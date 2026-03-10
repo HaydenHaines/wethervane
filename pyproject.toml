@@ -1,0 +1,70 @@
+[project]
+name = "us-political-covariation-model"
+version = "0.1.0"
+description = "Community-covariance model of U.S. political behavior"
+requires-python = ">=3.11"
+readme = "README.md"
+
+dependencies = [
+    # Data handling
+    "pandas>=2.0",
+    "geopandas>=0.14",
+    "pyarrow>=14.0",
+
+    # Census/ACS access
+    "cenpy>=1.0",
+
+    # Community detection
+    "leidenalg>=0.10",
+    "python-igraph>=0.11",
+    "infomap>=2.7",
+
+    # Machine learning / matrix factorization
+    "scikit-learn>=1.4",
+    "lightfm>=1.17",
+
+    # Bayesian modeling
+    "cmdstanpy>=1.2",
+    "pymc>=5.10",
+    "arviz>=0.17",
+
+    # Graph signal processing
+    "pygsp>=0.5",
+
+    # Visualization
+    "matplotlib>=3.8",
+    "seaborn>=0.13",
+    "plotly>=5.18",
+
+    # Utilities
+    "requests>=2.31",
+    "tqdm>=4.66",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4",
+    "ruff>=0.3",
+    "jupyter>=1.0",
+    "ipykernel>=6.0",
+    "streamlit>=1.30",
+]
+
+graph-tool = [
+    # graph-tool must be installed via conda or system package manager
+    # It cannot be installed via pip
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.backends._legacy:_Backend"

@@ -1,0 +1,61 @@
+# Data directory (large files, not versioned)
+data/raw/
+data/assembled/
+data/communities/
+data/covariance/
+data/polls/
+data/predictions/
+data/validation/
+
+# Keep directory structure
+!data/*/.gitkeep
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+.venv/
+venv/
+env/
+
+# R
+.Rhistory
+.Rdata
+.RData
+.Ruserdata
+renv/library/
+renv/staging/
+renv/local/
+
+# Stan
+*.hpp
+*.o
+*.exe
+
+# Jupyter
+.ipynb_checkpoints/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.local
+
+# Large model outputs
+*.pkl
+*.joblib
+*.rds
+*.stan.exe
