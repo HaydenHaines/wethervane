@@ -38,6 +38,8 @@ Six-stage pipeline with strict separation between community detection (non-polit
 5. **Prediction / Interpretation** -- Generate county-level dual estimates: vote share and turnout
 6. **Validation** -- Holdout backtesting, cross-validation, calibration checks
 
+**Separate silo: Political Sabermetrics** -- Advanced analytics for politician performance. Shares data infrastructure with the covariance pipeline but has its own compute pipeline. Decomposes election outcomes into district baseline + national environment + candidate effect. When the covariance model is available, candidate effects are further decomposed by community type (CTOV). See `docs/SABERMETRICS_ARCHITECTURE.md`.
+
 See `docs/ARCHITECTURE.md` for the full technical specification.
 
 ## Tech Stack
@@ -68,7 +70,8 @@ US-political-covariation-model/
 │   ├── voter-stability-evidence.md    # Literature on voter behavior stability
 │   ├── cross-disciplinary-methods.md  # Methods borrowed from other fields
 │   ├── community-detection-research.md # Community detection algorithms review
-│   └── methods_and_tools_research.md  # Tools and frameworks evaluation
+│   ├── methods_and_tools_research.md  # Tools and frameworks evaluation
+│   └── moneyball-politician-analytics.md # Political sabermetrics research direction
 ├── src/
 │   ├── assembly/                      # Data assembly pipeline (Python)
 │   ├── detection/                     # Community type discovery (Python)
@@ -78,7 +81,13 @@ US-political-covariation-model/
 │   │   └── mrp/                       # MRP implementation (R scripts)
 │   ├── prediction/                    # Prediction and interpretation (Python)
 │   ├── validation/                    # Validation framework (Python + R)
-│   └── viz/                           # Visualization (Python)
+│   ├── viz/                           # Visualization (Python)
+│   └── sabermetrics/                  # Political sabermetrics silo (Python)
+│       ├── ingest.py                  # Data download and ID crosswalk
+│       ├── baselines.py               # District baseline computation
+│       ├── residuals.py               # Candidate residual / CTOV computation
+│       ├── legislative.py             # Legislative effectiveness stats
+│       └── composites.py              # Career summaries, fit scores, scouting
 ├── data/                              # All data artifacts (gitignored)
 │   ├── raw/                           # Original downloaded data
 │   ├── assembled/                     # Cleaned and harmonized county-level data
@@ -86,7 +95,8 @@ US-political-covariation-model/
 │   ├── covariance/                    # Estimated covariance matrices
 │   ├── polls/                         # Polling data
 │   ├── predictions/                   # Model outputs
-│   └── validation/                    # Holdout sets and validation results
+│   ├── validation/                    # Holdout sets and validation results
+│   └── sabermetrics/                  # Politician stat records and composites
 ├── notebooks/                         # Exploratory Jupyter notebooks
 ├── tests/                             # Unit and integration tests
 ├── scripts/                           # One-off and utility scripts
