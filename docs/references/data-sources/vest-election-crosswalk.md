@@ -41,4 +41,17 @@ tract_votes = vest_df.groupby('tract_geoid')[vote_columns].sum()
 Election returns are reported by precinct. Precincts and census tracts are independent boundaries with no alignment. VEST has done the spatial allocation from precinct to census block for all 50 states — the hardest part of this crosswalk is already done. We aggregate blocks to tracts.
 
 ## Gotchas
-*Populated as failures are encountered in practice. First entry goes here the first time the VEST data surprises us.*
+
+**1. VEST 2020 uses VTD-level GEOIDs, NOT block-level.**
+AL 2020 GEOID20 format: `01013000100` (11 digits: state+county+VTD code). This is the same length as a census tract GEOID (11 digits: state+county+tract) but is a completely different geography. `GEOID20[:11]` gives a VTD FIPS, not a tract FIPS. A spatial join is required.
+
+Note: FL 2020 has **no GEOID20 column at all** — different column structure. GA 2020 also uses non-block GEOIDs. Assume spatial join is always required for 2020 data; only treat string-slice as an optimization if you confirm block-level GEOIDs in a specific release.
+
+**2. Centroid-based spatial join misses ~27% of tracts.**
+Assigning each precinct to the tract containing its centroid gives only 73% coverage — large rural precincts span multiple tracts, but only the tract containing the centroid receives votes. The other tracts in that precinct get zero votes assigned. This is a silent error for populated tracts. Use area-weighted allocation instead: for each precinct, compute the fraction of the precinct's area that overlaps each tract, then split votes by that fraction. Area-weighted allocation achieves 99%+ coverage.
+
+**3. Remaining uncovered tracts (35 in FL) are uninhabited.**
+After area-weighted allocation, 35 FL tracts remain uncovered — all have `pop_total = 0` in ACS data. These are water bodies, offshore tracts, or other uninhabited areas. Not a data quality issue; leave them as NaN in the joined dataset.
+
+**4. Use EPSG:5070 (NAD83 Conus Albers) for area computation.**
+VEST data CRS varies by state: AL uses EPSG:4269, GA uses EPSG:4019, FL uses EPSG:4269. All must be projected to an equal-area CRS before computing overlap areas. EPSG:5070 (NAD83 Conus Albers) is appropriate for the contiguous US. Failure to reproject will produce slightly incorrect weights due to angular distortion at this scale.
