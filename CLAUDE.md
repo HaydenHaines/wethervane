@@ -14,6 +14,18 @@ A research model that discovers community types from non-political data (religio
 - Project structure changes --> update Directory Map
 - New data source integrated --> update Data Sources reference
 
+### When to Update the Reference Web
+- Needed the same external information twice --> create a reference file + index entry
+- Starting a new pipeline stage --> capture the references you're about to use
+- Reference file grows past 150 lines --> split it
+- Approach rejected --> move to `_deprecated/` with a note
+- See `docs/references/GOVERNANCE.md` for full rules
+
+### When to Flag a Skill
+- Same type of task recurs across sessions --> flag to user: "this should become a skill"
+- Same reference file consulted 3+ times for the same operation --> flag it
+- After using a skill 2-3 times, propose concrete improvements based on what actually happened
+
 ### When to Update Memory Files
 - Mistake made and corrected --> `memory/lessons.md`
 - Debugging technique works --> `memory/debugging.md`
@@ -65,7 +77,15 @@ US-political-covariation-model/
 │   ├── DATA_SOURCES.md                # Data source catalog and access notes
 │   ├── SOURCE_LOG.md                  # Academic and reference sources
 │   ├── DECISIONS_LOG.md               # Detailed decision records
-│   └── adr/                           # Architecture Decision Records
+│   ├── adr/                           # Architecture Decision Records
+│   └── references/                    # Local reference web (see GOVERNANCE.md)
+│       ├── GOVERNANCE.md              # Rules for adding/removing references
+│       ├── RESOURCE_INDEX.md          # Stage-to-resource lookup table (start here)
+│       ├── stan/                      # Stan language, model patterns, cmdstanpy
+│       ├── data-sources/              # Census, ACS, election returns, surveys
+│       ├── methods/                   # MRP, NMF, Bayesian workflow
+│       ├── r-ecosystem/               # brms, rstanarm, survey package patterns
+│       └── _deprecated/               # Rejected approaches with notes
 ├── research/
 │   ├── voter-stability-evidence.md    # Literature on voter behavior stability
 │   ├── cross-disciplinary-methods.md  # Methods borrowed from other fields
@@ -114,7 +134,7 @@ US-political-covariation-model/
 
 ### Data
 - **Free data only for MVP**: Census, ACS, election returns, FEC, religious congregation data -- all publicly available at no cost.
-- **County-level resolution**: The unit of analysis is the county (FIPS code). Sub-county data may be used as features but predictions are at county level.
+- **Census tract resolution**: The unit of analysis is the census tract (~4,200 in FL+GA+AL). See ADR-004. County-level data may be used where tract-level is unavailable, but all community assignments and predictions are at tract level.
 - **Soft assignment**: Counties have mixed membership across community types (probability vectors), not hard cluster labels.
 
 ### Code
