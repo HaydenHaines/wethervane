@@ -1,7 +1,7 @@
 ---
 source: https://dataverse.harvard.edu/dataverse/vest
 captured: 2026-03-18
-version: Covers 2016, 2018, 2020, 2022 general elections; all 50 states
+version: Free access covers 2016, 2018, 2020. 2022+ is paywalled.
 ---
 
 # VEST Election Returns (UF / Harvard Dataverse)
@@ -9,8 +9,49 @@ version: Covers 2016, 2018, 2020, 2022 general elections; all 50 states
 Voting and Election Science Team, University of Florida. Precinct-level election results with spatial data enabling crosswalk to census geographies.
 
 ## Access
-Free download, no account required.
-URL: https://dataverse.harvard.edu/dataverse/vest
+Free download for 2016–2020, no account required.
+URL: https://dataverse.harvard.edu/dataverse/electionscience
+**2022 and 2024 are behind a paid subscriber paywall** — UF plans to make them public again when 2030 redistricting nears.
+
+## Working Historical Set
+Free VEST covers 2016, 2018, 2020. **2022 is paywalled.**
+For 2022 county-level results without spatial geometry, use MEDSL (see below).
+**Working election set for this project (VEST): 2016 + 2018 + 2020.**
+
+## 2022 Data Alternative: MEDSL GitHub
+For 2022 validation, use the MIT Election Data + Science Lab precinct returns.
+Precinct-level CSV with `county_fips` attached — aggregate to county with a groupby.
+No spatial join required (county-level only, not tract-level).
+Source: https://github.com/MEDSL/2022-elections-official/tree/main/individual_states
+Files: `2022-fl-local-precinct-general.zip`, `2022-ga-local-precinct-general.zip`
+Filter: `office == 'GOVERNOR'`, `stage == 'gen'`
+Mode dedup: use `mode == 'TOTAL'` rows where present; otherwise sum non-TOTAL modes.
+Column: `votes` (not `candidatevotes`); compute totalvotes as sum across candidates.
+**Limitation: county-level only. Cannot extend Stan tract-level covariance training.**
+
+## Harvard Dataverse File IDs (direct download)
+
+| Year | State | File ID | DOI |
+|------|-------|---------|-----|
+| 2016 | AL | 4751068 | 10.7910/DVN/NH5S2I |
+| 2016 | FL | 12070343 | 10.7910/DVN/NH5S2I |
+| 2016 | GA | 11070010 | 10.7910/DVN/NH5S2I |
+| 2018 | AL | 4751072 | 10.7910/DVN/UBKYRU |
+| 2018 | FL | 12070358 | 10.7910/DVN/UBKYRU |
+| 2018 | GA | 11070036 | 10.7910/DVN/UBKYRU |
+| 2020 | AL | 4751074 | 10.7910/DVN/K7760H |
+| 2020 | FL | 12070362 | 10.7910/DVN/K7760H |
+| 2020 | GA | 11070054 | 10.7910/DVN/K7760H |
+
+Download URL: `https://dataverse.harvard.edu/api/access/datafile/{file_id}`
+
+## Office Selection Per Year
+
+| Year | Office | Column pattern | Notes |
+|------|--------|----------------|-------|
+| 2016 | Presidential | `G16PRE*` | Output prefix: `pres_` |
+| 2018 | Gubernatorial | `G18GOV*` | No presidential race. Output prefix: `gov_`. **Alabama 2018 governor race was uncontested (Ivey, R)**. AL dem share will be near-zero; flag as unreliable for covariance estimation. |
+| 2020 | Presidential | `G20PRE*` | Output prefix: `pres_` |
 
 ## States Needed
 - Florida: search `florida_[year]_vest`

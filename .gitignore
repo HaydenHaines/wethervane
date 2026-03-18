@@ -4,11 +4,15 @@ data/assembled/
 data/communities/
 data/covariance/
 data/polls/
+!data/polls/*.csv
 data/predictions/
 data/validation/
 
 # Keep directory structure
 !data/*/.gitkeep
+
+# Large visualization artifacts (regeneratable from pipeline)
+data/viz/*.geojson
 
 # Python
 __pycache__/

@@ -44,12 +44,11 @@ Add an entry here **at the same time** as creating a reference file. See `GOVERN
 
 | File | What it covers | Tags |
 |------|---------------|------|
-| *(none yet)* | | |
+| [stan/community-covariance-model.md](stan/community-covariance-model.md) | Factor model structure, identification constraints, priors, theta_se computation, cmdstanpy interface, gotchas (missing data mask, sign constraint, T=3 width) | `S3`, `S4` |
 
 **Known gaps:**
-- Stan hierarchical model patterns for covariance estimation
-- cmdstanpy interface: data passing, sampling, diagnostics
-- Covariance matrix parameterization in Stan (LKJ prior)
+- Stan general language reference (data types, sampling statements, constraints)
+- LKJ prior as alternative to factor-model covariance parameterization
 
 ---
 

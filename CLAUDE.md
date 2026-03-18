@@ -151,24 +151,34 @@ US-political-covariation-model/
 
 ```bash
 # Python environment
-# TODO: finalize package manager (uv or pip)
-# pip install -e .                             # Install project in dev mode
+pip install -e .                                    # Install project in dev mode
 
-# Pipeline stages (placeholder — modules not yet implemented)
-# python -m src.assembly.run                   # Stage 1: Assemble county-level data
-# python -m src.detection.run                  # Stage 2: Discover community types
-# python -m src.covariance.run                 # Stage 3: Estimate political covariance
-# Rscript src/propagation/mrp/run.R            # Stage 4: MRP poll propagation
-# python -m src.prediction.run                 # Stage 5: Generate predictions
-# python -m src.validation.run                 # Stage 6: Validate against holdout
+# Data ingestion (run once; downloads raw data from MEDSL/VEST)
+python src/assembly/fetch_vest_multi_year.py        # VEST 2016/2018/2020 → tract-level
+python src/assembly/fetch_2022_governor.py          # MEDSL 2022 governor → county-level
+python src/assembly/fetch_2024_president.py         # MEDSL 2024 president → county-level
+
+# Community back-calculation (extend prior chain)
+python src/assembly/estimate_2022_community_shares.py  # Stan prior → 2022 governor
+python src/assembly/estimate_2024_community_shares.py  # 2022 prior → 2024 president
+
+# Validation (out-of-sample tests)
+python src/validation/validate_2020.py              # 2020 holdout: within-state corr
+python src/validation/validate_2022.py              # 2022 governor: 2020 prior → actuals
+python src/validation/validate_2024.py              # 2024 president: 2022 prior → actuals
+
+# 2026 forward prediction
+python src/prediction/predict_2026.py               # All 2026 races
+python src/prediction/predict_2026.py --race "FL Senate"   # Single race
+python src/prediction/predict_2026.py --top-counties 10    # More counties shown
+
+# Visualization
+python src/viz/build_blended_map.py                 # Community blend map → data/viz/
 
 # Quality
-# ruff check src/                              # Lint Python
-# ruff format src/                             # Format Python
-# pytest                                       # Run Python tests
-
-# R environment
-# Rscript -e "renv::restore()"                 # Restore R dependencies
+ruff check src/                                     # Lint Python
+ruff format src/                                    # Format Python
+pytest                                              # Run Python tests (placeholder)
 ```
 
 ## Known Tech Debt
@@ -195,3 +205,7 @@ US-political-covariation-model/
 | 2026-03-10 | Two-stage separation (non-political detection, political validation) | Core falsifiability mechanism. If community types discovered from religion/class/neighborhood do not predict political covariance, the hypothesis fails cleanly |
 | 2026-03-10 | Free public data only for MVP | Census, ACS, election returns, congregation data, public polls. No budget for proprietary data. Sufficient for proof of concept |
 | 2026-03-18 | K=7 NMF community types (canonical) | Separates Asian from Knowledge Worker/WFH — critical for geographic analysis. R²=0.661 (Strong). ~60% generic baseline is a valid finding, not a flaw. |
+| 2026-03-18 | Multi-election validation complete (2016+2018+2020) | R²=0.689/0.636/0.661 — hypothesis confirmed across three cycles. c6 (Hispanic) realignment (+4.9%→+1.2% swing) detected. c6 and c4 negatively correlated — key signal for Stan factor model. Historical election set: 2016 pres + 2018 gov (FL+GA only; AL uncontested) + 2020 pres. |
+| 2026-03-18 | Tikhonov ridge regression for 2022/2024 community back-calculation | Bayesian approach (bayesian_poll_update with Stan Sigma) fails for county-level back-calc: data precision (~670K per county × 67 counties) dominates prior precision (~500) by 1340:1 — posterior exits [0,1]. Vote-normalized Tikhonov solves `min_{0≤θ≤1} ||W_w·θ - y_w||² + λ||θ - θ₀||²`. Adaptive λ search finds minimum regularization keeping estimates physical. Prior chain: Stan(2016-2020) → 2022 governor → 2024 president. AL excluded from 2022 (MEDSL data quality); falls back to 2020 prior. |
+| 2026-03-18 | Stage 4 poll propagation implemented in Python (not R+Stan MRP) | Lightweight Gaussian Bayesian update in `src/propagation/propagate_polls.py`: mu_post = Sigma_post(Sigma_prior⁻¹ mu_prior + Σ_polls Hᵀσ⁻²y). Uses Stan covariance matrix but does not require running Stan for each forecast. Full MRP (R+Stan) deferred to post-MVP; Python approach sufficient for state-level polls. |
+| 2026-03-18 | 2026 forward prediction pipeline complete (placeholder polls) | `src/assembly/ingest_polls.py` + `data/polls/polls_2026.csv` + `src/prediction/predict_2026.py`. FL Senate: polls 43.9% → model 39.5% (R+21); GA Senate: polls 50.5% → model 43.4% (R+13). Model applies structural downward correction to FL consistent with 2022/2024 validation showing ~5pp poll overestimate of Democrats. County predictions saved to `data/predictions/county_predictions_2026.parquet`. |
