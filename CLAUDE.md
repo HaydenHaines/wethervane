@@ -41,16 +41,21 @@ A research model that discovers community types from non-political data (religio
 
 ## Architecture
 
-Six-stage pipeline with strict separation between community detection (non-political) and political validation:
+Shift-based community discovery pipeline: communities are defined directly from spatially correlated electoral shifts, not from non-political features.
 
-1. **Data Assembly** -- Ingest and harmonize census, ACS, religious congregation, occupation, and neighborhood data at the county level
-2. **Community Detection** -- Discover latent community types from non-political features using soft assignment (mixed membership)
-3. **Covariance Estimation** -- Estimate how community types covary politically using historical election data (Stan)
-4. **Poll Propagation** -- Propagate current polling data through the community covariance structure using MRP (R + Stan)
-5. **Prediction / Interpretation** -- Generate county-level dual estimates: vote share and turnout
-6. **Validation** -- Holdout backtesting, cross-validation, calibration checks
+1. **Data Assembly** -- Ingest and harmonize census, ACS, religious congregation, occupation, neighborhood data, and historical election returns at the tract level
+2. **Shift Vector Computation** -- For each census tract, compute 9-dimensional electoral shift vectors across three election pairs (2016→2020 pres, 2020→2024 pres, 2018→2022 midterm), capturing D/R/turnout changes
+3. **Spatial Adjacency Graph** -- Build Queen-contiguity adjacency matrix for census tracts (shared edge or corner = neighbors)
+4. **Hierarchical Community Discovery** -- Hierarchical agglomerative clustering on shift vectors with spatial contiguity constraint (can only merge spatially adjacent clusters). Produces geographically contiguous communities that shift together politically.
+5. **Community Description** -- Overlay demographics (ACS, RCMS, LODES, IRS migration) descriptively on the discovered communities to characterize them
+6. **Temporal Validation** -- Falsifiability via holdout: train community discovery on pre-2024 shifts (2016→2020, 2020→2024), test on 2024 actual vs. predicted shifts
+7. **Poll Propagation** -- Propagate current polling data through community structure (Gaussian Bayesian update)
+8. **Prediction / Interpretation** -- Generate tract-level and county-level dual estimates: vote share and turnout
+9. **Validation** -- Temporal holdout (2024), cross-validation, calibration checks
 
-**Separate silo: Political Sabermetrics** -- Advanced analytics for politician performance. Shares data infrastructure with the covariance pipeline but has its own compute pipeline. Decomposes election outcomes into district baseline + national environment + candidate effect. When the covariance model is available, candidate effects are further decomposed by community type (CTOV). See `docs/SABERMETRICS_ARCHITECTURE.md`.
+**Historical approach (shelved, retained for comparison):** The original two-stage approach discovered community types from non-political data (ACS + RCMS via NMF), then validated through historical election covariance (R²~0.66). This approach is no longer the primary discovery method but comparison to it remains valuable.
+
+**Separate silo: Political Sabermetrics** -- Advanced analytics for politician performance. Shares data infrastructure with the shift discovery pipeline but has its own compute pipeline. Decomposes election outcomes into district baseline + national environment + candidate effect. See `docs/SABERMETRICS_ARCHITECTURE.md`.
 
 See `docs/ARCHITECTURE.md` for the full technical specification.
 
@@ -94,7 +99,13 @@ US-political-covariation-model/
 │   └── moneyball-politician-analytics.md # Political sabermetrics research direction
 ├── src/
 │   ├── assembly/                      # Data assembly pipeline (Python)
-│   ├── detection/                     # Community type discovery (Python)
+│   ├── discovery/                     # Shift-based community discovery (Python)
+│   │   ├── shift_vectors.py           # Compute electoral shift vectors from election returns
+│   │   ├── adjacency.py               # Build Queen-contiguity spatial adjacency graphs
+│   │   └── cluster.py                 # Hierarchical agglomerative clustering with spatial constraints
+│   ├── description/                   # Community characterization (Python)
+│   │   └── overlay_demographics.py    # Describe discovered communities via ACS/RCMS/LODES/IRS
+│   ├── detection/                     # Historical NMF community type discovery (shelved, comparison only)
 │   ├── covariance/                    # Historical covariance estimation (Python + Stan)
 │   ├── propagation/                   # Poll propagation model (R + Stan)
 │   │   ├── stan/                      # Stan model files (.stan)
@@ -127,7 +138,9 @@ US-political-covariation-model/
 ## Conventions
 
 ### Research Integrity
-- **Two-stage separation is sacred**: Community detection uses ONLY non-political data. Political data enters ONLY at the covariance estimation stage. This is the core falsifiability mechanism -- if non-political community structure does not predict political covariance, the hypothesis is wrong.
+- **Communities defined by political behavior**: The shift-based approach inverts the historical two-stage model. Communities are discovered directly from spatially correlated electoral shifts, not from demographic proxies. This is more direct and falsifiable: communities that shift together politically are grouped together. See ADR-005.
+- **Falsifiability via temporal holdout**: Train community discovery on shifts before 2024 (2016→2020, 2020→2024), test on 2024 actual shifts. If discovered communities predict 2024 political shifts, the model is validated. If not, it fails cleanly.
+- **Demographics are descriptive**: After discovering communities from shifts, overlay demographics (ACS, RCMS, LODES, IRS migration) to characterize them. This reverses the historical dependency: demographics explain communities, not the other way around.
 - **Assumptions are explicit**: Every modeling assumption is logged in `docs/ASSUMPTIONS_LOG.md` with its status (untested / supported / refuted).
 - **Falsification over confirmation**: Design validation to try to break the model, not confirm it. Negative results are documented, not hidden.
 - **Reproducibility**: All data transformations are scripted. No manual steps between raw data and outputs. Random seeds are pinned.
@@ -212,3 +225,4 @@ pytest                                              # Run Python tests (203 test
 | 2026-03-18 | 2026 forward prediction pipeline complete (placeholder polls) | `src/assembly/ingest_polls.py` + `data/polls/polls_2026.csv` + `src/prediction/predict_2026.py`. FL Senate: polls 43.9% → model 39.5% (R+21); GA Senate: polls 50.5% → model 43.4% (R+13). Model applies structural downward correction to FL consistent with 2022/2024 validation showing ~5pp poll overestimate of Democrats. County predictions saved to `data/predictions/county_predictions_2026.parquet`. |
 | 2026-03-18 | RCMS 2020 religious data integrated (county level) | `src/assembly/fetch_rcms.py` scrapes ARDA county map tool (parameterized GET, no login required). Produces `data/raw/rcms_county.parquet` (293 counties, 7 data cols). `build_features.py` computes 6 derived features → `data/assembled/county_rcms_features.parquet`. RCMS is county-level only; ACS tract features remain in separate file. 38 new tests in `tests/test_rcms.py`. |
 | 2026-03-18 | IRS SOI county-to-county migration edge list integrated | `src/assembly/fetch_irs_migration.py` downloads IRS SOI inflow CSVs (default: latest 3 year pairs: 2019-2020, 2020-2021, 2021-2022). Filters to flows involving FL/GA/AL, skips aggregate rows (statefips ≥ 96) and non-migrant same-county rows. Produces `data/raw/irs_migration.parquet` (edge list: origin_fips, dest_fips, n_returns, n_exemptions, agi, year_pair). Inflow-only design avoids double-counting. 48 new tests in `tests/test_irs_migration.py`. Feature computation from edge list deferred to post-MVP. |
+| 2026-03-18 | Shift-based community discovery replaces NMF-on-demographics | Communities now discovered directly from spatially correlated electoral shift vectors (9-dim: D/R/turnout changes across three election pairs), using hierarchical agglomerative clustering with Queen spatial contiguity. The historical two-stage approach (NMF on ACS+RCMS → political validation) achieved R²~0.66 but imposed an indirect discovery path. Shift-based approach is more direct: communities are defined by how they move politically, not demographic proxies. Falsifiability moves from "do demographics predict covariance?" to "do communities from pre-2024 shifts predict 2024 shifts?" See ADR-005. |
