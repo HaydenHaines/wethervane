@@ -1,8 +1,17 @@
-# Project: US Political Covariation Model
+# Project: US Political Covariation Model (working name: **Bedrock**)
 
-A research model that discovers community types from non-political data (religion, class/occupation, neighborhood characteristics), estimates how those community types covary politically using historical election results, and propagates polling information through the learned covariance structure to produce community-level political estimates. The proof-of-concept geography is FL+GA+AL (226 counties), targeting functional predictions by the October 2026 midterms.
+A political modeling platform that discovers electoral communities directly from spatially correlated shift patterns, estimates how those communities covary, and propagates polling signals through the covariance structure to produce forward predictions. Target domain: `bedrock.vote`. Public-facing; 538-style audience.
 
-**Core insight:** communities that share social identity and behavioral patterns will covary politically, even when geographically separated. Detecting these communities from non-political data and then separately estimating their political covariance avoids circular reasoning and produces a falsifiable model.
+**Core insight:** beneath the noise of individual elections is a structural landscape of communities that move together politically. Those communities cross administrative boundaries, persist across decades, and can be discovered purely from how places shift. Understanding this structure — not just the surface results — is what makes prediction defensible.
+
+**Governing principles (2026-03-19, supersedes MVP-era "minimize complexity"):**
+- Build it right, not fast. Use the correct model even if it takes longer.
+- Build it expandable. Every component has a clear interface.
+- Two layers: **communities** (geographic blobs, HAC) + **types** (abstract archetypes, NMF). A community in rural Georgia and one in rural Washington are different communities; they may be the same type.
+- K is the hardest problem. Selection must be principled (holdout accuracy), not heuristic.
+- The public question is: *What will happen in 2026?*
+
+See `docs/ROADMAP.md` for the full path forward.
 
 ## Self-Improvement Protocol
 
@@ -41,13 +50,25 @@ A research model that discovers community types from non-political data (religio
 
 ## Architecture
 
-Shift-based community discovery pipeline: communities are defined directly from spatially correlated electoral shifts, not from non-political features.
+Two-layer electoral community model:
 
-1. **Data Assembly** -- Ingest and harmonize census, ACS, religious congregation, occupation, neighborhood data, and historical election returns at the tract level
-2. **Shift Vector Computation** -- For each census tract, compute 9-dimensional electoral shift vectors across three election pairs (2016→2020 pres, 2020→2024 pres, 2018→2022 midterm), capturing D/R/turnout changes
-3. **Spatial Adjacency Graph** -- Build Queen-contiguity adjacency matrix for census tracts (shared edge or corner = neighbors)
-4. **Hierarchical Community Discovery** -- Hierarchical agglomerative clustering on shift vectors with spatial contiguity constraint (can only merge spatially adjacent clusters). Produces geographically contiguous communities that shift together politically.
-5. **Community Description** -- Overlay demographics (ACS, RCMS, LODES, IRS migration) descriptively on the discovered communities to characterize them
+**Layer 1 — Geographic communities** (HAC with spatial constraint)
+Spatially contiguous blobs of counties/tracts that shift together politically. Each community is a specific place. Discovered by Ward hierarchical agglomerative clustering on log-odds shift vectors with Queen contiguity constraint.
+
+**Layer 2 — Electoral types** (NMF on community profiles)
+Abstract archetypes shared across non-contiguous communities. Rural Georgia and rural Washington are different communities; they may be the same type. Types are interpretable, named, and carry soft membership weights. J types << K communities.
+
+**Full pipeline:**
+1. **Data Assembly** -- Historical election returns (presidential, governor, Senate), ACS, RCMS, LODES, IRS migration at county/tract level
+2. **Shift Vector Computation** -- Log-odds shift vectors across all available election pairs (pres 2000–2020 + governor 2002–2022 + Senate). Total vote share denominator. 30 training dims + 3 holdout dims.
+3. **Spatial Adjacency Graph** -- Queen-contiguity adjacency matrix (county or tract)
+4. **Layer 1: Community Discovery** -- Ward HAC on shift vectors with spatial constraint → K geographically contiguous communities. K selected by holdout predictive accuracy.
+5. **Layer 2: Type Classification** -- NMF on community shift profiles → J electoral types with soft membership weights. J selected for interpretability.
+6. **Community Description** -- ACS, RCMS, LODES, IRS migration overlaid on discovered communities; types named from demographic character
+7. **Covariance Estimation** -- Stan factor model → K×K community covariance matrix Σ
+8. **Poll Propagation** -- Gaussian Bayesian update distributes state-level poll signal to communities via Σ
+9. **Prediction** -- Community-level forward estimates → county/tract predictions with uncertainty
+10. **Validation** -- Temporal holdout (2020→2024), cross-validation, calibration
 6. **Temporal Validation** -- Falsifiability via holdout: train community discovery on pre-2024 shifts (2016→2020, 2020→2024), test on 2024 actual vs. predicted shifts
 7. **Poll Propagation** -- Propagate current polling data through community structure (Gaussian Bayesian update)
 8. **Prediction / Interpretation** -- Generate tract-level and county-level dual estimates: vote share and turnout
@@ -207,12 +228,13 @@ pytest                                              # Run Python tests (203 test
 
 ## Constraints
 
-- **Free data only for MVP**: No paid data subscriptions. Census, ACS, election returns, congregation data, and public polls are all freely available.
-- **Personal research project**: Solo developer, hobby pace. Architecture decisions should minimize operational complexity.
-- **October 2026 target**: Functional prediction system for the 2026 midterm elections. This is a hard external deadline.
-- **Proof-of-concept geography**: FL+GA+AL only (226 counties). National expansion is a post-MVP goal.
-- **Hybrid stack complexity**: Python + R + Stan requires careful interface design. Stan is the bridge -- both cmdstanpy and rstan/cmdstanr can compile and run the same .stan files.
-- **No proprietary models**: All modeling code is transparent. No black-box APIs for core inference.
+- **Free data only**: Census, ACS, election returns, congregation data, public polls. No paid subscriptions.
+- **October 2026 target**: Functional public prediction tool for the 2026 midterms. Hard external deadline.
+- **FL+GA+AL pilot first**: County model and visualization ship before national expansion. But architecture must support national from day one.
+- **Build it right, not fast**: Operational complexity is no longer a constraint to minimize. Correct models and expandable architecture take priority.
+- **Public-facing**: Code quality, documentation, and methodology must be publication-ready. Assume others will read and attempt to replicate.
+- **Hybrid stack**: Python + R + Stan. Stan is the bridge — both cmdstanpy and cmdstanr compile the same .stan files. FastAPI exposes outputs; React + Deck.gl consumes them.
+- **No proprietary models**: All inference is transparent and reproducible.
 
 ## Key Decisions Log
 
