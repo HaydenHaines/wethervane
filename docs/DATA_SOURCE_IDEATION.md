@@ -906,3 +906,135 @@ After these 5, prioritize: FEC contributions, IRS zip income, Facebook SCI, USDA
 ---
 
 *End of Expansion Round 2. Total ideated sources: 101 (40 original + 61 new).*
+
+---
+
+## Expansion Round 3 — GitHub Repositories & Tools
+
+*Added 2026-03-19. Per Hayden's directive: "GitHub has a myriad of projects that may have data sources or chunks of tools we could use."*
+
+These are GitHub repos that either contain pre-compiled county-level data we can ingest directly, or tools that simplify fetching data we've already identified.
+
+---
+
+### Pre-Compiled County-Level Datasets
+
+### 102. CountyPlus — Open-Source County Panel Dataset
+- **What**: 3,000+ US counties × years 2003-2019. Pre-compiled panel with economic, demographic, health, and social variables from all major public sources (BEA, BLS, Census, CDC, USDA).
+- **Resolution**: County | **Temporal**: 2003-2019
+- **URL**: https://github.com/Clpr/CountyPlus
+- **Why it matters**: Single-download dataset that consolidates many of the individual sources we've listed (BEA income, BLS unemployment, USDA rural codes, CDC health). Could bootstrap feature engineering for 10+ Tier 1/2 sources with one integration. Panel format means temporal change features are pre-aligned.
+- **Signal**: Meta-source — accelerates integration of multiple individual sources.
+- **Cost/Effort**: Free. Single CSV/parquet download. May need updating beyond 2019.
+
+### 103. JsonOfCounties — Multi-Source County Data in JSON
+- **What**: County-level data including BEA income, presidential election results, demographics, education, and health metrics compiled into JSON format.
+- **Resolution**: County | **Temporal**: Various
+- **URL**: https://github.com/evangambit/JsonOfCounties
+- **Why it matters**: Pre-joined dataset covering income, elections, education, health — ready to cross-reference against our shift vectors. JSON format may need conversion but the joining work is done.
+- **Signal**: Convenience source — validates our own feature builds and fills gaps.
+- **Cost/Effort**: Free. JSON files, trivial conversion.
+
+### 104. US County Level Election Results 2008-2024
+- **What**: County-level presidential results for 2008, 2012, 2016, 2020, 2024 from NYT, Guardian, Politico, Fox News. Standardized CSV format.
+- **Resolution**: County | **Temporal**: 2008-2024
+- **URL**: https://github.com/tonmcg/US_County_Level_Election_Results_08-24
+- **Why it matters**: Pre-compiled 5-cycle presidential results at county level. Could supplement VEST data for quick shift vector computation or validation. Already cleaned and standardized — no scraping needed.
+- **Signal**: Validation source for our VEST/MEDSL election returns. Also extends to 2008/2012 which we don't currently use.
+- **Cost/Effort**: Free. Single CSV per cycle.
+
+### NYTimes Open Source Election Maps
+
+### 105. NYT 2024 Presidential Precinct Map (NEW — not in prior list)
+- **What**: Precinct-level TopoJSON/GeoJSON results for the 2024 presidential election. Published by NYT as open data. Includes vote totals, margins, and precinct boundaries.
+- **Resolution**: Precinct | **Temporal**: 2024
+- **URL**: https://github.com/nytimes/presidential-precinct-map-2024
+- **Why it matters**: This is the 2024 companion to the 2020 precinct data already listed (#41). Having both years at precinct level enables sub-county shift vector computation — a major upgrade from county-level shifts. FL and GA have substantial coverage.
+- **Signal**: Sub-county shift vectors. The highest-resolution temporal shift data publicly available.
+- **Cost/Effort**: Free, direct GeoJSON download. Requires spatial join to tracts.
+
+### 106. NYT Upshot 2020 Presidential Precinct Map
+- **What**: GeoJSON with Biden/Trump vote totals per precinct, plus generated precinct boundaries from L2 voter file.
+- **Resolution**: Precinct | **Temporal**: 2020
+- **URL**: https://github.com/TheUpshot/presidential-precinct-map-2020
+- **Why it matters**: Already listed as #41 but noting the actual GitHub repo for direct download. GeoJSON format with GEOID = county FIPS + precinct ID.
+- **Signal**: See #41.
+- **Cost/Effort**: Free.
+
+### 107. Election Geodata — Precinct Shapes Archive
+- **What**: Comprehensive archive of precinct boundary shapefiles across multiple election cycles. Community-maintained with contributions from election officials and academics.
+- **Resolution**: Precinct | **Temporal**: Multiple cycles
+- **URL**: https://github.com/nvkelso/election-geodata
+- **Why it matters**: The boundary files needed to geolocate precinct results from OpenElections or MEDSL. Without boundaries, precinct results can't be mapped to tracts.
+- **Signal**: Infrastructure — enables sub-county analysis from multiple data sources.
+- **Cost/Effort**: Free. Shapefile format, varies by state/year.
+
+### Health & Opioid Crisis Data
+
+### 108. OEPS — Opioid Environment Policy Scan (GeoDaCenter/UChicago)
+- **What**: Multi-scale data warehouse (tract, zip, county, state) covering opioid prescribing rates, naloxone access, treatment facility locations, MAT provider counts, plus socioeconomic context (ACS, health, employment). Pre-built for opioid research.
+- **Resolution**: Census tract to state | **Temporal**: Various (2015-2022)
+- **URL**: https://github.com/GeoDaCenter/opioid-policy-scan
+- **Why it matters**: The most comprehensive pre-compiled opioid crisis dataset at tract level. Includes treatment access (buprenorphine providers, MAT facilities), prescribing rates, and naloxone pharmacy availability — all at sub-county resolution. These are direct measures of the "deaths of despair" crisis that our CDC WONDER mortality fetcher captures from the outcome side.
+- **Signal**: Opioid crisis input variables (treatment access, prescribing) complement mortality output variables. Counties with high mortality but low treatment access are a distinct community type from those with high mortality and high treatment access.
+- **Cost/Effort**: Free. Pre-built CSV files organized by spatial scale. Very low effort.
+
+### 109. US Overdoses Analysis Database
+- **What**: County-level opioid mortality 1999-2015 merged with ACS income, medical insurance, SAMHSA drug use surveys, naloxone/buprenorphine dispensing data.
+- **Resolution**: County/state | **Temporal**: 1999-2015
+- **URL**: https://github.com/mattkiefer/us-overdoses
+- **Why it matters**: Pre-joined dataset linking overdose mortality to economic and healthcare access variables. The temporal range (1999-2015) captures the pre-Trump opioid crisis that shaped the 2016 political realignment.
+- **Signal**: Historical opioid crisis trajectory — counties where the crisis peaked before 2016 may have shifted differently from those where it peaked later.
+- **Cost/Effort**: Free. SQLite + CSV format.
+
+### Political Science Research Data
+
+### 110. PolData — Master Index of Political Datasets
+- **What**: Curated catalog of 300+ political science datasets across 15 categories: elections, parties, institutions, policy, public opinion, media, conflict, etc. Each entry includes topic, coverage, URL, and format.
+- **Resolution**: Varies | **Temporal**: Varies
+- **URL**: https://github.com/erikgahner/PolData
+- **Why it matters**: This is a meta-source — a research-grade index of political datasets that may contain sources we haven't identified. Worth scanning the full list for FL/GA/AL-relevant county-level data. Maintained by a political scientist.
+- **Signal**: Discovery accelerator — may identify 5-10 additional sources relevant to our specific geographic focus.
+- **Cost/Effort**: Free. Markdown index file.
+
+### 111. US Polling Places Database (Center for Public Integrity)
+- **What**: Standardized geocoded polling place locations for general elections across multiple states and years. Includes address, precinct assignment, and temporal changes.
+- **Resolution**: Point (polling place) | **Temporal**: 2012-2020
+- **URL**: https://github.com/PublicI/us-polling-places
+- **Why it matters**: Polling place closures and relocations are a documented voter suppression mechanism. Counties that reduced polling places between elections show lower turnout, particularly in minority communities. GA's 2018 election featured specific polling place closure controversies (Randolph County).
+- **Signal**: Election access infrastructure as political participation signal. Polling place distance increase predicts turnout decline.
+- **Cost/Effort**: Free. CSV format, geocoded.
+
+### Tools for Data Fetching
+
+### 112. censusdis — Pythonic Census API Wrapper
+- **What**: Python package for programmatic access to all 1,500+ Census Bureau API endpoints. Handles geography hierarchies, variable discovery, and data download with pandas integration.
+- **Resolution**: All Census geographies (tract to national) | **Temporal**: All Census/ACS years
+- **URL**: https://github.com/censusdis/censusdis
+- **Why it matters**: Could replace our manual ACS fetching with a more robust, discoverable API wrapper. Supports geographic boundary downloads alongside data — useful for spatial joins. More Pythonic than the `census` package.
+- **Signal**: Tool — accelerates Census/ACS data integration and makes it easier to explore new Census tables.
+- **Cost/Effort**: Free. `pip install censusdis`. Could refactor our ACS pipeline to use this.
+
+### 113. censusapi — R Census API Wrapper
+- **What**: Lightweight R package for all Census Bureau APIs. Supports data discovery, all geographies, and all endpoints including SAIPE, BDS, CBP, ACS, Decennial.
+- **Resolution**: All Census geographies | **Temporal**: All available years
+- **URL**: https://github.com/hrecht/censusapi
+- **Why it matters**: For our R pipeline (MRP/propagation), this provides native R access to Census data without Python intermediary. Particularly useful for SAIPE annual poverty data (source #97) and BDS business dynamics (source #17).
+- **Signal**: Tool — R-native Census access for the propagation pipeline.
+- **Cost/Effort**: Free. `install.packages("censusapi")`.
+
+---
+
+### Priority GitHub Sources to Integrate First
+
+| Source | # | Why First | Effort |
+|--------|---|-----------|--------|
+| CountyPlus panel | 102 | Bootstraps 10+ features at once | Very Low |
+| NYT 2024 precinct map | 105 | Sub-county shift vectors | Medium |
+| OEPS opioid scan | 108 | Tract-level crisis data, pre-built | Very Low |
+| PolData index | 110 | May reveal new sources | Research only |
+| censusdis tool | 112 | Improves all Census fetching | Medium (refactor) |
+
+---
+
+*End of Expansion Round 3. Total ideated sources: 113 (101 prior + 12 new from GitHub survey).*
