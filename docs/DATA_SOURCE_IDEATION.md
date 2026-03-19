@@ -2006,3 +2006,383 @@ These are GitHub repos that either contain pre-compiled county-level data we can
 ---
 
 *End of Expansion Round 5. Total ideated sources: 213 (163 prior + 50 new). Per Hayden: aggressive, creative, covering turnout, demographics, marketing, politics, and beyond.*
+
+---
+
+## Expansion Round 6 — GitHub Projects, NYT Open Data, and Unconventional Sources
+
+*Added 2026-03-19 S121. Hayden directive: "nytimes publishes really good national maps that they open source, and GitHub has a myriad of projects that may have data sources or chunks of tools." Focused on GitHub open-data repositories, media open datasets, and truly creative signals not yet covered.*
+
+---
+
+### GitHub Open Data Projects
+
+### 214. tonmcg/US_County_Level_Election_Results_08-20
+- **What**: Clean county-level presidential results 2008-2020 in single standardized CSV. FIPS codes, party vote counts, total votes.
+- **Resolution**: County | **Temporal**: 2008-2020
+- **URL**: https://github.com/tonmcg/US_County_Level_Election_Results_08-20
+- **Why it matters**: Pre-cleaned, FIPS-standardized election returns in a single file. Useful as a validation/crosswalk reference for VEST/MEDSL data. Easier to work with for quick exploratory analysis.
+- **Signal**: Election baseline reference. Complements VEST tract-level data with a fast county-level alternative.
+- **Cost/Effort**: Free, single CSV download.
+
+### 215. TheUpshot/nyt-2020-election-scraper (Archived)
+- **What**: JSON snapshots of NYT election night API data showing vote count progression over time (batch-by-batch results as they were reported). Trump/Biden running totals by state with timestamps.
+- **Resolution**: State-level time series | **Temporal**: Nov 3-13, 2020
+- **URL**: https://github.com/alex/nyt-2020-election-scraper
+- **Why it matters**: Captures the *sequence* of vote counting — late-counted mail ballots vs. election-day in-person votes. The "red mirage / blue shift" pattern where Trump led election night and Biden overtook in mail ballots reveals the two electorates (mail vs. in-person) within each state.
+- **Signal**: Vote-method composition by time. Mail ballot acceptance curves reveal partisan vote-method split.
+- **Cost/Effort**: Free. Archived JSON, would need parsing.
+
+### 216. MEDSL/elections (MIT Election Data + Science Lab)
+- **What**: Canonical GitHub repository for MIT's standardized precinct and county election returns. All 50 states, 2016-2024, president through local races.
+- **Resolution**: Precinct/county | **Temporal**: 2016-2024
+- **URL**: https://github.com/MEDSL/elections
+- **Why it matters**: Already the source for several fetchers, but the GitHub repo has additional datasets (state legislature, attorney general, ballot measures) not yet integrated. Ballot measure results (abortion referenda, marijuana legalization, minimum wage) reveal issue-level preferences distinct from candidate choice.
+- **Signal**: Issue-specific political preferences via ballot measures. Cross-party issue salience.
+- **Cost/Effort**: Free. Already familiar with the data format.
+
+### 217. BuzzFeedNews/everything (Archived Investigations Data)
+- **What**: Dozens of datasets from BuzzFeed News investigations — surveillance aircraft tracking, spy planes, political ad spending, nursing home inspection data, gun dealer inspections.
+- **Resolution**: Varies | **Temporal**: 2015-2023
+- **URL**: https://github.com/BuzzFeedNews/everything
+- **Why it matters**: Investigative journalism produces unique datasets not available elsewhere. Gun dealer inspection rates, nursing home violations, and federal surveillance patterns each capture distinct community-level signals.
+- **Signal**: Varied investigative signals — gun infrastructure, healthcare quality, federal enforcement.
+- **Cost/Effort**: Free (CC). Requires cherry-picking relevant datasets.
+
+### 218. Data.World / ProPublica Congress API + Campaign Finance
+- **What**: ProPublica maintains free APIs for congressional votes, member data, bills, lobbying disclosures, and nonprofit IRS 990 filings. GitHub repos: `propublica/campaign-finance-api-docs`, `propublica/congress-api-docs`.
+- **Resolution**: District/state/organization | **Temporal**: 1980s-present
+- **URL**: https://github.com/propublica, https://projects.propublica.org/
+- **Why it matters**: Congressional voting records aggregated by district allow computing legislator ideology scores independently from DIME. Nonprofit 990 data at scale captures civic infrastructure.
+- **Signal**: Political representation quality + civic infrastructure.
+- **Cost/Effort**: Free API (rate-limited).
+
+### 219. jsvine/lede-data (Open Journalism Datasets)
+- **What**: Curated collection of open datasets useful for data journalism. Includes links to government data (OSHA violations, FDA recalls, FAA incidents), political data (lobbyist registrations, PAC spending), and social data.
+- **Resolution**: Varies | **Temporal**: Ongoing
+- **URL**: https://github.com/jsvine/lede-data
+- **Why it matters**: Meta-resource — a curated index of data sources useful for investigative reporting. Likely contains pointers to datasets we haven't considered.
+- **Signal**: Discovery resource for additional niche sources.
+- **Cost/Effort**: Free. Index-only, need to evaluate individual datasets.
+
+### 220. erikgahner/PolData (Political Science Datasets Index)
+- **What**: Massive curated list of publicly available political science datasets. Covers elections, public opinion, institutions, policy, conflict, media, and methodology. 700+ entries.
+- **Resolution**: Varies | **Temporal**: Ongoing
+- **URL**: https://github.com/erikgahner/PolData
+- **Why it matters**: The most comprehensive single index of political science data. Almost certainly contains sources not yet in our ideation doc. Worth a systematic scan.
+- **Signal**: Meta-discovery resource. Could uncover 10+ additional sources.
+- **Cost/Effort**: Free. Review/filter effort.
+
+### 221. CivilServiceUSA/us-house + us-senate (Legislator Demographics)
+- **What**: Photos, demographics, social media accounts, and biographical data for every sitting member of Congress.
+- **Resolution**: District/state | **Temporal**: Current
+- **URL**: https://github.com/CivilServiceUSA
+- **Why it matters**: Legislator demographics (age, race, gender, education, prior occupation) as features of the district. Districts that elect women, minorities, or military veterans differ from those that don't.
+- **Signal**: Representation patterns as community signal.
+- **Cost/Effort**: Free.
+
+### 222. kjhealy/us_county_data (Kieran Healy's County Data)
+- **What**: Sociologist Kieran Healy's assembled county-level dataset combining ACS, CDC, USDA, and economic indicators. Pre-merged, analysis-ready.
+- **Resolution**: County | **Temporal**: Various
+- **URL**: https://github.com/kjhealy/us_county_data
+- **Why it matters**: Academic-quality data assembly from a respected sociologist. May contain derived variables (e.g., social capital indices, mortality composites) not in our raw sources. Useful as a validation crosswalk.
+- **Signal**: Pre-computed sociological indicators.
+- **Cost/Effort**: Free. Single package.
+
+### 223. datadesk/census-data-downloader (LA Times)
+- **What**: Python tool for bulk downloading Census/ACS tables. Handles the Census API complexity and outputs clean CSVs.
+- **Resolution**: Tract/county/state | **Temporal**: 2010-2023
+- **URL**: https://github.com/datadesk/census-data-downloader
+- **Why it matters**: Not a data source itself, but a **tool** that dramatically speeds up ACS data fetching. Could help us pull additional ACS tables (vehicle ownership, commute mode, housing tenure, language spoken) without writing custom API code.
+- **Signal**: Tooling — accelerates access to hundreds of ACS tables we haven't explored.
+- **Cost/Effort**: Free. Install and query.
+
+### 224. uscensusbureau/citysdk (Census CitySDK)
+- **What**: Official Census Bureau JavaScript/Python SDK for accessing Census data with geographic boundaries. Simplifies spatial joins.
+- **Resolution**: All Census geographies | **Temporal**: Current
+- **URL**: https://github.com/uscensusbureau/citysdk
+- **Why it matters**: Tool for efficiently pulling any Census variable with geometry attached. Useful for tract-level assembly at scale.
+- **Signal**: Tooling for spatial data access.
+- **Cost/Effort**: Free.
+
+### 225. TheEconomist/us-potus-model (Economist Election Model)
+- **What**: Stan/R code and data for The Economist's 2020 presidential election forecast model. Includes state-level polling averages, fundamentals, and priors.
+- **Resolution**: State | **Temporal**: 2020
+- **URL**: https://github.com/TheEconomist/us-potus-model
+- **Why it matters**: Published Bayesian election model with Stan code — directly comparable to our Stan propagation model. Their prior construction, poll weighting, and fundamentals integration are instructive. Could borrow their "fundamentals" feature set (GDP growth, presidential approval, incumbency).
+- **Signal**: Methodology reference + fundamentals data.
+- **Cost/Effort**: Free. Code study + data extraction.
+
+### 226. fivethirtyeight/data (538 Open Datasets)
+- **What**: All datasets behind FiveThirtyEight articles — redistricting, partisan lean, hate crimes, police killings, sports analytics. Dozens of political datasets.
+- **Resolution**: Varies | **Temporal**: 2014-2023
+- **URL**: https://github.com/fivethirtyeight/data
+- **Why it matters**: Curated political datasets from the most prominent election analysis shop. Partisan lean scores, redistricting atlases, hate crime data, and congressional generic ballot aggregations. Many are analysis-ready.
+- **Signal**: Political analytics reference data. Elasticity scores, partisan lean, etc.
+- **Cost/Effort**: Free. Multiple relevant CSVs.
+
+### 227. TheUpshot/nyt-clinic-access-data
+- **What**: County-level travel time to nearest abortion clinic, calculated by NYT. Before and after Dobbs.
+- **Resolution**: County | **Temporal**: 2022-2023
+- **URL**: https://github.com/nytimes/covid-19-data (and related Upshot repos)
+- **Why it matters**: Post-Dobbs abortion access is a major driver of 2024 turnout and shift. Counties where clinic access dramatically changed may show distinct political shifts. Especially relevant in FL (6-week ban) and GA (6-week heartbeat law).
+- **Signal**: Reproductive rights access as political mobilization driver.
+- **Cost/Effort**: Free.
+
+### 228. nytimes/covid-19-data (NYT COVID Tracker)
+- **What**: County-level daily COVID case and death counts, maintained through 2023. The most complete county-day panel of COVID impact in the US.
+- **Resolution**: County | **Temporal**: Jan 2020 - Mar 2023
+- **URL**: https://github.com/nytimes/covid-19-data
+- **Why it matters**: Granular COVID mortality timing matters for political impact. Counties that experienced their worst COVID wave before vs. after vaccines became politicized had different political experiences. Cumulative death toll by the 2022 election may predict gubernatorial shifts.
+- **Signal**: COVID impact timing and severity at county resolution. Distinct from CDC aggregate data.
+- **Cost/Effort**: Free. Very clean CSVs.
+
+### 229. nytimes/drug-deaths (NYT Opioid Data)
+- **What**: County-level drug overdose death estimates, 2006-2014. NYT analysis of CDC WONDER data with model-based estimates for suppressed cells.
+- **Resolution**: County | **Temporal**: 2006-2014
+- **URL**: https://github.com/nytimes/drug-deaths
+- **Why it matters**: Fills in the CDC WONDER suppression gap — counties with <10 deaths have their counts suppressed, but NYT modeled estimates. This gives continuous county-level opioid mortality data instead of the sparse CDC version. "Deaths of despair" = strongest county predictor of 2016 Trump swing.
+- **Signal**: Modeled opioid death rates without suppression. Critical for rural counties.
+- **Cost/Effort**: Free. Single CSV.
+
+---
+
+### Creative / Unconventional Sources
+
+### 230. Dollar General / Dollar Tree Store Density (SEC Filings + POI Data)
+- **What**: Store count per county for Dollar General, Dollar Tree, Family Dollar. DG publishes store count in 10-K; POI databases (SafeGraph, Overture) have locations.
+- **Resolution**: County (aggregated from points) | **Temporal**: Current
+- **URL**: Overture Maps POI (https://overturemaps.org/) or USDA Food Environment Atlas (proxy)
+- **Why it matters**: Dollar General is the single best spatial predictor of "left-behind America." They explicitly target communities with <20K population, limited grocery access, and low median income. DG density per capita is a composite poverty/rurality/food desert indicator in a single number. Journalistic analyses have shown Dollar General count correlates r>0.7 with Trump vote share at county level.
+- **Signal**: Composite rural economic distress. Single-variable proxy for multiple deprivation indicators.
+- **Cost/Effort**: Medium. Overture Maps is free; would need spatial join.
+
+### 231. Starbucks vs. Cracker Barrel Ratio
+- **What**: Ratio of Starbucks locations to Cracker Barrel locations per county/metro. Available from OpenStreetMap or Overture Maps.
+- **Resolution**: County | **Temporal**: Current snapshot
+- **Why it matters**: Widely noted as a near-perfect predictor of partisan lean. Dave Wasserman's "Cracker Barrel vs. Whole Foods" metric. Starbucks per capita tracks urban/educated/progressive. Cracker Barrel tracks exurban/rural/traditional. The ratio captures cultural lifestyle segmentation.
+- **Signal**: Cultural lifestyle proxy. Consumer choice as political identity.
+- **Cost/Effort**: Medium. OSM/Overture + spatial aggregation.
+
+### 232. Overture Maps Foundation POI Data (Full Category Breakdown)
+- **What**: Open, free point-of-interest database with 59M+ places globally, categorized. Includes business type, address, coordinates. Built from OSM + Microsoft + Meta + TomTom.
+- **Resolution**: Point | **Temporal**: Current (quarterly releases)
+- **URL**: https://overturemaps.org/
+- **Why it matters**: The open-source alternative to SafeGraph/Foursquare POI data. Enables computing any business-type density at county level: gun shops, churches, fitness studios, breweries, tanning salons, pawn shops, tattoo parlors. Each category is a cultural signal. The full POI landscape is the richest "cultural fingerprint" available.
+- **Signal**: Complete commercial/cultural landscape. Dozens of potential features.
+- **Cost/Effort**: Free. Large download, needs spatial processing.
+
+### 233. Church WiFi Network Names (Wardriving Data / WiGLE)
+- **What**: WiFi network SSID names collected by wardrivers, geocoded. Can filter for church/religious SSIDs.
+- **Resolution**: Point | **Temporal**: Ongoing
+- **URL**: https://wigle.net/ (academic access)
+- **Why it matters**: This is maximally creative — probably too noisy to be useful, but the density of church WiFi networks per km² would be an unusual proxy for religious institutional density beyond RCMS counts.
+- **Signal**: Extremely unconventional. Probably not worth the effort, noted for completeness.
+- **Cost/Effort**: High. Privacy/ethical concerns. SKIP unless specifically requested.
+
+### 234. Eviction Lab (Princeton) — Eviction Filing Rates
+- **What**: County-level eviction filing rates, eviction judgments, and racial disparities in evictions.
+- **Resolution**: County/tract | **Temporal**: 2000-2018 (Eviction Lab v1), expanding
+- **URL**: https://evictionlab.org/
+- **Why it matters**: Eviction rates capture housing instability, landlord-tenant power dynamics, and economic precarity. High-eviction counties experience churn that disrupts voter registration and community stability. Post-COVID eviction surges may predict 2024 shifts.
+- **Signal**: Housing instability + economic precarity. Affects voter pool composition.
+- **Cost/Effort**: Free (academic request). Clean county-level data.
+
+### 235. Chetty Social Capital Atlas (2022)
+- **What**: County-level measures of economic connectedness (cross-class friendships), civic engagement, social cohesion, and volunteering. From anonymized Facebook data.
+- **Resolution**: County/ZIP | **Temporal**: 2022 snapshot
+- **URL**: https://socialcapital.org/ (direct download)
+- **Why it matters**: The most direct measure of social capital available. Economic connectedness (the share of high-SES friends for low-SES people) is Chetty's central finding for upward mobility. Communities with high cross-class friendship are theoretically more politically moderate.
+- **Signal**: Social fabric quality. Cross-class connectivity may moderate political extremism.
+- **Cost/Effort**: Free. Clean download.
+
+### 236. Nationscape / Democracy Fund Voter Study Group
+- **What**: 500K+ survey responses (2019-2020) with demographics, partisanship, issue positions, media diet, racial attitudes, economic anxiety, immigration views. Geocoded to congressional district.
+- **Resolution**: Individual → CD/county via MRP | **Temporal**: 2019-2020
+- **URL**: https://www.voterstudygroup.org/data
+- **Why it matters**: Largest single political survey in US history. Nationscape interviewed 6,000 people per WEEK for 18 months. The sheer volume enables MRP estimation of attitudes at county level without the imprecision of smaller surveys. Could produce county-level "immigration anxiety," "racial resentment," and "economic pessimism" estimates.
+- **Signal**: Attitude decomposition at county level. The "why" behind shifts.
+- **Cost/Effort**: Free (academic request). Would need MRP modeling for county estimates.
+
+### 237. Catalist / TargetSmart Voter File Derivatives (Academic Access)
+- **What**: Modeled individual-level voter data: race, partisanship, turnout probability, issue positions. Aggregated to precinct/county for academic use.
+- **Resolution**: Precinct/county | **Temporal**: Updated biennially
+- **URL**: Academic access via CCES/Harvard partnerships
+- **Why it matters**: The commercial voter file is the data source campaigns actually use. Academic access gives modeled race and partisanship probabilities more accurate than Census self-report (because they're validated against actual vote history). Partisan registration + modeled partisanship = revealed political identity.
+- **Signal**: The closest thing to ground truth for individual-level political behavior, aggregated up.
+- **Cost/Effort**: Requires academic affiliation or data-use agreement. Worth pursuing through CCES access.
+
+### 238. PRRI Census of American Religion (Annual County Estimates)
+- **What**: County-level estimates of religious identity: white evangelical, white Catholic, Hispanic Catholic, Black Protestant, mainline Protestant, unaffiliated, etc. Modeled from 40K+ annual surveys.
+- **Resolution**: County | **Temporal**: Annual since 2013
+- **URL**: https://www.prri.org/research/2023-census-of-american-religion/
+- **Why it matters**: More current than RCMS (which is decennial). Captures the crucial "unaffiliated" growth and evangelical decline that RCMS misses. White evangelical share is the single strongest demographic predictor of Republican partisanship.
+- **Signal**: Real-time religious identity composition. Crucial for tracking the "nones" rise.
+- **Cost/Effort**: Data may require request/purchase. Check availability.
+
+### 239. Atlas of Rural and Small-Town America (USDA ERS)
+- **What**: Pre-assembled county-level dataset with 90+ variables covering demographics, employment, income, education, veterans, migration, and rurality. County typology codes (farming, mining, manufacturing, recreation, federal lands, retirement).
+- **Resolution**: County | **Temporal**: Updated annually
+- **URL**: https://www.ers.usda.gov/data-products/atlas-of-rural-and-small-town-america/
+- **Why it matters**: The USDA county typology codes are probably the best single classification of rural county types in existence. "Farming-dependent" vs. "mining-dependent" vs. "recreation" vs. "government-dependent" counties are distinct community types. Pre-computed, analysis-ready.
+- **Signal**: Official rural community type classification. Direct input to community detection.
+- **Cost/Effort**: Free. Download-ready.
+
+### 240. Gun Violence Archive (Mass Shootings + All Incidents)
+- **What**: Every gun violence incident in the US since 2013, geocoded with casualty count, type (mass shooting, defensive, domestic, gang), and location.
+- **Resolution**: Point (aggregatable to county) | **Temporal**: 2013-present
+- **URL**: https://www.gunviolencearchive.org/
+- **Why it matters**: Gun violence rate by type captures distinct community problems. Mass shootings have national political impact. Gang-related violence concentrates in specific metros. Domestic gun violence is everywhere but its rate varies. Counties where gun violence is high have different political dynamics around gun policy.
+- **Signal**: Gun violence exposure as political attitude shaper.
+- **Cost/Effort**: Free (CSV export). Straightforward geocoding to FIPS.
+
+### 241. Dave Leip's Atlas of US Presidential Elections (Historical)
+- **What**: County-level presidential election results from 1789 to present. The most complete long-run county election dataset available.
+- **Resolution**: County | **Temporal**: 1789-2024
+- **URL**: https://uselectionatlas.org/ (subscription for bulk data, but partial free access)
+- **Why it matters**: Deep historical patterns. Was this county Republican since Lincoln? Or did it flip in 1964 (Southern realignment)? Or 2016 (working-class realignment)? The timing of partisan transitions defines different community types.
+- **Signal**: Historical path dependency. When a county switched parties reveals its community character.
+- **Cost/Effort**: Partial free access; full data requires purchase. Check academic access.
+
+### 242. Mapping Police Violence
+- **What**: Comprehensive database of police killings since 2013. More complete than WaPo for non-shooting deaths (Taser, vehicle, restraint). Includes department size, use-of-force policies.
+- **Resolution**: Point/department | **Temporal**: 2013-present
+- **URL**: https://mappingpoliceviolence.us/
+- **Why it matters**: Complements WaPo database (#44) with non-shooting deaths. The rate of police violence relative to violent crime rate captures over/under-policing better than raw counts.
+- **Signal**: Policing intensity + community-police relations.
+- **Cost/Effort**: Free.
+
+### 243. Safegraph / Dewey / Advan Mobility Data (Academic Programs)
+- **What**: Anonymized cell phone mobility data — foot traffic to businesses, commuting patterns, home-to-work flows, visit duration. County-to-county movement.
+- **Resolution**: Census block group | **Temporal**: 2019-present
+- **URL**: https://www.deweydata.io/ (academic access), SafeGraph Data for Academics program
+- **Why it matters**: Direct measurement of who goes where. Mobility patterns define functional communities better than Census commuting data (which asks about work only). Church attendance patterns, shopping patterns, recreation patterns — all captured in mobility data.
+- **Signal**: Behavioral community definition from revealed mobility.
+- **Cost/Effort**: Free for academic research. Requires application.
+
+### 244. Internet Archive Wayback Machine — Historical Campaign Website Snapshots
+- **What**: Archived campaign websites for every congressional candidate. Issue positions, endorsements, biographical emphasis.
+- **Resolution**: District | **Temporal**: 2002-present
+- **Why it matters**: Candidate issue emphasis reveals what campaigns think voters care about. A candidate who leads with immigration vs. healthcare vs. economy is responding to local political demand. NLP analysis of campaign websites could extract issue salience by district.
+- **Signal**: Campaign-revealed issue salience. What candidates think voters want.
+- **Cost/Effort**: High (web scraping + NLP). Speculative but novel.
+
+### 245. Podcast / YouTube Consumption Geography (Chartable / Podtrac / Google Ads)
+- **What**: Geographic distribution of podcast listeners by show. Joe Rogan vs. NPR Politics vs. Ben Shapiro vs. Pod Save America audience geography.
+- **Resolution**: Metro/DMA | **Temporal**: Current
+- **Why it matters**: Media consumption is the strongest available signal for political information environment. But podcast/YouTube data is largely proprietary. Google Ads audience insights for YouTube channels could proxy this at the DMA level.
+- **Signal**: Media diet as political identity. The most direct measure of information ecosystem.
+- **Cost/Effort**: High. Mostly proprietary data. Google Ads data might be accessible.
+
+---
+
+### Marketing / Consumer Behavior Data
+
+### 246. ESRI Tapestry Segmentation (Summary-Level)
+- **What**: ESRI classifies every US neighborhood into 67 "tapestry segments" based on demographics, lifestyle, and consumer behavior. Summary statistics by zip/tract available.
+- **Resolution**: ZIP/tract | **Temporal**: Annual
+- **URL**: https://www.esri.com/en-us/arcgis/products/tapestry-segmentation (free community version for small lookups)
+- **Why it matters**: Tapestry segments are the commercial marketing world's answer to community detection — they group neighborhoods by lifestyle, purchasing behavior, and demographics. Segments like "Green Acres" (rural homeowners), "Bright Young Professionals" (urban renters), and "Southern Satellites" (rural South) are essentially political community types from a marketing lens.
+- **Signal**: Commercial community segmentation with political implications.
+- **Cost/Effort**: Full data is paid. But summary descriptions and tract-to-segment lookup for small geographies is free. Academic access may be available.
+
+### 247. Simmons/MRI-Simmons Consumer Survey (via Library Databases)
+- **What**: Massive annual consumer survey covering media habits, product purchases, lifestyle activities, political attitudes, for 25K+ US adults.
+- **Resolution**: DMA | **Temporal**: Annual
+- **Why it matters**: Connects consumer behavior to political attitudes directly. "People who drive pickup trucks AND listen to country music AND shop at Walmart" is a marketing segment that maps to a political community type. Libraries with academic subscriptions provide DMA-level data.
+- **Signal**: Consumer behavior as political proxy. The marketing industry's community detection.
+- **Cost/Effort**: Requires library database access.
+
+### 248. IRI/Nielsen Scanner Data — Retail Purchase Patterns (Academic Access)
+- **What**: Store-level sales data by product category for grocery and drug stores. Available for academic research at metro/county level.
+- **Resolution**: Store/county | **Temporal**: Weekly
+- **URL**: Academic access via Kilts Center (Chicago Booth)
+- **Why it matters**: Extreme version of the "Dollar General vs. Whole Foods" thesis. Actual purchase patterns (organic food share, gun magazine sales, pickup truck registration) are revealed-preference lifestyle indicators.
+- **Signal**: Revealed consumer lifestyle. The ultimate cultural fingerprint.
+- **Cost/Effort**: Requires academic data agreement. Complex but powerful.
+
+---
+
+### Additional NYT / Media Open Data
+
+### 249. NYT Campaign Ad Tracking
+- **What**: Political ad spending by media market, candidate, and issue focus. Total TV/digital spending allocation.
+- **Resolution**: DMA | **Temporal**: Election cycles
+- **URL**: Via FEC AdWatch / Wesleyan Media Project (https://mediaproject.wesleyan.edu/)
+- **Why it matters**: Where campaigns spend money reveals where they think voters are persuadable. Heavy ad spending in a market means campaigns see it as competitive. Issue focus of ads (immigration, economy, abortion) reveals perceived local salience.
+- **Signal**: Campaign resource allocation as revealed competitiveness signal.
+- **Cost/Effort**: Wesleyan Media Project is free for academic research.
+
+### 250. NYT Census Explorer / ACS Features Not Yet Pulled
+- **What**: Additional ACS tables that NYT visualizations have highlighted as politically relevant: vehicle ownership (0-car households), commute mode (public transit vs. drive alone), language spoken at home, multigenerational households, housing tenure (rent vs. own), year structure built, health insurance coverage type.
+- **Resolution**: Tract | **Temporal**: Annual (5-year ACS)
+- **URL**: Census API via CitySDK (#224) or datadesk downloader (#223)
+- **Why it matters**: Our ACS integration likely covers standard demographics. But NYT maps have highlighted unusual ACS variables: the "0-car household" rate is a direct urbanity measure. "Year structure built" captures whether a community is mid-century (postwar suburban boom), pre-war (old city), or post-2000 (exurban growth). "Public transit commuters" maps almost perfectly onto the blue-red divide.
+- **Signal**: Under-explored ACS tables with high political signal.
+- **Cost/Effort**: Free. Tools already available.
+
+### 251. NYT Gerrymandering / Redistricting Maps
+- **What**: District-level compactness scores, partisan lean, and geographic contiguity analysis from NYT and FiveThirtyEight redistricting coverage.
+- **Resolution**: Congressional district | **Temporal**: Post-2020 redistricting
+- **URL**: https://github.com/fivethirtyeight/data/tree/master/redistricting-atlas (538 version)
+- **Why it matters**: Gerrymandering creates artificial communities. Highly gerrymandered districts pack and crack real communities. The gap between a precinct's natural partisan lean and its district's partisan lean captures gerrymandering's distortive effect on representation.
+- **Signal**: Representational distortion. Misrepresented communities may have distinct political frustration.
+- **Cost/Effort**: Free.
+
+---
+
+### Turnout-Specific Sources
+
+### 252. EAVS (Election Administration and Voting Survey)
+- **What**: Every county's election administration data — registration rates, mail ballot request/return rates, provisional ballot counts, wait times, polling place count, poll worker demographics.
+- **Resolution**: County | **Temporal**: Biennial (even years)
+- **URL**: https://www.eac.gov/research-and-data/datasets-codebooks-and-surveys
+- **Why it matters**: The mechanics of voting matter. Long wait times suppress turnout. Mail ballot adoption varies dramatically by county. Counties that close polling places see turnout declines. This is infrastructure data that directly affects who votes.
+- **Signal**: Voting infrastructure quality. Suppression signals. Mail ballot adoption rates.
+- **Cost/Effort**: Free. Biennial surveys, county-level.
+
+### 253. Michael McDonald's US Elections Project — Turnout Rates
+- **What**: Voter turnout as percentage of VEP (voting eligible population) by state and county. The canonical correction for inaccurate Census citizenship estimates.
+- **Resolution**: State (county for some states) | **Temporal**: 1980-present
+- **URL**: https://www.electproject.org/
+- **Why it matters**: VEP-based turnout is more accurate than VAP-based (which inflates denominators with non-citizens and felons). State-level VEP turnout differences (e.g., MN at 80% vs. TX at 51%) reflect very different civic cultures.
+- **Signal**: Civic participation quality adjusted for eligible population.
+- **Cost/Effort**: Free.
+
+### 254. Early Voting / Vote Method Breakdown by County
+- **What**: In-person early, mail/absentee, and election-day voting shares by county. Available from state SOS offices.
+- **Resolution**: County | **Temporal**: 2020, 2022, 2024
+- **URL**: State SOS offices (FL: dos.fl.gov, GA: sos.ga.gov)
+- **Why it matters**: Vote method became partisan in 2020 (mail=D, in-person=R). Counties where mail voting surged show different turnout compositions than election-day-heavy counties. This structural shift in how people vote affects turnout modeling.
+- **Signal**: Vote method composition as partisan composition proxy.
+- **Cost/Effort**: Medium. State-by-state scraping.
+
+---
+
+### Updated Priority Matrix — Round 6
+
+| Source | # | Category | Expected Signal | Effort |
+|--------|---|----------|----------------|--------|
+| NYT COVID county data | 228 | Health/GitHub | Very High | Very Low |
+| NYT opioid deaths (modeled) | 229 | Health/GitHub | Very High | Very Low |
+| USDA Rural Atlas + typology | 239 | Community Types | Very High | Very Low |
+| Chetty Social Capital Atlas | 235 | Social | Very High | Very Low |
+| 538 open data (elasticity+) | 226 | Political/GitHub | High | Very Low |
+| Overture Maps POI density | 232 | Cultural | Very High | Medium |
+| PolData index scan | 220 | Meta-resource | High | Very Low |
+| EAVS voting infrastructure | 252 | Turnout | High | Low |
+| Eviction Lab | 234 | Housing | High | Low |
+| ACS under-explored tables | 250 | Demographics | High | Low |
+| Dollar General density | 230 | Cultural | Very High | Medium |
+| Nationscape survey (MRP) | 236 | Attitudes | Very High | High |
+| MEDSL downballot/ballots | 216 | Political/GitHub | High | Medium |
+| Gun Violence Archive | 240 | Safety | Medium-High | Low |
+| Wesleyan ad tracking | 249 | Campaigns | High | Low |
+
+**Quick wins (< 1 hour integration each):** 228, 229, 239, 235, 226, 220. These are clean CSVs or small downloads with direct county-level resolution.
+
+**GitHub tools to install:** 223 (census-data-downloader), 224 (CitySDK). These accelerate future data integration.
+
+---
+
+*End of Expansion Round 6. Total ideated sources: 254 (213 prior + 41 new). Focus: GitHub open-data projects, NYT media datasets, creative commercial/cultural signals, turnout infrastructure, and meta-discovery resources.*
