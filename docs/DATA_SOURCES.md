@@ -98,6 +98,15 @@ Evaluation of candidate data sources for the US Political Covariation Model. Eac
 
 ---
 
+## County-Level Historical Returns (Multi-Cycle Extension)
+
+| Source | URL | Resolution | Temporal | License | Privacy | Bias / Limitations | Signal Value | Priority | Status |
+|--------|-----|-----------|----------|---------|---------|-------------------|-------------|----------|--------|
+| MEDSL County Presidential Returns 2000–2024 | Harvard Dataverse [doi:10.7910/DVN/VOQCHQ](https://doi.org/10.7910/DVN/VOQCHQ) | County | 2000–2024 (all presidential cycles) | CC-BY | None — aggregated | Minor county boundary changes over time; some New England states report towns not counties. | 5 consecutive presidential pairs (2000→2004, …, 2020→2024) covering the full modern electoral era. Core input for the multi-cycle shift vector. | Critical | Downloaded via Harvard Dataverse API → `data/raw/medsl/county_presidential_2000_2024.csv` |
+| Algara & Amlani County Electoral Dataset 1872–2020 | Harvard Dataverse [doi:10.7910/DVN/DGUMFI](https://doi.org/10.7910/DVN/DGUMFI) | County | 1872–2020 (we use 2002–2018 governor cycles) | Free (academic replication data, CC-BY) | None — aggregated | Ends at 2020; 2022 governor still sourced from MEDSL separately. AL 2018 governor uncontested → structural zero in shift computation. | 5 consecutive governor pairs (2002→2006, …, 2014→2018) for FL, GA, AL. Combined with presidential pairs yields ~30 training dims for the multi-cycle model. | Critical | Downloaded via Harvard Dataverse API → `data/raw/algara_amlani/` |
+
+---
+
 ## Expansion Catalog
 
 See **[DATA_SOURCE_IDEATION.md](DATA_SOURCE_IDEATION.md)** for the full 40-source expansion catalog with priority matrix and recommended integration order.
