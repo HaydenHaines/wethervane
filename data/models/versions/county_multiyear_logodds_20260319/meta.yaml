@@ -1,0 +1,37 @@
+version: county_multiyear_logodds_20260319
+role: current
+k: 7
+shift_type: logodds
+vote_share_type: total
+description: >
+  30-dim multi-year county model trained on 2000–2022 election pairs, log-odds shift
+  vectors, total vote share denominator (not two-party). This is the canonical current
+  model. Log-odds transformation ensures shift vectors are symmetric and unbounded,
+  removing compression artifacts at extreme vote shares. Total vote share denominator
+  captures third-party and abstention effects. 30 training dims + 3 holdout dims.
+  K=7 NMF types. FL+GA+AL pilot geography (226 counties). Covariance estimated via
+  Stan factor model; poll propagation via Gaussian Bayesian update.
+training_elections:
+  - 2000_president
+  - 2002_governor
+  - 2004_president
+  - 2006_governor
+  - 2008_president
+  - 2010_governor
+  - 2012_president
+  - 2014_governor
+  - 2016_president
+  - 2018_governor
+  - 2020_president
+  - 2022_governor
+training_dims: 30
+holdout_dims: 3
+geography: FL+GA+AL
+sources:
+  - MEDSL doi:10.7910/DVN/VOQCHQ
+  - Algara/Amlani doi:10.7910/DVN/DGUMFI
+date_created: "2026-03-19"
+notes: >
+  Supersedes county_multiyear_20260319. Change from raw to log-odds shifts and from
+  two-party to total vote share denominator are the only methodological changes;
+  training data and geography are identical.

@@ -1,0 +1,19 @@
+version: county_3cycle_20260319
+role: previous_gen_best
+k: 7
+shift_type: raw
+vote_share_type: twoparty
+description: >
+  3-cycle county model trained on 2016/2018/2020 election pairs (presidential +
+  governor), raw shift vectors, two-party vote share denominator. K=7 NMF types.
+  Holdout r = 0.93-0.98 on 2020→2024 short-run autocorrelation. Frozen baseline;
+  superseded by multi-year model. FL+GA+AL pilot geography (226 counties).
+training_elections:
+  - 2016_president
+  - 2018_governor
+  - 2020_president
+training_dims: 6
+holdout_dims: 3
+holdout_r: 0.93-0.98
+geography: FL+GA+AL
+date_frozen: "2026-03-19"
