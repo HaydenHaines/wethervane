@@ -50,7 +50,7 @@ def sample_assignments() -> pd.DataFrame:
 
 def test_build_counties_shape(sample_shifts):
     counties = _build_counties(sample_shifts)
-    assert list(counties.columns) == ["county_fips", "state_abbr", "state_fips"]
+    assert list(counties.columns) == ["county_fips", "state_abbr", "state_fips", "county_name"]
     assert len(counties) == 3
 
 
@@ -192,3 +192,28 @@ def test_build_creates_queryable_db(mini_parquets, monkeypatch):
     assert vid == "test_model_v1"
 
     con.close()
+
+
+def test_build_counties_includes_name(sample_shifts, tmp_path):
+    """counties table includes county_name when crosswalk is present."""
+    from src.db.build_database import _build_counties
+
+    crosswalk = pd.DataFrame({
+        "county_fips": ["12001", "12003", "13001"],
+        "county_name": ["Alachua County, FL", "Baker County, FL", "Appling County, GA"],
+    })
+    crosswalk_path = tmp_path / "fips_county_crosswalk.csv"
+    crosswalk.to_csv(crosswalk_path, index=False)
+
+    counties = _build_counties(sample_shifts, crosswalk_path=crosswalk_path)
+    assert "county_name" in counties.columns
+    assert counties.loc[counties["county_fips"] == "12001", "county_name"].iloc[0] == "Alachua County, FL"
+
+
+def test_build_counties_name_fallback(sample_shifts):
+    """county_name is None when crosswalk path is missing."""
+    from src.db.build_database import _build_counties
+
+    counties = _build_counties(sample_shifts, crosswalk_path=None)
+    assert "county_name" in counties.columns
+    assert counties["county_name"].isna().all()

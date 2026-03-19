@@ -43,6 +43,7 @@ PREDICTIONS_2026 = PROJECT_ROOT / "data" / "predictions" / "county_predictions_2
 TYPE_ASSIGNMENTS_STUB = PROJECT_ROOT / "data" / "communities" / "county_type_assignments_stub.parquet"
 VERSIONS_DIR = PROJECT_ROOT / "data" / "models" / "versions"
 PREDICTIONS_2026_HAC = PROJECT_ROOT / "data" / "predictions" / "county_predictions_2026_hac.parquet"
+CROSSWALK_PATH = PROJECT_ROOT / "data" / "raw" / "fips_county_crosswalk.csv"
 
 
 # ---------------------------------------------------------------------------
@@ -53,7 +54,8 @@ _SCHEMA_SQL = """
 CREATE TABLE IF NOT EXISTS counties (
     county_fips  VARCHAR PRIMARY KEY,
     state_abbr   VARCHAR NOT NULL,
-    state_fips   VARCHAR NOT NULL
+    state_fips   VARCHAR NOT NULL,
+    county_name  VARCHAR
 );
 
 CREATE TABLE IF NOT EXISTS model_versions (
@@ -137,13 +139,38 @@ def _load_version_meta(versions_dir: Path) -> list[dict]:
     return meta_list
 
 
-def _build_counties(shifts: pd.DataFrame) -> pd.DataFrame:
-    """Derive the counties table from shift FIPS column."""
+_DEFAULT_CROSSWALK = object()  # sentinel: use module-level CROSSWALK_PATH
+
+
+def _build_counties(
+    shifts: pd.DataFrame,
+    crosswalk_path: Path | None = _DEFAULT_CROSSWALK,  # type: ignore[assignment]
+) -> pd.DataFrame:
+    """Derive the counties table from shift FIPS column, optionally joining county names.
+
+    Args:
+        shifts: DataFrame with a county_fips column.
+        crosswalk_path: Path to fips_county_crosswalk.csv.  Pass ``None`` to
+            skip name lookup (county_name will be all-NULL).  Omit (or pass the
+            sentinel ``_DEFAULT_CROSSWALK``) to use the module-level
+            ``CROSSWALK_PATH`` constant.
+    """
+    if crosswalk_path is _DEFAULT_CROSSWALK:
+        crosswalk_path = CROSSWALK_PATH
+
     fips = shifts["county_fips"].unique()
     df = pd.DataFrame({"county_fips": sorted(fips)})
     df["state_fips"] = df["county_fips"].str[:2]
     df["state_abbr"] = df["state_fips"].map(_STATE_FIPS_TO_ABBR).fillna("??")
-    return df[["county_fips", "state_abbr", "state_fips"]]
+
+    if crosswalk_path is not None and Path(crosswalk_path).exists():
+        xwalk = pd.read_csv(crosswalk_path, dtype=str)
+        xwalk["county_fips"] = xwalk["county_fips"].str.zfill(5)
+        df = df.merge(xwalk[["county_fips", "county_name"]], on="county_fips", how="left")
+    else:
+        df["county_name"] = None
+
+    return df[["county_fips", "state_abbr", "state_fips", "county_name"]]
 
 
 def _build_county_shifts(shifts: pd.DataFrame, version_id: str) -> pd.DataFrame:
@@ -245,7 +272,7 @@ def build(db_path: Path, reset: bool = False) -> None:
     version_metas = _load_version_meta(VERSIONS_DIR)
 
     # ── Ingest counties ────────────────────────────────────────────────────────
-    counties_df = _build_counties(shifts)
+    counties_df = _build_counties(shifts, crosswalk_path=CROSSWALK_PATH)
     con.execute("DELETE FROM counties")
     con.execute("INSERT INTO counties SELECT * FROM counties_df")
     log.info("Ingested %d counties", len(counties_df))
