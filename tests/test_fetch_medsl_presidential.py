@@ -46,8 +46,9 @@ def test_aggregate_county_year_dem_share(raw_df):
     filtered = filter_presidential_rows(raw_df)
     result = aggregate_county_year(filtered, 2020)
     fl_row = result[result["county_fips"] == "12001"].iloc[0]
-    # dem_share = 100 / (100+80)
-    assert abs(fl_row["pres_dem_share_2020"] - 100/180) < 1e-6
+    # dem_share = dem / totalvotes (all candidates, not just D+R)
+    # totalvotes = 185 for county 12001 (from raw_df fixture)
+    assert abs(fl_row["pres_dem_share_2020"] - 100/185) < 1e-6
 
 
 def test_aggregate_county_year_columns(raw_df):

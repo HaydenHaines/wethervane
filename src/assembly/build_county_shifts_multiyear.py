@@ -21,7 +21,10 @@ from __future__ import annotations
 import logging
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
+
+from src.core import config as _cfg
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger(__name__)
@@ -30,13 +33,14 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 ASSEMBLED_DIR = PROJECT_ROOT / "data" / "assembled"
 SHIFTS_DIR = PROJECT_ROOT / "data" / "shifts"
 
-AL_FIPS_PREFIX = "01"
+AL_FIPS_PREFIX = _cfg.AL_FIPS_PREFIX
+EPSILON = _cfg.LOGODDS_EPSILON  # clip dem_share to [EPSILON, 1-EPSILON] before logit
 
 # ── Column name constants ─────────────────────────────────────────────────────
 
-PRES_PAIRS = [("00", "04"), ("04", "08"), ("08", "12"), ("12", "16"), ("16", "20")]
-GOV_PAIRS  = [("02", "06"), ("06", "10"), ("10", "14"), ("14", "18"), ("18", "22")]
-HOLDOUT_PAIRS = [("20", "24")]
+PRES_PAIRS = _cfg.PRES_PAIRS
+GOV_PAIRS = _cfg.GOV_PAIRS
+HOLDOUT_PAIRS = _cfg.HOLDOUT_PRES_PAIRS
 
 TRAINING_SHIFT_COLS: list[str] = []
 for a, b in PRES_PAIRS:
@@ -58,10 +62,26 @@ def _total_col(df: pd.DataFrame) -> str:
     return next(c for c in df.columns if "_total_" in c)
 
 
+def _logodds_shift(later_share: pd.Series, earlier_share: pd.Series) -> pd.Series:
+    """Log-odds shift: logit(later) - logit(earlier), with epsilon clipping.
+
+    Clips dem_share to [EPSILON, 1-EPSILON] before applying logit to avoid
+    infinite values for counties at or near 0% / 100% Democrat.
+    Turnout shifts remain as raw proportional change (not log-odds) since
+    turnout is not bounded [0, 1] the same way vote share is.
+    """
+    later_clipped = later_share.clip(EPSILON, 1 - EPSILON)
+    earlier_clipped = earlier_share.clip(EPSILON, 1 - EPSILON)
+    return np.log(later_clipped / (1 - later_clipped)) - np.log(earlier_clipped / (1 - earlier_clipped))
+
+
 def compute_pres_shift(
     early: pd.DataFrame, late: pd.DataFrame, a: str, b: str
 ) -> pd.DataFrame:
-    """Compute D/R/turnout shifts between two presidential election DataFrames."""
+    """Compute D/R/turnout shifts between two presidential election DataFrames.
+
+    D and R shifts are log-odds (logit scale). Turnout shift is raw proportional.
+    """
     early_dem = _dem_share_col(early)
     early_tot = _total_col(early)
     late_dem = _dem_share_col(late)
@@ -70,7 +90,7 @@ def compute_pres_shift(
     merged = early[["county_fips", early_dem, early_tot]].merge(
         late[["county_fips", late_dem, late_tot]], on="county_fips", how="inner"
     )
-    d_shift = merged[late_dem] - merged[early_dem]
+    d_shift = _logodds_shift(merged[late_dem], merged[early_dem])
     r_shift = -(d_shift)
     early_total = merged[early_tot].replace(0, float("nan"))
     t_shift = (merged[late_tot] - merged[early_tot]) / early_total
@@ -86,7 +106,10 @@ def compute_pres_shift(
 def compute_gov_shift(
     early: pd.DataFrame, late: pd.DataFrame, a: str, b: str
 ) -> pd.DataFrame:
-    """Compute D/R/turnout shifts between two governor election DataFrames."""
+    """Compute D/R/turnout shifts between two governor election DataFrames.
+
+    D and R shifts are log-odds (logit scale). Turnout shift is raw proportional.
+    """
     early_dem = _dem_share_col(early)
     early_tot = _total_col(early)
     late_dem = _dem_share_col(late)
@@ -95,7 +118,7 @@ def compute_gov_shift(
     merged = early[["county_fips", early_dem, early_tot]].merge(
         late[["county_fips", late_dem, late_tot]], on="county_fips", how="inner"
     )
-    d_shift = merged[late_dem] - merged[early_dem]
+    d_shift = _logodds_shift(merged[late_dem], merged[early_dem])
     r_shift = -(d_shift)
     early_total = merged[early_tot].replace(0, float("nan"))
     t_shift = (merged[late_tot] - merged[early_tot]) / early_total
@@ -162,15 +185,7 @@ def main() -> None:
     log.info("County spine: %d counties", len(spine))
 
     # ── Presidential pairs ────────────────────────────────────────────────────
-    pres_file = {
-        "00": "medsl_county_presidential_2000.parquet",
-        "04": "medsl_county_presidential_2004.parquet",
-        "08": "medsl_county_presidential_2008.parquet",
-        "12": "medsl_county_presidential_2012.parquet",
-        "16": "medsl_county_presidential_2016.parquet",
-        "20": "medsl_county_presidential_2020.parquet",
-        "24": "medsl_county_presidential_2024.parquet",
-    }
+    pres_file = dict(_cfg.PRES_FILES)
     pres_dfs: dict[str, pd.DataFrame | None] = {k: _load(v) for k, v in pres_file.items()}
     # Fallback for 24 if new file not present
     if pres_dfs.get("24") is None:
@@ -185,14 +200,7 @@ def main() -> None:
             log.warning("Skipping pres pair %s→%s (data missing)", a, b)
 
     # ── Governor pairs ────────────────────────────────────────────────────────
-    gov_file = {
-        "02": "algara_county_governor_2002.parquet",
-        "06": "algara_county_governor_2006.parquet",
-        "10": "algara_county_governor_2010.parquet",
-        "14": "algara_county_governor_2014.parquet",
-        "18": "algara_county_governor_2018.parquet",
-        "22": "medsl_county_2022_governor.parquet",
-    }
+    gov_file = dict(_cfg.GOV_FILES)
     gov_dfs: dict[str, pd.DataFrame | None] = {k: _load(v) for k, v in gov_file.items()}
 
     gov_pairs = []

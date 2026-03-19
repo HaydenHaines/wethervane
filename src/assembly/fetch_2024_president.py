@@ -5,14 +5,17 @@ Source: MIT Election Data + Science Lab (MEDSL) 2024-elections-official GitHub r
   https://github.com/MEDSL/2024-elections-official/tree/main/individual_states
 
 Data is precinct-level CSV with county_fips attached — we aggregate to county.
-Two-party only: DEMOCRAT and REPUBLICAN votes are kept; third-party candidates
-(e.g. RFK Jr.) are excluded via party_simplified filter.
+
+Vote counting:
+  - pres_dem_2024 and pres_rep_2024: votes for DEMOCRAT / REPUBLICAN candidates
+  - pres_total_2024: total votes for ALL candidates (from totalvotes column), so
+    that pres_dem_share_2024 = dem / total_all (not two-party share)
+  - Third-party votes (RFK Jr., etc.) are included in the denominator
 
 Filter logic:
   - office contains "PRESIDENT" but NOT "VICE PRESIDENT"
   - stage == "gen"
   - writein != TRUE
-  - party_simplified in {"DEMOCRAT", "REPUBLICAN"}
 
 Mode dedup: MEDSL sometimes includes both mode-specific rows (ABSENTEE, ELECTION DAY)
 and a TOTAL row. We use TOTAL rows only if present; otherwise sum all modes.
@@ -33,6 +36,8 @@ from pathlib import Path
 import pandas as pd
 import requests
 from tqdm import tqdm
+
+from src.core import config as _cfg
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger(__name__)
@@ -95,12 +100,13 @@ def extract_president_county(df: pd.DataFrame, state_abbr: str) -> pd.DataFrame:
     Filter to presidential general election, dedup modes, aggregate to county level.
 
     Excludes VICE PRESIDENT rows (which may match a naive "PRESIDENT" substring check).
-    Keeps only DEMOCRAT and REPUBLICAN party_simplified — excludes RFK Jr. and other
-    third-party candidates so the output is a clean two-party share.
+    pres_dem_2024 and pres_rep_2024 count only DEMOCRAT/REPUBLICAN votes.
+    pres_total_2024 uses the totalvotes column (all candidates), so
+    pres_dem_share_2024 = dem / total_all (includes RFK Jr., etc. in denominator).
 
     Returns DataFrame with county_fips, state_abbr, and vote columns.
     """
-    # Filter to presidential general (exclude VICE PRESIDENT)
+    # Filter to presidential general (exclude VICE PRESIDENT, exclude writeins)
     pres = df[
         (df["office"].str.upper().str.contains("PRESIDENT", na=False)) &
         (~df["office"].str.upper().str.contains("VICE", na=False)) &
@@ -124,15 +130,6 @@ def extract_president_county(df: pd.DataFrame, state_abbr: str) -> pd.DataFrame:
         else:
             log.info("  No TOTAL mode — summing all modes")
 
-    # Two-party filter: keep only DEMOCRAT and REPUBLICAN
-    pres = pres[
-        pres["party_simplified"].str.upper().isin(["DEMOCRAT", "REPUBLICAN"])
-    ].copy()
-
-    if len(pres) == 0:
-        log.warning("  No DEMOCRAT/REPUBLICAN rows after party filter for %s", state_abbr)
-        return pd.DataFrame()
-
     # Ensure county_fips is zero-padded 5-digit string
     # MEDSL sometimes reads county_fips as float (e.g. 12001.0) — strip the .0 first
     pres["county_fips"] = (
@@ -142,7 +139,25 @@ def extract_president_county(df: pd.DataFrame, state_abbr: str) -> pd.DataFrame:
         .str.zfill(5)
     )
 
-    # Aggregate votes by county + party
+    # Capture total votes (all candidates) from totalvotes column.
+    # MEDSL reports the county total in every row for that county — take first per county.
+    if "totalvotes" in pres.columns:
+        county_total = (
+            pres.groupby("county_fips")["totalvotes"]
+            .first()
+            .reset_index()
+            .rename(columns={"totalvotes": "pres_total_2024"})
+        )
+    else:
+        county_total = (
+            pres.groupby("county_fips")["votes"]
+            .sum()
+            .reset_index()
+            .rename(columns={"votes": "pres_total_2024"})
+        )
+        log.warning("  %s: totalvotes column missing — using sum of all votes as total", state_abbr)
+
+    # Aggregate D and R votes by county (party filter only for candidate vote counts)
     county_party = (
         pres.groupby(["county_fips", "party_simplified"])["votes"]
         .sum()
@@ -156,9 +171,14 @@ def extract_president_county(df: pd.DataFrame, state_abbr: str) -> pd.DataFrame:
     rep = rep[["county_fips", "votes"]].rename(columns={"votes": "pres_rep_2024"})
 
     result = dem.merge(rep, on="county_fips", how="outer").fillna(0)
-    result["pres_total_2024"] = result["pres_dem_2024"] + result["pres_rep_2024"]
-    denom = result["pres_dem_2024"] + result["pres_rep_2024"]
-    result["pres_dem_share_2024"] = result["pres_dem_2024"] / denom.replace(0, float("nan"))
+    result = result.merge(county_total, on="county_fips", how="left")
+    # Fill missing totals with D+R sum (safety net)
+    result["pres_total_2024"] = result["pres_total_2024"].fillna(
+        result["pres_dem_2024"] + result["pres_rep_2024"]
+    )
+    result["pres_dem_share_2024"] = result["pres_dem_2024"] / result["pres_total_2024"].replace(
+        0, float("nan")
+    )
     result["state_abbr"] = state_abbr
 
     log.info(
@@ -219,17 +239,19 @@ def main() -> None:
         r = s["pres_rep_2024"].sum()
         print(f"  {state_abbr:<6}  {len(s):>8}  {d:>12,.0f}  {r:>12,.0f}  {d/(d+r):.1%}")
 
-    # Sanity check against known 2024 state results
-    ACTUAL_2024_STATE = {"FL": 0.4248, "GA": 0.4910, "AL": 0.3502}
-    print("\n── Sanity check vs. known 2024 state results ───────────────")
-    print(f"  {'State':<6}  {'Computed':>10}  {'Known':>10}  {'Diff':>8}")
-    print("  " + "-" * 40)
+    # Sanity check: total-vote dem share (includes third-party in denominator).
+    # Known values are two-party shares; total-vote share will be slightly lower
+    # (e.g. RFK Jr. drew ~1–2% nationally in 2024), so small negative diffs are expected.
+    ACTUAL_2024_TWOPARTY = {"FL": 0.4248, "GA": 0.4910, "AL": 0.3502}
+    print("\n── Sanity check vs. known 2024 two-party state results ─────────────")
+    print(f"  {'State':<6}  {'Total-vote share':>18}  {'Two-party known':>16}  {'Diff':>8}")
+    print("  " + "-" * 55)
     for state_abbr in combined["state_abbr"].unique():
         s = combined[combined["state_abbr"] == state_abbr]
         d = s["pres_dem_2024"].sum()
-        r = s["pres_rep_2024"].sum()
-        computed = d / (d + r)
-        known = ACTUAL_2024_STATE.get(state_abbr, float("nan"))
+        t = s["pres_total_2024"].sum()
+        computed = d / t if t > 0 else float("nan")
+        known = ACTUAL_2024_TWOPARTY.get(state_abbr, float("nan"))
         diff = computed - known
         print(f"  {state_abbr:<6}  {computed:.1%}  {known:.1%}  {diff:+.1%}")
 

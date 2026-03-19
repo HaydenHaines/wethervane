@@ -17,8 +17,8 @@ Output columns per year:
     state_abbr        str  'FL' / 'GA' / 'AL'
     gov_dem_{year}    float  raw Democratic votes
     gov_rep_{year}    float  raw Republican votes
-    gov_total_{year}  float  two-party total
-    gov_dem_share_{year}  float  dem / (dem + rep), 2-party
+    gov_total_{year}  float  total votes across all candidates (raw_county_vote_totals)
+    gov_dem_share_{year}  float  dem / total_all_candidates
 
 Note: AL 2018 governor was contested (Kay Ivey vs. Walter Maddox). The dataset
 includes actual vote counts for both candidates. The shift builder downstream
@@ -32,12 +32,14 @@ from pathlib import Path
 
 import pandas as pd
 
+from src.core import config as _cfg
+
 # ---------------------------------------------------------------------------
 # Constants
 # ---------------------------------------------------------------------------
 
-STATES: dict[str, str] = {"FL": "12", "GA": "13", "AL": "01"}
-GOV_YEARS: list[int] = [2002, 2006, 2010, 2014, 2018]
+STATES: dict[str, str] = _cfg.STATES  # abbr → fips prefix (matches config)
+GOV_YEARS: list[int] = _cfg.GOV_YEARS
 
 _DATAVERSE_BASE = "https://dataverse.harvard.edu/api"
 _DATASET_PID = "doi:10.7910/DVN/DGUMFI"
@@ -151,22 +153,28 @@ def aggregate_county_year(df: pd.DataFrame, year: int) -> pd.DataFrame:
     total_col = f"gov_total_{year}"
     share_col = f"gov_dem_share_{year}"
 
+    import numpy as np
+
     dem = year_df["democratic_raw_votes"].values
     rep = year_df["republican_raw_votes"].values
-    total = year_df["gov_raw_county_vote_totals_two_party"].values
+    # Use raw_county_vote_totals (all candidates) as the denominator so that
+    # dem_share = dem / total_all rather than dem / (dem+rep).
+    # raw_county_vote_totals is available in the Algara dataset; fall back to
+    # the two-party sum for rows where it is 0 or NaN (uncontested cycles).
+    total_all = year_df["raw_county_vote_totals"].values.astype(float)
+    two_party_sum = dem + rep
+    # Where total_all is zero or NaN, fall back to two-party sum
+    use_fallback = (total_all == 0) | np.isnan(total_all)
+    total = np.where(use_fallback, two_party_sum, total_all)
 
     out[dem_col] = dem
     out[rep_col] = rep
     out[total_col] = total
 
-    # 2-party dem share; NaN where total is 0 (uncontested with no votes recorded)
-    import numpy as np
-
-    two_party_sum = dem + rep
-    share = dem / two_party_sum
+    # dem_share = dem / total_all_candidates; NaN where total is 0 (uncontested)
+    share = dem / total
     share = pd.array(share, dtype=float)
-    # Where two_party_sum is 0 or NaN, set share to NaN
-    share[two_party_sum == 0] = float("nan")
+    share[total == 0] = float("nan")
     out[share_col] = share
 
     out = out.reset_index(drop=True)

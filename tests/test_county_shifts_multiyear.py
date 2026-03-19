@@ -7,9 +7,11 @@ from src.assembly.build_county_shifts_multiyear import (
     compute_pres_shift,
     compute_gov_shift,
     build_multiyear_shifts,
+    _logodds_shift,
     TRAINING_SHIFT_COLS,
     HOLDOUT_SHIFT_COLS,
     AL_FIPS_PREFIX,
+    EPSILON,
 )
 
 
@@ -49,10 +51,18 @@ def late_gov():
     })
 
 
+def _logit(p: float) -> float:
+    """Reference logit for test assertions."""
+    p_clipped = min(max(p, EPSILON), 1 - EPSILON)
+    return float(np.log(p_clipped / (1 - p_clipped)))
+
+
 def test_pres_d_shift_math(early_pres, late_pres):
+    """D shift should equal logit(later) - logit(earlier)."""
     result = compute_pres_shift(early_pres, late_pres, "16", "20")
     fl_row = result[result["county_fips"] == "12001"].iloc[0]
-    assert abs(fl_row["pres_d_shift_16_20"] - 0.05) < 1e-6
+    expected = _logit(0.65) - _logit(0.60)
+    assert abs(fl_row["pres_d_shift_16_20"] - expected) < 1e-6
 
 
 def test_pres_r_shift_is_negative_d(early_pres, late_pres):
@@ -62,6 +72,7 @@ def test_pres_r_shift_is_negative_d(early_pres, late_pres):
 
 
 def test_pres_turnout_shift(early_pres, late_pres):
+    """Turnout shift is still raw proportional (not log-odds)."""
     result = compute_pres_shift(early_pres, late_pres, "16", "20")
     fl_row = result[result["county_fips"] == "12001"].iloc[0]
     expected = (110000 - 100000) / 100000
@@ -69,10 +80,30 @@ def test_pres_turnout_shift(early_pres, late_pres):
 
 
 def test_gov_shift_math(early_gov, late_gov):
-    """Gov shift math should work like pres shift."""
+    """Gov D shift should equal logit(later) - logit(earlier)."""
     result = compute_gov_shift(early_gov, late_gov, "14", "18")
     fl_row = result[result["county_fips"] == "12001"].iloc[0]
-    assert abs(fl_row["gov_d_shift_14_18"] - (-0.01)) < 1e-6
+    expected = _logit(0.49) - _logit(0.50)
+    assert abs(fl_row["gov_d_shift_14_18"] - expected) < 1e-6
+
+
+def test_logodds_shift_helper():
+    """Direct test of _logodds_shift for known values."""
+    s_early = pd.Series([0.60])
+    s_late = pd.Series([0.65])
+    result = _logodds_shift(s_late, s_early)
+    expected = _logit(0.65) - _logit(0.60)
+    assert abs(result.iloc[0] - expected) < 1e-9
+
+
+def test_logodds_shift_clipping():
+    """Values at 0 and 1 should be clipped to EPSILON, not produce inf."""
+    s_early = pd.Series([0.0])
+    s_late = pd.Series([1.0])
+    result = _logodds_shift(s_late, s_early)
+    expected = _logit(1.0) - _logit(0.0)  # both clipped at EPSILON
+    assert abs(result.iloc[0] - expected) < 1e-9
+    assert np.isfinite(result.iloc[0])
 
 
 def test_output_column_count():

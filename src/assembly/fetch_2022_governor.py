@@ -1,5 +1,5 @@
 """
-Fetch 2022 gubernatorial election results at county level for FL and GA.
+Fetch 2022 gubernatorial election results at county level for FL, GA, and AL.
 
 Source: MIT Election Data + Science Lab (MEDSL) 2022-elections-official GitHub repo.
   https://github.com/MEDSL/2022-elections-official/tree/main/individual_states
@@ -12,6 +12,9 @@ Alabama 2022: Ivey (R) won ~67% vs Boyd (D) ~27%. Included if available.
 
 Mode dedup: MEDSL sometimes includes both mode-specific rows (ABSENTEE, ELECTION DAY)
 and a TOTAL row. We use TOTAL rows only if present; otherwise sum all modes.
+
+Vote share: gov_dem_share_2022 = gov_dem_2022 / gov_total_2022, where
+gov_total_2022 is the sum of votes for ALL candidates (not just D+R).
 
 Output:
   data/assembled/medsl_county_2022_governor.parquet
@@ -29,6 +32,8 @@ from pathlib import Path
 import pandas as pd
 import requests
 from tqdm import tqdm
+
+from src.core import config as _cfg
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger(__name__)
@@ -83,9 +88,13 @@ def extract_governor_county(df: pd.DataFrame, state_abbr: str) -> pd.DataFrame:
     """
     Filter to governor general election, dedup modes, aggregate to county level.
 
-    Returns DataFrame with county_fips, dem_votes, rep_votes.
+    gov_total_2022 = total votes for ALL candidates (not just D+R), captured
+    from the totalvotes column which MEDSL populates for all rows in a county.
+    gov_dem_share_2022 = gov_dem_2022 / gov_total_2022.
+
+    Returns DataFrame with county_fips, state_abbr, and vote columns.
     """
-    # Filter to governor general
+    # Filter to governor general (include all parties for total votes)
     gov = df[
         (df["office"].str.upper().str.contains("GOVERNOR", na=False)) &
         (df["stage"].str.lower() == "gen") &
@@ -117,7 +126,27 @@ def extract_governor_county(df: pd.DataFrame, state_abbr: str) -> pd.DataFrame:
         .str.zfill(5)
     )
 
-    # Aggregate votes by county + party
+    # Capture total votes (all candidates) from totalvotes column.
+    # MEDSL reports the county total in every row for that county — use the
+    # first value per county (all rows carry the same totalvotes for that county).
+    if "totalvotes" in gov.columns:
+        county_total = (
+            gov.groupby("county_fips")["totalvotes"]
+            .first()
+            .reset_index()
+            .rename(columns={"totalvotes": "gov_total_2022"})
+        )
+    else:
+        # Fallback: sum all candidate votes as total
+        county_total = (
+            gov.groupby("county_fips")["votes"]
+            .sum()
+            .reset_index()
+            .rename(columns={"votes": "gov_total_2022"})
+        )
+        log.warning("  %s: totalvotes column missing — using sum of all votes as total", state_abbr)
+
+    # Aggregate D and R votes by county
     county_party = (
         gov.groupby(["county_fips", "party_simplified"])["votes"]
         .sum()
@@ -131,9 +160,14 @@ def extract_governor_county(df: pd.DataFrame, state_abbr: str) -> pd.DataFrame:
     rep = rep[["county_fips", "votes"]].rename(columns={"votes": "gov_rep_2022"})
 
     result = dem.merge(rep, on="county_fips", how="outer").fillna(0)
-    result["gov_total_2022"] = result["gov_dem_2022"] + result["gov_rep_2022"]
-    denom = result["gov_dem_2022"] + result["gov_rep_2022"]
-    result["gov_dem_share_2022"] = result["gov_dem_2022"] / denom.replace(0, float("nan"))
+    result = result.merge(county_total, on="county_fips", how="left")
+    # Fill missing totals with D+R sum (safety net)
+    result["gov_total_2022"] = result["gov_total_2022"].fillna(
+        result["gov_dem_2022"] + result["gov_rep_2022"]
+    )
+    result["gov_dem_share_2022"] = result["gov_dem_2022"] / result["gov_total_2022"].replace(
+        0, float("nan")
+    )
     result["state_abbr"] = state_abbr
 
     log.info(

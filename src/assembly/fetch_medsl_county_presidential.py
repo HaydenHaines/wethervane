@@ -5,7 +5,7 @@ Source: MIT Election Data + Science Lab, Harvard Dataverse
 
 Downloads a single unified CSV covering all US presidential elections
 2000–2024 at the county level. Filters to FL, GA, AL. Computes
-two-party dem share per county per year.
+total-vote dem share (dem / all_candidates) per county per year.
 
 Output (one parquet per election year, data/assembled/):
   medsl_county_presidential_{year}.parquet
@@ -22,6 +22,8 @@ from pathlib import Path
 import pandas as pd
 import requests
 
+from src.core import config as _cfg
+
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger(__name__)
 
@@ -35,9 +37,10 @@ DATAVERSE_API = "https://dataverse.harvard.edu/api"
 
 # Maps fips_prefix → state abbreviation (STATES.values() = {"FL", "GA", "AL"})
 # state_po in MEDSL data is the abbreviation (FL, GA, AL)
-STATES: dict[str, str] = {"12": "FL", "13": "GA", "01": "AL"}
+# Derived from config; kept as a module-level dict for backward compat with tests.
+STATES: dict[str, str] = _cfg.STATE_ABBR  # fips_prefix → abbr
 
-PRES_YEARS = [2000, 2004, 2008, 2012, 2016, 2020, 2024]
+PRES_YEARS = _cfg.PRES_YEARS
 
 
 def _dataverse_download(doi: str, cache_path: Path) -> Path:
@@ -125,8 +128,18 @@ def aggregate_county_year(df: pd.DataFrame, year: int) -> pd.DataFrame:
         .sum()
         .rename(f"pres_rep_{year}")
     )
-    result = pd.concat([dem, rep], axis=1).reset_index()
-    result[f"pres_total_{year}"] = result[f"pres_dem_{year}"] + result[f"pres_rep_{year}"]
+    # Total votes across ALL candidates (not just D+R).
+    # MEDSL reports totalvotes as the county total in every row for that
+    # county-year, so taking the first value from the DEMOCRAT rows is
+    # equivalent to taking the county total.
+    total_all = (
+        yr[yr["party_simplified"] == "DEMOCRAT"]
+        .groupby("county_fips")["totalvotes"]
+        .first()
+        .rename(f"pres_total_{year}")
+    )
+    result = pd.concat([dem, rep, total_all], axis=1).reset_index()
+    # dem_share = dem / total_all_candidates
     result[f"pres_dem_share_{year}"] = (
         result[f"pres_dem_{year}"] / result[f"pres_total_{year}"]
     )
