@@ -43,8 +43,9 @@
  */
 
 data {
-  int<lower=1> K;          // number of community types (7)
-  int<lower=1> T;          // number of elections (3)
+  int<lower=1> K;          // number of community types (any K; formerly hardcoded 7)
+  int<lower=1> T;          // number of elections (any T; formerly hardcoded 3)
+  int<lower=1, upper=K> k_ref;    // reference community for sign identification
 
   matrix[K, T] theta_obs;  // observed community vote shares
   matrix[K, T] theta_se;   // observation standard errors per cell
@@ -56,10 +57,10 @@ parameters {
   vector<lower=0.05, upper=0.95>[K] mu;
 
   // Factor loadings: community sensitivity to national wave
-  // k_ref = 2 (c2 Black urban) is constrained positive for sign identification.
+  // k_ref (data variable) is constrained positive for sign identification.
   // Hard parameter bound avoids posterior discontinuity.
-  real<lower=0>    lambda_ref;       // lambda for c2 (k=2), always >= 0
-  vector[K-1]      lambda_other;     // lambda for c1, c3..c7 (unconstrained)
+  real<lower=0>    lambda_ref;       // lambda for community k_ref, always >= 0
+  vector[K-1]      lambda_other;     // lambda for all other communities (unconstrained)
 
   // Election-level factor scores (national wave intensity)
   // Positive = D-favorable year, negative = R-favorable year
@@ -73,12 +74,19 @@ parameters {
 }
 
 transformed parameters {
-  // Assemble full lambda vector: insert lambda_ref at position k=2
+  // Assemble full lambda vector: insert lambda_ref at position k_ref (dynamic)
   vector[K] lambda;
-  lambda[1] = lambda_other[1];   // c1: White rural homeowner
-  lambda[2] = lambda_ref;        // c2: Black urban (sign-constrained reference)
-  for (k in 3:K)
-    lambda[k] = lambda_other[k - 1];  // c3..c7
+  {
+    int j = 1;
+    for (k in 1:K) {
+      if (k == k_ref) {
+        lambda[k] = lambda_ref;
+      } else {
+        lambda[k] = lambda_other[j];
+        j += 1;
+      }
+    }
+  }
 
   // Predicted community vote shares
   matrix[K, T] theta_pred;

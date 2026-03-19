@@ -105,6 +105,14 @@ CREATE TABLE IF NOT EXISTS predictions (
     poll_avg       DOUBLE,
     PRIMARY KEY (county_fips, race, version_id)
 );
+
+CREATE TABLE IF NOT EXISTS community_sigma (
+    community_id_row  INTEGER NOT NULL,
+    community_id_col  INTEGER NOT NULL,
+    sigma_value       DOUBLE,
+    version_id        VARCHAR NOT NULL,
+    PRIMARY KEY (community_id_row, community_id_col, version_id)
+);
 """
 
 # State FIPS → abbreviation mapping (hardcoded for FL/GA/AL)
@@ -325,10 +333,30 @@ def build(db_path: Path, reset: bool = False) -> None:
     else:
         log.warning("No predictions file found; skipping predictions table")
 
+    # ── Ingest community sigma ─────────────────────────────────────────────────
+    sigma_path = PROJECT_ROOT / "data" / "covariance" / "county_community_sigma.parquet"
+    if sigma_path.exists():
+        sigma_df = pd.read_parquet(sigma_path)
+        sigma_long_rows = []
+        for row_id in sigma_df.index:
+            for col_id in sigma_df.columns:
+                sigma_long_rows.append({
+                    "community_id_row": int(row_id),
+                    "community_id_col": int(col_id),
+                    "sigma_value": float(sigma_df.loc[row_id, col_id]),
+                    "version_id": current_version_id,
+                })
+        sigma_long = pd.DataFrame(sigma_long_rows)
+        con.execute(f"DELETE FROM community_sigma WHERE version_id = '{current_version_id}'")
+        con.execute("INSERT INTO community_sigma SELECT * FROM sigma_long")
+        log.info("Ingested community_sigma: %d cells", len(sigma_long))
+    else:
+        log.info("No county_community_sigma.parquet found; skipping sigma table")
+
     # ── Summary query ──────────────────────────────────────────────────────────
     log.info("Database build complete: %s", db_path)
     print("\n=== bedrock.duckdb summary ===")
-    for table in ["counties", "model_versions", "community_assignments", "type_assignments", "county_shifts", "predictions"]:
+    for table in ["counties", "model_versions", "community_assignments", "type_assignments", "county_shifts", "predictions", "community_sigma"]:
         try:
             n = con.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0]
             print(f"  {table}: {n:,} rows")
