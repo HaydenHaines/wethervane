@@ -149,9 +149,24 @@ US-political-covariation-model/
 │   ├── predictions/                   # Model outputs
 │   ├── validation/                    # Holdout sets and validation results
 │   └── sabermetrics/                  # Politician stat records and composites
+├── api/                               # FastAPI backend (Phase 2)
+│   ├── main.py                        # App factory, lifespan (DB + sigma + weights)
+│   ├── db.py                          # DuckDB dependency
+│   ├── models.py                      # Pydantic response models
+│   ├── routers/                       # Endpoint implementations
+│   │   ├── meta.py                    # GET /health, GET /model/version
+│   │   ├── communities.py             # GET /communities, GET /communities/{id}
+│   │   ├── counties.py                # GET /counties
+│   │   └── forecast.py                # GET /forecast, POST /forecast/poll (stub)
+│   └── tests/                         # API unit tests (in-memory DuckDB fixtures)
+├── web/                               # Next.js frontend (Phase 2, in progress)
+│   └── public/
+│       └── counties-fl-ga-al.geojson  # FL+GA+AL county polygons for Deck.gl
 ├── notebooks/                         # Exploratory Jupyter notebooks
 ├── tests/                             # Unit and integration tests
 ├── scripts/                           # One-off and utility scripts
+│   ├── fetch_fips_crosswalk.py        # Download Census FIPS→county name mapping
+│   └── build_county_geojson.py        # Generate FL+GA+AL GeoJSON from TIGER/Line
 ├── pyproject.toml                     # Python project config and dependencies
 └── renv.lock                          # R dependency lockfile
 ```
@@ -216,10 +231,19 @@ python src/assembly/build_county_shifts_multiyear.py        # 30-dim county shif
 python -m src.validation.validate_county_holdout_multiyear  # Compare multi-year vs 3-cycle baseline
 
 # Quality
-ruff check src/                                     # Lint Python
-ruff format src/                                    # Format Python
+ruff check src/ api/                               # Lint Python
+ruff format src/ api/                              # Format Python
 python src/assembly/fetch_irs_migration.py          # IRS migration flows (latest 3 year pairs) → data/raw/irs_migration.parquet
-pytest                                              # Run Python tests (203 tests)
+pytest                                              # Run all Python tests (src + api)
+
+# Phase 2 — one-time setup (run before building DuckDB)
+python scripts/fetch_fips_crosswalk.py             # Download Census FIPS→county name → data/raw/fips_county_crosswalk.csv
+python scripts/build_county_geojson.py             # Generate FL+GA+AL county GeoJSON → web/public/counties-fl-ga-al.geojson
+python src/db/build_database.py --reset             # Build/rebuild data/bedrock.duckdb
+
+# Phase 2 — run API locally
+pip install -r api/requirements.txt
+uvicorn api.main:app --reload --port 8000          # API at http://localhost:8000/api/docs
 ```
 
 ## Known Tech Debt
@@ -260,3 +284,5 @@ pytest                                              # Run Python tests (203 test
 | 2026-03-19 | Phase 1 K selection: K=10 (holdout r=0.9027) | K selection sweep over K=5..30 with spatial Ward HAC and min community size 8. K=10 maximizes holdout Pearson r between community-mean pres_d_shift_16_20 (training) and pres_d_shift_20_24 (holdout). 3-cycle baseline at K=10 was r=0.941; multi-year model gives r=0.9027. |
 | 2026-03-19 | Phase 1 NMF types: J=7 | J sweep over 5-8; J=7 chosen for interpretability and consistency with project history. Type weights stored in county_type_assignments.parquet. |
 | 2026-03-19 | Phase 1 Stan Σ: county HAC model, T=5 elections | Stan rank-1 factor model fit on 5 elections (2016 pres, 2018 gov, 2020 pres, 2022 gov, 2024 pres). k_ref selected dynamically as most Democratic community. Σ stored at data/covariance/county_community_sigma.parquet. DuckDB has community_sigma table. |
+| 2026-03-19 | Phase 2 API architecture: FastAPI + DuckDB read-only + in-process Bayesian update | FastAPI opens bedrock.duckdb read-only at startup; loads K×K sigma, mu_prior, and weight matrices into app.state. All data endpoints are simple SQL queries via Depends(get_db). POST /forecast/poll calls bayesian_update() from src/prediction/predict_2026_hac.py (HAC K=10 pipeline) — NOT propagate_polls.py (old NMF K=7). Test isolation via create_app(lifespan_override=_noop_lifespan) factory + in-memory DuckDB fixture. |
+| 2026-03-19 | Phase 2 frontend: Next.js App Router + Deck.gl + Observable Plot | Persistent choropleth map (left) + tabbed right panel. Tab bar holds View 3 (Forecast) now; Views 2 and 4 slot in as future tabs. Community age slider (3–10 training pairs) deferred to future phase. Visual style: Clean Academic (light background, Georgia serif headings, #2166ac/#d73027 partisan colors). |
