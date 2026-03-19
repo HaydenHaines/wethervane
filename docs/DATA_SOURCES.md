@@ -95,3 +95,9 @@ Evaluation of candidate data sources for the US Political Covariation Model. Eac
 | Census TIGER/Line shapefiles | [https://www.census.gov/geographies/mapping-files/time-series/geo/tiger-line-file.html](https://www.census.gov/geographies/mapping-files/time-series/geo/tiger-line-file.html) | Block, tract, county, state boundaries | Annual | Public domain | None | Large file sizes. Boundary changes between years. | Geographic boundaries for mapping and spatial analysis. Required for any cartographic output. | High | Available |
 | National Center for Health Statistics -- Urban-Rural Classification | [https://www.cdc.gov/nchs/data_access/urban_rural.htm](https://www.cdc.gov/nchs/data_access/urban_rural.htm) | County | 2013 (based on 2010 census) | Public domain | None | Based on 2010 data; not yet updated for 2020 census. 6-category scheme. | Urbanicity classification useful for stratification and as a community-detection feature. | Low | Available |
 | Economist / Stan election model (open source) | [https://github.com/TheEconomist/us-potus-model](https://github.com/TheEconomist/us-potus-model) | State | 2020 | MIT License | N/A | Designed for presidential elections only. State-level, not county-level. Specific to 2020 cycle. | Architectural reference for the propagation model. Stan code for poll aggregation, state correlation, and fundamentals integration provides a starting template. | High (reference) | Available |
+
+---
+
+## Expansion Catalog
+
+See **[DATA_SOURCE_IDEATION.md](DATA_SOURCE_IDEATION.md)** for the full 40-source expansion catalog with priority matrix and recommended integration order.
