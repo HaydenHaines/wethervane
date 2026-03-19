@@ -9,10 +9,10 @@ from __future__ import annotations
 
 from contextlib import asynccontextmanager
 
+import duckdb
 import numpy as np
 import pandas as pd
 import pytest
-import duckdb
 from fastapi.testclient import TestClient
 
 from api.main import create_app
@@ -121,6 +121,7 @@ def _build_test_db() -> duckdb.DuckDBPyConnection:
             [fips, TEST_VERSION],
         )
 
+    # Minimal schema: only one shift column. Extend when shift_profile endpoints need it.
     con.execute("""
         CREATE TABLE county_shifts (
             county_fips VARCHAR NOT NULL,

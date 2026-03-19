@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import duckdb
-from fastapi import APIRouter, Depends, Request
+from fastapi import APIRouter, Depends
 
 from api.db import get_db
 from api.models import HealthResponse, ModelVersionResponse
