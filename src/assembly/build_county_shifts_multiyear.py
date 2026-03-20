@@ -1,10 +1,15 @@
-"""Build multi-year county shift vectors (33 dimensions).
+"""Build multi-year county shift vectors (57 dimensions when Senate data present).
 
-Training (30 dims):
+Training (30 presidential + governor dims):
   5 consecutive presidential pairs: 2000→2004, 2004→2008, 2008→2012,
                                     2012→2016, 2016→2020
   5 consecutive governor pairs:     2002→2006, 2006→2010, 2010→2014,
                                     2014→2018, 2018→2022
+
+Senate training dims (up to 8 pairs × 3 dims = 24 dims, when data available):
+  Pairs align same Senate seat across 6-year cycles (same class):
+    2002→2008, 2004→2010, 2006→2012, 2008→2014,
+    2010→2016, 2012→2018, 2014→2020, 2016→2022
 
 Holdout (3 dims — never used during clustering):
   Presidential 2020→2024
@@ -12,9 +17,12 @@ Holdout (3 dims — never used during clustering):
 Note: All AL governor cycles are fully contested. No structural zeros needed
 (AL 2018 governor: Kay Ivey vs Walter Maddox, Ivey won ~60/40 — real data).
 
+Senate counties that are uncontested or missing are zero-filled (logged).
+
 Output:
   data/shifts/county_shifts_multiyear.parquet
-  Columns: county_fips + 30 training + 3 holdout shift dims
+  Columns: county_fips + 30 pres/gov training + up to 24 senate training
+           + 3 holdout shift dims
 """
 from __future__ import annotations
 
@@ -40,6 +48,7 @@ EPSILON = _cfg.LOGODDS_EPSILON  # clip dem_share to [EPSILON, 1-EPSILON] before 
 
 PRES_PAIRS = _cfg.PRES_PAIRS
 GOV_PAIRS = _cfg.GOV_PAIRS
+SENATE_PAIRS = _cfg.SENATE_PAIRS
 HOLDOUT_PAIRS = _cfg.HOLDOUT_PRES_PAIRS
 
 TRAINING_SHIFT_COLS: list[str] = []
@@ -47,6 +56,8 @@ for a, b in PRES_PAIRS:
     TRAINING_SHIFT_COLS += [f"pres_d_shift_{a}_{b}", f"pres_r_shift_{a}_{b}", f"pres_turnout_shift_{a}_{b}"]
 for a, b in GOV_PAIRS:
     TRAINING_SHIFT_COLS += [f"gov_d_shift_{a}_{b}", f"gov_r_shift_{a}_{b}", f"gov_turnout_shift_{a}_{b}"]
+for a, b in SENATE_PAIRS:
+    TRAINING_SHIFT_COLS += [f"sen_d_shift_{a}_{b}", f"sen_r_shift_{a}_{b}", f"sen_turnout_shift_{a}_{b}"]
 
 HOLDOUT_SHIFT_COLS: list[str] = []
 for a, b in HOLDOUT_PAIRS:
@@ -131,18 +142,56 @@ def compute_gov_shift(
     })
 
 
+def compute_senate_shift(
+    early: pd.DataFrame, late: pd.DataFrame, a: str, b: str
+) -> pd.DataFrame:
+    """Compute D/R/turnout shifts between two Senate election DataFrames.
+
+    Senate shifts pair the same seat class across a 6-year cycle
+    (e.g. 2002→2008 is the same Class II seat in each state).
+
+    D and R shifts are log-odds (logit scale). Turnout shift is raw proportional.
+    Only counties present in both years survive (inner join); counties missing
+    from either cycle are zero-filled by build_multiyear_shifts.
+    """
+    early_dem = _dem_share_col(early)
+    early_tot = _total_col(early)
+    late_dem = _dem_share_col(late)
+    late_tot = _total_col(late)
+
+    merged = early[["county_fips", early_dem, early_tot]].merge(
+        late[["county_fips", late_dem, late_tot]], on="county_fips", how="inner"
+    )
+    d_shift = _logodds_shift(merged[late_dem], merged[early_dem])
+    r_shift = -(d_shift)
+    early_total = merged[early_tot].replace(0, float("nan"))
+    t_shift = (merged[late_tot] - merged[early_tot]) / early_total
+
+    return pd.DataFrame({
+        "county_fips": merged["county_fips"].values,
+        f"sen_d_shift_{a}_{b}": d_shift.values,
+        f"sen_r_shift_{a}_{b}": r_shift.values,
+        f"sen_turnout_shift_{a}_{b}": t_shift.values,
+    })
+
+
 def build_multiyear_shifts(
     spine: pd.DataFrame,
     pres_pairs: list,
     gov_pairs: list,
+    senate_pairs: list | None = None,
 ) -> pd.DataFrame:
     """Join all shift pairs onto the county spine.
 
-    pres_pairs: list of (a_str, b_str, early_df, late_df)
-    gov_pairs: list of (a_str, b_str, early_df, late_df)
+    pres_pairs:    list of (a_str, b_str, early_df, late_df)
+    gov_pairs:     list of (a_str, b_str, early_df, late_df)
+    senate_pairs:  list of (a_str, b_str, early_df, late_df), or None
 
     Missing pairs produce zero-filled columns (logged as warning).
     """
+    if senate_pairs is None:
+        senate_pairs = []
+
     result = spine[["county_fips"]].copy()
 
     all_cols = TRAINING_SHIFT_COLS + HOLDOUT_SHIFT_COLS
@@ -159,6 +208,13 @@ def build_multiyear_shifts(
     for a, b, early, late in gov_pairs:
         shifts = compute_gov_shift(early, late, a, b)
         cols = [f"gov_d_shift_{a}_{b}", f"gov_r_shift_{a}_{b}", f"gov_turnout_shift_{a}_{b}"]
+        merged = result[["county_fips"]].merge(shifts[["county_fips"] + cols], on="county_fips", how="left")
+        for col in cols:
+            result[col] = merged[col].fillna(0.0).values
+
+    for a, b, early, late in senate_pairs:
+        shifts = compute_senate_shift(early, late, a, b)
+        cols = [f"sen_d_shift_{a}_{b}", f"sen_r_shift_{a}_{b}", f"sen_turnout_shift_{a}_{b}"]
         merged = result[["county_fips"]].merge(shifts[["county_fips"] + cols], on="county_fips", how="left")
         for col in cols:
             result[col] = merged[col].fillna(0.0).values
@@ -211,16 +267,33 @@ def main() -> None:
         else:
             log.warning("Skipping gov pair %s→%s (data missing)", a, b)
 
+    # ── Senate pairs ──────────────────────────────────────────────────────────
+    senate_file = dict(_cfg.SENATE_FILES)
+    senate_dfs: dict[str, pd.DataFrame | None] = {k: _load(v) for k, v in senate_file.items()}
+
+    senate_pairs_loaded = []
+    for a, b in SENATE_PAIRS:
+        early, late = senate_dfs.get(a), senate_dfs.get(b)
+        if early is not None and late is not None:
+            senate_pairs_loaded.append((a, b, early, late))
+        else:
+            log.warning("Skipping senate pair %s→%s (data missing)", a, b)
+
     # ── Build ─────────────────────────────────────────────────────────────────
-    log.info("Building multi-year shifts: %d pres pairs, %d gov pairs",
-             len(pres_pairs), len(gov_pairs))
-    shifts = build_multiyear_shifts(spine, pres_pairs, gov_pairs)
+    log.info(
+        "Building multi-year shifts: %d pres pairs, %d gov pairs, %d senate pairs",
+        len(pres_pairs), len(gov_pairs), len(senate_pairs_loaded),
+    )
+    shifts = build_multiyear_shifts(spine, pres_pairs, gov_pairs, senate_pairs_loaded)
 
     SHIFTS_DIR.mkdir(parents=True, exist_ok=True)
     out = SHIFTS_DIR / "county_shifts_multiyear.parquet"
     shifts.to_parquet(out, index=False)
-    log.info("Saved → %s | %d counties | %d training dims + %d holdout dims",
-             out, len(shifts), len(TRAINING_SHIFT_COLS), len(HOLDOUT_SHIFT_COLS))
+    n_senate_dims = len(senate_pairs_loaded) * 3
+    log.info(
+        "Saved → %s | %d counties | %d training dims (%d senate) + %d holdout dims",
+        out, len(shifts), len(TRAINING_SHIFT_COLS), n_senate_dims, len(HOLDOUT_SHIFT_COLS),
+    )
 
     zero_cols = [c for c in TRAINING_SHIFT_COLS if shifts[c].abs().max() < 1e-10]
     if zero_cols:

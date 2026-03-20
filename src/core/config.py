@@ -34,6 +34,7 @@ AL_FIPS_PREFIX: str = _cfg["geography"]["al_fips_prefix"]
 
 PRES_YEARS: list[int] = _cfg["election"]["presidential_years"]
 GOV_YEARS: list[int] = _cfg["election"]["governor_years"]
+SENATE_YEARS: list[int] = _cfg["election"]["senate_years"]
 
 PRES_PAIRS: list[tuple[str, str]] = [
     (str(a)[-2:].zfill(2), str(b)[-2:].zfill(2))
@@ -42,6 +43,10 @@ PRES_PAIRS: list[tuple[str, str]] = [
 GOV_PAIRS: list[tuple[str, str]] = [
     (str(a)[-2:].zfill(2), str(b)[-2:].zfill(2))
     for a, b in _cfg["election"]["governor_pairs"]
+]
+SENATE_PAIRS: list[tuple[str, str]] = [
+    (str(a)[-2:].zfill(2), str(b)[-2:].zfill(2))
+    for a, b in _cfg["election"]["senate_pairs"]
 ]
 HOLDOUT_PRES_PAIRS: list[tuple[str, str]] = [
     (str(a)[-2:].zfill(2), str(b)[-2:].zfill(2))
@@ -54,4 +59,5 @@ LOGODDS_EPSILON: float = _cfg["election"]["logodds_epsilon"]
 
 PRES_FILES: dict[str, str] = _cfg["data"]["presidential_files"]
 GOV_FILES: dict[str, str] = _cfg["data"]["governor_files"]
+SENATE_FILES: dict[str, str] = _cfg["data"]["senate_files"]
 SPINE_FILE: str = _cfg["data"]["spine_file"]

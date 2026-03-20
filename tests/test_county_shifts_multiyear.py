@@ -107,7 +107,8 @@ def test_logodds_shift_clipping():
 
 
 def test_output_column_count():
-    assert len(TRAINING_SHIFT_COLS) == 30
+    # 5 pres pairs × 3 + 5 gov pairs × 3 + 8 senate pairs × 3 = 54 training dims
+    assert len(TRAINING_SHIFT_COLS) == 54
     assert len(HOLDOUT_SHIFT_COLS) == 3
 
 
