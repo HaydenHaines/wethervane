@@ -38,13 +38,16 @@ ADJACENCY_DIR = PROJECT_ROOT / "data" / "communities"
 # (pres_d_shift_20_24) at community level.
 BASELINE = {5: 0.983, 7: 0.964, 10: 0.941, 15: 0.934, 20: 0.932}
 
-N_TRAINING_COLS = 30  # first 30 cols after county_fips are training
+from src.assembly.build_county_shifts_multiyear import TRAINING_SHIFT_COLS, HOLDOUT_SHIFT_COLS
 
-# Column index of pres_d_shift_16_20 within the 30 training columns.
+N_TRAINING_COLS = len(TRAINING_SHIFT_COLS)  # dynamic: 30 pres/gov + up to 24 senate dims
+
+# Column index of pres_d_shift_16_20 within the training columns.
 # This is the most recent presidential D-shift in training and the direct
 # counterpart to the holdout's pres_d_shift_20_24 (holdout col 0).
-# Verified from county_shifts_multiyear.parquet column ordering.
-PRES_D_16_20_COL = 12
+# Verified: pres pairs come before gov/senate pairs in TRAINING_SHIFT_COLS;
+# pres_d_shift_16_20 is always at index 12 (5th presidential pair, D col).
+PRES_D_16_20_COL = TRAINING_SHIFT_COLS.index("pres_d_shift_16_20")
 
 K_VALUES = [5, 7, 10, 15, 20]
 
@@ -130,8 +133,8 @@ def main() -> None:
     model.fit(train_norm)
 
     print("\n" + "=" * 75)
-    print("Multi-Year County Holdout Validation — 30 training dims vs 3-cycle baseline")
-    print("Train: pres 2000–2020 (5 pairs) + gov 2002–2022 (5 pairs)")
+    print(f"Multi-Year County Holdout Validation — {N_TRAINING_COLS} training dims vs 3-cycle baseline")
+    print(f"Train: pres 2000–2020 (5 pairs) + gov 2002–2022 (5 pairs) + senate (8 pairs) = {N_TRAINING_COLS} dims")
     print("Holdout: pres 2020→2024")
     print(f"Metric: community-mean {ref_col_name} (train col {PRES_D_16_20_COL})")
     print(f"        vs community-mean {holdout_col_name} (holdout col 0)")
