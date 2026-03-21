@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import * as Plot from "@observablehq/plot";
-import { fetchCommunityDetail, type CommunityDetail } from "@/lib/api";
+import { fetchCommunityDetail, type CommunityDetail, type CommunityDemographics } from "@/lib/api";
 
 interface Props {
   communityId: number;
@@ -55,6 +55,53 @@ function ShiftSparkline({ shiftProfile }: { shiftProfile: Record<string, number>
   }, [shiftProfile]);
 
   return <div ref={ref} />;
+}
+
+function DemographicRow({ label, value, fmt }: { label: string; value: number | null; fmt?: "pct" | "dollar" | "num" }) {
+  if (value == null) return null;
+  let display: string;
+  if (fmt === "dollar") display = `$${Math.round(value).toLocaleString()}`;
+  else if (fmt === "pct") display = `${(value * 100).toFixed(1)}%`;
+  else display = value.toFixed(1);
+  return (
+    <div style={{ display: "flex", justifyContent: "space-between", padding: "3px 0", fontSize: "12px" }}>
+      <span style={{ color: "var(--color-text-muted)" }}>{label}</span>
+      <span style={{ fontWeight: 500 }}>{display}</span>
+    </div>
+  );
+}
+
+function DemographicsSection({ d }: { d: CommunityDemographics }) {
+  return (
+    <div style={{ marginBottom: "16px" }}>
+      <p style={{ margin: "0 0 6px", fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.5px", color: "var(--color-text-muted)" }}>
+        Demographics
+      </p>
+      <DemographicRow label="Median income" value={d.median_hh_income} fmt="dollar" />
+      <DemographicRow label="Median age" value={d.median_age} fmt="num" />
+      <DemographicRow label="White (non-Hispanic)" value={d.pct_white_nh} fmt="pct" />
+      <DemographicRow label="Black" value={d.pct_black} fmt="pct" />
+      <DemographicRow label="Hispanic" value={d.pct_hispanic} fmt="pct" />
+      <DemographicRow label="Asian" value={d.pct_asian} fmt="pct" />
+      <DemographicRow label="Bachelor's+" value={d.pct_bachelors_plus} fmt="pct" />
+      <DemographicRow label="Owner-occupied" value={d.pct_owner_occupied} fmt="pct" />
+      <DemographicRow label="Work from home" value={d.pct_wfh} fmt="pct" />
+      <DemographicRow label="Management" value={d.pct_management} fmt="pct" />
+      {(d.evangelical_share != null || d.catholic_share != null) && (
+        <>
+          <div style={{ margin: "8px 0 4px", borderTop: "1px solid var(--color-border)" }} />
+          <p style={{ margin: "0 0 6px", fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.5px", color: "var(--color-text-muted)" }}>
+            Religious composition
+          </p>
+          <DemographicRow label="Evangelical" value={d.evangelical_share} fmt="pct" />
+          <DemographicRow label="Mainline Protestant" value={d.mainline_share} fmt="pct" />
+          <DemographicRow label="Catholic" value={d.catholic_share} fmt="pct" />
+          <DemographicRow label="Black Protestant" value={d.black_protestant_share} fmt="pct" />
+          <DemographicRow label="Adherence rate" value={d.religious_adherence_rate} fmt="pct" />
+        </>
+      )}
+    </div>
+  );
 }
 
 export function CommunityPanel({ communityId, onClose }: Props) {
@@ -121,6 +168,9 @@ export function CommunityPanel({ communityId, onClose }: Props) {
             </p>
             <ShiftSparkline shiftProfile={detail.shift_profile} />
           </div>
+
+          {/* Demographics */}
+          {detail.demographics && <DemographicsSection d={detail.demographics} />}
 
           {/* County list */}
           <div>

@@ -30,6 +30,26 @@ export interface ForecastRow {
   poll_avg: number | null;
 }
 
+export interface CommunityDemographics {
+  pop_total: number | null;
+  pct_white_nh: number | null;
+  pct_black: number | null;
+  pct_asian: number | null;
+  pct_hispanic: number | null;
+  median_age: number | null;
+  median_hh_income: number | null;
+  pct_bachelors_plus: number | null;
+  pct_owner_occupied: number | null;
+  pct_wfh: number | null;
+  pct_management: number | null;
+  evangelical_share: number | null;
+  mainline_share: number | null;
+  catholic_share: number | null;
+  black_protestant_share: number | null;
+  congregations_per_1000: number | null;
+  religious_adherence_rate: number | null;
+}
+
 export interface CommunityDetail {
   community_id: number;
   display_name: string;
@@ -43,6 +63,7 @@ export interface CommunityDetail {
     pred_dem_share: number | null;
   }>;
   shift_profile: Record<string, number>;
+  demographics: CommunityDemographics | null;
 }
 
 export async function fetchCommunities(): Promise<CommunitySummary[]> {
