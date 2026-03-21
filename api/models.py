@@ -35,6 +35,27 @@ class CountyInCommunity(BaseModel):
     pred_dem_share: float | None
 
 
+class CommunityDemographics(BaseModel):
+    """Population-weighted demographic profile for a community."""
+    pop_total: float | None = None
+    pct_white_nh: float | None = None
+    pct_black: float | None = None
+    pct_asian: float | None = None
+    pct_hispanic: float | None = None
+    median_age: float | None = None
+    median_hh_income: float | None = None
+    pct_bachelors_plus: float | None = None
+    pct_owner_occupied: float | None = None
+    pct_wfh: float | None = None
+    pct_management: float | None = None
+    evangelical_share: float | None = None
+    mainline_share: float | None = None
+    catholic_share: float | None = None
+    black_protestant_share: float | None = None
+    congregations_per_1000: float | None = None
+    religious_adherence_rate: float | None = None
+
+
 class CommunityDetail(BaseModel):
     community_id: int
     display_name: str
@@ -43,6 +64,7 @@ class CommunityDetail(BaseModel):
     dominant_type_id: int | None
     counties: list[CountyInCommunity]
     shift_profile: dict[str, float]
+    demographics: CommunityDemographics | None = None
 
 
 class CountyRow(BaseModel):

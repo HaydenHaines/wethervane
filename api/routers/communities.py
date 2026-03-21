@@ -5,7 +5,7 @@ import duckdb
 from fastapi import APIRouter, Depends, HTTPException, Request
 
 from api.db import get_db
-from api.models import CommunityDetail, CommunitySummary, CountyInCommunity
+from api.models import CommunityDemographics, CommunityDetail, CommunitySummary, CountyInCommunity
 
 router = APIRouter(tags=["communities"])
 
@@ -136,6 +136,53 @@ def get_community(
     ).fetchone()
     dominant_type_id = int(type_row[0]) if type_row and type_row[0] is not None else None
 
+    # Demographics profile from community_profiles table
+    demographics: CommunityDemographics | None = None
+    try:
+        demo_row = db.execute(
+            """
+            SELECT
+                pop_total, pct_white_nh, pct_black, pct_asian, pct_hispanic,
+                median_age, median_hh_income, pct_bachelors_plus,
+                pct_owner_occupied, pct_wfh, pct_management,
+                evangelical_share, mainline_share, catholic_share,
+                black_protestant_share, congregations_per_1000,
+                religious_adherence_rate
+            FROM community_profiles
+            WHERE community_id = ?
+            LIMIT 1
+            """,
+            [community_id],
+        ).fetchdf()
+        if not demo_row.empty:
+            r = demo_row.iloc[0]
+
+            def _f(v) -> float | None:
+                return None if pd.isna(v) else float(v)
+
+            demographics = CommunityDemographics(
+                pop_total=_f(r["pop_total"]),
+                pct_white_nh=_f(r["pct_white_nh"]),
+                pct_black=_f(r["pct_black"]),
+                pct_asian=_f(r["pct_asian"]),
+                pct_hispanic=_f(r["pct_hispanic"]),
+                median_age=_f(r["median_age"]),
+                median_hh_income=_f(r["median_hh_income"]),
+                pct_bachelors_plus=_f(r["pct_bachelors_plus"]),
+                pct_owner_occupied=_f(r["pct_owner_occupied"]),
+                pct_wfh=_f(r["pct_wfh"]),
+                pct_management=_f(r["pct_management"]),
+                evangelical_share=_f(r["evangelical_share"]),
+                mainline_share=_f(r["mainline_share"]),
+                catholic_share=_f(r["catholic_share"]),
+                black_protestant_share=_f(r["black_protestant_share"]),
+                congregations_per_1000=_f(r["congregations_per_1000"]),
+                religious_adherence_rate=_f(r["religious_adherence_rate"]),
+            )
+    except Exception:
+        # community_profiles table may not exist in test DBs — graceful fallback
+        pass
+
     return CommunityDetail(
         community_id=community_id,
         display_name=_make_display_name(community_id, states),
@@ -144,4 +191,5 @@ def get_community(
         dominant_type_id=dominant_type_id,
         counties=counties,
         shift_profile=shift_profile,
+        demographics=demographics,
     )
