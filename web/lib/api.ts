@@ -15,6 +15,8 @@ export interface CountyRow {
   county_fips: string;
   state_abbr: string;
   community_id: number;
+  dominant_type: number | null;
+  super_type: number | null;
 }
 
 export interface ForecastRow {
@@ -90,6 +92,45 @@ export async function fetchForecast(race?: string, state?: string): Promise<Fore
   if (state) params.set("state", state);
   const res = await fetch(`${API_BASE}/forecast?${params}`);
   if (!res.ok) throw new Error(`/forecast failed: ${res.status}`);
+  return res.json();
+}
+
+export interface TypeSummary {
+  type_id: number;
+  super_type_id: number;
+  display_name: string;
+  n_counties: number;
+  mean_pred_dem_share: number | null;
+}
+
+export interface TypeDetail extends TypeSummary {
+  counties: string[];
+  demographics: Record<string, number>;
+  shift_profile: Record<string, number> | null;
+}
+
+export interface SuperTypeSummary {
+  super_type_id: number;
+  display_name: string;
+  member_type_ids: number[];
+  n_counties: number;
+}
+
+export async function fetchTypes(): Promise<TypeSummary[]> {
+  const res = await fetch(`${API_BASE}/types`);
+  if (!res.ok) throw new Error(`/types failed: ${res.status}`);
+  return res.json();
+}
+
+export async function fetchTypeDetail(id: number): Promise<TypeDetail> {
+  const res = await fetch(`${API_BASE}/types/${id}`);
+  if (!res.ok) throw new Error(`/types/${id} failed: ${res.status}`);
+  return res.json();
+}
+
+export async function fetchSuperTypes(): Promise<SuperTypeSummary[]> {
+  const res = await fetch(`${API_BASE}/super-types`);
+  if (!res.ok) throw new Error(`/super-types failed: ${res.status}`);
   return res.json();
 }
 
