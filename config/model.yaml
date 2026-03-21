@@ -102,13 +102,50 @@ clustering:
   - 30
   min_community_size: 8
 types:
-  algorithm: nmf
+  # Legacy NMF config (retained for comparison)
+  legacy_algorithm: nmf
+  legacy_j: 7
+  # Type-primary config (active)
+  algorithm: svd_varimax
+  fallback_algorithms:
+  - archetypal_analysis
+  - semi_nmf
   j: null
   j_candidates:
+  - 8
+  - 10
+  - 12
+  - 15
+  - 18
+  - 20
+  - 22
+  - 25
+  super_type_count_candidates:
   - 5
   - 6
   - 7
   - 8
+  lambda_shrinkage: 0.75
+  covariance_acceptance_threshold: 0.4
+  holdout_r_minimum: 0.85
+  holdout_r_target: 0.90
+census:
+  decennial_years:
+  - 2000
+  - 2010
+  - 2020
+  interpolation: true
+  api_urls:
+    sf1_2000: "https://api.census.gov/data/2000/dec/sf1"
+    sf3_2000: "https://api.census.gov/data/2000/dec/sf3"
+    sf1_2010: "https://api.census.gov/data/2010/dec/sf1"
+    acs5_2010: "https://api.census.gov/data/2010/acs/acs5"
+    dhc_2020: "https://api.census.gov/data/2020/dec/dhc"
+    acs5_2020: "https://api.census.gov/data/2020/acs/acs5"
+  cpi_adjustments:
+    '1999': 166.6
+    '2010': 218.1
+    '2020': 258.8
 validation:
   holdout_k_values:
   - 5
