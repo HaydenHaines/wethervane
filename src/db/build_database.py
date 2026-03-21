@@ -44,6 +44,8 @@ TYPE_ASSIGNMENTS_STUB = PROJECT_ROOT / "data" / "communities" / "county_type_ass
 VERSIONS_DIR = PROJECT_ROOT / "data" / "models" / "versions"
 PREDICTIONS_2026_HAC = PROJECT_ROOT / "data" / "predictions" / "county_predictions_2026_hac.parquet"
 CROSSWALK_PATH = PROJECT_ROOT / "data" / "raw" / "fips_county_crosswalk.csv"
+COMMUNITY_PROFILES_PATH = PROJECT_ROOT / "data" / "communities" / "community_profiles.parquet"
+COUNTY_ACS_FEATURES_PATH = PROJECT_ROOT / "data" / "assembled" / "county_acs_features.parquet"
 
 
 # ---------------------------------------------------------------------------
@@ -115,6 +117,43 @@ CREATE TABLE IF NOT EXISTS community_sigma (
     sigma_value       DOUBLE,
     version_id        VARCHAR NOT NULL,
     PRIMARY KEY (community_id_row, community_id_col, version_id)
+);
+
+CREATE TABLE IF NOT EXISTS community_profiles (
+    community_id          INTEGER PRIMARY KEY,
+    n_counties            INTEGER,
+    pop_total             DOUBLE,
+    pct_white_nh          DOUBLE,
+    pct_black             DOUBLE,
+    pct_asian             DOUBLE,
+    pct_hispanic          DOUBLE,
+    median_age            DOUBLE,
+    median_hh_income      DOUBLE,
+    pct_bachelors_plus    DOUBLE,
+    pct_owner_occupied    DOUBLE,
+    pct_wfh               DOUBLE,
+    pct_management        DOUBLE,
+    evangelical_share     DOUBLE,
+    mainline_share        DOUBLE,
+    catholic_share        DOUBLE,
+    black_protestant_share DOUBLE,
+    congregations_per_1000 DOUBLE,
+    religious_adherence_rate DOUBLE
+);
+
+CREATE TABLE IF NOT EXISTS county_demographics (
+    county_fips           VARCHAR PRIMARY KEY,
+    pop_total             DOUBLE,
+    pct_white_nh          DOUBLE,
+    pct_black             DOUBLE,
+    pct_asian             DOUBLE,
+    pct_hispanic          DOUBLE,
+    median_age            DOUBLE,
+    median_hh_income      DOUBLE,
+    pct_bachelors_plus    DOUBLE,
+    pct_owner_occupied    DOUBLE,
+    pct_wfh               DOUBLE,
+    pct_management        DOUBLE
 );
 """
 
@@ -394,10 +433,40 @@ def build(db_path: Path, reset: bool = False) -> None:
     else:
         log.info("No county_community_sigma.parquet found; skipping sigma table")
 
+    # ── Ingest community profiles (demographics overlay) ───────────────────────
+    if COMMUNITY_PROFILES_PATH.exists():
+        cp_df = pd.read_parquet(COMMUNITY_PROFILES_PATH)
+        # Only load the fixed demographic columns into the structured table
+        profile_cols = [
+            "community_id", "n_counties", "pop_total",
+            "pct_white_nh", "pct_black", "pct_asian", "pct_hispanic",
+            "median_age", "median_hh_income", "pct_bachelors_plus",
+            "pct_owner_occupied", "pct_wfh", "pct_management",
+            "evangelical_share", "mainline_share", "catholic_share",
+            "black_protestant_share", "congregations_per_1000",
+            "religious_adherence_rate",
+        ]
+        cp_insert = cp_df[[c for c in profile_cols if c in cp_df.columns]].copy()
+        con.execute("DELETE FROM community_profiles")
+        con.execute("INSERT INTO community_profiles SELECT * FROM cp_insert")
+        log.info("Ingested community_profiles: %d rows", len(cp_insert))
+    else:
+        log.info("No community_profiles.parquet found; skipping")
+
+    # ── Ingest county demographics ──────────────────────────────────────────────
+    if COUNTY_ACS_FEATURES_PATH.exists():
+        cd_df = pd.read_parquet(COUNTY_ACS_FEATURES_PATH)
+        cd_df["county_fips"] = cd_df["county_fips"].astype(str).str.zfill(5)
+        con.execute("DELETE FROM county_demographics")
+        con.execute("INSERT INTO county_demographics SELECT * FROM cd_df")
+        log.info("Ingested county_demographics: %d rows", len(cd_df))
+    else:
+        log.info("No county_acs_features.parquet found; skipping")
+
     # ── Summary query ──────────────────────────────────────────────────────────
     log.info("Database build complete: %s", db_path)
     print("\n=== bedrock.duckdb summary ===")
-    for table in ["counties", "model_versions", "community_assignments", "type_assignments", "county_shifts", "predictions", "community_sigma"]:
+    for table in ["counties", "model_versions", "community_assignments", "type_assignments", "county_shifts", "predictions", "community_sigma", "community_profiles", "county_demographics"]:
         try:
             n = con.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0]
             print(f"  {table}: {n:,} rows")
