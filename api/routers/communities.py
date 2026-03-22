@@ -220,8 +220,6 @@ def list_types(request: Request, db: duckdb.DuckDBPyConnection = Depends(get_db)
     if not _has_table(db, "types"):
         return []
 
-    version_id = request.app.state.version_id
-
     rows = db.execute(
         """
         SELECT
@@ -229,19 +227,13 @@ def list_types(request: Request, db: duckdb.DuckDBPyConnection = Depends(get_db)
             t.super_type_id,
             t.display_name,
             COUNT(DISTINCT cta.county_fips) AS n_counties,
-            AVG(p.pred_dem_share) AS mean_pred_dem_share
+            NULL AS mean_pred_dem_share
         FROM types t
         LEFT JOIN county_type_assignments cta
             ON t.type_id = cta.dominant_type
-            AND cta.version_id = ?
-        LEFT JOIN predictions p
-            ON cta.county_fips = p.county_fips
-            AND p.version_id = ?
-        WHERE t.version_id = ?
         GROUP BY t.type_id, t.super_type_id, t.display_name
         ORDER BY t.type_id
         """,
-        [version_id, version_id, version_id],
     ).fetchdf()
 
     results = []
@@ -269,12 +261,10 @@ def get_type(
     if not _has_table(db, "types"):
         raise HTTPException(status_code=404, detail="Type data not available")
 
-    version_id = request.app.state.version_id
-
     # Get type metadata
     type_row = db.execute(
-        "SELECT type_id, super_type_id, display_name FROM types WHERE type_id = ? AND version_id = ? LIMIT 1",
-        [type_id, version_id],
+        "SELECT type_id, super_type_id, display_name FROM types WHERE type_id = ? LIMIT 1",
+        [type_id],
     ).fetchone()
     if not type_row:
         raise HTTPException(status_code=404, detail=f"Type {type_id} not found")
@@ -285,10 +275,10 @@ def get_type(
     county_rows = db.execute(
         """
         SELECT county_fips FROM county_type_assignments
-        WHERE dominant_type = ? AND version_id = ?
+        WHERE dominant_type = ?
         ORDER BY county_fips
         """,
-        [type_id, version_id],
+        [type_id],
     ).fetchdf()
 
     counties = county_rows["county_fips"].tolist() if not county_rows.empty else []
@@ -298,8 +288,8 @@ def get_type(
     if counties and _has_table(db, "type_profiles"):
         try:
             demo_row = db.execute(
-                "SELECT * FROM type_profiles WHERE type_id = ? AND version_id = ? LIMIT 1",
-                [type_id, version_id],
+                "SELECT * FROM type_profiles WHERE type_id = ? LIMIT 1",
+                [type_id],
             ).fetchdf()
             if not demo_row.empty:
                 r = demo_row.iloc[0]
@@ -350,25 +340,36 @@ def list_super_types(request: Request, db: duckdb.DuckDBPyConnection = Depends(g
     if not _has_table(db, "types"):
         return []
 
-    version_id = request.app.state.version_id
-
-    rows = db.execute(
-        """
-        SELECT
-            t.super_type_id,
-            MIN(t.display_name) AS display_name,
-            ARRAY_AGG(DISTINCT t.type_id ORDER BY t.type_id) AS member_type_ids,
-            COUNT(DISTINCT cta.county_fips) AS n_counties
-        FROM types t
-        LEFT JOIN county_type_assignments cta
-            ON t.type_id = cta.dominant_type
-            AND cta.version_id = t.version_id
-        WHERE t.version_id = ?
-        GROUP BY t.super_type_id
-        ORDER BY t.super_type_id
-        """,
-        [version_id],
-    ).fetchdf()
+    # Super-type names come from the super_types table
+    if _has_table(db, "super_types"):
+        rows = db.execute(
+            """
+            SELECT
+                st.super_type_id,
+                st.display_name,
+                ARRAY_AGG(DISTINCT t.type_id ORDER BY t.type_id) AS member_type_ids,
+                COUNT(DISTINCT cta.county_fips) AS n_counties
+            FROM super_types st
+            LEFT JOIN types t ON t.super_type_id = st.super_type_id
+            LEFT JOIN county_type_assignments cta ON t.type_id = cta.dominant_type
+            GROUP BY st.super_type_id, st.display_name
+            ORDER BY st.super_type_id
+            """,
+        ).fetchdf()
+    else:
+        rows = db.execute(
+            """
+            SELECT
+                t.super_type_id,
+                MIN(t.display_name) AS display_name,
+                ARRAY_AGG(DISTINCT t.type_id ORDER BY t.type_id) AS member_type_ids,
+                COUNT(DISTINCT cta.county_fips) AS n_counties
+            FROM types t
+            LEFT JOIN county_type_assignments cta ON t.type_id = cta.dominant_type
+            GROUP BY t.super_type_id
+            ORDER BY t.super_type_id
+            """,
+        ).fetchdf()
 
     results = []
     for _, row in rows.iterrows():

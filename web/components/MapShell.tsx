@@ -2,7 +2,7 @@
 import { useState, useEffect, useCallback } from "react";
 import DeckGL from "@deck.gl/react";
 import { GeoJsonLayer } from "@deck.gl/layers";
-import { fetchCounties, type CountyRow } from "@/lib/api";
+import { fetchCounties, fetchSuperTypes, type CountyRow } from "@/lib/api";
 import { useMapContext } from "@/components/MapContext";
 import { CommunityPanel } from "@/components/CommunityPanel";
 import { TypePanel } from "@/components/TypePanel";
@@ -19,8 +19,17 @@ export const SUPER_TYPE_COLORS: [number, number, number][] = [
   [127, 127, 127],   // gray
 ];
 
-// Super-type display names (populated when type data available)
-export const SUPER_TYPE_NAMES: Record<number, string> = {};
+// Super-type display names (fetched from API, with fallback defaults)
+export const SUPER_TYPE_NAMES: Record<number, string> = {
+  0: "Rural White Conservative",
+  1: "Small-Town Mixed",
+  2: "Suburban Professional",
+  3: "Black Belt & Diverse",
+  4: "Hispanic South Florida",
+  5: "North Georgia Exurban",
+  6: "Deep Rural Georgia",
+  7: "Metro Atlanta Professional",
+};
 
 // Legacy community colors (fallback when type data not present)
 const COMMUNITY_COLORS: [number, number, number][] = [
@@ -55,12 +64,17 @@ export default function MapShell() {
     Promise.all([
       fetch("/counties-fl-ga-al.geojson").then((r) => r.json()),
       fetchCounties(),
-    ]).then(([geo, counties]) => {
+      fetchSuperTypes().catch(() => []),
+    ]).then(([geo, counties, superTypes]) => {
       const map: Record<string, CountyRow> = {};
       let typeDataPresent = false;
       counties.forEach((c) => {
         map[c.county_fips] = c;
         if (c.super_type !== null) typeDataPresent = true;
+      });
+      // Populate super-type names from API
+      superTypes.forEach((st: any) => {
+        SUPER_TYPE_NAMES[st.super_type_id] = st.display_name;
       });
       setCountyMap(map);
       setHasTypeData(typeDataPresent);

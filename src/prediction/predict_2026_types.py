@@ -213,14 +213,17 @@ def run() -> None:
     cov_df = pd.read_parquet(type_cov_path)
     type_covariance = cov_df.values[:J, :J]
 
-    # Load type priors from profiles (mean Dem share per type)
-    # If not available, use flat prior
+    # Load type priors from 2024 actual results (population-weighted Dem share per type)
     type_priors = np.full(J, 0.45)
-    if type_profiles_path.exists():
-        profiles = pd.read_parquet(type_profiles_path)
-        if "mean_dem_share" in profiles.columns:
-            type_priors = profiles["mean_dem_share"].values[:J]
-        log.info("Type priors: %s", np.round(type_priors, 3))
+    priors_path = PROJECT_ROOT / "data" / "communities" / "type_priors.parquet"
+    if priors_path.exists():
+        priors_df = pd.read_parquet(priors_path)
+        if "prior_dem_share" in priors_df.columns:
+            for _, row in priors_df.iterrows():
+                t = int(row["type_id"])
+                if t < J:
+                    type_priors[t] = row["prior_dem_share"]
+    log.info("Type priors: %s", np.round(type_priors, 3))
 
     # Derive states and names
     states = [_STATE_FIPS_TO_ABBR.get(f[:2], "??") for f in county_fips]
