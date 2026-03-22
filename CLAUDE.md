@@ -287,6 +287,20 @@ pip install -r api/requirements.txt
 uvicorn api.main:app --reload --port 8000          # API at http://localhost:8000/api/docs
 ```
 
+## API–Frontend Contract
+
+The API is the contract boundary between model pipeline and frontend. The frontend hardcodes nothing about model shape — all names, counts, and demographics come from API endpoints. See `docs/superpowers/specs/2026-03-21-api-frontend-contract-design.md`.
+
+**Key rules:**
+- Frontend reads super-type names and colors from `/super-types` API, never hardcoded
+- Demographics render generically from `Record<string, number>` — new features auto-display
+- Race strings are opaque labels; frontend groups by `state_abbr`
+- `build_database.py` validates contract on exit (required tables, columns, referential integrity)
+- API `/health` reports `contract: "ok"` or `"degraded"`
+- Integration tests in `tests/test_api_contract.py` validate the full DuckDB→API chain
+
+**If you change the model pipeline:** Run `uv run pytest tests/test_api_contract.py -v` to verify the frontend won't break.
+
 ## Known Tech Debt
 
 (None yet -- project is pre-implementation.)

@@ -6,7 +6,7 @@ A political modeling platform that discovers electoral types directly from how c
 
 Counties that shift similarly across elections -- regardless of geographic distance -- share underlying structural characteristics that make them covary politically. These "electoral types" can be discovered directly from shift vectors (log-odds changes in vote share across election pairs), and their covariance structure (constructed from demographic profiles) can propagate sparse polling information to produce county-level predictions.
 
-This hypothesis is **falsifiable by design**: types are discovered from pre-2024 electoral shifts, then tested against held-out 2024 shifts. If types fail to predict the holdout, the model fails cleanly. Current holdout correlation: **r = 0.778** across 293 counties.
+This hypothesis is **falsifiable by design**: types are discovered from pre-2024 electoral shifts, then tested against held-out 2024 shifts. If types fail to predict the holdout, the model fails cleanly. Current holdout correlation: **r = 0.818** across 293 counties (J=43 types, T=10 soft membership).
 
 ## Architecture
 
@@ -24,7 +24,7 @@ Data Assembly --> Shift Vectors --> Type Discovery --> Hierarchical Nesting --> 
 
 **Stage 2 -- Shift Vector Computation.** Compute log-odds shift vectors for each county across all election pairs. Presidential shifts are weighted 2.5x (they correlate across state lines); governor/Senate shifts are state-centered (demeaned within each state) to capture within-state differentiation without isolating types by state.
 
-**Stage 3 -- Type Discovery (KMeans J=20).** Cluster counties into J=20 electoral types using KMeans on the weighted, state-centered shift vectors. Types represent abstract archetypes of electoral behavior -- counties that shift similarly belong to the same type regardless of geography. 10 of 20 types span multiple states.
+**Stage 3 -- Type Discovery (KMeans J=43).** Cluster counties into J=43 electoral types using KMeans on the weighted, state-centered shift vectors (J selected via leave-one-pair-out CV). Types represent abstract archetypes of electoral behavior -- counties that shift similarly belong to the same type regardless of geography.
 
 **Stage 4 -- Hierarchical Nesting.** Ward HAC on KMeans centroids (no spatial constraint) produces 6-8 super-types for public interpretability. Super-types are the "colors" of the stained glass map.
 
@@ -74,39 +74,38 @@ The initial implementation covers **Florida, Georgia, and Alabama** (293 countie
 |-------|--------|------------|
 | 1 — Data Assembly | Complete | MEDSL presidential 2000-2024, Algara/Amlani governor 2002-2018, Census decennial 2000/2010/2020, ACS 2022, RCMS 2020, IRS migration |
 | 2 — Shift Vectors | Complete | Log-odds shifts with presidential x2.5 weighting + state-centered governor/Senate |
-| 3 — Type Discovery | Complete | KMeans J=20; 10/20 types span multiple states; balanced sizes (3-31 counties per type) |
-| 4 — Hierarchical Nesting | Complete | 6-8 super-types via Ward HAC on centroids |
+| 3 — Type Discovery | Complete | KMeans J=43 (via leave-one-pair-out CV); holdout r=0.818 |
+| 4 — Hierarchical Nesting | Complete | 5 super-types via Ward HAC on centroids |
 | 5 — Type Description | Complete | Time-matched census demographics overlaid on discovered types |
 | 6 — Covariance Construction | Complete | Economist-inspired demographic correlation with shrinkage |
 | 7 — Poll Propagation | MVP complete | Gaussian/Kalman update; full MRP (R+Stan) deferred |
 | 8 — Prediction | Complete | 2026 forecast pipeline running with placeholder polls |
-| 9 — Validation | Complete | Holdout r=0.778 (train pre-2024, test 2024); catches FL poll overestimate |
+| 9 — Validation | Complete | Holdout r=0.818 (J=43, T=10 soft membership); calibration MAE=0.061 |
 
 ### Primary gaps
 
-- **Test coverage**: 641 tests covering assembly, discovery, covariance, propagation, API, and frontend
+- **Test coverage**: 1,338 tests covering assembly, discovery, covariance, propagation, API, contract validation, and frontend
 - **Additional data sources**: RCMS 2020 religious data integrated (293 counties x 6 features). IRS migration edge list integrated (county-to-county flows, 2019-2022). Still pending: LODES commuting flows, Facebook SCI, FEC donor density
 - **Real poll data**: `data/polls/polls_2026.csv` contains synthetic placeholder polls; real 2026 polls must replace these as the cycle advances
 - **Full MRP**: R+Stan propagation pipeline is scaffolded but not implemented; Python Gaussian update is sufficient for the October 2026 target
 - **Historical VEST expansion**: 2012/2014 VEST data would add election pairs for richer shift vectors
 - **Sabermetrics**: all five sabermetrics source files contain only function signatures; no implemented logic yet
 
-## Electoral Types (KMeans J=20)
+## Electoral Types (KMeans J=43)
 
-KMeans clustering on presidential-weighted, state-centered shift vectors discovers 20 electoral types. Each county receives soft membership via inverse-distance to KMeans centroids (row-normalized to sum to 1). Types nest into 6-8 super-types via Ward HAC for public interpretability.
+KMeans clustering on presidential-weighted, state-centered shift vectors discovers 43 electoral types (J selected via leave-one-pair-out cross-validation over J=12..50). Each county receives temperature-scaled soft membership (T=10) via inverse-distance to KMeans centroids. Types nest into 5 super-types via Ward HAC for public interpretability.
 
-### Example types (illustrative)
+### Super-types
 
-| Type | Geography | Key demographics | Notable pattern |
-|------|-----------|-----------------|-----------------|
-| Cross-state rural | AL + FL + GA rural counties | Low density, older, white | Spans 3 states -- validates cross-border hypothesis |
-| Atlanta metro professional | Metro Atlanta suburbs | $78K median income, 40% BA+ | High-education suburban cluster |
-| Miami-Dade Hispanic enclave | 3 South FL counties | 51% Hispanic | Captures Cuban American shift distinctly |
-| Alabama Black Belt | 9 AL counties | 68% Black, $31K income | Historical plantation belt pattern |
+| Super-type | Counties | Description |
+|-----------|----------|-------------|
+| Southern Rural Conservative | 36 | Deep rural AL/GA/FL |
+| Rural & Small-Town Mixed | 87 | Small towns, mixed demographics |
+| Suburban Professional | 87 | Metro suburbs, higher income/education |
+| Black Belt & Diverse | 41 | Majority-Black counties, historical plantation belt |
+| Florida Coastal & Hispanic | 42 | South FL, Hispanic enclaves, coastal communities |
 
-10 of 20 types span multiple states, confirming that electoral behavior crosses administrative boundaries. Type sizes are balanced (3-31 counties per type), avoiding the "alternative states" problem of earlier HAC K=10 approach.
-
-Key discovery: presidential shifts at 2.5x weight enable cross-state correlation while state-centered governor/Senate shifts provide within-state differentiation. Raw all-shifts produced state-isolated types; presidential-only lost governor signal; this weighting was the empirical sweet spot.
+Key discovery: presidential shifts at 2.5x weight enable cross-state correlation while state-centered governor/Senate shifts provide within-state differentiation. J=43 was the CV-optimal type count (plateau at ~43, extending to J=50 showed no further gain).
 
 ## Validation Results
 
@@ -114,21 +113,19 @@ Types are discovered from pre-2024 shift vectors, then validated against held-ou
 
 | Metric | Value | Notes |
 |--------|-------|-------|
-| Holdout Pearson r | 0.778 | Train on pre-2024 shifts, predict 2024 pres D-share shift |
-| Cross-state types | 10/20 | Types spanning multiple states validate cross-border hypothesis |
-| Type size range | 3-31 counties | Balanced -- no single type dominates |
-| Super-types | 6-8 | Ward HAC on centroids for public interpretability |
+| Holdout Pearson r | 0.818 | Train on pre-2024 shifts, predict 2024 pres D-share shift |
+| Calibration MAE | 0.061 | With T=10 soft membership |
+| Type count (J) | 43 | Selected via leave-one-pair-out CV (J=12..50) |
+| Super-types | 5 | Ward HAC on centroids for public interpretability |
 
 ### Historical approaches (retained for comparison)
 
 | Approach | Holdout metric | Notes |
 |----------|---------------|-------|
-| KMeans J=20 (current) | r=0.778 | Presidential x2.5 + state-centered governor |
+| KMeans J=43 (current) | r=0.818 | Presidential x2.5 + state-centered governor, T=10 |
+| KMeans J=20 (prior) | r=0.778 | Same features, fewer types |
 | HAC K=10 geographic blobs | r=0.903 | High autocorrelation but "alternative states" not types |
 | NMF K=7 on demographics | R²=0.661 | Indirect: demographics -> political validation |
-| 3-cycle county baseline | r=0.941 | Simple autocorrelation, no community structure |
-
-The KMeans approach trades raw holdout correlation for interpretable, cross-state types that capture genuine electoral structure rather than geographic proximity.
 
 ## Repository Structure
 
@@ -150,7 +147,7 @@ api/            FastAPI backend (REST endpoints, DuckDB)
 web/            Next.js frontend (stained glass map)
 data/           Data artifacts (gitignored)
 notebooks/      Exploratory analysis
-tests/          Test suite (641 tests across all pipeline stages)
+tests/          Test suite (1,338 tests across all pipeline stages)
 scripts/        Utility scripts
 ```
 
