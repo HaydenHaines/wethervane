@@ -26,6 +26,7 @@ def bubble_dissolve(
     tract_gdf: gpd.GeoDataFrame,
     min_area_sqkm: float = 0.1,
     simplify_tolerance: float = 0.001,
+    super_type_names: dict[int, str] | None = None,
 ) -> gpd.GeoDataFrame:
     """Merge adjacent same-type tracts into community polygons.
 
@@ -43,13 +44,22 @@ def bubble_dissolve(
 
     Returns
     -------
+    super_type_names : dict[int, str] | None
+        Optional mapping of super_type id → human-readable display name.
+        If omitted, names default to ``'Type {id}'``.
+
+    Returns
+    -------
     GeoDataFrame with columns:
-        geometry   : merged polygon (WGS84 / EPSG:4326)
-        type_id    : int, the dominant_type value shared by the component
-        super_type : int, modal super_type across component tracts
-        n_tracts   : int, number of tracts in the component
-        area_sqkm  : float, polygon area in square kilometres (2 d.p.)
+        geometry        : merged polygon (WGS84 / EPSG:4326)
+        type_id         : int, the dominant_type value shared by the component
+        super_type      : int, modal super_type across component tracts
+        super_type_name : str, display name for super_type
+        n_tracts        : int, number of tracts in the component
+        area_sqkm       : float, polygon area in square kilometres (2 d.p.)
     """
+    if super_type_names is None:
+        super_type_names = {}
     # 1. Work in EPSG:5070 (Albers Equal Area, metres) for area calculation
     gdf = tract_gdf.to_crs("EPSG:5070").copy()
     gdf = gdf.reset_index(drop=True)  # ensure 0-based integer index
@@ -92,6 +102,7 @@ def bubble_dissolve(
                     "geometry": merged_geom,
                     "type_id": int(type_id),
                     "super_type": super_type,
+                    "super_type_name": super_type_names.get(super_type, f"Type {super_type}"),
                     "n_tracts": len(component_list),
                     "area_sqkm": round(area_sqkm, 2),
                 }
@@ -99,7 +110,7 @@ def bubble_dissolve(
 
     if not communities:
         return gpd.GeoDataFrame(
-            columns=["geometry", "type_id", "super_type", "n_tracts", "area_sqkm"],
+            columns=["geometry", "type_id", "super_type", "super_type_name", "n_tracts", "area_sqkm"],
             crs="EPSG:4326",
         )
 
@@ -147,6 +158,12 @@ def _build_parser() -> argparse.ArgumentParser:
         dest="simplify",
         help="Douglas-Peucker simplification tolerance (default: 0.001).",
     )
+    p.add_argument(
+        "--super-types",
+        type=Path,
+        default=None,
+        help="Path to super_types.parquet for display names. If omitted, names default to 'Type {id}'.",
+    )
     return p
 
 
@@ -154,6 +171,11 @@ def main(argv: list[str] | None = None) -> None:
     import pandas as pd
 
     args = _build_parser().parse_args(argv)
+
+    st_names: dict[int, str] = {}
+    if args.super_types and args.super_types.exists():
+        st_df = pd.read_parquet(args.super_types)
+        st_names = dict(zip(st_df["super_type_id"], st_df["display_name"]))
 
     assignments = pd.read_parquet(args.input)
 
@@ -180,6 +202,7 @@ def main(argv: list[str] | None = None) -> None:
         tract_gdf,
         min_area_sqkm=args.min_area,
         simplify_tolerance=args.simplify,
+        super_type_names=st_names,
     )
 
     args.output.parent.mkdir(parents=True, exist_ok=True)
