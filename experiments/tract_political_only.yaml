@@ -1,0 +1,55 @@
+experiment:
+  name: tract_political_only
+  description: "Types from electoral behavior -- shifts, lean, turnout, density"
+
+geography:
+  level: tract
+  states: [FL, GA, AL]
+
+features:
+  electoral:
+    enabled: true
+    weight: 1.0
+    include:
+      presidential_shifts: true
+      presidential_lean: true
+      turnout_level: true
+      turnout_shift: true
+      vote_density: true
+      house_shifts: true
+      senate_shifts: true
+      split_ticket: true
+      donor_density: true
+      governor_shift: false
+      state_center_nonpresidential: true
+  demographic:
+    enabled: false
+    weight: 1.0
+  religion:
+    enabled: false
+    weight: 1.0
+
+clustering:
+  algorithm: kmeans
+  j_candidates: [25, 30, 35, 40]
+  j_selection: holdout_cv
+  n_init: 10
+  random_state: 42
+  presidential_weight: 2.5
+  min_tracts_per_type: 50
+
+nesting:
+  enabled: true
+  s_candidates: [8, 10, 12, 15]
+  method: ward_hac
+
+visualization:
+  bubble_dissolve: true
+  min_polygon_area_sqkm: 0.1
+  simplify_tolerance: 0.001
+
+holdout:
+  pairs:
+    - [2020, 2024]
+  metric: pearson_r
+  min_threshold: 0.5

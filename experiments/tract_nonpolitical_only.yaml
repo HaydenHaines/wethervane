@@ -1,0 +1,56 @@
+experiment:
+  name: tract_nonpolitical_only
+  description: "Types from demographics and religion only -- no electoral features"
+
+geography:
+  level: tract
+  states: [FL, GA, AL]
+
+features:
+  electoral:
+    enabled: false
+    weight: 1.0
+  demographic:
+    enabled: true
+    weight: 1.0
+    include:
+      race_ethnicity: true
+      white_working_class: true
+      foreign_born: true
+      income: true
+      education: true
+      housing: true
+      rent_burden: true
+      age_household: true
+      commute: true
+      military: true
+  religion:
+    enabled: true
+    weight: 1.0
+    include:
+      religion: true
+
+clustering:
+  algorithm: kmeans
+  j_candidates: [25, 30, 35, 40]
+  j_selection: holdout_cv
+  n_init: 10
+  random_state: 42
+  presidential_weight: 1.0
+  min_tracts_per_type: 50
+
+nesting:
+  enabled: true
+  s_candidates: [8, 10, 12, 15]
+  method: ward_hac
+
+visualization:
+  bubble_dissolve: true
+  min_polygon_area_sqkm: 0.1
+  simplify_tolerance: 0.001
+
+holdout:
+  pairs:
+    - [2020, 2024]
+  metric: pearson_r
+  min_threshold: 0.5
