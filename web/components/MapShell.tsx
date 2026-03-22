@@ -56,8 +56,10 @@ const INITIAL_VIEW = {
 export default function MapShell() {
   const { selectedCommunityId, setSelectedCommunityId, selectedTypeId, setSelectedTypeId } = useMapContext();
   const [geojson, setGeojson] = useState<any>(null);
+  const [tractGeojson, setTractGeojson] = useState<any>(null);
   const [countyMap, setCountyMap] = useState<Record<string, CountyRow>>({});
   const [hasTypeData, setHasTypeData] = useState(false);
+  const [showTracts, setShowTracts] = useState(false);
   const [tooltip, setTooltip] = useState<{ x: number; y: number; text: string } | null>(null);
 
   useEffect(() => {
@@ -65,7 +67,9 @@ export default function MapShell() {
       fetch("/counties-fl-ga-al.geojson").then((r) => r.json()),
       fetchCounties(),
       fetchSuperTypes().catch(() => []),
-    ]).then(([geo, counties, superTypes]) => {
+      fetch("/tract-communities.geojson").then((r) => r.json()).catch(() => null),
+    ]).then(([geo, counties, superTypes, tractGeo]) => {
+      if (tractGeo) setTractGeojson(tractGeo);
       const map: Record<string, CountyRow> = {};
       let typeDataPresent = false;
       counties.forEach((c) => {
@@ -96,10 +100,11 @@ export default function MapShell() {
 
   const getColor = useCallback(
     (f: any): [number, number, number, number] => {
-      if (hasTypeData) {
-        // Stained glass: color by super-type
-        const st: number = f.properties?.super_type ?? -1;
-        const dt: number = f.properties?.dominant_type ?? -1;
+      // Tract communities and county types both use super_type for coloring
+      const st: number = f.properties?.super_type ?? -1;
+      const dt: number = f.properties?.dominant_type ?? f.properties?.type_id ?? -1;
+
+      if (st >= 0 || hasTypeData) {
         const isSelected = selectedTypeId !== null && dt === selectedTypeId;
         const base = st >= 0 && st < SUPER_TYPE_COLORS.length
           ? SUPER_TYPE_COLORS[st]
@@ -114,7 +119,7 @@ export default function MapShell() {
       const base = cid >= 0 && cid < COMMUNITY_COLORS.length ? COMMUNITY_COLORS[cid] : [180, 180, 180];
       return isSelected ? [...base, 255] as [number, number, number, number] : [...base, 180] as [number, number, number, number];
     },
-    [selectedCommunityId, selectedTypeId, hasTypeData]
+    [selectedCommunityId, selectedTypeId, hasTypeData, showTracts]
   );
 
   const getLineWidth = useCallback(
@@ -129,11 +134,14 @@ export default function MapShell() {
     [selectedCommunityId, selectedTypeId, hasTypeData]
   );
 
-  const layers = geojson
+  const activeData = showTracts && tractGeojson ? tractGeojson : geojson;
+  const layerId = showTracts && tractGeojson ? "tract-communities" : "counties";
+
+  const layers = activeData
     ? [
         new GeoJsonLayer({
-          id: "counties",
-          data: geojson,
+          id: layerId,
+          data: activeData,
           pickable: true,
           stroked: true,
           filled: true,
@@ -142,19 +150,29 @@ export default function MapShell() {
           getLineWidth,
           lineWidthUnits: "meters",
           updateTriggers: {
-            getFillColor: [selectedCommunityId, selectedTypeId, hasTypeData],
-            getLineWidth: [selectedCommunityId, selectedTypeId, hasTypeData],
+            getFillColor: [selectedCommunityId, selectedTypeId, hasTypeData, showTracts],
+            getLineWidth: [selectedCommunityId, selectedTypeId, hasTypeData, showTracts],
           },
           onHover: ({ object, x, y }: any) => {
             if (object) {
-              const name = object.properties?.county_name || object.properties?.county_fips;
-              if (hasTypeData) {
+              if (showTracts && tractGeojson) {
                 const st = object.properties?.super_type;
-                const dt = object.properties?.dominant_type;
-                setTooltip({ x, y, text: `${name}\nType ${dt} (Super-type ${st})` });
+                const tid = object.properties?.type_id;
+                const n = object.properties?.n_tracts;
+                const area = object.properties?.area_sqkm;
+                const stName = st >= 0 ? (SUPER_TYPE_NAMES[st] || `Super-type ${st}`) : "?";
+                setTooltip({ x, y, text: `${stName}\nType ${tid} · ${n} tracts · ${Math.round(area)} km²` });
               } else {
-                const cid = object.properties?.community_id;
-                setTooltip({ x, y, text: `${name}\nCommunity ${cid}` });
+                const name = object.properties?.county_name || object.properties?.county_fips;
+                if (hasTypeData) {
+                  const st = object.properties?.super_type;
+                  const dt = object.properties?.dominant_type;
+                  const stName = st >= 0 ? (SUPER_TYPE_NAMES[st] || `Super-type ${st}`) : "?";
+                  setTooltip({ x, y, text: `${name}\n${stName} (Type ${dt})` });
+                } else {
+                  const cid = object.properties?.community_id;
+                  setTooltip({ x, y, text: `${name}\nCommunity ${cid}` });
+                }
               }
             } else {
               setTooltip(null);
@@ -226,6 +244,30 @@ export default function MapShell() {
         }}>
           {tooltip.text}
         </div>
+      )}
+
+      {/* County/Tract toggle */}
+      {tractGeojson && (
+        <button
+          onClick={() => setShowTracts(!showTracts)}
+          style={{
+            position: "absolute",
+            top: 12,
+            left: 16,
+            background: showTracts ? "#2166ac" : "white",
+            color: showTracts ? "white" : "#333",
+            border: "1px solid var(--color-border)",
+            borderRadius: "4px",
+            padding: "6px 14px",
+            fontSize: "12px",
+            fontFamily: "var(--font-sans)",
+            cursor: "pointer",
+            fontWeight: 600,
+            boxShadow: "0 1px 3px rgba(0,0,0,0.15)",
+          }}
+        >
+          {showTracts ? "Tract Communities" : "County Types"} ▾
+        </button>
       )}
 
       {/* Legend */}
