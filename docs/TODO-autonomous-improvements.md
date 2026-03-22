@@ -58,7 +58,7 @@ Each of these should start with web research (search for recent papers, blog pos
 
 - [x] **Population-weighted KMeans** — DONE. Test `sample_weight=county_population` in KMeans. Finding: Hurts performance (r 0.818→0.781, -0.037). Large counties (Miami-Dade, Fulton) override rural types when weighted by population. Equal weighting preserves rural type diversity and political signal. Recommendation: keep equal weighting.
 
-- [ ] **Temporal weighting** — Weight 2016→2020 shifts at 2× and 2012→2016 at 1.5× to emphasize recent patterns. Research: do the Economist or 538 models use temporal decay? What decay functions work best?
+- [x] **Temporal weighting** — DONE. Equal weighting wins. All temporal decay schemes reduce holdout r by 0.002-0.012. Step function (2016+ only) collapses to r=0.198. Full history provides structural signal that recent-only cannot recover.
 
 - [ ] **MiniBatch KMeans for stability** — Standard KMeans can be sensitive to initialization. Test MiniBatchKMeans with 100 random starts, measure centroid stability via bootstrap. Research: what's the state of the art for assessing cluster stability?
 
@@ -72,7 +72,7 @@ Each of these should start with web research (search for recent papers, blog pos
 
 - [ ] **Negative correlation preservation** — Currently flooring negatives to zero in covariance. Test with floor_negatives=False. Rural evangelical vs urban progressive may genuinely inverse-correlate. Research: does the Economist floor negatives? Do other models?
 
-- [ ] **Shrinkage lambda tuning** — Current lambda=0.75 from Economist. Their types are 51 states; ours are 20 county types — different granularity. Sweep lambda=0.3..0.95. Research: what's the theoretical basis for the shrinkage parameter?
+- [x] **Shrinkage lambda tuning** — DONE. Lambda is NOT the bottleneck — validation_r=0.22 is flat across all lambda values (0.10-0.95). Root cause: demographic feature matrix is rank-deficient (31 features for 43 types). Production lambda=0.75 retained.
 
 - [ ] **Urbanicity feature (Economist-style)** — Compute `avg_log_pop_within_5_miles` per county. Much better than raw density for distinguishing suburban from exurban. Use as type profile feature. Research: how did the Economist compute this? What data source?
 
