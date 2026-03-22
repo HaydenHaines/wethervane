@@ -7,29 +7,48 @@ import { useMapContext } from "@/components/MapContext";
 import { CommunityPanel } from "@/components/CommunityPanel";
 import { TypePanel } from "@/components/TypePanel";
 
-// Colorblind-accessible super-type palette (stained glass colors)
+// Colorblind-accessible palette — 10 colors for tract-level (8 for county)
 export const SUPER_TYPE_COLORS: [number, number, number][] = [
-  [31, 119, 180],    // blue
-  [255, 127, 14],    // orange
-  [44, 160, 44],     // green
-  [214, 39, 40],     // red
-  [148, 103, 189],   // purple
-  [140, 86, 75],     // brown
-  [227, 119, 194],   // pink
-  [127, 127, 127],   // gray
+  [31, 119, 180],    // 0: blue
+  [255, 127, 14],    // 1: orange
+  [44, 160, 44],     // 2: green
+  [214, 39, 40],     // 3: red
+  [148, 103, 189],   // 4: purple
+  [140, 86, 75],     // 5: brown
+  [227, 119, 194],   // 6: pink
+  [127, 127, 127],   // 7: gray
+  [188, 189, 34],    // 8: olive
+  [23, 190, 207],    // 9: teal
 ];
 
-// Super-type display names (fetched from API, with fallback defaults)
-export const SUPER_TYPE_NAMES: Record<number, string> = {
-  0: "Rural White Conservative",
-  1: "Small-Town Mixed",
-  2: "Suburban Professional",
-  3: "Black Belt & Diverse",
-  4: "Hispanic South Florida",
-  5: "North Georgia Exurban",
-  6: "Deep Rural Georgia",
-  7: "Metro Atlanta Professional",
+// County-level super-type names (8 super-types)
+export const COUNTY_SUPER_TYPE_NAMES: Record<number, string> = {
+  0: "Rural White Conservative",    // 31 counties, 82% white, AL+FL panhandle
+  1: "Small-Town Mixed",            // 76 counties, GA-FL-AL rural crossroads
+  2: "Suburban Professional",        // 35 counties, FL coastal + AL urban
+  3: "Black Belt & Diverse",         // 82 counties, GA+AL Black Belt
+  4: "Hispanic South Florida",       // 3 counties, Miami-Dade area, 51% Hispanic
+  5: "North Georgia Exurban",        // 25 counties, N. GA white exurban
+  6: "Deep Rural Georgia",           // 19 counties, N. GA white working class
+  7: "Metro Atlanta Professional",   // 22 counties, Atlanta metro, $78K, 40% BA+
 };
+
+// Tract-level super-type names (10 super-types, different nesting)
+export const TRACT_SUPER_TYPE_NAMES: Record<number, string> = {
+  0: "Diverse Urban",                // 908 tracts, 28% hisp, 41% Black, FL+GA+AL metros
+  1: "Affluent Suburban",            // 568 tracts, 51% white, $84K income, GA+FL suburbs
+  2: "Hispanic Florida",             // 639 tracts, 75% Hispanic, Miami-Dade + Orlando + Tampa
+  3: "White Rural & Small-Town",     // 1471 tracts, 82% white, GA+AL+FL rural
+  4: "Black Belt & Urban Black",     // 736 tracts, 78% Black, GA+FL+AL
+  5: "White Florida Suburban",       // 1696 tracts, 78% white, almost all FL
+  6: "High-Income Professional",     // 637 tracts, $122K income, GA+AL+FL
+  7: "Mixed Working-Class",          // 750 tracts, 39% Black, 44% white, cross-state
+  8: "FL Moderate Suburban",         // 759 tracts, 25% hisp, 55% white, almost all FL
+  9: "Middle-Class Diverse",         // 915 tracts, 21% Black, 63% white, cross-state
+};
+
+// Active names depend on which view is shown
+export let SUPER_TYPE_NAMES: Record<number, string> = { ...COUNTY_SUPER_TYPE_NAMES };
 
 // Legacy community colors (fallback when type data not present)
 const COMMUNITY_COLORS: [number, number, number][] = [
@@ -160,14 +179,14 @@ export default function MapShell() {
                 const tid = object.properties?.type_id;
                 const n = object.properties?.n_tracts;
                 const area = object.properties?.area_sqkm;
-                const stName = st >= 0 ? (SUPER_TYPE_NAMES[st] || `Super-type ${st}`) : "?";
+                const stName = st >= 0 ? (TRACT_SUPER_TYPE_NAMES[st] || `Type ${st}`) : "?";
                 setTooltip({ x, y, text: `${stName}\nType ${tid} · ${n} tracts · ${Math.round(area)} km²` });
               } else {
                 const name = object.properties?.county_name || object.properties?.county_fips;
                 if (hasTypeData) {
                   const st = object.properties?.super_type;
                   const dt = object.properties?.dominant_type;
-                  const stName = st >= 0 ? (SUPER_TYPE_NAMES[st] || `Super-type ${st}`) : "?";
+                  const stName = st >= 0 ? (COUNTY_SUPER_TYPE_NAMES[st] || `Type ${st}`) : "?";
                   setTooltip({ x, y, text: `${name}\n${stName} (Type ${dt})` });
                 } else {
                   const cid = object.properties?.community_id;
@@ -199,11 +218,12 @@ export default function MapShell() {
       ]
     : [];
 
-  // Build legend entries based on available data
-  const legendEntries = hasTypeData
+  // Build legend entries — use tract or county names based on toggle
+  const activeNames = showTracts ? TRACT_SUPER_TYPE_NAMES : COUNTY_SUPER_TYPE_NAMES;
+  const legendEntries = hasTypeData || (showTracts && tractGeojson)
     ? SUPER_TYPE_COLORS.map((color, i) => ({
         color,
-        label: SUPER_TYPE_NAMES[i] || `Super-type ${i}`,
+        label: activeNames[i] || `Type ${i}`,
       }))
     : COMMUNITY_COLORS.map((color, i) => ({
         color,
@@ -249,7 +269,14 @@ export default function MapShell() {
       {/* County/Tract toggle */}
       {tractGeojson && (
         <button
-          onClick={() => setShowTracts(!showTracts)}
+          onClick={() => {
+            const next = !showTracts;
+            setShowTracts(next);
+            // Switch super-type names for the active view
+            Object.keys(SUPER_TYPE_NAMES).forEach(k => delete SUPER_TYPE_NAMES[Number(k)]);
+            const source = next ? TRACT_SUPER_TYPE_NAMES : COUNTY_SUPER_TYPE_NAMES;
+            Object.entries(source).forEach(([k, v]) => { SUPER_TYPE_NAMES[Number(k)] = v; });
+          }}
           style={{
             position: "absolute",
             top: 12,

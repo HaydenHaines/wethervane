@@ -4,14 +4,38 @@ A political modeling platform that discovers electoral communities directly from
 
 **Core insight:** beneath the noise of individual elections is a structural landscape of communities that move together politically. Those communities cross administrative boundaries, persist across decades, and can be discovered purely from how places shift. Understanding this structure — not just the surface results — is what makes prediction defensible.
 
-**Governing principles (2026-03-19, supersedes MVP-era "minimize complexity"):**
+**Governing principles (updated 2026-03-22):**
 - Build it right, not fast. Use the correct model even if it takes longer.
 - Build it expandable. Every component has a clear interface.
-- Two layers: **communities** (geographic blobs, HAC) + **types** (abstract archetypes, NMF). A community in rural Georgia and one in rural Washington are different communities; they may be the same type.
-- K is the hardest problem. Selection must be principled (holdout accuracy), not heuristic.
+- Types are primary. KMeans on shift vectors discovers J types. Counties/tracts get soft membership. Types carry covariance and prediction.
+- Governor/Senate shifts must be state-centered before cross-state clustering. Presidential shifts carry cross-state signal.
+- J selection must be principled (holdout accuracy), not heuristic.
 - The public question is: *What will happen in 2026?*
 
-See `docs/ROADMAP.md` for the full path forward.
+## CRITICAL: For Autonomous Agents
+
+**DO NOT:**
+- Revert to SVD+varimax, NMF, or HAC as the primary clustering algorithm. KMeans is the production algorithm. See ADR-006.
+- Use raw (non-state-centered) governor/Senate shifts for cross-state clustering. This creates state-isolated types.
+- Use the old community_assignments or HAC K=10 model for anything except historical comparison.
+- Modify the county-level model without running `uv run python -m src.validation.validate_types` and comparing to baseline (holdout r=0.778, MAE=0.074).
+- Run tract-level experiments without population weighting (tracts with <500 voters are noise).
+
+**BASELINE METRICS (beat these or don't merge):**
+- County holdout r: 0.778
+- County calibration MAE: 0.074 (with T=10 soft membership)
+- Tract pop-weighted r: 0.673
+
+**Data sources on disk (gitignored, do NOT re-download):**
+- `data/raw/fivethirtyeight/` — 538 data (887MB), pollster ratings, polls
+- `data/raw/fekrazad/` — 49-state tract-level RLCR vote allocations (320MB)
+- `data/raw/dra-block-data/` — block-level 2008-2024 election data
+- `data/raw/vest/` — precinct shapefiles 2016-2020
+- `data/raw/nyt_precinct/` — NYTimes 2020+2024 precinct data
+- `data/raw/tiger/` — TIGER/Line 2020 tract shapefiles
+- `research/economist-model/` — Economist 2020 model (MIT license)
+
+See `docs/ROADMAP.md` for the full path forward and `docs/TODO-autonomous-improvements.md` for the autonomous improvement queue.
 
 ## Self-Improvement Protocol
 
@@ -50,24 +74,36 @@ See `docs/ROADMAP.md` for the full path forward.
 
 ## Architecture
 
-Type-primary electoral model (ADR-006, supersedes community-primary HAC approach):
+Two-resolution electoral model (ADR-006):
 
-**Primary layer — Electoral types** (KMeans on county shift vectors)
-Abstract archetypes discovered directly from how counties shift electorally. Each county gets soft membership across J=20 types. Types are the primary predictive engine: covariance estimation, poll propagation, and prediction all flow through type structure. Types nest hierarchically into 6-8 super-types for public communication. Asymmetric type sizes are expected (a "Rural Conservative" type may span 40% of counties; an "Asian Professional" type may cover 2%).
+### County-Level Model (production, live at bedrock.hhaines.duckdns.org)
 
-**Secondary layer — Geographic communities** (HAC, deferred to tract phase)
-Spatially contiguous clusters of tracts for spatial smoothing. Not used in the county-level model. Will become relevant when tract-level data enables sub-county resolution.
+**Algorithm:** KMeans J=20 on presidential×2.5 + state-centered governor/Senate shifts (33 dims, 2008+).
+**Key insight:** Governor/Senate shifts are state-specific races — must be state-centered before cross-state clustering. Presidential shifts carry the cross-state signal.
+**Soft membership:** Temperature-scaled inverse distance (T=10, production default). T=10 reduces calibration MAE by ~37% vs T=1.
+**Holdout r:** 0.778 (county level). Calibration: MAE=0.074, r=0.805 (with T=10).
+**Super-types:** 8 named super-types for public communication (e.g., "Rural White Conservative", "Black Belt & Diverse", "Metro Atlanta Professional").
 
-**Full pipeline:**
-1. **Data Assembly** -- Historical election returns (presidential 2000-2024, governor 2002-2022, Senate 2002-2022), Decennial Census (2000/2010/2020) with interpolation, ACS 2022, RCMS, IRS migration, FEC donor density
-2. **Shift Vector Computation** -- 51 training + 3 holdout log-odds shift dimensions across all election pairs. Total vote share denominator. 293 FL+GA+AL counties.
-3. **Type Discovery** -- KMeans clustering on 293 × 33 county shift matrix (2008+, presidential×2.5 weighted) → J=20 types. Each county gets soft membership vector (inverse-distance to centroids, row-normalized to sum to 1).
-4. **Hierarchical Nesting** -- Ward HAC on type loadings (no spatial constraint) → 5-8 super-types for interpretability.
-5. **Type Description** -- Time-matched demographics (interpolated census), RCMS, IRS migration, FEC donor density overlaid on discovered types. Types named from demographic + behavioral character.
-6. **Type Covariance Construction** -- Economist-inspired: Pearson correlation from type demographic profiles → shrink toward all-1s (national swing) → validate against observed historical comovement. Hybrid fallback if validation fails.
-7. **Poll Propagation** -- Gaussian Bayesian update distributes state-level poll signal to types via type covariance Σ.
-8. **Prediction** -- Type-level estimates × county membership weights → county predictions. Dual output: vote share + turnout.
-9. **Validation** -- Leave-one-pair-out CV, type coherence, type stability across time windows, covariance validation, calibration.
+### Tract-Level Model (experimental, toggle on frontend)
+
+**Algorithm:** KMeans J=40, population-weighted, combined features (29 dims: 12 electoral + 17 nonpolitical).
+**Data source:** DRA (Dave's Redistricting) block-level data aggregated to tracts via GEOID[:11] groupby — NO areal interpolation needed. 9,393 tracts, 808K blocks.
+**Holdout r:** 0.645 raw, 0.673 population-weighted. Gap from county (0.78) explained by small-N noise in low-population tracts.
+**Population weighting:** Tracts with <500 voters excluded (314 dropped). Large tracts drive centroids.
+**Visualization:** Bubble dissolve merges adjacent same-type tracts into ~2,500 community polygons.
+**Foundational finding:** Political-only and nonpolitical-only features find DIFFERENT community structures (ARI=0.08), but combined features beat both (r=0.53 → 0.645 with pop weighting).
+
+### Full pipeline:
+1. **Data Assembly** -- Historical election returns (presidential 2000-2024, governor 2002-2022, Senate 2002-2022), Decennial Census (2000/2010/2020) with interpolation, ACS 2022, RCMS, IRS migration, FEC donor density. DRA block data for tract-level.
+2. **Shift Vector Computation** -- Log-odds shifts. County: 33 training dims (2008+). Tract: 12 electoral dims + 17 nonpolitical.
+3. **Type Discovery** -- KMeans clustering. County: presidential×2.5 weighted. Tract: population-weighted, combined features.
+4. **Hierarchical Nesting** -- Ward HAC on centroids → super-types (8 county, 10 tract).
+5. **Type Description** -- Time-matched demographics overlaid on types. Named descriptively.
+6. **Type Covariance Construction** -- Economist-inspired: demographic profile correlation → shrink toward all-1s → validate against observed comovement.
+7. **Poll Propagation** -- Gaussian Bayesian update via type covariance Σ.
+8. **Prediction** -- Type-level estimates × soft membership → county/tract predictions.
+9. **Validation** -- Leave-one-pair-out CV, calibration, type coherence, type stability.
+10. **Visualization** -- County: stained glass map (293 pieces). Tract: bubble dissolve (~2,500 community polygons).
 
 **Historical approaches (shelved, retained for comparison):**
 - HAC community-primary (K=10, ADR-005): retained as `county_baseline` in model versioning
