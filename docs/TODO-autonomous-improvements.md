@@ -109,7 +109,7 @@ Each of these should start with web research (search for recent papers, blog pos
 - [ ] **Type stability on recent sub-windows** — Compare 2008-2016 vs 2016-2024 types. Expected to be more stable than full 2000-2024.
 - [ ] **County prediction spot checks** — Pinellas FL, Cobb GA, DeKalb GA, Miami-Dade FL. Do predictions match known trends?
 - [x] **Calibration analysis** — DONE (S161). scripts/calibration_analysis.py + 30 tests. 2024: MAE=0.117, r=0.787, bias=+0.025 Dem. Rural types +15pp, urban -9pp. Worst: Clayton GA (pred 0.386, actual 0.843). 2020 LOO: MAE=0.165, r=0.741. Key insight: inverse-distance weighting too smooth — predictions compressed to 0.32-0.45 range.
-- [ ] **Sharpen soft membership** — S161 experiment in progress. Test temperature-scaled inverse distance to reduce cross-type averaging. Expected to reduce MAE significantly.
+- [x] **Sharpen soft membership** — DONE (S161). Temperature-scaled inverse distance: weight=(1/(dist+eps))^T. Sweep T=[1,2,3,4,5,10,999]. Best: T=10.0 — MAE 0.117→0.074 (-37%), r 0.787→0.805, prediction range [0.29,0.43]→[0.11,0.64] (actual [0.08,0.84]). Hard assignment (T=999) slightly worse (MAE 0.077), confirming residual soft value. Per-super-type: Metro Atlanta still worst (+6pp bias). Results: data/validation/soft_membership_sweep.csv, scripts/experiment_soft_membership.py + 22 tests.
 - [ ] **Variation partitioning** — How much holdout variance do types explain vs demographics alone vs overlap?
 
 ---
