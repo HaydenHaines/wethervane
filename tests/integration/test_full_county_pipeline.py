@@ -159,6 +159,31 @@ def synthetic_db(tmp_path_factory, synthetic_fips):
             "date_created": "2026-01-01",
         }, f)
 
+    # Build minimal type-primary parquets required by validate_contract
+    n_types = 3
+    type_profiles = pd.DataFrame({
+        "type_id": list(range(n_types)),
+        "super_type_id": [0] * n_types,
+        "display_name": [f"Type {i}" for i in range(n_types)],
+    })
+    type_profiles_path = tmp / "type_profiles.parquet"
+    type_profiles.to_parquet(type_profiles_path, index=False)
+
+    county_type_assignments = pd.DataFrame({
+        "county_fips": synthetic_fips,
+        "dominant_type": [i % n_types for i in range(len(synthetic_fips))],
+        "super_type": [0] * len(synthetic_fips),
+    })
+    county_type_assignments_path = tmp / "county_type_assignments_full.parquet"
+    county_type_assignments.to_parquet(county_type_assignments_path, index=False)
+
+    super_types = pd.DataFrame({
+        "super_type_id": [0],
+        "display_name": ["Traditional"],
+    })
+    super_types_path = tmp / "super_types.parquet"
+    super_types.to_parquet(super_types_path, index=False)
+
     # Patch paths and build
     original = {
         "SHIFTS_MULTIYEAR": mod.SHIFTS_MULTIYEAR,
@@ -166,12 +191,18 @@ def synthetic_db(tmp_path_factory, synthetic_fips):
         "PREDICTIONS_2026": mod.PREDICTIONS_2026,
         "TYPE_ASSIGNMENTS_STUB": mod.TYPE_ASSIGNMENTS_STUB,
         "VERSIONS_DIR": mod.VERSIONS_DIR,
+        "TYPE_PROFILES_PATH": mod.TYPE_PROFILES_PATH,
+        "COUNTY_TYPE_ASSIGNMENTS_PATH": mod.COUNTY_TYPE_ASSIGNMENTS_PATH,
+        "SUPER_TYPES_PATH": mod.SUPER_TYPES_PATH,
     }
     mod.SHIFTS_MULTIYEAR = shifts_path
     mod.COUNTY_ASSIGNMENTS = assignments_path
     mod.PREDICTIONS_2026 = preds_path
     mod.TYPE_ASSIGNMENTS_STUB = tmp / "nonexistent.parquet"
     mod.VERSIONS_DIR = tmp / "versions"
+    mod.TYPE_PROFILES_PATH = type_profiles_path
+    mod.COUNTY_TYPE_ASSIGNMENTS_PATH = county_type_assignments_path
+    mod.SUPER_TYPES_PATH = super_types_path
 
     db_path = tmp / "synthetic_bedrock.duckdb"
     try:

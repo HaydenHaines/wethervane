@@ -139,6 +139,31 @@ def mini_parquets(tmp_path, sample_shifts, sample_assignments):
     })
     preds.to_parquet(pred_dir / "county_predictions_2026.parquet", index=False)
 
+    # Type profiles (required by validate_contract: types table)
+    type_profiles = pd.DataFrame({
+        "type_id": [0, 1],
+        "super_type_id": [0, 0],
+        "display_name": ["Rural Conservative", "Suburban"],
+    })
+    type_profiles.to_parquet(comm_dir / "type_profiles.parquet", index=False)
+
+    # County type assignments (required by validate_contract)
+    county_type_assignments = pd.DataFrame({
+        "county_fips": ["12001", "12003", "13001"],
+        "dominant_type": [0, 1, 0],
+        "super_type": [0, 0, 0],
+    })
+    county_type_assignments.to_parquet(
+        comm_dir / "county_type_assignments_full.parquet", index=False
+    )
+
+    # Super-types (required by validate_contract)
+    super_types = pd.DataFrame({
+        "super_type_id": [0],
+        "display_name": ["Traditional"],
+    })
+    super_types.to_parquet(comm_dir / "super_types.parquet", index=False)
+
     # Version meta
     versions_dir = tmp_path / "data" / "models" / "versions" / "test_model_v1"
     versions_dir.mkdir(parents=True)
@@ -173,6 +198,13 @@ def test_build_creates_queryable_db(mini_parquets, monkeypatch):
     monkeypatch.setattr(mod, "TYPE_ASSIGNMENTS_STUB", data / "data/communities/nonexistent_stub.parquet")
     monkeypatch.setattr(mod, "VERSIONS_DIR", data / "data/models/versions")
     monkeypatch.setattr(mod, "CROSSWALK_PATH", data / "data/raw/fips_county_crosswalk.csv")
+    monkeypatch.setattr(mod, "COMMUNITY_PROFILES_PATH", data / "data/communities/nonexistent_profiles.parquet")
+    monkeypatch.setattr(mod, "COUNTY_ACS_FEATURES_PATH", data / "data/assembled/nonexistent_acs.parquet")
+    monkeypatch.setattr(mod, "TYPE_PROFILES_PATH", data / "data/communities/type_profiles.parquet")
+    monkeypatch.setattr(mod, "COUNTY_TYPE_ASSIGNMENTS_PATH", data / "data/communities/county_type_assignments_full.parquet")
+    monkeypatch.setattr(mod, "SUPER_TYPES_PATH", data / "data/communities/super_types.parquet")
+    monkeypatch.setattr(mod, "TYPE_COVARIANCE_LONG_PATH", data / "data/covariance/nonexistent_type_cov.parquet")
+    monkeypatch.setattr(mod, "DEMOGRAPHICS_INTERPOLATED_PATH", data / "data/assembled/nonexistent_demo_interp.parquet")
 
     db_path = data / "test_bedrock.duckdb"
     build(db_path=db_path, reset=True)
