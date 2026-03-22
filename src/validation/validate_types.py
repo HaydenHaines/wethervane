@@ -236,6 +236,7 @@ def generate_type_validation_report(
     type_assignments_path: str = "data/communities/type_assignments.parquet",
     type_covariance_path: str = "data/covariance/type_covariance.parquet",
     type_profiles_path: str = "data/communities/type_profiles.parquet",
+    min_year: int = 2008,
 ) -> dict:
     """Run all type validations and save a JSON report.
 
@@ -273,10 +274,26 @@ def generate_type_validation_report(
     # Identify holdout columns (2020→2024 presidential)
     holdout_keywords = ["20_24"]
     holdout_col_names = [c for c in all_cols if any(kw in c for kw in holdout_keywords)]
-    training_col_names = [c for c in all_cols if c not in holdout_col_names]
+    training_col_names_unfiltered = [c for c in all_cols if c not in holdout_col_names]
 
-    full_matrix = shifts_df[all_cols].values
-    holdout_indices = [all_cols.index(c) for c in holdout_col_names]
+    # Filter training columns to min_year (match type discovery's filter)
+    training_col_names = []
+    for c in training_col_names_unfiltered:
+        parts = c.split("_")
+        try:
+            y1 = int("20" + parts[-2]) if len(parts[-2]) == 2 else int(parts[-2])
+            if y1 >= min_year:
+                training_col_names.append(c)
+        except (ValueError, IndexError):
+            training_col_names.append(c)  # keep if can't parse
+
+    if not training_col_names:
+        training_col_names = training_col_names_unfiltered  # fallback
+
+    # Use filtered training + holdout as "all" for coherence/holdout metrics
+    used_cols = training_col_names + holdout_col_names
+    full_matrix = shifts_df[used_cols].values
+    holdout_indices = [used_cols.index(c) for c in holdout_col_names]
 
     # Training-only matrix for stability windows
     training_matrix = shifts_df[training_col_names].values
@@ -355,6 +372,7 @@ def generate_type_validation_report(
         "n_training_dims": n_train,
         "n_holdout_dims": len(holdout_indices),
         "holdout_columns": holdout_col_names,
+        "min_year": min_year,
     }
 
     # Print summary
@@ -400,6 +418,8 @@ def main() -> None:
     parser.add_argument("--assignments", default="data/communities/type_assignments.parquet")
     parser.add_argument("--covariance", default="data/covariance/type_covariance.parquet")
     parser.add_argument("--profiles", default="data/communities/type_profiles.parquet")
+    parser.add_argument("--min-year", type=int, default=2008,
+                        help="Min start year for training shifts (default: 2008, matching type discovery)")
     args = parser.parse_args()
 
     generate_type_validation_report(
@@ -407,6 +427,7 @@ def main() -> None:
         type_assignments_path=args.assignments,
         type_covariance_path=args.covariance,
         type_profiles_path=args.profiles,
+        min_year=args.min_year,
     )
 
 

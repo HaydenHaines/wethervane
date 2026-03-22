@@ -105,9 +105,10 @@ Each of these should start with web research (search for recent papers, blog pos
 ## Validation & Analysis
 
 - [x] **Write ADR-006** — DONE (S161). docs/adr/006-type-primary-kmeans-architecture.md
+- [ ] **Fix validate_types to use training dims only** — S161 finding: validation uses all 54 dims but model trained on 33 (2008+). Stability test uses full 54-dim split → 89.7° max angle (fails). Holdout r=0.647 vs model's 0.778. Covariance val r=0.176 vs expected 0.449. Fix: filter training_matrix to min_year=2008 before running validations. Also fix stability to split recent-only windows.
 - [ ] **Type stability on recent sub-windows** — Compare 2008-2016 vs 2016-2024 types. Expected to be more stable than full 2000-2024.
 - [ ] **County prediction spot checks** — Pinellas FL, Cobb GA, DeKalb GA, Miami-Dade FL. Do predictions match known trends?
-- [ ] **Calibration analysis** — 90% CI coverage on 2020 and 2024 actuals.
+- [ ] **Calibration analysis** — 90% CI coverage on 2020 and 2024 actuals. (S161: calibration script in progress)
 - [ ] **Variation partitioning** — How much holdout variance do types explain vs demographics alone vs overlap?
 
 ---
