@@ -2,10 +2,11 @@
 import { useEffect, useRef, useState } from "react";
 import * as Plot from "@observablehq/plot";
 import { fetchTypeDetail, type TypeDetail } from "@/lib/api";
-import { SUPER_TYPE_COLORS, SUPER_TYPE_NAMES } from "@/components/MapShell";
+import { getColorForSuperType, type SuperTypeInfo } from "@/components/MapShell";
 
 interface Props {
   typeId: number;
+  superTypeMap: Map<number, SuperTypeInfo>;
   onClose: () => void;
 }
 
@@ -72,7 +73,7 @@ function DemographicRow({ label, value, fmt }: { label: string; value: number | 
   );
 }
 
-export function TypePanel({ typeId, onClose }: Props) {
+export function TypePanel({ typeId, superTypeMap, onClose }: Props) {
   const [detail, setDetail] = useState<TypeDetail | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -85,7 +86,7 @@ export function TypePanel({ typeId, onClose }: Props) {
   }, [typeId]);
 
   const superColor = detail
-    ? SUPER_TYPE_COLORS[detail.super_type_id % SUPER_TYPE_COLORS.length]
+    ? getColorForSuperType(detail.super_type_id)
     : [127, 127, 127];
 
   return (
@@ -123,8 +124,8 @@ export function TypePanel({ typeId, onClose }: Props) {
           {detail && (
             <p style={{ margin: "4px 0 0", fontSize: "12px", color: "var(--color-text-muted)" }}>
               {detail.n_counties} counties
-              {SUPER_TYPE_NAMES[detail.super_type_id] && (
-                <> &middot; {SUPER_TYPE_NAMES[detail.super_type_id]}</>
+              {superTypeMap.get(detail.super_type_id)?.name && (
+                <> &middot; {superTypeMap.get(detail.super_type_id)!.name}</>
               )}
             </p>
           )}
