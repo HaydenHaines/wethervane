@@ -2,11 +2,12 @@
 import { useEffect, useRef, useState } from "react";
 import * as Plot from "@observablehq/plot";
 import { fetchTypeDetail, type TypeDetail } from "@/lib/api";
-import { getColorForSuperType, type SuperTypeInfo } from "@/components/MapShell";
+import { getColorForSuperType, type SuperTypeInfo, type TractContext } from "@/components/MapShell";
 
 interface Props {
   typeId: number;
   superTypeMap: Map<number, SuperTypeInfo>;
+  tractContext?: TractContext | null;
   onClose: () => void;
 }
 
@@ -114,7 +115,7 @@ function inferFormat(key: string): "pct" | "dollar" | "num" {
   return "num";
 }
 
-export function TypePanel({ typeId, superTypeMap, onClose }: Props) {
+export function TypePanel({ typeId, superTypeMap, tractContext, onClose }: Props) {
   const [detail, setDetail] = useState<TypeDetail | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -176,6 +177,22 @@ export function TypePanel({ typeId, superTypeMap, onClose }: Props) {
           style={{ border: "none", background: "none", cursor: "pointer", fontSize: "20px", color: "var(--color-text-muted)", lineHeight: 1 }}
         >&times;</button>
       </div>
+
+      {/* Tract community context — shown when clicked from tract view */}
+      {tractContext && (
+        <div style={{
+          padding: "10px 16px",
+          borderBottom: "1px solid var(--color-border)",
+          background: "var(--color-bg-muted, #f7f8fa)",
+        }}>
+          <p style={{ margin: "0 0 4px", fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.5px", color: "var(--color-text-muted)" }}>
+            This community
+          </p>
+          <p style={{ margin: 0, fontSize: "13px" }}>
+            {tractContext.nTracts} tracts &middot; {Math.round(tractContext.areaSqkm)} km²
+          </p>
+        </div>
+      )}
 
       {loading && (
         <div style={{ padding: "20px", color: "var(--color-text-muted)", fontSize: "13px" }}>

@@ -37,6 +37,12 @@ export interface SuperTypeInfo {
   color: [number, number, number];
 }
 
+export interface TractContext {
+  nTracts: number;
+  areaSqkm: number;
+  superTypeName: string;
+}
+
 const INITIAL_VIEW = {
   longitude: -84.5,
   latitude: 31.5,
@@ -54,6 +60,7 @@ export default function MapShell() {
   const [hasTypeData, setHasTypeData] = useState(false);
   const [showTracts, setShowTracts] = useState(false);
   const [tooltip, setTooltip] = useState<{ x: number; y: number; text: string } | null>(null);
+  const [tractContext, setTractContext] = useState<TractContext | null>(null);
 
   useEffect(() => {
     Promise.all([
@@ -189,16 +196,27 @@ export default function MapShell() {
           onClick: ({ object }: any) => {
             if (object) {
               if (hasTypeData) {
-                const dt = object.properties?.dominant_type;
+                const dt = object.properties?.dominant_type ?? object.properties?.type_id;
                 if (dt !== undefined && dt >= 0) {
                   setSelectedTypeId(dt === selectedTypeId ? null : dt);
                   setSelectedCommunityId(null);
+                  // Capture tract community context when clicking in tract view
+                  if (showTracts && object.properties?.n_tracts != null) {
+                    setTractContext({
+                      nTracts: object.properties.n_tracts,
+                      areaSqkm: object.properties.area_sqkm ?? 0,
+                      superTypeName: getSuperTypeName(object.properties?.super_type, object),
+                    });
+                  } else {
+                    setTractContext(null);
+                  }
                 }
               } else {
                 const cid = object.properties?.community_id;
                 if (cid !== undefined && cid >= 0) {
                   setSelectedCommunityId(cid === selectedCommunityId ? null : cid);
                   setSelectedTypeId(null);
+                  setTractContext(null);
                 }
               }
             }
@@ -317,7 +335,8 @@ export default function MapShell() {
         <TypePanel
           typeId={selectedTypeId}
           superTypeMap={superTypeMap}
-          onClose={() => setSelectedTypeId(null)}
+          tractContext={tractContext}
+          onClose={() => { setSelectedTypeId(null); setTractContext(null); }}
         />
       )}
     </div>
