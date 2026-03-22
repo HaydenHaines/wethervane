@@ -291,3 +291,79 @@ class TestDescribeTypesWithoutRcms:
         result = describe_types(ta, demo, rcms_features=None)
         assert "evangelical_share" not in result.columns
         assert len(result) > 0
+
+
+class TestDescribeTypesExtraFeatures:
+    def test_extra_features_columns_present(self):
+        """Extra feature columns should appear in the output."""
+        ta = _make_type_assignments()
+        demo = _make_demographics()
+        extra = pd.DataFrame({
+            "county_fips": [f"1200{i}" for i in range(6)],
+            "log_pop_density": [1.5, 2.0, 2.5, 3.0, 3.5, 4.0],
+            "net_migration_rate": [0.01, -0.02, 0.05, -0.01, 0.03, 0.0],
+        })
+        result = describe_types(ta, demo, extra_features=[extra])
+        assert "log_pop_density" in result.columns
+        assert "net_migration_rate" in result.columns
+
+    def test_extra_features_weighted_correctly(self):
+        """Extra features should use score-weighted means like other features."""
+        ta = pd.DataFrame({
+            "county_fips": ["10001", "10002"],
+            "type_0_score": [3.0, 1.0],
+            "dominant_type": [0, 0],
+        })
+        demo = pd.DataFrame({
+            "county_fips": ["10001", "10002"],
+            "year": [2020, 2020],
+            "pop_total": [1000.0, 1000.0],
+            "pct_white_nh": [0.5, 0.5],
+        })
+        extra = pd.DataFrame({
+            "county_fips": ["10001", "10002"],
+            "log_pop_density": [2.0, 4.0],
+        })
+        result = describe_types(ta, demo, extra_features=[extra])
+        expected = (2.0 * 3.0 + 4.0 * 1.0) / (3.0 + 1.0)
+        val = result.loc[result["type_id"] == 0, "log_pop_density"].iloc[0]
+        assert abs(val - expected) < 1e-9
+
+    def test_extra_features_skip_duplicate_columns(self):
+        """Extra features should not duplicate columns already in demographics."""
+        ta = _make_type_assignments()
+        demo = _make_demographics()
+        extra = pd.DataFrame({
+            "county_fips": [f"1200{i}" for i in range(6)],
+            "pct_white_nh": [0.99] * 6,  # already in demo — should be skipped
+            "new_feature": [1.0, 2.0, 3.0, 4.0, 5.0, 6.0],
+        })
+        result = describe_types(ta, demo, extra_features=[extra])
+        assert "new_feature" in result.columns
+        # pct_white_nh should come from demo, not extra
+        assert result["pct_white_nh"].max() < 0.99
+
+    def test_multiple_extra_sources(self):
+        """Multiple extra DataFrames should all be merged."""
+        ta = _make_type_assignments()
+        demo = _make_demographics()
+        extra1 = pd.DataFrame({
+            "county_fips": [f"1200{i}" for i in range(6)],
+            "feature_a": [1.0] * 6,
+        })
+        extra2 = pd.DataFrame({
+            "county_fips": [f"1200{i}" for i in range(6)],
+            "feature_b": [2.0] * 6,
+        })
+        result = describe_types(ta, demo, extra_features=[extra1, extra2])
+        assert "feature_a" in result.columns
+        assert "feature_b" in result.columns
+
+    def test_no_extra_features(self):
+        """Works normally when extra_features is None or empty."""
+        ta = _make_type_assignments()
+        demo = _make_demographics()
+        result1 = describe_types(ta, demo, extra_features=None)
+        result2 = describe_types(ta, demo, extra_features=[])
+        assert len(result1) == len(result2)
+        assert list(result1.columns) == list(result2.columns)

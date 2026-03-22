@@ -9,9 +9,12 @@ data/assembled/county_acs_features.parquet with the following derived columns:
     pct_hispanic        pop_hispanic / pop_total
     median_age          pass-through
     median_hh_income    pass-through
+    log_median_hh_income  log10(median_hh_income)
     pct_bachelors_plus  (bachelors + masters + professional + doctorate) / educ_total
+    pct_graduate        (masters + professional + doctorate) / educ_total
     pct_owner_occupied  housing_owner / housing_units
     pct_wfh             commute_wfh / commute_total
+    pct_transit         commute_transit / commute_total
     pct_management      (occ_mgmt_male + occ_mgmt_female) / occ_total
 
 Also retains county_fips and pop_total for population-weighted aggregation downstream.
@@ -66,6 +69,9 @@ def build_features(raw: pd.DataFrame) -> pd.DataFrame:
     df["median_age"] = raw["median_age"]
     df["median_hh_income"] = raw["median_hh_income"]
 
+    # Log income (captures nonlinear relationship better than raw)
+    df["log_median_hh_income"] = np.log10(raw["median_hh_income"].clip(lower=1))
+
     # Educational attainment: bachelor's degree or higher
     educ_higher = (
         raw["educ_bachelors"]
@@ -75,11 +81,18 @@ def build_features(raw: pd.DataFrame) -> pd.DataFrame:
     )
     df["pct_bachelors_plus"] = _safe_ratio(educ_higher, raw["educ_total"])
 
+    # Graduate degree holders (masters + professional + doctorate)
+    educ_grad = raw["educ_masters"] + raw["educ_professional"] + raw["educ_doctorate"]
+    df["pct_graduate"] = _safe_ratio(educ_grad, raw["educ_total"])
+
     # Housing tenure: owner-occupied
     df["pct_owner_occupied"] = _safe_ratio(raw["housing_owner"], raw["housing_units"])
 
     # Commute: work from home
     df["pct_wfh"] = _safe_ratio(raw["commute_wfh"], raw["commute_total"])
+
+    # Commute: public transit
+    df["pct_transit"] = _safe_ratio(raw["commute_transit"], raw["commute_total"])
 
     # Occupation: management / professional
     occ_mgmt = raw["occ_mgmt_male"] + raw["occ_mgmt_female"]

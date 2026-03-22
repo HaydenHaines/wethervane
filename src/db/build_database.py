@@ -469,9 +469,9 @@ def build(db_path: Path, reset: bool = False) -> None:
     if COUNTY_ACS_FEATURES_PATH.exists():
         cd_df = pd.read_parquet(COUNTY_ACS_FEATURES_PATH)
         cd_df["county_fips"] = cd_df["county_fips"].astype(str).str.zfill(5)
-        con.execute("DELETE FROM county_demographics")
-        con.execute("INSERT INTO county_demographics SELECT * FROM cd_df")
-        log.info("Ingested county_demographics: %d rows", len(cd_df))
+        con.execute("DROP TABLE IF EXISTS county_demographics")
+        con.execute("CREATE TABLE county_demographics AS SELECT * FROM cd_df")
+        log.info("Ingested county_demographics: %d rows (%d columns)", len(cd_df), len(cd_df.columns))
     else:
         log.info("No county_acs_features.parquet found; skipping")
 

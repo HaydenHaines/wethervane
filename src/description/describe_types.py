@@ -43,6 +43,10 @@ TYPE_ASSIGNMENTS_PATH = _ROOT / "data" / "communities" / "type_assignments.parqu
 DEMOGRAPHICS_INTERP_PATH = _ROOT / "data" / "assembled" / "demographics_interpolated.parquet"
 DEMOGRAPHICS_ACS_PATH = _ROOT / "data" / "assembled" / "county_acs_features.parquet"
 RCMS_PATH = _ROOT / "data" / "assembled" / "county_rcms_features.parquet"
+URBANICITY_PATH = _ROOT / "data" / "assembled" / "county_urbanicity_features.parquet"
+MIGRATION_PATH = _ROOT / "data" / "assembled" / "county_migration_features.parquet"
+BEA_PATH = _ROOT / "data" / "assembled" / "bea_county_income.parquet"
+FEC_PATH = _ROOT / "data" / "assembled" / "fec_county_contributions.parquet"
 OUTPUT_PATH = _ROOT / "data" / "communities" / "type_profiles.parquet"
 
 
@@ -51,6 +55,7 @@ def describe_types(
     demographics: pd.DataFrame,
     election_year: int | None = None,
     rcms_features: pd.DataFrame | None = None,
+    extra_features: list[pd.DataFrame] | None = None,
 ) -> pd.DataFrame:
     """Build demographic profiles for each electoral type.
 
@@ -70,11 +75,17 @@ def describe_types(
         Optional wide-format DataFrame with county_fips and RCMS columns
         (evangelical_share, etc.).  If None, RCMS columns are omitted from
         the output.
+    extra_features:
+        Optional list of wide-format DataFrames, each with county_fips and
+        additional numeric columns.  Merged left on county_fips.  Columns
+        already present in demographics or RCMS are skipped to avoid
+        duplication.
 
     Returns
     -------
     DataFrame with one row per type (type_id 0..J-1).  Columns:
-        type_id, n_counties, pop_total, <demographic means>, [<rcms means>]
+        type_id, n_counties, pop_total, <demographic means>, [<rcms means>],
+        [<extra feature means>]
     """
     # Identify score columns (type_0_score, type_1_score, ...)
     score_cols = sorted(
@@ -116,7 +127,26 @@ def describe_types(
             merged = merged.merge(rcms, on="county_fips", how="left")
             rcms_cols_used = available_rcms
 
-    all_feature_cols = demo_cols + rcms_cols_used
+    # Merge extra feature sources (urbanicity, migration, BEA, ACS extras, etc.)
+    extra_cols_used: list[str] = []
+    if extra_features:
+        existing_cols = set(merged.columns)
+        for extra_df in extra_features:
+            extra_df = extra_df.copy()
+            extra_df["county_fips"] = extra_df["county_fips"].astype(str).str.zfill(5)
+            # Only add columns not already present (skip county_fips and duplicates)
+            new_cols = [
+                c for c in extra_df.columns
+                if c != "county_fips" and c not in existing_cols
+            ]
+            if new_cols:
+                merged = merged.merge(
+                    extra_df[["county_fips"] + new_cols], on="county_fips", how="left"
+                )
+                extra_cols_used.extend(new_cols)
+                existing_cols.update(new_cols)
+
+    all_feature_cols = demo_cols + rcms_cols_used + extra_cols_used
 
     records = []
     for type_idx in range(j):
@@ -160,7 +190,7 @@ def describe_types(
     profiles = pd.DataFrame(records)
 
     # Consistent column ordering
-    col_order_raw = ["type_id", "n_counties", "pop_total"] + demo_cols + rcms_cols_used
+    col_order_raw = ["type_id", "n_counties", "pop_total"] + demo_cols + rcms_cols_used + extra_cols_used
     # Deduplicate while preserving order
     seen: set[str] = set()
     col_order: list[str] = []
@@ -201,7 +231,28 @@ def main() -> None:
     else:
         log.info("RCMS features not found at %s — skipping", RCMS_PATH)
 
-    profiles = describe_types(type_assignments, demographics, rcms_features=rcms_features)
+    # Collect extra feature sources (each optional — loaded if file exists)
+    extra_features: list[pd.DataFrame] = []
+    extra_paths = {
+        "ACS extras": DEMOGRAPHICS_ACS_PATH,
+        "urbanicity": URBANICITY_PATH,
+        "migration": MIGRATION_PATH,
+        "BEA income": BEA_PATH,
+        "FEC contributions": FEC_PATH,
+    }
+    for label, path in extra_paths.items():
+        if path.exists():
+            log.info("Loading %s features from %s", label, path)
+            extra_features.append(pd.read_parquet(path))
+        else:
+            log.info("%s features not found at %s — skipping", label, path)
+
+    profiles = describe_types(
+        type_assignments,
+        demographics,
+        rcms_features=rcms_features,
+        extra_features=extra_features if extra_features else None,
+    )
     log.info(
         "Built %d type profiles with %d columns", len(profiles), len(profiles.columns)
     )
