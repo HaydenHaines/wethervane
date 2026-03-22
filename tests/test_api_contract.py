@@ -1,0 +1,112 @@
+"""Integration tests: validate DuckDB->API->frontend contract.
+
+These tests use the REAL bedrock.duckdb to catch pipeline/API mismatches.
+Skip gracefully if the DB file doesn't exist (CI without data).
+"""
+from pathlib import Path
+
+import duckdb
+import pytest
+from fastapi.testclient import TestClient
+
+DB_PATH = Path("data/bedrock.duckdb")
+
+pytestmark = pytest.mark.skipif(
+    not DB_PATH.exists(),
+    reason="data/bedrock.duckdb not found — skip contract integration tests",
+)
+
+
+@pytest.fixture(scope="module")
+def real_client():
+    """TestClient backed by the real bedrock.duckdb."""
+    from api.main import create_app
+
+    app = create_app()  # uses real lifespan
+    with TestClient(app) as c:
+        yield c
+
+
+@pytest.fixture(scope="module")
+def real_db():
+    con = duckdb.connect(str(DB_PATH), read_only=True)
+    yield con
+    con.close()
+
+
+# ── Schema tests ──────────────────────────────────────────────────────────
+
+def test_duckdb_contract(real_db):
+    """Required tables and columns exist in bedrock.duckdb."""
+    from src.db.build_database import validate_contract
+
+    errors = validate_contract(real_db)
+    assert errors == [], f"Contract violations: {errors}"
+
+
+# ── API response shape tests ──────────────────────────────────────────────
+
+def test_super_types_response(real_client):
+    resp = real_client.get("/api/v1/super-types")
+    assert resp.status_code == 200
+    data = resp.json()
+    assert len(data) > 0, "super-types must not be empty"
+    for st in data:
+        assert "super_type_id" in st
+        assert "display_name" in st
+        assert isinstance(st["display_name"], str)
+        assert len(st["display_name"]) > 0
+
+
+def test_counties_reference_valid_super_types(real_client):
+    super_types = {st["super_type_id"] for st in real_client.get("/api/v1/super-types").json()}
+    counties = real_client.get("/api/v1/counties").json()
+    for c in counties:
+        if c["super_type"] is not None:
+            assert c["super_type"] in super_types, \
+                f"County {c['county_fips']} has super_type={c['super_type']} not in super-types"
+
+
+def test_forecast_has_state_abbr(real_client):
+    rows = real_client.get("/api/v1/forecast").json()
+    if not rows:
+        pytest.skip("No forecast data")
+    for r in rows:
+        assert "state_abbr" in r
+        assert isinstance(r["state_abbr"], str)
+        assert len(r["state_abbr"]) == 2
+
+
+def test_type_detail_has_dynamic_dicts(real_client):
+    types = real_client.get("/api/v1/types").json()
+    if not types:
+        pytest.skip("No types in database")
+    detail = real_client.get(f"/api/v1/types/{types[0]['type_id']}").json()
+    assert isinstance(detail["demographics"], dict)
+    if detail["shift_profile"] is not None:
+        assert isinstance(detail["shift_profile"], dict)
+        # Verify no non-numeric metadata leaked into shift_profile
+        for key, val in detail["shift_profile"].items():
+            assert isinstance(val, (int, float)), \
+                f"shift_profile[{key}] is {type(val).__name__}, expected number"
+
+
+# ── Cross-layer consistency ───────────────────────────────────────────────
+
+def test_super_type_coverage(real_client):
+    super_type_ids = {st["super_type_id"] for st in real_client.get("/api/v1/super-types").json()}
+    county_super_types = {c["super_type"] for c in real_client.get("/api/v1/counties").json() if c["super_type"] is not None}
+    assert county_super_types <= super_type_ids, \
+        f"Counties reference super-types not in API: {county_super_types - super_type_ids}"
+    unused = super_type_ids - county_super_types
+    if unused:
+        import warnings
+        warnings.warn(f"Super-types with no counties: {unused}")
+
+
+def test_health_reports_contract_status(real_client):
+    resp = real_client.get("/api/v1/health")
+    assert resp.status_code == 200
+    data = resp.json()
+    assert "contract" in data
+    assert data["contract"] in ("ok", "degraded")
