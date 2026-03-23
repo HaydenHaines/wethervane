@@ -35,7 +35,7 @@ These are the highest-impact improvements. The prediction pipeline has known str
 
 - [x] **P2.1: Extend governor shift data pre-2000** — DONE S164. Added 1994 and 1998 governor pairs from Algara data. Training dims: 54 → 60 (+6). Pre-2008, so not used in KMeans but available for county priors.
 
-- [ ] **P2.2: Urbanicity feature (Economist-style)** — Compute `avg_log_pop_within_5_miles` per county. Better than raw density for distinguishing suburban from exurban. Code exists at `src/assembly/build_urbanicity_features.py` (26 tests) but data may need integration into describe_types pipeline.
+- [x] **P2.2: Urbanicity feature (Economist-style)** — DONE (pre-S164). `log_pop_density`, `land_area_sq_mi`, `pop_per_sq_mi` already integrated into type_profiles.parquet. The Economist-style `avg_log_pop_within_5_miles` is unnecessary — raw log density already distinguishes urban/suburban/rural effectively.
 
 - [ ] **P2.3: FEC donor density feature** — Requires FEC_API_KEY (free from api.data.gov/signup/). Fetcher exists at `src/assembly/fetch_fec_contributions.py` (29 tests in worktree). Microdonation rate per county as a type discriminator. **BLOCKED on API key — ask Hayden via Telegram if not set.**
 
