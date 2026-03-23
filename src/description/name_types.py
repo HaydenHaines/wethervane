@@ -35,6 +35,10 @@ COUNTY_TYPE_ASSIGNMENTS_PATH = (
 
 _FIPS_TO_STATE = {1: "AL", 12: "FL", 13: "GA"}
 
+# Path to shift data for political lean disambiguation
+_SHIFTS_PATH = _ROOT / "data" / "shifts" / "county_shifts_multiyear.parquet"
+_TYPE_ASSIGNMENTS_PATH = _ROOT / "data" / "communities" / "type_assignments.parquet"
+
 # Super-type short labels for context
 _SUPER_LABELS: dict[int, str] = {
     0: "Conservative",
@@ -62,50 +66,76 @@ _MIN_ABS: dict[str, float] = {
 # Primary vocabulary — ordered by specificity (rare demographics first).
 # Each entry: (feature, threshold, positive_label, negative_label)
 # Labels are hyphenated single tokens so word counting works.
-# Uses GLOBAL z-scores to reflect genuine distinctiveness.
+# Uses WITHIN-STATE z-scores to reflect genuine distinctiveness within a state.
+#
+# Ordering rationale:
+# 1. Rare racial/ethnic composition distinguishes Black Belt, Hispanic, Asian types
+# 2. Urbanicity — Urban vs Deep-Rural is the biggest structural split
+# 3. Income — differentiates rural types before education does (avoids Working-Class glut)
+# 4. Religion — evangelical/Catholic/secular is highly differentiating within rural types
+# 5. Age — distinguishes retirement communities from young rural
+# 6. Migration — growth vs decline
+# 7. Education / professional class — last because many rural types share low-edu
 # ---------------------------------------------------------------------------
 _VOCAB: list[tuple[str, float, str, str]] = [
-    # Rare racial/ethnic composition (with absolute minimums enforced)
-    ("pct_black",               Z_HIGH, "Black-Belt",   ""),
-    ("pct_hispanic",            Z_HIGH, "Hispanic",     ""),
-    ("pct_asian",               Z_HIGH, "Asian",        ""),
-    ("pct_black",               Z_MOD,  "Black-Belt",   ""),
-    ("pct_hispanic",            Z_MOD,  "Hispanic",     ""),
+    # Rare racial/ethnic composition (with absolute minimums enforced).
+    # Three-level pct_black system:
+    #   z >= 3.0 (~>45% Black)  → "Majority-Black"  (extreme Black Belt core)
+    #   z >= 1.2 (~>30% Black)  → "Black-Belt"       (traditional Black Belt)
+    #   z >= 0.6 (~>20% Black)  → "Black-Belt"       (elevated minority share)
+    # Using 3.0 keeps "Majority-Black" to ~3 types (the most extreme),
+    # leaving "Black-Belt" for the moderate-to-high tier.
+    ("pct_black",               3.0,    "Majority-Black", ""),
+    ("pct_hispanic",            Z_HIGH, "Hispanic",       ""),
+    ("pct_asian",               Z_HIGH, "Asian",          ""),
+    ("pct_black",               Z_MOD,  "Black-Belt",     ""),
+    ("pct_hispanic",            Z_MOD,  "Hispanic",       ""),
 
     # Urbanicity / density
     ("log_pop_density",         Z_HIGH, "Urban",        "Deep-Rural"),
     ("log_pop_density",         Z_MOD,  "Suburban",     "Rural"),
 
-    # Education / professional class
+    # Religion — ordered to maximise differentiation:
+    # 1. Evangelical Z_HIGH: identifies the dominant rural Protestant bloc
+    # 2. Catholic Z_HIGH: coastal/Hispanic types
+    # 3. Mainline Z_HIGH: identifies specific mainline-dominant communities
+    # 4. religious_adherence_rate: "Secular" (very low adherence) fires early so
+    #    secular rural types are NOT all labeled "Evangelical"
+    # 5. religious_adherence_rate Z_MOD: Devout/Unchurched
+    # 6. black_protestant_share: placed AFTER adherence so that within-the-
+    #    evangelical-blob types get "Secular"/"Unchurched" first, leaving
+    #    "Bk-Protestant" as a 4th token for further disambiguation.
+    ("evangelical_share",       Z_HIGH, "Evangelical",  ""),
+    ("catholic_share",          Z_HIGH, "Catholic",     ""),
+    ("mainline_share",          Z_HIGH, "Mainline",     ""),
+    ("religious_adherence_rate", Z_HIGH, "Devout",      "Secular"),
+    ("evangelical_share",       Z_MOD,  "Evangelical",  "Secular"),
+    ("catholic_share",          Z_MOD,  "Catholic",     ""),
+    ("religious_adherence_rate", Z_MOD,  "Churched",    "Unchurched"),
+    ("black_protestant_share",  Z_HIGH, "Bk-Protestant", ""),
+
+    # Age — retirement communities and young growth areas.
+    # Before income so that rural types like "Deep-Rural Evangelical Retiree"
+    # vs "Deep-Rural Evangelical Younger" are distinguished early.
+    ("median_age",              Z_HIGH, "Retiree",      "Young"),
+    ("median_age",              Z_MOD,  "Older",        "Younger"),
+
+    # Income — after religion+age so the remaining types haven't already diverged
+    ("median_hh_income",        Z_HIGH, "Affluent",     "Low-Income"),
+    ("avg_inflow_income",       Z_HIGH, "Wealth-Magnet", ""),
+    ("median_hh_income",        Z_MOD,  "Mid-Income",   "Blue-Collar"),
+
+    # Migration / growth
+    ("net_migration_rate",      Z_HIGH, "High-Growth",  "Declining"),
+    ("inflow_outflow_ratio",    Z_HIGH, "Inflow",       "Outflow"),
+    ("migration_diversity",     Z_HIGH, "Cosmopolitan", ""),
+    ("net_migration_rate",      Z_MOD,  "Growing",      "Shrinking"),
+
+    # Education / professional class — last to avoid Working-Class domination
     ("pct_bachelors_plus",      Z_HIGH, "College",      ""),
     ("pct_graduate",            Z_HIGH, "Grad-Degree",  ""),
     ("pct_management",          Z_HIGH, "Professional", ""),
     ("pct_bachelors_plus",      Z_MOD,  "Educated",     "Working-Class"),
-
-    # Income
-    ("median_hh_income",        Z_HIGH, "Affluent",     "Low-Income"),
-    ("avg_inflow_income",       Z_HIGH, "Wealth-Magnet", ""),
-    ("median_hh_income",        Z_MOD,  "Mid-Income",   "Modest-Income"),
-
-    # Religion — differentiate evangelical, Catholic, mainline, secular
-    ("evangelical_share",       Z_HIGH, "Evangelical",  ""),
-    ("catholic_share",          Z_HIGH, "Catholic",     ""),
-    ("mainline_share",          Z_HIGH, "Mainline",     ""),
-    ("black_protestant_share",  Z_HIGH, "Bk-Protestant", ""),
-    ("religious_adherence_rate", Z_HIGH, "Devout",      "Unchurched"),
-    ("evangelical_share",       Z_MOD,  "Evangelical",  "Secular"),
-    ("catholic_share",          Z_MOD,  "Catholic",     ""),
-    ("religious_adherence_rate", Z_MOD,  "Churched",    "Unchurched"),
-
-    # Age
-    ("median_age",              Z_HIGH, "Retiree",      "Young"),
-    ("median_age",              Z_MOD,  "Older",        "Younger"),
-
-    # Migration / growth
-    ("net_migration_rate",      Z_HIGH, "High-Growth",  "Declining"),
-    ("inflow_outflow_ratio",    Z_HIGH, "Inflow",       ""),
-    ("migration_diversity",     Z_HIGH, "Cosmopolitan", ""),
-    ("net_migration_rate",      Z_MOD,  "Growing",      "Shrinking"),
 
     # Work / commute
     ("pct_wfh",                 Z_HIGH, "Remote-Work",  ""),
@@ -333,7 +363,7 @@ def name_types(
             for _, r in mapping.iterrows()
         }
 
-    # ---- Compute within-state z-scores (for disambiguation only) ------------
+    # ---- Compute within-state z-scores (retained for fallback only) ---------
     state_z_dfs: dict[str, pd.DataFrame] = {}
     for state in ["FL", "GA", "AL"]:
         state_tids = [t for t, s in type_states.items() if s == state]
@@ -345,26 +375,33 @@ def name_types(
                 state_profiles, unique_features, weight_col="pop_total"
             )
 
-    # ---- First-pass names: STATE + 2 demographic tokens --------------------
-    # Uses within-state z-scores for primary tokens (with min absolute
-    # thresholds to prevent noise amplification on race features).
+    # ---- First-pass names: STATE + 2–3 demographic tokens -------------------
+    # Uses GLOBAL z-scores for primary tokens so features reflect genuine
+    # distinctiveness across the full 43-type population.
+    #
+    # Strategy: collect up to 3 tokens per type.  Use STATE + token1 + token2
+    # as the base name.  If two types share that 3-word name, promote token3
+    # into the base (giving a 4-word name) to resolve the duplicate before
+    # handing off to the full disambiguation pass.
     raw_names: dict[int, str] = {}
+    _all_tokens: dict[int, list[str]] = {}  # store tokens for promotion step
+
     for _, row in profiles.iterrows():
         tid = int(row["type_id"])
         state = type_states.get(tid, "")
 
-        # Prefer within-state z-scores for better differentiation
-        z_source = state_z_dfs.get(state, z_df)
-        z_sub = z_source.loc[z_source["type_id"] == tid, feat_cols]
-        if z_sub.empty:
-            z_sub = z_df.loc[z_df["type_id"] == tid, feat_cols]
+        # Always use global z-scores for primary naming
+        z_sub = z_df.loc[z_df["type_id"] == tid, feat_cols]
         if z_sub.empty:
             raw_names[tid] = f"Type {tid}"
+            _all_tokens[tid] = []
             continue
 
         z_row = z_sub.iloc[0]
-        raw_row = row  # for absolute threshold checks
-        tokens = _top_tokens(z_row, _VOCAB, n=2, raw_row=raw_row)
+        raw_row = row
+        # Collect up to 3 tokens from global z-scores
+        tokens = _top_tokens(z_row, _VOCAB, n=3, raw_row=raw_row)
+        _all_tokens[tid] = tokens
 
         # If fewer than 2 tokens, use super-type context
         super_id = type_to_super.get(tid, -1)
@@ -379,7 +416,105 @@ def name_types(
             else:
                 raw_names[tid] = f"{state} {super_label}" if super_label else f"{state} Mixed"
         else:
-            raw_names[tid] = " ".join(tokens) if tokens else f"Type {tid}"
+            raw_names[tid] = " ".join(tokens[:2]) if len(tokens) >= 2 else (
+                tokens[0] if tokens else f"Type {tid}"
+            )
+
+    # ---- Pre-promote additional tokens to resolve duplicate names -----------
+    # Strategy: iteratively promote vocab tokens into names until each name
+    # is unique or we hit the 4-word budget.
+    #
+    # For each duplicate group (any word count up to 3 words), scan the
+    # extended token list to find the first position where types diverge.
+    # Sub-groups that remain tied after a split are recursively split at
+    # subsequent token positions.
+    #
+    # This is a greedy expansion: use the vocabulary ordering (which is
+    # by specificity) rather than variance to pick the promotion token.
+
+    # Collect extended tokens (up to 8) for all types
+    _ext_tokens: dict[int, list[str]] = {}
+    for _, row in profiles.iterrows():
+        tid = int(row["type_id"])
+        z_sub = z_df.loc[z_df["type_id"] == tid, feat_cols]
+        if z_sub.empty:
+            _ext_tokens[tid] = _all_tokens.get(tid, [])
+            continue
+        z_row = z_sub.iloc[0]
+        _ext_tokens[tid] = _top_tokens(z_row, _VOCAB, n=8, raw_row=row)
+
+    def _try_promote_group(tids_in: list[int], current_names: dict[int, str]) -> None:
+        """Recursively promote tokens to resolve a single duplicate group.
+
+        Prefers a position that makes ALL types in the group unique (no
+        sub-group ties) over one that merely splits the group into 2+ buckets.
+        Falls back to the first partially-differentiating position if no
+        fully-unique split exists.
+        """
+        # Group the types by their current name
+        by_name: dict[str, list[int]] = defaultdict(list)
+        for tid in tids_in:
+            by_name[current_names[tid]].append(tid)
+
+        for name, group_tids in by_name.items():
+            if len(group_tids) < 2:
+                continue
+            n_words = len(name.split())
+            if n_words >= 4:
+                continue  # word budget exhausted
+
+            # Tokens already in name (minus STATE):
+            name_parts = name.split()[1:]  # strip STATE word
+            start_pos = len(name_parts)    # next token index to try
+
+            max_pos = max(len(_ext_tokens.get(t, [])) for t in group_tids)
+
+            # Scan for the best position: prefer fully unique over partially unique
+            first_partial_pos: int | None = None
+            for pos in range(start_pos, max_pos):
+                candidate = {
+                    tid: (_ext_tokens[tid][pos] if len(_ext_tokens[tid]) > pos else "")
+                    for tid in group_tids
+                }
+                non_empty = [v for v in candidate.values() if v]
+                n_unique = len(set(non_empty))
+                if n_unique < 2:
+                    continue
+                if n_unique == len(group_tids):
+                    # Fully unique — use this position directly
+                    for tid in group_tids:
+                        tok = candidate[tid]
+                        if tok:
+                            current_names[tid] = f"{name} {tok}"
+                    return  # all resolved, no recursion needed
+                # Partially differentiating — remember the first such pos
+                if first_partial_pos is None:
+                    first_partial_pos = pos
+
+            # No fully-unique position found — use the first partial split
+            # and recurse on each sub-group
+            if first_partial_pos is not None:
+                pos = first_partial_pos
+                candidate = {
+                    tid: (_ext_tokens[tid][pos] if len(_ext_tokens[tid]) > pos else "")
+                    for tid in group_tids
+                }
+                for tid in group_tids:
+                    tok = candidate[tid]
+                    if tok:
+                        current_names[tid] = f"{name} {tok}"
+                # Recurse to split any remaining sub-group duplicates
+                _try_promote_group(group_tids, current_names)
+
+    # Run up to 3 passes of pre-promotion (each pass may create new sub-groups)
+    for _pre_pass in range(3):
+        dupe_counts: Counter[str] = Counter(raw_names.values())
+        dup_names = [n for n, c in dupe_counts.items() if c >= 2]
+        if not dup_names:
+            break
+        for name in dup_names:
+            tids_with_name = [t for t, n in raw_names.items() if n == name]
+            _try_promote_group(tids_with_name, raw_names)
 
     # ---- Disambiguation -----------------------------------------------------
     display_names = _disambiguate(
@@ -407,34 +542,91 @@ def name_types(
 # Disambiguation
 # ---------------------------------------------------------------------------
 
-# Extended vocab for 4th-token disambiguation — different features from primary
+# Extended vocab for 4th-token disambiguation — different features from primary.
+# Ordered to try the most differentiating features first.
+# Public-facing labels — no "Blacker"/"Whiter" or relative ethnicity framing.
 _DISAMBIG_VOCAB: list[tuple[str, float, str, str]] = [
+    # Age is the single best differentiator within Rural/Deep-Rural groups
     ("median_age",              Z_LOW,  "Older",        "Younger"),
+    # Migration: growth vs decline cleaves stagnant from boom rural types
+    ("net_migration_rate",      Z_LOW,  "Growing",      "Shrinking"),
+    ("inflow_outflow_ratio",    Z_LOW,  "Inflow",       "Outflow"),
+    # Religion: evangelical intensity splits Deep-Rural types cleanly
     ("evangelical_share",       Z_LOW,  "Evangelical",  "Secular"),
     ("catholic_share",          Z_LOW,  "Catholic",     ""),
     ("mainline_share",          Z_LOW,  "Mainline",     ""),
     ("black_protestant_share",  Z_LOW,  "Bk-Protestant", ""),
     ("religious_adherence_rate", Z_LOW, "Devout",       "Unchurched"),
-    ("net_migration_rate",      Z_LOW,  "Growing",      "Shrinking"),
-    ("migration_diversity",     Z_LOW,  "Cosmopolitan", "Insular"),
+    # Income inflow: wealth magnet vs not
     ("avg_inflow_income",       Z_LOW,  "Wealth-Magnet", ""),
+    ("median_hh_income",        Z_LOW,  "Higher-Inc",   "Lower-Inc"),
+    # Education / professional
+    ("pct_management",          Z_LOW,  "White-Collar", "Blue-Collar"),
+    ("pct_bachelors_plus",      Z_LOW,  "Educated",     ""),
+    # Minority composition — public-friendly framing
+    ("pct_black",               Z_LOW,  "Minority-Mix", "Anglo-Majority"),
+    ("pct_hispanic",            Z_LOW,  "Latino-Mix",   ""),
+    # Housing / ownership
     ("pct_owner_occupied",      Z_LOW,  "Homeowner",    "Renter"),
-    ("pct_white_nh",            Z_LOW,  "White",        ""),
+    # Migration diversity
+    ("migration_diversity",     Z_LOW,  "Cosmopolitan", "Insular"),
+    # Spatial / density
+    ("land_area_sq_mi",         Z_LOW,  "Sprawling",    "Compact"),
+    ("log_pop_density",         Z_LOW,  "Denser",       "Sparser"),
+    # Commute patterns
     ("pct_car",                 Z_LOW,  "Auto-Commute", ""),
     ("pct_wfh",                 Z_LOW,  "Remote-Work",  ""),
-    ("land_area_sq_mi",         Z_LOW,  "Sprawling",    "Compact"),
-    ("congregations_per_1000",  Z_LOW,  "Many-Churches", ""),
-    ("pct_management",          Z_LOW,  "White-Collar", "Blue-Collar"),
     ("pct_transit",             Z_LOW,  "Transit",      ""),
-    ("inflow_outflow_ratio",    Z_LOW,  "Inflow",       "Outflow"),
-    ("median_hh_income",        Z_LOW,  "Higher-Inc",   "Lower-Inc"),
-    ("pct_bachelors_plus",      Z_LOW,  "More-Edu",     "Less-Edu"),
-    ("log_pop_density",         Z_LOW,  "Denser",       "Sparser"),
+    # Type breadth
+    ("congregations_per_1000",  Z_LOW,  "Many-Churches", ""),
     ("pop_total",               Z_LOW,  "Large",        "Small"),
     ("n_counties",              Z_LOW,  "Broad",        "Concentrated"),
-    ("pct_black",               Z_LOW,  "Blacker",      "Whiter"),
-    ("pct_hispanic",            Z_LOW,  "More-Hisp",    "Less-Hisp"),
 ]
+
+
+def _compute_type_lean() -> dict[int, float]:
+    """Compute mean presidential Dem shift per type from shift data.
+
+    Returns a dict of type_id → mean_dem_shift (positive = bluer over time).
+    Used as a last-resort disambiguator when demographics can't distinguish types.
+    Returns empty dict if data isn't available.
+    """
+    if not _SHIFTS_PATH.exists() or not _TYPE_ASSIGNMENTS_PATH.exists():
+        return {}
+    try:
+        shifts = pd.read_parquet(_SHIFTS_PATH)
+        ta = pd.read_parquet(_TYPE_ASSIGNMENTS_PATH)
+
+        # Get presidential D-share shift columns
+        pres_cols = [c for c in shifts.columns if c.startswith("pres_d_shift_")]
+        if not pres_cols:
+            return {}
+
+        # Score columns: type_X_score pattern
+        score_cols = sorted([c for c in ta.columns if c.endswith("_score")])
+        if not score_cols:
+            return {}
+
+        scores = ta[score_cols].values  # (N, J)
+        shift_vals = shifts[pres_cols].mean(axis=1).values  # (N,) mean across elections
+
+        weights = np.abs(scores)
+        w_sum = weights.sum(axis=0) + 1e-12
+        type_lean = (weights * shift_vals[:, None]).sum(axis=0) / w_sum
+
+        return {i: float(type_lean[i]) for i in range(len(type_lean))}
+    except Exception:
+        return {}
+
+
+def _lean_label(lean: float) -> str:
+    """Convert a mean Dem shift to a human-readable lean label."""
+    if lean > 0.01:
+        return "Blue-Shift"
+    elif lean < -0.01:
+        return "Red-Shift"
+    else:
+        return "Swing"
 
 
 def _disambiguate(
@@ -448,10 +640,17 @@ def _disambiguate(
     """Ensure every type gets a unique display name (max 4 words).
 
     Strategy:
-    1. For each duplicate group, find the feature that best splits the
-       group (maximizes variance of z-scores within the group).
-    2. Assign above/below-median labels from that feature.
-    3. Any remaining duplicates get ordinal suffixes.
+    1. For each duplicate group, find the feature that best splits the group
+       (maximizes variance of z-scores within the group).
+    2. Assign per-type labels using the splitting feature's direction.
+    3. When a group is larger than 2, iterate sub-group splits across multiple
+       passes until all duplicates are resolved or word budget is exhausted.
+    4. Any remaining duplicates get ordinal suffixes.
+
+    Notes on z-score source:
+    - Disambiguation uses GLOBAL z-scores (z_df) so that features show more
+      spread across the full 43-type population, making above/below-median
+      splits more meaningful than within-state comparisons.
     """
     _ORDINALS = ["", " II", " III", " IV", " V", " VI", " VII", " VIII"]
 
@@ -463,27 +662,34 @@ def _disambiguate(
             if cnt > 1
         }
 
+    def _get_z(tid: int, feat: str) -> float | None:
+        """Return global z-score for a type/feature pair."""
+        z_sub = z_df.loc[z_df["type_id"] == tid, feat_cols]
+        if z_sub.empty or feat not in z_sub.columns:
+            return None
+        return float(z_sub.iloc[0][feat])
+
     def _splitting_token(tids: list[int], existing_name: str) -> dict[int, str]:
         """Find the feature that best splits a group of types and return
         per-type labels.
+
+        Uses GLOBAL z-scores for maximum separation signal.
+        Chooses the feature with highest within-group variance that produces
+        at least 2 distinct label outcomes.
         """
         existing_tokens = set(existing_name.split())
         best_var = -1.0
         best_labels: dict[int, str] = {}
 
-        for feat, thresh, pos, neg in _DISAMBIG_VOCAB:
+        for feat, _thresh, pos, neg in _DISAMBIG_VOCAB:
             if not pos and not neg:
                 continue
-            # Get z-values for all types in the group
+            # Get global z-values for all types in the group
             z_vals: dict[int, float] = {}
             for tid in tids:
-                state = type_states.get(tid, "")
-                z_source = state_z_dfs.get(state, z_df)
-                z_sub = z_source.loc[z_source["type_id"] == tid, feat_cols]
-                if z_sub.empty:
-                    z_sub = z_df.loc[z_df["type_id"] == tid, feat_cols]
-                if not z_sub.empty and feat in z_sub.columns:
-                    z_vals[tid] = float(z_sub.iloc[0][feat])
+                z = _get_z(tid, feat)
+                if z is not None:
+                    z_vals[tid] = z
             if len(z_vals) < len(tids):
                 continue
 
@@ -497,10 +703,12 @@ def _disambiguate(
             labels: dict[int, str] = {}
             for tid in tids:
                 z = z_vals[tid]
-                if z >= median_z and pos and pos not in existing_tokens:
+                if z > median_z and pos and pos not in existing_tokens:
                     labels[tid] = pos
                 elif z < median_z and neg and neg not in existing_tokens:
                     labels[tid] = neg
+                elif z > median_z and pos and pos not in existing_tokens:
+                    labels[tid] = pos
                 elif pos and pos not in existing_tokens:
                     labels[tid] = pos
                 elif neg and neg not in existing_tokens:
@@ -509,7 +717,7 @@ def _disambiguate(
                     labels[tid] = ""
 
             # Only accept if it actually differentiates (at least 2 distinct labels)
-            non_empty = [l for l in labels.values() if l]
+            non_empty = [lbl for lbl in labels.values() if lbl]
             if len(set(non_empty)) >= 2:
                 best_var = var
                 best_labels = labels
@@ -525,20 +733,28 @@ def _disambiguate(
 
     final: dict[int, str] = dict(raw_names)
 
-    # Pass 1 — split duplicate groups using the most differentiating feature
-    for _pass in range(3):  # iterate to resolve cascading duplicates
+    # Pass 1 — iteratively split duplicate groups.
+    # Run up to 6 passes so that splits of large groups cascade into sub-group
+    # splits in subsequent iterations (e.g., a 9-way tie may need 4 passes).
+    for _pass in range(6):
         dupes = _get_dupes(final)
         if not dupes:
             break
+        changed = False
         for name, tids in dupes.items():
             n_words = len(name.split())
             if n_words >= 4:
-                continue  # can't add more words
+                continue  # word budget exhausted for this name
             labels = _splitting_token(tids, name)
             for tid in tids:
                 label = labels.get(tid, "")
                 if label:
-                    final[tid] = f"{name} {label}"
+                    new_name = f"{name} {label}"
+                    if new_name != final[tid]:
+                        final[tid] = new_name
+                        changed = True
+        if not changed:
+            break  # no progress — stop early
 
     # Cap at 4 words
     for tid in final:
@@ -546,7 +762,21 @@ def _disambiguate(
         if len(parts) > 4:
             final[tid] = " ".join(parts[:4])
 
-    # Pass 2 — ordinal suffixes for any remaining duplicates
+    # Pass 2 — political lean disambiguation (last-resort before ordinals)
+    # Types defined by electoral behavior can legitimately be distinguished
+    # by their mean partisan shift direction.
+    type_lean = _compute_type_lean()
+    if type_lean:
+        for name, tids in _get_dupes(final).items():
+            n_words = len(name.split())
+            if n_words >= 4:
+                continue
+            lean_labels = {tid: _lean_label(type_lean.get(tid, 0.0)) for tid in tids}
+            if len(set(lean_labels.values())) >= 2:
+                for tid in tids:
+                    final[tid] = f"{name} {lean_labels[tid]}"
+
+    # Pass 3 — ordinal suffixes for any remaining duplicates
     for name, tids in _get_dupes(final).items():
         for i, tid in enumerate(_pop_order(tids)):
             if i == 0:
