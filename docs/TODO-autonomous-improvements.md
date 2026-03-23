@@ -33,7 +33,7 @@ These are the highest-impact improvements. The prediction pipeline has known str
 
 41 features for 43 types = near-singular covariance. Need ≥43 features for full rank. These tasks add features from data already on disk or freely available.
 
-- [ ] **P2.1: Extend governor shift data pre-2000** — Algara & Amlani data already downloaded, goes back to 1865. Currently using 2002-2018. Add 1994 and 1998 governor pairs. Low effort, no downloads needed. Adds 2 training dims → 35 total.
+- [x] **P2.1: Extend governor shift data pre-2000** — DONE S164. Added 1994 and 1998 governor pairs from Algara data. Training dims: 54 → 60 (+6). Pre-2008, so not used in KMeans but available for county priors.
 
 - [ ] **P2.2: Urbanicity feature (Economist-style)** — Compute `avg_log_pop_within_5_miles` per county. Better than raw density for distinguishing suburban from exurban. Code exists at `src/assembly/build_urbanicity_features.py` (26 tests) but data may need integration into describe_types pipeline.
 
