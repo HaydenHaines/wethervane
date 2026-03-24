@@ -206,7 +206,7 @@ def test_build_creates_queryable_db(mini_parquets, monkeypatch):
     monkeypatch.setattr(mod, "TYPE_COVARIANCE_LONG_PATH", data / "data/covariance/nonexistent_type_cov.parquet")
     monkeypatch.setattr(mod, "DEMOGRAPHICS_INTERPOLATED_PATH", data / "data/assembled/nonexistent_demo_interp.parquet")
 
-    db_path = data / "test_bedrock.duckdb"
+    db_path = data / "test_wethervane.duckdb"
     build(db_path=db_path, reset=True)
 
     assert db_path.exists()
@@ -346,7 +346,7 @@ def test_types_table_exists(mini_parquets_with_types, monkeypatch):
 
     _patch_all_paths(mod, data, monkeypatch)
 
-    db_path = data / "test_bedrock_types.duckdb"
+    db_path = data / "test_wethervane_types.duckdb"
     build(db_path=db_path, reset=True)
 
     con = duckdb.connect(str(db_path))
@@ -364,7 +364,7 @@ def test_county_type_assignments_table_exists(mini_parquets_with_types, monkeypa
 
     _patch_all_paths(mod, data, monkeypatch)
 
-    db_path = data / "test_bedrock_cta.duckdb"
+    db_path = data / "test_wethervane_cta.duckdb"
     build(db_path=db_path, reset=True)
 
     con = duckdb.connect(str(db_path))
@@ -382,7 +382,7 @@ def test_type_covariance_table_exists(mini_parquets_with_types, monkeypatch):
 
     _patch_all_paths(mod, data, monkeypatch)
 
-    db_path = data / "test_bedrock_tcov.duckdb"
+    db_path = data / "test_wethervane_tcov.duckdb"
     build(db_path=db_path, reset=True)
 
     con = duckdb.connect(str(db_path))
@@ -400,7 +400,7 @@ def test_demographics_interpolated_table_exists(mini_parquets_with_types, monkey
 
     _patch_all_paths(mod, data, monkeypatch)
 
-    db_path = data / "test_bedrock_demo.duckdb"
+    db_path = data / "test_wethervane_demo.duckdb"
     build(db_path=db_path, reset=True)
 
     con = duckdb.connect(str(db_path))

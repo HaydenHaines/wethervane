@@ -1,4 +1,4 @@
-"""Real NMF type classification for Layer 2 of the Bedrock pipeline.
+"""Real NMF type classification for Layer 2 of the WetherVane pipeline.
 
 Takes community shift profiles (K × n_dims) and fits sklearn NMF to
 produce J electoral types with soft membership weights.

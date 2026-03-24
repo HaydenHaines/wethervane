@@ -1,5 +1,5 @@
 # api/models.py
-"""Pydantic response models for the Bedrock API."""
+"""Pydantic response models for the WetherVane API."""
 from __future__ import annotations
 
 from pydantic import BaseModel, Field

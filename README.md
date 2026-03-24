@@ -1,4 +1,4 @@
-# US Political Covariation Model
+# WetherVane
 
 A political modeling platform that discovers electoral types directly from how counties shift across elections, estimates how those types covary using demographic profiles, and propagates polling signals through the covariance structure to produce county-level predictions. The key insight is that beneath the noise of individual elections lies a structural landscape of communities that move together politically -- communities that cross administrative boundaries, persist across decades, and can be discovered purely from spatially correlated electoral shifts.
 
@@ -66,7 +66,7 @@ The initial implementation covers **Florida, Georgia, and Alabama** (293 countie
 
 ## Project Status
 
-**Type-primary architecture implemented end-to-end.** The pipeline runs from data assembly through KMeans type discovery, hierarchical nesting, demographic description, covariance construction, and county-level prediction. Stained glass map live at bedrock.hhaines.duckdns.org.
+**Type-primary architecture implemented end-to-end.** The pipeline runs from data assembly through KMeans type discovery, hierarchical nesting, demographic description, covariance construction, and county-level prediction. Stained glass map live at wethervane.hhaines.duckdns.org.
 
 ### Stage summary
 

@@ -1,6 +1,6 @@
-# Project: US Political Covariation Model (working name: **Bedrock**)
+# Project: WetherVane
 
-A political modeling platform that discovers electoral communities directly from spatially correlated shift patterns, estimates how those communities covary, and propagates polling signals through the covariance structure to produce forward predictions. Target domain: `bedrock.vote`. Public-facing; 538-style audience.
+A political modeling platform that discovers electoral communities directly from spatially correlated shift patterns, estimates how those communities covary, and propagates polling signals through the covariance structure to produce forward predictions. Public-facing; 538-style audience.
 
 **Core insight:** beneath the noise of individual elections is a structural landscape of communities that move together politically. Those communities cross administrative boundaries, persist across decades, and can be discovered purely from how places shift. Understanding this structure — not just the surface results — is what makes prediction defensible.
 
@@ -76,7 +76,7 @@ See `docs/ROADMAP.md` for the full path forward and `docs/TODO-autonomous-improv
 
 Two-resolution electoral model (ADR-006):
 
-### County-Level Model (production, live at bedrock.hhaines.duckdns.org)
+### County-Level Model (production, live at wethervane.hhaines.duckdns.org)
 
 **Algorithm:** KMeans J=43 on presidential×2.5 + state-centered governor/Senate shifts (33 dims, 2008+).
 **Key insight:** Governor/Senate shifts are state-specific races — must be state-centered before cross-state clustering. Presidential shifts carry the cross-state signal.
@@ -126,7 +126,7 @@ See `docs/ARCHITECTURE.md` for the full technical specification.
 ## Directory Map
 
 ```
-US-political-covariation-model/
+wethervane/
 ├── CLAUDE.md                          # This file — project conventions for Claude Code
 ├── README.md                          # Project overview and orientation
 ├── docs/
@@ -280,7 +280,7 @@ pytest                                              # Run all Python tests (src 
 # Phase 2 — one-time setup (run before building DuckDB)
 python scripts/fetch_fips_crosswalk.py             # Download Census FIPS→county name → data/raw/fips_county_crosswalk.csv
 python scripts/build_county_geojson.py             # Generate FL+GA+AL county GeoJSON → web/public/counties-fl-ga-al.geojson
-python src/db/build_database.py --reset             # Build/rebuild data/bedrock.duckdb
+python src/db/build_database.py --reset             # Build/rebuild data/wethervane.duckdb
 
 # Phase 2 — run API locally
 pip install -r api/requirements.txt
@@ -339,7 +339,7 @@ The API is the contract boundary between model pipeline and frontend. The fronte
 | 2026-03-19 | Phase 1 K selection: K=10 (holdout r=0.9027) | K selection sweep over K=5..30 with spatial Ward HAC and min community size 8. K=10 maximizes holdout Pearson r between community-mean pres_d_shift_16_20 (training) and pres_d_shift_20_24 (holdout). 3-cycle baseline at K=10 was r=0.941; multi-year model gives r=0.9027. |
 | 2026-03-19 | Phase 1 NMF types: J=7 | J sweep over 5-8; J=7 chosen for interpretability and consistency with project history. Type weights stored in county_type_assignments.parquet. |
 | 2026-03-19 | Phase 1 Stan Σ: county HAC model, T=5 elections | Stan rank-1 factor model fit on 5 elections (2016 pres, 2018 gov, 2020 pres, 2022 gov, 2024 pres). k_ref selected dynamically as most Democratic community. Σ stored at data/covariance/county_community_sigma.parquet. DuckDB has community_sigma table. |
-| 2026-03-19 | Phase 2 API architecture: FastAPI + DuckDB read-only + in-process Bayesian update | FastAPI opens bedrock.duckdb read-only at startup; loads K×K sigma, mu_prior, and weight matrices into app.state. All data endpoints are simple SQL queries via Depends(get_db). POST /forecast/poll calls bayesian_update() from src/prediction/predict_2026_hac.py (HAC K=10 pipeline) — NOT propagate_polls.py (old NMF K=7). Test isolation via create_app(lifespan_override=_noop_lifespan) factory + in-memory DuckDB fixture. |
+| 2026-03-19 | Phase 2 API architecture: FastAPI + DuckDB read-only + in-process Bayesian update | FastAPI opens wethervane.duckdb read-only at startup; loads K×K sigma, mu_prior, and weight matrices into app.state. All data endpoints are simple SQL queries via Depends(get_db). POST /forecast/poll calls bayesian_update() from src/prediction/predict_2026_hac.py (HAC K=10 pipeline) — NOT propagate_polls.py (old NMF K=7). Test isolation via create_app(lifespan_override=_noop_lifespan) factory + in-memory DuckDB fixture. |
 | 2026-03-19 | Phase 2 frontend: Next.js App Router + Deck.gl + Observable Plot | Persistent choropleth map (left) + tabbed right panel. Tab bar holds View 3 (Forecast) now; Views 2 and 4 slot in as future tabs. Community age slider (3–10 training pairs) deferred to future phase. Visual style: Clean Academic (light background, Georgia serif headings, #2166ac/#d73027 partisan colors). |
 | 2026-03-20 | Type-primary architecture pivot (ADR-006) | Types become the primary predictive engine, replacing HAC geographic communities. KMeans on 293 county shift vectors (33 training dims, 2008+, presidential×2.5 weighted) discovers J=43 types (J=20 was initial; refined to J=43 via leave-one-pair-out CV). Types carry covariance and prediction. Geographic communities deferred to tract phase. Motivated by: HAC K=10 produced "alternative states" (10 giant blobs), not the stained glass pattern of many small units colored by behavioral type. |
 | 2026-03-22 | J=20→43 based on leave-one-pair-out CV sweep | Formal CV across J=12..50. Optimal: J=43 (r=0.779 CV mean). Extended sweep to J=50 shows plateau ~43. Performance gain: holdout r 0.778→0.818 (+4%). Integrated into production pipeline. |

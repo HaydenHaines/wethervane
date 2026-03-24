@@ -20,10 +20,9 @@
 
 ## Name
 
-Working name: **Bedrock**
-Concept: the structural foundation beneath surface-level election results. Communities are bedrock; individual elections are weather.
-Domain target: `bedrock.vote`
-*(Final name/domain decision deferred — build the thing first.)*
+**WetherVane**
+Concept: a portmanteau of "Bellwether" and "weathervane" — tracking which way the political winds blow through structural community analysis.
+*(Domain TBD.)*
 
 ---
 
@@ -164,7 +163,7 @@ Each versioned dir contains:
 - Verify Miami-Dade 2020→2024 log-odds shift captures Hispanic realignment
 
 ### 0.3 — DuckDB data layer
-- Write `src/db/build_database.py` — reads versioned model dirs, ingests into `data/bedrock.duckdb`
+- Write `src/db/build_database.py` — reads versioned model dirs, ingests into `data/wethervane.duckdb`
 - Schema: `counties`, `communities`, `shifts`, `predictions`, `model_versions`
 - Add DuckDB queries to replace pandas parquet loads in validation and viz scripts
 - FastAPI will query DuckDB directly
@@ -203,7 +202,7 @@ Each versioned dir contains:
 - [ ] Turnout feature from dropped uncontested pairs (OQ-002 answered)
 - [ ] 3D vs 2D triplet comparison experiment (OQ-003 answered)
 - [x] 2026 county-level predictions updated with type-primary structure
-- [x] Stained glass map live at bedrock.hhaines.duckdns.org (293 counties colored by super-type)
+- [x] Stained glass map live at wethervane.hhaines.duckdns.org (293 counties colored by super-type)
 - [x] Validation report: holdout r=0.778, balanced type sizes (3-31), cross-state types confirmed
 - [ ] Historical VEST 2012/2014 expansion for richer shift vectors
 

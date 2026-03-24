@@ -1,4 +1,4 @@
-"""Build data/bedrock.duckdb — the central query layer for the Bedrock pipeline.
+"""Build data/wethervane.duckdb — the central query layer for the WetherVane pipeline.
 
 Reads parquet artifacts from data/shifts/, data/communities/, data/predictions/,
 and model version metadata from data/models/versions/*/meta.yaml, then ingests
@@ -39,7 +39,7 @@ import sys
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-DEFAULT_DB = PROJECT_ROOT / "data" / "bedrock.duckdb"
+DEFAULT_DB = PROJECT_ROOT / "data" / "wethervane.duckdb"
 
 # Parquet source paths
 SHIFTS_MULTIYEAR = PROJECT_ROOT / "data" / "shifts" / "county_shifts_multiyear.parquet"
@@ -348,7 +348,7 @@ def validate_contract(con: duckdb.DuckDBPyConnection) -> list[str]:
 
 
 def build(db_path: Path, reset: bool = False) -> None:
-    """Build or update bedrock.duckdb from current pipeline artifacts."""
+    """Build or update wethervane.duckdb from current pipeline artifacts."""
 
     db_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -612,7 +612,7 @@ def build(db_path: Path, reset: bool = False) -> None:
 
     # ── Summary query ──────────────────────────────────────────────────────────
     log.info("Database build complete: %s", db_path)
-    print("\n=== bedrock.duckdb summary ===")
+    print("\n=== wethervane.duckdb summary ===")
     for table in ["counties", "model_versions", "community_assignments", "type_assignments", "county_shifts", "predictions", "community_sigma", "community_profiles", "county_demographics", "types", "county_type_assignments", "super_types", "type_covariance", "demographics_interpolated"]:
         try:
             n = con.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0]
@@ -644,7 +644,7 @@ def build(db_path: Path, reset: bool = False) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Build bedrock.duckdb from pipeline artifacts")
+    parser = argparse.ArgumentParser(description="Build wethervane.duckdb from pipeline artifacts")
     parser.add_argument("--db", type=Path, default=DEFAULT_DB, help="Output DuckDB path")
     parser.add_argument("--reset", action="store_true", help="Drop and rebuild the database")
     args = parser.parse_args()

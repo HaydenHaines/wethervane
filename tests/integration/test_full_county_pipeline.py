@@ -204,7 +204,7 @@ def synthetic_db(tmp_path_factory, synthetic_fips):
     mod.COUNTY_TYPE_ASSIGNMENTS_PATH = county_type_assignments_path
     mod.SUPER_TYPES_PATH = super_types_path
 
-    db_path = tmp / "synthetic_bedrock.duckdb"
+    db_path = tmp / "synthetic_wethervane.duckdb"
     try:
         mod.build(db_path=db_path, reset=True)
     finally:

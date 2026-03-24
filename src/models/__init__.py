@@ -1,4 +1,4 @@
-"""Bedrock model data contracts.
+"""WetherVane model data contracts.
 
 Two-layer architecture:
   Layer 1 — Communities: geographically contiguous blobs (hard assignment)

@@ -1,4 +1,4 @@
-"""Central configuration loader for the Bedrock pipeline.
+"""Central configuration loader for the WetherVane pipeline.
 
 Reads config/model.yaml. All pipeline scripts should import from here
 rather than hardcoding constants.

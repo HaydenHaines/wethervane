@@ -7,7 +7,7 @@ import dynamic from "next/dynamic";
 const MapShell = dynamic(() => import("@/components/MapShell"), { ssr: false });
 
 export const metadata: Metadata = {
-  title: "Bedrock — 2026 Electoral Forecast",
+  title: "WetherVane — 2026 Electoral Forecast",
   description: "Community-based electoral forecasting for the 2026 midterms",
 };
 

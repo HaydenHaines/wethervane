@@ -1,9 +1,9 @@
 # api/tests/conftest.py
-"""Shared test fixtures for the Bedrock API tests.
+"""Shared test fixtures for the WetherVane API tests.
 
 Pattern: create a fresh app instance per test using create_app(lifespan_override=_noop_lifespan)
 to skip the real DB startup, then set app.state fields directly before yielding the TestClient.
-This avoids requiring data/bedrock.duckdb or any real parquet files during testing.
+This avoids requiring data/wethervane.duckdb or any real parquet files during testing.
 """
 from __future__ import annotations
 

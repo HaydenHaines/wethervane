@@ -17,22 +17,22 @@ export function MethodologyView() {
         margin: "0 0 20px",
         lineHeight: "1.5",
       }}>
-        How Bedrock discovers electoral structure and produces forecasts.
+        How WetherVane discovers electoral structure and produces forecasts.
       </p>
 
       <Divider />
 
-      {/* Section 1: What is Bedrock? */}
-      <Section title="What is Bedrock?">
+      {/* Section 1: What is WetherVane? */}
+      <Section title="What is WetherVane?">
         <p>
-          Bedrock is a structural model of electoral behavior. Rather than treating
+          WetherVane is a structural model of electoral behavior. Rather than treating
           polls as the whole story, it discovers hidden patterns in how communities
           shift politically across elections — and uses that structure to propagate
           new information across geography.
         </p>
         <p>
           Most forecasting models are poll aggregators: they average polls, adjust
-          for house effects, and output a number. Bedrock starts from a different
+          for house effects, and output a number. WetherVane starts from a different
           question: <em>what is the underlying structure that makes places move
           together?</em> Understanding that structure — not just the surface
           results — is what makes prediction defensible.
@@ -153,7 +153,7 @@ export function MethodologyView() {
       {/* Section 4: Current Status */}
       <Section title="Current Status">
         <p>
-          Bedrock is in active development, targeting the 2026 midterm elections.
+          WetherVane is in active development, targeting the 2026 midterm elections.
           The current pilot covers three states.
         </p>
         <MetricGrid metrics={[
@@ -177,7 +177,7 @@ export function MethodologyView() {
       {/* Section 5: Data Sources */}
       <Section title="Data Sources">
         <p>
-          Bedrock uses exclusively free, public data. No proprietary datasets or
+          WetherVane uses exclusively free, public data. No proprietary datasets or
           paid subscriptions.
         </p>
         <SourceList sources={[

@@ -1,4 +1,4 @@
-"""Data contract definitions for Bedrock's two-layer community model.
+"""Data contract definitions for WetherVane's two-layer community model.
 
 These define the canonical column names and schemas for model outputs.
 All pipeline scripts must produce outputs matching these contracts.

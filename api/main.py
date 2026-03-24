@@ -1,5 +1,5 @@
 # api/main.py
-"""FastAPI application factory for the Bedrock API."""
+"""FastAPI application factory for the WetherVane API."""
 from __future__ import annotations
 
 import logging
@@ -72,8 +72,8 @@ def _load_mu_prior(db: duckdb.DuckDBPyConnection, version_id: str, K: int) -> np
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Open DB and load in-memory data at startup; close at shutdown."""
-    data_dir = Path(os.environ.get("BEDROCK_DATA_DIR", "data"))
-    db_path = Path(os.environ.get("BEDROCK_DB_PATH", str(data_dir / "bedrock.duckdb")))
+    data_dir = Path(os.environ.get("WETHERVANE_DATA_DIR", "data"))
+    db_path = Path(os.environ.get("WETHERVANE_DB_PATH", str(data_dir / "wethervane.duckdb")))
 
     log.info("Opening DuckDB at %s (read_only=True)", db_path)
     app.state.db = duckdb.connect(str(db_path), read_only=True)
@@ -168,8 +168,8 @@ async def lifespan(app: FastAPI):
 def create_app(lifespan_override=None) -> FastAPI:
     """Factory function. Pass lifespan_override=_noop_lifespan in tests to skip DB startup."""
     app = FastAPI(
-        title="Bedrock API",
-        description="Electoral community model data for bedrock.vote",
+        title="WetherVane API",
+        description="Electoral community model data for WetherVane",
         version="0.1.0",
         docs_url="/api/docs",
         redoc_url="/api/redoc",

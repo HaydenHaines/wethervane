@@ -1,6 +1,6 @@
 """Integration tests: validate DuckDB->API->frontend contract.
 
-These tests use the REAL bedrock.duckdb to catch pipeline/API mismatches.
+These tests use the REAL wethervane.duckdb to catch pipeline/API mismatches.
 Skip gracefully if the DB file doesn't exist (CI without data).
 """
 from pathlib import Path
@@ -9,17 +9,17 @@ import duckdb
 import pytest
 from fastapi.testclient import TestClient
 
-DB_PATH = Path("data/bedrock.duckdb")
+DB_PATH = Path("data/wethervane.duckdb")
 
 pytestmark = pytest.mark.skipif(
     not DB_PATH.exists(),
-    reason="data/bedrock.duckdb not found — skip contract integration tests",
+    reason="data/wethervane.duckdb not found — skip contract integration tests",
 )
 
 
 @pytest.fixture(scope="module")
 def real_client():
-    """TestClient backed by the real bedrock.duckdb."""
+    """TestClient backed by the real wethervane.duckdb."""
     from api.main import create_app
 
     app = create_app()  # uses real lifespan
@@ -37,7 +37,7 @@ def real_db():
 # ── Schema tests ──────────────────────────────────────────────────────────
 
 def test_duckdb_contract(real_db):
-    """Required tables and columns exist in bedrock.duckdb."""
+    """Required tables and columns exist in wethervane.duckdb."""
     from src.db.build_database import validate_contract
 
     errors = validate_contract(real_db)

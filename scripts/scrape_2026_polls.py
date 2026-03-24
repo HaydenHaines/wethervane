@@ -28,7 +28,7 @@ logger = logging.getLogger(__name__)
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 OUTPUT_PATH = PROJECT_ROOT / "data" / "polls" / "polls_2026.csv"
 
-USER_AGENT = "Bedrock-PollScraper/1.0 (political research)"
+USER_AGENT = "WetherVane-PollScraper/1.0 (political research)"
 REQUEST_DELAY = 2  # seconds between HTTP requests
 
 # ---------------------------------------------------------------------------
