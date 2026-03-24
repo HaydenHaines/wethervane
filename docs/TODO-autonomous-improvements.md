@@ -65,7 +65,7 @@ KMeans at J=43 with r=0.818 is solid. These experiments may find marginal gains 
 
 ## Priority 4 — Validation & Analysis
 
-- [ ] **P4.1: Variation partitioning** — Decompose holdout variance: how much do types explain vs demographics alone vs their overlap? Important for understanding whether types add value beyond demographics.
+- [x] **P4.1: Variation partitioning** — DONE S175. Types R²=0.685, Demo R²=0.548, Combined R²=0.777. Unique to types: 22.9%, Unique to demo: 9.1%, Shared: 45.6%, Residual: 22.3%. Types add substantial unique value. See docs/variation-partitioning-S175.md.
 
 - [ ] **P4.2: Type stability on sub-windows** — Compare types from 2008-2016 vs 2016-2024. Current full-window stability fails (89.8° angular distance). Sub-windows should be more stable. Documents whether types are durable or period-specific.
 
