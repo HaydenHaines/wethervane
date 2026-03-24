@@ -55,7 +55,7 @@ KMeans at J=43 with r=0.818 is solid. These experiments may find marginal gains 
 
 - [ ] **P3.2: MiniBatch KMeans stability** — Test centroid stability via bootstrap (100 random starts). Measure how often counties switch types across runs. If unstable, consider ensemble averaging. Lower priority — current model seems stable in practice.
 
-- [ ] **P3.3: Spectral clustering** — Test with k-nearest-neighbors affinity, J=43. Can find non-convex clusters KMeans misses. Research: spectral clustering in electoral geography.
+- [x] **P3.3: Spectral clustering** — DONE S175. Noise-level difference: spectral wins at J=43 (+0.006) but loses at J=50 (-0.009). No systematic advantage. KMeans confirmed. See docs/spectral-experiment-S175.md.
 
 - [ ] **P3.4: HDBSCAN with auto-J** — Discovers J from data density. Interesting but risky — may produce very different J than 43. Counties in sparse regions become "noise."
 
