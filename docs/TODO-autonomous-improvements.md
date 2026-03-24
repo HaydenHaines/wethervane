@@ -67,7 +67,7 @@ KMeans at J=43 with r=0.818 is solid. These experiments may find marginal gains 
 
 - [x] **P4.1: Variation partitioning** — DONE S175. Types R²=0.685, Demo R²=0.548, Combined R²=0.777. Unique to types: 22.9%, Unique to demo: 9.1%, Shared: 45.6%, Residual: 22.3%. Types add substantial unique value. See docs/variation-partitioning-S175.md.
 
-- [ ] **P4.2: Type stability on sub-windows** — Compare types from 2008-2016 vs 2016-2024. Current full-window stability fails (89.8° angular distance). Sub-windows should be more stable. Documents whether types are durable or period-specific.
+- [x] **P4.2: Type stability on sub-windows** — DONE S175. Cross-window ARI=0.113, NMI=0.582, county stability=32.4%. Seed ARI=0.440. Types partially stable — core structure preserved but assignments drift across eras. Full window outperforms sub-windows (r=0.854 vs 0.804/0.838). See docs/type-stability-subwindows-S175.md.
 
 ---
 
