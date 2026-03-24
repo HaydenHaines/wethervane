@@ -3888,105 +3888,6 @@ wheels = [
 ]
 
 [[package]]
-name = "us-political-covariation-model"
-version = "0.1.0"
-source = { editable = "." }
-dependencies = [
-    { name = "arviz", version = "0.23.4", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.12'" },
-    { name = "arviz", version = "1.0.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
-    { name = "beautifulsoup4" },
-    { name = "cenpy" },
-    { name = "cmdstanpy" },
-    { name = "duckdb" },
-    { name = "geopandas" },
-    { name = "hdbscan" },
-    { name = "infomap" },
-    { name = "kneed" },
-    { name = "leidenalg" },
-    { name = "libpysal" },
-    { name = "lxml" },
-    { name = "matplotlib" },
-    { name = "networkx" },
-    { name = "openpyxl" },
-    { name = "pandas" },
-    { name = "plotly" },
-    { name = "pyarrow" },
-    { name = "pygsp" },
-    { name = "pymc" },
-    { name = "pyreadr" },
-    { name = "python-dotenv" },
-    { name = "python-igraph" },
-    { name = "pyyaml" },
-    { name = "requests" },
-    { name = "scikit-learn" },
-    { name = "seaborn" },
-    { name = "tqdm" },
-]
-
-[package.optional-dependencies]
-api = [
-    { name = "fastapi" },
-    { name = "httpx" },
-    { name = "uvicorn", extra = ["standard"] },
-]
-dev = [
-    { name = "ipykernel" },
-    { name = "jupyter" },
-    { name = "pytest" },
-    { name = "ruff" },
-    { name = "streamlit" },
-]
-
-[package.dev-dependencies]
-dev = [
-    { name = "pytest" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "arviz", specifier = ">=0.17" },
-    { name = "beautifulsoup4", specifier = ">=4.12" },
-    { name = "cenpy", specifier = ">=1.0" },
-    { name = "cmdstanpy", specifier = ">=1.2" },
-    { name = "duckdb", specifier = ">=0.10" },
-    { name = "fastapi", marker = "extra == 'api'", specifier = ">=0.110.0" },
-    { name = "geopandas", specifier = ">=0.14" },
-    { name = "hdbscan", specifier = ">=0.8.41" },
-    { name = "httpx", marker = "extra == 'api'", specifier = ">=0.27.0" },
-    { name = "infomap", specifier = ">=2.7" },
-    { name = "ipykernel", marker = "extra == 'dev'", specifier = ">=6.0" },
-    { name = "jupyter", marker = "extra == 'dev'", specifier = ">=1.0" },
-    { name = "kneed", specifier = ">=0.8" },
-    { name = "leidenalg", specifier = ">=0.10" },
-    { name = "libpysal", specifier = ">=4.9" },
-    { name = "lxml", specifier = ">=5.0" },
-    { name = "matplotlib", specifier = ">=3.8" },
-    { name = "networkx", specifier = ">=3.0" },
-    { name = "openpyxl", specifier = ">=3.1.5" },
-    { name = "pandas", specifier = ">=2.0" },
-    { name = "plotly", specifier = ">=5.18" },
-    { name = "pyarrow", specifier = ">=14.0" },
-    { name = "pygsp", specifier = ">=0.5" },
-    { name = "pymc", specifier = ">=5.10" },
-    { name = "pyreadr", specifier = ">=0.5.4" },
-    { name = "pytest", marker = "extra == 'dev'", specifier = ">=7.4" },
-    { name = "python-dotenv", specifier = ">=1.0" },
-    { name = "python-igraph", specifier = ">=0.11" },
-    { name = "pyyaml", specifier = ">=6.0" },
-    { name = "requests", specifier = ">=2.31" },
-    { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.3" },
-    { name = "scikit-learn", specifier = ">=1.4" },
-    { name = "seaborn", specifier = ">=0.13" },
-    { name = "streamlit", marker = "extra == 'dev'", specifier = ">=1.30" },
-    { name = "tqdm", specifier = ">=4.66" },
-    { name = "uvicorn", extras = ["standard"], marker = "extra == 'api'", specifier = ">=0.29.0" },
-]
-provides-extras = ["dev", "api", "graph-tool"]
-
-[package.metadata.requires-dev]
-dev = [{ name = "pytest", specifier = ">=9.0.2" }]
-
-[[package]]
 name = "uvicorn"
 version = "0.42.0"
 source = { registry = "https://pypi.org/simple" }
@@ -4247,6 +4148,105 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/9a/3f/f70e03f40ffc9a30d817eef7da1be72ee4956ba8d7255c399a01b135902a/websockets-16.0-pp311-pypy311_pp73-win_amd64.whl", hash = "sha256:a653aea902e0324b52f1613332ddf50b00c06fdaf7e92624fbf8c77c78fa5767", size = 178735, upload-time = "2026-01-10T09:23:42.259Z" },
     { url = "https://files.pythonhosted.org/packages/6f/28/258ebab549c2bf3e64d2b0217b973467394a9cea8c42f70418ca2c5d0d2e/websockets-16.0-py3-none-any.whl", hash = "sha256:1637db62fad1dc833276dded54215f2c7fa46912301a24bd94d45d46a011ceec", size = 171598, upload-time = "2026-01-10T09:23:45.395Z" },
 ]
+
+[[package]]
+name = "wethervane"
+version = "0.1.0"
+source = { editable = "." }
+dependencies = [
+    { name = "arviz", version = "0.23.4", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.12'" },
+    { name = "arviz", version = "1.0.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
+    { name = "beautifulsoup4" },
+    { name = "cenpy" },
+    { name = "cmdstanpy" },
+    { name = "duckdb" },
+    { name = "geopandas" },
+    { name = "hdbscan" },
+    { name = "infomap" },
+    { name = "kneed" },
+    { name = "leidenalg" },
+    { name = "libpysal" },
+    { name = "lxml" },
+    { name = "matplotlib" },
+    { name = "networkx" },
+    { name = "openpyxl" },
+    { name = "pandas" },
+    { name = "plotly" },
+    { name = "pyarrow" },
+    { name = "pygsp" },
+    { name = "pymc" },
+    { name = "pyreadr" },
+    { name = "python-dotenv" },
+    { name = "python-igraph" },
+    { name = "pyyaml" },
+    { name = "requests" },
+    { name = "scikit-learn" },
+    { name = "seaborn" },
+    { name = "tqdm" },
+]
+
+[package.optional-dependencies]
+api = [
+    { name = "fastapi" },
+    { name = "httpx" },
+    { name = "uvicorn", extra = ["standard"] },
+]
+dev = [
+    { name = "ipykernel" },
+    { name = "jupyter" },
+    { name = "pytest" },
+    { name = "ruff" },
+    { name = "streamlit" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "pytest" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "arviz", specifier = ">=0.17" },
+    { name = "beautifulsoup4", specifier = ">=4.12" },
+    { name = "cenpy", specifier = ">=1.0" },
+    { name = "cmdstanpy", specifier = ">=1.2" },
+    { name = "duckdb", specifier = ">=0.10" },
+    { name = "fastapi", marker = "extra == 'api'", specifier = ">=0.110.0" },
+    { name = "geopandas", specifier = ">=0.14" },
+    { name = "hdbscan", specifier = ">=0.8.41" },
+    { name = "httpx", marker = "extra == 'api'", specifier = ">=0.27.0" },
+    { name = "infomap", specifier = ">=2.7" },
+    { name = "ipykernel", marker = "extra == 'dev'", specifier = ">=6.0" },
+    { name = "jupyter", marker = "extra == 'dev'", specifier = ">=1.0" },
+    { name = "kneed", specifier = ">=0.8" },
+    { name = "leidenalg", specifier = ">=0.10" },
+    { name = "libpysal", specifier = ">=4.9" },
+    { name = "lxml", specifier = ">=5.0" },
+    { name = "matplotlib", specifier = ">=3.8" },
+    { name = "networkx", specifier = ">=3.0" },
+    { name = "openpyxl", specifier = ">=3.1.5" },
+    { name = "pandas", specifier = ">=2.0" },
+    { name = "plotly", specifier = ">=5.18" },
+    { name = "pyarrow", specifier = ">=14.0" },
+    { name = "pygsp", specifier = ">=0.5" },
+    { name = "pymc", specifier = ">=5.10" },
+    { name = "pyreadr", specifier = ">=0.5.4" },
+    { name = "pytest", marker = "extra == 'dev'", specifier = ">=7.4" },
+    { name = "python-dotenv", specifier = ">=1.0" },
+    { name = "python-igraph", specifier = ">=0.11" },
+    { name = "pyyaml", specifier = ">=6.0" },
+    { name = "requests", specifier = ">=2.31" },
+    { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.3" },
+    { name = "scikit-learn", specifier = ">=1.4" },
+    { name = "seaborn", specifier = ">=0.13" },
+    { name = "streamlit", marker = "extra == 'dev'", specifier = ">=1.30" },
+    { name = "tqdm", specifier = ">=4.66" },
+    { name = "uvicorn", extras = ["standard"], marker = "extra == 'api'", specifier = ">=0.29.0" },
+]
+provides-extras = ["dev", "api", "graph-tool"]
+
+[package.metadata.requires-dev]
+dev = [{ name = "pytest", specifier = ">=9.0.2" }]
 
 [[package]]
 name = "widgetsnbextension"
