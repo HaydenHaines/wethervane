@@ -44,9 +44,9 @@ export interface TractContext {
 }
 
 const INITIAL_VIEW = {
-  longitude: -84.5,
-  latitude: 31.5,
-  zoom: 5.8,
+  longitude: -98.0,
+  latitude: 39.0,
+  zoom: 4.0,
   pitch: 0,
   bearing: 0,
 };
@@ -65,7 +65,7 @@ export default function MapShell() {
 
   useEffect(() => {
     Promise.all([
-      fetch("/counties-fl-ga-al.geojson").then((r) => r.json()),
+      fetch("/counties-us.geojson").then((r) => r.json()),
       fetchCounties(),
       fetchSuperTypes().catch(() => []),
       fetch("/tract-communities.geojson").then((r) => r.json()).catch(() => null),

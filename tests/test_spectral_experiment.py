@@ -413,4 +413,4 @@ def test_load_data_no_holdout_in_training(mod):
     assert len(overlap) == 0, f"Holdout columns found in training: {overlap}"
     assert len(holdout_cols) == 3
     assert X_weighted.shape == X_raw.shape
-    assert X_weighted.shape[0] == 293  # FL+GA+AL counties
+    assert X_weighted.shape[0] == 3154  # national (all 50 states + DC)

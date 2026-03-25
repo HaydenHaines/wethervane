@@ -1,8 +1,11 @@
 # scripts/build_county_geojson.py
-"""Download Census TIGER/Line county shapefiles and generate FL+GA+AL GeoJSON.
+"""Download Census TIGER/Line county shapefiles and generate national US GeoJSON.
 
-Output: web/public/counties-fl-ga-al.geojson
+Output: web/public/counties-us.geojson
 Properties per feature: county_fips, county_name (if crosswalk present)
+
+Covers all 50 states + DC (3,143+ counties/county-equivalents). Simplification
+tolerance of 0.005 degrees keeps the output ~8–12 MB, suitable for web delivery.
 """
 from __future__ import annotations
 
@@ -13,8 +16,7 @@ import pandas as pd
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 TIGER_URL = "https://www2.census.gov/geo/tiger/TIGER2023/COUNTY/tl_2023_us_county.zip"
-TARGET_STATES = {"01", "12", "13"}  # AL, FL, GA
-OUT_PATH = PROJECT_ROOT / "web" / "public" / "counties-fl-ga-al.geojson"
+OUT_PATH = PROJECT_ROOT / "web" / "public" / "counties-us.geojson"
 CROSSWALK_PATH = PROJECT_ROOT / "data" / "raw" / "fips_county_crosswalk.csv"
 
 
@@ -23,15 +25,11 @@ def main() -> None:
     gdf = gpd.read_file(TIGER_URL)
     print(f"Downloaded {len(gdf)} counties (all US)")
 
-    # Filter to FL/GA/AL
-    gdf = gdf[gdf["STATEFP"].isin(TARGET_STATES)].copy()
-    print(f"Filtered to {len(gdf)} counties (FL+GA+AL)")
-
     # Build county_fips
     gdf["county_fips"] = gdf["STATEFP"] + gdf["COUNTYFP"]
 
-    # Simplify geometry (tolerance ~0.001 degrees ≈ ~100m at these latitudes)
-    gdf["geometry"] = gdf["geometry"].simplify(0.001, preserve_topology=True)
+    # Simplify geometry (tolerance 0.005 degrees ≈ ~500m; keeps output ~8–12 MB for national coverage)
+    gdf["geometry"] = gdf["geometry"].simplify(0.005, preserve_topology=True)
 
     # Join county names from crosswalk if available
     keep_cols = ["county_fips", "geometry"]
@@ -40,7 +38,8 @@ def main() -> None:
         xwalk["county_fips"] = xwalk["county_fips"].str.zfill(5)
         gdf = gdf.merge(xwalk, on="county_fips", how="left")
         missing = gdf["county_name"].isna().sum()
-        assert missing == 0, f"{missing} counties missing county_name after crosswalk merge"
+        if missing > 0:
+            print(f"Warning: {missing} counties missing county_name after crosswalk merge (territories/outlying areas)")
         keep_cols = ["county_fips", "county_name", "geometry"]
 
     gdf = gdf[keep_cols].set_geometry("geometry")

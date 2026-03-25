@@ -24,11 +24,13 @@ from scipy.sparse import csr_matrix, issparse
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger(__name__)
 
+from src.core import config as _cfg
+
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 TIGER_DIR = PROJECT_ROOT / "data" / "raw" / "tiger"
 OUTPUT_PATH = PROJECT_ROOT / "data" / "communities" / "adjacency.npz"
 
-STATE_FIPS = ["01", "12", "13"]  # AL, FL, GA
+STATE_FIPS = sorted(_cfg.STATES.values())  # all 50 states + DC, from config
 
 
 # ── Core functions ─────────────────────────────────────────────────────────────
@@ -151,7 +153,7 @@ def handle_islands(W: csr_matrix, gdf: gpd.GeoDataFrame) -> csr_matrix:
 
 
 def _load_tiger_tracts() -> gpd.GeoDataFrame:
-    """Load TIGER 2022 tract shapefiles for AL, FL, GA."""
+    """Load TIGER 2022 tract shapefiles for all states in config.STATES."""
     gdfs = []
     for fips in STATE_FIPS:
         extract_dir = TIGER_DIR / f"tl_2022_{fips}_tract"

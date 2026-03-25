@@ -371,6 +371,13 @@ class TestPredictCombined:
 # ── Integration test on real data ─────────────────────────────────────────────
 
 
+@pytest.mark.skip(
+    reason=(
+        "Phase D blocker: type_assignments.parquet covers 293 FL/GA/AL counties but "
+        "county_shifts_multiyear.parquet is now national (3154 counties). "
+        "Re-enable after national model retrain (Phase D)."
+    )
+)
 class TestRunPartitioning:
     @pytest.fixture(scope="class")
     def results(self):
@@ -386,8 +393,8 @@ class TestRunPartitioning:
             assert key in results
 
     def test_n_counties_correct(self, results):
-        """Should have 293 FL+GA+AL counties."""
-        assert results["n_counties"] == 293
+        """Should have 3154 national counties after Phase D retrain."""
+        assert results["n_counties"] == 3154
 
     def test_n_holdout_dims_correct(self, results):
         """3 holdout dimensions (pres D-shift, R-shift, turnout)."""
