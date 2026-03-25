@@ -93,6 +93,7 @@ export default function MapShell() {
   const [typeDataMap, setTypeDataMap] = useState<Map<number, TypeSummary>>(new Map());
   const [hasTypeData, setHasTypeData] = useState(false);
   const [showTracts, setShowTracts] = useState(false);
+  const [tractLoading, setTractLoading] = useState(false);
   const [tooltip, setTooltip] = useState<{ x: number; y: number; text: string } | null>(null);
   const [tractContext, setTractContext] = useState<TractContext | null>(null);
 
@@ -101,10 +102,8 @@ export default function MapShell() {
       fetch("/counties-us.geojson").then((r) => r.json()),
       fetchCounties(),
       fetchSuperTypes().catch(() => []),
-      fetch("/tract-communities.geojson").then((r) => r.json()).catch(() => null),
       fetchTypes().catch(() => []),
-    ]).then(([geo, counties, superTypes, tractGeo, types]) => {
-      if (tractGeo) setTractGeojson(tractGeo);
+    ]).then(([geo, counties, superTypes, types]) => {
 
       // Build super-type map from API
       const stMap = new Map<number, SuperTypeInfo>();
@@ -152,6 +151,20 @@ export default function MapShell() {
       setGeojson(enriched);
     });
   }, []);
+
+  // Lazy-load tract GeoJSON on first toggle (15MB, too large for initial load)
+  const loadTracts = useCallback(() => {
+    if (tractGeojson || tractLoading) return;
+    setTractLoading(true);
+    fetch("/tracts-us.geojson")
+      .then((r) => r.json())
+      .then((tractGeo) => {
+        setTractGeojson(tractGeo);
+        setTractLoading(false);
+        setShowTracts(true);
+      })
+      .catch(() => setTractLoading(false));
+  }, [tractGeojson, tractLoading]);
 
   const getColor = useCallback(
     (f: any): [number, number, number, number] => {
@@ -302,12 +315,26 @@ export default function MapShell() {
     });
   }
 
+  // For tract view, extract super-type names from GeoJSON features
+  const tractSuperTypeNames = new Map<number, string>();
+  if (showTracts && tractGeojson) {
+    tractGeojson.features?.forEach((f: any) => {
+      const st = f.properties?.super_type;
+      const name = f.properties?.super_type_name;
+      if (st != null && name && !tractSuperTypeNames.has(st)) {
+        tractSuperTypeNames.set(st, name);
+      }
+    });
+  }
+
   const legendEntries = Array.from(activeSuperTypeIds)
     .sort((a, b) => a - b)
     .map((id) => ({
       id,
       color: getColorForSuperType(id),
-      label: superTypeMap.get(id)?.name ?? `Type ${id}`,
+      label: showTracts
+        ? (tractSuperTypeNames.get(id) ?? `Type ${id}`)
+        : (superTypeMap.get(id)?.name ?? `Type ${id}`),
     }));
 
   return (
@@ -360,29 +387,35 @@ export default function MapShell() {
         );
       })()}
 
-      {/* County/Tract toggle */}
-      {tractGeojson && (
-        <button
-          onClick={() => setShowTracts((prev) => !prev)}
-          style={{
-            position: "absolute",
-            top: 12,
-            left: 16,
-            background: showTracts ? "#2166ac" : "white",
-            color: showTracts ? "white" : "#333",
-            border: "1px solid var(--color-border)",
-            borderRadius: "4px",
-            padding: "6px 14px",
-            fontSize: "12px",
-            fontFamily: "var(--font-sans)",
-            cursor: "pointer",
-            fontWeight: 600,
-            boxShadow: "0 1px 3px rgba(0,0,0,0.15)",
-          }}
-        >
-          {showTracts ? "Tract Communities" : "County Types"} ▾
-        </button>
-      )}
+      {/* County/Tract toggle — always shown, lazy-loads tract data on first click */}
+      <button
+        onClick={() => {
+          if (tractGeojson) {
+            setShowTracts((prev) => !prev);
+          } else {
+            loadTracts();
+          }
+        }}
+        disabled={tractLoading}
+        style={{
+          position: "absolute",
+          top: 12,
+          left: 16,
+          background: showTracts ? "#2166ac" : "white",
+          color: showTracts ? "white" : "#333",
+          border: "1px solid var(--color-border)",
+          borderRadius: "4px",
+          padding: "6px 14px",
+          fontSize: "12px",
+          fontFamily: "var(--font-sans)",
+          cursor: tractLoading ? "wait" : "pointer",
+          fontWeight: 600,
+          boxShadow: "0 1px 3px rgba(0,0,0,0.15)",
+          opacity: tractLoading ? 0.7 : 1,
+        }}
+      >
+        {tractLoading ? "Loading tracts…" : showTracts ? "Tract Communities" : "County Types"} ▾
+      </button>
 
       {/* Legend */}
       {legendEntries.length > 0 && (
