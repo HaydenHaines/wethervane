@@ -24,7 +24,7 @@ A political modeling platform that discovers electoral communities directly from
 **BASELINE METRICS (beat these or don't merge):**
 - County holdout r: 0.805 (J sweep CV, national 3,154 counties)
 - County covariance val r: 0.825
-- Tract pop-weighted r: 0.673
+- Tract holdout r: 0.628 (J=100, 31 dims, S191)
 
 **Data sources on disk (gitignored, do NOT re-download):**
 - `data/raw/fivethirtyeight/` — 538 data (887MB), pollster ratings, polls
@@ -86,18 +86,19 @@ Two-resolution electoral model (ADR-006):
 
 ### Tract-Level Model (experimental, toggle on frontend)
 
-**Algorithm:** KMeans J=40, population-weighted, combined features (29 dims: 12 electoral + 17 nonpolitical).
-**Data source:** DRA (Dave's Redistricting) block-level data aggregated to tracts via GEOID[:11] groupby — NO areal interpolation needed. 9,393 tracts, 808K blocks.
-**Holdout r:** 0.645 raw, 0.673 population-weighted. Gap from county (0.78) explained by small-N noise in low-population tracts.
-**Population weighting:** Tracts with <500 voters excluded (314 dropped). Large tracts drive centroids.
-**Visualization:** Bubble dissolve merges adjacent same-type tracts into ~2,500 community polygons.
-**Foundational finding:** Political-only and nonpolitical-only features find DIFFERENT community structures (ARI=0.08), but combined features beat both (r=0.53 → 0.645 with pop weighting).
+**Algorithm:** KMeans J=100, combined features (31 dims: 12 electoral + 19 demographic). Presidential weight=1.0 (applied post-StandardScaler).
+**Data source:** DRA (Dave's Redistricting) block-level data aggregated to tracts via GEOID[:11] groupby — NO areal interpolation needed. 84,415 tracts national (all 50 states + DC), 867K tract-race rows.
+**Holdout r:** 0.628 (S191). Improved from 0.586 (S189) by adding 2 earlier presidential shift pairs (08→12, 12→16), 19 ACS demographic features, and increasing J from 40 to 100.
+**Population weighting:** Tracts with <500 voters excluded (3,286 dropped → 81,129 tracts).
+**Super-types:** 5, derived from Ward HAC on ACS demographic profiles (not KMeans centroids — centroids produce degenerate clustering). Names: Black Urban, Hispanic & Diverse Working, White Mainstream, Urban Professional, Affluent Suburban.
+**Visualization:** Bubble dissolve merges adjacent same-type tracts into ~39,561 community polygons (17MB GeoJSON).
+**Key findings (S191):** Presidential weighting before StandardScaler has NO EFFECT (bug). Optimal pw=1.0 for combined features. Gov shifts at 54% coverage hurt (excluded). Electoral+Demo beats both electoral-only and demo-only. J keeps improving monotonically but plateaus ~J=100-150.
 
 ### Full pipeline:
 1. **Data Assembly** -- Historical election returns (presidential 2000-2024, governor 2002-2022, Senate 2002-2022), Decennial Census (2000/2010/2020) with interpolation, ACS 2022, RCMS, IRS migration, FEC donor density. DRA block data for tract-level.
-2. **Shift Vector Computation** -- Log-odds shifts. County: 33 training dims (2008+). Tract: 12 electoral dims + 17 nonpolitical.
-3. **Type Discovery** -- KMeans clustering. County: presidential×2.5 weighted. Tract: population-weighted, combined features.
-4. **Hierarchical Nesting** -- Ward HAC on centroids → super-types (8 county, 10 tract).
+2. **Shift Vector Computation** -- Log-odds shifts. County: 33 training dims (2008+). Tract: 31 dims (12 electoral + 19 demographic).
+3. **Type Discovery** -- KMeans clustering. County: presidential×2.5 weighted (J=55). Tract: combined features, pw=1.0 (J=100).
+4. **Hierarchical Nesting** -- County: Ward HAC on centroids → super-types. Tract: Ward HAC on demographic profiles (centroids are degenerate).
 5. **Type Description** -- Time-matched demographics overlaid on types. Named descriptively.
 6. **Type Covariance Construction** -- Economist-inspired: demographic profile correlation → shrink toward all-1s → validate against observed comovement.
 7. **Poll Propagation** -- Gaussian Bayesian update via type covariance Σ.
