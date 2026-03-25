@@ -374,7 +374,8 @@ def generate_type_validation_report(
     for c in training_col_names_unfiltered:
         parts = c.split("_")
         try:
-            y1 = int("20" + parts[-2]) if len(parts[-2]) == 2 else int(parts[-2])
+            y2 = int(parts[-2])
+            y1 = y2 + (1900 if y2 >= 50 else 2000) if len(parts[-2]) == 2 else y2
             if y1 >= min_year:
                 training_col_names.append(c)
         except (ValueError, IndexError):

@@ -218,7 +218,8 @@ def main() -> None:
     shift_cols = []
     for c in all_shift_cols:
         parts = c.split("_")
-        y1 = int("20" + parts[-2])
+        y2 = int(parts[-2])
+        y1 = y2 + (1900 if y2 >= 50 else 2000)
         if y1 >= args.min_year:
             shift_cols.append(c)
 

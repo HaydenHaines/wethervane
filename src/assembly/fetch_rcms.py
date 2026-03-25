@@ -3,7 +3,7 @@ Stage 1 data assembly: fetch RCMS 2020 county-level religious congregation data.
 
 Source: Association of Religion Data Archives (ARDA) — thearda.com
 Data: Religious Congregations and Membership Study (RCMS) 2020
-Scope: FL (FIPS 12), GA (FIPS 13), AL (FIPS 01) — 293 counties total
+Scope: All 50 states + DC (configured via src/core/config.py)
 
 The ARDA serves RCMS 2020 data through an interactive county map tool at:
   https://www.thearda.com/us-religion/maps/us-county-maps
@@ -230,7 +230,7 @@ def main() -> None:
         combined = combined[fips_ok]
 
     # Validate state prefixes match state_abbr
-    fips_to_abbr = {"01": "AL", "12": "FL", "13": "GA"}
+    fips_to_abbr = {fips: abbr for abbr, fips in STATES.items()}
     derived_state = combined["county_fips"].str[:2].map(fips_to_abbr)
     mismatch = combined["state_abbr"] != derived_state
     if mismatch.any():
