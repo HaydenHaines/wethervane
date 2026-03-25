@@ -28,11 +28,13 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+from src.core import config as _cfg
+
 log = logging.getLogger(__name__)
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
-# State FIPS -> abbreviation
-_STATE_FIPS_TO_ABBR = {"12": "FL", "13": "GA", "01": "AL"}
+# State FIPS -> abbreviation (all 50 states + DC, sourced from config/model.yaml)
+_STATE_FIPS_TO_ABBR: dict[str, str] = _cfg.STATE_ABBR
 
 
 def compute_county_priors(
@@ -403,6 +405,23 @@ def run() -> None:
         )
         result["race"] = race
         all_predictions.append(result)
+
+    # Generate national baseline for all counties (no poll adjustment)
+    baseline = predict_race(
+        race="baseline",
+        poll_dem_share=None,
+        poll_n=None,
+        type_scores=type_scores,
+        type_covariance=type_covariance,
+        type_priors=type_priors,
+        county_fips=county_fips,
+        states=states,
+        county_names=county_names,
+        state_filter=None,      # no filter = all counties
+        county_priors=county_prior_values,
+    )
+    baseline["race"] = "baseline"
+    all_predictions.append(baseline)
 
     if all_predictions:
         output = pd.concat(all_predictions, ignore_index=True)

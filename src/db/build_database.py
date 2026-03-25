@@ -48,6 +48,7 @@ PREDICTIONS_2026 = PROJECT_ROOT / "data" / "predictions" / "county_predictions_2
 TYPE_ASSIGNMENTS_STUB = PROJECT_ROOT / "data" / "communities" / "county_type_assignments_stub.parquet"
 VERSIONS_DIR = PROJECT_ROOT / "data" / "models" / "versions"
 PREDICTIONS_2026_HAC = PROJECT_ROOT / "data" / "predictions" / "county_predictions_2026_hac.parquet"
+PREDICTIONS_2026_TYPES = PROJECT_ROOT / "data" / "predictions" / "county_predictions_2026_types.parquet"
 CROSSWALK_PATH = PROJECT_ROOT / "data" / "raw" / "fips_county_crosswalk.csv"
 COMMUNITY_PROFILES_PATH = PROJECT_ROOT / "data" / "communities" / "community_profiles.parquet"
 COUNTY_ACS_FEATURES_PATH = PROJECT_ROOT / "data" / "assembled" / "county_acs_features.parquet"
@@ -497,6 +498,28 @@ def build(db_path: Path, reset: bool = False) -> None:
             log.info("Ingested HAC predictions: %d rows", len(new_rows))
     else:
         log.info("No HAC predictions file found; skipping")
+
+    # ── Ingest types predictions ───────────────────────────────────────────────
+    if PREDICTIONS_2026_TYPES.exists():
+        pred_types = pd.read_parquet(PREDICTIONS_2026_TYPES)
+        pred_types["county_fips"] = pred_types["county_fips"].astype(str).str.zfill(5)
+        pred_types_rows = _build_predictions(pred_types, current_version_id)
+        existing_races = set(con.execute("SELECT DISTINCT race FROM predictions").fetchdf()["race"])
+        # Types predictions take precedence: remove any overlapping (county, race) pairs first
+        new_races = set(pred_types_rows["race"].unique()) - existing_races
+        overlap_races = set(pred_types_rows["race"].unique()) & existing_races
+        if overlap_races:
+            for r in overlap_races:
+                overlap_fips = pred_types_rows.loc[pred_types_rows["race"] == r, "county_fips"].tolist()
+                placeholders = ", ".join(["?"] * len(overlap_fips))
+                con.execute(
+                    f"DELETE FROM predictions WHERE race = ? AND county_fips IN ({placeholders}) AND version_id = ?",
+                    [r] + overlap_fips + [current_version_id],
+                )
+        con.execute("INSERT INTO predictions SELECT * FROM pred_types_rows")
+        log.info("Ingested types predictions: %d rows", len(pred_types_rows))
+    else:
+        log.info("No types predictions file found; skipping")
 
     # ── Ingest community sigma ─────────────────────────────────────────────────
     sigma_path = PROJECT_ROOT / "data" / "covariance" / "county_community_sigma.parquet"
