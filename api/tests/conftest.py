@@ -156,19 +156,24 @@ def _build_test_db() -> duckdb.DuckDBPyConnection:
             type_id INTEGER NOT NULL,
             super_type_id INTEGER NOT NULL,
             display_name VARCHAR NOT NULL,
+            median_hh_income DOUBLE,
+            pct_bachelors_plus DOUBLE,
+            pct_white_nh DOUBLE,
+            log_pop_density DOUBLE,
+            narrative VARCHAR,
             version_id VARCHAR NOT NULL,
             PRIMARY KEY (type_id, version_id)
         )
     """)
     # 4 types, 2 super-types
     type_data = [
-        (0, 0, "Rural Conservative", TEST_VERSION),
-        (1, 0, "Small Town Traditional", TEST_VERSION),
-        (2, 1, "Suburban Moderate", TEST_VERSION),
-        (3, 1, "Urban Progressive", TEST_VERSION),
+        (0, 0, "Rural Conservative", 45000.0, 0.15, 0.85, 1.5, "A rural type.", TEST_VERSION),
+        (1, 0, "Small Town Traditional", 50000.0, 0.20, 0.80, 2.0, "A small town type.", TEST_VERSION),
+        (2, 1, "Suburban Moderate", 75000.0, 0.35, 0.70, 3.5, "A suburban type.", TEST_VERSION),
+        (3, 1, "Urban Progressive", 65000.0, 0.45, 0.40, 4.5, "An urban type.", TEST_VERSION),
     ]
     for td in type_data:
-        con.execute("INSERT INTO types VALUES (?, ?, ?, ?)", list(td))
+        con.execute("INSERT INTO types VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", list(td))
 
     con.execute("""
         CREATE TABLE super_types (
