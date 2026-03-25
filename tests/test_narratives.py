@@ -1,7 +1,7 @@
 """Tests for the type narrative generation module.
 
 Covers:
-- All 43 types get a narrative
+- All types get a narrative
 - Narratives are plain strings of reasonable length (1-4 sentences)
 - No raw z-score numbers exposed
 - Distinctive features are mentioned for high-signal types
@@ -211,8 +211,13 @@ class TestGenerateAllNarratives:
     def test_returns_dict(self, narratives):
         assert isinstance(narratives, dict)
 
-    def test_all_43_types_covered(self, narratives):
-        assert len(narratives) == 43, f"Expected 43 types, got {len(narratives)}"
+    def test_all_types_covered(self, narratives):
+        # J is config-driven; check against type_profiles on disk
+        import pandas as pd
+        from pathlib import Path
+        profiles = pd.read_parquet(Path(__file__).parents[1] / "data" / "communities" / "type_profiles.parquet")
+        expected = len(profiles)
+        assert len(narratives) == expected, f"Expected {expected} types, got {len(narratives)}"
 
     def test_all_type_ids_are_ints(self, narratives):
         for tid in narratives:

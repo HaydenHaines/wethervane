@@ -133,7 +133,7 @@ def select_j(
         total_cells = n_counties * n_dims
         dof_ratio = total_cells / n_params if n_params > 0 else 0.0
 
-        if dof_ratio < 1.5:
+        if dof_ratio < 1.0:
             rows.append({
                 "j": j,
                 "mean_holdout_r": np.nan,
