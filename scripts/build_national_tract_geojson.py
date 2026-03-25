@@ -33,7 +33,18 @@ TIGER_ZIP = TIGER_DIR / "cb_2020_us_tract_500k.zip"
 TIGER_SHP_DIR = TIGER_DIR / "cb_2020_us_tract_500k"
 
 ASSIGNMENTS_PATH = PROJECT_ROOT / "data" / "tracts" / "national_tract_assignments.parquet"
+FEATURES_PATH = PROJECT_ROOT / "data" / "tracts" / "tract_features.parquet"
 OUTPUT_PATH = PROJECT_ROOT / "web" / "public" / "tracts-us.geojson"
+
+# Demographic columns to embed as type-level averages in the GeoJSON
+DEMO_COLS = [
+    "median_hh_income",
+    "pct_ba_plus",
+    "pct_white_nh",
+    "pct_black",
+    "pct_hispanic",
+    "evangelical_share",
+]
 
 SIMPLIFY_TOLERANCE = 1000  # metres in EPSG:5070
 MIN_AREA_SQKM = 0.1
@@ -118,6 +129,57 @@ def load_super_type_names() -> dict[int, str]:
     }
 
 
+def compute_type_demographics(assignments: pd.DataFrame) -> dict[int, dict[str, float]]:
+    """Compute average demographic stats per type from tract features.
+
+    Returns a dict mapping type_id -> {col: value} for embedding in GeoJSON.
+    Only computes if the features file exists; returns empty dict otherwise.
+    """
+    if not FEATURES_PATH.exists():
+        print(f"  WARNING: Features file not found at {FEATURES_PATH} — skipping demographics")
+        return {}
+
+    # Only load columns that actually exist in the file
+    all_cols = pd.read_parquet(FEATURES_PATH, columns=["GEOID"]).columns.tolist()
+    avail_cols = [c for c in DEMO_COLS if c in all_cols]
+    features = pd.read_parquet(FEATURES_PATH, columns=["GEOID"] + avail_cols)
+    print(f"  Loaded {len(features):,} rows from tract_features.parquet ({len(avail_cols)} demo cols)")
+
+    # Join dominant_type onto features
+    merged = features.merge(
+        assignments[["GEOID", "dominant_type"]],
+        on="GEOID",
+        how="inner",
+    )
+    print(f"  Matched {len(merged):,} tracts for demographic averages")
+
+    # Compute mean per type; round for compact JSON
+    type_means = merged.groupby("dominant_type")[avail_cols].mean()
+
+    def _round(val: float, ndigits: int) -> float | None:
+        return round(float(val), ndigits) if pd.notna(val) else None
+
+    result: dict[int, dict[str, float]] = {}
+    for type_id, row in type_means.iterrows():
+        record: dict[str, float | None] = {}
+        if "median_hh_income" in row.index:
+            record["median_hh_income"] = _round(row["median_hh_income"], 0)
+        if "pct_ba_plus" in row.index:
+            record["pct_ba_plus"] = _round(row["pct_ba_plus"], 3)
+        if "pct_white_nh" in row.index:
+            record["pct_white_nh"] = _round(row["pct_white_nh"], 3)
+        if "pct_black" in row.index:
+            record["pct_black"] = _round(row["pct_black"], 3)
+        if "pct_hispanic" in row.index:
+            record["pct_hispanic"] = _round(row["pct_hispanic"], 3)
+        if "evangelical_share" in row.index:
+            record["evangelical_share"] = _round(row["evangelical_share"], 1)
+        result[int(type_id)] = record  # type: ignore[assignment]
+
+    print(f"  Computed demographics for {len(result)} types")
+    return result
+
+
 def main() -> None:
     t0 = time.time()
 
@@ -159,6 +221,10 @@ def main() -> None:
     st_names = load_super_type_names()
     print(f"  Super-type names: {st_names}")
 
+    # 6b. Compute type-level demographic averages for tooltip enrichment
+    print("\nComputing type-level demographic averages...")
+    type_demo = compute_type_demographics(assignments)
+
     # 7. Dissolve by state
     states = sorted(joined["state_fips"].unique())
     print(f"\nDissolving {len(joined):,} tracts across {len(states)} states...")
@@ -178,6 +244,7 @@ def main() -> None:
                 min_area_sqkm=MIN_AREA_SQKM,
                 simplify_tolerance=SIMPLIFY_TOLERANCE,
                 super_type_names=st_names,
+                type_demographics=type_demo,
             )
             elapsed = time.time() - t_state
             print(f"  [{i+1:2d}/{len(states)}] FIPS {fips}: "
@@ -194,6 +261,7 @@ def main() -> None:
                     min_area_sqkm=1.0,
                     simplify_tolerance=SIMPLIFY_TOLERANCE,
                     super_type_names=st_names,
+                    type_demographics=type_demo,
                 )
                 elapsed = time.time() - t_state
                 print(f"         Retry succeeded: {len(result):,} polygons "

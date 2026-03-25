@@ -234,7 +234,27 @@ export default function MapShell() {
                 const n = object.properties?.n_tracts;
                 const area = object.properties?.area_sqkm;
                 const stName = getSuperTypeName(st, object);
-                setTooltip({ x, y, text: `${stName}\nType ${tid} · ${n} tracts · ${Math.round(area)} km²` });
+                // Demographic properties embedded at type level
+                const income = formatIncome(object.properties?.median_hh_income);
+                const college = formatPct(object.properties?.pct_ba_plus);
+                const white = formatPct(object.properties?.pct_white_nh);
+                const black = formatPct(object.properties?.pct_black);
+                const hispanic = formatPct(object.properties?.pct_hispanic);
+                // Build rich tooltip
+                const lines: string[] = [
+                  `${stName}  ·  Type ${tid}`,
+                  `${n} tracts · ${Math.round(area)} km²`,
+                ];
+                const stats: string[] = [];
+                if (income) stats.push(`Income: ${income}`);
+                if (college) stats.push(`College+: ${college}`);
+                if (stats.length > 0) lines.push(stats.join("  ·  "));
+                const raceStats: string[] = [];
+                if (white) raceStats.push(`White NH: ${white}`);
+                if (black) raceStats.push(`Black: ${black}`);
+                if (hispanic) raceStats.push(`Hispanic: ${hispanic}`);
+                if (raceStats.length > 0) lines.push(raceStats.join("  ·  "));
+                setTooltip({ x, y, text: lines.join("\n") });
               } else {
                 const fips = object.properties?.county_fips;
                 const name = object.properties?.county_name || fips;

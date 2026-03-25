@@ -27,6 +27,7 @@ def bubble_dissolve(
     min_area_sqkm: float = 0.1,
     simplify_tolerance: float = 0.001,
     super_type_names: dict[int, str] | None = None,
+    type_demographics: "dict[int, dict[str, float]] | None" = None,
 ) -> gpd.GeoDataFrame:
     """Merge adjacent same-type tracts into community polygons.
 
@@ -41,12 +42,14 @@ def bubble_dissolve(
         Douglas-Peucker simplification tolerance applied after merging.
         Units are those of the output CRS (degrees for geographic, metres for
         projected).  Pass 0.0 to skip simplification.
-
-    Returns
-    -------
     super_type_names : dict[int, str] | None
         Optional mapping of super_type id → human-readable display name.
         If omitted, names default to ``'Type {id}'``.
+    type_demographics : dict[int, dict[str, float]] | None
+        Optional mapping of type_id → demographic summary stats dict.
+        Keys: median_hh_income, pct_ba_plus, pct_white_nh, pct_black,
+              pct_hispanic, evangelical_share.
+        These are embedded as flat properties on each output polygon.
 
     Returns
     -------
@@ -57,9 +60,12 @@ def bubble_dissolve(
         super_type_name : str, display name for super_type
         n_tracts        : int, number of tracts in the component
         area_sqkm       : float, polygon area in square kilometres (2 d.p.)
+        + optional demographic columns if type_demographics provided
     """
     if super_type_names is None:
         super_type_names = {}
+    if type_demographics is None:
+        type_demographics = {}
     # 1. Work in EPSG:5070 (Albers Equal Area, metres) for area calculation
     gdf = tract_gdf.to_crs("EPSG:5070").copy()
     gdf = gdf.reset_index(drop=True)  # ensure 0-based integer index
@@ -97,16 +103,18 @@ def bubble_dissolve(
                 merged_geom = merged_geom.simplify(simplify_tolerance)
 
             super_type = int(component_tracts["super_type"].mode().iloc[0])
-            communities.append(
-                {
-                    "geometry": merged_geom,
-                    "type_id": int(type_id),
-                    "super_type": super_type,
-                    "super_type_name": super_type_names.get(super_type, f"Type {super_type}"),
-                    "n_tracts": len(component_list),
-                    "area_sqkm": round(area_sqkm, 2),
-                }
-            )
+            record: dict = {
+                "geometry": merged_geom,
+                "type_id": int(type_id),
+                "super_type": super_type,
+                "super_type_name": super_type_names.get(super_type, f"Type {super_type}"),
+                "n_tracts": len(component_list),
+                "area_sqkm": round(area_sqkm, 2),
+            }
+            # Embed type-level demographic averages if provided
+            if type_id in type_demographics:
+                record.update(type_demographics[type_id])
+            communities.append(record)
 
     if not communities:
         return gpd.GeoDataFrame(
