@@ -22,8 +22,8 @@ A political modeling platform that discovers electoral communities directly from
 - Run tract-level experiments without population weighting (tracts with <500 voters are noise).
 
 **BASELINE METRICS (beat these or don't merge):**
-- County holdout r: 0.818
-- County calibration MAE: 0.061 (with T=10 soft membership)
+- County holdout r: 0.805 (J sweep CV, national 3,154 counties)
+- County covariance val r: 0.825
 - Tract pop-weighted r: 0.673
 
 **Data sources on disk (gitignored, do NOT re-download):**
@@ -78,11 +78,11 @@ Two-resolution electoral model (ADR-006):
 
 ### County-Level Model (production, live at wethervane.hhaines.duckdns.org)
 
-**Algorithm:** KMeans J=43 on presidential×2.5 + state-centered governor/Senate shifts (33 dims, 2008+).
+**Algorithm:** KMeans J=55 on presidential×2.5 + state-centered governor/Senate shifts (33 dims, 2008+). All 50 states + DC, 3,154 counties.
 **Key insight:** Governor/Senate shifts are state-specific races — must be state-centered before cross-state clustering. Presidential shifts carry the cross-state signal.
 **Soft membership:** Temperature-scaled inverse distance (T=10, production default). T=10 reduces calibration MAE by ~37% vs T=1.
-**Holdout r:** 0.818 (county level). Calibration: MAE=0.061, r=0.829 (with T=10).
-**Super-types:** 5 super-types for public communication (e.g., "Rural White Conservative", "Black Belt & Diverse", "Metro Atlanta Professional").
+**Holdout r:** 0.805 (J sweep CV), 0.453 (validation holdout — expected drop at national scale). Covariance val r=0.825.
+**Super-types:** 5 super-types for public communication.
 
 ### Tract-Level Model (experimental, toggle on frontend)
 
@@ -216,7 +216,7 @@ wethervane/
 
 ### Data
 - **Free data only for MVP**: Census, ACS, election returns, FEC, religious congregation data -- all publicly available at no cost.
-- **County-level primary**: The unit of analysis is the county (293 in FL+GA+AL). Tract-level refinement deferred to post-MVP when precinct data coverage improves.
+- **County-level primary**: The unit of analysis is the county (3,154 across all 50 states + DC). Tract-level refinement deferred to post-MVP when precinct data coverage improves.
 - **Soft assignment**: Counties have mixed membership across types via KMeans inverse-distance scores. Scores are always in [0,1], row-normalized to sum to 1.
 - **Census interpolation**: Decennial census (2000/2010/2020) linearly interpolated for election years. Provides time-matched demographics for type description and covariance construction.
 
