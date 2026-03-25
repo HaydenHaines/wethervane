@@ -24,7 +24,7 @@ A political modeling platform that discovers electoral communities directly from
 **BASELINE METRICS (beat these or don't merge):**
 - County holdout r: 0.805 (J sweep CV, national 3,154 counties)
 - County covariance val r: 0.825
-- Tract holdout r: 0.628 (J=100, 31 dims, S191)
+- Tract holdout r: 0.632 (J=100, 35 dims, S192)
 
 **Data sources on disk (gitignored, do NOT re-download):**
 - `data/raw/fivethirtyeight/` — 538 data (887MB), pollster ratings, polls
@@ -88,7 +88,7 @@ Two-resolution electoral model (ADR-006):
 
 **Algorithm:** KMeans J=100, combined features (31 dims: 12 electoral + 19 demographic). Presidential weight=1.0 (applied post-StandardScaler).
 **Data source:** DRA (Dave's Redistricting) block-level data aggregated to tracts via GEOID[:11] groupby — NO areal interpolation needed. 84,415 tracts national (all 50 states + DC), 867K tract-race rows.
-**Holdout r:** 0.628 (S191). Improved from 0.586 (S189) by adding 2 earlier presidential shift pairs (08→12, 12→16), 19 ACS demographic features, and increasing J from 40 to 100.
+**Holdout r:** 0.632 (S192). Improved from 0.628 (S191) by adding 4 religion features (national RCMS, 100% coverage). S191: 0.586→0.628 from earlier pres shifts, ACS demographics, J=40→100.
 **Population weighting:** Tracts with <500 voters excluded (3,286 dropped → 81,129 tracts).
 **Super-types:** 5, derived from Ward HAC on ACS demographic profiles (not KMeans centroids — centroids produce degenerate clustering). Names: Black Urban, Hispanic & Diverse Working, White Mainstream, Urban Professional, Affluent Suburban.
 **Visualization:** Bubble dissolve merges adjacent same-type tracts into ~39,561 community polygons (17MB GeoJSON).
