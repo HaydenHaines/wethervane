@@ -176,8 +176,11 @@ CREATE TABLE IF NOT EXISTS super_types (
 );
 """
 
-# State FIPS → abbreviation mapping (hardcoded for FL/GA/AL)
-_STATE_FIPS_TO_ABBR = {"12": "FL", "13": "GA", "01": "AL"}
+# State FIPS → abbreviation mapping: sourced from config/model.yaml (all 50+DC).
+# Crosswalk CSV is the primary source for county names; this dict handles state_abbr
+# for any county whose state is in scope.
+from src.core import config as _cfg  # noqa: E402
+_STATE_FIPS_TO_ABBR: dict[str, str] = _cfg.STATE_ABBR  # fips_prefix → abbr
 
 
 def _load_version_meta(versions_dir: Path) -> list[dict]:

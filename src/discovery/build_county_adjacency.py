@@ -21,6 +21,8 @@ import numpy as np
 import pandas as pd
 from scipy.sparse import csr_matrix, save_npz
 
+from src.core import config as _cfg
+
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger(__name__)
 
@@ -28,7 +30,9 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 TIGER_DIR = PROJECT_ROOT / "data" / "raw" / "tiger"
 COMMUNITIES_DIR = PROJECT_ROOT / "data" / "communities"
 
-STATE_FIPS = ["01", "12", "13"]  # AL, FL, GA
+# Derived from config/model.yaml — all states listed under geography.state_fips.
+# Edit that file to restrict to a subset (e.g. ["01", "12", "13"] for FL/GA/AL only).
+STATE_FIPS: list[str] = sorted(_cfg.STATE_ABBR.keys())  # sorted 2-digit FIPS strings
 
 
 def load_tiger_tracts() -> gpd.GeoDataFrame:
