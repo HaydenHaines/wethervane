@@ -17,6 +17,7 @@ export interface CountyRow {
   community_id: number;
   dominant_type: number | null;
   super_type: number | null;
+  pred_dem_share: number | null;
 }
 
 export interface ForecastRow {
@@ -101,6 +102,11 @@ export interface TypeSummary {
   display_name: string;
   n_counties: number;
   mean_pred_dem_share: number | null;
+  // Key demographics for tooltip display (pre-fetched alongside type names)
+  median_hh_income: number | null;
+  pct_bachelors_plus: number | null;
+  pct_white_nh: number | null;
+  log_pop_density: number | null;
 }
 
 export interface TypeCounty {

@@ -74,6 +74,7 @@ class CountyRow(BaseModel):
     community_id: int | None = None
     dominant_type: int | None = None
     super_type: int | None = None
+    pred_dem_share: float | None = None
 
 
 class ForecastRow(BaseModel):
@@ -119,6 +120,11 @@ class TypeSummary(BaseModel):
     display_name: str
     n_counties: int
     mean_pred_dem_share: float | None = None
+    # Key demographics for tooltip display (pre-fetched, no per-hover API calls)
+    median_hh_income: float | None = None
+    pct_bachelors_plus: float | None = None
+    pct_white_nh: float | None = None
+    log_pop_density: float | None = None
 
 
 class TypeCounty(BaseModel):

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import duckdb
+import pandas as pd
 from fastapi import APIRouter, Depends, Request
 
 from api.db import get_db
@@ -24,22 +25,46 @@ def list_counties(request: Request, db: duckdb.DuckDBPyConnection = Depends(get_
     has_types = _has_table(db, "county_type_assignments")
     has_communities = _has_table(db, "community_assignments")
 
+    has_predictions = _has_table(db, "predictions")
+
     if has_types:
-        rows = db.execute(
-            """
-            SELECT c.county_fips, c.state_abbr,
-                   ca.community_id,
-                   cta.dominant_type, cta.super_type
-            FROM counties c
-            JOIN county_type_assignments cta
-                ON c.county_fips = cta.county_fips
-            LEFT JOIN community_assignments ca
-                ON c.county_fips = ca.county_fips
-                AND ca.version_id = ?
-            ORDER BY c.county_fips
-            """,
-            [version_id],
-        ).fetchdf()
+        if has_predictions:
+            rows = db.execute(
+                """
+                SELECT c.county_fips, c.state_abbr,
+                       ca.community_id,
+                       cta.dominant_type, cta.super_type,
+                       AVG(p.pred_dem_share) AS pred_dem_share
+                FROM counties c
+                JOIN county_type_assignments cta
+                    ON c.county_fips = cta.county_fips
+                LEFT JOIN community_assignments ca
+                    ON c.county_fips = ca.county_fips
+                    AND ca.version_id = ?
+                LEFT JOIN predictions p
+                    ON c.county_fips = p.county_fips
+                GROUP BY c.county_fips, c.state_abbr, ca.community_id,
+                         cta.dominant_type, cta.super_type
+                ORDER BY c.county_fips
+                """,
+                [version_id],
+            ).fetchdf()
+        else:
+            rows = db.execute(
+                """
+                SELECT c.county_fips, c.state_abbr,
+                       ca.community_id,
+                       cta.dominant_type, cta.super_type
+                FROM counties c
+                JOIN county_type_assignments cta
+                    ON c.county_fips = cta.county_fips
+                LEFT JOIN community_assignments ca
+                    ON c.county_fips = ca.county_fips
+                    AND ca.version_id = ?
+                ORDER BY c.county_fips
+                """,
+                [version_id],
+            ).fetchdf()
     elif has_communities:
         rows = db.execute(
             """
@@ -61,19 +86,20 @@ def list_counties(request: Request, db: duckdb.DuckDBPyConnection = Depends(get_
             """,
         ).fetchdf()
 
-    import pandas as pd
-
     results = []
     for _, row in rows.iterrows():
         community_id = None
         dominant_type = None
         super_type = None
+        pred_dem_share = None
         if "community_id" in row.index and not pd.isna(row["community_id"]):
             community_id = int(row["community_id"])
         if "dominant_type" in row.index and not pd.isna(row["dominant_type"]):
             dominant_type = int(row["dominant_type"])
         if "super_type" in row.index and not pd.isna(row["super_type"]):
             super_type = int(row["super_type"])
+        if "pred_dem_share" in row.index and not pd.isna(row["pred_dem_share"]):
+            pred_dem_share = float(row["pred_dem_share"])
         results.append(
             CountyRow(
                 county_fips=row["county_fips"],
@@ -81,6 +107,7 @@ def list_counties(request: Request, db: duckdb.DuckDBPyConnection = Depends(get_
                 community_id=community_id,
                 dominant_type=dominant_type,
                 super_type=super_type,
+                pred_dem_share=pred_dem_share,
             )
         )
     return results

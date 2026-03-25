@@ -7,6 +7,38 @@ import { useMapContext } from "@/components/MapContext";
 import { CommunityPanel } from "@/components/CommunityPanel";
 import { TypePanel } from "@/components/TypePanel";
 
+// ── Tooltip helpers ──────────────────────────────────────────────────────────
+
+/** Format dem share as political lean: "D+5.2" or "R+3.1" */
+function formatLean(share: number | null | undefined): string {
+  if (share == null) return "";
+  const pct = share * 100;
+  if (pct >= 50) return `D+${(pct - 50).toFixed(1)}`;
+  return `R+${(50 - pct).toFixed(1)}`;
+}
+
+/** Format income as "$XX,XXX" */
+function formatIncome(income: number | null | undefined): string {
+  if (income == null) return "";
+  return `$${Math.round(income).toLocaleString("en-US")}`;
+}
+
+/** Convert log_pop_density to a readable category */
+function densityCategory(logDensity: number | null | undefined): string {
+  if (logDensity == null) return "";
+  const density = Math.exp(logDensity);
+  if (density >= 2000) return "Urban";
+  if (density >= 500) return "Suburban";
+  if (density >= 100) return "Exurban";
+  return "Rural";
+}
+
+/** Format a percentage value (0–1) as "XX%" */
+function formatPct(val: number | null | undefined): string {
+  if (val == null) return "";
+  return `${Math.round(val * 100)}%`;
+}
+
 // 15-color perceptually-distinct palette. Assigned by super_type_id.
 // Purely a visual concern — the model does not know about colors.
 export const PALETTE: [number, number, number][] = [
@@ -58,6 +90,7 @@ export default function MapShell() {
   const [countyMap, setCountyMap] = useState<Record<string, CountyRow>>({});
   const [superTypeMap, setSuperTypeMap] = useState<Map<number, SuperTypeInfo>>(new Map());
   const [typeNameMap, setTypeNameMap] = useState<Map<number, string>>(new Map());
+  const [typeDataMap, setTypeDataMap] = useState<Map<number, TypeSummary>>(new Map());
   const [hasTypeData, setHasTypeData] = useState(false);
   const [showTracts, setShowTracts] = useState(false);
   const [tooltip, setTooltip] = useState<{ x: number; y: number; text: string } | null>(null);
@@ -83,12 +116,15 @@ export default function MapShell() {
       });
       setSuperTypeMap(stMap);
 
-      // Build fine type name map from API
+      // Build fine type name map and full type data map from API
       const tnMap = new Map<number, string>();
+      const tdMap = new Map<number, TypeSummary>();
       (types as TypeSummary[]).forEach((t) => {
         tnMap.set(t.type_id, t.display_name);
+        tdMap.set(t.type_id, t);
       });
       setTypeNameMap(tnMap);
+      setTypeDataMap(tdMap);
 
       // Build county map
       const map: Record<string, CountyRow> = {};
@@ -187,13 +223,31 @@ export default function MapShell() {
                 const stName = getSuperTypeName(st, object);
                 setTooltip({ x, y, text: `${stName}\nType ${tid} · ${n} tracts · ${Math.round(area)} km²` });
               } else {
-                const name = object.properties?.county_name || object.properties?.county_fips;
+                const fips = object.properties?.county_fips;
+                const name = object.properties?.county_name || fips;
                 if (hasTypeData) {
-                  const st = object.properties?.super_type;
                   const dt = object.properties?.dominant_type;
+                  const st = object.properties?.super_type;
                   const stName = getSuperTypeName(st, object);
                   const typeName = typeNameMap.get(dt) ?? `Type ${dt}`;
-                  setTooltip({ x, y, text: `${name}\n${typeName}\n${stName}` });
+                  // Enrich with predictions and type demographics
+                  const county = countyMap[fips];
+                  const typeInfo = typeDataMap.get(dt);
+                  const lean = formatLean(county?.pred_dem_share);
+                  const income = formatIncome(typeInfo?.median_hh_income);
+                  const college = formatPct(typeInfo?.pct_bachelors_plus);
+                  const white = formatPct(typeInfo?.pct_white_nh);
+                  const density = densityCategory(typeInfo?.log_pop_density);
+                  // Build tooltip lines
+                  const lines: string[] = [`${name}`, `${typeName}  ·  ${stName}`];
+                  if (lean) lines.push(`Lean: ${lean}`);
+                  const stats: string[] = [];
+                  if (income) stats.push(`Income: ${income}`);
+                  if (college) stats.push(`College+: ${college}`);
+                  if (white) stats.push(`White NH: ${white}`);
+                  if (density) stats.push(`Density: ${density}`);
+                  if (stats.length > 0) lines.push(stats.join("  ·  "));
+                  setTooltip({ x, y, text: lines.join("\n") });
                 } else {
                   const cid = object.properties?.community_id;
                   setTooltip({ x, y, text: `${name}\nCommunity ${cid}` });
@@ -265,24 +319,46 @@ export default function MapShell() {
         style={{ background: "#e8ecf0" }}
       />
 
-      {tooltip && (
-        <div style={{
-          position: "absolute",
-          left: tooltip.x + 12,
-          top: tooltip.y + 12,
-          background: "white",
-          border: "1px solid var(--color-border)",
-          borderRadius: "4px",
-          padding: "6px 10px",
-          fontSize: "12px",
-          fontFamily: "var(--font-sans)",
-          pointerEvents: "none",
-          whiteSpace: "pre-line",
-          boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
-        }}>
-          {tooltip.text}
-        </div>
-      )}
+      {tooltip && (() => {
+        const lines = tooltip.text.split("\n");
+        const [headline, ...rest] = lines;
+        return (
+          <div style={{
+            position: "absolute",
+            left: tooltip.x + 14,
+            top: tooltip.y + 14,
+            background: "rgba(20, 24, 32, 0.93)",
+            borderRadius: "6px",
+            padding: "8px 12px",
+            fontSize: "12px",
+            fontFamily: "var(--font-sans)",
+            pointerEvents: "none",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.35)",
+            minWidth: "160px",
+            maxWidth: "280px",
+          }}>
+            <div style={{ color: "#f0f4f8", fontWeight: 600, fontSize: "13px", marginBottom: "4px" }}>
+              {headline}
+            </div>
+            {rest.map((line, i) => {
+              if (line.startsWith("Lean:")) {
+                const lean = line.replace("Lean: ", "");
+                const isDem = lean.startsWith("D");
+                return (
+                  <div key={i} style={{ color: isDem ? "#6baed6" : "#fc8d59", fontWeight: 700, fontSize: "13px", marginBottom: "4px" }}>
+                    {lean}
+                  </div>
+                );
+              }
+              return (
+                <div key={i} style={{ color: "#b0bec5", fontSize: "11px", marginTop: i === 0 ? 0 : "2px" }}>
+                  {line}
+                </div>
+              );
+            })}
+          </div>
+        );
+      })()}
 
       {/* County/Tract toggle */}
       {tractGeojson && (

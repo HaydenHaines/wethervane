@@ -228,25 +228,39 @@ def list_types(request: Request, db: duckdb.DuckDBPyConnection = Depends(get_db)
             t.super_type_id,
             t.display_name,
             COUNT(DISTINCT cta.county_fips) AS n_counties,
-            NULL AS mean_pred_dem_share
+            AVG(p.pred_dem_share) AS mean_pred_dem_share,
+            t.median_hh_income,
+            t.pct_bachelors_plus,
+            t.pct_white_nh,
+            t.log_pop_density
         FROM types t
         LEFT JOIN county_type_assignments cta
             ON t.type_id = cta.dominant_type
-        GROUP BY t.type_id, t.super_type_id, t.display_name
+        LEFT JOIN predictions p
+            ON cta.county_fips = p.county_fips
+        GROUP BY t.type_id, t.super_type_id, t.display_name,
+                 t.median_hh_income, t.pct_bachelors_plus,
+                 t.pct_white_nh, t.log_pop_density
         ORDER BY t.type_id
         """,
     ).fetchdf()
 
+    def _f(v) -> float | None:
+        return None if pd.isna(v) else float(v)
+
     results = []
     for _, row in rows.iterrows():
-        mean_share = None if pd.isna(row["mean_pred_dem_share"]) else float(row["mean_pred_dem_share"])
         results.append(
             TypeSummary(
                 type_id=int(row["type_id"]),
                 super_type_id=int(row["super_type_id"]),
                 display_name=str(row["display_name"]),
                 n_counties=int(row["n_counties"]),
-                mean_pred_dem_share=mean_share,
+                mean_pred_dem_share=_f(row["mean_pred_dem_share"]),
+                median_hh_income=_f(row["median_hh_income"]),
+                pct_bachelors_plus=_f(row["pct_bachelors_plus"]),
+                pct_white_nh=_f(row["pct_white_nh"]),
+                log_pop_density=_f(row["log_pop_density"]),
             )
         )
     return results
