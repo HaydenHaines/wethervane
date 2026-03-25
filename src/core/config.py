@@ -5,8 +5,12 @@ rather than hardcoding constants.
 
 Usage:
     from src.core import config
-    states = config.STATES          # {"FL": "12", "GA": "13", "AL": "01"}
+    states = config.STATES          # {"AL": "01", "FL": "12", ...} all 50+DC
     pres_pairs = config.PRES_PAIRS  # [("00", "04"), ...]
+
+    # To fetch a configurable subset (defaults to all states in config):
+    fips_map = config.get_state_fips()          # all states from config
+    fips_map = config.get_state_fips(["FL", "GA", "AL"])  # explicit override
 """
 from __future__ import annotations
 
@@ -31,6 +35,29 @@ _cfg = load()
 STATES: dict[str, str] = _cfg["geography"]["state_fips"]          # abbr → fips prefix
 STATE_ABBR: dict[str, str] = {v: k for k, v in STATES.items()}   # fips prefix → abbr
 AL_FIPS_PREFIX: str = _cfg["geography"]["al_fips_prefix"]
+
+
+def get_state_fips(abbrs: list[str] | None = None) -> dict[str, str]:
+    """Return a state abbreviation → FIPS prefix mapping.
+
+    Parameters
+    ----------
+    abbrs:
+        Optional list of state abbreviations to restrict the result to (e.g.
+        ``["FL", "GA", "AL"]`` for the legacy 3-state pilot).  If omitted, all
+        states listed in ``config/model.yaml`` under ``geography.state_fips``
+        are returned (currently all 50 states + DC).
+
+    Returns
+    -------
+    dict mapping state abbreviation → 2-digit FIPS prefix string.
+    """
+    if abbrs is None:
+        return dict(STATES)
+    unknown = set(abbrs) - set(STATES)
+    if unknown:
+        raise ValueError(f"Unknown state abbreviation(s): {sorted(unknown)}")
+    return {abbr: STATES[abbr] for abbr in abbrs}
 
 PRES_YEARS: list[int] = _cfg["election"]["presidential_years"]
 GOV_YEARS: list[int] = _cfg["election"]["governor_years"]
