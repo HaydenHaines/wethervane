@@ -302,16 +302,16 @@ class TestFilterStateScope:
         result = filter_inflow_df(df, "2021-2022")
         assert len(result) == 1
 
-    def test_drops_flow_between_non_target_states(self):
-        """Flows where neither origin nor destination is in FL/GA/AL must be dropped."""
+    def test_keeps_flow_between_configured_states(self):
+        """Flows between any configured states are retained (TX and CA are now in scope)."""
         df = _make_raw_df(
             [
-                # TX → CA: neither is FL/GA/AL
+                # TX → CA: both are now configured states (national scope)
                 {"y1_statefips": 48, "y1_countyfips": 1, "y2_statefips": 6, "y2_countyfips": 1},
             ]
         )
         result = filter_inflow_df(df, "2021-2022")
-        assert len(result) == 0
+        assert len(result) == 1
 
     def test_all_three_target_states_accepted(self):
         """Flows involving FL (12), GA (13), or AL (01) must all be kept."""
@@ -418,16 +418,18 @@ class TestFilterEdgeCases:
         result = filter_inflow_df(df, "2021-2022")
         assert len(result) == 0
 
-    def test_no_target_state_rows_returns_empty(self):
-        """Input with no FL/GA/AL flows must produce empty output."""
+    def test_all_configured_state_rows_retained(self):
+        """All configured-state flows are retained (CA, TX, NY, IL are now all in scope)."""
         df = _make_raw_df(
             [
+                # CA → TX: both configured
                 {"y1_statefips": 6, "y1_countyfips": 1, "y2_statefips": 48, "y2_countyfips": 1},
+                # NY → IL: both configured
                 {"y1_statefips": 36, "y1_countyfips": 61, "y2_statefips": 17, "y2_countyfips": 31},
             ]
         )
         result = filter_inflow_df(df, "2021-2022")
-        assert len(result) == 0
+        assert len(result) == 2
 
 
 # ---------------------------------------------------------------------------

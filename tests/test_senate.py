@@ -86,18 +86,18 @@ def test_filter_drops_state_senate():
 
 
 def test_filter_drops_other_states():
-    """Only FL, GA, AL rows should survive."""
+    """All configured-state rows survive (TX and NY are now in scope — national expansion)."""
     rows = [
         _make_senate_row("FL", "12001", 2018),
         _make_senate_row("GA", "13001", 2018),
         _make_senate_row("AL", "01001", 2018),
-        _make_senate_row("TX", "48001", 2018),  # drop
-        _make_senate_row("NY", "36001", 2018),  # drop
+        _make_senate_row("TX", "48001", 2018),  # TX now in scope
+        _make_senate_row("NY", "36001", 2018),  # NY now in scope
     ]
     df = _raw_df(rows)
     filtered = filter_senate_rows(df)
-    assert len(filtered) == 3
-    assert set(filtered["state_po"]) == {"FL", "GA", "AL"}
+    assert len(filtered) == 5
+    assert set(filtered["state_po"]) == {"FL", "GA", "AL", "TX", "NY"}
 
 
 def test_filter_drops_third_party():

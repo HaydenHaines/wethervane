@@ -262,7 +262,7 @@ class TestResponseParsing:
         counties_12 = [("12", "001"), ("12", "003")]
         counties_13 = [("13", "001")]
         counties_01 = [("01", "001")]
-        # 6 calls: 2 per state (sf1 + sf3)
+        # 6 calls: 2 per state (sf1 + sf3), sorted alphabetically: AL, FL, GA
         mock_get.side_effect = [
             _mock_response(_multi_county_response(_sf1_2000_row, counties_01)),
             _mock_response(_multi_county_response(_sf3_2000_row, counties_01)),
@@ -271,7 +271,9 @@ class TestResponseParsing:
             _mock_response(_multi_county_response(_sf1_2000_row, counties_13)),
             _mock_response(_multi_county_response(_sf3_2000_row, counties_13)),
         ]
-        df = fetch_year(2000)
+        # Pass explicit 3-state dict so mock side-effects line up regardless of
+        # how many states are in the global config.
+        df = fetch_year(2000, states={"AL": "01", "FL": "12", "GA": "13"})
         assert len(df) == 4  # 2 + 1 + 1
 
 

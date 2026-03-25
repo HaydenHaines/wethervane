@@ -152,11 +152,11 @@ class TestComputeIncomeShares:
 
 
 class TestFilterToTargetStates:
-    def test_ca_county_excluded(self, mixed_state_raw_df):
-        """California county (06*) is dropped."""
+    def test_ca_county_retained(self, mixed_state_raw_df):
+        """California county (06*) is retained — CA is now a target state (national scope)."""
         shares = compute_income_shares(mixed_state_raw_df)
         filtered = filter_to_target_states(shares)
-        assert "06001" not in filtered["county_fips"].values
+        assert "06001" in filtered["county_fips"].values
 
     def test_fl_county_retained(self, mixed_state_raw_df):
         """Florida county (12*) is retained."""
@@ -165,15 +165,21 @@ class TestFilterToTargetStates:
         assert "12001" in filtered["county_fips"].values
 
     def test_target_prefixes_are_correct(self):
-        """TARGET_FIPS_PREFIXES contains exactly FL, GA, AL codes."""
-        assert TARGET_FIPS_PREFIXES == {"12", "13", "01"}
+        """TARGET_FIPS_PREFIXES contains all 50 states + DC (51 entries)."""
+        # All US state FIPS prefixes — 50 states + DC
+        assert len(TARGET_FIPS_PREFIXES) == 51
+        assert "12" in TARGET_FIPS_PREFIXES  # FL
+        assert "13" in TARGET_FIPS_PREFIXES  # GA
+        assert "01" in TARGET_FIPS_PREFIXES  # AL
+        assert "06" in TARGET_FIPS_PREFIXES  # CA
+        assert "48" in TARGET_FIPS_PREFIXES  # TX
 
     def test_only_target_states_in_output(self, mixed_state_raw_df):
-        """All county_fips in output start with 12, 13, or 01."""
+        """All county_fips in output are within the configured state set."""
         shares = compute_income_shares(mixed_state_raw_df)
         filtered = filter_to_target_states(shares)
         prefixes = filtered["county_fips"].str[:2].unique()
-        assert set(prefixes).issubset({"12", "13", "01"})
+        assert set(prefixes).issubset(TARGET_FIPS_PREFIXES)
 
 
 # ---------------------------------------------------------------------------
@@ -412,12 +418,12 @@ class TestBuildBeaIncomeFeatures:
         }
 
     @patch("src.assembly.fetch_bea_income.fetch_cainc1_state_cached")
-    def test_only_fl_ga_al_counties(self, mock_fetch):
-        """Output contains only FL (12), GA (13), AL (01) counties."""
+    def test_only_configured_state_counties(self, mock_fetch):
+        """Output contains only counties within the configured state set."""
         mock_fetch.side_effect = self._side_effect
         result = build_bea_income_features()
         prefixes = result["county_fips"].str[:2].unique()
-        assert set(prefixes).issubset({"12", "13", "01"})
+        assert set(prefixes).issubset(TARGET_FIPS_PREFIXES)
 
     @patch("src.assembly.fetch_bea_income.fetch_cainc1_state_cached")
     def test_no_duplicate_county_fips(self, mock_fetch):

@@ -93,20 +93,21 @@ def test_filter_governor_only():
 
 
 def test_filter_target_states_only():
-    """Only FL, GA, AL rows should survive after filtering."""
+    """Only rows for configured states survive after filtering (now all 50+DC)."""
     rows = [
         _make_row("FL", "12001", 2006.0),
         _make_row("GA", "13001", 2006.0),
         _make_row("AL", "01001", 2006.0),
-        _make_row("TX", "48001", 2006.0),  # should be excluded
-        _make_row("CA", "06001", 2006.0),  # should be excluded
+        _make_row("TX", "48001", 2006.0),  # TX is now in scope
+        _make_row("CA", "06001", 2006.0),  # CA is now in scope
     ]
     df = _make_df(rows)
     filtered = filter_governor_rows(df)
-    assert len(filtered) == 3
-    assert set(filtered["state"].unique()) == {"FL", "GA", "AL"}
-    assert "48001" not in filtered["fips"].values
-    assert "06001" not in filtered["fips"].values
+    # All 5 rows are for configured states (national scope)
+    assert len(filtered) == 5
+    assert set(filtered["state"].unique()) == {"FL", "GA", "AL", "TX", "CA"}
+    assert "48001" in filtered["fips"].values
+    assert "06001" in filtered["fips"].values
 
 
 # ---------------------------------------------------------------------------

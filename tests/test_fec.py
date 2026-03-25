@@ -208,10 +208,11 @@ class TestBuildCountySpine:
         al_rows = spine[spine["county_fips"].str[:2] == "01"]
         assert (al_rows["state_abbr"] == "AL").all()
 
-    def test_out_of_scope_fips_excluded(self, sample_crosswalk):
-        """Counties outside FL/GA/AL (e.g. CA 06037) are excluded from spine."""
+    def test_in_scope_fips_included(self, sample_crosswalk):
+        """Counties within any configured state (e.g. CA 06037) are included in spine."""
+        # CA is now in scope (national expansion); 06037 should be retained
         spine = _build_county_spine(sample_crosswalk)
-        assert "06037" not in spine["county_fips"].values
+        assert "06037" in spine["county_fips"].values
 
     def test_unique_county_fips(self, sample_crosswalk):
         """Each county FIPS appears exactly once in spine."""
@@ -422,8 +423,13 @@ class TestCachePaths:
         assert 2024 in FEC_CYCLES
 
     def test_target_states(self):
-        """TARGET_STATES contains FL, GA, AL."""
-        assert TARGET_STATES == {"FL", "GA", "AL"}
+        """TARGET_STATES contains all 50 states + DC (51 entries)."""
+        assert len(TARGET_STATES) == 51
+        assert "FL" in TARGET_STATES
+        assert "GA" in TARGET_STATES
+        assert "AL" in TARGET_STATES
+        assert "CA" in TARGET_STATES
+        assert "TX" in TARGET_STATES
 
 
 # ---------------------------------------------------------------------------

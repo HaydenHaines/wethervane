@@ -263,11 +263,11 @@ class TestFilterStateScope:
         result = filter_county_df(df, 2022, "10")
         assert len(result) >= 1
 
-    def test_drops_non_target_state(self):
-        """Texas counties (48xxx) must be dropped."""
+    def test_keeps_target_state_tx(self):
+        """Texas counties (48xxx) are now kept — TX is a configured state (national scope)."""
         df = _make_raw_csv_df([{"area_fips": "48001"}])
         result = filter_county_df(df, 2022, "10")
-        assert len(result) == 0
+        assert len(result) >= 1
 
     def test_drops_state_level_fips(self):
         """State-level FIPS (12000) must be dropped (county part == '000')."""
@@ -383,16 +383,16 @@ class TestFilterEdgeCases:
         result = filter_county_df(df, 2022, "10")
         assert len(result) == 0
 
-    def test_all_non_target_states_returns_empty(self):
-        """Input with no FL/GA/AL rows must return empty output."""
+    def test_all_configured_state_rows_kept(self):
+        """TX and CA are now configured states — rows are kept (national scope)."""
         df = _make_raw_csv_df(
             [
-                {"area_fips": "48001"},  # TX
-                {"area_fips": "06001"},  # CA
+                {"area_fips": "48001"},  # TX — now in scope
+                {"area_fips": "06001"},  # CA — now in scope
             ]
         )
         result = filter_county_df(df, 2022, "10")
-        assert len(result) == 0
+        assert len(result) == 2
 
 
 # ---------------------------------------------------------------------------
