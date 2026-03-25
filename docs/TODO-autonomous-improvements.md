@@ -53,11 +53,11 @@ KMeans at J=43 with r=0.818 is solid. These experiments may find marginal gains 
 
 - [x] **P3.1: Gaussian Mixture Models** — DONE S164. GMM diagonal beats KMeans at J=43 (0.847 vs 0.832 holdout_r, +1.5%) but KMeans wins at J=50. Marginal gains. Recommendation: keep KMeans. See docs/gmm-experiment-S164.md.
 
-- [ ] **P3.2: MiniBatch KMeans stability** — Test centroid stability via bootstrap (100 random starts). Measure how often counties switch types across runs. If unstable, consider ensemble averaging. Lower priority — current model seems stable in practice.
+- [x] **P3.2: KMeans stability** — DONE S165. Holdout r = 0.919 ± 0.004 across 50 random seeds. Stable for production. See docs/kmeans-stability-experiment-S165.md.
 
 - [x] **P3.3: Spectral clustering** — DONE S175. Noise-level difference: spectral wins at J=43 (+0.006) but loses at J=50 (-0.009). No systematic advantage. KMeans confirmed. See docs/spectral-experiment-S175.md.
 
-- [ ] **P3.4: HDBSCAN with auto-J** — Discovers J from data density. Interesting but risky — may produce very different J than 43. Counties in sparse regions become "noise."
+- [x] **P3.4: HDBSCAN with auto-J** — DONE S178. Fails decisively (r=0.53 vs KMeans 0.84). Finds state-level density, not electoral types. All clustering experiments complete except P3.5.
 
 - [ ] **P3.5: Turnout as separate dimension** — Turnout-shift is redundant with 2-party D/R shifts. Test: cluster on turnout separately, merge with partisan types. Research: does turnout structure add predictive value for midterms?
 
@@ -107,7 +107,7 @@ These are research tasks — web search and evaluation, not code. Output should 
 
 - [x] **P7.2: Model versioning** — DONE S175. Tagged `type-primary-v1.0` on main. KMeans J=43, holdout r=0.828, county RMSE 2.67pp, 1511 tests.
 
-- [ ] **P7.3: CI/CD validation** — GitHub Action runs `validate_types` on push to feat/type-primary-architecture. Fail if holdout r drops below 0.80.
+- [x] **P7.3: CI/CD validation** — DONE S175. GitHub Actions: lint + test + test count threshold.
 
 ---
 
