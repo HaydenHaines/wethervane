@@ -102,13 +102,19 @@ def load_super_type_names() -> dict[int, str]:
     except Exception:
         pass
 
-    # Generic names for 5 tract super-types
+    # Descriptive names for 5 tract super-types.
+    # Derived from Ward HAC on demographic profiles of 40 fine types (ACS 2022).
+    # Super-type 0: Hispanic/Asian multiethnic working-middle class (15,702 tracts)
+    # Super-type 1: Urban majority-minority, Black+Hispanic, high transit (6,772 tracts)
+    # Super-type 2: Tight-knit religious enclaves, very young, high poverty (10 tracts)
+    # Super-type 3: White mainstream suburban/rural, high homeownership (43,328 tracts)
+    # Super-type 4: High-education professional, diverse, knowledge economy (15,317 tracts)
     return {
-        0: "Super-Type A",
-        1: "Super-Type B",
-        2: "Super-Type C",
-        3: "Super-Type D",
-        4: "Super-Type E",
+        0: "Diverse Sunbelt",
+        1: "Urban Majority-Minority",
+        2: "Enclave Communities",
+        3: "White Mainstream Suburban",
+        4: "High-Education Professional",
     }
 
 
