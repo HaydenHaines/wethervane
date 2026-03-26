@@ -509,56 +509,58 @@ export function ForecastView() {
           <p style={{ margin: "0 0 6px", fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.4px", color: "var(--color-text-muted)" }}>
             County predictions
           </p>
-          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "12px" }}>
-            <thead>
-              <tr style={{ borderBottom: "1px solid var(--color-border)" }}>
-                <th style={{ textAlign: "left", padding: "4px 6px", color: "var(--color-text-muted)", fontWeight: "normal" }}>County</th>
-                <th style={{ textAlign: "right", padding: "4px 6px", color: "var(--color-text-muted)", fontWeight: "normal" }}>Dem %</th>
-                {hasPollUpdate && (
-                  <th style={{ textAlign: "right", padding: "4px 6px", color: "var(--color-text-muted)", fontWeight: "normal" }}>Δ</th>
-                )}
-                <th style={{ textAlign: "right", padding: "4px 6px", color: "var(--color-text-muted)", fontWeight: "normal" }}>90% CI</th>
-              </tr>
-            </thead>
-            <tbody>
-              {[...stateRows]
-                .sort((a, b) => (b.pred_dem_share ?? 0) - (a.pred_dem_share ?? 0))
-                .map((row) => {
-                  const share = row.pred_dem_share ?? 0;
-                  const structuralShare = structuralMap.get(row.county_fips) ?? null;
-                  const delta = hasPollUpdate && structuralShare !== null ? share - structuralShare : null;
-                  return (
-                    <tr key={row.county_fips} style={{ borderBottom: "1px solid var(--color-border)" }}>
-                      <td style={{ padding: "5px 6px" }}>{row.county_name ?? row.county_fips}</td>
-                      <td style={{
-                        padding: "5px 6px", textAlign: "right",
-                        color: share > 0.5 ? "var(--color-dem)" : "var(--color-rep)",
-                        fontWeight: 600,
-                      }}>
-                        {(share * 100).toFixed(1)}%
-                      </td>
-                      {hasPollUpdate && (
+          <div className="forecast-county-table-wrap">
+            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "12px" }}>
+              <thead>
+                <tr style={{ borderBottom: "1px solid var(--color-border)" }}>
+                  <th style={{ textAlign: "left", padding: "4px 6px", color: "var(--color-text-muted)", fontWeight: "normal" }}>County</th>
+                  <th style={{ textAlign: "right", padding: "4px 6px", color: "var(--color-text-muted)", fontWeight: "normal" }}>Dem %</th>
+                  {hasPollUpdate && (
+                    <th style={{ textAlign: "right", padding: "4px 6px", color: "var(--color-text-muted)", fontWeight: "normal" }}>Δ</th>
+                  )}
+                  <th style={{ textAlign: "right", padding: "4px 6px", color: "var(--color-text-muted)", fontWeight: "normal" }}>90% CI</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[...stateRows]
+                  .sort((a, b) => (b.pred_dem_share ?? 0) - (a.pred_dem_share ?? 0))
+                  .map((row) => {
+                    const share = row.pred_dem_share ?? 0;
+                    const structuralShare = structuralMap.get(row.county_fips) ?? null;
+                    const delta = hasPollUpdate && structuralShare !== null ? share - structuralShare : null;
+                    return (
+                      <tr key={row.county_fips} style={{ borderBottom: "1px solid var(--color-border)" }}>
+                        <td style={{ padding: "5px 6px" }}>{row.county_name ?? row.county_fips}</td>
                         <td style={{
-                          padding: "5px 6px", textAlign: "right", fontSize: "11px",
-                          color: delta === null ? "var(--color-text-muted)"
-                            : delta > 0.002 ? "var(--color-dem)"
-                            : delta < -0.002 ? "var(--color-rep)"
-                            : "var(--color-text-muted)",
+                          padding: "5px 6px", textAlign: "right",
+                          color: share > 0.5 ? "var(--color-dem)" : "var(--color-rep)",
+                          fontWeight: 600,
                         }}>
-                          {delta === null ? "—"
-                            : `${delta > 0 ? "+" : ""}${(delta * 100).toFixed(1)}`}
+                          {(share * 100).toFixed(1)}%
                         </td>
-                      )}
-                      <td style={{ padding: "5px 6px", textAlign: "right", color: "var(--color-text-muted)" }}>
-                        {row.pred_lo90 !== null && row.pred_hi90 !== null
-                          ? `${(row.pred_lo90 * 100).toFixed(0)}–${(row.pred_hi90 * 100).toFixed(0)}%`
-                          : "—"}
-                      </td>
-                    </tr>
-                  );
-                })}
-            </tbody>
-          </table>
+                        {hasPollUpdate && (
+                          <td style={{
+                            padding: "5px 6px", textAlign: "right", fontSize: "11px",
+                            color: delta === null ? "var(--color-text-muted)"
+                              : delta > 0.002 ? "var(--color-dem)"
+                              : delta < -0.002 ? "var(--color-rep)"
+                              : "var(--color-text-muted)",
+                          }}>
+                            {delta === null ? "—"
+                              : `${delta > 0 ? "+" : ""}${(delta * 100).toFixed(1)}`}
+                          </td>
+                        )}
+                        <td style={{ padding: "5px 6px", textAlign: "right", color: "var(--color-text-muted)" }}>
+                          {row.pred_lo90 !== null && row.pred_hi90 !== null
+                            ? `${(row.pred_lo90 * 100).toFixed(0)}–${(row.pred_hi90 * 100).toFixed(0)}%`
+                            : "—"}
+                        </td>
+                      </tr>
+                    );
+                  })}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
     </div>

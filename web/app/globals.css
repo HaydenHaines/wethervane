@@ -115,7 +115,7 @@ h1, h2, h3 { font-family: var(--font-serif); }
     width: auto !important;
   }
 
-  /* ── Forecast county table: constrained height with show-more ── */
+  /* ── Forecast county table: constrained height with scroll ── */
   .forecast-county-table-wrap {
     max-height: 320px;
     overflow-y: auto;
@@ -124,14 +124,41 @@ h1, h2, h3 { font-family: var(--font-serif); }
     border-radius: 4px;
   }
 
+  .forecast-county-table-wrap thead th {
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 1;
+  }
+
+  /* ── County detail page ── */
+  .county-detail-article {
+    padding: 24px 16px 60px !important;
+  }
+
+  .county-detail-article h1 {
+    font-size: 24px !important;
+  }
+
+  .county-demo-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .county-siblings-grid {
+    grid-template-columns: 1fr !important;
+  }
+
   /* ── Generic touch targets ── */
   button,
   select,
   a {
-    min-height: 36px;
+    min-height: 44px;
   }
 
-  /* Inline icon buttons (close × etc.) can stay smaller */
+  /* Inline icon buttons (close, collapse, remove) can stay smaller */
+  button[aria-label="Close panel"],
+  button[aria-label="Expand panel"],
+  button[aria-label="Collapse panel"],
   button[title="Remove"] {
     min-height: unset;
   }

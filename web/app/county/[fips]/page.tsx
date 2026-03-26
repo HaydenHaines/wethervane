@@ -193,7 +193,7 @@ export default async function CountyPage({ params }: PageProps) {
   }
 
   return (
-    <article style={{
+    <article className="county-detail-article" style={{
       maxWidth: 800,
       margin: "0 auto",
       padding: "40px 24px 80px",
@@ -301,7 +301,7 @@ export default async function CountyPage({ params }: PageProps) {
               }}>
                 {SECTION_LABELS[section]}
               </h3>
-              <div style={{
+              <div className="county-demo-grid" style={{
                 display: "grid",
                 gridTemplateColumns: "1fr 1fr",
                 gap: "6px 24px",
@@ -341,7 +341,7 @@ export default async function CountyPage({ params }: PageProps) {
           }}>
             Other counties classified as <strong>{data.type_display_name}</strong>:
           </p>
-          <div style={{
+          <div className="county-siblings-grid" style={{
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
             gap: "4px 16px",
