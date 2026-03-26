@@ -54,28 +54,28 @@ def _write_type_assignments(tmp: Path) -> None:
         "type_1_score": [0.3, 0.5, 0.4],
         "type_2_score": [0.2, 0.2, 0.4],
     })
-    (tmp / "communities").mkdir(parents=True, exist_ok=True)
-    df.to_parquet(tmp / "communities" / "type_assignments.parquet", index=False)
+    (tmp / "data" / "communities").mkdir(parents=True, exist_ok=True)
+    df.to_parquet(tmp / "data" / "communities" / "type_assignments.parquet", index=False)
 
 
 def _write_type_covariance(tmp: Path) -> None:
     """Write a valid J×J square covariance matrix."""
     cov = np.eye(TEST_J) * 0.01 + np.ones((TEST_J, TEST_J)) * 0.002
-    (tmp / "covariance").mkdir(parents=True, exist_ok=True)
-    pd.DataFrame(cov).to_parquet(tmp / "covariance" / "type_covariance.parquet")
+    (tmp / "data" / "covariance").mkdir(parents=True, exist_ok=True)
+    pd.DataFrame(cov).to_parquet(tmp / "data" / "covariance" / "type_covariance.parquet")
 
 
 def _write_type_profiles(tmp: Path) -> None:
     """Write a valid type_profiles.parquet with mean_dem_share."""
     df = pd.DataFrame({"type_id": range(TEST_J), "mean_dem_share": [0.40, 0.50, 0.60]})
-    df.to_parquet(tmp / "communities" / "type_profiles.parquet", index=False)
+    df.to_parquet(tmp / "data" / "communities" / "type_profiles.parquet", index=False)
 
 
 def _write_ridge_priors(tmp: Path) -> None:
     """Write a valid ridge_county_priors.parquet."""
     df = pd.DataFrame({"county_fips": TEST_FIPS, "ridge_pred_dem_share": [0.42, 0.38, 0.55]})
-    (tmp / "models" / "ridge_model").mkdir(parents=True, exist_ok=True)
-    df.to_parquet(tmp / "models" / "ridge_model" / "ridge_county_priors.parquet", index=False)
+    (tmp / "data" / "models" / "ridge_model").mkdir(parents=True, exist_ok=True)
+    df.to_parquet(tmp / "data" / "models" / "ridge_model" / "ridge_county_priors.parquet", index=False)
 
 
 @pytest.fixture
@@ -150,7 +150,7 @@ def test_asymmetric_covariance_raises(tmp_data):
     # Overwrite with asymmetric matrix
     cov = np.eye(TEST_J) * 0.01
     cov[0, 1] = 0.5  # asymmetric
-    pd.DataFrame(cov).to_parquet(tmp_data / "covariance" / "type_covariance.parquet")
+    pd.DataFrame(cov).to_parquet(tmp_data / "data" / "covariance" / "type_covariance.parquet")
     con = _base_db()
     with pytest.raises(DomainIngestionError, match="not symmetric"):
         ingest(con, "test_v1", tmp_data)
@@ -158,18 +158,18 @@ def test_asymmetric_covariance_raises(tmp_data):
 
 def test_unknown_county_fips_raises(tmp_data):
     # Add a row with unknown FIPS to type_assignments
-    df = pd.read_parquet(tmp_data / "communities" / "type_assignments.parquet")
+    df = pd.read_parquet(tmp_data / "data" / "communities" / "type_assignments.parquet")
     df.loc[len(df)] = {"county_fips": "99999", "type_0_score": 0.5, "type_1_score": 0.3, "type_2_score": 0.2}
-    df.to_parquet(tmp_data / "communities" / "type_assignments.parquet", index=False)
+    df.to_parquet(tmp_data / "data" / "communities" / "type_assignments.parquet", index=False)
     con = _base_db()
     with pytest.raises(DomainIngestionError, match="county_fips"):
         ingest(con, "test_v1", tmp_data)
 
 
 def test_score_out_of_range_raises(tmp_data):
-    df = pd.read_parquet(tmp_data / "communities" / "type_assignments.parquet")
+    df = pd.read_parquet(tmp_data / "data" / "communities" / "type_assignments.parquet")
     df["type_0_score"] = 1.5  # out of [0,1]
-    df.to_parquet(tmp_data / "communities" / "type_assignments.parquet", index=False)
+    df.to_parquet(tmp_data / "data" / "communities" / "type_assignments.parquet", index=False)
     con = _base_db()
     with pytest.raises(DomainIngestionError):
         ingest(con, "test_v1", tmp_data)
@@ -187,8 +187,8 @@ def _write_hac_state_weights(tmp: Path) -> None:
         "community_1": [0.3, 0.4],
         "community_2": [0.1, 0.2],
     })
-    (tmp / "propagation").mkdir(parents=True, exist_ok=True)
-    df.to_parquet(tmp / "propagation" / "community_weights_state_hac.parquet", index=False)
+    (tmp / "data" / "propagation").mkdir(parents=True, exist_ok=True)
+    df.to_parquet(tmp / "data" / "propagation" / "community_weights_state_hac.parquet", index=False)
 
 
 def _write_hac_county_weights(tmp: Path) -> None:
@@ -199,7 +199,7 @@ def _write_hac_county_weights(tmp: Path) -> None:
         "community_1": [0.3, 0.5, 0.4],
         "community_2": [0.2, 0.3, 0.3],
     })
-    df.to_parquet(tmp / "propagation" / "community_weights_county_hac.parquet", index=False)
+    df.to_parquet(tmp / "data" / "propagation" / "community_weights_county_hac.parquet", index=False)
 
 
 @pytest.fixture

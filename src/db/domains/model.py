@@ -189,9 +189,7 @@ def ingest(
     for table in DOMAIN_SPEC.tables:
         con.execute(f"DELETE FROM {table} WHERE version_id = ?", [version_id])
 
-    # Accept either the project root (files under data/) or a data directory directly.
-    # Prefer project_root/data/ if it exists, else treat project_root as the data root.
-    data = project_root / "data" if (project_root / "data").is_dir() else project_root
+    data = project_root / "data"
     _ingest_type_scores(con, version_id, data / "communities" / "type_assignments.parquet")
     _ingest_type_covariance(con, version_id, data / "covariance" / "type_covariance.parquet")
     _ingest_type_priors(con, version_id, data / "communities" / "type_profiles.parquet")
