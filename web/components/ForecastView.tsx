@@ -1,11 +1,7 @@
 "use client";
-import { useEffect, useRef, useState, useCallback } from "react";
-import * as Plot from "@observablehq/plot";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import { fetchForecast, type ForecastRow } from "@/lib/api";
-import { FeedAPoll } from "@/components/FeedAPoll";
-import { FeedHistoricalPolls } from "@/components/FeedHistoricalPolls";
-
-const MOBILE_ROW_LIMIT = 10;
+import { useMapContext } from "@/components/MapContext";
 
 const LEAN_LABELS = [
   { threshold: 0.55, label: "Solid D", color: "var(--color-dem)" },
@@ -24,219 +20,318 @@ function getLean(share: number) {
   return LEAN_LABELS[LEAN_LABELS.length - 1];
 }
 
-function ForecastBarChart({ rows }: { rows: ForecastRow[] }) {
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!ref.current || rows.length === 0) return;
-    const sorted = [...rows]
-      .filter((r) => r.pred_dem_share !== null)
-      .sort((a, b) => (a.pred_dem_share ?? 0) - (b.pred_dem_share ?? 0));
-
-    const plot = Plot.plot({
-      width: ref.current.clientWidth || 380,
-      height: 140,
-      marginLeft: 6,
-      marginRight: 6,
-      marginTop: 8,
-      marginBottom: 24,
-      x: { label: null, axis: null },
-      y: { label: "Dem %", domain: [0.2, 0.8], grid: true,
-           tickFormat: (d: number) => `${(d * 100).toFixed(0)}%` },
-      marks: [
-        Plot.ruleY([0.5], { stroke: "#999", strokeDasharray: "4,3" }),
-        Plot.rectY(sorted, {
-          x: Plot.indexOf,
-          y: "pred_dem_share",
-          fill: (d: ForecastRow) =>
-            (d.pred_dem_share ?? 0) > 0.5 ? "var(--color-dem)" : "var(--color-rep)",
-          fillOpacity: 0.7,
-        }),
-      ],
-    });
-
-    ref.current.innerHTML = "";
-    ref.current.appendChild(plot);
-    return () => { ref.current?.innerHTML && (ref.current.innerHTML = ""); };
-  }, [rows]);
-
-  return <div ref={ref} style={{ width: "100%" }} />;
+function SectionHeader({
+  title,
+  disabled,
+  open,
+  onToggle,
+}: {
+  title: string;
+  disabled?: boolean;
+  open: boolean;
+  onToggle: () => void;
+}) {
+  return (
+    <button
+      onClick={onToggle}
+      disabled={disabled}
+      style={{
+        width: "100%",
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        padding: "8px 10px",
+        background: disabled ? "#f5f5f5" : "white",
+        border: "1px solid var(--color-border)",
+        borderRadius: "3px",
+        cursor: disabled ? "not-allowed" : "pointer",
+        fontSize: "12px",
+        fontFamily: "var(--font-sans)",
+        color: disabled ? "var(--color-text-muted)" : "#333",
+        marginBottom: "2px",
+      }}
+    >
+      <span style={{ fontWeight: 600 }}>{title}</span>
+      {disabled ? (
+        <span style={{ fontSize: "10px", background: "#e8e8e8", padding: "2px 6px", borderRadius: "10px" }}>
+          coming soon
+        </span>
+      ) : (
+        <span>{open ? "▲" : "▼"}</span>
+      )}
+    </button>
+  );
 }
 
 export function ForecastView() {
-  const [races, setRaces] = useState<string[]>([]);
-  const [selectedRace, setSelectedRace] = useState<string>("");
-  const [baselineRows, setBaselineRows] = useState<ForecastRow[]>([]);
+  const { setForecastState, setForecastChoropleth } = useMapContext();
+
+  const [allRows, setAllRows] = useState<ForecastRow[]>([]);
   const [displayRows, setDisplayRows] = useState<ForecastRow[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [showAllCounties, setShowAllCounties] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [modelPriorOpen, setModelPriorOpen] = useState(true);
 
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 767px)");
-    setIsMobile(mq.matches);
-    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
-    mq.addEventListener("change", handler);
-    return () => mq.removeEventListener("change", handler);
-  }, []);
+  // Sequential control state
+  const [selectedState, setSelectedState] = useState<string>("");
+  // Year is hardcoded 2026 for now (single cycle)
+  const YEAR = "2026";
+  const [selectedRace, setSelectedRace] = useState<string>("");
 
+  // Load all forecast rows once to populate dropdowns
   useEffect(() => {
     fetchForecast().then((rows) => {
-      const uniqueRaces = Array.from(new Set(rows.map((r) => r.race))).sort();
-      setRaces(uniqueRaces);
-      if (uniqueRaces.length > 0) setSelectedRace(uniqueRaces[0]);
+      setAllRows(rows);
     });
   }, []);
 
+  // Derive available states from race names like "FL_Senate" → "FL"
+  const availableStates = useMemo(() => {
+    const stateSet = new Set<string>();
+    allRows.forEach((r) => {
+      const abbr = r.race.split("_")[0];
+      if (abbr && abbr.length === 2) stateSet.add(abbr);
+    });
+    return Array.from(stateSet).sort();
+  }, [allRows]);
+
+  // Auto-select first state when rows load
   useEffect(() => {
+    if (availableStates.length > 0 && !selectedState) {
+      setSelectedState(availableStates[0]);
+    }
+  }, [availableStates, selectedState]);
+
+  // Races available for selected state
+  const racesForState = useMemo(() => {
+    if (!selectedState) return [];
+    return Array.from(new Set(allRows.filter((r) => r.race.startsWith(selectedState + "_")).map((r) => r.race))).sort();
+  }, [allRows, selectedState]);
+
+  // Auto-select first race when state changes
+  useEffect(() => {
+    if (racesForState.length > 0) {
+      setSelectedRace(racesForState[0]);
+    } else {
+      setSelectedRace("");
+    }
+  }, [racesForState]);
+
+  // Sync forecast state to map context for highlighting + pan
+  useEffect(() => {
+    setForecastState(selectedState || null);
+  }, [selectedState, setForecastState]);
+
+  // Recalculate: fetch model-prior predictions and push to map choropleth
+  const recalculate = useCallback(async () => {
     if (!selectedRace) return;
     setLoading(true);
-    fetchForecast(selectedRace)
-      .then((rows) => {
-        setBaselineRows(rows);
-        setDisplayRows(rows);
-      })
-      .finally(() => setLoading(false));
-  }, [selectedRace]);
+    try {
+      const rows = await fetchForecast(selectedRace);
+      setDisplayRows(rows);
+      // Build fips → dem_share map for map choropleth
+      const choropleth = new Map<string, number>();
+      rows.forEach((r) => {
+        if (r.pred_dem_share !== null) choropleth.set(r.county_fips, r.pred_dem_share);
+      });
+      setForecastChoropleth(choropleth);
+    } finally {
+      setLoading(false);
+    }
+  }, [selectedRace, setForecastChoropleth]);
 
-  const stateRows = displayRows.filter((r) => r.race === selectedRace);
-  const selectedState = stateRows.length > 0 ? stateRows[0].state_abbr : "";
+  // Auto-recalculate when race changes
+  useEffect(() => {
+    if (selectedRace) recalculate();
+    else { setDisplayRows([]); setForecastChoropleth(null); }
+  }, [selectedRace]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Clean up choropleth when leaving
+  useEffect(() => () => { setForecastChoropleth(null); setForecastState(null); }, []);
+
+  const stateRows = displayRows.filter((r) => r.state_abbr === selectedState);
   const statePred =
     stateRows.length > 0
       ? stateRows.reduce((sum, r) => sum + (r.pred_dem_share ?? 0), 0) / stateRows.length
       : null;
   const lean = statePred !== null ? getLean(statePred) : null;
 
+  const dropdownStyle: React.CSSProperties = {
+    padding: "6px 10px",
+    border: "1px solid var(--color-border)",
+    borderRadius: "3px",
+    fontSize: "13px",
+    fontFamily: "var(--font-sans)",
+    background: "white",
+    width: "100%",
+  };
+
+  const labelStyle: React.CSSProperties = {
+    fontSize: "11px",
+    color: "var(--color-text-muted)",
+    display: "block",
+    marginBottom: "3px",
+    textTransform: "uppercase",
+    letterSpacing: "0.4px",
+  };
+
   return (
-    <div style={{ padding: "16px" }}>
-      {/* Race selector */}
-      <div style={{ marginBottom: "12px" }}>
-        <label style={{ fontSize: "12px", color: "var(--color-text-muted)", display: "block", marginBottom: "4px" }}>
-          Race
-        </label>
-        <select
-          value={selectedRace}
-          onChange={(e) => setSelectedRace(e.target.value)}
-          style={{ padding: "6px 10px", border: "1px solid var(--color-border)", borderRadius: "3px", fontSize: "14px", fontFamily: "var(--font-serif)", background: "white" }}
-        >
-          {races.map((r) => <option key={r} value={r}>{r}</option>)}
-        </select>
+    <div style={{ padding: "14px" }}>
+      {/* ── Sequential Controls ────────────────────────────────────── */}
+      <div style={{ marginBottom: "14px" }}>
+        <div style={{ marginBottom: "8px" }}>
+          <label style={labelStyle}>State</label>
+          <select
+            value={selectedState}
+            onChange={(e) => setSelectedState(e.target.value)}
+            style={dropdownStyle}
+          >
+            {availableStates.map((s) => (
+              <option key={s} value={s}>{s}</option>
+            ))}
+          </select>
+        </div>
+
+        <div style={{ marginBottom: "8px" }}>
+          <label style={labelStyle}>Year</label>
+          <select value={YEAR} disabled style={{ ...dropdownStyle, color: "var(--color-text-muted)" }}>
+            <option value={YEAR}>{YEAR}</option>
+          </select>
+        </div>
+
+        <div>
+          <label style={labelStyle}>Election</label>
+          <select
+            value={selectedRace}
+            onChange={(e) => setSelectedRace(e.target.value)}
+            style={dropdownStyle}
+            disabled={racesForState.length === 0}
+          >
+            {racesForState.length === 0 ? (
+              <option value="">—</option>
+            ) : (
+              racesForState.map((r) => (
+                <option key={r} value={r}>{r.replace(/_/g, " ")}</option>
+              ))
+            )}
+          </select>
+        </div>
       </div>
 
-      {/* State summary */}
+      {/* ── Data Panel ─────────────────────────────────────────────── */}
+      <div style={{ marginBottom: "12px" }}>
+        <p style={{ margin: "0 0 6px", fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.4px", color: "var(--color-text-muted)" }}>
+          Data inputs
+        </p>
+
+        <SectionHeader
+          title="Model Prior"
+          open={modelPriorOpen}
+          onToggle={() => setModelPriorOpen((p) => !p)}
+        />
+        {modelPriorOpen && (
+          <div style={{
+            padding: "8px 10px",
+            border: "1px solid var(--color-border)",
+            borderTop: "none",
+            borderRadius: "0 0 3px 3px",
+            marginBottom: "4px",
+            fontSize: "12px",
+            color: "var(--color-text-muted)",
+            lineHeight: "1.5",
+          }}>
+            Structural baseline from type covariance (Ridge+HGB ensemble, LOO r=0.671).
+            Predictions reflect 2024 presidential Dem share prior propagated through community type structure.
+          </div>
+        )}
+
+        <SectionHeader title="Fundamentals" disabled open={false} onToggle={() => {}} />
+        <SectionHeader title="National Polls" disabled open={false} onToggle={() => {}} />
+        <SectionHeader title="State Polls" disabled open={false} onToggle={() => {}} />
+      </div>
+
+      {/* ── Recalculate ─────────────────────────────────────────────── */}
+      <button
+        onClick={recalculate}
+        disabled={loading || !selectedRace}
+        style={{
+          width: "100%",
+          padding: "8px",
+          background: loading ? "#aaa" : "#2166ac",
+          color: "white",
+          border: "none",
+          borderRadius: "3px",
+          fontSize: "13px",
+          fontFamily: "var(--font-sans)",
+          fontWeight: 600,
+          cursor: loading || !selectedRace ? "not-allowed" : "pointer",
+          marginBottom: "14px",
+          letterSpacing: "0.3px",
+        }}
+      >
+        {loading ? "Calculating…" : "Recalculate"}
+      </button>
+
+      {/* ── State Summary ───────────────────────────────────────────── */}
       {statePred !== null && lean && (
         <div style={{
-          padding: "12px",
+          padding: "10px 12px",
           border: "1px solid var(--color-border)",
           borderRadius: "4px",
           marginBottom: "12px",
           borderLeft: `4px solid ${lean.color}`,
         }}>
-          <div style={{ fontFamily: "var(--font-serif)", fontSize: "20px", fontWeight: "700" }}>
+          <div style={{ fontFamily: "var(--font-serif)", fontSize: "18px", fontWeight: "700" }}>
             {lean.label}
           </div>
-          <div style={{ fontSize: "13px", color: "var(--color-text-muted)", marginTop: "2px" }}>
-            Projected {selectedState} dem share: {(statePred * 100).toFixed(1)}%
+          <div style={{ fontSize: "12px", color: "var(--color-text-muted)", marginTop: "2px" }}>
+            {selectedState} projected Dem share: {(statePred * 100).toFixed(1)}%
+          </div>
+          <div style={{ fontSize: "11px", color: "var(--color-text-muted)", marginTop: "2px" }}>
+            {selectedRace.replace(/_/g, " ")} · Model prior only
           </div>
         </div>
       )}
 
-      {/* Feed-a-Poll */}
-      {selectedRace && (
-        <FeedAPoll
-          state={selectedState}
-          race={selectedRace}
-          onUpdate={setDisplayRows}
-          onReset={() => setDisplayRows(baselineRows)}
-        />
-      )}
-
-      {/* Feed historical polls */}
-      {selectedRace && (
-        <FeedHistoricalPolls
-          state={selectedState}
-          race={selectedRace}
-          onUpdate={setDisplayRows}
-          onReset={() => setDisplayRows(baselineRows)}
-        />
-      )}
-
-      {/* Bar chart */}
-      {loading ? (
-        <p style={{ color: "var(--color-text-muted)", fontSize: "13px" }}>Loading…</p>
-      ) : (
-        <>
-          <ForecastBarChart rows={stateRows} />
-
-          {/* County table */}
-          <div style={{ marginTop: "12px" }}>
-            <p style={{ margin: "0 0 8px", fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.5px", color: "var(--color-text-muted)" }}>
-              County predictions
-            </p>
-            {(() => {
-              const sortedRows = [...stateRows].sort((a, b) => (b.pred_dem_share ?? 0) - (a.pred_dem_share ?? 0));
-              const visibleRows = isMobile && !showAllCounties ? sortedRows.slice(0, MOBILE_ROW_LIMIT) : sortedRows;
-              return (
-                <>
-                  <div className="forecast-county-table-wrap">
-                    <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "12px" }}>
-                      <thead>
-                        <tr style={{ borderBottom: "1px solid var(--color-border)" }}>
-                          <th style={{ textAlign: "left", padding: "4px 6px", color: "var(--color-text-muted)", fontWeight: "normal" }}>County</th>
-                          <th style={{ textAlign: "right", padding: "4px 6px", color: "var(--color-text-muted)", fontWeight: "normal" }}>Dem %</th>
-                          <th style={{ textAlign: "right", padding: "4px 6px", color: "var(--color-text-muted)", fontWeight: "normal" }}>90% CI</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {visibleRows.map((row) => {
-                          const share = row.pred_dem_share ?? 0;
-                          return (
-                            <tr key={row.county_fips} style={{ borderBottom: "1px solid var(--color-border)" }}>
-                              <td style={{ padding: "5px 6px" }}>{row.county_name ?? row.county_fips}</td>
-                              <td style={{
-                                padding: "5px 6px", textAlign: "right",
-                                color: share > 0.5 ? "var(--color-dem)" : "var(--color-rep)",
-                                fontWeight: "600",
-                              }}>
-                                {(share * 100).toFixed(1)}%
-                              </td>
-                              <td style={{ padding: "5px 6px", textAlign: "right", color: "var(--color-text-muted)" }}>
-                                {row.pred_lo90 !== null && row.pred_hi90 !== null
-                                  ? `${(row.pred_lo90 * 100).toFixed(0)}–${(row.pred_hi90 * 100).toFixed(0)}%`
-                                  : "—"}
-                              </td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
-                  </div>
-                  {isMobile && sortedRows.length > MOBILE_ROW_LIMIT && (
-                    <button
-                      onClick={() => setShowAllCounties((prev) => !prev)}
-                      style={{
-                        marginTop: "8px",
-                        width: "100%",
-                        padding: "8px",
-                        border: "1px solid var(--color-border)",
-                        borderRadius: "4px",
-                        background: "white",
-                        fontSize: "12px",
-                        color: "var(--color-text-muted)",
-                        cursor: "pointer",
-                        fontFamily: "var(--font-sans)",
-                      }}
-                    >
-                      {showAllCounties
-                        ? "Show fewer counties"
-                        : `Show all ${sortedRows.length} counties`}
-                    </button>
-                  )}
-                </>
-              );
-            })()}
-          </div>
-        </>
+      {/* ── County Table ────────────────────────────────────────────── */}
+      {stateRows.length > 0 && (
+        <div>
+          <p style={{ margin: "0 0 6px", fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.4px", color: "var(--color-text-muted)" }}>
+            County predictions
+          </p>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "12px" }}>
+            <thead>
+              <tr style={{ borderBottom: "1px solid var(--color-border)" }}>
+                <th style={{ textAlign: "left", padding: "4px 6px", color: "var(--color-text-muted)", fontWeight: "normal" }}>County</th>
+                <th style={{ textAlign: "right", padding: "4px 6px", color: "var(--color-text-muted)", fontWeight: "normal" }}>Dem %</th>
+                <th style={{ textAlign: "right", padding: "4px 6px", color: "var(--color-text-muted)", fontWeight: "normal" }}>90% CI</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[...stateRows]
+                .sort((a, b) => (b.pred_dem_share ?? 0) - (a.pred_dem_share ?? 0))
+                .map((row) => {
+                  const share = row.pred_dem_share ?? 0;
+                  return (
+                    <tr key={row.county_fips} style={{ borderBottom: "1px solid var(--color-border)" }}>
+                      <td style={{ padding: "5px 6px" }}>{row.county_name ?? row.county_fips}</td>
+                      <td style={{
+                        padding: "5px 6px", textAlign: "right",
+                        color: share > 0.5 ? "var(--color-dem)" : "var(--color-rep)",
+                        fontWeight: 600,
+                      }}>
+                        {(share * 100).toFixed(1)}%
+                      </td>
+                      <td style={{ padding: "5px 6px", textAlign: "right", color: "var(--color-text-muted)" }}>
+                        {row.pred_lo90 !== null && row.pred_hi90 !== null
+                          ? `${(row.pred_lo90 * 100).toFixed(0)}–${(row.pred_hi90 * 100).toFixed(0)}%`
+                          : "—"}
+                      </td>
+                    </tr>
+                  );
+                })}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );
