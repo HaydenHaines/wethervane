@@ -163,7 +163,16 @@ function ScatterPlot({
   yKey: string;
   onHover: (state: TooltipState | null, event?: MouseEvent) => void;
 }) {
+  const containerRef = useRef<HTMLDivElement>(null);
   const ref = useRef<HTMLDivElement>(null);
+  const [plotWidth, setPlotWidth] = useState(388);
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const obs = new ResizeObserver(([entry]) => setPlotWidth(Math.floor(entry.contentRect.width)));
+    obs.observe(containerRef.current);
+    return () => obs.disconnect();
+  }, []);
 
   useEffect(() => {
     if (!ref.current || data.length === 0) return;
@@ -197,8 +206,10 @@ function ScatterPlot({
       })
     );
 
+    const effectiveWidth = plotWidth > 0 ? plotWidth : 388;
+
     const plot = Plot.plot({
-      width: 388,
+      width: effectiveWidth,
       height: 300,
       marginLeft: 48,
       marginRight: 8,
@@ -246,7 +257,7 @@ function ScatterPlot({
         // We use the SVG viewBox to map pixel coords to data coords
         // Simpler: just find nearest by euclidean in pixel space using plot dimensions
         const plotLeft = 48;
-        const plotRight = 388 - 8;
+        const plotRight = effectiveWidth - 8;
         const plotTop = 12;
         const plotBottom = 300 - 40;
 
@@ -299,9 +310,13 @@ function ScatterPlot({
     return () => {
       if (ref.current?.contains(plot)) ref.current.removeChild(plot);
     };
-  }, [data, xKey, yKey, onHover]);
+  }, [data, xKey, yKey, onHover, plotWidth]);
 
-  return <div ref={ref} />;
+  return (
+    <div ref={containerRef} style={{ width: "100%" }}>
+      <div ref={ref} />
+    </div>
+  );
 }
 
 // ── Main component ────────────────────────────────────────────────────────────
@@ -357,7 +372,7 @@ export function ShiftExplorer() {
   };
 
   return (
-    <div style={{ padding: "12px 16px" }}>
+    <div style={{ padding: "12px 16px", minWidth: 0, overflow: "hidden" }}>
       <h3 style={{
         margin: "0 0 4px",
         fontFamily: "var(--font-serif)",

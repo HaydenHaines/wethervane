@@ -3,6 +3,18 @@ import { useEffect, useRef, useState } from "react";
 import * as Plot from "@observablehq/plot";
 import { fetchCommunityDetail, type CommunityDetail, type CommunityDemographics } from "@/lib/api";
 
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    setIsMobile(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+  return isMobile;
+}
+
 interface Props {
   communityId: number;
   onClose: () => void;
@@ -107,6 +119,8 @@ function DemographicsSection({ d }: { d: CommunityDemographics }) {
 export function CommunityPanel({ communityId, onClose }: Props) {
   const [detail, setDetail] = useState<CommunityDetail | null>(null);
   const [loading, setLoading] = useState(true);
+  const [collapsed, setCollapsed] = useState(false);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     setLoading(true);
@@ -114,6 +128,24 @@ export function CommunityPanel({ communityId, onClose }: Props) {
       .then(setDetail)
       .finally(() => setLoading(false));
   }, [communityId]);
+
+  useEffect(() => {
+    setCollapsed(false);
+  }, [communityId]);
+
+  const mobileStyle: React.CSSProperties = isMobile ? {
+    position: "fixed",
+    top: "auto",
+    bottom: 0,
+    right: 0,
+    left: 0,
+    width: "100%",
+    height: collapsed ? "auto" : "min(55vh, 500px)",
+    borderLeft: "none",
+    borderTop: "2px solid var(--color-border)",
+    boxShadow: "0 -4px 16px rgba(0,0,0,0.15)",
+    zIndex: 200,
+  } : {};
 
   return (
     <div style={{
@@ -128,6 +160,7 @@ export function CommunityPanel({ communityId, onClose }: Props) {
       flexDirection: "column",
       boxShadow: "-2px 0 8px rgba(0,0,0,0.08)",
       zIndex: 10,
+      ...mobileStyle,
     }}>
       {/* Header */}
       <div style={{
@@ -147,12 +180,26 @@ export function CommunityPanel({ communityId, onClose }: Props) {
             </p>
           )}
         </div>
-        <button
-          onClick={onClose}
-          style={{ border: "none", background: "none", cursor: "pointer", fontSize: "20px", color: "var(--color-text-muted)", lineHeight: 1 }}
-        >×</button>
+        <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+          {isMobile && (
+            <button
+              onClick={() => setCollapsed((prev) => !prev)}
+              aria-label={collapsed ? "Expand panel" : "Collapse panel"}
+              style={{ border: "none", background: "none", cursor: "pointer", fontSize: "18px", color: "var(--color-text-muted)", lineHeight: 1, padding: "0 4px" }}
+            >
+              {collapsed ? "▼" : "▲"}
+            </button>
+          )}
+          <button
+            onClick={onClose}
+            aria-label="Close panel"
+            style={{ border: "none", background: "none", cursor: "pointer", fontSize: "20px", color: "var(--color-text-muted)", lineHeight: 1 }}
+          >×</button>
+        </div>
       </div>
 
+      {(!isMobile || !collapsed) && (
+        <>
       {loading && (
         <div style={{ padding: "20px", color: "var(--color-text-muted)", fontSize: "13px" }}>
           Loading…
@@ -199,6 +246,8 @@ export function CommunityPanel({ communityId, onClose }: Props) {
             })}
           </div>
         </div>
+      )}
+        </>
       )}
     </div>
   );

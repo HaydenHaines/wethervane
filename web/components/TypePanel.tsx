@@ -5,6 +5,18 @@ import { fetchTypeDetail, type TypeDetail, type TypeCounty } from "@/lib/api";
 import { getColorForSuperType, type SuperTypeInfo, type TractContext } from "@/components/MapShell";
 import { DEMO_DISPLAY, DEMO_SKIP, prettifyKey, inferFormat } from "@/lib/typeDisplay";
 
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    setIsMobile(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+  return isMobile;
+}
+
 interface Props {
   typeId: number;
   superTypeMap: Map<number, SuperTypeInfo>;
@@ -79,6 +91,8 @@ function DemographicRow({ label, value, fmt }: { label: string; value: number | 
 export function TypePanel({ typeId, superTypeMap, tractContext, onClose }: Props) {
   const [detail, setDetail] = useState<TypeDetail | null>(null);
   const [loading, setLoading] = useState(true);
+  const [collapsed, setCollapsed] = useState(false);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     setLoading(true);
@@ -88,9 +102,30 @@ export function TypePanel({ typeId, superTypeMap, tractContext, onClose }: Props
       .finally(() => setLoading(false));
   }, [typeId]);
 
+  // Reset collapsed state when a new type is selected
+  useEffect(() => {
+    setCollapsed(false);
+  }, [typeId]);
+
   const superColor = detail
     ? getColorForSuperType(detail.super_type_id)
     : [127, 127, 127];
+
+  // On mobile: use a fixed bottom-sheet so the panel doesn't cover the map.
+  // Collapsed = just the header strip; expanded = up to 55vh scrollable sheet.
+  const mobileStyle: React.CSSProperties = isMobile ? {
+    position: "fixed",
+    top: "auto",
+    bottom: 0,
+    right: 0,
+    left: 0,
+    width: "100%",
+    height: collapsed ? "auto" : "min(55vh, 500px)",
+    borderLeft: "none",
+    borderTop: "2px solid var(--color-border)",
+    boxShadow: "0 -4px 16px rgba(0,0,0,0.15)",
+    zIndex: 200,
+  } : {};
 
   return (
     <div style={{
@@ -105,6 +140,7 @@ export function TypePanel({ typeId, superTypeMap, tractContext, onClose }: Props
       flexDirection: "column",
       boxShadow: "-2px 0 8px rgba(0,0,0,0.08)",
       zIndex: 10,
+      ...mobileStyle,
     }}>
       {/* Header */}
       <div style={{
@@ -133,12 +169,27 @@ export function TypePanel({ typeId, superTypeMap, tractContext, onClose }: Props
             </p>
           )}
         </div>
-        <button
-          onClick={onClose}
-          style={{ border: "none", background: "none", cursor: "pointer", fontSize: "20px", color: "var(--color-text-muted)", lineHeight: 1 }}
-        >&times;</button>
+        <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+          {isMobile && (
+            <button
+              onClick={() => setCollapsed((prev) => !prev)}
+              aria-label={collapsed ? "Expand panel" : "Collapse panel"}
+              style={{ border: "none", background: "none", cursor: "pointer", fontSize: "18px", color: "var(--color-text-muted)", lineHeight: 1, padding: "0 4px" }}
+            >
+              {collapsed ? "▼" : "▲"}
+            </button>
+          )}
+          <button
+            onClick={onClose}
+            aria-label="Close panel"
+            style={{ border: "none", background: "none", cursor: "pointer", fontSize: "20px", color: "var(--color-text-muted)", lineHeight: 1 }}
+          >&times;</button>
+        </div>
       </div>
 
+      {/* Body: hidden when collapsed on mobile */}
+      {(!isMobile || !collapsed) && (
+        <>
       {/* Tract community context — shown when clicked from tract view */}
       {tractContext && (
         <div style={{
@@ -227,6 +278,8 @@ export function TypePanel({ typeId, superTypeMap, tractContext, onClose }: Props
             ))}
           </div>
         </div>
+      )}
+        </>
       )}
     </div>
   );
