@@ -10,6 +10,9 @@ Verifies:
 - No spurious duplicate rows
 - QCEW industry features present and imputed when missing
 - CHR health features present (excl. ACS-overlap cols) and imputed when missing
+- Migration features present and imputed when missing
+- Urbanicity features present and imputed when missing
+- Total column count correct (ACS + RCMS + QCEW + CHR + Migration + Urbanicity)
 - No duplicate columns after joining all sources
 """
 from __future__ import annotations
@@ -20,8 +23,10 @@ import pytest
 
 from src.assembly.build_county_features_national import (
     CHR_FEATURE_COLS,
+    MIGRATION_FEATURE_COLS,
     QCEW_FEATURE_COLS,
     RCMS_FEATURE_COLS,
+    URBANICITY_FEATURE_COLS,
     build_national_features,
 )
 
@@ -256,6 +261,31 @@ def _make_chr(fips_list: list[str]) -> pd.DataFrame:
     })
 
 
+def _make_migration(fips_list: list[str]) -> pd.DataFrame:
+    """Minimal synthetic migration county features DataFrame."""
+    rng = np.random.default_rng(20)
+    n = len(fips_list)
+    return pd.DataFrame({
+        "county_fips": fips_list,
+        "net_migration_rate": rng.uniform(-0.05, 0.10, size=n),
+        "avg_inflow_income": rng.uniform(40000, 100000, size=n),
+        "migration_diversity": rng.uniform(0.0, 1.0, size=n),
+        "inflow_outflow_ratio": rng.uniform(0.5, 2.5, size=n),
+    })
+
+
+def _make_urbanicity(fips_list: list[str]) -> pd.DataFrame:
+    """Minimal synthetic urbanicity county features DataFrame."""
+    rng = np.random.default_rng(21)
+    n = len(fips_list)
+    return pd.DataFrame({
+        "county_fips": fips_list,
+        "log_pop_density": rng.uniform(0.0, 4.5, size=n),
+        "land_area_sq_mi": rng.uniform(50.0, 5000.0, size=n),
+        "pop_per_sq_mi": rng.uniform(1.0, 20000.0, size=n),
+    })
+
+
 # ---------------------------------------------------------------------------
 # Tests: QCEW features
 # ---------------------------------------------------------------------------
@@ -379,6 +409,84 @@ class TestChrIntegration:
 
 
 # ---------------------------------------------------------------------------
+# Tests: Migration features
+# ---------------------------------------------------------------------------
+
+
+class TestMigrationIntegration:
+    """Migration features are merged correctly and imputed when missing."""
+
+    def test_migration_columns_present(self):
+        """All MIGRATION_FEATURE_COLS appear in output when migration is provided."""
+        fips = ["01001", "01003", "01005"]
+        acs = _make_acs(fips)
+        rcms = _make_rcms(fips)
+        migration = _make_migration(fips)
+        result = build_national_features(acs, rcms, migration=migration)
+        for col in MIGRATION_FEATURE_COLS:
+            assert col in result.columns, f"Missing migration column: {col}"
+
+    def test_migration_missing_county_imputed(self):
+        """County absent from migration data gets state-median imputation (no NaN)."""
+        acs_fips = ["01001", "01003", "01005"]
+        mig_fips = ["01001", "01003"]   # 01005 missing
+        acs = _make_acs(acs_fips)
+        rcms = _make_rcms(acs_fips)
+        migration = _make_migration(mig_fips)
+        result = build_national_features(acs, rcms, migration=migration)
+        for col in MIGRATION_FEATURE_COLS:
+            assert result[col].isna().sum() == 0, f"{col} has NaN after migration imputation"
+
+    def test_migration_none_no_extra_cols(self):
+        """When migration=None, no migration columns appear in output."""
+        fips = ["01001", "01003"]
+        acs = _make_acs(fips)
+        rcms = _make_rcms(fips)
+        result = build_national_features(acs, rcms, migration=None)
+        for col in MIGRATION_FEATURE_COLS:
+            assert col not in result.columns, f"Unexpected migration column: {col}"
+
+
+# ---------------------------------------------------------------------------
+# Tests: Urbanicity features
+# ---------------------------------------------------------------------------
+
+
+class TestUrbanicityIntegration:
+    """Urbanicity features are merged correctly and imputed when missing."""
+
+    def test_urbanicity_columns_present(self):
+        """All URBANICITY_FEATURE_COLS appear in output when urbanicity is provided."""
+        fips = ["01001", "01003", "01005"]
+        acs = _make_acs(fips)
+        rcms = _make_rcms(fips)
+        urbanicity = _make_urbanicity(fips)
+        result = build_national_features(acs, rcms, urbanicity=urbanicity)
+        for col in URBANICITY_FEATURE_COLS:
+            assert col in result.columns, f"Missing urbanicity column: {col}"
+
+    def test_urbanicity_missing_county_imputed(self):
+        """County absent from urbanicity data gets state-median imputation (no NaN)."""
+        acs_fips = ["01001", "01003", "01005"]
+        urb_fips = ["01001", "01003"]   # 01005 missing
+        acs = _make_acs(acs_fips)
+        rcms = _make_rcms(acs_fips)
+        urbanicity = _make_urbanicity(urb_fips)
+        result = build_national_features(acs, rcms, urbanicity=urbanicity)
+        for col in URBANICITY_FEATURE_COLS:
+            assert result[col].isna().sum() == 0, f"{col} has NaN after urbanicity imputation"
+
+    def test_urbanicity_none_no_extra_cols(self):
+        """When urbanicity=None, no urbanicity columns appear in output."""
+        fips = ["01001", "01003"]
+        acs = _make_acs(fips)
+        rcms = _make_rcms(fips)
+        result = build_national_features(acs, rcms, urbanicity=None)
+        for col in URBANICITY_FEATURE_COLS:
+            assert col not in result.columns, f"Unexpected urbanicity column: {col}"
+
+
+# ---------------------------------------------------------------------------
 # Tests: no duplicate columns when all sources joined
 # ---------------------------------------------------------------------------
 
@@ -419,6 +527,45 @@ class TestNoDuplicateColumns:
         # ACS cols (including county_fips) + RCMS + QCEW + CHR
         acs_cols = len(acs.columns)  # includes county_fips
         expected = acs_cols + len(RCMS_FEATURE_COLS) + len(QCEW_FEATURE_COLS) + len(CHR_FEATURE_COLS)
+        assert len(result.columns) == expected, (
+            f"Expected {expected} cols, got {len(result.columns)}: {list(result.columns)}"
+        )
+
+    def test_no_duplicate_cols_all_six_sources(self):
+        """Full join (ACS + RCMS + QCEW + CHR + Migration + Urbanicity) produces no duplicate column names."""
+        fips = ["01001", "01003", "01005", "12001"]
+        acs = _make_acs(fips)
+        rcms = _make_rcms(fips)
+        qcew = _make_qcew(fips)
+        chr_df = _make_chr(fips)
+        migration = _make_migration(fips)
+        urbanicity = _make_urbanicity(fips)
+        result = build_national_features(acs, rcms, qcew=qcew, chr_df=chr_df, migration=migration, urbanicity=urbanicity)
+        assert result.columns.nunique() == len(result.columns), (
+            f"Duplicate columns: {[c for c in result.columns if list(result.columns).count(c) > 1]}"
+        )
+
+    def test_total_feature_count_six_sources(self):
+        """Output column count equals ACS + RCMS + QCEW + CHR + Migration + Urbanicity + county_fips."""
+        fips = ["01001", "01003"]
+        acs = _make_acs(fips)
+        rcms = _make_rcms(fips)
+        qcew = _make_qcew(fips)
+        chr_df = _make_chr(fips)
+        migration = _make_migration(fips)
+        urbanicity = _make_urbanicity(fips)
+        result = build_national_features(
+            acs, rcms, qcew=qcew, chr_df=chr_df, migration=migration, urbanicity=urbanicity
+        )
+        acs_cols = len(acs.columns)  # includes county_fips
+        expected = (
+            acs_cols
+            + len(RCMS_FEATURE_COLS)
+            + len(QCEW_FEATURE_COLS)
+            + len(CHR_FEATURE_COLS)
+            + len(MIGRATION_FEATURE_COLS)
+            + len(URBANICITY_FEATURE_COLS)
+        )
         assert len(result.columns) == expected, (
             f"Expected {expected} cols, got {len(result.columns)}: {list(result.columns)}"
         )

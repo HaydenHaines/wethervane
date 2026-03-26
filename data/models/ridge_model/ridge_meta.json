@@ -1,8 +1,8 @@
 {
-  "alpha": 0.23101297000831605,
-  "r2_ridge": 0.9884146506250471,
-  "r2_train": 0.9884146506250471,
-  "r2_hgb": 0.9963021823652506,
+  "alpha": 0.1873817422860385,
+  "r2_ridge": 0.9885922716089638,
+  "r2_train": 0.9885922716089638,
+  "r2_hgb": 0.9964027289662623,
   "ensemble_method": "50pct_ridge_50pct_hgb",
   "ensemble_ridge_weight": 0.5,
   "ensemble_hgb_weight": 0.5,
@@ -14,9 +14,9 @@
     "l2_regularization": 1.0,
     "random_state": 42
   },
-  "loo_r_ridge": 0.665,
-  "loo_r_hgb": 0.701,
-  "loo_r_ensemble": 0.706,
+  "loo_r_ridge": 0.65,
+  "loo_r_hgb": 0.687,
+  "loo_r_ensemble": 0.69,
   "feature_names": [
     "type_0_score",
     "type_1_score",
@@ -161,7 +161,14 @@
     "drive_alone_pct",
     "life_expectancy",
     "diabetes_prevalence_pct",
-    "poor_mental_health_days"
+    "poor_mental_health_days",
+    "net_migration_rate",
+    "avg_inflow_income",
+    "migration_diversity",
+    "inflow_outflow_ratio",
+    "log_pop_density",
+    "land_area_sq_mi",
+    "pop_per_sq_mi"
   ],
   "n_counties": 3106,
   "n_training_samples": 3106,
@@ -174,6 +181,5 @@
     2020
   ],
   "n_type_scores": 100,
-  "n_demo_features": 43,
-  "loo_notes": "Measured with QCEW+CHR features (feat/qcew-chr-features branch)"
+  "n_demo_features": 50
 }

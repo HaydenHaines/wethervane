@@ -1,13 +1,15 @@
-"""Build a consolidated national county features file joining ACS + RCMS + QCEW + CHR.
+"""Build a consolidated national county features file joining ACS + RCMS + QCEW + CHR + Migration + Urbanicity.
 
 Reads:
     data/assembled/county_acs_features.parquet         (3,144 counties × 15 cols)
     data/assembled/county_rcms_features.parquet        (3,141 counties × 8 cols)
     data/assembled/county_qcew_features.parquet        (12,768 rows county_fips×year × 12 cols)
     data/assembled/county_health_features.parquet      (3,143 counties × 21 cols)
+    data/assembled/county_migration_features.parquet   (3,127 counties × 5 cols)
+    data/assembled/county_urbanicity_features.parquet  (3,135 counties × 4 cols)
 
 Outputs:
-    data/assembled/county_features_national.parquet  (3,100+ counties × ~45 cols)
+    data/assembled/county_features_national.parquet  (3,100+ counties × ~51 cols)
 
 Derived ACS features (from build_county_acs_features.py):
     pct_white_nh, pct_black, pct_asian, pct_hispanic
@@ -56,6 +58,8 @@ ACS_PATH = PROJECT_ROOT / "data" / "assembled" / "county_acs_features.parquet"
 RCMS_PATH = PROJECT_ROOT / "data" / "assembled" / "county_rcms_features.parquet"
 QCEW_PATH = PROJECT_ROOT / "data" / "assembled" / "county_qcew_features.parquet"
 CHR_PATH = PROJECT_ROOT / "data" / "assembled" / "county_health_features.parquet"
+MIGRATION_PATH = PROJECT_ROOT / "data" / "assembled" / "county_migration_features.parquet"
+URBANICITY_PATH = PROJECT_ROOT / "data" / "assembled" / "county_urbanicity_features.parquet"
 OUTPUT_PATH = PROJECT_ROOT / "data" / "assembled" / "county_features_national.parquet"
 
 RCMS_FEATURE_COLS = [
@@ -77,6 +81,21 @@ QCEW_FEATURE_COLS = [
     "finance_share",
     "hospitality_share",
     "industry_diversity_hhi",
+]
+
+# Migration features (IRS SOI inflow/outflow; derived from county_migration_features.parquet)
+MIGRATION_FEATURE_COLS = [
+    "net_migration_rate",
+    "avg_inflow_income",
+    "migration_diversity",
+    "inflow_outflow_ratio",
+]
+
+# Urbanicity features (Census Gazetteer + ACS pop_total)
+URBANICITY_FEATURE_COLS = [
+    "log_pop_density",
+    "land_area_sq_mi",
+    "pop_per_sq_mi",
 ]
 
 # CHR features (median_household_income, high_school_completion_pct, some_college_pct
@@ -149,8 +168,10 @@ def build_national_features(
     rcms: pd.DataFrame,
     qcew: pd.DataFrame | None = None,
     chr_df: pd.DataFrame | None = None,
+    migration: pd.DataFrame | None = None,
+    urbanicity: pd.DataFrame | None = None,
 ) -> pd.DataFrame:
-    """Join ACS, RCMS, QCEW, and CHR county features into a single national DataFrame.
+    """Join ACS, RCMS, QCEW, CHR, Migration, and Urbanicity county features into a single national DataFrame.
 
     Parameters
     ----------
@@ -164,11 +185,18 @@ def build_national_features(
     chr_df:
         Output of build_county_health_features.py — county_fips + 15 CHR health features.
         metadata cols (state_abbr, data_year) and ACS-overlap cols are dropped. Optional.
+    migration:
+        Output of build_irs_migration_features.py — county_fips + 4 migration features.
+        Optional.
+    urbanicity:
+        Output of build_urbanicity_features.py — county_fips + 3 urbanicity features.
+        Optional.
 
     Returns
     -------
     DataFrame with county_fips, pop_total, 13 ACS ratio features, 6 RCMS features,
-    8 QCEW industry-mix features (if provided), and 15 CHR health features (if provided).
+    8 QCEW industry-mix features (if provided), 15 CHR health features (if provided),
+    4 migration features (if provided), and 3 urbanicity features (if provided).
     Missing values for all joined sources are imputed with state-level medians.
     """
     # Validate FIPS format
@@ -225,6 +253,38 @@ def build_national_features(
             )
             merged = _impute_state_medians(merged, CHR_FEATURE_COLS)
 
+    # ── Migration features ───────────────────────────────────────────────────
+    if migration is not None:
+        if not migration["county_fips"].str.len().eq(5).all():
+            raise ValueError("Migration county_fips must be 5-char zero-padded strings")
+
+        mig_cols = ["county_fips"] + MIGRATION_FEATURE_COLS
+        merged = merged.merge(migration[mig_cols], on="county_fips", how="left")
+
+        n_missing_mig = merged[MIGRATION_FEATURE_COLS[0]].isna().sum()
+        if n_missing_mig > 0:
+            log.info(
+                "%d counties lack migration data — imputing with state-level medians",
+                n_missing_mig,
+            )
+            merged = _impute_state_medians(merged, MIGRATION_FEATURE_COLS)
+
+    # ── Urbanicity features ──────────────────────────────────────────────────
+    if urbanicity is not None:
+        if not urbanicity["county_fips"].str.len().eq(5).all():
+            raise ValueError("Urbanicity county_fips must be 5-char zero-padded strings")
+
+        urb_cols = ["county_fips"] + URBANICITY_FEATURE_COLS
+        merged = merged.merge(urbanicity[urb_cols], on="county_fips", how="left")
+
+        n_missing_urb = merged[URBANICITY_FEATURE_COLS[0]].isna().sum()
+        if n_missing_urb > 0:
+            log.info(
+                "%d counties lack urbanicity data — imputing with state-level medians",
+                n_missing_urb,
+            )
+            merged = _impute_state_medians(merged, URBANICITY_FEATURE_COLS)
+
     return merged.reset_index(drop=True)
 
 
@@ -255,7 +315,25 @@ def main() -> None:
     else:
         log.warning("CHR features not found at %s — skipping", CHR_PATH)
 
-    features = build_national_features(acs, rcms, qcew=qcew, chr_df=chr_df)
+    # Load Migration features if available
+    migration: pd.DataFrame | None = None
+    if MIGRATION_PATH.exists():
+        log.info("Loading Migration county features from %s", MIGRATION_PATH)
+        migration = pd.read_parquet(MIGRATION_PATH)
+        log.info("  %d counties × %d cols", len(migration), len(migration.columns))
+    else:
+        log.warning("Migration features not found at %s — skipping", MIGRATION_PATH)
+
+    # Load Urbanicity features if available
+    urbanicity: pd.DataFrame | None = None
+    if URBANICITY_PATH.exists():
+        log.info("Loading Urbanicity county features from %s", URBANICITY_PATH)
+        urbanicity = pd.read_parquet(URBANICITY_PATH)
+        log.info("  %d counties × %d cols", len(urbanicity), len(urbanicity.columns))
+    else:
+        log.warning("Urbanicity features not found at %s — skipping", URBANICITY_PATH)
+
+    features = build_national_features(acs, rcms, qcew=qcew, chr_df=chr_df, migration=migration, urbanicity=urbanicity)
 
     n_na_any = features.isnull().any(axis=1).sum()
     log.info(

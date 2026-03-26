@@ -1,4 +1,4 @@
-"""Build urbanicity features for FL, GA, AL counties.
+"""Build urbanicity features for all national counties.
 
 Sources:
   - Census Bureau 2020 Gazetteer file (county land area in sq meters)
@@ -43,10 +43,6 @@ GAZETTEER_ZIP_ENTRY = "2020_Gaz_counties_national.txt"
 # Sq meters → sq miles conversion factor
 SQ_M_PER_SQ_MI = 2_589_988.11
 
-# FL=12, GA=13, AL=01
-TARGET_FIPS_PREFIXES = {"01", "12", "13"}
-
-
 def _load_gazetteer() -> pd.DataFrame:
     """Return DataFrame with columns: county_fips (5-char str), aland_sq_m (float).
 
@@ -85,7 +81,7 @@ def build_urbanicity_features(
     acs: pd.DataFrame,
     gazetteer: pd.DataFrame,
 ) -> pd.DataFrame:
-    """Compute urbanicity features for FL/GA/AL counties.
+    """Compute urbanicity features for all national counties.
 
     Parameters
     ----------
@@ -98,12 +94,8 @@ def build_urbanicity_features(
     -------
     DataFrame with county_fips, log_pop_density, land_area_sq_mi, pop_per_sq_mi.
     """
-    # Filter to FL/GA/AL
-    acs_fga = acs[acs["county_fips"].str[:2].isin(TARGET_FIPS_PREFIXES)].copy()
-    gaz_fga = gazetteer[gazetteer["county_fips"].str[:2].isin(TARGET_FIPS_PREFIXES)].copy()
-
-    merged = acs_fga[["county_fips", "pop_total"]].merge(
-        gaz_fga[["county_fips", "aland_sq_m"]],
+    merged = acs[["county_fips", "pop_total"]].merge(
+        gazetteer[["county_fips", "aland_sq_m"]],
         on="county_fips",
         how="inner",
     )

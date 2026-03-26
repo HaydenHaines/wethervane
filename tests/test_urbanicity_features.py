@@ -2,7 +2,7 @@
 
 Coverage:
 1. log_pop_density computation with known values
-2. Filtering to FL/GA/AL only (non-target states excluded)
+2. National scope (no state filtering — all counties included)
 3. Zero land area handling — should produce NaN, not -inf
 4. Output schema: expected columns, correct dtypes, no spurious NaN
 5. land_area_sq_mi unit conversion from ALAND (sq meters)
@@ -23,7 +23,6 @@ from src.assembly.build_urbanicity_features import (
     OUTPUT_PATH,
     GAZETTEER_CACHE,
     SQ_M_PER_SQ_MI,
-    TARGET_FIPS_PREFIXES,
     build_urbanicity_features,
 )
 
@@ -35,7 +34,7 @@ from src.assembly.build_urbanicity_features import (
 
 @pytest.fixture
 def minimal_acs() -> pd.DataFrame:
-    """Minimal ACS DataFrame covering FL, GA, AL, and one out-of-scope county."""
+    """Minimal ACS DataFrame covering FL, GA, AL, and a CA county."""
     return pd.DataFrame(
         {
             "county_fips": ["12001", "13001", "01001", "06037"],
@@ -51,7 +50,7 @@ def minimal_gazetteer() -> pd.DataFrame:
     12001 FL Alachua   ~ 873 sq mi  = 2,261,000,000 sq m  (urban-ish)
     13001 GA Appling   ~ 508 sq mi  = 1,315,000,000 sq m  (rural)
     01001 AL Autauga   ~ 604 sq mi  = 1,564,000,000 sq m
-    06037 CA Los Angeles — out-of-scope, should be excluded
+    06037 CA Los Angeles — now included (national scope)
     """
     return pd.DataFrame(
         {
@@ -110,33 +109,29 @@ class TestLogPopDensityComputation:
 
 
 # ---------------------------------------------------------------------------
-# 2. Filtering to FL/GA/AL only
+# 2. National scope (no state filtering)
 # ---------------------------------------------------------------------------
 
 
-class TestStateFiltering:
-    def test_out_of_scope_county_excluded(self, minimal_acs, minimal_gazetteer):
-        """California county (06037) must not appear in output."""
+class TestNationalScope:
+    def test_out_of_state_county_included(self, minimal_acs, minimal_gazetteer):
+        """California county (06037) must now appear in output (national scope)."""
         result = build_urbanicity_features(minimal_acs, minimal_gazetteer)
-        assert "06037" not in result["county_fips"].values
+        assert "06037" in result["county_fips"].values
 
-    def test_only_target_states_present(self, minimal_acs, minimal_gazetteer):
-        """All output county_fips must have a FL/GA/AL FIPS prefix."""
+    def test_all_acs_counties_with_gazetteer_match_included(self, minimal_acs, minimal_gazetteer):
+        """All four counties present in both ACS and gazetteer appear in output."""
         result = build_urbanicity_features(minimal_acs, minimal_gazetteer)
-        prefixes = result["county_fips"].str[:2].unique()
-        assert set(prefixes).issubset(TARGET_FIPS_PREFIXES)
+        assert len(result) == 4
 
-    def test_all_three_states_represented(self, minimal_acs, minimal_gazetteer):
-        """FL, GA, and AL counties all appear in output."""
+    def test_all_states_represented(self, minimal_acs, minimal_gazetteer):
+        """FL, GA, AL, and CA counties all appear in output."""
         result = build_urbanicity_features(minimal_acs, minimal_gazetteer)
         prefixes = set(result["county_fips"].str[:2].tolist())
         assert "12" in prefixes  # FL
         assert "13" in prefixes  # GA
         assert "01" in prefixes  # AL
-
-    def test_target_fips_prefixes_constant(self):
-        """TARGET_FIPS_PREFIXES covers exactly FL, GA, AL."""
-        assert TARGET_FIPS_PREFIXES == {"01", "12", "13"}
+        assert "06" in prefixes  # CA
 
 
 # ---------------------------------------------------------------------------
@@ -325,12 +320,4 @@ class TestEmptyInputs:
         """Empty gazetteer produces empty output (no ALAND data to join)."""
         empty_gaz = pd.DataFrame(columns=["county_fips", "aland_sq_m"])
         result = build_urbanicity_features(minimal_acs, empty_gaz)
-        assert len(result) == 0
-
-    def test_no_fl_ga_al_in_acs_returns_empty(self, minimal_gazetteer):
-        """ACS with only out-of-scope counties produces empty output."""
-        acs = pd.DataFrame(
-            {"county_fips": ["06037", "48201"], "pop_total": [10_000_000, 4_000_000]}
-        )
-        result = build_urbanicity_features(acs, minimal_gazetteer)
         assert len(result) == 0
