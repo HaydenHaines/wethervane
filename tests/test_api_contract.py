@@ -110,3 +110,40 @@ def test_health_reports_contract_status(real_client):
     data = resp.json()
     assert "contract" in data
     assert data["contract"] in ("ok", "degraded")
+
+
+def test_app_state_reconstruction_shapes(tmp_path):
+    """Verify app.state arrays have correct shapes after loading from DuckDB."""
+    import duckdb
+    import numpy as np
+    from api.main import _load_type_data_from_db
+
+    J = 4
+    N = 3
+
+    con = duckdb.connect(":memory:")
+    con.execute("""
+        CREATE TABLE type_scores (county_fips VARCHAR, type_id INTEGER, score FLOAT, version_id VARCHAR)
+    """)
+    for fips in ["12001", "12003", "13001"]:
+        for j in range(J):
+            con.execute("INSERT INTO type_scores VALUES (?,?,?,?)", [fips, j, 1.0/J, "v1"])
+
+    con.execute("""
+        CREATE TABLE type_covariance (type_i INTEGER, type_j INTEGER, value FLOAT, version_id VARCHAR)
+    """)
+    for i in range(J):
+        for j in range(J):
+            con.execute("INSERT INTO type_covariance VALUES (?,?,?,?)", [i, j, float(i==j)*0.01, "v1"])
+
+    con.execute("""
+        CREATE TABLE type_priors (type_id INTEGER, mean_dem_share FLOAT, version_id VARCHAR)
+    """)
+    for j in range(J):
+        con.execute("INSERT INTO type_priors VALUES (?,?,?)", [j, 0.45, "v1"])
+
+    scores, fips_list, covariance, priors = _load_type_data_from_db(con, "v1")
+    assert scores.shape == (N, J)
+    assert covariance.shape == (J, J)
+    assert priors.shape == (J,)
+    assert len(fips_list) == N

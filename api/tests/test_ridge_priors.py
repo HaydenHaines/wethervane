@@ -83,18 +83,8 @@ def _make_app_with_type_state(ridge_priors: dict | None = None) -> TestClient:
 class TestRidgePriorsStartupLoading:
     """Test that lifespan() loads ridge_county_priors.parquet into app.state.ridge_priors."""
 
-    def test_ridge_priors_loaded_from_parquet(self, tmp_path):
-        """Ridge priors parquet is present → app.state.ridge_priors populated."""
-        # Write a synthetic ridge parquet
-        ridge_dir = tmp_path / "models" / "ridge_model"
-        ridge_dir.mkdir(parents=True)
-        ridge_df = pd.DataFrame({
-            "county_fips": list(RIDGE_PRIOR_VALUES.keys()),
-            "ridge_pred_dem_share": list(RIDGE_PRIOR_VALUES.values()),
-        })
-        ridge_df.to_parquet(ridge_dir / "ridge_county_priors.parquet", index=False)
-
-        # Also need minimal DuckDB so lifespan doesn't crash
+    def test_ridge_priors_loaded_from_db(self, tmp_path):
+        """Ridge priors in DuckDB → app.state.ridge_priors populated."""
         import duckdb
         db_path = tmp_path / "wethervane.duckdb"
         con = duckdb.connect(str(db_path))
@@ -121,6 +111,15 @@ class TestRidgePriorsStartupLoading:
             "CREATE TABLE community_assignments (county_fips VARCHAR, community_id INTEGER, "
             "k INTEGER, version_id VARCHAR)"
         )
+        con.execute(
+            "CREATE TABLE ridge_county_priors (county_fips VARCHAR, "
+            "ridge_pred_dem_share DOUBLE, version_id VARCHAR)"
+        )
+        for fips, val in RIDGE_PRIOR_VALUES.items():
+            con.execute(
+                "INSERT INTO ridge_county_priors VALUES (?, ?, ?)",
+                [fips.zfill(5), val, "v1"],
+            )
         con.close()
 
         captured_state: dict = {}
