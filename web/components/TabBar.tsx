@@ -12,7 +12,7 @@ const TABS = [
 export function TabBar() {
   const pathname = usePathname();
   return (
-    <nav style={{
+    <nav className="tab-bar" style={{
       display: "flex",
       gap: "0",
       borderBottom: "1px solid var(--color-border)",
@@ -21,7 +21,7 @@ export function TabBar() {
       {TABS.map((tab) => {
         const active = pathname.startsWith(tab.href);
         return (
-          <Link key={tab.href} href={tab.href} style={{
+          <Link key={tab.href} href={tab.href} className="tab-link" style={{
             padding: "10px 20px",
             fontFamily: "var(--font-serif)",
             fontSize: "14px",

@@ -409,6 +409,7 @@ export default function MapShell() {
 
       {/* County/Tract toggle — always shown, lazy-loads tract data on first click */}
       <button
+        className="map-toggle-btn"
         onClick={() => {
           if (tractGeojson) {
             setShowTracts((prev) => !prev);
@@ -439,19 +440,22 @@ export default function MapShell() {
 
       {/* Legend */}
       {legendEntries.length > 0 && (
-        <div style={{
-          position: "absolute",
-          bottom: 24,
-          left: 16,
-          background: "white",
-          border: "1px solid var(--color-border)",
-          borderRadius: "4px",
-          padding: "8px 12px",
-          fontSize: "11px",
-          fontFamily: "var(--font-sans)",
-        }}>
+        <div
+          className="map-legend"
+          style={{
+            position: "absolute",
+            bottom: 24,
+            left: 16,
+            background: "white",
+            border: "1px solid var(--color-border)",
+            borderRadius: "4px",
+            padding: "8px 12px",
+            fontSize: "11px",
+            fontFamily: "var(--font-sans)",
+          }}
+        >
           {legendEntries.map((entry) => (
-            <div key={entry.id} style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "2px" }}>
+            <div key={entry.id} className="map-legend-item" style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "2px" }}>
               <div style={{
                 width: 12, height: 12, borderRadius: 2,
                 background: `rgb(${entry.color.join(",")})`,

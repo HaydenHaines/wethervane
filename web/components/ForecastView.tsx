@@ -1,9 +1,11 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import * as Plot from "@observablehq/plot";
 import { fetchForecast, type ForecastRow } from "@/lib/api";
 import { FeedAPoll } from "@/components/FeedAPoll";
 import { FeedHistoricalPolls } from "@/components/FeedHistoricalPolls";
+
+const MOBILE_ROW_LIMIT = 10;
 
 const LEAN_LABELS = [
   { threshold: 0.55, label: "Solid D", color: "var(--color-dem)" },
@@ -67,6 +69,16 @@ export function ForecastView() {
   const [baselineRows, setBaselineRows] = useState<ForecastRow[]>([]);
   const [displayRows, setDisplayRows] = useState<ForecastRow[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showAllCounties, setShowAllCounties] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    setIsMobile(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
 
   useEffect(() => {
     fetchForecast().then((rows) => {
@@ -161,39 +173,68 @@ export function ForecastView() {
             <p style={{ margin: "0 0 8px", fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.5px", color: "var(--color-text-muted)" }}>
               County predictions
             </p>
-            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "12px" }}>
-              <thead>
-                <tr style={{ borderBottom: "1px solid var(--color-border)" }}>
-                  <th style={{ textAlign: "left", padding: "4px 6px", color: "var(--color-text-muted)", fontWeight: "normal" }}>County</th>
-                  <th style={{ textAlign: "right", padding: "4px 6px", color: "var(--color-text-muted)", fontWeight: "normal" }}>Dem %</th>
-                  <th style={{ textAlign: "right", padding: "4px 6px", color: "var(--color-text-muted)", fontWeight: "normal" }}>90% CI</th>
-                </tr>
-              </thead>
-              <tbody>
-                {[...stateRows]
-                  .sort((a, b) => (b.pred_dem_share ?? 0) - (a.pred_dem_share ?? 0))
-                  .map((row) => {
-                    const share = row.pred_dem_share ?? 0;
-                    return (
-                      <tr key={row.county_fips} style={{ borderBottom: "1px solid var(--color-border)" }}>
-                        <td style={{ padding: "5px 6px" }}>{row.county_name ?? row.county_fips}</td>
-                        <td style={{
-                          padding: "5px 6px", textAlign: "right",
-                          color: share > 0.5 ? "var(--color-dem)" : "var(--color-rep)",
-                          fontWeight: "600",
-                        }}>
-                          {(share * 100).toFixed(1)}%
-                        </td>
-                        <td style={{ padding: "5px 6px", textAlign: "right", color: "var(--color-text-muted)" }}>
-                          {row.pred_lo90 !== null && row.pred_hi90 !== null
-                            ? `${(row.pred_lo90 * 100).toFixed(0)}–${(row.pred_hi90 * 100).toFixed(0)}%`
-                            : "—"}
-                        </td>
-                      </tr>
-                    );
-                  })}
-              </tbody>
-            </table>
+            {(() => {
+              const sortedRows = [...stateRows].sort((a, b) => (b.pred_dem_share ?? 0) - (a.pred_dem_share ?? 0));
+              const visibleRows = isMobile && !showAllCounties ? sortedRows.slice(0, MOBILE_ROW_LIMIT) : sortedRows;
+              return (
+                <>
+                  <div className="forecast-county-table-wrap">
+                    <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "12px" }}>
+                      <thead>
+                        <tr style={{ borderBottom: "1px solid var(--color-border)" }}>
+                          <th style={{ textAlign: "left", padding: "4px 6px", color: "var(--color-text-muted)", fontWeight: "normal" }}>County</th>
+                          <th style={{ textAlign: "right", padding: "4px 6px", color: "var(--color-text-muted)", fontWeight: "normal" }}>Dem %</th>
+                          <th style={{ textAlign: "right", padding: "4px 6px", color: "var(--color-text-muted)", fontWeight: "normal" }}>90% CI</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {visibleRows.map((row) => {
+                          const share = row.pred_dem_share ?? 0;
+                          return (
+                            <tr key={row.county_fips} style={{ borderBottom: "1px solid var(--color-border)" }}>
+                              <td style={{ padding: "5px 6px" }}>{row.county_name ?? row.county_fips}</td>
+                              <td style={{
+                                padding: "5px 6px", textAlign: "right",
+                                color: share > 0.5 ? "var(--color-dem)" : "var(--color-rep)",
+                                fontWeight: "600",
+                              }}>
+                                {(share * 100).toFixed(1)}%
+                              </td>
+                              <td style={{ padding: "5px 6px", textAlign: "right", color: "var(--color-text-muted)" }}>
+                                {row.pred_lo90 !== null && row.pred_hi90 !== null
+                                  ? `${(row.pred_lo90 * 100).toFixed(0)}–${(row.pred_hi90 * 100).toFixed(0)}%`
+                                  : "—"}
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                  {isMobile && sortedRows.length > MOBILE_ROW_LIMIT && (
+                    <button
+                      onClick={() => setShowAllCounties((prev) => !prev)}
+                      style={{
+                        marginTop: "8px",
+                        width: "100%",
+                        padding: "8px",
+                        border: "1px solid var(--color-border)",
+                        borderRadius: "4px",
+                        background: "white",
+                        fontSize: "12px",
+                        color: "var(--color-text-muted)",
+                        cursor: "pointer",
+                        fontFamily: "var(--font-sans)",
+                      }}
+                    >
+                      {showAllCounties
+                        ? "Show fewer counties"
+                        : `Show all ${sortedRows.length} counties`}
+                    </button>
+                  )}
+                </>
+              );
+            })()}
           </div>
         </>
       )}
