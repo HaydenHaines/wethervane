@@ -96,6 +96,9 @@ def _load_type_data_from_db(
         "SELECT type_i, type_j, value FROM type_covariance WHERE version_id=? ORDER BY type_i, type_j",
         [version_id],
     ).fetchdf()
+    if cov_df.empty:
+        log.warning("No type_covariance rows in DB for version %s", version_id)
+        return None, None, None, None
     cov_pivot = cov_df.pivot(index="type_i", columns="type_j", values="value").sort_index()
     cov_pivot = cov_pivot[sorted(cov_pivot.columns)]
     type_covariance = cov_pivot.values[:J, :J].astype(float)
@@ -105,6 +108,9 @@ def _load_type_data_from_db(
         "SELECT type_id, mean_dem_share FROM type_priors WHERE version_id=? ORDER BY type_id",
         [version_id],
     ).fetchdf()
+    if priors_df.empty:
+        log.warning("No type_priors rows in DB for version %s", version_id)
+        return None, None, None, None
     type_priors = priors_df["mean_dem_share"].values[:J].astype(float)
 
     return type_scores, type_county_fips, type_covariance, type_priors
@@ -138,7 +144,10 @@ def _load_hac_weights_from_db(
         return pd.DataFrame(), pd.DataFrame()
 
     state_weights = sw_df.pivot(index="state_abbr", columns="community_id", values="weight").reset_index()
-    state_weights.columns = ["state_abbr"] + [f"community_{i}" for i in state_weights.columns[1:]]
+    # Sort by community_id to ensure stable column ordering
+    comm_ids = sorted(c for c in state_weights.columns if c != "state_abbr")
+    state_weights = state_weights[["state_abbr"] + comm_ids]
+    state_weights.columns = ["state_abbr"] + [f"community_{i}" for i in comm_ids]
 
     # `_forecast_poll_hac` only reads county_fips → community_id mapping.
     # Other columns that may exist in the source parquet (state_fips, etc.)
