@@ -74,16 +74,21 @@ class TestIsTarget:
         s = pd.Series(["01001", "01073"])
         assert _is_target(s).all()
 
-    def test_non_target_state_rejected(self):
-        """TX (48) and CA (06) FIPS must not be flagged as target."""
-        s = pd.Series(["48001", "06001"])
-        assert not _is_target(s).any()
+    def test_tx_is_target(self):
+        """TX (48) is now a target state (national scope)."""
+        s = pd.Series(["48001", "48201"])
+        assert _is_target(s).all()
 
-    def test_mixed_series(self):
-        """Mixed series must return True only for FL/GA/AL rows."""
+    def test_ca_is_target(self):
+        """CA (06) is now a target state (national scope)."""
+        s = pd.Series(["06001", "06037"])
+        assert _is_target(s).all()
+
+    def test_mixed_series_all_us_states_are_target(self):
+        """All US state FIPS prefixes must be recognized as target (national scope)."""
         s = pd.Series(["12001", "48001", "13121", "06001"])
-        expected = [True, False, True, False]
-        assert _is_target(s).tolist() == expected
+        # All four are valid US state FIPS — all should be target
+        assert _is_target(s).all()
 
 
 # ---------------------------------------------------------------------------
@@ -184,7 +189,7 @@ class TestBuildFeaturesForYear:
         assert (result["inflow_outflow_ratio"] <= 1).all()
 
     def test_only_target_counties_in_output(self, simple_df):
-        """Output index must contain only FL/GA/AL FIPS codes."""
+        """Output index must contain only counties from configured states (national scope)."""
         result = build_features_for_year(simple_df)
         for fips in result.index:
             assert fips[:2] in TARGET_PREFIXES, f"Non-target county {fips} found in output"
@@ -417,9 +422,9 @@ class TestMigrationFeaturesIntegration:
         assert expected == set(features.columns)
 
     def test_all_counties_target_states(self, features):
-        """All county_fips in output must belong to FL, GA, or AL."""
+        """All county_fips in output must belong to configured states (national: all 50+DC)."""
         for fips in features["county_fips"]:
-            assert fips[:2] in TARGET_PREFIXES, f"Non-target county {fips} in output"
+            assert fips[:2] in TARGET_PREFIXES, f"Non-configured county {fips} in output"
 
     def test_no_null_values(self, features):
         """Feature columns must have no null values."""
@@ -448,6 +453,7 @@ class TestMigrationFeaturesIntegration:
         assert features["county_fips"].nunique() == len(features)
 
     def test_reasonable_county_count(self, features):
-        """FL+GA+AL have 293 counties total — output should be close to that."""
+        """National scope has 3,100+ counties — output should cover the bulk of them."""
         n = len(features)
-        assert 50 <= n <= 293, f"Unexpected county count: {n} (expected 50–293)"
+        assert n >= 3000, f"Too few counties: {n} (expected 3,000+ for national scope)"
+        assert n <= 3300, f"Too many counties: {n} (expected at most ~3,300)"

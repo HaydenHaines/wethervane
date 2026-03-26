@@ -9,7 +9,8 @@ data/assembled/county_migration_features.parquet with:
     migration_diversity     number of unique origin counties sending migrants here
     inflow_outflow_ratio    inflow / (inflow + outflow); in [0, 1], >0.5 = net inflow
 
-Target counties: FL (12), GA (13), AL (01).  Origin/destination counties may be anywhere.
+Scope: All 50 states + DC (national coverage, ~3,100+ counties).
+Origin/destination counties may be anywhere in the US.
 If multiple year_pairs are present the per-year features are averaged for stability.
 
 IRS note: n_returns == -1 is a suppression sentinel (fewer than 10 returns).  These rows
@@ -24,6 +25,8 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+from src.core import config as _cfg
+
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger(__name__)
 
@@ -31,8 +34,8 @@ PROJECT_ROOT = Path(__file__).parents[2]
 INPUT_PATH = PROJECT_ROOT / "data" / "raw" / "irs_migration.parquet"
 OUTPUT_PATH = PROJECT_ROOT / "data" / "assembled" / "county_migration_features.parquet"
 
-# FIPS prefixes for the three target states
-TARGET_PREFIXES = ("01", "12", "13")
+# FIPS prefixes for all target states (national: all 50 states + DC)
+TARGET_PREFIXES: tuple[str, ...] = tuple(_cfg.STATES.values())
 
 # Small positive floor to prevent division by zero for pure-outflow counties
 _INFLOW_FLOOR = 1.0

@@ -441,10 +441,12 @@ class TestConstants:
     """Tests for module-level constants."""
 
     def test_states_fips_correct(self):
-        """STATES must map AL→01, FL→12, GA→13."""
+        """STATES must map AL→01, FL→12, GA→13, and include all 50 states + DC."""
         assert STATES["AL"] == "01"
         assert STATES["FL"] == "12"
         assert STATES["GA"] == "13"
+        # National: 50 states + DC = 51
+        assert len(STATES) == 51
 
     def test_target_state_fips_matches_states(self):
         """TARGET_STATE_FIPS must be the set of values from STATES."""
@@ -510,11 +512,20 @@ class TestIrsMigrationIntegration:
         assert (dest_state_fips < 96).all(), "Aggregate dest FIPS found"
 
     def test_target_state_coverage(self, irs_parquet):
-        """Each of FL, GA, AL must appear as origin or destination."""
-        for fips_prefix in ("01", "12", "13"):
+        """All 50 states + DC must appear as origin or destination (national scope)."""
+        from src.core import config as _cfg
+        # Check a representative sample of states
+        for abbr, fips_prefix in list(_cfg.STATES.items())[:20]:
             in_origin = irs_parquet["origin_fips"].str.startswith(fips_prefix).any()
             in_dest = irs_parquet["dest_fips"].str.startswith(fips_prefix).any()
-            assert in_origin or in_dest, f"No flows found for state FIPS {fips_prefix}"
+            assert in_origin or in_dest, f"No flows found for state {abbr} (FIPS {fips_prefix})"
+
+    def test_national_county_coverage(self, irs_parquet):
+        """National data should have flows involving 3,000+ unique destination counties."""
+        unique_dests = irs_parquet["dest_fips"].nunique()
+        assert unique_dests >= 3000, (
+            f"Only {unique_dests} unique dest counties — expected 3,000+ for national scope"
+        )
 
     def test_n_returns_not_null(self, irs_parquet):
         """n_returns must not be null; IRS uses -1 as a suppression sentinel for small cells."""

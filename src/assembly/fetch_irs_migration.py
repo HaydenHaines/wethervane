@@ -3,7 +3,7 @@ Stage 1 data assembly: fetch IRS SOI county-to-county migration flow data.
 
 Source: IRS Statistics of Income (SOI) Division — irs.gov/statistics/soi-tax-stats
 Data: County-to-county migration data derived from individual income tax returns
-Scope: FL (FIPS 12), GA (FIPS 13), AL (FIPS 01) — flows involving our 3 target states
+Scope: All 50 states + DC (national coverage) — all county-to-county flows
 
 The IRS SOI program tracks taxpayer mobility by comparing addresses on successive
 year tax returns. The result is a county-to-county edge list capturing the direction,
@@ -44,8 +44,7 @@ URL pattern: https://www.irs.gov/pub/irs-soi/countyinflow{YY}{YY}.csv
 
 Output: data/raw/irs_migration.parquet
   Columns: origin_fips, dest_fips, n_returns, n_exemptions, agi, year_pair
-  Rows: one per county-pair-year_pair combination (only flows where origin or
-        destination is in FL, GA, or AL)
+  Rows: one per county-pair-year_pair combination (national: all inter-county flows)
 """
 
 from __future__ import annotations
@@ -293,7 +292,7 @@ def filter_inflow_df(df: pd.DataFrame, year_label: str) -> pd.DataFrame:
     df = df[state_mask]
     n_after_state = len(df)
     log.info(
-        "  Kept %d rows involving FL/GA/AL (dropped %d out-of-scope)",
+        "  Kept %d rows (national scope; dropped %d out-of-scope/foreign)",
         n_after_state,
         n_after_nonmig - n_after_state,
     )
