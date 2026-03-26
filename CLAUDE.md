@@ -18,12 +18,14 @@ A political modeling platform that discovers electoral communities directly from
 - Revert to SVD+varimax, NMF, or HAC as the primary clustering algorithm. KMeans is the production algorithm. See ADR-006.
 - Use raw (non-state-centered) governor/Senate shifts for cross-state clustering. This creates state-isolated types.
 - Use the old community_assignments or HAC K=10 model for anything except historical comparison.
-- Modify the county-level model without running `uv run python -m src.validation.validate_types` and comparing to baseline (holdout r=0.648, covariance val r=0.855).
+- Modify the county-level model without running `uv run python -m src.validation.validate_types` and comparing to baseline.
 - Run tract-level experiments without population weighting (tracts with <500 voters are noise).
+- Trust the standard holdout r without checking LOO. Standard metric inflates by ~0.22 due to type self-prediction.
 
 **BASELINE METRICS (beat these or don't merge):**
 - County holdout r: 0.698 (J=100, StandardScaler+pw=8, national 3,154 counties)
-- County covariance val r: 0.556
+- County holdout LOO r: 0.448 (honest generalization metric, S196)
+- County covariance val r: 0.915 (observed LW-regularized, S196; was 0.556 with demographic construction)
 - County coherence: 0.783
 - County RMSE: 0.073
 - Tract holdout r: 0.632 (J=100, 35 dims, S192)
@@ -102,7 +104,7 @@ Two-resolution electoral model (ADR-006):
 3. **Type Discovery** -- KMeans clustering. County: presidential×2.5 weighted (J=55). Tract: combined features, pw=1.0 (J=100).
 4. **Hierarchical Nesting** -- County: Ward HAC on centroids → super-types. Tract: Ward HAC on demographic profiles (centroids are degenerate).
 5. **Type Description** -- Time-matched demographics overlaid on types. Named descriptively.
-6. **Type Covariance Construction** -- Economist-inspired: demographic profile correlation → shrink toward all-1s → validate against observed comovement.
+6. **Type Covariance Construction** -- Observed Ledoit-Wolf regularized correlation from election shifts (primary). Demographic construction retained as fallback. LOEO val_r=0.995.
 7. **Poll Propagation** -- Gaussian Bayesian update via type covariance Σ.
 8. **Prediction** -- Type-level estimates × soft membership → county/tract predictions.
 9. **Validation** -- Leave-one-pair-out CV, calibration, type coherence, type stability.
@@ -261,7 +263,7 @@ python -m src.assembly.interpolate_demographics             # Interpolate for el
 python -m src.discovery.select_j                            # J selection sweep via leave-one-pair-out CV
 python -m src.discovery.run_type_discovery                  # KMeans → type assignments
 python -m src.description.describe_types                    # Overlay time-matched demographics on types
-python -m src.covariance.construct_type_covariance          # Economist-inspired covariance construction
+python -m src.covariance.construct_type_covariance          # Observed LW-regularized covariance (primary)
 python -m src.prediction.predict_2026_types                 # Type-based 2026 predictions
 python -m src.validation.validate_types                     # Type validation report
 
