@@ -56,9 +56,9 @@ export function MethodologyView() {
             toward Democrats or Republicans, and by how much?
           </p>
           <p>
-            KMeans clustering (J=43) groups counties with similar shift patterns
+            KMeans clustering (J=100) groups counties with similar shift patterns
             into <strong>electoral types</strong>. Presidential shifts are
-            weighted <strong>2.5x</strong> because they carry cross-state signal.
+            weighted <strong>8x</strong> because they carry cross-state signal.
             Governor and Senate shifts are state-centered first (subtracting the
             statewide swing) so that clustering captures within-state variation,
             not just red-state/blue-state differences.
@@ -81,15 +81,15 @@ export function MethodologyView() {
 
         <Step number={3} title="Covariance Structure">
           <p>
-            Types that share demographic profiles tend to move together
+            Types that share electoral behavior tend to move together
             politically. The model estimates a covariance matrix capturing how
-            much each pair of types co-moves, using demographic profile
+            much each pair of types co-moves, using observed electoral
             correlation with Ledoit-Wolf regularization.
           </p>
           <p>
-            This is validated against observed electoral comovement — the
-            demographic construction must agree with what actually happened, or
-            the model falls back to direct observation.
+            This observed covariance (validation r = 0.915) captures the real
+            co-movement structure between types, validated against held-out
+            election cycles.
           </p>
         </Step>
 
@@ -154,21 +154,21 @@ export function MethodologyView() {
       <Section title="Current Status">
         <p>
           WetherVane is in active development, targeting the 2026 midterm elections.
-          The current pilot covers three states.
+          The model covers all 50 states and DC.
         </p>
         <MetricGrid metrics={[
-          { label: "Pilot region", value: "FL, GA, AL" },
-          { label: "Counties", value: "293" },
-          { label: "Fine types", value: "43" },
+          { label: "Coverage", value: "All 50 states + DC" },
+          { label: "Counties", value: "3,154" },
+          { label: "Fine types", value: "100" },
           { label: "Super-types", value: "5" },
-          { label: "County holdout r", value: "0.818" },
-          { label: "Calibration MAE", value: "6.1 pp" },
-          { label: "County RMSE", value: "2.67 pp" },
-          { label: "KMeans stability", value: "r = 0.919 \u00B1 0.004" },
+          { label: "County holdout r", value: "0.698" },
+          { label: "LOO r (Ridge+Demo)", value: "0.650" },
+          { label: "County RMSE", value: "7.3 pp" },
+          { label: "Covariance val r", value: "0.915" },
         ]} />
         <p style={{ marginTop: "12px" }}>
-          <strong>Planned:</strong> National expansion (all 50 states + DC),
-          Senate and Governor race-specific models.
+          <strong>Planned:</strong> Senate and Governor race-specific models,
+          precinct-level refinement.
         </p>
       </Section>
 
@@ -184,6 +184,8 @@ export function MethodologyView() {
           { name: "Election returns", source: "MIT Election Data & Science Lab (MEDSL)" },
           { name: "Demographics", source: "U.S. Census Bureau (Decennial + ACS)" },
           { name: "Religious congregations", source: "Association of Religion Data Archives (ARDA)" },
+          { name: "Migration flows", source: "IRS Statistics of Income (SOI)" },
+          { name: "Health data", source: "CDC (COVID vaccination, mortality)" },
           { name: "Polling data", source: "FiveThirtyEight archives" },
           { name: "Governor returns", source: "Algara & Amlani (Harvard Dataverse)" },
         ]} />
