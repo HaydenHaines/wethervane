@@ -109,6 +109,20 @@ The output display design should be driven by what the model can defensibly prod
 
 ---
 
+## Candidate Effects (interpretive layer, future)
+
+When posterior θ deviates from expected θ (Σ + fundamentals), that deviation is a candidate effect:
+
+```
+candidate_effect[k] = θ_posterior[k] - θ_expected[k]
+```
+
+The Forecast tab should eventually surface this as an interpretive layer: "This candidate is over/underperforming with [type] relative to structural expectations." This connects to the Sabermetrics silo (CTOV, candidate drag/lift) but operates at the type level rather than the race level.
+
+For 2026, the Forecast tab does not need to display candidate effects — but the architecture should not preclude it. The posterior θ should always be available for comparison against the expected θ baseline.
+
+---
+
 ## Fundamentals Model (separate, future)
 
 Fundamentals are a **national signal** that modifies expected demographic lean for a given cycle. Conceptually: economic conditions, presidential approval, historical midterm patterns.

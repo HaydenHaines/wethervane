@@ -4,13 +4,16 @@ A political modeling platform that discovers electoral communities directly from
 
 **Core insight:** beneath the noise of individual elections is a structural landscape of communities that move together politically. Those communities cross administrative boundaries, persist across decades, and can be discovered purely from how places shift. Understanding this structure — not just the surface results — is what makes prediction defensible.
 
-**Governing principles (updated 2026-03-22):**
+**Governing principles (updated 2026-03-26):**
 - Build it right, not fast. Use the correct model even if it takes longer.
 - Build it expandable. Every component has a clear interface.
 - Types are primary. KMeans on shift vectors discovers J types. Counties/tracts get soft membership. Types carry covariance and prediction.
 - Governor/Senate shifts must be state-centered before cross-state clustering. Presidential shifts carry cross-state signal.
 - J selection must be principled (holdout accuracy), not heuristic.
-- The public question is: *What will happen in 2026?*
+- **θ is the fundamental inference target.** Type means θ are what the model estimates. State/county outcomes are downstream products of θ, not the primary objects of inference.
+- **Polls are observations of W·θ.** A poll tells us about the type composition of the polled geography. The model learns θ from it and propagates that inference everywhere those types exist — regardless of state lines.
+- **Deviations from expected θ are candidate effects.** Σ + fundamentals generate an expected θ. Posterior deviations are candidate-specific draws (Trump/Rust Belt, W/Hispanic). These are detectable from early polling and propagatable to unpolled geographies.
+- The public question is: *What will happen in 2026?* The 2028 question is: *What is each type doing, and why?*
 
 ## CRITICAL: For Autonomous Agents
 
