@@ -21,6 +21,7 @@ import numpy as np
 import pandas as pd
 import yaml
 from sklearn.cluster import KMeans
+from sklearn.preprocessing import StandardScaler
 
 
 @dataclass
@@ -227,6 +228,18 @@ def main() -> None:
         shift_cols = all_shift_cols  # fallback to all if filter removes everything
 
     shift_matrix = df[shift_cols].values
+
+    # Apply StandardScaler, then presidential weighting (post-scaling).
+    # Without scaling, gov/senate shifts with different variances dominate
+    # KMeans by Euclidean distance magnitude, not signal content.
+    presidential_weight = float(config["types"].get("presidential_weight", 4.0))
+    scaler = StandardScaler()
+    shift_matrix = scaler.fit_transform(shift_matrix)
+
+    if presidential_weight != 1.0:
+        pres_indices = [i for i, c in enumerate(shift_cols) if "pres_" in c]
+        shift_matrix[:, pres_indices] *= presidential_weight
+        print(f"Applied presidential weight={presidential_weight} to {len(pres_indices)} columns (post-scaling)")
 
     print(f"Shift matrix: {shift_matrix.shape[0]} counties x {shift_matrix.shape[1]} dims (min_year={args.min_year})")
     print(f"Discovering J={j} types via KMeans (temperature={temperature})...")

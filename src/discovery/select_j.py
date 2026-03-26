@@ -19,6 +19,7 @@ import numpy as np
 import pandas as pd
 import yaml
 from scipy.stats import pearsonr
+from sklearn.preprocessing import StandardScaler
 
 from src.discovery.run_type_discovery import discover_types
 
@@ -206,6 +207,15 @@ def main() -> None:
     # Separate FIPS and shift columns, exclude holdout
     shift_cols = [c for c in df.columns if c != "county_fips" and c not in HOLDOUT_COLUMNS]
     shift_matrix = df[shift_cols].values
+
+    # Apply StandardScaler + presidential weighting
+    presidential_weight = float(config["types"].get("presidential_weight", 4.0))
+    scaler = StandardScaler()
+    shift_matrix = scaler.fit_transform(shift_matrix)
+    if presidential_weight != 1.0:
+        pres_indices = [i for i, c in enumerate(shift_cols) if "pres_" in c]
+        shift_matrix[:, pres_indices] *= presidential_weight
+        print(f"Applied presidential weight={presidential_weight} to {len(pres_indices)} columns (post-scaling)")
 
     print(f"Shift matrix: {shift_matrix.shape[0]} counties x {shift_matrix.shape[1]} dims")
     print(f"J candidates: {j_candidates}")
