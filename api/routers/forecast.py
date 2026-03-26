@@ -1,8 +1,8 @@
 from __future__ import annotations
 
+import duckdb
 import numpy as np
 import pandas as pd
-import duckdb
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 
 from api.db import get_db
@@ -115,8 +115,6 @@ def _forecast_poll_types(
     """Type-based Bayesian update using predict_race from predict_2026_types."""
     from src.prediction.predict_2026_types import predict_race
 
-    version_id = request.app.state.version_id
-
     # Get county names from DB
     county_info = db.execute(
         """SELECT c.county_fips, c.county_name, c.state_abbr
@@ -138,10 +136,11 @@ def _forecast_poll_types(
     else:
         county_priors = None  # falls back to type-mean inside predict_race
 
+    # poll.state is the authoritative source for which state was polled;
+    # passing it explicitly avoids the fragile race-string scan.
     result_df = predict_race(
         race=poll.race,
-        poll_dem_share=poll.dem_share,
-        poll_n=poll.n,
+        polls=[(poll.dem_share, poll.n, poll.state)],
         type_scores=type_scores,
         type_covariance=type_covariance,
         type_priors=type_priors,
@@ -151,6 +150,11 @@ def _forecast_poll_types(
         state_filter=None,
         county_priors=county_priors,
     )
+
+    # Compute state-level prediction as the mean of polled-state county
+    # predictions — consistent with how the HAC pipeline populates state_pred.
+    state_rows = result_df[result_df["state"] == poll.state]
+    state_pred_val = float(state_rows["pred_dem_share"].mean()) if not state_rows.empty else None
 
     results = []
     for _, row in result_df.iterrows():
@@ -164,7 +168,7 @@ def _forecast_poll_types(
                 pred_std=float(row["ci_upper"] - row["ci_lower"]) / (2 * 1.645),
                 pred_lo90=float(row["ci_lower"]),
                 pred_hi90=float(row["ci_upper"]),
-                state_pred=None,
+                state_pred=state_pred_val,
                 poll_avg=poll.dem_share,
             )
         )
@@ -291,37 +295,83 @@ def update_forecast_with_multi_polls(
     date_range = f"{dates[0]} to {dates[-1]}" if dates else "unknown"
     effective_n_total = sum(p.n_sample for p in weighted)
 
-    # Aggregate to a single effective poll
-    combined_share, combined_n = aggregate_polls(weighted)
+    # Build poll list for stacked Bayesian update — do not collapse.
+    # Collapsing loses geographic information when polls cover different
+    # states and conflates structurally distinct signals into one scalar.
+    race_polls = [
+        (p.dem_share, p.n_sample, p.geography)
+        for p in weighted
+        if p.geo_level == "state"
+    ]
 
-    # Route through the type-based or HAC pipeline via PollInput
-    race_label = body.race or polls[0].race
-    poll_state = body.state
+    if not race_polls:
+        raise HTTPException(status_code=400, detail="No state-level polls after filtering")
 
-    single_poll = PollInput(
-        state=poll_state,
-        race=race_label,
-        dem_share=combined_share,
-        n=combined_n,
-    )
-
-    # Use the existing single-poll endpoint logic
     type_scores = getattr(request.app.state, "type_scores", None)
     type_covariance = getattr(request.app.state, "type_covariance", None)
     type_priors = getattr(request.app.state, "type_priors", None)
     type_county_fips = getattr(request.app.state, "type_county_fips", None)
 
-    if (
-        type_scores is not None
-        and type_covariance is not None
-        and type_priors is not None
-        and type_county_fips is not None
-    ):
-        county_results = _forecast_poll_types(
-            single_poll, request, db,
-            type_scores, type_covariance, type_priors, type_county_fips,
+    if all(x is not None for x in [type_scores, type_covariance, type_priors, type_county_fips]):
+        from src.prediction.predict_2026_types import predict_race
+
+        county_info = db.execute(
+            "SELECT county_fips, county_name, state_abbr FROM counties ORDER BY county_fips"
+        ).fetchdf()
+        name_map = dict(zip(county_info["county_fips"], county_info["county_name"]))
+        state_map = dict(zip(county_info["county_fips"], county_info["state_abbr"]))
+
+        fips_list = type_county_fips
+        states_list = [state_map.get(f, f[:2]) for f in fips_list]
+        names_list = [name_map.get(f, "") for f in fips_list]
+
+        ridge_priors: dict[str, float] = getattr(request.app.state, "ridge_priors", {})
+        county_priors = (
+            np.array([ridge_priors.get(f, 0.45) for f in fips_list])
+            if ridge_priors else None
         )
+
+        result_df = predict_race(
+            race=body.race or race_polls[0][2],
+            polls=race_polls,
+            type_scores=type_scores,
+            type_covariance=type_covariance,
+            type_priors=type_priors,
+            county_fips=fips_list,
+            states=states_list,
+            county_names=names_list,
+            county_priors=county_priors,
+        )
+
+        state_pred_val = None
+        if body.state:
+            state_rows = result_df[result_df["state"] == body.state]
+            if not state_rows.empty:
+                state_pred_val = float(state_rows["pred_dem_share"].mean())
+
+        county_results = [
+            ForecastRow(
+                county_fips=row["county_fips"],
+                county_name=row["county_name"] if row["county_name"] else None,
+                state_abbr=row["state"],
+                race=body.race or race_polls[0][2],
+                pred_dem_share=float(row["pred_dem_share"]),
+                pred_std=float(row["ci_upper"] - row["ci_lower"]) / (2 * 1.645),
+                pred_lo90=float(row["ci_lower"]),
+                pred_hi90=float(row["ci_upper"]),
+                state_pred=state_pred_val,
+                poll_avg=float(np.mean([p[0] for p in race_polls])),
+            )
+            for _, row in result_df.iterrows()
+        ]
     else:
+        # HAC fallback: multi-poll stacking not yet supported; collapse to one
+        # effective poll as an approximation until HAC gains stacking support.
+        combined_share, combined_n = aggregate_polls(weighted)
+        race_label = body.race or polls[0].race
+        single_poll = PollInput(
+            state=body.state, race=race_label, dem_share=combined_share, n=combined_n
+        )
         county_results = _forecast_poll_hac(single_poll, request, db)
 
     return MultiPollResponse(
