@@ -4,7 +4,7 @@ Stage 1 data assembly: fetch CDC COVID-19 county-level vaccination data.
 Source: CDC COVID-19 Vaccinations in the United States, County
 Dataset ID: 8xkx-amqh (data.cdc.gov)
 SODA API: https://data.cdc.gov/resource/8xkx-amqh.json
-Scope: FL (FIPS 12), GA (FIPS 13), AL (FIPS 01) — 293 counties total
+Scope: ALL US counties (3,000+ counties across all 50 states + DC)
 
 The CDC publishes daily county-level snapshots of COVID-19 vaccination coverage.
 Each row represents one county on one date, with cumulative counts and percentages.
@@ -12,6 +12,11 @@ Each row represents one county on one date, with cumulative counts and percentag
 This fetcher retrieves the LATEST snapshot per county — the most recent date
 for which vaccination percentages are recorded. For most counties this is late
 2023 or early 2024, when CDC stopped updating the data.
+
+To limit data volume (3,000+ counties × 1,000+ days would be millions of rows),
+we filter to records after 2023-01-01, which captures the final-state vaccination
+coverage for each county without downloading the full historical time series.
+(The CDC stopped updating this dataset in May 2023.)
 
 Variables fetched per county (all are cumulative percentages):
   Series_Complete_Pop_Pct   : Percent of population fully vaccinated (2-dose or J&J)
@@ -52,12 +57,6 @@ log = logging.getLogger(__name__)
 PROJECT_ROOT = Path(__file__).parents[2]
 OUTPUT_PATH = PROJECT_ROOT / "data" / "raw" / "covid_vaccination.parquet"
 
-# Target states: abbreviation → FIPS prefix
-STATES = {"AL": "01", "FL": "12", "GA": "13"}
-
-# Set of state FIPS prefixes we care about (for filtering)
-TARGET_STATE_FIPS = frozenset(STATES.values())
-
 # CDC SODA API endpoint for county-level COVID vaccination data
 SODA_BASE_URL = "https://data.cdc.gov/resource/8xkx-amqh.json"
 
@@ -66,6 +65,12 @@ SODA_PAGE_SIZE = 10_000
 
 # Polite delay between pagination requests (seconds)
 REQUEST_DELAY = 0.5
+
+# Only fetch recent dates to avoid downloading the full multi-year time series.
+# The CDC stopped updating counties in May 2023 (dataset ends 2023-05-10).
+# Using 2023-01-01 captures the final vaccination coverage for each county
+# without downloading years of historical snapshots.
+DATE_CUTOFF = "2023-01-01"
 
 # CDC column names in the raw JSON response
 CDC_COLUMNS = {
@@ -93,8 +98,9 @@ OUTPUT_COLUMNS = [
 def build_soda_url(offset: int = 0, limit: int = SODA_PAGE_SIZE) -> str:
     """Construct a CDC SODA API URL for one page of county vaccination data.
 
-    Filters to FL (12xxx), GA (13xxx), and AL (01xxx) county FIPS codes using
-    SODA's $where clause with LIKE patterns. Requests only the columns we need.
+    Filters to records after DATE_CUTOFF to limit data volume while still
+    capturing final vaccination coverage for all US counties. Requests only
+    the columns we need.
 
     Args:
         offset: Row offset for pagination.
@@ -103,11 +109,9 @@ def build_soda_url(offset: int = 0, limit: int = SODA_PAGE_SIZE) -> str:
     Returns:
         Full SODA API URL string with query parameters.
     """
-    # Filter FIPS codes to our three target states using SODA $where
-    # FIPS is stored as a 5-character string in the CDC dataset
-    where_clause = (
-        "fips like '12%' OR fips like '13%' OR fips like '01%'"
-    )
+    # Filter to recent dates only — captures final vaccination state per county
+    # without downloading millions of historical rows
+    where_clause = f"date > '{DATE_CUTOFF}'"
     select_cols = ",".join(CDC_COLUMNS.keys())
 
     params = {
@@ -144,13 +148,14 @@ def fetch_page(offset: int = 0, limit: int = SODA_PAGE_SIZE) -> list[dict] | Non
 
 
 def fetch_all_pages() -> pd.DataFrame:
-    """Fetch all CDC vaccination data for FL/GA/AL counties via SODA pagination.
+    """Fetch all CDC vaccination data for all US counties via SODA pagination.
 
     Loops through SODA pages until a page returns fewer rows than requested
-    (indicating we've reached the end of the result set).
+    (indicating we've reached the end of the result set). Only fetches records
+    after DATE_CUTOFF to limit data volume.
 
     Returns:
-        Combined DataFrame with all rows for FL/GA/AL counties.
+        Combined DataFrame with all rows after the date cutoff.
         Empty DataFrame on failure.
     """
     all_rows: list[dict] = []
@@ -189,7 +194,6 @@ def parse_raw_df(df: pd.DataFrame) -> pd.DataFrame:
     2. Coerce vaccination percentage columns to float (empty strings → NaN)
     3. Parse date column
     4. Validate FIPS format (must be 5 digits)
-    5. Filter to only our target states
 
     Args:
         df: Raw DataFrame from fetch_all_pages().
@@ -234,13 +238,6 @@ def parse_raw_df(df: pd.DataFrame) -> pd.DataFrame:
     if n_bad > 0:
         log.warning("  Dropping %d rows with non-5-digit FIPS", n_bad)
         df = df[fips_ok]
-
-    # Filter to target state FIPS prefixes
-    state_ok = df["county_fips"].str[:2].isin(TARGET_STATE_FIPS)
-    n_filtered = (~state_ok).sum()
-    if n_filtered > 0:
-        log.warning("  Dropping %d rows outside FL/GA/AL FIPS range", n_filtered)
-        df = df[state_ok]
 
     return df[OUTPUT_COLUMNS].reset_index(drop=True)
 
@@ -293,13 +290,13 @@ def get_latest_snapshot(df: pd.DataFrame) -> pd.DataFrame:
 def main() -> None:
     """Fetch CDC COVID-19 county-level vaccination data and save to parquet.
 
-    Fetches all available snapshots for FL, GA, and AL counties from the
+    Fetches all recent snapshots (post-2023-06-01) for all US counties from the
     CDC SODA API, reduces to the latest snapshot per county, and saves
     to data/raw/covid_vaccination.parquet.
     """
-    log.info("Fetching CDC COVID-19 county vaccination data (FL, GA, AL)")
+    log.info("Fetching CDC COVID-19 county vaccination data (national — all US counties)")
     log.info("Source: data.cdc.gov/resource/8xkx-amqh.json")
-    log.info("Target states: %s", list(STATES.keys()))
+    log.info("Date filter: records after %s (captures final vaccination state per county)", DATE_CUTOFF)
 
     # Fetch all pages
     raw = fetch_all_pages()

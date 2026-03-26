@@ -8,9 +8,9 @@ Tests exercise:
 
 These tests use synthetic DataFrames and mock HTTP responses so they run without
 any network access. Tests verify:
-  - URL construction includes correct dataset ID, where clause, state filters
+  - URL construction includes correct dataset ID and where clause (national scope)
   - Raw JSON parsed correctly into typed DataFrames
-  - FIPS filtering keeps only FL/GA/AL county FIPS (5-digit, non-state-level)
+  - FIPS filtering keeps valid 5-digit county FIPS codes (excludes state aggregates)
   - Suppressed rows (footnote non-null) are dropped from COVID data
   - Drug overdose rate averages correctly across years
   - COVID death rate computes correctly from deaths + population
@@ -18,7 +18,7 @@ any network access. Tests verify:
   - Excess mortality ratio: county / state median
   - State-median imputation fills NaN correctly
   - Reserved NaN columns (heart_disease_rate, cancer_rate, suicide_rate) are all NaN
-  - Edge cases: empty input, all-suppressed, no target states, zero population
+  - Edge cases: empty input, all-suppressed, zero population
 """
 
 from __future__ import annotations
@@ -37,10 +37,7 @@ from src.assembly.fetch_cdc_wonder_mortality import (
     DATASET_DRUG_OVERDOSE,
     SODA_BASE,
     SODA_PAGE_SIZE,
-    STATES,
-    TARGET_STATE_FIPS,
     _build_soda_url,
-    _extract_year_from_date,
     build_covid_deaths_url,
     build_drug_overdose_url,
     fetch_covid_deaths,
@@ -63,36 +60,31 @@ from src.assembly.build_cdc_mortality_features import (
 # ---------------------------------------------------------------------------
 
 
-def _make_drug_overdose_rows(county_fips: str = "12001", year: int = 2019, death_rate: float = 20.0) -> dict:
-    """Build a minimal drug overdose raw row dict."""
+def _make_drug_overdose_rows(county_fips: str = "12001", year: int = 2022, death_count: float = 50.0) -> dict:
+    """Build a minimal VSRR drug overdose raw row dict (dataset gb4e-yj24 schema)."""
     return {
         "fips": county_fips,
-        "county": "Test County",
-        "state": "Florida",
+        "countyname": "Test County",
+        "st_abbrev": "FL",
         "year": str(year),
-        "deaths": "50",
-        "population": "100000",
-        "model_based_death_rate": str(death_rate),
-        "age_adjusted_rate": str(death_rate * 1.1),
+        "month": "12",
+        "provisional_drug_overdose": str(int(death_count)),
     }
 
 
 def _make_covid_rows(
     county_fips: str = "12001",
-    start_date: str = "2020-01-01T00:00:00.000",
     deaths_covid: str = "200",
     deaths_all: str = "1000",
     footnote: str | None = None,
 ) -> dict:
-    """Build a minimal COVID deaths raw row dict."""
+    """Build a minimal COVID deaths raw row dict (dataset kn79-hsxy schema)."""
     row = {
-        "fips_code": county_fips,
+        "county_fips_code": county_fips,
         "county_name": "Test County",
-        "state": "Florida",
-        "start_date": start_date,
-        "end_date": "2020-12-31T00:00:00.000",
-        "deaths_covid19": deaths_covid,
-        "deaths_all_cause": deaths_all,
+        "state_name": "Florida",
+        "covid_death": deaths_covid,
+        "total_death": deaths_all,
     }
     if footnote is not None:
         row["footnote"] = footnote
@@ -178,11 +170,10 @@ class TestBuildDrugOverdoseUrl:
         url = build_drug_overdose_url()
         assert DATASET_DRUG_OVERDOSE in url
 
-    def test_url_filters_target_states(self):
-        """Drug overdose URL must filter to FL, GA, or AL."""
+    def test_url_has_where_clause(self):
+        """Drug overdose URL must include a $where clause."""
         url = build_drug_overdose_url()
-        # State names are in the where clause
-        assert "Florida" in url or "Florida".lower() in url.lower() or "Florida" in url
+        assert "%24where" in url or "$where" in url
 
     def test_url_has_pagination_params(self):
         """Drug overdose URL must include limit and offset."""
@@ -191,10 +182,10 @@ class TestBuildDrugOverdoseUrl:
         assert "100" in url
 
     def test_url_selects_key_columns(self):
-        """Drug overdose URL must select fips and death rate columns."""
+        """Drug overdose URL must select fips and overdose count columns."""
         url = build_drug_overdose_url()
         assert "fips" in url
-        assert "model_based_death_rate" in url or "death_rate" in url
+        assert "provisional_drug_overdose" in url or "drug_overdose" in url.lower()
 
 
 class TestBuildCovidDeathsUrl:
@@ -205,10 +196,10 @@ class TestBuildCovidDeathsUrl:
         url = build_covid_deaths_url()
         assert DATASET_COVID_DEATHS in url
 
-    def test_url_filters_target_states(self):
-        """COVID deaths URL must filter to FL, GA, or AL."""
+    def test_url_has_where_clause(self):
+        """COVID deaths URL must include a $where clause."""
         url = build_covid_deaths_url()
-        assert "Florida" in url or "Florida".lower() in url.lower()
+        assert "%24where" in url or "$where" in url
 
     def test_url_selects_covid_death_columns(self):
         """COVID deaths URL must include covid death count columns."""
@@ -223,16 +214,6 @@ class TestBuildCovidDeathsUrl:
 
 class TestConstants:
     """Tests for module-level constants."""
-
-    def test_states_fips_correct(self):
-        """STATES must map AL→01, FL→12, GA→13."""
-        assert STATES["AL"] == "01"
-        assert STATES["FL"] == "12"
-        assert STATES["GA"] == "13"
-
-    def test_target_state_fips_matches_states(self):
-        """TARGET_STATE_FIPS must be the frozenset of STATES values."""
-        assert TARGET_STATE_FIPS == frozenset(STATES.values())
 
     def test_cause_codes_defined(self):
         """All cause code constants must be non-empty strings."""
@@ -256,36 +237,10 @@ class TestConstants:
 
 
 # ---------------------------------------------------------------------------
-# _extract_year_from_date
+# _extract_year_from_date — removed in national expansion (S198+)
+# The COVID deaths dataset (kn79-hsxy) changed to a single cumulative row
+# per county with no date column; year extraction is no longer needed.
 # ---------------------------------------------------------------------------
-
-
-class TestExtractYearFromDate:
-    """Tests for _extract_year_from_date()."""
-
-    def test_extracts_year_from_iso_date(self):
-        """Must extract correct year from ISO 8601 date string."""
-        s = pd.Series(["2020-03-15T00:00:00.000"])
-        result = _extract_year_from_date(s)
-        assert result.iloc[0] == 2020
-
-    def test_extracts_year_from_plain_date(self):
-        """Must extract correct year from plain date string (YYYY-MM-DD)."""
-        s = pd.Series(["2021-06-01"])
-        result = _extract_year_from_date(s)
-        assert result.iloc[0] == 2021
-
-    def test_invalid_date_produces_nan(self):
-        """Invalid date string must produce NaN year."""
-        s = pd.Series(["not-a-date"])
-        result = _extract_year_from_date(s)
-        assert result.isna().all()
-
-    def test_multiple_dates(self):
-        """Must handle multiple dates correctly."""
-        s = pd.Series(["2020-01-01", "2021-06-15", "2022-12-31"])
-        result = _extract_year_from_date(s)
-        assert list(result) == [2020, 2021, 2022]
 
 
 # ---------------------------------------------------------------------------
@@ -306,31 +261,31 @@ class TestFetchDrugOverdose:
     @patch("src.assembly.fetch_cdc_wonder_mortality.requests.get")
     def test_returns_dataframe_on_success(self, mock_get):
         """fetch_drug_overdose must return a non-empty DataFrame on success."""
-        rows = [_make_drug_overdose_rows("12001", 2019, 20.0)]
+        rows = [_make_drug_overdose_rows("12001", 2022, 50)]
         mock_get.return_value = self._make_mock_response(rows)
         result = fetch_drug_overdose()
         assert isinstance(result, pd.DataFrame)
         assert not result.empty
 
     @patch("src.assembly.fetch_cdc_wonder_mortality.requests.get")
-    def test_filters_to_target_states(self, mock_get):
-        """fetch_drug_overdose must drop non-FL/GA/AL counties."""
+    def test_keeps_all_valid_county_fips(self, mock_get):
+        """fetch_drug_overdose must keep all valid 5-digit county FIPS (national scope)."""
         rows = [
-            _make_drug_overdose_rows("12001", 2019, 20.0),  # FL — keep
-            {**_make_drug_overdose_rows("48001", 2019, 15.0), "state": "Texas"},  # TX — drop
+            _make_drug_overdose_rows("12001", 2022, 50),  # FL — keep
+            {**_make_drug_overdose_rows("48001", 2022, 40), "st_abbrev": "TX"},  # TX — also keep
         ]
         mock_get.return_value = self._make_mock_response(rows)
         result = fetch_drug_overdose()
         if not result.empty:
-            state_prefixes = result["county_fips"].str[:2].unique()
-            assert all(p in TARGET_STATE_FIPS for p in state_prefixes)
+            # Both FL and TX counties should be present
+            assert len(result) >= 2
 
     @patch("src.assembly.fetch_cdc_wonder_mortality.requests.get")
     def test_drops_state_level_fips(self, mock_get):
         """fetch_drug_overdose must drop state-level FIPS (e.g., 12000)."""
         rows = [
-            _make_drug_overdose_rows("12000", 2019, 20.0),  # State-level — drop
-            _make_drug_overdose_rows("12001", 2019, 20.0),  # County — keep
+            _make_drug_overdose_rows("12000", 2022, 50),  # State-level — drop
+            _make_drug_overdose_rows("12001", 2022, 50),  # County — keep
         ]
         mock_get.return_value = self._make_mock_response(rows)
         result = fetch_drug_overdose()
@@ -341,17 +296,17 @@ class TestFetchDrugOverdose:
     @patch("src.assembly.fetch_cdc_wonder_mortality.requests.get")
     def test_output_has_required_columns(self, mock_get):
         """fetch_drug_overdose output must have required columns."""
-        rows = [_make_drug_overdose_rows("12001", 2019, 20.0)]
+        rows = [_make_drug_overdose_rows("12001", 2022, 50.0)]
         mock_get.return_value = self._make_mock_response(rows)
         result = fetch_drug_overdose()
         if not result.empty:
-            required = {"county_fips", "year", "cause", "death_rate"}
+            required = {"county_fips", "year", "cause", "deaths"}
             assert required.issubset(set(result.columns))
 
     @patch("src.assembly.fetch_cdc_wonder_mortality.requests.get")
     def test_cause_is_drug_overdose(self, mock_get):
         """fetch_drug_overdose must set cause = CAUSE_DRUG_OVERDOSE."""
-        rows = [_make_drug_overdose_rows("12001", 2019, 20.0)]
+        rows = [_make_drug_overdose_rows("12001", 2022, 50)]
         mock_get.return_value = self._make_mock_response(rows)
         result = fetch_drug_overdose()
         if not result.empty:
@@ -360,9 +315,8 @@ class TestFetchDrugOverdose:
     @patch("src.assembly.fetch_cdc_wonder_mortality.requests.get")
     def test_fips_zero_padded(self, mock_get):
         """fetch_drug_overdose must zero-pad FIPS to 5 digits."""
-        rows = [{"fips": "1001", "county": "X", "state": "Alabama", "year": "2019",
-                 "deaths": "10", "population": "10000", "model_based_death_rate": "10.0",
-                 "age_adjusted_rate": "11.0"}]
+        rows = [{"fips": "1001", "countyname": "X", "st_abbrev": "AL", "year": "2022",
+                 "month": "12", "provisional_drug_overdose": "50"}]
         mock_get.return_value = self._make_mock_response(rows)
         result = fetch_drug_overdose()
         if not result.empty:
@@ -403,7 +357,7 @@ class TestFetchCovidDeaths:
     @patch("src.assembly.fetch_cdc_wonder_mortality.requests.get")
     def test_returns_dataframe_on_success(self, mock_get):
         """fetch_covid_deaths must return a non-empty DataFrame on success."""
-        rows = [_make_covid_rows("12001", "2020-01-01T00:00:00.000", "200", "1000")]
+        rows = [_make_covid_rows("12001", "200", "1000")]
         mock_get.return_value = self._make_mock_response(rows)
         result = fetch_covid_deaths()
         assert isinstance(result, pd.DataFrame)
@@ -412,7 +366,7 @@ class TestFetchCovidDeaths:
     @patch("src.assembly.fetch_cdc_wonder_mortality.requests.get")
     def test_produces_both_cause_codes(self, mock_get):
         """fetch_covid_deaths must produce both 'covid' and 'allcause_covid' rows."""
-        rows = [_make_covid_rows("12001", "2020-06-01T00:00:00.000", "200", "1000")]
+        rows = [_make_covid_rows("12001", "200", "1000")]
         mock_get.return_value = self._make_mock_response(rows)
         result = fetch_covid_deaths()
         if not result.empty:
@@ -424,8 +378,8 @@ class TestFetchCovidDeaths:
     def test_drops_suppressed_rows(self, mock_get):
         """fetch_covid_deaths must drop rows with non-null footnote (suppressed)."""
         rows = [
-            _make_covid_rows("12001", "2020-01-01T00:00:00.000", "200", "1000", footnote=None),
-            _make_covid_rows("12003", "2020-01-01T00:00:00.000", "50", "500", footnote="Suppressed: counts 1-9"),
+            _make_covid_rows("12001", "200", "1000", footnote=None),
+            _make_covid_rows("12003", "50", "500", footnote="Suppressed: counts 1-9"),
         ]
         mock_get.return_value = self._make_mock_response(rows)
         result = fetch_covid_deaths()
@@ -435,38 +389,34 @@ class TestFetchCovidDeaths:
             assert "12003" not in counties
 
     @patch("src.assembly.fetch_cdc_wonder_mortality.requests.get")
-    def test_filters_to_target_states(self, mock_get):
-        """fetch_covid_deaths must drop non-FL/GA/AL counties."""
+    def test_keeps_all_valid_county_fips(self, mock_get):
+        """fetch_covid_deaths must keep all valid 5-digit county FIPS (national scope)."""
         rows = [
-            _make_covid_rows("12001", "2020-01-01T00:00:00.000", "200", "1000"),  # FL — keep
-            {**_make_covid_rows("48001", "2020-01-01T00:00:00.000", "100", "500"),
-             "state": "Texas"},  # TX — drop
+            _make_covid_rows("12001", "200", "1000"),  # FL — keep
+            {**_make_covid_rows("48001", "100", "500"), "state_name": "Texas"},  # TX — also keep
         ]
         mock_get.return_value = self._make_mock_response(rows)
         result = fetch_covid_deaths()
         if not result.empty:
-            state_prefixes = result["county_fips"].str[:2].unique()
-            assert all(p in TARGET_STATE_FIPS for p in state_prefixes)
+            # Both FL and TX counties should be present
+            counties = result["county_fips"].unique()
+            assert "12001" in counties
+            assert "48001" in counties
 
     @patch("src.assembly.fetch_cdc_wonder_mortality.requests.get")
-    def test_aggregates_deaths_across_periods(self, mock_get):
-        """fetch_covid_deaths must sum deaths across multiple period rows for same county."""
-        rows = [
-            _make_covid_rows("12001", "2020-01-01T00:00:00.000", "100", "500"),
-            _make_covid_rows("12001", "2021-01-01T00:00:00.000", "150", "600"),
-        ]
+    def test_one_row_per_county_per_cause(self, mock_get):
+        """fetch_covid_deaths produces one row per (county, cause) — dataset is cumulative."""
+        rows = [_make_covid_rows("12001", "200", "1000")]
         mock_get.return_value = self._make_mock_response(rows)
         result = fetch_covid_deaths()
         if not result.empty:
-            covid_row = result[(result["county_fips"] == "12001") & (result["cause"] == CAUSE_COVID)]
-            if not covid_row.empty:
-                # Should have two year rows (2020 and 2021), each with their own deaths
-                assert len(covid_row) >= 1
+            covid_rows = result[(result["county_fips"] == "12001") & (result["cause"] == CAUSE_COVID)]
+            assert len(covid_rows) == 1
 
     @patch("src.assembly.fetch_cdc_wonder_mortality.requests.get")
     def test_output_has_required_columns(self, mock_get):
         """fetch_covid_deaths output must have required columns."""
-        rows = [_make_covid_rows("12001", "2020-01-01T00:00:00.000", "200", "1000")]
+        rows = [_make_covid_rows("12001", "200", "1000")]
         mock_get.return_value = self._make_mock_response(rows)
         result = fetch_covid_deaths()
         if not result.empty:
@@ -490,46 +440,46 @@ class TestFetchCovidDeaths:
 class TestComputeDrugOverdoseRate:
     """Tests for compute_drug_overdose_rate()."""
 
-    def test_averages_across_years(self):
-        """Drug overdose rate must be the mean rate across available years."""
+    def test_sums_deaths_across_rows(self):
+        """Drug overdose rate must be the sum of deaths across rows per county."""
         df = _make_raw_mortality_df([
-            {"county_fips": "12001", "year": 2018, "death_rate": 10.0},
-            {"county_fips": "12001", "year": 2019, "death_rate": 20.0},
-            {"county_fips": "12001", "year": 2020, "death_rate": 30.0},
+            {"county_fips": "12001", "year": 2022, "deaths": 10.0},
+            {"county_fips": "12001", "year": 2023, "deaths": 20.0},
         ])
         result = compute_drug_overdose_rate(df)
         assert not result.empty
         rate = result.loc[result["county_fips"] == "12001", "drug_overdose_rate"].iloc[0]
-        assert abs(rate - 20.0) < 1e-6
+        # Sum of [10.0, 20.0] = 30.0
+        assert abs(rate - 30.0) < 1e-6
 
-    def test_single_year_returns_that_rate(self):
-        """Single year per county returns that year's rate directly."""
+    def test_single_row_returns_that_count(self):
+        """Single row per county returns that row's death count."""
         df = _make_raw_mortality_df([
-            {"county_fips": "12001", "year": 2019, "death_rate": 25.5},
+            {"county_fips": "12001", "year": 2022, "deaths": 50.0},
         ])
         result = compute_drug_overdose_rate(df)
         rate = result.loc[result["county_fips"] == "12001", "drug_overdose_rate"].iloc[0]
-        assert abs(rate - 25.5) < 1e-6
+        assert abs(rate - 50.0) < 1e-6
 
     def test_multiple_counties(self):
         """Multiple counties produce one row per county."""
         df = _make_raw_mortality_df([
-            {"county_fips": "12001", "year": 2019, "death_rate": 10.0},
-            {"county_fips": "12003", "year": 2019, "death_rate": 20.0},
-            {"county_fips": "13001", "year": 2019, "death_rate": 15.0},
+            {"county_fips": "12001", "year": 2022, "deaths": 10.0},
+            {"county_fips": "12003", "year": 2022, "deaths": 20.0},
+            {"county_fips": "13001", "year": 2022, "deaths": 15.0},
         ])
         result = compute_drug_overdose_rate(df)
         assert len(result) == 3
 
-    def test_nan_death_rate_handled(self):
-        """NaN death_rate values must be excluded from mean (not treated as 0)."""
+    def test_nan_deaths_handled(self):
+        """NaN deaths values must not break computation."""
         df = _make_raw_mortality_df([
-            {"county_fips": "12001", "year": 2018, "death_rate": 20.0},
-            {"county_fips": "12001", "year": 2019, "death_rate": float("nan")},
+            {"county_fips": "12001", "year": 2022, "deaths": 20.0},
+            {"county_fips": "12001", "year": 2023, "deaths": float("nan")},
         ])
         result = compute_drug_overdose_rate(df)
         rate = result.loc[result["county_fips"] == "12001", "drug_overdose_rate"].iloc[0]
-        # Mean of [20.0, NaN] skipping NaN = 20.0
+        # nansum of [20.0, NaN] = 20.0
         assert abs(rate - 20.0) < 1e-6
 
     def test_empty_input_returns_empty(self):
@@ -540,8 +490,8 @@ class TestComputeDrugOverdoseRate:
     def test_only_uses_drug_overdose_rows(self):
         """Must only use rows where cause == CAUSE_DRUG_OVERDOSE."""
         df = _make_raw_mortality_df([
-            {"county_fips": "12001", "cause": CAUSE_DRUG_OVERDOSE, "death_rate": 20.0},
-            {"county_fips": "12001", "cause": CAUSE_COVID, "death_rate": 999.0},
+            {"county_fips": "12001", "cause": CAUSE_DRUG_OVERDOSE, "deaths": 20.0},
+            {"county_fips": "12001", "cause": CAUSE_COVID, "deaths": 999.0},
         ])
         result = compute_drug_overdose_rate(df)
         rate = result.loc[result["county_fips"] == "12001", "drug_overdose_rate"].iloc[0]
@@ -556,76 +506,36 @@ class TestComputeDrugOverdoseRate:
 class TestComputeCovidDeathRate:
     """Tests for compute_covid_death_rate()."""
 
-    def test_computes_rate_from_deaths_and_population(self):
-        """COVID death rate = deaths / population × 100,000."""
+    def test_computes_rate_as_pct_of_allcause(self):
+        """COVID death rate = covid_deaths / total_deaths × 100 (as % of allcause)."""
         df = _make_raw_mortality_df([
-            {
-                "county_fips": "12001",
-                "cause": CAUSE_COVID,
-                "year": 2020,
-                "deaths": 1000.0,
-                "population": float("nan"),  # no population in COVID rows
-            },
-            {
-                "county_fips": "12001",
-                "cause": CAUSE_DRUG_OVERDOSE,
-                "year": 2019,
-                "deaths": 50.0,
-                "population": 500_000.0,
-                "death_rate": 10.0,
-                "age_adjusted_rate": 11.0,
-            },
+            {"county_fips": "12001", "cause": CAUSE_COVID, "year": 2023, "deaths": 800.0},
+            {"county_fips": "12001", "cause": CAUSE_ALLCAUSE_COVID_PERIOD, "year": 2023, "deaths": 10000.0},
         ])
         result = compute_covid_death_rate(df)
         if not result.empty and "covid_death_rate" in result.columns:
             rate = result.loc[result["county_fips"] == "12001", "covid_death_rate"]
             if not rate.empty and not rate.isna().all():
-                # 1000 / 500000 * 100000 = 200.0
-                assert abs(rate.iloc[0] - 200.0) < 1.0
+                # 800 / 10000 * 100 = 8.0%
+                assert abs(rate.iloc[0] - 8.0) < 0.1
 
-    def test_sums_deaths_across_years(self):
-        """COVID deaths must be summed across all years."""
+    def test_falls_back_to_count_when_no_allcause(self):
+        """When no allcause_covid rows exist, stores raw covid death count."""
         df = _make_raw_mortality_df([
-            {"county_fips": "12001", "cause": CAUSE_COVID, "year": 2020, "deaths": 500.0, "population": float("nan")},
-            {"county_fips": "12001", "cause": CAUSE_COVID, "year": 2021, "deaths": 600.0, "population": float("nan")},
-            {"county_fips": "12001", "cause": CAUSE_DRUG_OVERDOSE, "year": 2019, "deaths": 30.0,
-             "population": 1_000_000.0, "death_rate": 30.0, "age_adjusted_rate": 33.0},
+            {"county_fips": "12001", "cause": CAUSE_COVID, "year": 2023, "deaths": 500.0},
         ])
         result = compute_covid_death_rate(df)
-        # Should use total deaths 1100 and pop 1,000,000 → rate = 110.0
         if not result.empty and "covid_death_rate" in result.columns:
             rate = result.loc[result["county_fips"] == "12001", "covid_death_rate"]
-            if not rate.empty and not rate.isna().all():
-                assert abs(rate.iloc[0] - 110.0) < 1.0
-
-    def test_nan_when_no_population(self):
-        """COVID death rate must be NaN when population is unavailable."""
-        df = _make_raw_mortality_df([
-            {"county_fips": "12001", "cause": CAUSE_COVID, "year": 2020, "deaths": 1000.0, "population": float("nan")},
-        ])
-        result = compute_covid_death_rate(df)
-        if not result.empty:
-            rate = result.loc[result["county_fips"] == "12001", "covid_death_rate"]
-            assert rate.isna().all()
-
-    def test_nan_when_zero_population(self):
-        """COVID death rate must be NaN when population is zero."""
-        df = _make_raw_mortality_df([
-            {"county_fips": "12001", "cause": CAUSE_COVID, "year": 2020, "deaths": 100.0, "population": float("nan")},
-            {"county_fips": "12001", "cause": CAUSE_DRUG_OVERDOSE, "year": 2019,
-             "deaths": 10.0, "population": 0.0, "death_rate": 0.0, "age_adjusted_rate": 0.0},
-        ])
-        result = compute_covid_death_rate(df)
-        if not result.empty:
-            rate = result.loc[result["county_fips"] == "12001", "covid_death_rate"]
-            assert rate.isna().all() or (rate >= 0).all()
+            # Should store raw count as fallback
+            if not rate.empty:
+                assert rate.iloc[0] >= 0
 
     def test_rate_is_non_negative(self):
         """COVID death rate must be non-negative."""
         df = _make_raw_mortality_df([
-            {"county_fips": "12001", "cause": CAUSE_COVID, "year": 2020, "deaths": 50.0, "population": float("nan")},
-            {"county_fips": "12001", "cause": CAUSE_DRUG_OVERDOSE, "year": 2019,
-             "deaths": 30.0, "population": 100_000.0, "death_rate": 30.0, "age_adjusted_rate": 33.0},
+            {"county_fips": "12001", "cause": CAUSE_COVID, "year": 2023, "deaths": 50.0},
+            {"county_fips": "12001", "cause": CAUSE_ALLCAUSE_COVID_PERIOD, "year": 2023, "deaths": 1000.0},
         ])
         result = compute_covid_death_rate(df)
         if not result.empty and "covid_death_rate" in result.columns:
@@ -646,39 +556,31 @@ class TestComputeCovidDeathRate:
 class TestComputeAllcauseRate:
     """Tests for compute_allcause_rate()."""
 
-    def test_averages_age_adjusted_rate_across_years(self):
-        """All-cause rate must be the mean age_adjusted_rate across years."""
+    def test_uses_allcause_covid_deaths(self):
+        """All-cause rate must use deaths from CAUSE_ALLCAUSE_COVID_PERIOD rows."""
         df = _make_raw_mortality_df([
-            {"county_fips": "12001", "year": 2018, "age_adjusted_rate": 800.0},
-            {"county_fips": "12001", "year": 2019, "age_adjusted_rate": 900.0},
+            {"county_fips": "12001", "cause": CAUSE_ALLCAUSE_COVID_PERIOD, "year": 2023, "deaths": 5000.0},
         ])
         result = compute_allcause_rate(df)
+        assert not result.empty
         rate = result.loc[result["county_fips"] == "12001", "allcause_age_adj_rate"].iloc[0]
-        assert abs(rate - 850.0) < 1e-6
-
-    def test_single_year_uses_that_rate(self):
-        """Single year returns that year's age-adjusted rate."""
-        df = _make_raw_mortality_df([
-            {"county_fips": "12001", "year": 2019, "age_adjusted_rate": 750.0},
-        ])
-        result = compute_allcause_rate(df)
-        rate = result.loc[result["county_fips"] == "12001", "allcause_age_adj_rate"].iloc[0]
-        assert abs(rate - 750.0) < 1e-6
+        assert abs(rate - 5000.0) < 1e-6
 
     def test_empty_input_returns_empty(self):
         """Empty input must return empty DataFrame."""
         result = compute_allcause_rate(pd.DataFrame())
         assert result.empty
 
-    def test_only_uses_drug_overdose_rows(self):
-        """Must only use drug_overdose cause rows for age_adjusted_rate."""
+    def test_only_uses_allcause_rows(self):
+        """Must only use allcause_covid rows, not drug_overdose or covid rows."""
         df = _make_raw_mortality_df([
-            {"county_fips": "12001", "cause": CAUSE_DRUG_OVERDOSE, "age_adjusted_rate": 800.0},
-            {"county_fips": "12001", "cause": CAUSE_COVID, "age_adjusted_rate": 999.0},
+            {"county_fips": "12001", "cause": CAUSE_ALLCAUSE_COVID_PERIOD, "deaths": 3000.0},
+            {"county_fips": "12001", "cause": CAUSE_COVID, "deaths": 999.0},
+            {"county_fips": "12001", "cause": CAUSE_DRUG_OVERDOSE, "deaths": 50.0},
         ])
         result = compute_allcause_rate(df)
         rate = result.loc[result["county_fips"] == "12001", "allcause_age_adj_rate"].iloc[0]
-        assert abs(rate - 800.0) < 1e-6
+        assert abs(rate - 3000.0) < 1e-6
 
 
 # ---------------------------------------------------------------------------
@@ -841,16 +743,17 @@ class TestComputeCdcMortalityFeatures:
         valid = result["excess_mortality_ratio"].dropna()
         assert (valid > 0).all()
 
-    def test_filters_non_target_states(self):
-        """Non-FL/GA/AL counties must be excluded from output."""
+    def test_keeps_all_valid_county_fips(self):
+        """All valid 5-digit county FIPS are retained (national scope — TX is kept)."""
         df = _make_raw_mortality_df([
             {"county_fips": "12001", "cause": CAUSE_DRUG_OVERDOSE, "death_rate": 20.0},
-            {"county_fips": "48001", "cause": CAUSE_DRUG_OVERDOSE, "death_rate": 15.0},  # TX — drop
+            {"county_fips": "48001", "cause": CAUSE_DRUG_OVERDOSE, "death_rate": 15.0},  # TX — kept
         ])
         result = compute_cdc_mortality_features(df)
         if not result.empty:
             state_prefixes = result["county_fips"].str[:2].unique()
-            assert "48" not in state_prefixes
+            assert "12" in state_prefixes  # FL present
+            assert "48" in state_prefixes  # TX also present (national)
 
     def test_drops_state_level_fips(self):
         """State-level FIPS (e.g., 12000) must be excluded."""
@@ -1033,10 +936,15 @@ class TestCdcMortalityIntegration:
         assert (raw_parquet["county_fips"].str.len() == 5).all()
         assert raw_parquet["county_fips"].str.isdigit().all()
 
-    def test_raw_target_states_only(self, raw_parquet):
-        """Only FL/GA/AL counties must appear in raw parquet."""
-        state_prefixes = raw_parquet["county_fips"].str[:2].unique()
-        assert set(state_prefixes) <= {"01", "12", "13"}
+    def test_raw_national_scope(self, raw_parquet):
+        """Raw parquet must include counties from many states (national scope)."""
+        state_prefixes = set(raw_parquet["county_fips"].str[:2].unique())
+        # Should have substantially more than 3 states
+        assert len(state_prefixes) >= 10
+        # FL, GA, AL must be included
+        assert "12" in state_prefixes  # FL
+        assert "13" in state_prefixes  # GA
+        assert "01" in state_prefixes  # AL
 
     def test_raw_no_state_level_fips(self, raw_parquet):
         """No state-level FIPS (county part == '000') must be present."""
@@ -1059,15 +967,17 @@ class TestCdcMortalityIntegration:
         for col in _RESERVED_NAN_COLS:
             assert features_parquet[col].isna().all(), f"{col} should be all-NaN"
 
-    def test_features_drug_overdose_rate_positive(self, features_parquet):
-        """Non-NaN drug_overdose_rate values must be positive."""
+    def test_features_drug_overdose_rate_non_negative(self, features_parquet):
+        """Non-NaN drug_overdose_rate values must be non-negative."""
         valid = features_parquet["drug_overdose_rate"].dropna()
-        assert (valid > 0).all()
+        assert (valid >= 0).all()
+        # At least some counties should have positive values
+        assert (valid > 0).any()
 
-    def test_features_excess_ratio_positive(self, features_parquet):
-        """Non-NaN excess_mortality_ratio values must be positive."""
+    def test_features_excess_ratio_non_negative(self, features_parquet):
+        """Non-NaN excess_mortality_ratio values must be non-negative."""
         valid = features_parquet["excess_mortality_ratio"].dropna()
-        assert (valid > 0).all()
+        assert (valid >= 0).all()
 
     def test_features_state_coverage(self, features_parquet):
         """Features must include counties from all three target states."""

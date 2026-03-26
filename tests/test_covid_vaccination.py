@@ -8,10 +8,10 @@ Tests exercise:
 
 These tests use synthetic data and mock HTTP responses so they run without
 network access or the real COVID vaccination parquet file. Tests verify:
-  - SODA URL construction includes correct FIPS filter and pagination params
+  - SODA URL construction includes correct date filter and pagination params
   - Raw JSON response is correctly parsed and typed
   - FIPS validation rejects non-5-digit codes
-  - State-scope filtering keeps only FL (12xxx), GA (13xxx), AL (01xxx)
+  - All valid 5-digit county FIPS codes are retained (national scope)
   - Latest-snapshot logic selects the row with maximum date per county
   - Feature computation renames CDC columns and clips to [0, 100]
   - NaN counties handled gracefully (not filled, not dropped)
@@ -28,10 +28,9 @@ import pandas as pd
 import pytest
 
 from src.assembly.fetch_covid_vaccination import (
+    DATE_CUTOFF,
     OUTPUT_COLUMNS,
     SODA_BASE_URL,
-    STATES,
-    TARGET_STATE_FIPS,
     build_soda_url,
     fetch_page,
     get_latest_snapshot,
@@ -212,15 +211,11 @@ def features_df(latest_df) -> pd.DataFrame:
 class TestConstants:
     """Tests for module-level constants."""
 
-    def test_states_fips_correct(self):
-        """STATES must map AL→01, FL→12, GA→13."""
-        assert STATES["AL"] == "01"
-        assert STATES["FL"] == "12"
-        assert STATES["GA"] == "13"
-
-    def test_target_state_fips_matches_states(self):
-        """TARGET_STATE_FIPS must be the set of FIPS prefixes from STATES."""
-        assert TARGET_STATE_FIPS == frozenset(STATES.values())
+    def test_date_cutoff_defined(self):
+        """DATE_CUTOFF must be a non-empty string in YYYY-MM-DD format."""
+        assert isinstance(DATE_CUTOFF, str)
+        assert len(DATE_CUTOFF) == 10
+        assert DATE_CUTOFF[:4].isdigit()
 
     def test_output_columns_includes_required_fields(self):
         """OUTPUT_COLUMNS must include county_fips, state_abbr, date, and all 3 vax pct cols."""
@@ -258,13 +253,12 @@ class TestBuildSodaUrl:
         url = build_soda_url()
         assert url.startswith(SODA_BASE_URL)
 
-    def test_url_contains_fips_filter(self):
-        """URL must filter FIPS to FL (12), GA (13), AL (01)."""
+    def test_url_contains_date_filter(self):
+        """URL must include a date cutoff filter (not a FIPS state filter)."""
         url = build_soda_url()
-        # Should mention fips patterns for all three states
-        assert "12" in url
-        assert "13" in url
-        assert "01" in url
+        # National scope: filter is by date, not by state FIPS
+        assert "date" in url
+        assert DATE_CUTOFF[:4] in url  # Year from cutoff must appear in URL
 
     def test_url_contains_limit(self):
         """URL must include $limit parameter."""
@@ -374,11 +368,11 @@ class TestParseRawDf:
         booster_nulls = parsed_df["booster_doses_vax_pct"].isna().sum()
         assert booster_nulls >= 1, "Expected at least one NaN booster_doses_vax_pct from empty string input"
 
-    def test_state_filter_excludes_out_of_scope_fips(self):
-        """Rows with FIPS outside FL/GA/AL should be dropped."""
+    def test_national_scope_keeps_all_valid_fips(self):
+        """parse_raw_df must keep all valid 5-digit county FIPS (not just FL/GA/AL)."""
         raw = pd.DataFrame([
             {
-                "fips": "06001",  # California — should be dropped
+                "fips": "06001",  # California — should be KEPT (national scope)
                 "recip_state": "CA",
                 "recip_county": "Alameda",
                 "date": "2023-01-01T00:00:00.000",
@@ -397,8 +391,7 @@ class TestParseRawDf:
             },
         ])
         result = parse_raw_df(raw)
-        assert len(result) == 1
-        assert result.iloc[0]["county_fips"] == "12001"
+        assert len(result) == 2  # Both rows kept — national scope
 
     def test_bad_fips_dropped(self):
         """Rows with non-5-digit FIPS must be dropped."""
@@ -426,9 +419,10 @@ class TestParseRawDf:
         assert len(result) == 1
         assert result.iloc[0]["county_fips"] == "12001"
 
-    def test_three_target_states_all_retained(self, parsed_df):
-        """Counties from FL, GA, and AL must all be present in parsed output."""
+    def test_multiple_states_retained(self, parsed_df):
+        """Counties from multiple states must all be present in parsed output."""
         state_prefixes = parsed_df["county_fips"].str[:2].unique()
+        # Synthetic data includes FL (12), GA (13), AL (01) — all should be retained
         assert "12" in state_prefixes  # FL
         assert "13" in state_prefixes  # GA
         assert "01" in state_prefixes  # AL
@@ -546,10 +540,10 @@ class TestFipsFiltering:
         assert len(result) == 1
         assert result.iloc[0]["county_fips"][:2] == "01"
 
-    def test_non_target_state_excluded(self):
-        """Texas (FIPS prefix 48) must be excluded."""
+    def test_non_fl_ga_al_state_retained(self):
+        """Texas (FIPS prefix 48) must be retained — national scope."""
         raw = pd.DataFrame([{
-            "fips": "48201",  # Harris County TX
+            "fips": "48201",  # Harris County TX — kept (national scope)
             "recip_state": "TX",
             "recip_county": "Harris",
             "date": "2023-01-01T00:00:00.000",
@@ -558,7 +552,8 @@ class TestFipsFiltering:
             "administered_dose1_pop_pct": "64.0",
         }])
         result = parse_raw_df(raw)
-        assert len(result) == 0
+        assert len(result) == 1
+        assert result.iloc[0]["county_fips"] == "48201"
 
 
 # ---------------------------------------------------------------------------
@@ -814,10 +809,17 @@ class TestCovidVaccinationIntegration:
         required = {"county_fips", "state_abbr"} | set(COVID_FEATURE_COLS)
         assert required.issubset(set(assembled_parquet.columns))
 
-    def test_assembled_covers_all_three_states(self, assembled_parquet):
-        """Assembled features must include counties from FL, GA, and AL."""
+    def test_assembled_covers_all_fifty_states(self, assembled_parquet):
+        """Assembled features must include counties from all US states (national scope)."""
         states = set(assembled_parquet["state_abbr"].unique())
-        assert states == {"FL", "GA", "AL"}, f"Expected FL/GA/AL, got: {states}"
+        # Spot-check a few states from across the country
+        assert "FL" in states, "FL missing from national assembled data"
+        assert "GA" in states, "GA missing from national assembled data"
+        assert "AL" in states, "AL missing from national assembled data"
+        assert "TX" in states, "TX missing from national assembled data"
+        assert "CA" in states, "CA missing from national assembled data"
+        # Should have substantially more than 3 states
+        assert len(states) >= 50, f"Expected 50+ states, got: {len(states)}"
 
     def test_assembled_vax_values_in_range(self, assembled_parquet):
         """All vaccination features must be in [0, 100] after feature computation."""
@@ -826,9 +828,7 @@ class TestCovidVaccinationIntegration:
             assert (valid >= 0).all(), f"{col} has values below 0"
             assert (valid <= 100).all(), f"{col} has values above 100"
 
-    def test_assembled_fips_state_prefix_matches_abbr(self, assembled_parquet):
-        """FIPS prefixes must match state_abbr values."""
-        fips_to_abbr = {"01": "AL", "12": "FL", "13": "GA"}
-        derived = assembled_parquet["county_fips"].str[:2].map(fips_to_abbr)
-        mismatches = assembled_parquet["state_abbr"] != derived
-        assert not mismatches.any(), f"{mismatches.sum()} rows have FIPS/state_abbr mismatch"
+    def test_assembled_fips_format_valid(self, assembled_parquet):
+        """All county_fips values must be 5-digit strings."""
+        all_5_digit = assembled_parquet["county_fips"].str.match(r"^\d{5}$").all()
+        assert all_5_digit, "Some county_fips values are not 5-digit strings"

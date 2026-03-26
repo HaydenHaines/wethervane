@@ -56,8 +56,6 @@ from src.assembly.fetch_cdc_wonder_mortality import (
     CAUSE_ALLCAUSE_COVID_PERIOD,
     CAUSE_COVID,
     CAUSE_DRUG_OVERDOSE,
-    STATES,
-    TARGET_STATE_FIPS,
 )
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
@@ -66,9 +64,6 @@ log = logging.getLogger(__name__)
 PROJECT_ROOT = Path(__file__).parents[2]
 INPUT_PATH = PROJECT_ROOT / "data" / "raw" / "cdc_mortality.parquet"
 OUTPUT_PATH = PROJECT_ROOT / "data" / "assembled" / "county_cdc_mortality_features.parquet"
-
-# All 226 FL+GA+AL counties must appear in the output
-EXPECTED_COUNTY_COUNT = 226
 
 # Feature column names in the output (in order)
 CDC_MORTALITY_FEATURE_COLS = [
@@ -92,11 +87,13 @@ _RESERVED_NAN_COLS = ["heart_disease_rate", "cancer_rate", "suicide_rate"]
 
 
 def compute_drug_overdose_rate(df: pd.DataFrame) -> pd.DataFrame:
-    """Compute average drug overdose rate per county across available years.
+    """Compute drug overdose death count per county (12-month provisional).
 
-    Uses the model-based death rate (death_rate column) from the NCHS drug
-    poisoning dataset. Averages across all available years (2018–2021) per
-    county to produce a stable cross-sectional estimate.
+    Uses the deaths column from VSRR provisional county drug overdose data
+    (dataset gb4e-yj24). The raw values are 12-month rolling death counts.
+    They are stored as the drug_overdose_rate feature (labeled "rate" for
+    pipeline compatibility; values are counts normalized within state via
+    excess_mortality_ratio).
 
     Args:
         df: Raw mortality DataFrame from data/raw/cdc_mortality.parquet.
@@ -114,12 +111,12 @@ def compute_drug_overdose_rate(df: pd.DataFrame) -> pd.DataFrame:
         log.warning("No drug overdose rows found in input data.")
         return pd.DataFrame(columns=["county_fips", "drug_overdose_rate"])
 
-    drug_df["death_rate"] = pd.to_numeric(drug_df["death_rate"], errors="coerce")
+    drug_df["deaths"] = pd.to_numeric(drug_df["deaths"], errors="coerce")
 
-    # Average model-based rate across all years per county
+    # Sum across any duplicate rows per county (should be one row, but defensive)
     result = (
-        drug_df.groupby("county_fips")["death_rate"]
-        .mean()
+        drug_df.groupby("county_fips")["deaths"]
+        .sum()
         .rename("drug_overdose_rate")
         .reset_index()
     )
@@ -132,21 +129,19 @@ def compute_drug_overdose_rate(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def compute_covid_death_rate(df: pd.DataFrame) -> pd.DataFrame:
-    """Compute COVID-19 deaths per 100K population per county (2020–2023).
+    """Compute COVID-19 death count per county (cumulative 2020–2023).
 
-    Aggregates total COVID deaths per county across all available years, then
-    divides by population from the drug overdose dataset. If population is not
-    available for a county, death_rate from the raw data is used as a proxy.
-
-    Note: The raw COVID deaths data (kn79-hsxy) does not include population.
-    We use the population from the drug overdose dataset joined by county_fips.
+    Uses the deaths column from the provisional COVID-19 deaths dataset
+    (kn79-hsxy). The raw values are cumulative COVID death counts. Stored
+    as covid_death_rate for pipeline compatibility. Normalization by
+    all-cause deaths (as a population proxy) is performed when available.
 
     Args:
         df: Raw mortality DataFrame from data/raw/cdc_mortality.parquet.
 
     Returns:
         DataFrame with columns: county_fips, covid_death_rate.
-        One row per county. Rate is per 100K population.
+        One row per county.
     """
     if df.empty or "cause" not in df.columns:
         log.warning("No COVID deaths rows found in input data.")
@@ -159,7 +154,16 @@ def compute_covid_death_rate(df: pd.DataFrame) -> pd.DataFrame:
 
     covid_df["deaths"] = pd.to_numeric(covid_df["deaths"], errors="coerce")
 
-    # Sum deaths across all years per county
+    # Get all-cause deaths as a proxy for population (for normalization)
+    allcause_df = df[df["cause"] == CAUSE_ALLCAUSE_COVID_PERIOD].copy()
+    allcause_df["deaths"] = pd.to_numeric(allcause_df["deaths"], errors="coerce")
+    allcause_totals = (
+        allcause_df.groupby("county_fips")["deaths"]
+        .sum()
+        .rename("total_deaths")
+        .reset_index()
+    )
+
     covid_totals = (
         covid_df.groupby("county_fips")["deaths"]
         .sum()
@@ -167,28 +171,16 @@ def compute_covid_death_rate(df: pd.DataFrame) -> pd.DataFrame:
         .reset_index()
     )
 
-    # Get population from drug overdose data (most recent year available)
-    drug_df = df[df["cause"] == CAUSE_DRUG_OVERDOSE].copy()
-    drug_df["population"] = pd.to_numeric(drug_df["population"], errors="coerce")
-    drug_df["year"] = pd.to_numeric(drug_df["year"], errors="coerce")
+    merged = covid_totals.merge(allcause_totals, on="county_fips", how="left")
 
-    if not drug_df.empty:
-        # Use the most recent year's population per county
-        pop_df = (
-            drug_df.sort_values("year", ascending=False)
-            .groupby("county_fips")["population"]
-            .first()
-            .rename("population")
-            .reset_index()
-        )
-    else:
-        pop_df = pd.DataFrame(columns=["county_fips", "population"])
+    # Compute COVID as % of all-cause deaths (proxy for COVID death rate)
+    # This is comparable across counties without requiring population data
+    total = pd.to_numeric(merged["total_deaths"], errors="coerce").replace(0, float("nan"))
+    merged["covid_death_rate"] = (merged["covid_deaths_total"] / total * 100).clip(lower=0)
 
-    merged = covid_totals.merge(pop_df, on="county_fips", how="left")
-
-    # Compute rate per 100K; NaN where population is missing or zero
-    pop = pd.to_numeric(merged["population"], errors="coerce").replace(0, float("nan"))
-    merged["covid_death_rate"] = (merged["covid_deaths_total"] / pop * 100_000).clip(lower=0)
+    # Fall back to raw count where total deaths is missing
+    no_total = merged["covid_death_rate"].isna()
+    merged.loc[no_total, "covid_death_rate"] = merged.loc[no_total, "covid_deaths_total"]
 
     n_valid = merged["covid_death_rate"].notna().sum()
     log.info(
@@ -199,16 +191,12 @@ def compute_covid_death_rate(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def compute_allcause_rate(df: pd.DataFrame) -> pd.DataFrame:
-    """Compute all-cause age-adjusted mortality rate from available data.
+    """Compute all-cause death count from provisional COVID period data.
 
-    Uses the age_adjusted_rate column from the drug overdose dataset as
-    a proxy for all-cause age-adjusted mortality. The NCHS drug overdose
-    dataset includes age-adjusted rates derived from the same mortality
-    tables as CDC WONDER. This is the best county-level all-cause proxy
-    available via the SODA API.
-
-    Falls back to computing from allcause_covid rows if drug overdose
-    age_adjusted_rate is entirely NaN.
+    Uses the total_death (all-cause deaths) from the provisional COVID-19
+    deaths dataset (kn79-hsxy). This is the cumulative all-cause deaths for
+    each county over 2020–2023. Stored as allcause_age_adj_rate for pipeline
+    compatibility (true age-adjustment is not available from SODA API).
 
     Args:
         df: Raw mortality DataFrame from data/raw/cdc_mortality.parquet.
@@ -220,17 +208,16 @@ def compute_allcause_rate(df: pd.DataFrame) -> pd.DataFrame:
     if df.empty or "cause" not in df.columns:
         return pd.DataFrame(columns=["county_fips", "allcause_age_adj_rate"])
 
-    drug_df = df[df["cause"] == CAUSE_DRUG_OVERDOSE].copy()
-    if drug_df.empty:
+    allcause_df = df[df["cause"] == CAUSE_ALLCAUSE_COVID_PERIOD].copy()
+    if allcause_df.empty:
         return pd.DataFrame(columns=["county_fips", "allcause_age_adj_rate"])
 
-    drug_df["age_adjusted_rate"] = pd.to_numeric(drug_df["age_adjusted_rate"], errors="coerce")
-    drug_df["year"] = pd.to_numeric(drug_df["year"], errors="coerce")
+    allcause_df["deaths"] = pd.to_numeric(allcause_df["deaths"], errors="coerce")
 
-    # Average age-adjusted rate across years per county
+    # Sum across any duplicate rows per county
     result = (
-        drug_df.groupby("county_fips")["age_adjusted_rate"]
-        .mean()
+        allcause_df.groupby("county_fips")["deaths"]
+        .sum()
         .rename("allcause_age_adj_rate")
         .reset_index()
     )
@@ -352,9 +339,8 @@ def compute_cdc_mortality_features(df: pd.DataFrame) -> pd.DataFrame:
     if df.empty:
         return pd.DataFrame(columns=["county_fips"] + CDC_MORTALITY_FEATURE_COLS)
 
-    # Validate FIPS
+    # Validate FIPS: keep only valid 5-digit county codes (exclude state aggregates)
     df = df[df["county_fips"].str.match(r"^\d{5}$", na=False)].copy()
-    df = df[df["county_fips"].str[:2].isin(TARGET_STATE_FIPS)].copy()
     df = df[df["county_fips"].str[2:] != "000"].copy()
 
     # Get the union of all county FIPS in the data
@@ -462,15 +448,11 @@ def main() -> None:
 
     # Summary statistics
     n_counties = len(features)
-    state_counts = features["county_fips"].str[:2].value_counts().to_dict()
-    fips_to_abbr = {"01": "AL", "12": "FL", "13": "GA"}
+    n_states = features["county_fips"].str[:2].nunique()
     log.info(
-        "\nSummary: %d counties total",
-        n_counties,
+        "\nSummary: %d counties across %d states",
+        n_counties, n_states,
     )
-    for fips_pref, count in sorted(state_counts.items()):
-        abbr = fips_to_abbr.get(fips_pref, fips_pref)
-        log.info("  %s: %d counties", abbr, count)
 
     # Feature distribution summary
     log.info("\nFeature ranges (all counties):")

@@ -9,6 +9,9 @@ COVID vaccination rates are one of the strongest county-level correlates of
 partisan behavior (r > 0.8 with 2020 Trump vote share), making them a high-
 value feature for community description overlays.
 
+Scope: ALL US counties (3,000+ counties across all 50 states + DC).
+Imputation uses state-level medians derived from county_fips[:2].
+
 Features computed (3 total):
   vax_complete_pct  : Series_Complete_Pop_Pct — fully vaccinated (2-dose or J&J)
   vax_booster_pct   : Booster_Doses_Vax_Pct — boosted as % of fully vaccinated
