@@ -34,10 +34,8 @@ NESTING_DEMO_FEATURES = [
     "pct_ba_plus",
     "median_hh_income",
     "median_age",
-    "evangelical_share",
-    "catholic_share",
-    "black_protestant_share",
-    "religious_adherence_rate",
+    # Religion features excluded — county-level RCMS mapped uniformly to tracts
+    # causes super-type boundaries to follow county lines.
 ]
 
 from src.discovery.nest_types import nest_types
@@ -99,11 +97,9 @@ DEMOGRAPHIC_FEATURES = [
     "pct_wfh",
     "pct_no_vehicle",
     "pct_veteran",
-    # Religion features (county-level RCMS mapped to tracts via FIPS prefix)
-    "evangelical_share",
-    "catholic_share",
-    "black_protestant_share",
-    "religious_adherence_rate",
+    # Religion features EXCLUDED from clustering (county-level RCMS mapped uniformly
+    # to all tracts in a county, causing KMeans to create type boundaries that follow
+    # county lines). Religion data still available in features parquet for display.
 ]
 
 POPULATION_MIN_VOTES = 500
