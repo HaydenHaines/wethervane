@@ -1,7 +1,9 @@
 """Hierarchical nesting of fine types into super-types.
 
-Uses Ward HAC (no spatial constraint) on type loading vectors to group
-fine types into a smaller number of super-types for public interpretability.
+Uses Ward HAC on type feature vectors to group fine types into a smaller
+number of super-types for public interpretability. When J is large (>20),
+nesting on demographic profiles produces better-balanced clusters than
+nesting on shift-space centroids.
 
 Usage:
     python -m src.discovery.nest_types
@@ -15,6 +17,7 @@ import numpy as np
 import yaml
 from scipy.cluster.hierarchy import fcluster, linkage
 from sklearn.metrics import silhouette_score
+from sklearn.preprocessing import StandardScaler
 
 
 @dataclass
@@ -25,15 +28,16 @@ class NestingResult:
 
 
 def nest_types(
-    type_loadings: np.ndarray,
+    type_features: np.ndarray,
     s_candidates: list[int] | None = None,
 ) -> NestingResult:
-    """Group fine types into super-types via Ward HAC on loading vectors.
+    """Group fine types into super-types via Ward HAC on feature vectors.
 
     Parameters
     ----------
-    type_loadings : ndarray of shape (J, D)
-        Type shift profiles (rotated loadings from SVD+varimax).
+    type_features : ndarray of shape (J, D)
+        Feature vectors for each type. Can be shift-space centroids,
+        demographic profiles, or any numeric representation.
     s_candidates : list[int], optional
         Candidate numbers of super-types. Defaults to [5, 6, 7, 8].
 
@@ -45,10 +49,10 @@ def nest_types(
     if s_candidates is None:
         s_candidates = [5, 6, 7, 8]
 
-    j = type_loadings.shape[0]
+    j = type_features.shape[0]
 
-    # Ward linkage on type loading vectors
-    Z = linkage(type_loadings, method="ward")
+    # Ward linkage on feature vectors
+    Z = linkage(type_features, method="ward")
 
     # Evaluate each candidate S
     sil_scores: dict[int, float] = {}
@@ -71,7 +75,7 @@ def nest_types(
         if len(set(labels_0)) < 2:
             sil_scores[s] = -1.0
         else:
-            sil_scores[s] = float(silhouette_score(type_loadings, labels_0))
+            sil_scores[s] = float(silhouette_score(type_features, labels_0))
 
     # Select S with highest silhouette score
     best_s = max(sil_scores, key=lambda s: sil_scores[s])
@@ -91,10 +95,23 @@ def nest_types(
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
 
+DEMO_NESTING_FEATURES = [
+    "pct_white_nh",
+    "pct_black",
+    "pct_hispanic",
+    "pct_asian",
+    "pct_bachelors_plus",
+    "median_hh_income",
+    "median_age",
+    "evangelical_share",
+    "catholic_share",
+    "black_protestant_share",
+    "religious_adherence_rate",
+]
+
+
 def main() -> None:
     import pandas as pd
-
-    from src.discovery.run_type_discovery import discover_types
 
     # Load config
     config_path = PROJECT_ROOT / "config" / "model.yaml"
@@ -103,37 +120,52 @@ def main() -> None:
 
     s_candidates = config["types"]["super_type_count_candidates"]
 
-    # Load type assignments to get J
+    # Load type assignments
     type_path = PROJECT_ROOT / "data" / "communities" / "type_assignments.parquet"
     if not type_path.exists():
         raise FileNotFoundError(
             f"Run type discovery first: python -m src.discovery.run_type_discovery\n"
             f"Expected: {type_path}"
         )
-
     type_df = pd.read_parquet(type_path)
-    score_cols = [c for c in type_df.columns if c.startswith("type_") and c.endswith("_score")]
-    j = len(score_cols)
 
-    # Re-run discovery to get loadings (or load from saved)
-    holdout_cols = [
-        "pres_d_shift_20_24",
-        "pres_r_shift_20_24",
-        "pres_turnout_shift_20_24",
-    ]
-    shifts_path = PROJECT_ROOT / "data" / "shifts" / "county_shifts_multiyear.parquet"
-    shift_df = pd.read_parquet(shifts_path)
-    shift_cols = [c for c in shift_df.columns if c != "county_fips" and c not in holdout_cols]
-    shift_matrix = shift_df[shift_cols].values
+    # Load type profiles for demographic-based nesting
+    profiles_path = PROJECT_ROOT / "data" / "communities" / "type_profiles.parquet"
+    if not profiles_path.exists():
+        raise FileNotFoundError(
+            f"Run describe_types first: python -m src.description.describe_types\n"
+            f"Expected: {profiles_path}"
+        )
+    profiles_df = pd.read_parquet(profiles_path)
+    profiles_df = profiles_df.sort_values("type_id").reset_index(drop=True)
 
-    result = discover_types(shift_matrix, j=j)
+    # Build feature matrix from demographic profiles
+    available = [c for c in DEMO_NESTING_FEATURES if c in profiles_df.columns]
+    print(f"Nesting features ({len(available)}): {available}")
+    feature_matrix = profiles_df[available].values
 
+    # StandardScaler so all demographics are on equal footing
+    scaler = StandardScaler()
+    feature_matrix = scaler.fit_transform(feature_matrix)
+
+    # Handle any NaN (missing demographics for some types)
+    nan_mask = np.isnan(feature_matrix)
+    if nan_mask.any():
+        col_means = np.nanmean(feature_matrix, axis=0)
+        for col_idx in range(feature_matrix.shape[1]):
+            feature_matrix[nan_mask[:, col_idx], col_idx] = col_means[col_idx]
+
+    j = feature_matrix.shape[0]
     print(f"Nesting {j} fine types into {s_candidates} super-type candidates...")
-    nesting = nest_types(result.loadings, s_candidates=s_candidates)
+    nesting = nest_types(feature_matrix, s_candidates=s_candidates)
 
     print(f"\nSilhouette scores: {nesting.silhouette_scores}")
     print(f"Best S: {nesting.best_s}")
-    print(f"Mapping: {nesting.mapping}")
+
+    # Show distribution
+    from collections import Counter
+    dist = Counter(nesting.mapping.values())
+    print(f"Super-type distribution: {dict(sorted(dist.items()))}")
 
     # Save nesting to the type assignments
     type_df["super_type"] = type_df["dominant_type"].map(nesting.mapping)

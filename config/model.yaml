@@ -213,7 +213,7 @@ types:
   fallback_algorithms:
   - archetypal_analysis
   - semi_nmf
-  j: 50
+  j: 100
   j_candidates:
   - 30
   - 40
@@ -227,9 +227,6 @@ types:
   - 150
   super_type_count_candidates:
   - 5
-  - 6
-  - 7
-  - 8
   lambda_shrinkage: 0.75
   # covariance_max_rank: 18  # Available but inactive — observed comovement is ~3-dimensional (not 18), and shrinkage already reduces effective rank to ~2. Activate after adding features that genuinely predict electoral comovement.
   covariance_acceptance_threshold: 0.4

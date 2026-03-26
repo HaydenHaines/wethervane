@@ -129,8 +129,8 @@ def select_j(
     rows = []
 
     for j in j_candidates:
-        # Degrees of freedom check
-        n_params = j * (n_counties + n_dims)
+        # Degrees of freedom check: KMeans has J × D centroid parameters
+        n_params = j * n_dims
         total_cells = n_counties * n_dims
         dof_ratio = total_cells / n_params if n_params > 0 else 0.0
 
@@ -205,6 +205,9 @@ def main() -> None:
     df = pd.read_parquet(shifts_path)
 
     # Separate FIPS and shift columns, exclude holdout
+    # Note: select_j uses ALL shift columns (not min_year filtered) to maximize
+    # the number of election pairs available for leave-one-pair-out CV.
+    # run_type_discovery applies min_year filtering separately.
     shift_cols = [c for c in df.columns if c != "county_fips" and c not in HOLDOUT_COLUMNS]
     shift_matrix = df[shift_cols].values
 

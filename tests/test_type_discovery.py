@@ -267,20 +267,20 @@ class TestSelectJ:
     def test_dof_filter(self, synthetic_shift_matrix_large):
         """J too large for data should be filtered out or get NaN."""
         n, d = synthetic_shift_matrix_large.shape  # 100 x 30
-        # J=28 → n_params = 28*(100+30) = 3640, total_cells = 100*30 = 3000
-        # dof_ratio = 3000 / 3640 = 0.82 < 1.5 → should be filtered
+        # J=120 → n_params = 120*30 = 3600, total_cells = 100*30 = 3000
+        # dof_ratio = 3000 / 3600 = 0.83 < 1.0 → should be filtered
         pair_indices = [[i, i + 1, i + 2] for i in range(0, 30, 3)]
         result = select_j(
             synthetic_shift_matrix_large,
             pair_column_indices=pair_indices,
-            j_candidates=[3, 5, 28],
+            j_candidates=[3, 5, 120],
             random_state=42,
         )
-        row_28 = result.all_results[result.all_results["j"] == 28]
-        if len(row_28) > 0:
-            assert row_28["dof_ratio"].values[0] < 1.5
-            # Best J should not be 28 since it fails DOF check
-            assert result.best_j != 28
+        row_120 = result.all_results[result.all_results["j"] == 120]
+        if len(row_120) > 0:
+            assert row_120["dof_ratio"].values[0] < 1.0
+            # Best J should not be 120 since it fails DOF check
+            assert result.best_j != 120
 
     def test_all_candidates_in_results(self, synthetic_shift_matrix, synthetic_columns):
         groups = group_columns_by_pair(synthetic_columns)
