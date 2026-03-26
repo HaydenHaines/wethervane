@@ -40,38 +40,42 @@ function normCdf(x: number): number {
 }
 
 /**
- * Anchoring comparisons — maps a win probability to a familiar analog.
- * Thresholds sit at midpoints between anchor values so each bucket maps to
- * the closest familiar probability. Anchor values in parentheses.
+ * Confidence anchors — maps model confidence (always ≥ 0.5, in the predicted
+ * winner) to a familiar analog framed as certainty, not event probability.
  *
- * The 38–62% zone is split into three using the two-dice anchor: rolling 7+
- * on two standard dice has P ≈ 58%, rolling under 7 has P ≈ 42%. Familiar
- * from Monopoly/Catan — prevents calling every close race "a coin flip."
+ * The uncertainty here is in our model, not in the election outcome. Elections
+ * aren't dice rolls — the framing is "how confident are we?" / "how often would
+ * a model this confident turn out to be wrong?"
+ *
+ * Thresholds are midpoints between anchor values. Five buckets cover 50–100%.
+ * Two-dice split (58% / 50%) prevents calling every close race "a coin flip."
  */
-const PROB_ANCHORS: Array<{ min: number; text: string }> = [
+const CONFIDENCE_ANCHORS: Array<{ min: number; text: string }> = [
   { min: 0.90, text: "about as certain as not rolling snake eyes" },          // ≈ 97%
-  { min: 0.79, text: "about as likely as not rolling a 1 on a die" },        // ≈ 83%
-  { min: 0.67, text: "about as likely as not drawing a spade" },              //   75%
-  { min: 0.54, text: "about as likely as rolling 7 or higher on two dice" }, // ≈ 58%
-  { min: 0.46, text: "about as certain as a coin flip" },                     //   50%
-  { min: 0.34, text: "about as likely as rolling under 7 on two dice" },     // ≈ 42%
-  { min: 0.21, text: "about as likely as drawing a spade" },                  //   25%
-  { min: 0.12, text: "about as likely as rolling a 1 on a die" },            // ≈ 17%
-  { min: 0,    text: "about as likely as drawing an ace from a deck" },       // ≈  8%
+  { min: 0.79, text: "about as certain as not rolling a 1 on a die" },       // ≈ 83%
+  { min: 0.67, text: "about as certain as not drawing a spade" },             //   75%
+  { min: 0.54, text: "about as certain as rolling 7 or higher on two dice" },// ≈ 58%
+  { min: 0,    text: "about as certain as a coin flip" },                     //   50%
 ];
 
-function getAnchor(p: number): string {
-  for (const { min, text } of PROB_ANCHORS) {
-    if (p >= min) return text;
+/** Confidence is always expressed in the predicted winner (≥ 0.5). */
+function getAnchor(winProb: number): string {
+  const confidence = Math.max(winProb, 1 - winProb);
+  for (const { min, text } of CONFIDENCE_ANCHORS) {
+    if (confidence >= min) return text;
   }
-  return PROB_ANCHORS[PROB_ANCHORS.length - 1].text;
+  return CONFIDENCE_ANCHORS[CONFIDENCE_ANCHORS.length - 1].text;
 }
 
-function formatWins(p: number): string {
-  const wins = Math.round(p * 100);
-  if (wins <= 0) return "less than 1 of 100 simulations";
-  if (wins >= 100) return "more than 99 of 100 simulations";
-  return `${wins} of 100 simulations`;
+/**
+ * Formats the model error rate for display.
+ * e.g. winProb=0.69 → "about 31 of 100 predictions like this"
+ */
+function formatMisses(winProb: number): string {
+  const confidence = Math.max(winProb, 1 - winProb);
+  const misses = Math.round((1 - confidence) * 100);
+  if (misses <= 0) return "less than 1 of 100 predictions like this";
+  return `about ${misses} of 100 predictions like this`;
 }
 
 function SectionHeader({
@@ -451,14 +455,25 @@ export function ForecastView() {
             {lean.label}
           </div>
 
-          {/* Natural frequency */}
-          <div style={{ fontSize: "12px", marginTop: "5px" }}>
-            <span style={{ color: winProb >= 0.5 ? "var(--color-dem)" : "var(--color-rep)", fontWeight: 600 }}>
-              Dem wins in {formatWins(winProb)}
-            </span>
+          {/* Confidence statement — framed as model certainty, not event probability */}
+          <div style={{ fontSize: "12px", marginTop: "5px", lineHeight: "1.5" }}>
+            {lean.label === "Toss-up" ? (
+              <span style={{ color: "var(--color-text-muted)" }}>
+                Too close to call — we&apos;d be wrong about half the time in races this tight
+              </span>
+            ) : (
+              <>
+                <span style={{ color: winProb >= 0.5 ? "var(--color-dem)" : "var(--color-rep)", fontWeight: 600 }}>
+                  {winProb >= 0.5 ? "Dem" : "Rep"} projected to win
+                </span>
+                <span style={{ color: "var(--color-text-muted)" }}>
+                  {" "}— we&apos;d expect to be wrong in {formatMisses(winProb)}
+                </span>
+              </>
+            )}
           </div>
 
-          {/* Probability bar */}
+          {/* Confidence bar (blue = Dem share; marker at 50% = toss-up line) */}
           <div style={{ position: "relative", height: "6px", background: "#f5d0ca", borderRadius: "3px", margin: "7px 0 4px" }}>
             <div style={{
               position: "absolute", left: 0, top: 0, bottom: 0,
@@ -467,7 +482,7 @@ export function ForecastView() {
               borderRadius: "3px",
               transition: "width 0.4s ease",
             }} />
-            {/* 50% toss-up marker */}
+            {/* toss-up marker */}
             <div style={{
               position: "absolute", left: "50%", top: "-3px", bottom: "-3px",
               width: "1px", background: "#666", opacity: 0.4,
