@@ -11,6 +11,7 @@ import pytest
 from src.validation.validate_types import (
     holdout_accuracy,
     holdout_accuracy_county_prior,
+    holdout_accuracy_ridge_augmented,
     type_coherence,
     type_stability,
 )
@@ -314,3 +315,156 @@ class TestHoldoutAccuracyCountyPrior:
         result = holdout_accuracy_county_prior(scores, shifts, training_cols, holdout_cols)
         expected_mean = float(np.mean(result["per_dim_r"]))
         assert abs(result["mean_r"] - expected_mean) < 1e-9
+
+
+# ── Tests: holdout_accuracy_ridge_augmented ───────────────────────────────────
+
+
+def _make_demo_parquet(tmp_path, county_fips_list, n_demo_cols=5, seed=0):
+    """Write a small synthetic demographics parquet for testing."""
+    import pandas as pd
+
+    rng = np.random.default_rng(seed)
+    data = {"county_fips": county_fips_list}
+    for i in range(n_demo_cols):
+        data[f"demo_{i}"] = rng.standard_normal(len(county_fips_list))
+    df = pd.DataFrame(data)
+    path = tmp_path / "county_features_national.parquet"
+    df.to_parquet(path, index=False)
+    return str(path)
+
+
+class TestHoldoutAccuracyRidgeAugmented:
+    """Tests for holdout_accuracy_ridge_augmented using synthetic data."""
+
+    @pytest.fixture(scope="class")
+    def synthetic_data(self):
+        """60 counties, 9 dims, 3 types — same structure as perfect_type fixture."""
+        rng = np.random.default_rng(42)
+        n, d, j = 60, 9, 3
+        centers = np.array([
+            [2.0, 2.0, 2.0, 0.0, 0.0, 0.0, -2.0, -2.0, -2.0],
+            [0.0, 0.0, 0.0, 2.0, 2.0, 2.0, 0.0, 0.0, 0.0],
+            [-2.0, -2.0, -2.0, 0.0, 0.0, 0.0, 2.0, 2.0, 2.0],
+        ])
+        labels = np.repeat([0, 1, 2], 20)
+        shifts = centers[labels] + rng.standard_normal((n, d)) * 0.05
+
+        scores = np.zeros((n, j))
+        for i, lbl in enumerate(labels):
+            scores[i, lbl] = 5.0 + rng.standard_normal() * 0.01
+
+        # Synthetic FIPS strings: "00001" .. "00060"
+        county_fips = np.array([f"{i:05d}" for i in range(1, n + 1)])
+        return scores, shifts, county_fips
+
+    def test_runs_without_error(self, synthetic_data, tmp_path):
+        """Function completes and returns a dict when demographics file exists."""
+        scores, shifts, county_fips = synthetic_data
+        demo_path = _make_demo_parquet(tmp_path, county_fips.tolist())
+        training_cols = [0, 1, 2, 3, 4, 5]
+        holdout_cols = [6, 7, 8]
+        result = holdout_accuracy_ridge_augmented(
+            scores, shifts, training_cols, holdout_cols,
+            county_fips=county_fips,
+            demographics_path=demo_path,
+        )
+        assert result is not None
+
+    def test_output_keys(self, synthetic_data, tmp_path):
+        """All expected keys present in result dict."""
+        scores, shifts, county_fips = synthetic_data
+        demo_path = _make_demo_parquet(tmp_path, county_fips.tolist())
+        result = holdout_accuracy_ridge_augmented(
+            scores, shifts, [0, 1, 2, 3, 4, 5], [6, 7, 8],
+            county_fips=county_fips,
+            demographics_path=demo_path,
+        )
+        for key in ("mean_r", "per_dim_r", "mean_rmse", "per_dim_rmse",
+                    "best_alphas", "n_matched_counties", "n_demo_features"):
+            assert key in result, f"Missing key: {key}"
+
+    def test_n_matched_and_demo_features(self, synthetic_data, tmp_path):
+        """n_matched_counties and n_demo_features reflect the join results."""
+        scores, shifts, county_fips = synthetic_data
+        n_demo = 7
+        demo_path = _make_demo_parquet(tmp_path, county_fips.tolist(), n_demo_cols=n_demo)
+        result = holdout_accuracy_ridge_augmented(
+            scores, shifts, [0, 1, 2, 3, 4, 5], [6, 7, 8],
+            county_fips=county_fips,
+            demographics_path=demo_path,
+        )
+        assert result["n_matched_counties"] == len(county_fips)
+        assert result["n_demo_features"] == n_demo
+
+    def test_r_bounded(self, synthetic_data, tmp_path):
+        """LOO r values must be in [-1, 1]."""
+        scores, shifts, county_fips = synthetic_data
+        demo_path = _make_demo_parquet(tmp_path, county_fips.tolist())
+        result = holdout_accuracy_ridge_augmented(
+            scores, shifts, [0, 1, 2, 3, 4, 5], [6, 7, 8],
+            county_fips=county_fips,
+            demographics_path=demo_path,
+        )
+        assert -1.0 <= result["mean_r"] <= 1.0
+        for r in result["per_dim_r"]:
+            assert -1.0 <= r <= 1.0
+
+    def test_rmse_nonnegative(self, synthetic_data, tmp_path):
+        """LOO RMSE must be non-negative."""
+        scores, shifts, county_fips = synthetic_data
+        demo_path = _make_demo_parquet(tmp_path, county_fips.tolist())
+        result = holdout_accuracy_ridge_augmented(
+            scores, shifts, [0, 1, 2, 3, 4, 5], [6, 7, 8],
+            county_fips=county_fips,
+            demographics_path=demo_path,
+        )
+        assert result["mean_rmse"] >= 0.0
+        for rmse in result["per_dim_rmse"]:
+            assert rmse >= 0.0
+
+    def test_returns_none_when_no_county_fips(self, synthetic_data, tmp_path):
+        """Returns None gracefully when county_fips is None."""
+        scores, shifts, county_fips = synthetic_data
+        demo_path = _make_demo_parquet(tmp_path, county_fips.tolist())
+        result = holdout_accuracy_ridge_augmented(
+            scores, shifts, [0, 1, 2, 3, 4, 5], [6, 7, 8],
+            county_fips=None,
+            demographics_path=demo_path,
+        )
+        assert result is None
+
+    def test_returns_none_when_file_missing(self, synthetic_data, tmp_path):
+        """Returns None gracefully when demographics file does not exist."""
+        scores, shifts, county_fips = synthetic_data
+        result = holdout_accuracy_ridge_augmented(
+            scores, shifts, [0, 1, 2, 3, 4, 5], [6, 7, 8],
+            county_fips=county_fips,
+            demographics_path=str(tmp_path / "nonexistent.parquet"),
+        )
+        assert result is None
+
+    def test_partial_fips_overlap(self, synthetic_data, tmp_path):
+        """Inner join with partial overlap uses only matched rows."""
+        scores, shifts, county_fips = synthetic_data
+        # Only provide demographics for first 40 counties
+        demo_path = _make_demo_parquet(tmp_path, county_fips[:40].tolist())
+        result = holdout_accuracy_ridge_augmented(
+            scores, shifts, [0, 1, 2, 3, 4, 5], [6, 7, 8],
+            county_fips=county_fips,
+            demographics_path=demo_path,
+        )
+        assert result is not None
+        assert result["n_matched_counties"] == 40
+
+    def test_mean_r_is_mean_of_per_dim(self, synthetic_data, tmp_path):
+        """mean_r equals the mean of per_dim_r."""
+        scores, shifts, county_fips = synthetic_data
+        demo_path = _make_demo_parquet(tmp_path, county_fips.tolist())
+        result = holdout_accuracy_ridge_augmented(
+            scores, shifts, [0, 1, 2, 3, 4, 5], [6, 7, 8],
+            county_fips=county_fips,
+            demographics_path=demo_path,
+        )
+        expected = float(np.mean(result["per_dim_r"]))
+        assert abs(result["mean_r"] - expected) < 1e-9
