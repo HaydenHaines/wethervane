@@ -124,6 +124,22 @@ This decomposition serves two purposes:
 
 This architecture bridges the Forecast function and the Sabermetrics silo. Sabermetrics quantifies candidate effects at the race level (CTOV, candidate drag/lift). The Forecast engine uses those same effects at the type level to improve predictions in unpolled geographies.
 
+### Candidate Effects vs. Structural Shifts
+
+A critical distinction must be maintained between two superficially similar phenomena:
+
+**Candidate effect:** A cycle-specific deviation. θ_posterior[k] exceeds θ_expected[k] because of something idiosyncratic to this candidate — their persona, biography, messaging, or platform resonance with type k. Remove the candidate, and a generic party nominee reverts closer to the baseline. The deviation does not persist across candidates.
+
+**Structural shift:** A durable realignment. θ_posterior[k] has moved and *stays moved* across successive candidates from the same party. The type's baseline has genuinely relocated. The historical prior itself needs updating.
+
+The empirical test is persistence: does the deviation survive candidate turnover? Trump's performance with non-college white working-class types initially appeared as a candidate effect. Its persistence across the 2018 and 2022 midterms — with candidates other than Trump — suggests a structural shift is underway, or that a candidate effect was large enough to trigger genuine realignment. By contrast, W's performance with socially conservative Hispanic Catholic types in 2004 did not persist strongly through subsequent Republican nominees — more consistent with a candidate-specific draw.
+
+**Architectural implication:** The model needs two layers:
+- **Cycle-specific θ:** Updated each cycle by polls. Captures candidate effects and current environment.
+- **Structural θ baseline:** The prior on θ, updated slowly across cycles as evidence of durable shift accumulates. When consecutive cycles show the same directional deviation for a type, that deviation migrates from "candidate effect" into a revised structural baseline.
+
+This is how the model learns realignments over time rather than perpetually treating them as surprises. A model that does not distinguish these two phenomena will either over-correct (chasing each candidate's idiosyncrasies into the baseline) or under-correct (treating durable realignments as temporary noise).
+
 ---
 
 ## The 2026–2028 Development Arc

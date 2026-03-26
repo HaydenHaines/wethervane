@@ -119,6 +119,8 @@ candidate_effect[k] = θ_posterior[k] - θ_expected[k]
 
 The Forecast tab should eventually surface this as an interpretive layer: "This candidate is over/underperforming with [type] relative to structural expectations." This connects to the Sabermetrics silo (CTOV, candidate drag/lift) but operates at the type level rather than the race level.
 
+**Critical distinction to preserve in the display:** A deviation from expected θ could be a *candidate effect* (idiosyncratic to this candidate, will not persist) or a *structural shift* (the type has genuinely relocated its partisan baseline). These require different interpretations and different responses in the model. A candidate effect should not update the structural prior. A structural shift should. See VISION.md for the full framing.
+
 For 2026, the Forecast tab does not need to display candidate effects — but the architecture should not preclude it. The posterior θ should always be available for comparison against the expected θ baseline.
 
 ---

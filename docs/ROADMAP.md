@@ -305,6 +305,7 @@ Presidential races generate the highest polling volume, the most diverse geograp
 - How stable is Σ across cycles for the same race type (presidential vs. midterm)? Should Σ be cycle-type-specific?
 - For unpolled states, how does uncertainty scale with distance in type-space from polled geographies?
 - What crosstab schema captures the most type-relevant demographic breakdowns without requiring variables pollsters rarely report?
+- **Candidate effect vs. structural shift:** When does a persistent θ deviation warrant updating the structural baseline rather than attributing it to the current candidate? What is the evidence threshold for reclassifying a candidate effect as a realignment? This is one of the hardest modeling questions in the project — see VISION.md for the full framing.
 
 ---
 
