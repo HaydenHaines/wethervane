@@ -321,6 +321,77 @@ def holdout_accuracy_county_prior(
     }
 
 
+def holdout_accuracy_county_prior_loo(
+    scores: np.ndarray,
+    shift_matrix: np.ndarray,
+    training_cols: list[int],
+    holdout_cols: list[int],
+) -> dict:
+    """Leave-one-out holdout accuracy using county-level priors.
+
+    Same as holdout_accuracy_county_prior but removes each county from the
+    type mean computation before predicting it. This eliminates inflation
+    from small types where a county dominates its own type mean.
+
+    Returns
+    -------
+    dict with keys:
+        "mean_r"       -- float, mean LOO Pearson r across holdout dims
+        "per_dim_r"    -- list[float], one r per holdout dim
+        "mean_rmse"    -- float, mean LOO RMSE across holdout dims
+        "per_dim_rmse" -- list[float], one RMSE per holdout dim
+    """
+    n, j = scores.shape
+
+    abs_scores = np.abs(scores)
+    row_sums = abs_scores.sum(axis=1, keepdims=True)
+    row_sums = np.where(row_sums == 0, 1.0, row_sums)
+    weights = abs_scores / row_sums
+
+    training_data = shift_matrix[:, training_cols]
+    county_training_means = training_data.mean(axis=1)
+
+    # Precompute global weighted sums for efficient LOO
+    global_weight_sums = weights.sum(axis=0)  # J
+    global_weighted_train = weights.T @ county_training_means  # J
+
+    per_dim_r: list[float] = []
+    per_dim_rmse: list[float] = []
+
+    for col in holdout_cols:
+        actual = shift_matrix[:, col]
+        global_weighted_hold = weights.T @ actual  # J
+
+        predicted = np.zeros(n)
+        for i in range(n):
+            # LOO: subtract county i's contribution from type sums
+            loo_ws = global_weight_sums - weights[i]
+            loo_ws = np.where(loo_ws < 1e-12, 1e-12, loo_ws)
+            loo_train = (global_weighted_train - weights[i] * county_training_means[i]) / loo_ws
+            loo_hold = (global_weighted_hold - weights[i] * actual[i]) / loo_ws
+            type_adj = loo_hold - loo_train
+            predicted[i] = county_training_means[i] + (weights[i] * type_adj).sum()
+
+        if np.std(actual) < 1e-10 or np.std(predicted) < 1e-10:
+            per_dim_r.append(0.0)
+        else:
+            r, _ = pearsonr(actual, predicted)
+            per_dim_r.append(float(np.clip(r, -1.0, 1.0)))
+
+        rmse = float(np.sqrt(np.mean((actual - predicted) ** 2)))
+        per_dim_rmse.append(rmse)
+
+    mean_r = float(np.mean(per_dim_r)) if per_dim_r else 0.0
+    mean_rmse = float(np.mean(per_dim_rmse)) if per_dim_rmse else 0.0
+
+    return {
+        "mean_r": mean_r,
+        "per_dim_r": per_dim_r,
+        "mean_rmse": mean_rmse,
+        "per_dim_rmse": per_dim_rmse,
+    }
+
+
 # ── Report generator ──────────────────────────────────────────────────────────
 
 
@@ -427,6 +498,11 @@ def generate_type_validation_report(
         scores, full_matrix, training_indices, holdout_indices,
     )
 
+    log.info("Running holdout_accuracy_county_prior_loo...")
+    accuracy_county_prior_loo = holdout_accuracy_county_prior_loo(
+        scores, full_matrix, training_indices, holdout_indices,
+    )
+
     # --- Covariance validation (if data available) ---
     cov_path = resolve(type_covariance_path)
     cov_validation_r: float | None = None
@@ -467,6 +543,7 @@ def generate_type_validation_report(
         "stability": stability,
         "holdout_accuracy": accuracy,
         "holdout_accuracy_county_prior": accuracy_county_prior,
+        "holdout_accuracy_county_prior_loo": accuracy_county_prior_loo,
         "covariance_validation_r": cov_validation_r,
         "j": j,
         "n_counties": int(full_matrix.shape[0]),
@@ -491,6 +568,9 @@ def generate_type_validation_report(
     print(f"  Holdout accuracy (r):   {accuracy_county_prior['mean_r']:.3f}  (county-level prior)")
     if "mean_rmse" in accuracy_county_prior:
         print(f"  Holdout RMSE:           {accuracy_county_prior['mean_rmse']:.4f}  (county-level prior)")
+    print(f"  Holdout LOO r:          {accuracy_county_prior_loo['mean_r']:.3f}  (county-level prior, LOO)")
+    if "mean_rmse" in accuracy_county_prior_loo:
+        print(f"  Holdout LOO RMSE:       {accuracy_county_prior_loo['mean_rmse']:.4f}  (county-level prior, LOO)")
     if cov_validation_r is not None:
         print(f"  Covariance val r:       {cov_validation_r:.3f}  (> 0.4 = acceptable)")
     print("=" * 65)
