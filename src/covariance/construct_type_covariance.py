@@ -450,44 +450,102 @@ def _load_type_scores_and_shifts() -> tuple[np.ndarray, np.ndarray, list[list[in
     return type_scores, shift_matrix, election_col_groups
 
 
+def _loeo_validate_observed(
+    type_scores: np.ndarray,
+    shift_matrix: np.ndarray,
+    election_col_groups: list[list[int]],
+    shrinkage: float | None = None,
+) -> float:
+    """Leave-one-election-out validation of observed LW covariance.
+
+    For each election t:
+    1. Compute LW-observed correlation from all elections EXCEPT t.
+    2. Compute the full observed correlation from all elections.
+    3. Measure off-diagonal correlation between the T-1 matrix and the full matrix.
+
+    Returns mean LOEO correlation across all elections.
+    """
+    J = type_scores.shape[1]
+    T = len(election_col_groups)
+    if T < 3:
+        log.warning("LOEO needs >= 3 elections, got %d", T)
+        return float("nan")
+
+    type_shifts = _compute_type_shifts(type_scores, shift_matrix, election_col_groups)
+    mask = ~np.eye(J, dtype=bool)
+
+    # Full observed correlation (target)
+    full_corr = compute_observed_correlation(
+        type_scores, shift_matrix, election_col_groups, shrinkage=shrinkage,
+    )
+    full_off = full_corr[mask]
+
+    loeo_rs = []
+    for t in range(T):
+        # T-1 election groups (exclude election t)
+        train_groups = [g for i, g in enumerate(election_col_groups) if i != t]
+        train_corr = compute_observed_correlation(
+            type_scores, shift_matrix, train_groups, shrinkage=shrinkage,
+        )
+        train_off = train_corr[mask]
+
+        if np.std(train_off) < 1e-10 or np.std(full_off) < 1e-10:
+            continue
+        r = float(np.corrcoef(train_off, full_off)[0, 1])
+        loeo_rs.append(r)
+
+    return float(np.mean(loeo_rs)) if loeo_rs else float("nan")
+
+
 def main() -> None:
     cfg = _load_config()
     types_cfg = cfg.get("types", {})
-    lambda_shrinkage = float(types_cfg.get("lambda_shrinkage", 0.75))
-    threshold = float(types_cfg.get("covariance_acceptance_threshold", 0.4))
     sigma_base = 0.07  # logit-scale base sigma
-    max_rank_raw = types_cfg.get("covariance_max_rank", None)
-    max_rank = int(max_rank_raw) if max_rank_raw is not None else None
-
-    log.info("lambda_shrinkage=%.2f  threshold=%.2f  max_rank=%s", lambda_shrinkage, threshold, max_rank)
 
     type_profiles, feature_cols = _load_type_profiles()
     J = len(type_profiles)
 
-    log.info("Constructing %d×%d type covariance matrix...", J, J)
-    result = construct_type_covariance(
-        type_profiles,
-        feature_cols,
-        lambda_shrinkage=lambda_shrinkage,
-        sigma_base=sigma_base,
-        max_rank=max_rank,
-    )
-
     try:
         type_scores, shift_matrix, election_col_groups = _load_type_scores_and_shifts()
-        validation_r = validate_covariance(result, type_scores, shift_matrix, election_col_groups)
-        log.info("Validation r = %.3f (threshold = %.2f)", validation_r, threshold)
 
-        # Compute observed correlation with Ledoit-Wolf shrinkage
+        # Primary: observed LW-regularized correlation from election shifts
+        log.info("Computing observed LW-regularised correlation (primary)...")
         obs_corr = compute_observed_correlation(
             type_scores, shift_matrix, election_col_groups,
         )
         log.info("Observed correlation computed (LW-regularised, PD)")
 
-        # Hybrid fallback: blend constructed + observed when validation_r < threshold
-        result = apply_hybrid_fallback(result, obs_corr, validation_r, threshold)
+        # LOEO validation: how well does the T-1 matrix predict the full matrix?
+        loeo_r = _loeo_validate_observed(
+            type_scores, shift_matrix, election_col_groups,
+        )
+        log.info("LOEO validation r = %.4f", loeo_r)
+
+        # Scale to covariance
+        Sigma = sigma_base**2 * obs_corr
+
+        result = CovarianceResult(
+            correlation_matrix=obs_corr,
+            covariance_matrix=Sigma,
+            validation_r=loeo_r,
+            used_hybrid=False,
+            sigma_base=sigma_base,
+        )
+
     except FileNotFoundError as e:
-        log.warning("Skipping validation (data missing): %s", e)
+        # Fallback: demographic-based construction (no shift data available)
+        log.warning("Shift data not found (%s) — falling back to demographic construction", e)
+        lambda_shrinkage = float(types_cfg.get("lambda_shrinkage", 0.75))
+        max_rank_raw = types_cfg.get("covariance_max_rank", None)
+        max_rank = int(max_rank_raw) if max_rank_raw is not None else None
+
+        result = construct_type_covariance(
+            type_profiles,
+            feature_cols,
+            lambda_shrinkage=lambda_shrinkage,
+            sigma_base=sigma_base,
+            max_rank=max_rank,
+        )
         result.validation_r = float("nan")
 
     COVARIANCE_DIR.mkdir(parents=True, exist_ok=True)
@@ -504,10 +562,9 @@ def main() -> None:
 
     print("\n=== Type Covariance Construction Summary ===")
     print(f"  J (types):          {J}")
-    print(f"  lambda_shrinkage:   {lambda_shrinkage}")
     print(f"  sigma_base:         {sigma_base}")
-    print(f"  validation_r:       {result.validation_r:.3f}" if not np.isnan(result.validation_r) else "  validation_r:       N/A")
-    print(f"  used_hybrid:        {result.used_hybrid}")
+    print(f"  method:             observed LW-regularised (primary)")
+    print(f"  LOEO validation_r:  {result.validation_r:.4f}" if not np.isnan(result.validation_r) else "  LOEO validation_r:  N/A")
     print(f"  Correlation matrix saved to: {corr_path}")
     print(f"  Covariance matrix saved to:  {cov_path}")
 
