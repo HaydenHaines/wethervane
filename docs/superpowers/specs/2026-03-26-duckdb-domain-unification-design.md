@@ -87,10 +87,14 @@ All rows carry `version_id VARCHAR` FK referencing `model_versions`.
 |---|---|---|
 | `type_scores` | `county_fips VARCHAR`, `type_id INT`, `score FLOAT`, `version_id VARCHAR` | melt from `type_assignments.parquet` |
 | `type_covariance` | `type_i INT`, `type_j INT`, `value FLOAT`, `version_id VARCHAR` | melt from `type_covariance.parquet` |
-| `type_priors` | `type_id INT`, `mean_dem_share FLOAT`, `version_id VARCHAR` | from `type_profiles.parquet` |
+| `type_priors` | `type_id INT`, `mean_dem_share FLOAT`, `version_id VARCHAR` | from `type_profiles.parquet` — `mean_dem_share` column only |
 | `ridge_county_priors` | `county_fips VARCHAR`, `ridge_pred_dem_share FLOAT`, `version_id VARCHAR` | from `ridge_county_priors.parquet` |
 | `hac_state_weights` | `state_abbr VARCHAR`, `community_id INT`, `weight FLOAT`, `version_id VARCHAR` | from `community_weights_state_hac.parquet` |
 | `hac_county_weights` | `county_fips VARCHAR`, `community_id INT`, `weight FLOAT`, `version_id VARCHAR` | from `community_weights_county_hac.parquet` |
+
+**Note on `type_priors` vs existing `types` table:** `type_profiles.parquet` feeds two tables. The existing `types` table (built by `build_database.py`) ingests the full demographic profile. The new `type_priors` table ingests only `mean_dem_share` — the scalar prior used by `predict_race`. Both ingest from the same source file; this is intentional parallel ingestion with different projections.
+
+**Note on HAC `community_id`:** The `community_id` values in `hac_state_weights` and `hac_county_weights` are HAC pipeline IDs (K=10 communities), independent of the KMeans `type_id` space. They are self-contained within the HAC pipeline and require no cross-check against any other table. No referential integrity constraint is imposed on `community_id`.
 
 **Note on `type_covariance`:** The existing `build_database.py` already has a `type_covariance` table (built from `type_covariance_long.parquet`). This work replaces that path with the same melt logic applied directly to `type_covariance.parquet` (the wide square matrix written by the covariance pipeline). Column names in DuckDB (`type_i`, `type_j`, `value`) are imposed by ingestion, not inherited from the parquet.
 
@@ -104,7 +108,7 @@ Rows carry `cycle VARCHAR` (e.g. "2026") rather than `version_id`.
 | `poll_crosstabs` | `poll_id VARCHAR FK`, `demographic_group VARCHAR`, `group_value VARCHAR`, `dem_share FLOAT`, `n_sample INT` | Per-poll demographic breakdowns; created empty until crosstab data is available |
 | `poll_notes` | `poll_id VARCHAR FK`, `note_type VARCHAR`, `note_value VARCHAR` | Pollster quality flags and methodology notes. Example: `note_type="grade", note_value="A"`. Types drawn from `load_polls_with_notes()` note keys. |
 
-`poll_id` is a stable hash of `(race, geography, date, pollster, cycle)`.
+`poll_id` is a stable hash of `(race, geography, date, pollster, cycle)`: SHA-256 hex digest of `"|".join([race, geography, date or "", pollster or "", cycle])`. This is deterministic and FK-safe across `polls`, `poll_crosstabs`, and `poll_notes`.
 
 ---
 
