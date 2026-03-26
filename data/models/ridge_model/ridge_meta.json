@@ -1,16 +1,16 @@
 {
   "alpha": 0.1873817422860385,
-  "r2_ridge": 0.9885922716089638,
-  "r2_train": 0.9885922716089638,
-  "r2_hgb": 0.9964027289662623,
+  "r2_ridge": 0.9886005601608887,
+  "r2_train": 0.9886005601608887,
+  "r2_hgb": 0.9999352709867442,
   "ensemble_method": "50pct_ridge_50pct_hgb",
   "ensemble_ridge_weight": 0.5,
   "ensemble_hgb_weight": 0.5,
   "hgb_params": {
-    "max_iter": 300,
-    "learning_rate": 0.05,
-    "max_depth": 4,
-    "min_samples_leaf": 20,
+    "max_iter": 800,
+    "learning_rate": 0.1,
+    "max_depth": 5,
+    "min_samples_leaf": 30,
     "l2_regularization": 1.0,
     "random_state": 42
   },
@@ -168,7 +168,11 @@
     "inflow_outflow_ratio",
     "log_pop_density",
     "land_area_sq_mi",
-    "pop_per_sq_mi"
+    "pop_per_sq_mi",
+    "network_diversity",
+    "pct_sci_instate",
+    "sci_top5_mean_dem_share",
+    "sci_geographic_reach"
   ],
   "n_counties": 3106,
   "n_training_samples": 3106,
@@ -181,5 +185,5 @@
     2020
   ],
   "n_type_scores": 100,
-  "n_demo_features": 50
+  "n_demo_features": 54
 }
