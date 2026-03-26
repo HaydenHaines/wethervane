@@ -7,6 +7,7 @@ import { fetchCounties, fetchSuperTypes, fetchTypes, type CountyRow, type TypeSu
 import { useMapContext } from "@/components/MapContext";
 import { CommunityPanel } from "@/components/CommunityPanel";
 import { TypePanel } from "@/components/TypePanel";
+import { TractPanel, type TractFeatureProps } from "@/components/TractPanel";
 
 // ── Tooltip helpers ──────────────────────────────────────────────────────────
 
@@ -138,6 +139,7 @@ export default function MapShell() {
   const [tractLoading, setTractLoading] = useState(false);
   const [tooltip, setTooltip] = useState<{ x: number; y: number; text: string } | null>(null);
   const [tractContext, setTractContext] = useState<TractContext | null>(null);
+  const [selectedTractFeature, setSelectedTractFeature] = useState<TractFeatureProps | null>(null);
 
   // Pan to selected forecast state whenever it changes
   useEffect(() => {
@@ -394,27 +396,46 @@ export default function MapShell() {
           },
           onClick: ({ object }: any) => {
             if (object) {
-              if (hasTypeData) {
+              if (showTracts && object.properties?.n_tracts != null) {
+                // Tract view: display GeoJSON properties directly, no API call
+                const props = object.properties;
+                const current = selectedTractFeature;
+                if (current && current.type_id === props.type_id && current.n_tracts === props.n_tracts) {
+                  // Click same tract polygon again — deselect
+                  setSelectedTractFeature(null);
+                } else {
+                  setSelectedTractFeature({
+                    type_id: props.type_id,
+                    super_type: props.super_type,
+                    super_type_name: getSuperTypeName(props.super_type, object),
+                    n_tracts: props.n_tracts,
+                    area_sqkm: props.area_sqkm ?? 0,
+                    median_hh_income: props.median_hh_income,
+                    pct_ba_plus: props.pct_ba_plus,
+                    pct_white_nh: props.pct_white_nh,
+                    pct_black: props.pct_black,
+                    pct_hispanic: props.pct_hispanic,
+                    evangelical_share: props.evangelical_share,
+                  });
+                }
+                // Clear county-level selections
+                setSelectedTypeId(null);
+                setSelectedCommunityId(null);
+                setTractContext(null);
+              } else if (hasTypeData) {
                 const dt = object.properties?.dominant_type ?? object.properties?.type_id;
                 if (dt !== undefined && dt >= 0) {
                   setSelectedTypeId(dt === selectedTypeId ? null : dt);
                   setSelectedCommunityId(null);
-                  // Capture tract community context when clicking in tract view
-                  if (showTracts && object.properties?.n_tracts != null) {
-                    setTractContext({
-                      nTracts: object.properties.n_tracts,
-                      areaSqkm: object.properties.area_sqkm ?? 0,
-                      superTypeName: getSuperTypeName(object.properties?.super_type, object),
-                    });
-                  } else {
-                    setTractContext(null);
-                  }
+                  setSelectedTractFeature(null);
+                  setTractContext(null);
                 }
               } else {
                 const cid = object.properties?.community_id;
                 if (cid !== undefined && cid >= 0) {
                   setSelectedCommunityId(cid === selectedCommunityId ? null : cid);
                   setSelectedTypeId(null);
+                  setSelectedTractFeature(null);
                   setTractContext(null);
                 }
               }
@@ -516,6 +537,10 @@ export default function MapShell() {
         onClick={() => {
           if (tractGeojson) {
             setShowTracts((prev) => !prev);
+            // Clear selections when switching views — county and tract IDs are independent
+            setSelectedTractFeature(null);
+            setSelectedTypeId(null);
+            setTractContext(null);
           } else {
             loadTracts();
           }
@@ -614,6 +639,13 @@ export default function MapShell() {
           superTypeMap={superTypeMap}
           tractContext={tractContext}
           onClose={() => { setSelectedTypeId(null); setTractContext(null); }}
+        />
+      )}
+
+      {selectedTractFeature !== null && (
+        <TractPanel
+          tract={selectedTractFeature}
+          onClose={() => setSelectedTractFeature(null)}
         />
       )}
     </div>
