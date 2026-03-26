@@ -140,6 +140,8 @@ The empirical test is persistence: does the deviation survive candidate turnover
 
 This is how the model learns realignments over time rather than perpetually treating them as surprises. A model that does not distinguish these two phenomena will either over-correct (chasing each candidate's idiosyncrasies into the baseline) or under-correct (treating durable realignments as temporary noise).
 
+A further complication: a candidate can *widen the tent* — drawing a type toward their party — and then the party can pivot institutionally to follow that candidate, baking what started as a candidate effect into the party's platform, messaging, and coalition. At that point the candidate effect has become a structural shift not because the type changed but because the party changed to meet it. Trump and the Republican Party's relationship with non-college white working-class voters is the clearest modern example. The distinction between "candidate pulls type" and "party follows candidate to lock in type" is genuine but difficult to operationalize cleanly from electoral data alone. This is one reason the candidate effects layer is deferred — the boundary between these phenomena requires careful thinking before it can be modeled.
+
 ---
 
 ## The 2026–2028 Development Arc
