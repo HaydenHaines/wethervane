@@ -1,6 +1,13 @@
 "use client";
 import { useEffect, useMemo, useState, useCallback } from "react";
-import { fetchForecast, type ForecastRow } from "@/lib/api";
+import {
+  fetchForecast,
+  fetchForecastRaces,
+  fetchPolls,
+  feedMultiplePolls,
+  type ForecastRow,
+  type PollRow,
+} from "@/lib/api";
 import { useMapContext } from "@/components/MapContext";
 
 const LEAN_LABELS = [
@@ -74,53 +81,60 @@ function stateFromRace(race: string): string | null {
   return null;
 }
 
+function buildChoropleth(rows: ForecastRow[]): Map<string, number> {
+  const m = new Map<string, number>();
+  rows.forEach((r) => {
+    if (r.pred_dem_share !== null) m.set(r.county_fips, r.pred_dem_share);
+  });
+  return m;
+}
+
 export function ForecastView() {
   const { setForecastState, setForecastChoropleth } = useMapContext();
 
-  const [allRows, setAllRows] = useState<ForecastRow[]>([]);
+  const [allRaces, setAllRaces] = useState<string[]>([]);
+  // Structural prior from GET /forecast — set on race change, never mutated by recalculate
+  const [structuralRows, setStructuralRows] = useState<ForecastRow[]>([]);
+  // Currently displayed predictions (structural by default, poll-updated after recalculate)
   const [displayRows, setDisplayRows] = useState<ForecastRow[]>([]);
+  const [polls, setPolls] = useState<PollRow[]>([]);
   const [loading, setLoading] = useState(false);
-  const [modelPriorOpen, setModelPriorOpen] = useState(true);
+  const [hasPollUpdate, setHasPollUpdate] = useState(false);
 
-  // Sequential control state
+  const [modelPriorOpen, setModelPriorOpen] = useState(true);
+  const [statePollsOpen, setStatePollsOpen] = useState(true);
+
   const [selectedState, setSelectedState] = useState<string>("");
-  // Year is hardcoded 2026 for now (single cycle)
   const YEAR = "2026";
   const [selectedRace, setSelectedRace] = useState<string>("");
 
-  // Load all forecast rows once to populate dropdowns
+  // Load race list once on mount
   useEffect(() => {
-    fetchForecast().then((rows) => {
-      setAllRows(rows);
-    });
+    fetchForecastRaces().then(setAllRaces).catch(() => setAllRaces([]));
   }, []);
 
   // Derive available states from race labels ("2026 FL Senate" → "FL")
   const availableStates = useMemo(() => {
     const stateSet = new Set<string>();
-    allRows.forEach((r) => {
-      const s = stateFromRace(r.race);
+    allRaces.forEach((race) => {
+      const s = stateFromRace(race);
       if (s) stateSet.add(s);
     });
     return Array.from(stateSet).sort();
-  }, [allRows]);
+  }, [allRaces]);
 
-  // Auto-select first state when rows load
+  // Auto-select first state when races load
   useEffect(() => {
     if (availableStates.length > 0 && !selectedState) {
       setSelectedState(availableStates[0]);
     }
   }, [availableStates, selectedState]);
 
-  // Races available for selected state ("2026 FL Senate" matches "FL")
+  // Races available for selected state
   const racesForState = useMemo(() => {
     if (!selectedState) return [];
-    return Array.from(new Set(
-      allRows
-        .filter((r) => stateFromRace(r.race) === selectedState)
-        .map((r) => r.race)
-    )).sort();
-  }, [allRows, selectedState]);
+    return allRaces.filter((r) => stateFromRace(r) === selectedState).sort();
+  }, [allRaces, selectedState]);
 
   // Auto-select first race when state changes
   useEffect(() => {
@@ -131,34 +145,60 @@ export function ForecastView() {
     }
   }, [racesForState]);
 
-  // Sync forecast state to map context for highlighting + pan
+  // Sync forecast state to map context for highlight + pan
   useEffect(() => {
     setForecastState(selectedState || null);
   }, [selectedState, setForecastState]);
 
-  // Recalculate: fetch model-prior predictions and push to map choropleth
+  // On race change: load structural rows + polls in parallel; reset poll update
+  useEffect(() => {
+    if (!selectedRace) {
+      setStructuralRows([]);
+      setDisplayRows([]);
+      setPolls([]);
+      setHasPollUpdate(false);
+      setForecastChoropleth(null);
+      return;
+    }
+    setLoading(true);
+    setHasPollUpdate(false);
+    Promise.all([
+      fetchForecast(selectedRace),
+      fetchPolls({ race: selectedRace }),
+    ])
+      .then(([rows, pollRows]) => {
+        setStructuralRows(rows);
+        setDisplayRows(rows);
+        setPolls(pollRows);
+        setForecastChoropleth(buildChoropleth(rows));
+      })
+      .finally(() => setLoading(false));
+  }, [selectedRace]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Recalculate: if polls exist, run stacked Bayesian update; else reload structural
   const recalculate = useCallback(async () => {
     if (!selectedRace) return;
     setLoading(true);
     try {
-      const rows = await fetchForecast(selectedRace);
+      let rows: ForecastRow[];
+      if (polls.length > 0) {
+        const result = await feedMultiplePolls({
+          cycle: YEAR,
+          state: selectedState,
+          race: selectedRace,
+        });
+        rows = result.counties;
+        setHasPollUpdate(true);
+      } else {
+        rows = await fetchForecast(selectedRace);
+        setHasPollUpdate(false);
+      }
       setDisplayRows(rows);
-      // Build fips → dem_share map for map choropleth
-      const choropleth = new Map<string, number>();
-      rows.forEach((r) => {
-        if (r.pred_dem_share !== null) choropleth.set(r.county_fips, r.pred_dem_share);
-      });
-      setForecastChoropleth(choropleth);
+      setForecastChoropleth(buildChoropleth(rows));
     } finally {
       setLoading(false);
     }
-  }, [selectedRace, setForecastChoropleth]);
-
-  // Auto-recalculate when race changes
-  useEffect(() => {
-    if (selectedRace) recalculate();
-    else { setDisplayRows([]); setForecastChoropleth(null); }
-  }, [selectedRace]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [selectedRace, selectedState, polls, setForecastChoropleth]);
 
   // Clean up choropleth when leaving
   useEffect(() => () => { setForecastChoropleth(null); setForecastState(null); }, []);
@@ -169,6 +209,12 @@ export function ForecastView() {
       ? stateRows.reduce((sum, r) => sum + (r.pred_dem_share ?? 0), 0) / stateRows.length
       : null;
   const lean = statePred !== null ? getLean(statePred) : null;
+
+  // Delta lookup: structural prediction per county for delta column
+  const structuralMap = useMemo(
+    () => new Map(structuralRows.map((r) => [r.county_fips, r.pred_dem_share])),
+    [structuralRows]
+  );
 
   const dropdownStyle: React.CSSProperties = {
     padding: "6px 10px",
@@ -261,7 +307,56 @@ export function ForecastView() {
 
         <SectionHeader title="Fundamentals" disabled open={false} onToggle={() => {}} />
         <SectionHeader title="National Polls" disabled open={false} onToggle={() => {}} />
-        <SectionHeader title="State Polls" disabled open={false} onToggle={() => {}} />
+
+        <SectionHeader
+          title={polls.length > 0 ? `State Polls (${polls.length})` : "State Polls"}
+          open={statePollsOpen}
+          disabled={polls.length === 0}
+          onToggle={() => setStatePollsOpen((p) => !p)}
+        />
+        {statePollsOpen && polls.length > 0 && (
+          <div style={{
+            border: "1px solid var(--color-border)",
+            borderTop: "none",
+            borderRadius: "0 0 3px 3px",
+            marginBottom: "4px",
+          }}>
+            {polls.map((poll, i) => (
+              <div
+                key={i}
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr auto auto",
+                  gap: "6px",
+                  padding: "5px 10px",
+                  borderBottom: i < polls.length - 1 ? "1px solid var(--color-border)" : undefined,
+                  fontSize: "12px",
+                  alignItems: "center",
+                }}
+              >
+                <div>
+                  <span style={{ color: "#333" }}>{poll.pollster || "Unknown"}</span>
+                  {poll.date && (
+                    <span style={{ color: "var(--color-text-muted)", fontSize: "11px", marginLeft: "6px" }}>
+                      {poll.date.slice(0, 10)}
+                    </span>
+                  )}
+                </div>
+                <span style={{ color: "var(--color-text-muted)", fontSize: "11px" }}>
+                  n={poll.n_sample.toLocaleString()}
+                </span>
+                <span style={{
+                  fontWeight: 600,
+                  color: poll.dem_share > 0.5 ? "var(--color-dem)" : "var(--color-rep)",
+                  minWidth: "40px",
+                  textAlign: "right",
+                }}>
+                  {(poll.dem_share * 100).toFixed(1)}%
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* ── Recalculate ─────────────────────────────────────────────── */}
@@ -283,7 +378,7 @@ export function ForecastView() {
           letterSpacing: "0.3px",
         }}
       >
-        {loading ? "Calculating…" : "Recalculate"}
+        {loading ? "Calculating…" : polls.length > 0 ? `Recalculate (${polls.length} poll${polls.length !== 1 ? "s" : ""})` : "Recalculate"}
       </button>
 
       {/* ── State Summary ───────────────────────────────────────────── */}
@@ -302,7 +397,7 @@ export function ForecastView() {
             {selectedState} projected Dem share: {(statePred * 100).toFixed(1)}%
           </div>
           <div style={{ fontSize: "11px", color: "var(--color-text-muted)", marginTop: "2px" }}>
-            {selectedRace} · Model prior only
+            {selectedRace} · {hasPollUpdate ? `${polls.length} poll${polls.length !== 1 ? "s" : ""} incorporated` : "Model prior only"}
           </div>
         </div>
       )}
@@ -318,6 +413,9 @@ export function ForecastView() {
               <tr style={{ borderBottom: "1px solid var(--color-border)" }}>
                 <th style={{ textAlign: "left", padding: "4px 6px", color: "var(--color-text-muted)", fontWeight: "normal" }}>County</th>
                 <th style={{ textAlign: "right", padding: "4px 6px", color: "var(--color-text-muted)", fontWeight: "normal" }}>Dem %</th>
+                {hasPollUpdate && (
+                  <th style={{ textAlign: "right", padding: "4px 6px", color: "var(--color-text-muted)", fontWeight: "normal" }}>Δ</th>
+                )}
                 <th style={{ textAlign: "right", padding: "4px 6px", color: "var(--color-text-muted)", fontWeight: "normal" }}>90% CI</th>
               </tr>
             </thead>
@@ -326,6 +424,8 @@ export function ForecastView() {
                 .sort((a, b) => (b.pred_dem_share ?? 0) - (a.pred_dem_share ?? 0))
                 .map((row) => {
                   const share = row.pred_dem_share ?? 0;
+                  const structuralShare = structuralMap.get(row.county_fips) ?? null;
+                  const delta = hasPollUpdate && structuralShare !== null ? share - structuralShare : null;
                   return (
                     <tr key={row.county_fips} style={{ borderBottom: "1px solid var(--color-border)" }}>
                       <td style={{ padding: "5px 6px" }}>{row.county_name ?? row.county_fips}</td>
@@ -336,6 +436,18 @@ export function ForecastView() {
                       }}>
                         {(share * 100).toFixed(1)}%
                       </td>
+                      {hasPollUpdate && (
+                        <td style={{
+                          padding: "5px 6px", textAlign: "right", fontSize: "11px",
+                          color: delta === null ? "var(--color-text-muted)"
+                            : delta > 0.002 ? "var(--color-dem)"
+                            : delta < -0.002 ? "var(--color-rep)"
+                            : "var(--color-text-muted)",
+                        }}>
+                          {delta === null ? "—"
+                            : `${delta > 0 ? "+" : ""}${(delta * 100).toFixed(1)}`}
+                        </td>
+                      )}
                       <td style={{ padding: "5px 6px", textAlign: "right", color: "var(--color-text-muted)" }}>
                         {row.pred_lo90 !== null && row.pred_hi90 !== null
                           ? `${(row.pred_lo90 * 100).toFixed(0)}–${(row.pred_hi90 * 100).toFixed(0)}%`

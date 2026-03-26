@@ -6,7 +6,7 @@ import pandas as pd
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 
 from api.db import get_db
-from api.models import ForecastRow, MultiPollInput, MultiPollResponse, PollInput
+from api.models import ForecastRow, MultiPollInput, MultiPollResponse, PollInput, PollRow
 
 router = APIRouter(tags=["forecast"])
 
@@ -70,6 +70,48 @@ def get_forecast(
             poll_avg=None if pd.isna(row["poll_avg"]) else float(row["poll_avg"]),
         )
         for _, row in rows.iterrows()
+    ]
+
+
+@router.get("/forecast/races", response_model=list[str])
+def get_forecast_races(
+    request: Request,
+    db: duckdb.DuckDBPyConnection = Depends(get_db),
+):
+    """Return distinct race labels available in the predictions table, sorted."""
+    version_id = request.app.state.version_id
+    rows = db.execute(
+        "SELECT DISTINCT race FROM predictions WHERE version_id = ? ORDER BY race",
+        [version_id],
+    ).fetchall()
+    return [r[0] for r in rows]
+
+
+@router.get("/polls", response_model=list[PollRow])
+def get_polls(
+    race: str | None = Query(None, description="Filter by race label (e.g. '2026 FL Senate')"),
+    state: str | None = Query(None, description="Filter by state abbreviation (e.g. 'FL')"),
+    cycle: str = Query("2026", description="Poll cycle year"),
+):
+    """Return available polls from the poll CSV for a given race/state."""
+    from src.propagation.poll_weighting import load_polls_with_notes
+
+    try:
+        polls, _ = load_polls_with_notes(cycle, race=race, geography=state)
+    except FileNotFoundError:
+        return []
+
+    return [
+        PollRow(
+            race=p.race,
+            geography=p.geography,
+            geo_level=p.geo_level,
+            dem_share=p.dem_share,
+            n_sample=p.n_sample,
+            date=p.date or None,
+            pollster=p.pollster or None,
+        )
+        for p in polls
     ]
 
 
