@@ -57,6 +57,8 @@ COUNTY_ACS_FEATURES_PATH = PROJECT_ROOT / "data" / "assembled" / "county_acs_fea
 TYPE_PROFILES_PATH = PROJECT_ROOT / "data" / "communities" / "type_profiles.parquet"
 # Narrative generator (template-based, no LLM)
 from src.description.generate_narratives import generate_all_narratives  # noqa: E402
+from src.db.domains.model import ingest as ingest_model, create_tables as model_ddl  # noqa: E402
+from src.db.domains.polling import ingest as ingest_polling, create_tables as polling_ddl  # noqa: E402
 COUNTY_TYPE_ASSIGNMENTS_PATH = PROJECT_ROOT / "data" / "communities" / "county_type_assignments_full.parquet"
 SUPER_TYPES_PATH = PROJECT_ROOT / "data" / "communities" / "super_types.parquet"
 DEMOGRAPHICS_INTERPOLATED_PATH = PROJECT_ROOT / "data" / "assembled" / "demographics_interpolated.parquet"
@@ -662,9 +664,6 @@ def build(db_path: Path, reset: bool = False, project_root: Path | None = None) 
         log.info("No super_types.parquet found; skipping")
 
     # ── Domain ingest ────────────────────────────────────────────────────────
-    from src.db.domains.model import ingest as ingest_model, create_tables as model_ddl
-    from src.db.domains.polling import ingest as ingest_polling, create_tables as polling_ddl
-
     model_ddl(con)
     polling_ddl(con)
 
