@@ -143,9 +143,11 @@ _VOCAB: list[tuple[str, float, str, str]] = [
     ("pct_black",               Z_MOD,  "Black-Belt",     ""),
     ("pct_hispanic",            Z_MOD,  "Hispanic",       ""),
 
-    # Urbanicity / density
+    # Urbanicity / density / transit
     ("log_pop_density",         Z_HIGH, "Urban",        "Deep-Rural"),
+    ("pct_transit",             Z_HIGH, "Transit-Hub",  ""),
     ("log_pop_density",         Z_MOD,  "Suburban",     "Rural"),
+    ("pct_transit",             Z_MOD,  "Transit",      ""),
 
     # Religion — ordered to maximise differentiation:
     # 1. Evangelical Z_HIGH: identifies the dominant rural Protestant bloc
