@@ -1,4 +1,4 @@
-"""Build a consolidated national county features file joining ACS + RCMS + QCEW + CHR + Migration + Urbanicity + SCI.
+"""Build a consolidated national county features file joining ACS + RCMS + QCEW + CHR + Migration + Urbanicity + SCI + Broadband.
 
 Reads:
     data/assembled/county_acs_features.parquet         (3,144 counties × 15 cols)
@@ -8,9 +8,13 @@ Reads:
     data/assembled/county_migration_features.parquet   (3,127 counties × 5 cols)
     data/assembled/county_urbanicity_features.parquet  (3,135 counties × 4 cols)
     data/assembled/county_sci_features.parquet         (3,200+ counties × 5 cols)
+    data/assembled/county_broadband_features.parquet   (3,100+ counties × 6 cols)
 
 Outputs:
-    data/assembled/county_features_national.parquet  (3,100+ counties × ~55 cols)
+    data/assembled/county_features_national.parquet  (3,100+ counties × ~60 cols)
+
+Broadband features (from build_acs_broadband_features.py; ACS B28002):
+    pct_broadband, pct_no_internet, pct_satellite, pct_cable_fiber, broadband_gap
 
 Derived ACS features (from build_county_acs_features.py):
     pct_white_nh, pct_black, pct_asian, pct_hispanic
@@ -62,6 +66,7 @@ CHR_PATH = PROJECT_ROOT / "data" / "assembled" / "county_health_features.parquet
 MIGRATION_PATH = PROJECT_ROOT / "data" / "assembled" / "county_migration_features.parquet"
 URBANICITY_PATH = PROJECT_ROOT / "data" / "assembled" / "county_urbanicity_features.parquet"
 SCI_PATH = PROJECT_ROOT / "data" / "assembled" / "county_sci_features.parquet"
+BROADBAND_PATH = PROJECT_ROOT / "data" / "assembled" / "county_broadband_features.parquet"
 OUTPUT_PATH = PROJECT_ROOT / "data" / "assembled" / "county_features_national.parquet"
 
 RCMS_FEATURE_COLS = [
@@ -128,6 +133,15 @@ CHR_FEATURE_COLS = [
     "poor_mental_health_days",
 ]
 
+# Broadband / internet access features (ACS B28002)
+BROADBAND_FEATURE_COLS = [
+    "pct_broadband",
+    "pct_no_internet",
+    "pct_satellite",
+    "pct_cable_fiber",
+    "broadband_gap",
+]
+
 
 def _impute_state_medians(df: pd.DataFrame, cols: list[str]) -> pd.DataFrame:
     """Impute NaN values in cols using state-level medians (state derived from county_fips).
@@ -181,8 +195,9 @@ def build_national_features(
     migration: pd.DataFrame | None = None,
     urbanicity: pd.DataFrame | None = None,
     sci: pd.DataFrame | None = None,
+    broadband: pd.DataFrame | None = None,
 ) -> pd.DataFrame:
-    """Join ACS, RCMS, QCEW, CHR, Migration, Urbanicity, and SCI county features into a single national DataFrame.
+    """Join ACS, RCMS, QCEW, CHR, Migration, Urbanicity, SCI, and Broadband county features.
 
     Parameters
     ----------
@@ -191,8 +206,8 @@ def build_national_features(
     rcms:
         Output of build_features.py RCMS section — county_fips + state_abbr + 6 RCMS cols.
     qcew:
-        Output of build_qcew_features.py — county_fips × year rows (12,768) with 8 industry
-        share features. Aggregated to 2023 (latest year) inside this function. Optional.
+        Output of build_qcew_features.py — county_fips × year rows with 8 industry share
+        features. Aggregated to the latest available year inside this function. Optional.
     chr_df:
         Output of build_county_health_features.py — county_fips + 15 CHR health features.
         metadata cols (state_abbr, data_year) and ACS-overlap cols are dropped. Optional.
@@ -205,13 +220,17 @@ def build_national_features(
     sci:
         Output of build_sci_features.py — county_fips + 4 SCI social connectedness features.
         Optional.
+    broadband:
+        Output of build_acs_broadband_features.py — county_fips + 5 broadband features
+        (pct_broadband, pct_no_internet, pct_satellite, pct_cable_fiber, broadband_gap).
+        Optional.
 
     Returns
     -------
     DataFrame with county_fips, pop_total, 13 ACS ratio features, 6 RCMS features,
     8 QCEW industry-mix features (if provided), 15 CHR health features (if provided),
-    4 migration features (if provided), 3 urbanicity features (if provided), and
-    4 SCI features (if provided).
+    4 migration features (if provided), 3 urbanicity features (if provided),
+    4 SCI features (if provided), and 5 broadband features (if provided).
     Missing values for all joined sources are imputed with state-level medians.
     """
     # Validate FIPS format
@@ -316,6 +335,22 @@ def build_national_features(
             )
             merged = _impute_state_medians(merged, SCI_FEATURE_COLS)
 
+    # ── Broadband / internet access features ────────────────────────────────
+    if broadband is not None:
+        if not broadband["county_fips"].str.len().eq(5).all():
+            raise ValueError("Broadband county_fips must be 5-char zero-padded strings")
+
+        bb_cols = ["county_fips"] + BROADBAND_FEATURE_COLS
+        merged = merged.merge(broadband[bb_cols], on="county_fips", how="left")
+
+        n_missing_bb = merged[BROADBAND_FEATURE_COLS[0]].isna().sum()
+        if n_missing_bb > 0:
+            log.info(
+                "%d counties lack broadband data — imputing with state-level medians",
+                n_missing_bb,
+            )
+            merged = _impute_state_medians(merged, BROADBAND_FEATURE_COLS)
+
     return merged.reset_index(drop=True)
 
 
@@ -373,7 +408,19 @@ def main() -> None:
     else:
         log.warning("SCI features not found at %s — skipping", SCI_PATH)
 
-    features = build_national_features(acs, rcms, qcew=qcew, chr_df=chr_df, migration=migration, urbanicity=urbanicity, sci=sci)
+    # Load Broadband features if available
+    broadband: pd.DataFrame | None = None
+    if BROADBAND_PATH.exists():
+        log.info("Loading Broadband county features from %s", BROADBAND_PATH)
+        broadband = pd.read_parquet(BROADBAND_PATH)
+        log.info("  %d counties × %d cols", len(broadband), len(broadband.columns))
+    else:
+        log.warning("Broadband features not found at %s — skipping", BROADBAND_PATH)
+
+    features = build_national_features(
+        acs, rcms, qcew=qcew, chr_df=chr_df,
+        migration=migration, urbanicity=urbanicity, sci=sci, broadband=broadband,
+    )
 
     n_na_any = features.isnull().any(axis=1).sum()
     log.info(
@@ -402,7 +449,8 @@ def main() -> None:
     # Summary stats for key features
     log.info("\nFeature summary (all counties):")
     summary_cols = ["pct_white_nh", "pct_black", "pct_hispanic", "pct_bachelors_plus",
-                    "median_hh_income", "evangelical_share", "catholic_share"]
+                    "median_hh_income", "evangelical_share", "catholic_share",
+                    "pct_broadband", "pct_no_internet"]
     for col in summary_cols:
         if col not in features.columns:
             continue
