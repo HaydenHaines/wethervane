@@ -27,6 +27,47 @@ function getLean(share: number) {
   return LEAN_LABELS[LEAN_LABELS.length - 1];
 }
 
+/** Standard normal CDF via Abramowitz & Stegun approximation (error < 7.5e-8). */
+function normCdf(x: number): number {
+  const t = 1 / (1 + 0.2315419 * Math.abs(x));
+  const d = 0.3989423 * Math.exp((-x * x) / 2);
+  const p =
+    d *
+    t *
+    (0.3193815 +
+      t * (-0.3565638 + t * (1.7814779 + t * (-1.8212560 + t * 1.3302744))));
+  return x > 0 ? 1 - p : p;
+}
+
+/**
+ * Anchoring comparisons — maps a win probability to a familiar analog.
+ * Thresholds are midpoints between the actual anchor values so each bucket
+ * maps to the closest familiar probability (snake eyes ≈97%, die face ≈17%, etc.).
+ */
+const PROB_ANCHORS: Array<{ min: number; text: string }> = [
+  { min: 0.90, text: "about as certain as not rolling snake eyes" },     // anchor ≈ 97%
+  { min: 0.79, text: "about as likely as not rolling a 1 on a die" },   // anchor ≈ 83%
+  { min: 0.62, text: "about as likely as not drawing a spade" },         // anchor = 75%
+  { min: 0.38, text: "about as certain as a coin flip" },                // anchor = 50%
+  { min: 0.21, text: "about as likely as drawing a spade" },             // anchor = 25%
+  { min: 0.12, text: "about as likely as rolling a 1 on a die" },       // anchor ≈ 17%
+  { min: 0,    text: "about as likely as drawing an ace from a deck" },  // anchor ≈ 8%
+];
+
+function getAnchor(p: number): string {
+  for (const { min, text } of PROB_ANCHORS) {
+    if (p >= min) return text;
+  }
+  return PROB_ANCHORS[PROB_ANCHORS.length - 1].text;
+}
+
+function formatWins(p: number): string {
+  const wins = Math.round(p * 100);
+  if (wins <= 0) return "less than 1 of 100 simulations";
+  if (wins >= 100) return "more than 99 of 100 simulations";
+  return `${wins} of 100 simulations`;
+}
+
 function SectionHeader({
   title,
   disabled,
@@ -210,6 +251,15 @@ export function ForecastView() {
       : null;
   const lean = statePred !== null ? getLean(statePred) : null;
 
+  // Win probability: P(D > 0.5) = Φ((μ − 0.5) / σ)
+  // Use mean county pred_std as state-level uncertainty; fall back to 0.05 if unavailable.
+  const stateStd = stateRows.length > 0
+    ? stateRows.reduce((sum, r) => sum + (r.pred_std ?? 0.05), 0) / stateRows.length
+    : 0.05;
+  const winProb = statePred !== null && stateStd > 0
+    ? normCdf((statePred - 0.5) / stateStd)
+    : null;
+
   // Delta lookup: structural prediction per county for delta column
   const structuralMap = useMemo(
     () => new Map(structuralRows.map((r) => [r.county_fips, r.pred_dem_share])),
@@ -382,7 +432,7 @@ export function ForecastView() {
       </button>
 
       {/* ── State Summary ───────────────────────────────────────────── */}
-      {statePred !== null && lean && (
+      {statePred !== null && lean && winProb !== null && (
         <div style={{
           padding: "10px 12px",
           border: "1px solid var(--color-border)",
@@ -390,14 +440,44 @@ export function ForecastView() {
           marginBottom: "12px",
           borderLeft: `4px solid ${lean.color}`,
         }}>
+          {/* Lean label */}
           <div style={{ fontFamily: "var(--font-serif)", fontSize: "18px", fontWeight: "700" }}>
             {lean.label}
           </div>
-          <div style={{ fontSize: "12px", color: "var(--color-text-muted)", marginTop: "2px" }}>
-            {selectedState} projected Dem share: {(statePred * 100).toFixed(1)}%
+
+          {/* Natural frequency */}
+          <div style={{ fontSize: "12px", marginTop: "5px" }}>
+            <span style={{ color: winProb >= 0.5 ? "var(--color-dem)" : "var(--color-rep)", fontWeight: 600 }}>
+              Dem wins in {formatWins(winProb)}
+            </span>
           </div>
-          <div style={{ fontSize: "11px", color: "var(--color-text-muted)", marginTop: "2px" }}>
-            {selectedRace} · {hasPollUpdate ? `${polls.length} poll${polls.length !== 1 ? "s" : ""} incorporated` : "Model prior only"}
+
+          {/* Probability bar */}
+          <div style={{ position: "relative", height: "6px", background: "#f5d0ca", borderRadius: "3px", margin: "7px 0 4px" }}>
+            <div style={{
+              position: "absolute", left: 0, top: 0, bottom: 0,
+              width: `${(winProb * 100).toFixed(1)}%`,
+              background: "#2166ac",
+              borderRadius: "3px",
+              transition: "width 0.4s ease",
+            }} />
+            {/* 50% toss-up marker */}
+            <div style={{
+              position: "absolute", left: "50%", top: "-3px", bottom: "-3px",
+              width: "1px", background: "#666", opacity: 0.4,
+            }} />
+          </div>
+
+          {/* Anchoring comparison */}
+          <div style={{ fontSize: "11px", color: "var(--color-text-muted)", fontStyle: "italic", marginBottom: "6px" }}>
+            {getAnchor(winProb)}
+          </div>
+
+          {/* Secondary: projected share + source */}
+          <div style={{ fontSize: "11px", color: "var(--color-text-muted)", borderTop: "1px solid var(--color-border)", paddingTop: "5px" }}>
+            {selectedState} avg Dem share: {(statePred * 100).toFixed(1)}%
+            &nbsp;·&nbsp;
+            {hasPollUpdate ? `${polls.length} poll${polls.length !== 1 ? "s" : ""} incorporated` : "model prior"}
           </div>
         </div>
       )}
