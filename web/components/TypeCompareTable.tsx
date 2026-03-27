@@ -74,6 +74,7 @@ function TypeSelect({ types, value, onChange, placeholder }: TypeSelectProps) {
     <select
       value={value ?? ""}
       onChange={(e) => onChange(e.target.value === "" ? null : Number(e.target.value))}
+      aria-label={placeholder}
       style={{
         width: "100%",
         padding: "5px 8px",

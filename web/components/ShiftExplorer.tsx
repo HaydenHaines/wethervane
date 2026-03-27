@@ -406,6 +406,7 @@ export function ShiftExplorer() {
                 value={xKey}
                 onChange={(e) => setXKey(e.target.value)}
                 style={selectStyle}
+                aria-label="X-axis variable"
               >
                 <optgroup label="Demographics">
                   {DEMO_KEYS.map(({ key, label }) => (
@@ -427,6 +428,7 @@ export function ShiftExplorer() {
                 value={resolvedYKey}
                 onChange={(e) => setYKey(e.target.value)}
                 style={selectStyle}
+                aria-label="Y-axis variable"
               >
                 {shiftKeys.length > 0 && (
                   <optgroup label="Shifts">

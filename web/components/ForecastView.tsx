@@ -349,8 +349,9 @@ export function ForecastView() {
       {/* ── Sequential Controls ────────────────────────────────────── */}
       <div style={{ marginBottom: "14px" }}>
         <div style={{ marginBottom: "8px" }}>
-          <label style={labelStyle}>State</label>
+          <label style={labelStyle} htmlFor="forecast-state">State</label>
           <select
+            id="forecast-state"
             value={selectedState}
             onChange={(e) => setSelectedState(e.target.value)}
             style={dropdownStyle}
@@ -362,15 +363,16 @@ export function ForecastView() {
         </div>
 
         <div style={{ marginBottom: "8px" }}>
-          <label style={labelStyle}>Year</label>
-          <select value={YEAR} disabled style={{ ...dropdownStyle, color: "var(--color-text-muted)" }}>
+          <label style={labelStyle} htmlFor="forecast-year">Year</label>
+          <select id="forecast-year" value={YEAR} disabled style={{ ...dropdownStyle, color: "var(--color-text-muted)" }}>
             <option value={YEAR}>{YEAR}</option>
           </select>
         </div>
 
         <div>
-          <label style={labelStyle}>Election</label>
+          <label style={labelStyle} htmlFor="forecast-election">Election</label>
           <select
+            id="forecast-election"
             value={selectedRace}
             onChange={(e) => setSelectedRace(e.target.value)}
             style={dropdownStyle}
