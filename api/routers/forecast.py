@@ -195,8 +195,8 @@ def get_race_detail(
             AVG(p.pred_dem_share) AS mean_pred_dem_share
         FROM predictions p
         JOIN counties c ON p.county_fips = c.county_fips
-        JOIN county_type_assignments cta ON p.county_fips = cta.county_fips AND cta.version_id = p.version_id
-        JOIN types t ON cta.dominant_type = t.type_id AND t.version_id = p.version_id
+        JOIN county_type_assignments cta ON p.county_fips = cta.county_fips
+        JOIN types t ON cta.dominant_type = t.type_id
         WHERE p.version_id = ? AND p.race = ? AND c.state_abbr = ?
         GROUP BY cta.dominant_type, t.display_name
         ORDER BY COUNT(*) DESC
