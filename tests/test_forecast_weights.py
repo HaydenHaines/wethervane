@@ -82,3 +82,42 @@ def test_poll_n_scaling(mock_model):
     shift_full = abs(result_full["pred_dem_share"].mean() - 0.45)
     shift_scaled = abs(result_scaled["pred_dem_share"].mean() - 0.45)
     assert shift_full > shift_scaled
+
+
+def test_section_weights_model():
+    """Verify SectionWeights model has correct defaults and validation."""
+    from api.models import SectionWeights, MultiPollInput
+
+    # Defaults
+    sw = SectionWeights()
+    assert sw.model_prior == 1.0
+    assert sw.state_polls == 1.0
+    assert sw.national_polls == 1.0
+
+    # Custom values
+    sw2 = SectionWeights(model_prior=0.5, state_polls=1.5)
+    assert sw2.model_prior == 0.5
+    assert sw2.state_polls == 1.5
+
+    # Embedded in MultiPollInput with defaults
+    mpi = MultiPollInput(cycle="2026", state="FL")
+    assert mpi.section_weights.model_prior == 1.0
+
+    # Embedded with custom weights
+    mpi2 = MultiPollInput(
+        cycle="2026", state="FL",
+        section_weights=SectionWeights(model_prior=0.3),
+    )
+    assert mpi2.section_weights.model_prior == 0.3
+
+
+def test_higher_prior_weight_anchors_closer(mock_model):
+    """Higher model_prior weight should keep predictions closer to the prior."""
+    polls = [(0.60, 500, "AL")]
+    mean_prior = mock_model["county_priors"].mean()  # 0.45
+    result_low = predict_race(race="test", polls=polls, prior_weight=0.3, **mock_model)
+    result_high = predict_race(race="test", polls=polls, prior_weight=1.5, **mock_model)
+    shift_low = abs(result_low["pred_dem_share"].mean() - mean_prior)
+    shift_high = abs(result_high["pred_dem_share"].mean() - mean_prior)
+    # Higher prior weight → less shift from baseline
+    assert shift_high < shift_low
