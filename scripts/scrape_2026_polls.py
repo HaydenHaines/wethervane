@@ -1,13 +1,17 @@
 """
 Scrape 2026 election polls from Wikipedia and 270toWin.
 
-Dual-source scraper targeting FL, GA, AL governor and Senate races.
+Dual-source scraper covering all 18 tracked 2026 races:
+  Governor: AL, FL, GA, MI, OH, PA, TX, WI
+  Senate: AL, FL, GA, IA, ME, MI, MN, NC, NH, OR
+
 Outputs to data/polls/polls_2026.csv in the project's standard schema.
 
 Usage:
     uv run python scripts/scrape_2026_polls.py
     uv run python scripts/scrape_2026_polls.py --dry-run
     uv run python scripts/scrape_2026_polls.py --races "FL Governor,GA Senate"
+    uv run python scripts/scrape_2026_polls.py --dry-run --races "MI Senate,NC Senate"
 """
 
 from __future__ import annotations

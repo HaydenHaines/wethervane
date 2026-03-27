@@ -599,7 +599,23 @@ class TestRaceConfig:
             assert len(cfg["rep_candidates"]) > 0, f"{label} has empty rep_candidates"
 
     def test_races_configured(self):
-        assert len(RACE_CONFIG) >= 6  # At least the original 6 + national races
+        assert len(RACE_CONFIG) == 18  # 8 governor + 10 senate races
+
+    def test_all_18_races_present(self):
+        """All 18 tracked races must be configured in RACE_CONFIG."""
+        expected = {
+            # Original 6
+            "2026 FL Governor", "2026 FL Senate",
+            "2026 GA Governor", "2026 GA Senate",
+            "2026 AL Governor", "2026 AL Senate",
+            # 12 national competitive races added in S213
+            "2026 IA Senate", "2026 ME Senate",
+            "2026 MI Senate", "2026 MN Senate",
+            "2026 NC Senate", "2026 NH Senate", "2026 OR Senate",
+            "2026 MI Governor", "2026 OH Governor",
+            "2026 PA Governor", "2026 TX Governor", "2026 WI Governor",
+        }
+        assert expected == set(RACE_CONFIG.keys())
 
     def test_states_are_valid(self):
         valid_states = {
