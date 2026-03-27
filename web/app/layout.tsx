@@ -13,6 +13,13 @@ export const metadata: Metadata = {
   ),
   title: "WetherVane — 2026 Electoral Forecast",
   description: "Community-based electoral forecasting for the 2026 midterms",
+  alternates: {
+    types: {
+      "application/rss+xml": [
+        { url: "/feed.xml", title: "WetherVane Forecast Updates" },
+      ],
+    },
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
