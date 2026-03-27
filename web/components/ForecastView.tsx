@@ -121,6 +121,48 @@ function SectionHeader({
   );
 }
 
+function WeightSlider({
+  label,
+  value,
+  onChange,
+}: {
+  label: string;
+  value: number;
+  onChange: (v: number) => void;
+}) {
+  return (
+    <div style={{
+      display: "flex",
+      alignItems: "center",
+      gap: "8px",
+      padding: "6px 10px",
+      fontSize: "12px",
+    }}>
+      <span style={{ color: "var(--color-text-muted)", minWidth: "50px" }}>
+        {label}
+      </span>
+      <input
+        type="range"
+        min={0}
+        max={200}
+        value={Math.round(value * 100)}
+        onChange={(e) => onChange(parseInt(e.target.value) / 100)}
+        style={{ flex: 1, height: "4px", accentColor: "#2166ac" }}
+      />
+      <span style={{
+        fontFamily: "var(--font-mono, monospace)",
+        fontSize: "11px",
+        minWidth: "32px",
+        textAlign: "right",
+        color: value === 1.0 ? "var(--color-text-muted)" : "#333",
+        fontWeight: value === 1.0 ? "normal" : 600,
+      }}>
+        {(value * 100).toFixed(0)}%
+      </span>
+    </div>
+  );
+}
+
 /** Extract 2-char state abbreviation from a race label.
  * Handles the actual API format: "2026 FL Senate", "2026 GA Governor".
  * Walks whitespace-delimited tokens and returns the first all-uppercase 2-char token.
@@ -154,6 +196,8 @@ export function ForecastView() {
 
   const [modelPriorOpen, setModelPriorOpen] = useState(true);
   const [statePollsOpen, setStatePollsOpen] = useState(true);
+  const [modelPriorWeight, setModelPriorWeight] = useState(1.0);
+  const [statePollsWeight, setStatePollsWeight] = useState(1.0);
 
   const [selectedState, setSelectedState] = useState<string>("");
   const YEAR = "2026";
@@ -237,6 +281,11 @@ export function ForecastView() {
           cycle: YEAR,
           state: selectedState,
           race: selectedRace,
+          section_weights: {
+            model_prior: modelPriorWeight,
+            state_polls: statePollsWeight,
+            national_polls: 1.0,
+          },
         });
         rows = result.counties;
         setHasPollUpdate(true);
@@ -249,7 +298,7 @@ export function ForecastView() {
     } finally {
       setLoading(false);
     }
-  }, [selectedRace, selectedState, polls, setForecastChoropleth]);
+  }, [selectedRace, selectedState, polls, setForecastChoropleth, modelPriorWeight, statePollsWeight]);
 
   // Clean up choropleth when leaving
   useEffect(() => () => { setForecastChoropleth(null); setForecastState(null); }, []);
@@ -361,7 +410,7 @@ export function ForecastView() {
             lineHeight: "1.5",
           }}>
             Structural baseline from type covariance (Ridge+HGB ensemble, LOO r=0.671).
-            Predictions reflect 2024 presidential Dem share prior propagated through community type structure.
+            <WeightSlider label="Weight" value={modelPriorWeight} onChange={setModelPriorWeight} />
           </div>
         )}
 
@@ -415,6 +464,7 @@ export function ForecastView() {
                 </span>
               </div>
             ))}
+            <WeightSlider label="Weight" value={statePollsWeight} onChange={setStatePollsWeight} />
           </div>
         )}
       </div>

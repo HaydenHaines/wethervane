@@ -187,6 +187,11 @@ export async function feedMultiplePolls(body: {
   race?: string;
   half_life_days?: number;
   apply_quality?: boolean;
+  section_weights?: {
+    model_prior: number;
+    state_polls: number;
+    national_polls: number;
+  };
 }): Promise<MultiPollResponse> {
   const res = await fetch(`${API_BASE}/forecast/polls`, {
     method: "POST",
