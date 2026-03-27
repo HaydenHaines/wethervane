@@ -278,16 +278,36 @@ export default async function RaceDetailPage({ params }: PageProps) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       {/* Breadcrumb */}
-      <nav style={{
+      <nav aria-label="breadcrumb" style={{
         fontSize: 13,
         color: "var(--color-text-muted)",
         marginBottom: 24,
       }}>
-        <Link href="/forecast" style={{ color: "var(--color-dem)", textDecoration: "none" }}>
-          Forecast
-        </Link>
-        {" / "}
-        <span>{data.year} {data.state_abbr} {data.race_type}</span>
+        <ol style={{
+          listStyle: "none",
+          margin: 0,
+          padding: 0,
+          display: "flex",
+          flexWrap: "wrap",
+          alignItems: "center",
+          gap: "0 4px",
+        }}>
+          <li>
+            <Link href="/" style={{ color: "var(--color-dem)", textDecoration: "none" }}>
+              Home
+            </Link>
+          </li>
+          <li aria-hidden="true" style={{ userSelect: "none" }}>/</li>
+          <li>
+            <Link href="/forecast" style={{ color: "var(--color-dem)", textDecoration: "none" }}>
+              Forecast
+            </Link>
+          </li>
+          <li aria-hidden="true" style={{ userSelect: "none" }}>/</li>
+          <li aria-current="page">
+            {data.year} {stateName} {data.race_type}
+          </li>
+        </ol>
       </nav>
 
       {/* Header */}
