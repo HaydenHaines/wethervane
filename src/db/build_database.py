@@ -804,16 +804,28 @@ def main() -> None:
     args = parser.parse_args()
 
     # ── jemalloc auto-detection ────────────────────────────────────────────────
-    # If LD_PRELOAD doesn't already include jemalloc, try to find it and re-exec.
+    # DuckDB 1.5.x corrupts glibc's malloc heap after many large DataFrame
+    # inserts. We must verify jemalloc is *actually loaded* (not just that the
+    # env var is set) because `uv run` may not propagate LD_PRELOAD to the
+    # Python subprocess. A sentinel var prevents infinite re-exec loops.
+    SENTINEL = "_BUILD_DB_JEMALLOC_REEXEC"
     jemalloc_paths = [
         "/usr/lib/x86_64-linux-gnu/libjemalloc.so.2",
         "/usr/lib/libjemalloc.so.2",
         "/usr/local/lib/libjemalloc.so.2",
     ]
-    current_preload = os.environ.get("LD_PRELOAD", "")
-    jemalloc_active = any(p in current_preload for p in jemalloc_paths)
 
-    if not jemalloc_active:
+    def _jemalloc_actually_loaded() -> bool:
+        """Check /proc/self/maps to verify jemalloc is in the process address space."""
+        try:
+            maps = Path("/proc/self/maps").read_text()
+            return "libjemalloc" in maps
+        except OSError:
+            return False
+
+    already_reexeced = os.environ.get(SENTINEL) == "1"
+
+    if not _jemalloc_actually_loaded() and not already_reexeced:
         jemalloc_lib = next((p for p in jemalloc_paths if os.path.exists(p)), None)
         if jemalloc_lib:
             log.info(
@@ -821,7 +833,8 @@ def main() -> None:
                 jemalloc_lib,
             )
             env = os.environ.copy()
-            env["LD_PRELOAD"] = (current_preload + ":" + jemalloc_lib).lstrip(":")
+            env["LD_PRELOAD"] = jemalloc_lib
+            env[SENTINEL] = "1"
             result = subprocess.run([sys.executable] + sys.argv, env=env)
             sys.exit(result.returncode)
         else:
@@ -829,6 +842,13 @@ def main() -> None:
                 "jemalloc not found — DuckDB 1.5.x may crash with SIGABRT on large builds. "
                 "Install libjemalloc2 (apt install libjemalloc2) to fix this."
             )
+    elif _jemalloc_actually_loaded():
+        log.info("jemalloc verified loaded in process address space")
+    elif already_reexeced:
+        log.warning(
+            "jemalloc re-exec attempted but jemalloc still not loaded — "
+            "proceeding without jemalloc (crash risk)"
+        )
 
     build(db_path=args.db, reset=args.reset)
 
