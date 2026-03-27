@@ -666,6 +666,91 @@ def holdout_accuracy_county_prior_loo(
     }
 
 
+# ── Per-super-type RMSE ───────────────────────────────────────────────────────
+
+RMSE_FLAG_THRESHOLD = 0.10
+
+
+def rmse_by_super_type(
+    actual: np.ndarray,
+    predicted: np.ndarray,
+    super_type_labels: np.ndarray,
+    super_type_names: dict[int, str] | None = None,
+    flag_threshold: float = RMSE_FLAG_THRESHOLD,
+) -> dict[str, float]:
+    """Compute RMSE broken down by super-type and flag high-error groups.
+
+    Groups counties by their assigned super-type and computes root-mean-squared
+    error for each group. Groups with RMSE above *flag_threshold* are flagged
+    with a warning log message, which aids in identifying poorly predicted
+    segments of the electorate.
+
+    Parameters
+    ----------
+    actual : ndarray of shape (N,)
+        True holdout shift values for each county.
+    predicted : ndarray of shape (N,)
+        Model-predicted shift values aligned with *actual*.
+    super_type_labels : ndarray of shape (N,) of int
+        Super-type assignment for each county (integer IDs).
+    super_type_names : dict[int, str] | None
+        Optional mapping from super-type ID to a display name.  If None,
+        keys in the returned dict are formatted as ``"super_type_{id}"``.
+    flag_threshold : float
+        RMSE value above which a super-type is flagged as poorly predicted.
+        Default 0.10 (10 pp log-odds shift).
+
+    Returns
+    -------
+    dict[str, float]
+        Keys are super-type names (or ``"super_type_{id}"`` fallbacks), values
+        are RMSE floats.  An empty dict is returned when *actual* is empty.
+    """
+    actual = np.asarray(actual, dtype=float)
+    predicted = np.asarray(predicted, dtype=float)
+    super_type_labels = np.asarray(super_type_labels)
+
+    if actual.size == 0:
+        return {}
+
+    if actual.shape != predicted.shape or actual.shape != super_type_labels.shape:
+        raise ValueError(
+            "actual, predicted, and super_type_labels must have the same shape; "
+            f"got {actual.shape}, {predicted.shape}, {super_type_labels.shape}"
+        )
+
+    unique_ids = np.unique(super_type_labels)
+    result: dict[str, float] = {}
+
+    for st_id in unique_ids:
+        mask = super_type_labels == st_id
+        if mask.sum() == 0:
+            continue
+
+        squared_errors = (actual[mask] - predicted[mask]) ** 2
+        rmse = float(np.sqrt(np.mean(squared_errors)))
+
+        # Resolve display name
+        if super_type_names is not None and st_id in super_type_names:
+            name = super_type_names[int(st_id)]
+        else:
+            name = f"super_type_{int(st_id)}"
+
+        result[name] = rmse
+
+        if rmse > flag_threshold:
+            log.warning(
+                "High RMSE for super-type '%s' (id=%d, n=%d): %.4f > %.4f threshold",
+                name,
+                int(st_id),
+                int(mask.sum()),
+                rmse,
+                flag_threshold,
+            )
+
+    return result
+
+
 # ── Report generator ──────────────────────────────────────────────────────────
 
 
@@ -819,6 +904,64 @@ def generate_type_validation_report(
         include_county_mean=True,
     )
 
+    # --- Per-super-type RMSE (county-level prior, first holdout dim) ---
+    rmse_super_type: dict[str, float] | None = None
+    super_type_names_map: dict[int, str] | None = None
+
+    # Load super-type display names if available
+    super_types_parquet = PROJECT_ROOT / "data" / "communities" / "super_types.parquet"
+    if super_types_parquet.exists():
+        try:
+            st_df = pd.read_parquet(super_types_parquet)
+            if "super_type_id" in st_df.columns and "display_name" in st_df.columns:
+                super_type_names_map = dict(zip(st_df["super_type_id"], st_df["display_name"]))
+        except Exception as e:
+            log.warning("Could not load super_types.parquet: %s", e)
+
+    def _compute_super_type_rmse(st_labels_int: np.ndarray) -> dict[str, float] | None:
+        """Helper: re-derive county-prior predictions for first holdout dim."""
+        if not holdout_indices:
+            return None
+        first_holdout = holdout_indices[0]
+        actual_h = full_matrix[:, first_holdout]
+        abs_sc = np.abs(scores)
+        rs = abs_sc.sum(axis=1, keepdims=True)
+        rs = np.where(rs == 0, 1.0, rs)
+        wts = abs_sc / rs
+        wt_sums = wts.sum(axis=0)
+        wt_sums = np.where(wt_sums == 0, 1.0, wt_sums)
+        tr_data = full_matrix[:, training_indices]
+        c_train_means = tr_data.mean(axis=1)
+        type_train_means = (wts.T @ c_train_means) / wt_sums
+        type_hold_means = (wts.T @ actual_h) / wt_sums
+        type_adj = type_hold_means - type_train_means
+        c_adj = (wts * type_adj[None, :]).sum(axis=1)
+        predicted_h = c_train_means + c_adj
+        return rmse_by_super_type(
+            actual_h, predicted_h, st_labels_int,
+            super_type_names=super_type_names_map,
+        )
+
+    if "super_type" in assignments_df.columns:
+        try:
+            if "county_fips" in assignments_df.columns and "county_fips" in shifts_df.columns:
+                st_series = assignments_df.set_index("county_fips")["super_type"]
+                shifts_fips_st = shifts_df["county_fips"].values
+                st_labels_aligned = st_series.reindex(shifts_fips_st).values
+                if not np.any(np.isnan(st_labels_aligned.astype(float))):
+                    log.info("Running rmse_by_super_type (FIPS-aligned)...")
+                    rmse_super_type = _compute_super_type_rmse(st_labels_aligned.astype(int))
+                else:
+                    log.warning("rmse_by_super_type: some counties missing super_type; skipping")
+            else:
+                # Use row order directly (no FIPS available)
+                log.info("Running rmse_by_super_type (row-aligned)...")
+                rmse_super_type = _compute_super_type_rmse(
+                    assignments_df["super_type"].values.astype(int)
+                )
+        except Exception as e:
+            log.warning("rmse_by_super_type failed: %s", e)
+
     # --- Covariance validation (if data available) ---
     cov_path = resolve(type_covariance_path)
     cov_validation_r: float | None = None
@@ -863,6 +1006,7 @@ def generate_type_validation_report(
         "holdout_accuracy_ridge": accuracy_ridge,
         "holdout_accuracy_ridge_augmented": accuracy_ridge_augmented,
         "covariance_validation_r": cov_validation_r,
+        "rmse_by_super_type": rmse_super_type,
         "j": j,
         "n_counties": int(full_matrix.shape[0]),
         "n_training_dims": n_train,
@@ -905,6 +1049,12 @@ def generate_type_validation_report(
         print("  Ridge+Demo LOO r:       N/A  (demographics file missing or FIPS unavailable)")
     if cov_validation_r is not None:
         print(f"  Covariance val r:       {cov_validation_r:.3f}  (> 0.4 = acceptable)")
+    if rmse_super_type is not None:
+        print()
+        print(f"  RMSE by super-type  (threshold: {RMSE_FLAG_THRESHOLD:.2f} = flagged):")
+        for st_name, st_rmse in sorted(rmse_super_type.items()):
+            flag = "  *** HIGH ***" if st_rmse > RMSE_FLAG_THRESHOLD else ""
+            print(f"    {st_name:<32s}  {st_rmse:.4f}{flag}")
     print("=" * 65)
 
     # Save JSON report
