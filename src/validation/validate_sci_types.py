@@ -496,6 +496,9 @@ def fetch_county_centroids(output_path: Path) -> pd.DataFrame:
         with zf.open(txt_name) as f:
             raw = pd.read_csv(f, sep="\t", dtype={"GEOID": str})
 
+    # Census gazetteer has trailing whitespace in column names
+    raw.columns = raw.columns.str.strip()
+
     # Standardize columns
     centroids = pd.DataFrame({
         "county_fips": raw["GEOID"].str.zfill(5),
