@@ -783,10 +783,14 @@ def build(db_path: Path, reset: bool = False, project_root: Path | None = None) 
     if errors:
         for e in errors:
             log.error("CONTRACT VIOLATION: %s", e)
-        con.close()
+        del con
+        gc.collect()
         sys.exit(1)
     log.info("Contract validation passed")
-    con.close()
+    # Use `del con` (not close()) — close() crashes on corrupted glibc heap.
+    # See S204/S246 for DuckDB 1.5.x malloc bug context.
+    del con
+    gc.collect()
 
 
 def main() -> None:
