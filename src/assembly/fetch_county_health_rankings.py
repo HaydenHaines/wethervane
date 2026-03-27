@@ -110,6 +110,22 @@ CHR_MEASURES: dict[str, str] = {
     "v085_rawvalue": "life_expectancy",
     "v060_rawvalue": "diabetes_prevalence_pct",
     "v036_rawvalue": "poor_mental_health_days",
+    # === New measures added S243 — high electoral signal ===
+    "v138_rawvalue": "drug_overdose_deaths_rate",
+    "v161_rawvalue": "suicide_rate",
+    "v148_rawvalue": "firearm_fatalities_rate",
+    "v139_rawvalue": "food_insecurity_pct",
+    "v140_rawvalue": "social_associations_rate",
+    "v177_rawvalue": "voter_turnout_pct",
+    "v149_rawvalue": "disconnected_youth_pct",
+    "v141_rawvalue": "residential_segregation",
+    "v153_rawvalue": "homeownership_pct",
+    "v178_rawvalue": "census_participation_pct",
+    "v065_rawvalue": "free_reduced_lunch_pct",
+    "v134_rawvalue": "alcohol_impaired_driving_deaths_pct",
+    "v135_rawvalue": "injury_deaths_rate",
+    "v082_rawvalue": "single_parent_households_pct",
+    "v015_rawvalue": "homicide_rate",
 }
 
 # Output column names (in order)
