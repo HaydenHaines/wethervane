@@ -47,6 +47,7 @@ dependencies = [
     "pydantic>=2.0",
     "hdbscan>=0.8.41",
     "httpx>=0.28.1",
+    "ruff>=0.15.6",
 ]
 
 [project.optional-dependencies]
@@ -86,5 +87,8 @@ build-backend = "setuptools.build_meta"
 
 [dependency-groups]
 dev = [
+    "fastapi>=0.110.0",
+    "httpx>=0.27.0",
     "pytest>=9.0.2",
+    "uvicorn[standard]>=0.29.0",
 ]

@@ -6,7 +6,16 @@ import pandas as pd
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 
 from api.db import get_db
-from api.models import ForecastRow, MultiPollInput, MultiPollResponse, PollInput, PollRow
+from api.models import (
+    ForecastRow,
+    MultiPollInput,
+    MultiPollResponse,
+    PollInput,
+    PollRow,
+    RaceDetail,
+    RacePoll,
+    TypeBreakdown,
+)
 
 router = APIRouter(tags=["forecast"])
 
@@ -85,6 +94,138 @@ def get_forecast_races(
         [version_id],
     ).fetchall()
     return [r[0] for r in rows]
+
+
+def race_to_slug(race: str) -> str:
+    """Convert race label to URL slug. "2026 FL Governor" → "2026-fl-governor"."""
+    return race.lower().replace(" ", "-")
+
+
+def slug_to_race(slug: str) -> str:
+    """Convert URL slug back to race label. "2026-fl-governor" → "2026 FL Governor"."""
+    parts = slug.split("-")
+    if len(parts) < 3:
+        return slug
+    year = parts[0]
+    state = parts[1].upper()
+    race_type = " ".join(p.capitalize() for p in parts[2:])
+    return f"{year} {state} {race_type}"
+
+
+@router.get("/forecast/race-slugs", response_model=list[str])
+def get_race_slugs(
+    request: Request,
+    db: duckdb.DuckDBPyConnection = Depends(get_db),
+) -> list[str]:
+    """Return URL slugs for all non-baseline races (for sitemap / generateStaticParams)."""
+    version_id = request.app.state.version_id
+    rows = db.execute(
+        "SELECT DISTINCT race FROM predictions WHERE version_id = ? AND race != 'baseline' ORDER BY race",
+        [version_id],
+    ).fetchall()
+    return [race_to_slug(r[0]) for r in rows]
+
+
+@router.get("/forecast/race/{slug}", response_model=RaceDetail)
+def get_race_detail(
+    slug: str,
+    request: Request,
+    db: duckdb.DuckDBPyConnection = Depends(get_db),
+) -> RaceDetail:
+    """Return state-level prediction, polls, and type breakdown for a single race."""
+    version_id = request.app.state.version_id
+    race = slug_to_race(slug)
+
+    # Validate the race exists
+    exists = db.execute(
+        "SELECT COUNT(*) FROM predictions WHERE version_id = ? AND race = ?",
+        [version_id, race],
+    ).fetchone()
+    if not exists or exists[0] == 0:
+        raise HTTPException(status_code=404, detail=f"Race '{race}' not found")
+
+    # Parse state_abbr and race_type from slug parts
+    parts = slug.split("-")
+    state_abbr = parts[1].upper() if len(parts) >= 2 else "??"
+    race_type = " ".join(p.capitalize() for p in parts[2:]) if len(parts) >= 3 else "Unknown"
+    year = int(parts[0]) if parts[0].isdigit() else 2026
+
+    # State-level prediction: mean of county pred_dem_share for this race+state
+    pred_row = db.execute(
+        """
+        SELECT AVG(p.pred_dem_share) AS state_pred, COUNT(*) AS n_counties
+        FROM predictions p
+        JOIN counties c ON p.county_fips = c.county_fips
+        WHERE p.version_id = ? AND p.race = ? AND c.state_abbr = ?
+        """,
+        [version_id, race, state_abbr],
+    ).fetchone()
+
+    prediction = None if (pred_row is None or pred_row[0] is None) else float(pred_row[0])
+    n_counties = int(pred_row[1]) if pred_row else 0
+
+    # Polls for this race
+    polls_df = db.execute(
+        """
+        SELECT date, pollster, dem_share, n_sample
+        FROM polls
+        WHERE cycle = ? AND LOWER(race) = LOWER(?)
+        ORDER BY date
+        """,
+        [str(year), race],
+    ).fetchdf()
+
+    polls: list[RacePoll] = [
+        RacePoll(
+            date=row["date"] if row["date"] else None,
+            pollster=row["pollster"] if row["pollster"] else None,
+            dem_share=float(row["dem_share"]),
+            n_sample=int(row["n_sample"]) if not pd.isna(row["n_sample"]) else None,
+        )
+        for _, row in polls_df.iterrows()
+    ]
+
+    # Type breakdown: top 5 types by county count in this state for this race
+    breakdown_df = db.execute(
+        """
+        SELECT
+            cta.dominant_type AS type_id,
+            t.display_name,
+            COUNT(*) AS n_counties,
+            AVG(p.pred_dem_share) AS mean_pred_dem_share
+        FROM predictions p
+        JOIN counties c ON p.county_fips = c.county_fips
+        JOIN county_type_assignments cta ON p.county_fips = cta.county_fips AND cta.version_id = p.version_id
+        JOIN types t ON cta.dominant_type = t.type_id AND t.version_id = p.version_id
+        WHERE p.version_id = ? AND p.race = ? AND c.state_abbr = ?
+        GROUP BY cta.dominant_type, t.display_name
+        ORDER BY COUNT(*) DESC
+        LIMIT 5
+        """,
+        [version_id, race, state_abbr],
+    ).fetchdf()
+
+    type_breakdown: list[TypeBreakdown] = [
+        TypeBreakdown(
+            type_id=int(row["type_id"]),
+            display_name=row["display_name"],
+            n_counties=int(row["n_counties"]),
+            mean_pred_dem_share=None if pd.isna(row["mean_pred_dem_share"]) else float(row["mean_pred_dem_share"]),
+        )
+        for _, row in breakdown_df.iterrows()
+    ]
+
+    return RaceDetail(
+        race=race,
+        slug=slug,
+        state_abbr=state_abbr,
+        race_type=race_type,
+        year=year,
+        prediction=prediction,
+        n_counties=n_counties,
+        polls=polls,
+        type_breakdown=type_breakdown,
+    )
 
 
 @router.get("/polls", response_model=list[PollRow])

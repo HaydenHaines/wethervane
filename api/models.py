@@ -174,6 +174,34 @@ class TypeScatterPoint(BaseModel):
     shift_profile: dict[str, float]
 
 
+# ── Race detail (SEO page) ───────────────────────────────────────────────
+
+class RacePoll(BaseModel):
+    date: str | None
+    pollster: str | None
+    dem_share: float
+    n_sample: int | None
+
+
+class TypeBreakdown(BaseModel):
+    type_id: int
+    display_name: str
+    n_counties: int
+    mean_pred_dem_share: float | None
+
+
+class RaceDetail(BaseModel):
+    race: str
+    slug: str
+    state_abbr: str
+    race_type: str
+    year: int
+    prediction: float | None
+    n_counties: int
+    polls: list[RacePoll]
+    type_breakdown: list[TypeBreakdown]
+
+
 # ── County detail (SEO page) ──────────────────────────────────────────────
 
 class SiblingCounty(BaseModel):

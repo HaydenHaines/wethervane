@@ -4182,6 +4182,7 @@ dependencies = [
     { name = "python-igraph" },
     { name = "pyyaml" },
     { name = "requests" },
+    { name = "ruff" },
     { name = "scikit-learn" },
     { name = "seaborn" },
     { name = "tqdm" },
@@ -4203,7 +4204,10 @@ dev = [
 
 [package.dev-dependencies]
 dev = [
+    { name = "fastapi" },
+    { name = "httpx" },
     { name = "pytest" },
+    { name = "uvicorn", extra = ["standard"] },
 ]
 
 [package.metadata]
@@ -4240,6 +4244,7 @@ requires-dist = [
     { name = "python-igraph", specifier = ">=0.11" },
     { name = "pyyaml", specifier = ">=6.0" },
     { name = "requests", specifier = ">=2.31" },
+    { name = "ruff", specifier = ">=0.15.6" },
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.3" },
     { name = "scikit-learn", specifier = ">=1.4" },
     { name = "seaborn", specifier = ">=0.13" },
@@ -4250,7 +4255,12 @@ requires-dist = [
 provides-extras = ["dev", "api", "graph-tool"]
 
 [package.metadata.requires-dev]
-dev = [{ name = "pytest", specifier = ">=9.0.2" }]
+dev = [
+    { name = "fastapi", specifier = ">=0.110.0" },
+    { name = "httpx", specifier = ">=0.27.0" },
+    { name = "pytest", specifier = ">=9.0.2" },
+    { name = "uvicorn", extras = ["standard"], specifier = ">=0.29.0" },
+]
 
 [[package]]
 name = "widgetsnbextension"

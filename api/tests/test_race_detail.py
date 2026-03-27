@@ -1,0 +1,351 @@
+"""Tests for /forecast/race/{slug} and /forecast/race-slugs endpoints.
+
+The test DB (from conftest.py) uses race="FL_Senate" which is the legacy format.
+We add a supplemental fixture that seeds the "2026 FL Senate" format races
+expected by the new slug-based endpoints.
+"""
+from __future__ import annotations
+
+import duckdb
+import numpy as np
+import pytest
+from fastapi.testclient import TestClient
+
+from api.main import create_app
+from api.routers.forecast import race_to_slug, slug_to_race
+from api.tests.conftest import _build_test_state, _noop_lifespan
+
+# ── Slug conversion unit tests ────────────────────────────────────────────
+
+class TestSlugConversion:
+    def test_race_to_slug_governor(self):
+        assert race_to_slug("2026 FL Governor") == "2026-fl-governor"
+
+    def test_race_to_slug_senate(self):
+        assert race_to_slug("2026 GA Senate") == "2026-ga-senate"
+
+    def test_race_to_slug_lowercase(self):
+        assert race_to_slug("2026 AL Governor") == "2026-al-governor"
+
+    def test_slug_to_race_governor(self):
+        assert slug_to_race("2026-fl-governor") == "2026 FL Governor"
+
+    def test_slug_to_race_senate(self):
+        assert slug_to_race("2026-ga-senate") == "2026 GA Senate"
+
+    def test_slug_roundtrip(self):
+        for race in ["2026 FL Governor", "2026 GA Senate", "2026 AL Governor"]:
+            assert slug_to_race(race_to_slug(race)) == race
+
+    def test_slug_to_race_too_short(self):
+        # Should not raise, just return slug unchanged
+        result = slug_to_race("short")
+        assert isinstance(result, str)
+
+
+# ── Fixture with 2026-format race data ────────────────────────────────────
+
+TEST_VERSION = "test_v1"
+TEST_FIPS_RACES = ["12001", "12003", "13001", "13003", "01001"]
+# Mapping: fips -> (state_abbr, state_fips, county_name)
+TEST_COUNTIES = {
+    "12001": ("FL", "12", "Alachua County, FL"),
+    "12003": ("FL", "12", "Baker County, FL"),
+    "13001": ("GA", "13", "Appling County, GA"),
+    "13003": ("GA", "13", "Atkinson County, GA"),
+    "01001": ("AL", "01", "Autauga County, AL"),
+}
+
+
+def _build_race_detail_db() -> duckdb.DuckDBPyConnection:
+    """In-memory DuckDB with 2026-format races and type data for race detail tests."""
+    con = duckdb.connect(":memory:")
+
+    con.execute("""
+        CREATE TABLE counties (
+            county_fips VARCHAR PRIMARY KEY,
+            state_abbr  VARCHAR NOT NULL,
+            state_fips  VARCHAR NOT NULL,
+            county_name VARCHAR
+        )
+    """)
+    for fips, (state, sfips, name) in TEST_COUNTIES.items():
+        con.execute("INSERT INTO counties VALUES (?, ?, ?, ?)", [fips, state, sfips, name])
+
+    con.execute("""
+        CREATE TABLE model_versions (
+            version_id VARCHAR PRIMARY KEY,
+            role VARCHAR, k INTEGER, j INTEGER,
+            shift_type VARCHAR, vote_share_type VARCHAR,
+            n_training_dims INTEGER, n_holdout_dims INTEGER,
+            holdout_r VARCHAR, geography VARCHAR,
+            description VARCHAR, created_at TIMESTAMP
+        )
+    """)
+    con.execute(
+        "INSERT INTO model_versions VALUES (?, 'current', 3, 4, 'logodds', 'total', 30, 3, '0.70', 'test', 'test', '2026-01-01')",
+        [TEST_VERSION],
+    )
+
+    con.execute("""
+        CREATE TABLE predictions (
+            county_fips VARCHAR NOT NULL,
+            race VARCHAR NOT NULL,
+            version_id VARCHAR NOT NULL,
+            pred_dem_share DOUBLE,
+            pred_std DOUBLE,
+            pred_lo90 DOUBLE,
+            pred_hi90 DOUBLE,
+            state_pred DOUBLE,
+            poll_avg DOUBLE,
+            PRIMARY KEY (county_fips, race, version_id)
+        )
+    """)
+    # FL counties get FL races, GA gets GA races, AL gets AL races, plus "baseline"
+    races = {
+        "12001": ["2026 FL Governor", "2026 FL Senate"],
+        "12003": ["2026 FL Governor", "2026 FL Senate"],
+        "13001": ["2026 GA Governor", "2026 GA Senate"],
+        "13003": ["2026 GA Governor", "2026 GA Senate"],
+        "01001": ["2026 AL Governor"],
+    }
+    for fips, fips_races in races.items():
+        for race in fips_races:
+            con.execute(
+                "INSERT INTO predictions VALUES (?, ?, ?, 0.42, 0.03, 0.37, 0.47, 0.42, 0.46)",
+                [fips, race, TEST_VERSION],
+            )
+    # Also insert a "baseline" that should NOT appear in race-slugs
+    for fips in TEST_FIPS_RACES:
+        con.execute(
+            "INSERT INTO predictions VALUES (?, 'baseline', ?, 0.42, 0.03, 0.37, 0.47, 0.42, 0.46)",
+            [fips, TEST_VERSION],
+        )
+
+    con.execute("""
+        CREATE TABLE community_assignments (
+            county_fips VARCHAR NOT NULL,
+            community_id INTEGER NOT NULL,
+            k INTEGER NOT NULL,
+            version_id VARCHAR NOT NULL,
+            PRIMARY KEY (county_fips, k, version_id)
+        )
+    """)
+    for i, fips in enumerate(TEST_FIPS_RACES):
+        con.execute("INSERT INTO community_assignments VALUES (?, ?, ?, ?)", [fips, i % 3, 3, TEST_VERSION])
+
+    con.execute("""
+        CREATE TABLE community_sigma (
+            community_id_row INTEGER NOT NULL,
+            community_id_col INTEGER NOT NULL,
+            sigma_value DOUBLE,
+            version_id VARCHAR NOT NULL
+        )
+    """)
+    for i in range(3):
+        for j in range(3):
+            val = 0.01 if i == j else 0.005
+            con.execute("INSERT INTO community_sigma VALUES (?, ?, ?, ?)", [i, j, val, TEST_VERSION])
+
+    con.execute("""
+        CREATE TABLE types (
+            type_id INTEGER NOT NULL,
+            super_type_id INTEGER NOT NULL,
+            display_name VARCHAR NOT NULL,
+            median_hh_income DOUBLE,
+            pct_bachelors_plus DOUBLE,
+            pct_white_nh DOUBLE,
+            log_pop_density DOUBLE,
+            narrative VARCHAR,
+            version_id VARCHAR NOT NULL,
+            PRIMARY KEY (type_id, version_id)
+        )
+    """)
+    for tid, name in [(0, "Rural Conservative"), (1, "Suburban Moderate"), (2, "Urban Progressive"), (3, "Small Town")]:
+        con.execute(
+            "INSERT INTO types VALUES (?, 0, ?, 50000, 0.20, 0.75, 2.0, NULL, ?)",
+            [tid, name, TEST_VERSION],
+        )
+
+    con.execute("""
+        CREATE TABLE super_types (
+            super_type_id INTEGER PRIMARY KEY,
+            display_name VARCHAR
+        )
+    """)
+    con.execute("INSERT INTO super_types VALUES (0, 'All Types')")
+
+    con.execute("""
+        CREATE TABLE county_type_assignments (
+            county_fips VARCHAR NOT NULL,
+            dominant_type INTEGER NOT NULL,
+            super_type INTEGER NOT NULL,
+            version_id VARCHAR NOT NULL,
+            PRIMARY KEY (county_fips, version_id)
+        )
+    """)
+    type_map = {"12001": 2, "12003": 0, "13001": 1, "13003": 0, "01001": 3}
+    for fips, dt in type_map.items():
+        con.execute("INSERT INTO county_type_assignments VALUES (?, ?, 0, ?)", [fips, dt, TEST_VERSION])
+
+    con.execute("""
+        CREATE TABLE polls (
+            poll_id   VARCHAR NOT NULL,
+            race      VARCHAR NOT NULL,
+            geography VARCHAR NOT NULL,
+            geo_level VARCHAR NOT NULL,
+            dem_share FLOAT   NOT NULL,
+            n_sample  INTEGER NOT NULL,
+            date      VARCHAR,
+            pollster  VARCHAR,
+            notes     VARCHAR,
+            cycle     VARCHAR NOT NULL,
+            PRIMARY KEY (poll_id)
+        )
+    """)
+    con.execute("""
+        INSERT INTO polls VALUES
+        ('p1', '2026 FL Senate', 'FL', 'state', 0.45, 600, '2026-01-15', 'Siena', NULL, '2026'),
+        ('p2', '2026 FL Senate', 'FL', 'state', 0.47, 800, '2026-02-20', 'Quinnipiac', NULL, '2026')
+    """)
+
+    con.execute("CREATE TABLE poll_crosstabs (poll_id VARCHAR, demographic_group VARCHAR, group_value VARCHAR, dem_share FLOAT, n_sample INTEGER)")
+    con.execute("CREATE TABLE poll_notes (poll_id VARCHAR, note_type VARCHAR, note_value VARCHAR)")
+    con.execute("CREATE TABLE county_shifts (county_fips VARCHAR, version_id VARCHAR, pres_d_shift_00_04 DOUBLE)")
+    con.execute("CREATE TABLE county_demographics (county_fips VARCHAR PRIMARY KEY, pop_total BIGINT, pct_white_nh DOUBLE, pct_black DOUBLE, pct_asian DOUBLE, pct_hispanic DOUBLE, median_age DOUBLE, median_hh_income BIGINT, log_median_hh_income DOUBLE, pct_bachelors_plus DOUBLE, pct_graduate DOUBLE, pct_owner_occupied DOUBLE, pct_wfh DOUBLE, pct_transit DOUBLE, pct_management DOUBLE)")
+
+    return con
+
+
+@pytest.fixture
+def race_client():
+    """TestClient seeded with 2026-format race data."""
+    db = _build_race_detail_db()
+    state = _build_test_state()
+
+    test_app = create_app(lifespan_override=_noop_lifespan)
+    test_app.state.db = db
+    test_app.state.version_id = TEST_VERSION
+    test_app.state.K = 3
+    test_app.state.sigma = np.eye(3) * 0.01
+    test_app.state.mu_prior = np.full(3, 0.42)
+    test_app.state.state_weights = state["state_weights"]
+    test_app.state.county_weights = state["county_weights"]
+    test_app.state.contract_ok = True
+
+    with TestClient(test_app, raise_server_exceptions=True) as c:
+        yield c
+
+    db.close()
+
+
+# ── Endpoint tests ─────────────────────────────────────────────────────────
+
+class TestGetRaceSlugs:
+    def test_returns_list_of_slugs(self, race_client):
+        resp = race_client.get("/api/v1/forecast/race-slugs")
+        assert resp.status_code == 200
+        slugs = resp.json()
+        assert isinstance(slugs, list)
+        assert len(slugs) > 0
+
+    def test_excludes_baseline(self, race_client):
+        resp = race_client.get("/api/v1/forecast/race-slugs")
+        slugs = resp.json()
+        assert "baseline" not in slugs
+
+    def test_slugs_are_lowercase_hyphenated(self, race_client):
+        resp = race_client.get("/api/v1/forecast/race-slugs")
+        slugs = resp.json()
+        for slug in slugs:
+            assert slug == slug.lower()
+            assert " " not in slug
+
+    def test_contains_expected_races(self, race_client):
+        resp = race_client.get("/api/v1/forecast/race-slugs")
+        slugs = resp.json()
+        assert "2026-fl-senate" in slugs
+        assert "2026-fl-governor" in slugs
+
+
+class TestGetRaceDetail:
+    def test_returns_correct_structure(self, race_client):
+        resp = race_client.get("/api/v1/forecast/race/2026-fl-senate")
+        assert resp.status_code == 200
+        data = resp.json()
+        required = {"race", "slug", "state_abbr", "race_type", "year", "prediction", "n_counties", "polls", "type_breakdown"}
+        for field in required:
+            assert field in data, f"Missing field: {field}"
+
+    def test_race_label_matches_slug(self, race_client):
+        resp = race_client.get("/api/v1/forecast/race/2026-fl-senate")
+        data = resp.json()
+        assert data["race"] == "2026 FL Senate"
+        assert data["slug"] == "2026-fl-senate"
+
+    def test_state_abbr_extracted(self, race_client):
+        resp = race_client.get("/api/v1/forecast/race/2026-fl-senate")
+        data = resp.json()
+        assert data["state_abbr"] == "FL"
+
+    def test_race_type_extracted(self, race_client):
+        resp = race_client.get("/api/v1/forecast/race/2026-fl-senate")
+        data = resp.json()
+        assert data["race_type"] == "Senate"
+
+    def test_year_extracted(self, race_client):
+        resp = race_client.get("/api/v1/forecast/race/2026-fl-senate")
+        data = resp.json()
+        assert data["year"] == 2026
+
+    def test_prediction_is_float(self, race_client):
+        resp = race_client.get("/api/v1/forecast/race/2026-fl-senate")
+        data = resp.json()
+        assert isinstance(data["prediction"], float)
+
+    def test_n_counties_matches_state(self, race_client):
+        resp = race_client.get("/api/v1/forecast/race/2026-fl-senate")
+        data = resp.json()
+        # 2 FL counties in test DB
+        assert data["n_counties"] == 2
+
+    def test_polls_included(self, race_client):
+        resp = race_client.get("/api/v1/forecast/race/2026-fl-senate")
+        data = resp.json()
+        assert len(data["polls"]) == 2
+        poll = data["polls"][0]
+        assert "date" in poll
+        assert "pollster" in poll
+        assert "dem_share" in poll
+        assert "n_sample" in poll
+
+    def test_polls_empty_for_race_without_polls(self, race_client):
+        resp = race_client.get("/api/v1/forecast/race/2026-al-governor")
+        data = resp.json()
+        assert data["polls"] == []
+
+    def test_type_breakdown_present(self, race_client):
+        resp = race_client.get("/api/v1/forecast/race/2026-fl-senate")
+        data = resp.json()
+        assert len(data["type_breakdown"]) > 0
+        t = data["type_breakdown"][0]
+        assert "type_id" in t
+        assert "display_name" in t
+        assert "n_counties" in t
+        assert "mean_pred_dem_share" in t
+
+    def test_type_breakdown_limited_to_5(self, race_client):
+        resp = race_client.get("/api/v1/forecast/race/2026-fl-senate")
+        data = resp.json()
+        assert len(data["type_breakdown"]) <= 5
+
+    def test_404_for_invalid_slug(self, race_client):
+        resp = race_client.get("/api/v1/forecast/race/9999-xx-fake-race")
+        assert resp.status_code == 404
+
+    def test_governor_race(self, race_client):
+        resp = race_client.get("/api/v1/forecast/race/2026-fl-governor")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["race_type"] == "Governor"
+        assert data["state_abbr"] == "FL"
