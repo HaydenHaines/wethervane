@@ -13,6 +13,15 @@ import pytest
 import src.assembly.ingest_polls as ingest_mod
 from src.propagation.propagate_polls import PollObservation
 
+_ORIGINAL_PROJECT_ROOT = ingest_mod.PROJECT_ROOT
+
+
+@pytest.fixture(autouse=True)
+def _restore_project_root():
+    """Restore PROJECT_ROOT after each test to prevent cross-test contamination."""
+    yield
+    ingest_mod.PROJECT_ROOT = _ORIGINAL_PROJECT_ROOT
+
 
 # ---------------------------------------------------------------------------
 # Helpers
