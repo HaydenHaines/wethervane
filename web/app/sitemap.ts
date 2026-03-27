@@ -27,9 +27,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.6,
     }));
 
-    return [...staticPages, ...countyPages];
+    // Type pages: IDs 0-99 (statically known, no API call needed)
+    const typePages = Array.from({ length: 100 }, (_, i) => ({
+      url: `${base}/type/${i}`,
+      lastModified: new Date(),
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    }));
+
+    return [...staticPages, ...typePages, ...countyPages];
   } catch {
-    // If API is unavailable at build time, return static pages only
-    return staticPages;
+    // If API is unavailable at build time, include type pages (IDs are statically known)
+    const typePages = Array.from({ length: 100 }, (_, i) => ({
+      url: `${base}/type/${i}`,
+      lastModified: new Date(),
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    }));
+    return [...staticPages, ...typePages];
   }
 }
