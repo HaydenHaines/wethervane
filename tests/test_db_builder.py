@@ -50,7 +50,7 @@ def sample_assignments() -> pd.DataFrame:
 
 def test_build_counties_shape(sample_shifts):
     counties = _build_counties(sample_shifts)
-    assert list(counties.columns) == ["county_fips", "state_abbr", "state_fips", "county_name"]
+    assert list(counties.columns) == ["county_fips", "state_abbr", "state_fips", "county_name", "total_votes_2024"]
     assert len(counties) == 3
 
 

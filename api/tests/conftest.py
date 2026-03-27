@@ -39,21 +39,22 @@ def _build_test_db() -> duckdb.DuckDBPyConnection:
 
     con.execute("""
         CREATE TABLE counties (
-            county_fips VARCHAR PRIMARY KEY,
-            state_abbr  VARCHAR NOT NULL,
-            state_fips  VARCHAR NOT NULL,
-            county_name VARCHAR
+            county_fips      VARCHAR PRIMARY KEY,
+            state_abbr       VARCHAR NOT NULL,
+            state_fips       VARCHAR NOT NULL,
+            county_name      VARCHAR,
+            total_votes_2024 INTEGER
         )
     """)
     counties_data = [
-        ("12001", "FL", "12", "Alachua County, FL"),
-        ("12003", "FL", "12", "Baker County, FL"),
-        ("13001", "GA", "13", "Appling County, GA"),
-        ("13003", "GA", "13", "Atkinson County, GA"),
-        ("01001", "AL", "01", "Autauga County, AL"),
+        ("12001", "FL", "12", "Alachua County, FL", 100000),
+        ("12003", "FL", "12", "Baker County, FL", 15000),
+        ("13001", "GA", "13", "Appling County, GA", 80000),
+        ("13003", "GA", "13", "Atkinson County, GA", 8000),
+        ("01001", "AL", "01", "Autauga County, AL", 28000),
     ]
     for row in counties_data:
-        con.execute("INSERT INTO counties VALUES (?, ?, ?, ?)", list(row))
+        con.execute("INSERT INTO counties VALUES (?, ?, ?, ?, ?)", list(row))
 
     con.execute("""
         CREATE TABLE model_versions (
@@ -320,8 +321,8 @@ def client():
 def client_no_types():
     """TestClient with a DB that has no type-primary tables."""
     con = duckdb.connect(":memory:")
-    con.execute("CREATE TABLE counties (county_fips VARCHAR PRIMARY KEY, state_abbr VARCHAR, state_fips VARCHAR, county_name VARCHAR)")
-    con.execute("INSERT INTO counties VALUES ('12001', 'FL', '12', 'Alachua')")
+    con.execute("CREATE TABLE counties (county_fips VARCHAR PRIMARY KEY, state_abbr VARCHAR, state_fips VARCHAR, county_name VARCHAR, total_votes_2024 INTEGER)")
+    con.execute("INSERT INTO counties VALUES ('12001', 'FL', '12', 'Alachua', 100000)")
     con.execute("CREATE TABLE model_versions (version_id VARCHAR PRIMARY KEY, role VARCHAR, k INTEGER, j INTEGER, shift_type VARCHAR, vote_share_type VARCHAR, n_training_dims INTEGER, n_holdout_dims INTEGER, holdout_r VARCHAR, geography VARCHAR, description VARCHAR, created_at TIMESTAMP)")
     con.execute("INSERT INTO model_versions VALUES ('test_v1', 'current', 3, 7, 'logodds', 'total', 30, 3, '0.90', 'test', 'test', '2026-01-01')")
     con.execute("CREATE TABLE community_assignments (county_fips VARCHAR, community_id INTEGER, k INTEGER, version_id VARCHAR, PRIMARY KEY(county_fips, k, version_id))")

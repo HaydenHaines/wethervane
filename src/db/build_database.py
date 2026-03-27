@@ -55,6 +55,7 @@ VERSIONS_DIR = PROJECT_ROOT / "data" / "models" / "versions"
 PREDICTIONS_2026_HAC = PROJECT_ROOT / "data" / "predictions" / "county_predictions_2026_hac.parquet"
 PREDICTIONS_2026_TYPES = PROJECT_ROOT / "data" / "predictions" / "county_predictions_2026_types.parquet"
 CROSSWALK_PATH = PROJECT_ROOT / "data" / "raw" / "fips_county_crosswalk.csv"
+PRES_2024_PATH = PROJECT_ROOT / "data" / "assembled" / "medsl_county_presidential_2024.parquet"
 COMMUNITY_PROFILES_PATH = PROJECT_ROOT / "data" / "communities" / "community_profiles.parquet"
 COUNTY_ACS_FEATURES_PATH = PROJECT_ROOT / "data" / "assembled" / "county_acs_features.parquet"
 
@@ -75,10 +76,11 @@ DEMOGRAPHICS_INTERPOLATED_PATH = PROJECT_ROOT / "data" / "assembled" / "demograp
 
 _SCHEMA_SQL = """
 CREATE TABLE IF NOT EXISTS counties (
-    county_fips  VARCHAR PRIMARY KEY,
-    state_abbr   VARCHAR NOT NULL,
-    state_fips   VARCHAR NOT NULL,
-    county_name  VARCHAR
+    county_fips      VARCHAR PRIMARY KEY,
+    state_abbr       VARCHAR NOT NULL,
+    state_fips       VARCHAR NOT NULL,
+    county_name      VARCHAR,
+    total_votes_2024 INTEGER  -- 2024 presidential total votes (for population-weighted aggregation)
 );
 
 CREATE TABLE IF NOT EXISTS model_versions (
@@ -225,8 +227,10 @@ _DEFAULT_CROSSWALK = object()  # sentinel: use module-level CROSSWALK_PATH
 def _build_counties(
     shifts: pd.DataFrame,
     crosswalk_path: Path | None = _DEFAULT_CROSSWALK,  # type: ignore[assignment]
+    pres_2024_path: Path | None = None,
 ) -> pd.DataFrame:
-    """Derive the counties table from shift FIPS column, optionally joining county names.
+    """Derive the counties table from shift FIPS column, optionally joining county names
+    and 2024 presidential vote totals (used for population-weighted state aggregation).
 
     Args:
         shifts: DataFrame with a county_fips column.
@@ -234,6 +238,9 @@ def _build_counties(
             skip name lookup (county_name will be all-NULL).  Omit (or pass the
             sentinel ``_DEFAULT_CROSSWALK``) to use the module-level
             ``CROSSWALK_PATH`` constant.
+        pres_2024_path: Path to medsl_county_presidential_2024.parquet.  When
+            provided (and the file exists), ``total_votes_2024`` is populated
+            from ``pres_total_2024``.  Falls back to NULL when not available.
     """
     if crosswalk_path is _DEFAULT_CROSSWALK:
         crosswalk_path = CROSSWALK_PATH
@@ -250,7 +257,34 @@ def _build_counties(
     else:
         df["county_name"] = None
 
-    return df[["county_fips", "state_abbr", "state_fips", "county_name"]]
+    # Join 2024 presidential vote totals for population-weighted state aggregation.
+    # total_votes_2024 is NULL when data is unavailable; the API falls back to
+    # uniform weighting when the column is missing or all-NULL.
+    _pres_path = pres_2024_path if pres_2024_path is not None else PRES_2024_PATH
+    if _pres_path is not None and Path(_pres_path).exists():
+        pres_df = pd.read_parquet(_pres_path)
+        pres_df["county_fips"] = pres_df["county_fips"].astype(str).str.zfill(5)
+        df = df.merge(
+            pres_df[["county_fips", "pres_total_2024"]].rename(
+                columns={"pres_total_2024": "total_votes_2024"}
+            ),
+            on="county_fips",
+            how="left",
+        )
+        # Cast to nullable int (some counties may be missing from the parquet)
+        df["total_votes_2024"] = pd.to_numeric(df["total_votes_2024"], errors="coerce").astype(
+            "Int64"
+        )
+        n_matched = df["total_votes_2024"].notna().sum()
+        log.info("Joined total_votes_2024 for %d / %d counties", n_matched, len(df))
+    else:
+        df["total_votes_2024"] = None
+        log.warning(
+            "2024 presidential parquet not found at %s; total_votes_2024 will be NULL",
+            _pres_path,
+        )
+
+    return df[["county_fips", "state_abbr", "state_fips", "county_name", "total_votes_2024"]]
 
 
 def _build_county_shifts(shifts: pd.DataFrame, version_id: str) -> pd.DataFrame:
@@ -318,7 +352,7 @@ def validate_contract(con: duckdb.DuckDBPyConnection) -> list[str]:
         "super_types": ["super_type_id", "display_name"],
         "types": ["type_id", "super_type_id", "display_name"],
         "county_type_assignments": ["county_fips", "dominant_type", "super_type"],
-        "counties": ["county_fips", "state_abbr", "county_name"],
+        "counties": ["county_fips", "state_abbr", "county_name", "total_votes_2024"],
         "type_scores": ["county_fips", "type_id", "score"],
         "type_priors": ["type_id", "mean_dem_share"],
         "polls": ["poll_id", "race", "geography", "dem_share"],

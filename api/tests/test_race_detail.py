@@ -63,14 +63,17 @@ def _build_race_detail_db() -> duckdb.DuckDBPyConnection:
 
     con.execute("""
         CREATE TABLE counties (
-            county_fips VARCHAR PRIMARY KEY,
-            state_abbr  VARCHAR NOT NULL,
-            state_fips  VARCHAR NOT NULL,
-            county_name VARCHAR
+            county_fips      VARCHAR PRIMARY KEY,
+            state_abbr       VARCHAR NOT NULL,
+            state_fips       VARCHAR NOT NULL,
+            county_name      VARCHAR,
+            total_votes_2024 INTEGER
         )
     """)
+    # Synthetic vote totals give FL counties ~10x more votes than AL/GA (urban weight test)
+    test_votes = {"12001": 100000, "12003": 15000, "13001": 80000, "13003": 8000, "01001": 28000}
     for fips, (state, sfips, name) in TEST_COUNTIES.items():
-        con.execute("INSERT INTO counties VALUES (?, ?, ?, ?)", [fips, state, sfips, name])
+        con.execute("INSERT INTO counties VALUES (?, ?, ?, ?, ?)", [fips, state, sfips, name, test_votes[fips]])
 
     con.execute("""
         CREATE TABLE model_versions (

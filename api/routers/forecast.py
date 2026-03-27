@@ -25,6 +25,37 @@ log = logging.getLogger(__name__)
 router = APIRouter(tags=["forecast"])
 
 
+def _vote_weighted_pred(
+    result_df: pd.DataFrame,
+    vote_map: dict[str, int],
+    state: str,
+) -> float | None:
+    """Return the vote-weighted mean pred_dem_share for *state* counties.
+
+    Falls back to a simple (unweighted) mean when vote totals are unavailable
+    for a county.  Returns None if no rows match the state.
+
+    Parameters
+    ----------
+    result_df : DataFrame
+        Output of predict_race — must have columns ``county_fips``, ``state``,
+        and ``pred_dem_share``.
+    vote_map : dict[str, int]
+        Mapping county_fips → 2024 presidential total votes.
+    state : str
+        State abbreviation to aggregate (e.g. "FL").
+    """
+    state_rows = result_df[result_df["state"] == state]
+    if state_rows.empty:
+        return None
+    weights = state_rows["county_fips"].map(vote_map).fillna(0).astype(float)
+    total_weight = weights.sum()
+    if total_weight > 0:
+        return float((state_rows["pred_dem_share"].values * weights.values).sum() / total_weight)
+    # Fall back to unweighted mean when no vote data available
+    return float(state_rows["pred_dem_share"].mean())
+
+
 @router.get("/forecast", response_model=list[ForecastRow])
 def get_forecast(
     request: Request,
@@ -155,10 +186,20 @@ def get_race_detail(
     race_type = " ".join(p.capitalize() for p in parts[2:]) if len(parts) >= 3 else "Unknown"
     year = int(parts[0]) if parts[0].isdigit() else 2026
 
-    # State-level prediction: mean of county pred_dem_share for this race+state
+    # State-level prediction: vote-weighted mean of county pred_dem_share for this race+state.
+    # total_votes_2024 weights each county by its 2024 presidential turnout so that
+    # high-population urban counties (which tend D) are not swamped by the large number
+    # of low-population rural counties (which tend R).  Falls back to unweighted mean
+    # when vote totals are unavailable (NULL total_votes_2024).
     pred_row = db.execute(
         """
-        SELECT AVG(p.pred_dem_share) AS state_pred, COUNT(*) AS n_counties
+        SELECT
+            CASE
+                WHEN SUM(c.total_votes_2024) > 0
+                THEN SUM(p.pred_dem_share * c.total_votes_2024) / SUM(c.total_votes_2024)
+                ELSE AVG(p.pred_dem_share)
+            END AS state_pred,
+            COUNT(*) AS n_counties
         FROM predictions p
         JOIN counties c ON p.county_fips = c.county_fips
         WHERE p.version_id = ? AND p.race = ? AND c.state_abbr = ?
@@ -264,7 +305,13 @@ def get_embed_metadata(
 
     pred_row = db.execute(
         """
-        SELECT AVG(p.pred_dem_share) AS state_pred, COUNT(*) AS n_counties
+        SELECT
+            CASE
+                WHEN SUM(c.total_votes_2024) > 0
+                THEN SUM(p.pred_dem_share * c.total_votes_2024) / SUM(c.total_votes_2024)
+                ELSE AVG(p.pred_dem_share)
+            END AS state_pred,
+            COUNT(*) AS n_counties
         FROM predictions p
         JOIN counties c ON p.county_fips = c.county_fips
         WHERE p.version_id = ? AND p.race = ? AND c.state_abbr = ?
@@ -466,14 +513,19 @@ def _forecast_poll_types(
     """Type-based Bayesian update using predict_race from predict_2026_types."""
     from src.prediction.predict_2026_types import predict_race
 
-    # Get county names from DB
+    # Get county names and 2024 vote totals from DB
     county_info = db.execute(
-        """SELECT c.county_fips, c.county_name, c.state_abbr
+        """SELECT c.county_fips, c.county_name, c.state_abbr, c.total_votes_2024
            FROM counties c ORDER BY c.county_fips""",
         [],
     ).fetchdf()
     name_map = dict(zip(county_info["county_fips"], county_info["county_name"]))
     state_map = dict(zip(county_info["county_fips"], county_info["state_abbr"]))
+    vote_map: dict[str, int] = {
+        row["county_fips"]: int(row["total_votes_2024"])
+        for _, row in county_info.iterrows()
+        if row["total_votes_2024"] is not None and not pd.isna(row["total_votes_2024"])
+    }
 
     states = [state_map.get(f, f[:2]) for f in type_county_fips]
     county_names = [name_map.get(f, "") for f in type_county_fips]
@@ -531,10 +583,10 @@ def _forecast_poll_types(
         county_priors=county_priors,
     )
 
-    # Compute state-level prediction as the mean of polled-state county
-    # predictions — consistent with how the HAC pipeline populates state_pred.
-    state_rows = result_df[result_df["state"] == poll.state]
-    state_pred_val = float(state_rows["pred_dem_share"].mean()) if not state_rows.empty else None
+    # Compute vote-weighted state-level prediction for the polled state.
+    # Uses 2024 presidential total votes so urban counties (high population, tend D)
+    # are not swamped by the large number of rural counties (low population, tend R).
+    state_pred_val = _vote_weighted_pred(result_df, vote_map, poll.state)
 
     results = []
     for _, row in result_df.iterrows():
@@ -719,10 +771,15 @@ def update_forecast_with_multi_polls(
         from src.prediction.predict_2026_types import predict_race
 
         county_info = db.execute(
-            "SELECT county_fips, county_name, state_abbr FROM counties ORDER BY county_fips"
+            "SELECT county_fips, county_name, state_abbr, total_votes_2024 FROM counties ORDER BY county_fips"
         ).fetchdf()
         name_map = dict(zip(county_info["county_fips"], county_info["county_name"]))
         state_map = dict(zip(county_info["county_fips"], county_info["state_abbr"]))
+        vote_map_multi: dict[str, int] = {
+            row["county_fips"]: int(row["total_votes_2024"])
+            for _, row in county_info.iterrows()
+            if row["total_votes_2024"] is not None and not pd.isna(row["total_votes_2024"])
+        }
 
         fips_list = type_county_fips
         states_list = [state_map.get(f, f[:2]) for f in fips_list]
@@ -772,9 +829,7 @@ def update_forecast_with_multi_polls(
 
         state_pred_val = None
         if body.state:
-            state_rows = result_df[result_df["state"] == body.state]
-            if not state_rows.empty:
-                state_pred_val = float(state_rows["pred_dem_share"].mean())
+            state_pred_val = _vote_weighted_pred(result_df, vote_map_multi, body.state)
 
         county_results = [
             ForecastRow(

@@ -8,8 +8,8 @@ from src.db.build_database import validate_contract
 def _make_valid_db() -> duckdb.DuckDBPyConnection:
     """Build a minimal in-memory DuckDB that passes contract validation."""
     con = duckdb.connect(":memory:")
-    con.execute("CREATE TABLE counties (county_fips VARCHAR, state_abbr VARCHAR, county_name VARCHAR)")
-    con.execute("INSERT INTO counties VALUES ('12001', 'FL', 'Alachua')")
+    con.execute("CREATE TABLE counties (county_fips VARCHAR, state_abbr VARCHAR, county_name VARCHAR, total_votes_2024 INTEGER)")
+    con.execute("INSERT INTO counties VALUES ('12001', 'FL', 'Alachua', NULL)")
     con.execute("CREATE TABLE super_types (super_type_id INTEGER, display_name VARCHAR)")
     con.execute("INSERT INTO super_types VALUES (0, 'Test Super Type')")
     con.execute("CREATE TABLE types (type_id INTEGER, super_type_id INTEGER, display_name VARCHAR)")
