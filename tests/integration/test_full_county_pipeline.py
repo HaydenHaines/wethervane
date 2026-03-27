@@ -125,25 +125,34 @@ def synthetic_fips() -> list[str]:
 
 @pytest.fixture(scope="module")
 def synthetic_db(tmp_path_factory, synthetic_fips):
-    """Build a full synthetic DuckDB from scratch."""
+    """Build a full synthetic DuckDB from scratch.
+
+    Sets up a complete directory structure under tmp so build() can be
+    called with project_root=tmp — no module-level monkeypatching needed.
+    """
     tmp = tmp_path_factory.mktemp("integration")
     import src.db.build_database as mod
 
-    # Build synthetic parquets
+    data = tmp / "data"
+
+    # Build synthetic parquets in the expected directory structure
     shifts = _build_synthetic_shifts(synthetic_fips)
-    shifts_path = tmp / "shifts.parquet"
-    shifts.to_parquet(shifts_path, index=False)
+    shifts_dir = data / "shifts"
+    shifts_dir.mkdir(parents=True)
+    shifts.to_parquet(shifts_dir / "county_shifts_multiyear.parquet", index=False)
 
     assignments = _build_synthetic_assignments(synthetic_fips)
-    assignments_path = tmp / "assignments.parquet"
-    assignments.to_parquet(assignments_path, index=False)
+    communities_dir = data / "communities"
+    communities_dir.mkdir(parents=True)
+    assignments.to_parquet(communities_dir / "county_community_assignments.parquet", index=False)
 
     preds = _build_synthetic_predictions(synthetic_fips)
-    preds_path = tmp / "predictions.parquet"
-    preds.to_parquet(preds_path, index=False)
+    preds_dir = data / "predictions"
+    preds_dir.mkdir(parents=True)
+    preds.to_parquet(preds_dir / "county_predictions_2026.parquet", index=False)
 
     # Build version meta
-    ver_dir = tmp / "versions" / "synthetic_v1"
+    ver_dir = data / "models" / "versions" / "synthetic_v1"
     ver_dir.mkdir(parents=True)
     with open(ver_dir / "meta.yaml", "w") as f:
         yaml.dump({
@@ -166,51 +175,25 @@ def synthetic_db(tmp_path_factory, synthetic_fips):
         "super_type_id": [0] * n_types,
         "display_name": [f"Type {i}" for i in range(n_types)],
     })
-    type_profiles_path = tmp / "type_profiles.parquet"
-    type_profiles.to_parquet(type_profiles_path, index=False)
+    type_profiles.to_parquet(communities_dir / "type_profiles.parquet", index=False)
 
     county_type_assignments = pd.DataFrame({
         "county_fips": synthetic_fips,
         "dominant_type": [i % n_types for i in range(len(synthetic_fips))],
         "super_type": [0] * len(synthetic_fips),
     })
-    county_type_assignments_path = tmp / "county_type_assignments_full.parquet"
-    county_type_assignments.to_parquet(county_type_assignments_path, index=False)
+    county_type_assignments.to_parquet(
+        communities_dir / "county_type_assignments_full.parquet", index=False,
+    )
 
     super_types = pd.DataFrame({
         "super_type_id": [0],
         "display_name": ["Traditional"],
     })
-    super_types_path = tmp / "super_types.parquet"
-    super_types.to_parquet(super_types_path, index=False)
-
-    # Patch paths and build
-    original = {
-        "SHIFTS_MULTIYEAR": mod.SHIFTS_MULTIYEAR,
-        "COUNTY_ASSIGNMENTS": mod.COUNTY_ASSIGNMENTS,
-        "PREDICTIONS_2026": mod.PREDICTIONS_2026,
-        "TYPE_ASSIGNMENTS_STUB": mod.TYPE_ASSIGNMENTS_STUB,
-        "VERSIONS_DIR": mod.VERSIONS_DIR,
-        "TYPE_PROFILES_PATH": mod.TYPE_PROFILES_PATH,
-        "COUNTY_TYPE_ASSIGNMENTS_PATH": mod.COUNTY_TYPE_ASSIGNMENTS_PATH,
-        "SUPER_TYPES_PATH": mod.SUPER_TYPES_PATH,
-    }
-    mod.SHIFTS_MULTIYEAR = shifts_path
-    mod.COUNTY_ASSIGNMENTS = assignments_path
-    mod.PREDICTIONS_2026 = preds_path
-    mod.TYPE_ASSIGNMENTS_STUB = tmp / "nonexistent.parquet"
-    mod.VERSIONS_DIR = tmp / "versions"
-    mod.TYPE_PROFILES_PATH = type_profiles_path
-    mod.COUNTY_TYPE_ASSIGNMENTS_PATH = county_type_assignments_path
-    mod.SUPER_TYPES_PATH = super_types_path
+    super_types.to_parquet(communities_dir / "super_types.parquet", index=False)
 
     db_path = tmp / "synthetic_wethervane.duckdb"
-    try:
-        mod.build(db_path=db_path, reset=True)
-    finally:
-        # Restore originals
-        for k, v in original.items():
-            setattr(mod, k, v)
+    mod.build(db_path=db_path, reset=True, project_root=tmp)
 
     return db_path, shifts, assignments
 

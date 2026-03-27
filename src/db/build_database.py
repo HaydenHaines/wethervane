@@ -41,6 +41,10 @@ if str(PROJECT_ROOT) not in sys.path:
 
 DEFAULT_DB = PROJECT_ROOT / "data" / "wethervane.duckdb"
 
+# Election cycle to ingest polling data for.
+# Update this when targeting a new cycle year.
+POLL_INGEST_CYCLE = "2026"
+
 # Parquet source paths
 SHIFTS_MULTIYEAR = PROJECT_ROOT / "data" / "shifts" / "county_shifts_multiyear.parquet"
 COUNTY_ASSIGNMENTS = PROJECT_ROOT / "data" / "communities" / "county_community_assignments.parquet"
@@ -57,9 +61,10 @@ COUNTY_ACS_FEATURES_PATH = PROJECT_ROOT / "data" / "assembled" / "county_acs_fea
 TYPE_PROFILES_PATH = PROJECT_ROOT / "data" / "communities" / "type_profiles.parquet"
 # Narrative generator (template-based, no LLM)
 from src.description.generate_narratives import generate_all_narratives  # noqa: E402
+from src.db.domains.model import ingest as ingest_model, create_tables as model_ddl  # noqa: E402
+from src.db.domains.polling import ingest as ingest_polling, create_tables as polling_ddl  # noqa: E402
 COUNTY_TYPE_ASSIGNMENTS_PATH = PROJECT_ROOT / "data" / "communities" / "county_type_assignments_full.parquet"
 SUPER_TYPES_PATH = PROJECT_ROOT / "data" / "communities" / "super_types.parquet"
-TYPE_COVARIANCE_LONG_PATH = PROJECT_ROOT / "data" / "covariance" / "type_covariance_long.parquet"
 DEMOGRAPHICS_INTERPOLATED_PATH = PROJECT_ROOT / "data" / "assembled" / "demographics_interpolated.parquet"
 
 
@@ -174,6 +179,18 @@ CREATE TABLE IF NOT EXISTS county_demographics (
 CREATE TABLE IF NOT EXISTS super_types (
     super_type_id  INTEGER PRIMARY KEY,
     display_name   VARCHAR
+);
+
+CREATE TABLE IF NOT EXISTS types (
+    type_id        INTEGER PRIMARY KEY,
+    super_type_id  INTEGER,
+    display_name   VARCHAR
+);
+
+CREATE TABLE IF NOT EXISTS county_type_assignments (
+    county_fips    VARCHAR NOT NULL,
+    dominant_type  INTEGER,
+    super_type     INTEGER
 );
 """
 
@@ -301,6 +318,9 @@ def validate_contract(con: duckdb.DuckDBPyConnection) -> list[str]:
         "types": ["type_id", "super_type_id", "display_name"],
         "county_type_assignments": ["county_fips", "dominant_type", "super_type"],
         "counties": ["county_fips", "state_abbr", "county_name"],
+        "type_scores": ["county_fips", "type_id", "score"],
+        "type_priors": ["type_id", "mean_dem_share"],
+        "polls": ["poll_id", "race", "geography", "dem_share"],
     }
 
     optional = {
@@ -351,8 +371,29 @@ def validate_contract(con: duckdb.DuckDBPyConnection) -> list[str]:
     return errors
 
 
-def build(db_path: Path, reset: bool = False) -> None:
+def build(db_path: Path, reset: bool = False, project_root: Path | None = None) -> None:
     """Build or update wethervane.duckdb from current pipeline artifacts."""
+
+    _project_root = project_root if project_root is not None else PROJECT_ROOT
+
+    # Derive data paths from the resolved project root so callers can pass
+    # a custom root (e.g. tmp_path in tests) without monkeypatching.
+    _data = _project_root / "data"
+    _shifts_path = _data / "shifts" / "county_shifts_multiyear.parquet"
+    _assignments_path = _data / "communities" / "county_community_assignments.parquet"
+    _stub_path = _data / "communities" / "county_type_assignments_stub.parquet"
+    _predictions_path = _data / "predictions" / "county_predictions_2026.parquet"
+    _predictions_hac_path = _data / "predictions" / "county_predictions_2026_hac.parquet"
+    _predictions_types_path = _data / "predictions" / "county_predictions_2026_types.parquet"
+    _versions_dir = _data / "models" / "versions"
+    _crosswalk_path = _data / "raw" / "fips_county_crosswalk.csv"
+    _sigma_path = _data / "covariance" / "county_community_sigma.parquet"
+    _community_profiles_path = _data / "communities" / "community_profiles.parquet"
+    _county_acs_path = _data / "assembled" / "county_acs_features.parquet"
+    _type_profiles_path = _data / "communities" / "type_profiles.parquet"
+    _county_type_assignments_path = _data / "communities" / "county_type_assignments_full.parquet"
+    _super_types_path = _data / "communities" / "super_types.parquet"
+    _demographics_interpolated_path = _data / "assembled" / "demographics_interpolated.parquet"
 
     db_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -371,36 +412,45 @@ def build(db_path: Path, reset: bool = False) -> None:
     log.info("Schema created/verified")
 
     # ── Load source data ───────────────────────────────────────────────────────
-    log.info("Loading shifts from %s", SHIFTS_MULTIYEAR)
-    shifts = pd.read_parquet(SHIFTS_MULTIYEAR)
-    shifts["county_fips"] = shifts["county_fips"].astype(str).str.zfill(5)
+    shifts = None
+    if _shifts_path.exists():
+        log.info("Loading shifts from %s", _shifts_path)
+        shifts = pd.read_parquet(_shifts_path)
+        shifts["county_fips"] = shifts["county_fips"].astype(str).str.zfill(5)
+    else:
+        log.warning("Shifts file not found: %s; skipping core ingestion", _shifts_path)
 
-    log.info("Loading community assignments from %s", COUNTY_ASSIGNMENTS)
-    assignments = pd.read_parquet(COUNTY_ASSIGNMENTS)
-    assignments["county_fips"] = assignments["county_fips"].astype(str).str.zfill(5)
-    # Prefer community_id column; fall back to 'community' if needed
-    if "community_id" not in assignments.columns and "community" in assignments.columns:
-        assignments = assignments.rename(columns={"community": "community_id"})
+    assignments = None
+    if _assignments_path.exists():
+        log.info("Loading community assignments from %s", _assignments_path)
+        assignments = pd.read_parquet(_assignments_path)
+        assignments["county_fips"] = assignments["county_fips"].astype(str).str.zfill(5)
+        # Prefer community_id column; fall back to 'community' if needed
+        if "community_id" not in assignments.columns and "community" in assignments.columns:
+            assignments = assignments.rename(columns={"community": "community_id"})
+    else:
+        log.warning("Assignments file not found: %s; skipping community ingestion", _assignments_path)
 
     type_df = None
-    if TYPE_ASSIGNMENTS_STUB.exists():
-        log.info("Loading type assignments stub from %s", TYPE_ASSIGNMENTS_STUB)
-        type_df = pd.read_parquet(TYPE_ASSIGNMENTS_STUB)
+    if _stub_path.exists():
+        log.info("Loading type assignments stub from %s", _stub_path)
+        type_df = pd.read_parquet(_stub_path)
 
     predictions = None
-    if PREDICTIONS_2026.exists():
-        log.info("Loading predictions from %s", PREDICTIONS_2026)
-        predictions = pd.read_parquet(PREDICTIONS_2026)
+    if _predictions_path.exists():
+        log.info("Loading predictions from %s", _predictions_path)
+        predictions = pd.read_parquet(_predictions_path)
         predictions["county_fips"] = predictions["county_fips"].astype(str).str.zfill(5)
 
     # ── Load model version metadata ────────────────────────────────────────────
-    version_metas = _load_version_meta(VERSIONS_DIR)
+    version_metas = _load_version_meta(_versions_dir)
 
     # ── Ingest counties ────────────────────────────────────────────────────────
-    counties_df = _build_counties(shifts, crosswalk_path=CROSSWALK_PATH)
-    con.execute("DELETE FROM counties")
-    con.execute("INSERT INTO counties SELECT * FROM counties_df")
-    log.info("Ingested %d counties", len(counties_df))
+    if shifts is not None:
+        counties_df = _build_counties(shifts, crosswalk_path=_crosswalk_path)
+        con.execute("DELETE FROM counties")
+        con.execute("INSERT INTO counties SELECT * FROM counties_df")
+        log.info("Ingested %d counties", len(counties_df))
 
     # ── Ingest model versions ──────────────────────────────────────────────────
     con.execute("DELETE FROM model_versions")
@@ -441,41 +491,42 @@ def build(db_path: Path, reset: bool = False) -> None:
     current_version_id = current_meta.get("version_id") or current_meta.get("version", "unknown")
     log.info("Using version_id '%s' for shift/assignment ingestion", current_version_id)
 
-    shift_rows = _build_county_shifts(shifts, current_version_id)
-    shift_cols = [c for c in shifts.columns if c != "county_fips"]
+    if shifts is not None:
+        shift_rows = _build_county_shifts(shifts, current_version_id)
 
-    # Drop existing shifts for this version and rebuild
-    con.execute(f"DELETE FROM county_shifts WHERE version_id = '{current_version_id}'")
+        # Drop existing shifts for this version and rebuild
+        con.execute(f"DELETE FROM county_shifts WHERE version_id = '{current_version_id}'")
 
-    # DuckDB can't ingest a wide parquet with dynamic columns via the fixed schema.
-    # Instead we use duckdb's native parquet reader + CREATE OR REPLACE TABLE pattern
-    # to handle the dynamic shift columns alongside the fixed ones.
-    import tempfile, os
-    with tempfile.NamedTemporaryFile(suffix=".parquet", delete=False) as tmp:
-        tmp_path = tmp.name
-    try:
-        shift_rows.to_parquet(tmp_path, index=False)
-        # Use REPLACE because the base CREATE TABLE only has county_fips + version_id columns;
-        # we store shifts in a dedicated wide table re-created from parquet.
-        con.execute("DROP TABLE IF EXISTS county_shifts")
-        con.execute(f"CREATE TABLE county_shifts AS SELECT * FROM read_parquet('{tmp_path}')")
-        log.info("Ingested county_shifts: %d rows × %d cols", len(shift_rows), len(shift_rows.columns))
-    finally:
-        os.unlink(tmp_path)
+        # DuckDB can't ingest a wide parquet with dynamic columns via the fixed schema.
+        # Instead we use duckdb's native parquet reader + CREATE OR REPLACE TABLE pattern
+        # to handle the dynamic shift columns alongside the fixed ones.
+        import tempfile, os
+        with tempfile.NamedTemporaryFile(suffix=".parquet", delete=False) as tmp:
+            tmp_path = tmp.name
+        try:
+            shift_rows.to_parquet(tmp_path, index=False)
+            # Use REPLACE because the base CREATE TABLE only has county_fips + version_id columns;
+            # we store shifts in a dedicated wide table re-created from parquet.
+            con.execute("DROP TABLE IF EXISTS county_shifts")
+            con.execute(f"CREATE TABLE county_shifts AS SELECT * FROM read_parquet('{tmp_path}')")
+            log.info("Ingested county_shifts: %d rows × %d cols", len(shift_rows), len(shift_rows.columns))
+        finally:
+            os.unlink(tmp_path)
 
     # ── Ingest community assignments ───────────────────────────────────────────
-    ca_rows = _build_community_assignments(assignments, current_version_id)
-    con.execute(f"DELETE FROM community_assignments WHERE version_id = '{current_version_id}'")
-    con.execute("INSERT INTO community_assignments SELECT * FROM ca_rows")
-    log.info(
-        "Ingested community_assignments: %d rows, k=%d", len(ca_rows), ca_rows["k"].iloc[0]
-    )
+    if assignments is not None:
+        ca_rows = _build_community_assignments(assignments, current_version_id)
+        con.execute(f"DELETE FROM community_assignments WHERE version_id = '{current_version_id}'")
+        con.execute("INSERT INTO community_assignments SELECT * FROM ca_rows")
+        log.info(
+            "Ingested community_assignments: %d rows, k=%d", len(ca_rows), ca_rows["k"].iloc[0]
+        )
 
-    # ── Ingest type assignments ────────────────────────────────────────────────
-    ta_rows = _build_type_assignments(type_df, assignments, current_version_id)
-    con.execute(f"DELETE FROM type_assignments WHERE version_id = '{current_version_id}'")
-    con.execute("INSERT INTO type_assignments SELECT * FROM ta_rows")
-    log.info("Ingested type_assignments: %d rows", len(ta_rows))
+        # ── Ingest type assignments ────────────────────────────────────────────
+        ta_rows = _build_type_assignments(type_df, assignments, current_version_id)
+        con.execute(f"DELETE FROM type_assignments WHERE version_id = '{current_version_id}'")
+        con.execute("INSERT INTO type_assignments SELECT * FROM ta_rows")
+        log.info("Ingested type_assignments: %d rows", len(ta_rows))
 
     # ── Ingest predictions ─────────────────────────────────────────────────────
     if predictions is not None:
@@ -487,8 +538,8 @@ def build(db_path: Path, reset: bool = False) -> None:
         log.warning("No predictions file found; skipping predictions table")
 
     # ── Ingest HAC predictions ──────────────────────────────────────────────────
-    if PREDICTIONS_2026_HAC.exists():
-        pred_hac = pd.read_parquet(PREDICTIONS_2026_HAC)
+    if _predictions_hac_path.exists():
+        pred_hac = pd.read_parquet(_predictions_hac_path)
         pred_hac["county_fips"] = pred_hac["county_fips"].astype(str).str.zfill(5)
         pred_hac_rows = _build_predictions(pred_hac, current_version_id)
         existing_races = set(con.execute("SELECT DISTINCT race FROM predictions").fetchdf()["race"])
@@ -500,8 +551,8 @@ def build(db_path: Path, reset: bool = False) -> None:
         log.info("No HAC predictions file found; skipping")
 
     # ── Ingest types predictions ───────────────────────────────────────────────
-    if PREDICTIONS_2026_TYPES.exists():
-        pred_types = pd.read_parquet(PREDICTIONS_2026_TYPES)
+    if _predictions_types_path.exists():
+        pred_types = pd.read_parquet(_predictions_types_path)
         pred_types["county_fips"] = pred_types["county_fips"].astype(str).str.zfill(5)
         pred_types_rows = _build_predictions(pred_types, current_version_id)
         existing_races = set(con.execute("SELECT DISTINCT race FROM predictions").fetchdf()["race"])
@@ -522,9 +573,8 @@ def build(db_path: Path, reset: bool = False) -> None:
         log.info("No types predictions file found; skipping")
 
     # ── Ingest community sigma ─────────────────────────────────────────────────
-    sigma_path = PROJECT_ROOT / "data" / "covariance" / "county_community_sigma.parquet"
-    if sigma_path.exists():
-        sigma_df = pd.read_parquet(sigma_path)
+    if _sigma_path.exists():
+        sigma_df = pd.read_parquet(_sigma_path)
         sigma_long_rows = []
         for row_id in sigma_df.index:
             for col_id in sigma_df.columns:
@@ -542,8 +592,8 @@ def build(db_path: Path, reset: bool = False) -> None:
         log.info("No county_community_sigma.parquet found; skipping sigma table")
 
     # ── Ingest community profiles (demographics overlay) ───────────────────────
-    if COMMUNITY_PROFILES_PATH.exists():
-        cp_df = pd.read_parquet(COMMUNITY_PROFILES_PATH)
+    if _community_profiles_path.exists():
+        cp_df = pd.read_parquet(_community_profiles_path)
         # Only load the fixed demographic columns into the structured table
         profile_cols = [
             "community_id", "n_counties", "pop_total",
@@ -562,8 +612,8 @@ def build(db_path: Path, reset: bool = False) -> None:
         log.info("No community_profiles.parquet found; skipping")
 
     # ── Ingest county demographics ──────────────────────────────────────────────
-    if COUNTY_ACS_FEATURES_PATH.exists():
-        cd_df = pd.read_parquet(COUNTY_ACS_FEATURES_PATH)
+    if _county_acs_path.exists():
+        cd_df = pd.read_parquet(_county_acs_path)
         cd_df["county_fips"] = cd_df["county_fips"].astype(str).str.zfill(5)
         con.execute("DROP TABLE IF EXISTS county_demographics")
         con.execute("CREATE TABLE county_demographics AS SELECT * FROM cd_df")
@@ -572,11 +622,11 @@ def build(db_path: Path, reset: bool = False) -> None:
         log.info("No county_acs_features.parquet found; skipping")
 
     # ── Ingest type profiles (types table) ────────────────────────────────────
-    if TYPE_PROFILES_PATH.exists():
-        tp_df = pd.read_parquet(TYPE_PROFILES_PATH)
+    if _type_profiles_path.exists():
+        tp_df = pd.read_parquet(_type_profiles_path)
         # Add super_type_id from county_type_assignments if available
-        if COUNTY_TYPE_ASSIGNMENTS_PATH.exists() and "super_type_id" not in tp_df.columns:
-            cta_tmp = pd.read_parquet(COUNTY_TYPE_ASSIGNMENTS_PATH)
+        if _county_type_assignments_path.exists() and "super_type_id" not in tp_df.columns:
+            cta_tmp = pd.read_parquet(_county_type_assignments_path)
             if "super_type" in cta_tmp.columns and "dominant_type" in cta_tmp.columns:
                 type_to_super = cta_tmp.groupby("dominant_type")["super_type"].first()
                 tp_df["super_type_id"] = tp_df["type_id"].map(type_to_super)
@@ -587,7 +637,7 @@ def build(db_path: Path, reset: bool = False) -> None:
         # ── Generate and attach narratives ────────────────────────────────────
         log.info("Generating type narratives from demographic z-scores")
         try:
-            narratives = generate_all_narratives(str(TYPE_PROFILES_PATH))
+            narratives = generate_all_narratives(str(_type_profiles_path))
             tp_df["narrative"] = tp_df["type_id"].map(narratives)
             log.info("Attached narratives to %d types", tp_df["narrative"].notna().sum())
         except Exception as exc:
@@ -599,8 +649,8 @@ def build(db_path: Path, reset: bool = False) -> None:
         log.info("No type_profiles.parquet found; skipping types table")
 
     # ── Ingest county type assignments ─────────────────────────────────────────
-    if COUNTY_TYPE_ASSIGNMENTS_PATH.exists():
-        cta_df = pd.read_parquet(COUNTY_TYPE_ASSIGNMENTS_PATH)
+    if _county_type_assignments_path.exists():
+        cta_df = pd.read_parquet(_county_type_assignments_path)
         cta_df["county_fips"] = cta_df["county_fips"].astype(str).str.zfill(5)
         con.execute("DROP TABLE IF EXISTS county_type_assignments")
         con.execute("CREATE TABLE county_type_assignments AS SELECT * FROM cta_df")
@@ -609,28 +659,26 @@ def build(db_path: Path, reset: bool = False) -> None:
         log.info("No county_type_assignments_full.parquet found; skipping")
 
     # ── Ingest super-types ─────────────────────────────────────────────────────
-    if SUPER_TYPES_PATH.exists():
-        st_df = pd.read_parquet(SUPER_TYPES_PATH)
+    if _super_types_path.exists():
+        st_df = pd.read_parquet(_super_types_path)
         con.execute("DELETE FROM super_types")
         con.execute("INSERT INTO super_types SELECT * FROM st_df")
         log.info("Ingested super_types: %d rows", len(st_df))
     else:
         log.info("No super_types.parquet found; skipping")
 
-    # ── Ingest type covariance (long format) ───────────────────────────────────
-    if TYPE_COVARIANCE_LONG_PATH.exists():
-        tcov_df = pd.read_parquet(TYPE_COVARIANCE_LONG_PATH)
-        con.execute("DROP TABLE IF EXISTS type_covariance")
-        con.execute("CREATE TABLE type_covariance AS SELECT * FROM tcov_df")
-        log.info("Ingested type_covariance: %d rows", len(tcov_df))
-    else:
-        log.info("No type_covariance_long.parquet found; skipping")
+    # ── Domain ingest ────────────────────────────────────────────────────────
+    model_ddl(con)
+    polling_ddl(con)
+
+    ingest_model(con, current_version_id, _project_root)
+    ingest_polling(con, POLL_INGEST_CYCLE, _project_root)
 
     # ── Ingest demographics interpolated ───────────────────────────────────────
     # DuckDB develops heap corruption after many DataFrame INSERTs on a single
     # connection. Flush to disk, open a fresh connection for the last large table.
-    if DEMOGRAPHICS_INTERPOLATED_PATH.exists():
-        di_df = pd.read_parquet(DEMOGRAPHICS_INTERPOLATED_PATH)
+    if _demographics_interpolated_path.exists():
+        di_df = pd.read_parquet(_demographics_interpolated_path)
         di_df["county_fips"] = di_df["county_fips"].astype(str).str.zfill(5)
         del con  # release without close() — avoids crash on corrupted heap
         import gc; gc.collect()
@@ -644,14 +692,17 @@ def build(db_path: Path, reset: bool = False) -> None:
     # ── Summary query ──────────────────────────────────────────────────────────
     log.info("Database build complete: %s", db_path)
     print("\n=== wethervane.duckdb summary ===")
-    for table in ["counties", "model_versions", "community_assignments", "type_assignments", "county_shifts", "predictions", "community_sigma", "community_profiles", "county_demographics", "types", "county_type_assignments", "super_types", "type_covariance", "demographics_interpolated"]:
+    for table in ["counties", "model_versions", "community_assignments", "type_assignments",
+                   "county_shifts", "predictions", "community_sigma", "community_profiles",
+                   "county_demographics", "types", "county_type_assignments", "super_types",
+                   "type_covariance", "demographics_interpolated",
+                   "type_scores", "type_priors", "ridge_priors", "polls", "pollsters"]:
         try:
             n = con.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0]
             print(f"  {table}: {n:,} rows")
         except Exception as e:
             print(f"  {table}: ERROR — {e}")
 
-    # Show model versions
     print("\n=== Model Versions ===")
     rows = con.execute(
         "SELECT version_id, role, k, shift_type, vote_share_type, holdout_r FROM model_versions ORDER BY version_id"
@@ -661,16 +712,14 @@ def build(db_path: Path, reset: bool = False) -> None:
         vid, role, k, st, vst, hr = row
         print(f"  {str(vid):<45}  {str(role):<20}  {str(k):>4}  {str(st):<10}  {str(hr)}")
 
-    # ── Contract validation ────────────────────────────────────────────────────
+    # Contract validation
     errors = validate_contract(con)
     if errors:
         for e in errors:
             log.error("CONTRACT VIOLATION: %s", e)
         con.close()
-        import sys
         sys.exit(1)
     log.info("Contract validation passed")
-
     con.close()
 
 
@@ -679,6 +728,7 @@ def main() -> None:
     parser.add_argument("--db", type=Path, default=DEFAULT_DB, help="Output DuckDB path")
     parser.add_argument("--reset", action="store_true", help="Drop and rebuild the database")
     args = parser.parse_args()
+
     build(db_path=args.db, reset=args.reset)
 
 

@@ -69,6 +69,96 @@ def _load_mu_prior(db: duckdb.DuckDBPyConnection, version_id: str, K: int) -> np
     return mu
 
 
+def _load_type_data_from_db(
+    db: duckdb.DuckDBPyConnection, version_id: str
+) -> tuple[np.ndarray, list[str], np.ndarray, np.ndarray] | tuple[None, None, None, None]:
+    """Load type scores, fips list, covariance, and priors from DuckDB.
+
+    Returns (type_scores, type_county_fips, type_covariance, type_priors)
+    or (None, None, None, None) if the tables are empty for this version.
+    """
+    scores_df = db.execute(
+        "SELECT county_fips, type_id, score FROM type_scores WHERE version_id=? ORDER BY county_fips, type_id",
+        [version_id],
+    ).fetchdf()
+    if scores_df.empty:
+        return None, None, None, None
+
+    # Pivot: rows=county_fips, cols=type_id (0-indexed contiguous)
+    pivot = scores_df.pivot(index="county_fips", columns="type_id", values="score").sort_index()
+    pivot = pivot[sorted(pivot.columns)]  # ensure column order 0..J-1
+    type_scores = pivot.values.astype(float)
+    type_county_fips = pivot.index.tolist()
+    J = type_scores.shape[1]
+
+    # Covariance J×J
+    cov_df = db.execute(
+        "SELECT type_i, type_j, value FROM type_covariance WHERE version_id=? ORDER BY type_i, type_j",
+        [version_id],
+    ).fetchdf()
+    if cov_df.empty:
+        log.warning("No type_covariance rows in DB for version %s", version_id)
+        return None, None, None, None
+    cov_pivot = cov_df.pivot(index="type_i", columns="type_j", values="value").sort_index()
+    cov_pivot = cov_pivot[sorted(cov_pivot.columns)]
+    type_covariance = cov_pivot.values[:J, :J].astype(float)
+
+    # Priors J-vector
+    priors_df = db.execute(
+        "SELECT type_id, mean_dem_share FROM type_priors WHERE version_id=? ORDER BY type_id",
+        [version_id],
+    ).fetchdf()
+    if priors_df.empty:
+        log.warning("No type_priors rows in DB for version %s", version_id)
+        return None, None, None, None
+    type_priors = priors_df["mean_dem_share"].values[:J].astype(float)
+
+    return type_scores, type_county_fips, type_covariance, type_priors
+
+
+def _load_ridge_priors_from_db(db: duckdb.DuckDBPyConnection, version_id: str) -> dict[str, float]:
+    """Load ridge county priors as a dict from DuckDB."""
+    df = db.execute(
+        "SELECT county_fips, ridge_pred_dem_share FROM ridge_county_priors WHERE version_id=?",
+        [version_id],
+    ).fetchdf()
+    if df.empty:
+        return {}
+    return dict(zip(df["county_fips"], df["ridge_pred_dem_share"]))
+
+
+def _load_hac_weights_from_db(
+    db: duckdb.DuckDBPyConnection, version_id: str
+) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Reconstruct state_weights and county_weights DataFrames from DuckDB.
+
+    Returns DataFrames matching the shape that _forecast_poll_hac expects:
+    state_weights has columns [state_abbr, community_0, community_1, ...]
+    county_weights has columns [county_fips, community_id]
+    """
+    sw_df = db.execute(
+        "SELECT state_abbr, community_id, weight FROM hac_state_weights WHERE version_id=?",
+        [version_id],
+    ).fetchdf()
+    if sw_df.empty:
+        return pd.DataFrame(), pd.DataFrame()
+
+    state_weights = sw_df.pivot(index="state_abbr", columns="community_id", values="weight").reset_index()
+    # Sort by community_id to ensure stable column ordering
+    comm_ids = sorted(c for c in state_weights.columns if c != "state_abbr")
+    state_weights = state_weights[["state_abbr"] + comm_ids]
+    state_weights.columns = ["state_abbr"] + [f"community_{i}" for i in comm_ids]
+
+    # `_forecast_poll_hac` only reads county_fips → community_id mapping.
+    # Other columns that may exist in the source parquet (state_fips, etc.)
+    # are intentionally excluded here.
+    cw_df = db.execute(
+        "SELECT county_fips, community_id FROM hac_county_weights WHERE version_id=?",
+        [version_id],
+    ).fetchdf()
+    return state_weights, cw_df
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Open DB and load in-memory data at startup; close at shutdown."""
@@ -95,78 +185,44 @@ async def lifespan(app: FastAPI):
     app.state.mu_prior = _load_mu_prior(startup_db, version_id, K)
     log.info("Loaded mu_prior: %s", app.state.mu_prior.round(3))
 
-    # Load weight matrices from parquet (not in DuckDB)
-    state_w_path = data_dir / "propagation" / "community_weights_state_hac.parquet"
-    county_w_path = data_dir / "propagation" / "community_weights_county_hac.parquet"
-    if state_w_path.exists():
-        app.state.state_weights = pd.read_parquet(state_w_path)
-        log.info("Loaded state_weights: %d rows", len(app.state.state_weights))
-    else:
-        log.warning("state_weights not found at %s — POST /forecast/poll will fail", state_w_path)
-        app.state.state_weights = pd.DataFrame()
+    db = startup_db
 
-    if county_w_path.exists():
-        app.state.county_weights = pd.read_parquet(county_w_path)
-        log.info("Loaded county_weights: %d rows", len(app.state.county_weights))
-    else:
-        log.warning("county_weights not found at %s", county_w_path)
-        app.state.county_weights = pd.DataFrame()
+    # ── Type-primary model data ─────────────────────────────────────────────
+    try:
+        (
+            app.state.type_scores,
+            app.state.type_county_fips,
+            app.state.type_covariance,
+            app.state.type_priors,
+        ) = _load_type_data_from_db(db, version_id)
+        if app.state.type_scores is not None:
+            J = app.state.type_scores.shape[1]
+            log.info("Loaded type data: %d counties × %d types", app.state.type_scores.shape[0], J)
+        else:
+            log.warning("No type data in DB for version %s", version_id)
+    except Exception as exc:
+        log.warning("Could not load type data from DB: %s", exc)
+        app.state.type_scores = None
+        app.state.type_county_fips = None
+        app.state.type_covariance = None
+        app.state.type_priors = None
 
-    # ── Type-primary data (optional — graceful fallback if not present) ──
-    app.state.type_scores = None
-    app.state.type_covariance = None
-    app.state.type_priors = None
-    app.state.type_county_fips = None
-
-    type_scores_path = data_dir / "communities" / "type_assignments.parquet"
-    type_cov_path = data_dir / "covariance" / "type_covariance.parquet"
-    type_profiles_path = data_dir / "communities" / "type_profiles.parquet"
-
-    if type_scores_path.exists() and type_cov_path.exists():
-        try:
-            ta_df = pd.read_parquet(type_scores_path)
-            score_cols = sorted([c for c in ta_df.columns if c.endswith("_score")])
-            if score_cols:
-                app.state.type_scores = ta_df[score_cols].values
-                app.state.type_county_fips = ta_df["county_fips"].astype(str).str.zfill(5).tolist()
-                J = app.state.type_scores.shape[1]
-                log.info("Loaded type_scores: %d counties x %d types", *app.state.type_scores.shape)
-
-                cov_df = pd.read_parquet(type_cov_path)
-                app.state.type_covariance = cov_df.values[:J, :J]
-                log.info("Loaded type_covariance: %d x %d", J, J)
-
-                # Type priors
-                app.state.type_priors = np.full(J, 0.45)
-                if type_profiles_path.exists():
-                    profiles = pd.read_parquet(type_profiles_path)
-                    if "mean_dem_share" in profiles.columns:
-                        app.state.type_priors = profiles["mean_dem_share"].values[:J]
-                log.info("Type priors loaded: %s", np.round(app.state.type_priors, 3))
-        except Exception:
-            log.warning("Failed to load type data — falling back to HAC pipeline", exc_info=True)
-    else:
-        log.info("Type data not found — will use HAC pipeline for forecasts")
-
-    # ── Ridge county priors (optional — graceful fallback if not present) ──────
-    ridge_priors_path = data_dir / "models" / "ridge_model" / "ridge_county_priors.parquet"
-    if ridge_priors_path.exists():
-        try:
-            ridge_df = pd.read_parquet(ridge_priors_path)
-            ridge_df["county_fips"] = ridge_df["county_fips"].astype(str).str.zfill(5)
-            app.state.ridge_priors = dict(
-                zip(ridge_df["county_fips"], ridge_df["ridge_pred_dem_share"])
-            )
-            log.info("Loaded Ridge county priors: %d counties", len(app.state.ridge_priors))
-        except Exception:
-            log.warning("Failed to load Ridge county priors — falling back to type-mean", exc_info=True)
-            app.state.ridge_priors = {}
-    else:
-        log.warning(
-            "Ridge county priors not found at %s — forecast will use type-mean priors",
-            ridge_priors_path,
-        )
+    # ── Ridge county priors ──────────────────────────────────────────────────
+    try:
+        app.state.ridge_priors = _load_ridge_priors_from_db(db, version_id)
+        log.info("Loaded ridge priors: %d counties", len(app.state.ridge_priors))
+    except Exception as exc:
+        log.warning("Could not load ridge priors from DB: %s", exc)
         app.state.ridge_priors = {}
+
+    # ── HAC fallback weights ─────────────────────────────────────────────────
+    try:
+        app.state.state_weights, app.state.county_weights = _load_hac_weights_from_db(db, version_id)
+        log.info("Loaded HAC weights: %d states", len(app.state.state_weights))
+    except Exception as exc:
+        log.warning("Could not load HAC weights from DB: %s", exc)
+        app.state.state_weights = pd.DataFrame()
+        app.state.county_weights = pd.DataFrame()
 
     # ── Contract check ─────────────────────────────────────────────────────────
     contract_ok = True
