@@ -89,13 +89,15 @@ def download_baf_cd(state_fips: str, state_abbr: str) -> pd.DataFrame:
     return df[["block_geoid", "district"]]
 
 
-def load_dra_block_votes(state_abbr: str) -> pd.DataFrame:
+def load_dra_block_votes(state_abbr: str, dra_dir: Path | None = None) -> pd.DataFrame:
     """Load DRA block-level vote totals for one state.
 
     Returns DataFrame with columns: block_geoid (str), votes (int).
     Uses 2024 presidential vote total; falls back to 2020 if 2024 unavailable.
     """
-    state_dir = DRA_DIR / state_abbr
+    if dra_dir is None:
+        dra_dir = DRA_DIR
+    state_dir = dra_dir / state_abbr
     csv_pattern = f"election_data_block_{state_abbr}.v06.csv"
 
     # Find the CSV (may be in a version subdirectory)
@@ -124,7 +126,11 @@ def load_dra_block_votes(state_abbr: str) -> pd.DataFrame:
     return df[["block_geoid", "votes"]]
 
 
-def build_state_crosswalk(state_fips: str, state_abbr: str) -> pd.DataFrame:
+def build_state_crosswalk(
+    state_fips: str,
+    state_abbr: str,
+    dra_dir: Path | None = None,
+) -> pd.DataFrame:
     """Build county-district crosswalk for one state.
 
     Downloads BAF, joins with DRA vote data, aggregates to county-district level.
@@ -133,7 +139,7 @@ def build_state_crosswalk(state_fips: str, state_abbr: str) -> pd.DataFrame:
     baf = download_baf_cd(state_fips, state_abbr)
 
     # Load block-level votes
-    votes = load_dra_block_votes(state_abbr)
+    votes = load_dra_block_votes(state_abbr, dra_dir=dra_dir)
 
     # Join on block GEOID
     merged = baf.merge(votes, on="block_geoid", how="left")
@@ -169,13 +175,13 @@ def build_state_crosswalk(state_fips: str, state_abbr: str) -> pd.DataFrame:
 
 def build_crosswalk(
     states: list[str] | None = None,
-    cache_dir: Path | None = None,
+    dra_dir: Path | None = None,
 ) -> pd.DataFrame:
     """Build national county-to-district crosswalk.
 
     Args:
         states: List of state abbreviations to process. None = all 50 states + DC.
-        cache_dir: If provided, cache downloaded BAF files here.
+        dra_dir: Path to DRA block data root. Defaults to PROJECT_ROOT/data/raw/dra-block-data.
 
     Returns:
         DataFrame with county-district crosswalk for all requested states.
@@ -191,7 +197,7 @@ def build_crosswalk(
     for state_abbr in states:
         state_fips = STATE_ABBR_TO_FIPS[state_abbr]
         try:
-            cw = build_state_crosswalk(state_fips, state_abbr)
+            cw = build_state_crosswalk(state_fips, state_abbr, dra_dir=dra_dir)
             log.info(
                 "%s: %d county-district pairs, %d counties, %d districts",
                 state_abbr, len(cw),
