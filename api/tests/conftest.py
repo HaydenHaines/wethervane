@@ -255,7 +255,7 @@ def _build_test_db() -> duckdb.DuckDBPyConnection:
         INSERT INTO polls VALUES
         ('abc123', 'FL_Senate', 'FL', 'state', 0.45, 600, '2026-01-15', 'Siena', 'grade=A', '2026')
     """)
-    con.execute("CREATE TABLE poll_crosstabs (poll_id VARCHAR, demographic_group VARCHAR, group_value VARCHAR, dem_share FLOAT, n_sample INTEGER)")
+    con.execute("CREATE TABLE poll_crosstabs (poll_id VARCHAR, demographic_group VARCHAR, group_value VARCHAR, dem_share FLOAT, n_sample INTEGER, pct_of_sample FLOAT)")
     con.execute("CREATE TABLE poll_notes (poll_id VARCHAR, note_type VARCHAR, note_value VARCHAR)")
     con.execute("INSERT INTO poll_notes VALUES ('abc123', 'grade', 'A')")
 

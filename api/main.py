@@ -14,6 +14,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from api.routers import communities, counties, forecast, meta
+from src.propagation.crosstab_w_builder import CROSSTAB_DIMENSION_MAP, build_affinity_index
 
 log = logging.getLogger(__name__)
 
@@ -223,6 +224,59 @@ async def lifespan(app: FastAPI):
         log.warning("Could not load HAC weights from DB: %s", exc)
         app.state.state_weights = pd.DataFrame()
         app.state.county_weights = pd.DataFrame()
+
+    # ── Crosstab affinity index ───────────────────────────────────────────────
+    # Used by the forecast router to construct poll-specific W vectors when a
+    # poll has crosstab demographic breakdown data in the poll_crosstabs table.
+    # Optional: if the required parquet files are missing, log a warning and
+    # set crosstab_affinity to None so the router falls back to state-mean W.
+    try:
+        type_profiles_path = data_dir / "communities" / "type_profiles.parquet"
+        county_features_path = data_dir / "assembled" / "county_features_national.parquet"
+        type_profiles_df = pd.read_parquet(type_profiles_path)
+        county_demographics_df = pd.read_parquet(county_features_path)
+        app.state.crosstab_affinity = build_affinity_index(type_profiles_df, county_demographics_df)
+        log.info("Loaded crosstab affinity index (%d dimensions)", len(app.state.crosstab_affinity))
+
+        # Per-state population-weighted demographic means for each crosstab dimension.
+        # These are the baseline composition values that crosstab pct_of_sample deviates from.
+        # Shape: {state_abbr: {dimension_key: float}}
+        real_features = {
+            key: col
+            for key, col in CROSSTAB_DIMENSION_MAP.items()
+            if col is not None and col in county_demographics_df.columns
+        }
+        # Need state_abbr in county_demographics — look it up from the counties table.
+        counties_df = startup_db.execute(
+            "SELECT county_fips, state_abbr FROM counties"
+        ).fetchdf()
+        county_demographics_df = county_demographics_df.merge(
+            counties_df, on="county_fips", how="left"
+        )
+        state_means: dict[str, dict[str, float]] = {}
+        if "state_abbr" in county_demographics_df.columns and "pop_total" in county_demographics_df.columns:
+            for state_abbr, grp in county_demographics_df.groupby("state_abbr"):
+                pops = grp["pop_total"].to_numpy(dtype=float)
+                total = pops.sum()
+                if total <= 0:
+                    continue
+                dim_means: dict[str, float] = {}
+                for dim_key, col in real_features.items():
+                    if col in grp.columns:
+                        vals = grp[col].to_numpy(dtype=float)
+                        dim_means[dim_key] = float(np.average(vals, weights=pops))
+                # Add inverted dimension means (same value as parent — delta is negated in construct_w_row)
+                if "education_college" in dim_means:
+                    dim_means["education_noncollege"] = dim_means["education_college"]
+                if "urbanicity_urban" in dim_means:
+                    dim_means["urbanicity_rural"] = dim_means["urbanicity_urban"]
+                state_means[str(state_abbr)] = dim_means
+        app.state.crosstab_state_means = state_means
+        log.info("Computed per-state crosstab demographic means for %d states", len(state_means))
+    except Exception as exc:
+        log.warning("Could not build crosstab affinity index: %s", exc)
+        app.state.crosstab_affinity = None
+        app.state.crosstab_state_means = {}
 
     # ── Contract check ─────────────────────────────────────────────────────────
     contract_ok = True

@@ -469,3 +469,152 @@ def test_county_prior_backward_compat(synthetic_data):
         result_no_arg["pred_dem_share"].values,
         atol=1e-10,
     )
+
+
+# ---------------------------------------------------------------------------
+# W-override (crosstab-adjusted W) tests
+# ---------------------------------------------------------------------------
+
+
+def test_w_override_4tuple_uses_provided_w(synthetic_data):
+    """A 4-tuple poll with a non-None W override must use that W, not the state-mean W.
+
+    We pass a maximally concentrated W (all weight on type 0) and verify that
+    the result differs from using state-mean W.  The state-mean W for FL is
+    spread across many types, so a concentrated W produces a different posterior.
+    """
+    d = synthetic_data
+    J = d["J"]
+
+    # Concentrated W: all weight on type 0
+    w_override = np.zeros(J)
+    w_override[0] = 1.0
+
+    result_override = predict_race(
+        race="FL Senate",
+        polls=[(0.55, 1000, "FL", w_override)],
+        type_scores=d["type_scores"],
+        type_covariance=d["type_covariance"],
+        type_priors=d["type_priors"],
+        county_fips=d["county_fips"],
+        states=d["states"],
+        county_names=d["county_names"],
+    )
+
+    # Same poll without override (uses state-mean W)
+    result_no_override = predict_race(
+        race="FL Senate",
+        polls=[(0.55, 1000, "FL")],
+        type_scores=d["type_scores"],
+        type_covariance=d["type_covariance"],
+        type_priors=d["type_priors"],
+        county_fips=d["county_fips"],
+        states=d["states"],
+        county_names=d["county_names"],
+    )
+
+    # Results must differ because the W vectors differ
+    assert not np.allclose(
+        result_override["pred_dem_share"].values,
+        result_no_override["pred_dem_share"].values,
+    ), "W override should produce different predictions from state-mean W"
+
+
+def test_w_override_none_in_4tuple_falls_back_to_state_w(synthetic_data):
+    """A 4-tuple poll with None as the W override must behave identically to a 3-tuple."""
+    d = synthetic_data
+
+    result_3tuple = predict_race(
+        race="FL Senate",
+        polls=[(0.45, 800, "FL")],
+        type_scores=d["type_scores"],
+        type_covariance=d["type_covariance"],
+        type_priors=d["type_priors"],
+        county_fips=d["county_fips"],
+        states=d["states"],
+        county_names=d["county_names"],
+    )
+
+    result_4tuple_none = predict_race(
+        race="FL Senate",
+        polls=[(0.45, 800, "FL", None)],
+        type_scores=d["type_scores"],
+        type_covariance=d["type_covariance"],
+        type_priors=d["type_priors"],
+        county_fips=d["county_fips"],
+        states=d["states"],
+        county_names=d["county_names"],
+    )
+
+    np.testing.assert_allclose(
+        result_3tuple["pred_dem_share"].values,
+        result_4tuple_none["pred_dem_share"].values,
+        atol=1e-10,
+        err_msg="4-tuple with None W override must give identical results to 3-tuple",
+    )
+
+
+def test_w_override_renormalised(synthetic_data):
+    """W override is renormalised, so passing a scaled W gives the same result as unit W."""
+    d = synthetic_data
+    J = d["J"]
+
+    # Create a W vector and its 2× scaled version
+    w_unit = np.array([0.4, 0.3, 0.2, 0.1])[:J]
+    w_unit = w_unit / w_unit.sum()
+    w_scaled = w_unit * 5.0  # not normalised
+
+    result_unit = predict_race(
+        race="FL Senate",
+        polls=[(0.50, 800, "FL", w_unit)],
+        type_scores=d["type_scores"],
+        type_covariance=d["type_covariance"],
+        type_priors=d["type_priors"],
+        county_fips=d["county_fips"],
+        states=d["states"],
+        county_names=d["county_names"],
+    )
+
+    result_scaled = predict_race(
+        race="FL Senate",
+        polls=[(0.50, 800, "FL", w_scaled)],
+        type_scores=d["type_scores"],
+        type_covariance=d["type_covariance"],
+        type_priors=d["type_priors"],
+        county_fips=d["county_fips"],
+        states=d["states"],
+        county_names=d["county_names"],
+    )
+
+    np.testing.assert_allclose(
+        result_unit["pred_dem_share"].values,
+        result_scaled["pred_dem_share"].values,
+        atol=1e-9,
+        err_msg="Scaled W override should give same predictions after renormalisation",
+    )
+
+
+def test_w_override_mixed_with_no_override(synthetic_data):
+    """A poll list mixing 4-tuples with override and None must work without error."""
+    d = synthetic_data
+    J = d["J"]
+
+    w_override = np.ones(J) / J  # uniform W
+
+    result = predict_race(
+        race="FL Senate",
+        polls=[
+            (0.50, 1000, "FL", w_override),
+            (0.40, 800, "GA", None),
+        ],
+        type_scores=d["type_scores"],
+        type_covariance=d["type_covariance"],
+        type_priors=d["type_priors"],
+        county_fips=d["county_fips"],
+        states=d["states"],
+        county_names=d["county_names"],
+    )
+
+    assert len(result) == d["N"]
+    assert (result["pred_dem_share"] >= 0).all()
+    assert (result["pred_dem_share"] <= 1).all()

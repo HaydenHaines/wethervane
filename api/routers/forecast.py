@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import logging
+
 import duckdb
 import numpy as np
 import pandas as pd
@@ -16,6 +18,8 @@ from api.models import (
     RacePoll,
     TypeBreakdown,
 )
+
+log = logging.getLogger(__name__)
 
 router = APIRouter(tags=["forecast"])
 
@@ -291,6 +295,87 @@ def update_forecast_with_poll(
     return _forecast_poll_hac(poll, request, db)
 
 
+def _get_crosstab_w_override(
+    poll_id: str,
+    state_abbr: str,
+    db: duckdb.DuckDBPyConnection,
+    request: Request,
+    type_scores: np.ndarray,
+    county_fips_list: list[str],
+    states_list: list[str],
+) -> np.ndarray | None:
+    """Build a crosstab-adjusted W override for a poll if crosstab data is available.
+
+    Returns a normalised ndarray of shape (J,) if crosstab data exists and the
+    affinity index is loaded, otherwise returns None (caller uses state-mean W).
+
+    This is intentionally defensive: any failure returns None so the caller
+    falls back to the state-mean W rather than crashing the request.
+    """
+    from src.propagation.crosstab_w_builder import compute_state_baseline_w, construct_w_row
+
+    affinity = getattr(request.app.state, "crosstab_affinity", None)
+    if affinity is None:
+        return None  # Affinity index not loaded at startup
+
+    state_means_all: dict[str, dict[str, float]] = getattr(request.app.state, "crosstab_state_means", {})
+    state_means = state_means_all.get(state_abbr)
+    if not state_means:
+        return None  # No demographic baseline for this state
+
+    try:
+        crosstab_rows_df = db.execute(
+            """SELECT demographic_group, group_value, pct_of_sample
+               FROM poll_crosstabs
+               WHERE poll_id = ? AND pct_of_sample IS NOT NULL""",
+            [poll_id],
+        ).fetchdf()
+    except Exception as exc:
+        log.debug("poll_crosstabs query failed for poll_id=%s: %s", poll_id, exc)
+        return None
+
+    if crosstab_rows_df.empty:
+        return None  # No crosstab data for this poll
+
+    crosstab_dicts = crosstab_rows_df.to_dict("records")
+
+    # Population data for baseline W — use pop_total from county_features if available.
+    # Fall back to uniform weights if not present.
+    try:
+        pop_df = db.execute(
+            "SELECT county_fips, pop_total FROM county_demographics ORDER BY county_fips"
+        ).fetchdf()
+        pop_map = dict(zip(pop_df["county_fips"], pop_df["pop_total"].astype(float)))
+        county_pops = np.array([max(pop_map.get(f, 1.0), 1.0) for f in county_fips_list])
+    except Exception:
+        county_pops = np.ones(len(county_fips_list))
+
+    state_mask = np.array([s == state_abbr for s in states_list])
+    if not state_mask.any():
+        return None
+
+    try:
+        w_base = compute_state_baseline_w(
+            np.abs(type_scores),  # abs scores for population weighting (same as predict_race)
+            county_pops,
+            state_mask,
+        )
+        w_override = construct_w_row(
+            poll_crosstabs=crosstab_dicts,
+            state_baseline_w=w_base,
+            affinity_index=affinity,
+            state_demographic_means=state_means,
+        )
+    except Exception as exc:
+        log.warning(
+            "construct_w_row failed for poll_id=%s state=%s: %s",
+            poll_id, state_abbr, exc,
+        )
+        return None
+
+    return w_override
+
+
 def _forecast_poll_types(
     poll: PollInput,
     request: Request,
@@ -324,11 +409,40 @@ def _forecast_poll_types(
     else:
         county_priors = None  # falls back to type-mean inside predict_race
 
+    # Look up this poll's ID so we can query poll_crosstabs.
+    # poll_id is not part of PollInput (ad-hoc polls don't have one), so we
+    # attempt a best-effort lookup by matching on race+geography+dem_share.
+    # If no match, w_override is None and we fall back to state-mean W.
+    poll_id_row = db.execute(
+        """SELECT poll_id FROM polls
+           WHERE LOWER(race) = LOWER(?) AND geography = ?
+           ORDER BY date DESC LIMIT 1""",
+        [poll.race, poll.state],
+    ).fetchone()
+    poll_id = poll_id_row[0] if poll_id_row else None
+
+    w_override = None
+    if poll_id is not None:
+        w_override = _get_crosstab_w_override(
+            poll_id=poll_id,
+            state_abbr=poll.state,
+            db=db,
+            request=request,
+            type_scores=type_scores,
+            county_fips_list=type_county_fips,
+            states_list=states,
+        )
+        if w_override is not None:
+            log.info(
+                "Using crosstab-adjusted W for poll_id=%s race=%s state=%s",
+                poll_id, poll.race, poll.state,
+            )
+
     # poll.state is the authoritative source for which state was polled;
     # passing it explicitly avoids the fragile race-string scan.
     result_df = predict_race(
         race=poll.race,
-        polls=[(poll.dem_share, poll.n, poll.state)],
+        polls=[(poll.dem_share, poll.n, poll.state, w_override)],
         type_scores=type_scores,
         type_covariance=type_covariance,
         type_priors=type_priors,
@@ -501,13 +615,21 @@ def update_forecast_with_multi_polls(
     # states and conflates structurally distinct signals into one scalar.
     # Apply section weight to poll effective N (Option A from spec).
     sw = body.section_weights
-    race_polls = [
-        (p.dem_share, max(1, int(p.n_sample * sw.state_polls)), p.geography)
-        for p in weighted
-        if p.geo_level == "state"
+    # Build the weighted poll list including geography, retaining poll_id for crosstab lookup.
+    # rows_df is indexed by original CSV row; we need to align poll_id with the weighted list.
+    # The weighted list preserves the ordering of polls (PollObservation order = rows_df order).
+    # Build a poll_id list parallel to `polls` (which mirrors rows_df ordering).
+    poll_ids_by_index = list(rows_df["poll_id"]) if "poll_id" in rows_df.columns else [None] * len(polls)
+
+    weighted_state_indices = [
+        i for i, p in enumerate(weighted) if p.geo_level == "state"
+    ]
+    race_polls_base = [
+        (weighted[i].dem_share, max(1, int(weighted[i].n_sample * sw.state_polls)), weighted[i].geography)
+        for i in weighted_state_indices
     ]
 
-    if not race_polls:
+    if not race_polls_base:
         raise HTTPException(status_code=400, detail="No state-level polls after filtering")
 
     type_scores = getattr(request.app.state, "type_scores", None)
@@ -533,6 +655,29 @@ def update_forecast_with_multi_polls(
             np.array([ridge_priors.get(f, 0.45) for f in fips_list])
             if ridge_priors else None
         )
+
+        # Augment each poll tuple with a crosstab W override when available.
+        # Falls back to None (state-mean W) when no crosstab data exists.
+        race_polls: list[tuple] = []
+        for idx, (dem_share, n, state_abbr) in zip(weighted_state_indices, race_polls_base):
+            pid = poll_ids_by_index[idx] if idx < len(poll_ids_by_index) else None
+            w_override = None
+            if pid is not None:
+                w_override = _get_crosstab_w_override(
+                    poll_id=pid,
+                    state_abbr=state_abbr,
+                    db=db,
+                    request=request,
+                    type_scores=type_scores,
+                    county_fips_list=fips_list,
+                    states_list=states_list,
+                )
+                if w_override is not None:
+                    log.info(
+                        "Multi-poll: using crosstab-adjusted W for poll_id=%s state=%s",
+                        pid, state_abbr,
+                    )
+            race_polls.append((dem_share, n, state_abbr, w_override))
 
         result_df = predict_race(
             race=body.race or race_polls[0][2],

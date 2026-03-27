@@ -127,7 +127,7 @@ def predict_race(
     type_covariance: np.ndarray,
     type_priors: np.ndarray,
     county_fips: list[str],
-    polls: list[tuple[float, int, str]] | None = None,
+    polls: list[tuple[float, int, str] | tuple[float, int, str, np.ndarray | None]] | None = None,
     states: list[str] | None = None,
     county_names: list[str] | None = None,
     state_filter: str | None = None,
@@ -164,11 +164,20 @@ def predict_race(
         Prior Dem share per type (used for Bayesian update baseline).
     county_fips : list[str]
         FIPS codes for each county (length N).
-    polls : list of (dem_share, n, state_abbr) tuples or None
-        Poll observations. Each tuple is one poll: Democratic two-party
-        share (0-1), sample size, and the state abbreviation whose type
-        composition defines the observation equation (W row). Multiple
-        polls are stacked into a single multi-row Bayesian update.
+    polls : list of poll tuples or None
+        Poll observations.  Each element is either a 3-tuple
+        ``(dem_share, n, state_abbr)`` or a 4-tuple
+        ``(dem_share, n, state_abbr, w_override)`` where ``w_override``
+        is a precomputed W row (ndarray of shape J, or None).
+
+        When ``w_override`` is a non-None ndarray it is used directly
+        (after renormalisation) instead of computing the state-mean W
+        from type scores.  This supports crosstab-adjusted W vectors
+        from :mod:`src.propagation.crosstab_w_builder`.
+
+        3-tuple calls are fully backward compatible — existing callers
+        do not need to change.
+
         None = use prior only (no poll adjustment).
     states : list[str] or None
         State abbreviation per county. Derived from FIPS if None.
@@ -218,8 +227,18 @@ def predict_race(
         W_rows = []
         y_vals = []
         sigma_vals = []
-        for dem_share, n, poll_state in polls:
-            if poll_state:
+        for poll_tuple in polls:
+            dem_share = poll_tuple[0]
+            n = poll_tuple[1]
+            poll_state = poll_tuple[2]
+            # Optional 4th element: precomputed crosstab-adjusted W override.
+            w_override = poll_tuple[3] if len(poll_tuple) > 3 else None  # type: ignore[misc]
+
+            if w_override is not None:
+                # Use the precomputed W directly; renormalise against float drift.
+                w_sum = float(w_override.sum())
+                W_row = w_override / w_sum if w_sum > 0 else np.ones(J) / J
+            elif poll_state:
                 state_mask = np.array([s == poll_state for s in states])
                 if state_mask.any():
                     state_scores = type_scores[state_mask]
