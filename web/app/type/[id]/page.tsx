@@ -242,7 +242,9 @@ export default async function TypePage({ params }: PageProps) {
           Map
         </Link>
         {" / "}
-        <span>Types</span>
+        <Link href="/types" style={{ color: "var(--color-dem)", textDecoration: "none" }}>
+          Types
+        </Link>
         {" / "}
         <span>Type {data.type_id}</span>
       </nav>
