@@ -340,8 +340,10 @@ def update_forecast_with_multi_polls(
     # Build poll list for stacked Bayesian update — do not collapse.
     # Collapsing loses geographic information when polls cover different
     # states and conflates structurally distinct signals into one scalar.
+    # Apply section weight to poll effective N (Option A from spec).
+    sw = body.section_weights
     race_polls = [
-        (p.dem_share, p.n_sample, p.geography)
+        (p.dem_share, max(1, int(p.n_sample * sw.state_polls)), p.geography)
         for p in weighted
         if p.geo_level == "state"
     ]
@@ -383,6 +385,7 @@ def update_forecast_with_multi_polls(
             states=states_list,
             county_names=names_list,
             county_priors=county_priors,
+            prior_weight=sw.model_prior,
         )
 
         state_pred_val = None

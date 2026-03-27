@@ -97,12 +97,19 @@ class PollInput(BaseModel):
     n: int = 600        # poll sample size
 
 
+class SectionWeights(BaseModel):
+    model_prior: float = Field(1.0, ge=0.0, le=2.0)
+    state_polls: float = Field(1.0, ge=0.0, le=2.0)
+    national_polls: float = Field(1.0, ge=0.0, le=2.0)
+
+
 class MultiPollInput(BaseModel):
     cycle: str              # e.g. "2020", "2022"
     state: str              # e.g. "FL"
     race: str | None = None  # optional filter (e.g. "President", "Senate")
     half_life_days: float = 30.0
     apply_quality: bool = True
+    section_weights: SectionWeights = Field(default_factory=SectionWeights)
 
 
 class MultiPollResponse(BaseModel):
