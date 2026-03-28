@@ -102,7 +102,7 @@ const DEMO_FIELDS: DemoField[] = [
   { key: "evangelical_share", label: "Evangelical", format: formatPct, section: "religion" },
   { key: "catholic_share", label: "Catholic", format: formatPct, section: "religion" },
   { key: "mainline_share", label: "Mainline Protestant", format: formatPct, section: "religion" },
-  { key: "religious_adherence_rate", label: "Religious Adherence", format: formatPct, section: "religion" },
+  { key: "religious_adherence_rate", label: "Religious Adherence", format: (v) => `${(v / 10).toFixed(1)}%`, section: "religion" },
   { key: "pct_owner_occupied", label: "Owner-Occupied Housing", format: formatPct, section: "other" },
   { key: "pct_wfh", label: "Work From Home", format: formatPct, section: "other" },
   { key: "pct_management", label: "Management/Professional", format: formatPct, section: "other" },

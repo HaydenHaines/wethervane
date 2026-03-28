@@ -110,7 +110,7 @@ function DemographicsSection({ d }: { d: CommunityDemographics }) {
           <DemographicRow label="Mainline Protestant" value={d.mainline_share} fmt="pct" />
           <DemographicRow label="Catholic" value={d.catholic_share} fmt="pct" />
           <DemographicRow label="Black Protestant" value={d.black_protestant_share} fmt="pct" />
-          <DemographicRow label="Adherence rate" value={d.religious_adherence_rate} fmt="pct" />
+          <DemographicRow label="Adherence rate" value={d.religious_adherence_rate != null ? d.religious_adherence_rate / 10 : null} fmt="pct" />
         </>
       )}
     </div>
