@@ -26,41 +26,50 @@ class FeatureSpec:
 # ── Electoral features (~27) ─────────────────────────────────────────────────
 
 _ELECTORAL: list[FeatureSpec] = [
-    # Presidential shifts (log-odds)
-    FeatureSpec("pres_d_shift_16_20", "electoral", "presidential_shifts", "vest", 2020, "Dem log-odds shift 2016→2020"),
-    FeatureSpec("pres_r_shift_16_20", "electoral", "presidential_shifts", "vest", 2020, "Rep log-odds shift 2016→2020"),
-    FeatureSpec("pres_turnout_shift_16_20", "electoral", "presidential_shifts", "vest", 2020, "Turnout proportional change 2016→2020"),
-    FeatureSpec("pres_d_shift_20_24", "electoral", "presidential_shifts", "nyt", 2024, "Dem log-odds shift 2020→2024"),
-    FeatureSpec("pres_r_shift_20_24", "electoral", "presidential_shifts", "nyt", 2024, "Rep log-odds shift 2020→2024"),
-    FeatureSpec("pres_turnout_shift_20_24", "electoral", "presidential_shifts", "nyt", 2024, "Turnout proportional change 2020→2024"),
+    # Presidential shifts (log-odds, NOT state-centered — carry cross-state signal)
+    FeatureSpec("pres_shift_2008_2012", "electoral", "presidential_shifts", "dra", 2012, "Dem log-odds shift 2008→2012"),
+    FeatureSpec("pres_shift_2012_2016", "electoral", "presidential_shifts", "dra", 2016, "Dem log-odds shift 2012→2016"),
+    FeatureSpec("pres_shift_2016_2020", "electoral", "presidential_shifts", "dra", 2020, "Dem log-odds shift 2016→2020"),
+    FeatureSpec("pres_shift_2020_2024", "electoral", "presidential_shifts", "dra", 2024, "Dem log-odds shift 2020→2024"),
+    FeatureSpec("pres_turnout_shift_2016_2020", "electoral", "presidential_shifts", "dra", 2020, "Turnout proportional change 2016→2020"),
+    FeatureSpec("pres_turnout_shift_2020_2024", "electoral", "presidential_shifts", "dra", 2024, "Turnout proportional change 2020→2024"),
+
+    # Governor shifts (log-odds, state-centered — proxy for candidate effect removal)
+    FeatureSpec("gov_shift_2010_2014", "electoral", "governor_shifts", "dra", 2014, "Gov Dem shift 2010→2014 (state-centered)"),
+    FeatureSpec("gov_shift_2014_2018", "electoral", "governor_shifts", "dra", 2018, "Gov Dem shift 2014→2018 (state-centered)"),
+    FeatureSpec("gov_shift_2018_2022", "electoral", "governor_shifts", "dra", 2022, "Gov Dem shift 2018→2022 (state-centered)"),
+
+    # Senate shifts (log-odds, state-centered — proxy for candidate effect removal)
+    FeatureSpec("sen_shift_2010_2014", "electoral", "senate_shifts", "dra", 2014, "Senate Dem shift 2010→2014 (state-centered)"),
+    FeatureSpec("sen_shift_2014_2016", "electoral", "senate_shifts", "dra", 2016, "Senate Dem shift 2014→2016 (state-centered)"),
+    FeatureSpec("sen_shift_2016_2020", "electoral", "senate_shifts", "dra", 2020, "Senate Dem shift 2016→2020 (state-centered)"),
+    FeatureSpec("sen_shift_2020_2022", "electoral", "senate_shifts", "dra", 2022, "Senate Dem shift 2020→2022 (state-centered)"),
+
+    # House shifts (log-odds, state-centered)
+    FeatureSpec("house_shift_2016_2018", "electoral", "house_shifts", "dra", 2018, "House Dem shift 2016→2018 (state-centered)"),
+    FeatureSpec("house_shift_2018_2020", "electoral", "house_shifts", "dra", 2020, "House Dem shift 2018→2020 (state-centered)"),
 
     # Presidential lean (dem_share levels)
-    FeatureSpec("pres_dem_share_2016", "electoral", "presidential_lean", "vest", 2016, "Dem vote share 2016 president"),
-    FeatureSpec("pres_dem_share_2020", "electoral", "presidential_lean", "vest", 2020, "Dem vote share 2020 president"),
-    FeatureSpec("pres_dem_share_2024", "electoral", "presidential_lean", "nyt", 2024, "Dem vote share 2024 president"),
+    FeatureSpec("pres_dem_share_2016", "electoral", "presidential_lean", "dra", 2016, "Dem vote share 2016 president"),
+    FeatureSpec("pres_dem_share_2020", "electoral", "presidential_lean", "dra", 2020, "Dem vote share 2020 president"),
+    FeatureSpec("pres_dem_share_2024", "electoral", "presidential_lean", "dra", 2024, "Dem vote share 2024 president"),
 
     # Turnout level (raw total votes)
-    FeatureSpec("turnout_2016", "electoral", "turnout_level", "vest", 2016, "Total votes cast 2016 president"),
-    FeatureSpec("turnout_2020", "electoral", "turnout_level", "vest", 2020, "Total votes cast 2020 president"),
-    FeatureSpec("turnout_2024", "electoral", "turnout_level", "nyt", 2024, "Total votes cast 2024 president"),
+    FeatureSpec("turnout_2016", "electoral", "turnout_level", "dra", 2016, "Total votes cast 2016 president"),
+    FeatureSpec("turnout_2020", "electoral", "turnout_level", "dra", 2020, "Total votes cast 2020 president"),
+    FeatureSpec("turnout_2024", "electoral", "turnout_level", "dra", 2024, "Total votes cast 2024 president"),
 
     # Turnout shift (proportional change in total votes)
-    FeatureSpec("turnout_shift_16_20", "electoral", "turnout_shift", "vest", 2020, "Turnout proportional change 2016→2020"),
-    FeatureSpec("turnout_shift_20_24", "electoral", "turnout_shift", "nyt", 2024, "Turnout proportional change 2020→2024"),
+    FeatureSpec("turnout_shift_2016_2020", "electoral", "turnout_shift", "dra", 2020, "Turnout proportional change 2016→2020"),
+    FeatureSpec("turnout_shift_2020_2024", "electoral", "turnout_shift", "dra", 2024, "Turnout proportional change 2020→2024"),
 
     # Vote density (votes / sq km)
-    FeatureSpec("vote_density_2020", "electoral", "vote_density", "vest", 2020, "Votes per sq km 2020"),
-    FeatureSpec("vote_density_2024", "electoral", "vote_density", "nyt", 2024, "Votes per sq km 2024"),
-
-    # House shifts (state-centered)
-    FeatureSpec("house_d_shift_16_18_sc", "electoral", "house_shifts", "vest", 2018, "House Dem shift 2016→2018 (state-centered)"),
-    FeatureSpec("house_r_shift_16_18_sc", "electoral", "house_shifts", "vest", 2018, "House Rep shift 2016→2018 (state-centered)"),
-    FeatureSpec("house_d_shift_18_20_sc", "electoral", "house_shifts", "vest", 2020, "House Dem shift 2018→2020 (state-centered)"),
-    FeatureSpec("house_r_shift_18_20_sc", "electoral", "house_shifts", "vest", 2020, "House Rep shift 2018→2020 (state-centered)"),
+    FeatureSpec("vote_density_2020", "electoral", "vote_density", "dra", 2020, "Votes per sq km 2020"),
+    FeatureSpec("vote_density_2024", "electoral", "vote_density", "dra", 2024, "Votes per sq km 2024"),
 
     # Split ticket
-    FeatureSpec("split_ticket_2016", "electoral", "split_ticket", "vest", 2016, "abs(pres_dem - house_dem) 2016"),
-    FeatureSpec("split_ticket_2020", "electoral", "split_ticket", "vest", 2020, "abs(pres_dem - house_dem) 2020"),
+    FeatureSpec("split_ticket_2016", "electoral", "split_ticket", "dra", 2016, "abs(pres_dem - house_dem) 2016"),
+    FeatureSpec("split_ticket_2020", "electoral", "split_ticket", "dra", 2020, "abs(pres_dem - house_dem) 2020"),
 
     # Donor density (county proxy)
     FeatureSpec("donor_density", "electoral", "donor_density", "fec", None, "FEC donor density (county proxy)"),

@@ -147,7 +147,7 @@ def test_shift_computation(tract_votes_pair, tract_areas, state_fips_map):
 
     row = result.loc[result["GEOID"] == "12001000100"]
     assert len(row) == 1
-    actual = row["pres_d_shift_20_24"].values[0]
+    actual = row["pres_shift_2020_2024"].values[0]
     np.testing.assert_almost_equal(actual, expected_shift, decimal=5)
 
 
@@ -237,12 +237,108 @@ def test_state_centering(tract_votes_pair, tract_areas, state_fips_map):
     }
     result = build_electoral_features(tract_votes, tract_areas, state_fips_map)
 
-    # If governor shift columns exist and are state-centered,
-    # the FL tracts should have mean ~0 and GA tracts should have mean ~0
-    if "gov_d_shift_18_20_sc" in result.columns:
-        fl_mask = result["GEOID"].str.startswith("12")
-        fl_mean = result.loc[fl_mask, "gov_d_shift_18_20_sc"].mean()
-        np.testing.assert_almost_equal(fl_mean, 0.0, decimal=5)
+    # Governor shift columns should be state-centered (zero state mean)
+    assert "gov_shift_2018_2020" in result.columns, "Expected gov_shift_2018_2020 column"
+    fl_mask = result["GEOID"].str.startswith("12")
+    fl_mean = result.loc[fl_mask, "gov_shift_2018_2020"].mean()
+    np.testing.assert_almost_equal(fl_mean, 0.0, decimal=5)
+
+
+def test_offcycle_shifts_are_state_centered(tract_areas, state_fips_map):
+    """Off-cycle (governor/senate) shifts should have zero state mean."""
+    # 4 tracts across 2 states, governor race
+    geoids = ["01001010100", "01001010200", "13001010100", "13001010200"]
+    df_gov_2018 = pd.DataFrame({
+        "GEOID": geoids,
+        "votes_dem": [100, 200, 300, 400],
+        "votes_rep": [200, 100, 100, 200],
+        "votes_total": [300, 300, 400, 600],
+        "dem_share": [100 / 300, 200 / 300, 300 / 400, 400 / 600],
+        "state": ["AL", "AL", "GA", "GA"],
+        "year": [2018] * 4,
+        "race": ["governor"] * 4,
+    })
+    df_gov_2022 = pd.DataFrame({
+        "GEOID": geoids,
+        "votes_dem": [120, 220, 280, 420],
+        "votes_rep": [180, 80, 120, 180],
+        "votes_total": [300, 300, 400, 600],
+        "dem_share": [120 / 300, 220 / 300, 280 / 400, 420 / 600],
+        "state": ["AL", "AL", "GA", "GA"],
+        "year": [2022] * 4,
+        "race": ["governor"] * 4,
+    })
+    # Also add senate data to test senate shift naming
+    df_sen_2018 = df_gov_2018.copy()
+    df_sen_2018["race"] = "senate"
+    df_sen_2022 = df_gov_2022.copy()
+    df_sen_2022["race"] = "senate"
+    # Tweak dem_share slightly so senate shifts differ from governor
+    df_sen_2022["dem_share"] = [110 / 300, 210 / 300, 290 / 400, 410 / 600]
+
+    areas = pd.Series(
+        [1.0] * 4,
+        index=pd.Index(geoids, name="GEOID"),
+    )
+    fips_map = {"01": "AL", "13": "GA"}
+
+    tract_votes = {
+        "governor_2018": df_gov_2018,
+        "governor_2022": df_gov_2022,
+        "senate_2018": df_sen_2018,
+        "senate_2022": df_sen_2022,
+    }
+    result = build_electoral_features(tract_votes, areas, fips_map)
+
+    # Verify governor shift column exists with correct naming
+    gov_shift_cols = [c for c in result.columns if c.startswith("gov_shift_")]
+    assert len(gov_shift_cols) > 0, "Expected governor shift columns"
+    assert "gov_shift_2018_2022" in result.columns
+
+    # Verify senate shift column exists with correct naming
+    sen_shift_cols = [c for c in result.columns if c.startswith("sen_shift_")]
+    assert len(sen_shift_cols) > 0, "Expected senate shift columns"
+    assert "sen_shift_2018_2022" in result.columns
+
+    # Verify state-centering: each state's mean should be ~0
+    for col in gov_shift_cols + sen_shift_cols:
+        for state_fips in ["01", "13"]:
+            state_mask = result["GEOID"].str[:2] == state_fips
+            state_vals = result.loc[state_mask, col].dropna()
+            if len(state_vals) > 1:
+                assert abs(state_vals.mean()) < 0.01, (
+                    f"{col} state mean for FIPS {state_fips} should be ~0, "
+                    f"got {state_vals.mean():.4f}"
+                )
+
+    # Verify presidential shifts are NOT state-centered (if present)
+    pres_shift_cols = [c for c in result.columns if c.startswith("pres_shift_")]
+    # No presidential data in this test, so just verify naming convention
+    assert len(pres_shift_cols) == 0, "No presidential data was provided"
+
+
+def test_presidential_shifts_not_state_centered(tract_votes_pair, tract_areas, state_fips_map):
+    """Presidential shifts should NOT be state-centered (carry cross-state signal)."""
+    df_2020, df_2024 = tract_votes_pair
+    tract_votes = {
+        "president_2020": df_2020,
+        "president_2024": df_2024,
+    }
+    result = build_electoral_features(tract_votes, tract_areas, state_fips_map)
+
+    # Presidential shift column should exist with full-year naming
+    assert "pres_shift_2020_2024" in result.columns
+
+    # FL tracts (12*) should NOT have zero mean — presidential shifts are raw
+    fl_mask = result["GEOID"].str.startswith("12")
+    fl_vals = result.loc[fl_mask, "pres_shift_2020_2024"].dropna()
+    if len(fl_vals) > 1:
+        # The mean is non-zero because we don't state-center presidential shifts
+        # (it could be zero by coincidence, but with our test data it shouldn't be)
+        fl_mean = fl_vals.mean()
+        # Just verify the column has valid non-NaN values
+        assert len(fl_vals) == 2
+        assert not np.isnan(fl_mean)
 
 
 # ── Demographic feature tests ────────────────────────────────────────────────

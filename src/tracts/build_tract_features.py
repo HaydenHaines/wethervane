@@ -106,7 +106,8 @@ def build_electoral_features(
                 density_df = density_df[[col_density]].reset_index()
                 result = result.merge(density_df, on="GEOID", how="left")
 
-    # -- Presidential shifts (log-odds) ----------------------------------------
+    # -- Presidential shifts (log-odds, NOT state-centered) ----------------------
+    # Presidential shifts carry cross-state signal and remain raw.
     pres_pairs = [("2008", "2012"), ("2012", "2016"), ("2016", "2020"), ("2020", "2024")]
     for early_yr, late_yr in pres_pairs:
         early_key = f"president_{early_yr}"
@@ -124,57 +125,52 @@ def build_electoral_features(
             suffixes=("_early", "_late"),
         )
 
-        a = early_yr[-2:]
-        b = late_yr[-2:]
-
-        # D shift (log-odds)
+        # Dem log-odds shift (positive = Dem gain)
         d_shift = _logodds(merged["dem_share_late"]) - _logodds(merged["dem_share_early"])
-        merged[f"pres_d_shift_{a}_{b}"] = d_shift
-        merged[f"pres_r_shift_{a}_{b}"] = -d_shift
+        merged[f"pres_shift_{early_yr}_{late_yr}"] = d_shift
 
         # Turnout shift (proportional)
         early_total = merged["votes_total_early"].replace(0, np.nan)
-        merged[f"pres_turnout_shift_{a}_{b}"] = (
+        merged[f"pres_turnout_shift_{early_yr}_{late_yr}"] = (
             (merged["votes_total_late"] - merged["votes_total_early"]) / early_total
         )
 
         shift_cols = [
-            f"pres_d_shift_{a}_{b}",
-            f"pres_r_shift_{a}_{b}",
-            f"pres_turnout_shift_{a}_{b}",
+            f"pres_shift_{early_yr}_{late_yr}",
+            f"pres_turnout_shift_{early_yr}_{late_yr}",
         ]
         result = result.merge(merged[["GEOID"] + shift_cols], on="GEOID", how="left")
 
     # -- Turnout shift (standalone) --------------------------------------------
     for early_yr, late_yr in pres_pairs:
-        a = early_yr[-2:]
-        b = late_yr[-2:]
-        col = f"turnout_shift_{a}_{b}"
-        pres_col = f"pres_turnout_shift_{a}_{b}"
+        col = f"turnout_shift_{early_yr}_{late_yr}"
+        pres_col = f"pres_turnout_shift_{early_yr}_{late_yr}"
         if pres_col in result.columns:
             result[col] = result[pres_col]
 
-    # -- Non-presidential shifts (governor, house) with state-centering --------
-    non_pres_pairs = []
-    # Detect governor pairs
-    gov_years = sorted(
-        int(k.split("_")[1])
-        for k in tract_votes
-        if k.startswith("governor_")
-    )
-    for i in range(len(gov_years) - 1):
-        non_pres_pairs.append(("governor", str(gov_years[i]), str(gov_years[i + 1])))
+    # -- Off-cycle shifts (governor, senate, house) with state-centering -------
+    # Off-cycle shifts are state-centered: subtract the state mean within each
+    # state (identified by first 2 chars of tract GEOID = state FIPS).
+    # This is a proxy for candidate effect removal — different governor/senate
+    # candidates in each state add state-level bias that must be removed before
+    # cross-state clustering.
+    _OFFCYCLE_RACE_PREFIX = {
+        "governor": "gov",
+        "senate": "sen",
+        "house": "house",
+    }
+    offcycle_pairs: list[tuple[str, str, str]] = []
 
-    # Detect house pairs
-    house_years = sorted(
-        int(k.split("_")[1])
-        for k in tract_votes
-        if k.startswith("house_")
-    )
-    for i in range(len(house_years) - 1):
-        non_pres_pairs.append(("house", str(house_years[i]), str(house_years[i + 1])))
+    for race, prefix in _OFFCYCLE_RACE_PREFIX.items():
+        race_years = sorted(
+            int(k.split("_")[1])
+            for k in tract_votes
+            if k.startswith(f"{race}_")
+        )
+        for i in range(len(race_years) - 1):
+            offcycle_pairs.append((race, str(race_years[i]), str(race_years[i + 1])))
 
-    for race, early_yr, late_yr in non_pres_pairs:
+    for race, early_yr, late_yr in offcycle_pairs:
         early_key = f"{race}_{early_yr}"
         late_key = f"{race}_{late_yr}"
         if early_key not in tract_votes or late_key not in tract_votes:
@@ -183,33 +179,31 @@ def build_electoral_features(
         early_df = tract_votes[early_key]
         late_df = tract_votes[late_key]
 
-        merged = early_df[["GEOID", "dem_share", "state"]].merge(
+        merged = early_df[["GEOID", "dem_share"]].merge(
             late_df[["GEOID", "dem_share"]],
             on="GEOID",
             how="inner",
             suffixes=("_early", "_late"),
         )
 
-        a = early_yr[-2:]
-        b = late_yr[-2:]
-        prefix = "gov" if race == "governor" else "house"
+        prefix = _OFFCYCLE_RACE_PREFIX[race]
+        col_name = f"{prefix}_shift_{early_yr}_{late_yr}"
 
-        # Raw shift
+        # Raw log-odds shift
         raw_shift = _logodds(merged["dem_share_late"]) - _logodds(merged["dem_share_early"])
 
-        # State-center: subtract state mean
-        states = merged["state"]
+        # State-center using GEOID prefix (first 2 chars = state FIPS)
+        state_fips = merged["GEOID"].str[:2]
         centered = raw_shift.copy()
-        for st in states.unique():
-            mask = states == st
-            centered[mask] = raw_shift[mask] - raw_shift[mask].mean()
+        for st in state_fips.unique():
+            mask = state_fips == st
+            st_vals = raw_shift[mask]
+            valid = st_vals.dropna()
+            if len(valid) > 1:
+                centered[mask] = st_vals - valid.mean()
 
-        col_d = f"{prefix}_d_shift_{a}_{b}_sc"
-        col_r = f"{prefix}_r_shift_{a}_{b}_sc"
-        merged[col_d] = centered
-        merged[col_r] = -centered
-
-        result = result.merge(merged[["GEOID", col_d, col_r]], on="GEOID", how="left")
+        merged[col_name] = centered
+        result = result.merge(merged[["GEOID", col_name]], on="GEOID", how="left")
 
     # -- Split ticket ----------------------------------------------------------
     for year in (2016, 2020):
