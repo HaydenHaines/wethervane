@@ -8,18 +8,35 @@
 
 /* ── Light theme (default) ────────────────────────────────────── */
 :root {
+  /* WetherVane surface tokens */
   --color-bg: #f7f8fa;
   --color-surface: #ffffff;
   --color-surface-raised: #ffffff;
+  --color-surface-elevated: #ffffff;
   --color-border: #e0e0e0;
+  --color-border-subtle: #f0eeeb;
   --color-text: #222222;
   --color-text-muted: #666666;
-  --color-dem: #2d4a6f;
-  --color-rep: #6e3535;
+  --color-text-subtle: #8a8478;
   --color-focus: #2166ac;
   --color-panel-width: 420px;
   --font-serif: Georgia, "Times New Roman", serif;
   --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  /* Dusty Ink v2 partisan scale — purple tossup, not gray */
+  --forecast-safe-d: #2d4a6f;
+  --forecast-likely-d: #4b6d90;
+  --forecast-lean-d: #7e9ab5;
+  --forecast-tossup: #8a6b8a;
+  --forecast-lean-r: #c4907a;
+  --forecast-likely-r: #9e5e4e;
+  --forecast-safe-r: #6e3535;
+
+  /* Legacy aliases (kept for existing components) */
+  --color-dem: #2d4a6f;
+  --color-rep: #6e3535;
+
+  /* shadcn oklch tokens */
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -59,30 +76,62 @@
   --color-bg: #1a1b1e;
   --color-surface: #25262b;
   --color-surface-raised: #2c2e33;
+  --color-surface-elevated: #2c2d32;
   --color-border: #3d3f44;
+  --color-border-subtle: #2a2b2f;
   --color-text: #e0e0e0;
   --color-text-muted: #a0a0a0;
+  --color-text-subtle: #787670;
+  --color-focus: #5b9bd5;
+
+  /* Dusty Ink v2 dark partisan scale */
+  --forecast-safe-d: #5b9bd5;
+  --forecast-likely-d: #4b82b9;
+  --forecast-lean-d: #6e9bc3;
+  --forecast-tossup: #a082a0;
+  --forecast-lean-r: #d2a08c;
+  --forecast-likely-r: #c8826e;
+  --forecast-safe-r: #e8746a;
+
+  /* Legacy aliases */
   --color-dem: #5b9bd5;
   --color-rep: #e8746a;
-  --color-focus: #5b9bd5;
 }
 
-/* Auto-detect system preference when no explicit choice stored */
+/* ── System preference (auto-detect when no explicit choice stored) ── */
 @media (prefers-color-scheme: dark) {
   [data-theme="system"] {
     --color-bg: #1a1b1e;
     --color-surface: #25262b;
     --color-surface-raised: #2c2e33;
+    --color-surface-elevated: #2c2d32;
     --color-border: #3d3f44;
+    --color-border-subtle: #2a2b2f;
     --color-text: #e0e0e0;
     --color-text-muted: #a0a0a0;
+    --color-text-subtle: #787670;
+    --color-focus: #5b9bd5;
+
+    /* Dusty Ink v2 dark partisan scale */
+    --forecast-safe-d: #5b9bd5;
+    --forecast-likely-d: #4b82b9;
+    --forecast-lean-d: #6e9bc3;
+    --forecast-tossup: #a082a0;
+    --forecast-lean-r: #d2a08c;
+    --forecast-likely-r: #c8826e;
+    --forecast-safe-r: #e8746a;
+
+    /* Legacy aliases */
     --color-dem: #5b9bd5;
     --color-rep: #e8746a;
-    --color-focus: #5b9bd5;
   }
 }
 
 /* ── Base styles ──────────────────────────────────────────────── */
+
+html {
+  scroll-behavior: smooth;
+}
 
 body {
   margin: 0;
@@ -92,13 +141,15 @@ body {
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-/* Map layout manages its own overflow via the .app-shell container.
-   Non-map pages (e.g. /type/[id], /methodology) need normal scrolling. */
-.app-shell {
-  overflow: hidden;
+h1, h2, h3 { font-family: var(--font-serif); }
+
+a {
+  color: var(--color-dem);
 }
 
-h1, h2, h3 { font-family: var(--font-serif); }
+a:hover {
+  text-decoration: underline;
+}
 
 /* ── Accessibility ────────────────────────────────────────────── */
 
@@ -133,15 +184,6 @@ h1, h2, h3 { font-family: var(--font-serif); }
   outline: none;
 }
 
-/* Ensure sufficient contrast for links */
-a {
-  color: var(--color-dem);
-}
-
-a:hover {
-  text-decoration: underline;
-}
-
 /* Reduced motion preference */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -152,334 +194,7 @@ a:hover {
   }
 }
 
-/* ── Theme toggle button ──────────────────────────────────────── */
-
-.theme-toggle {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border: 1px solid var(--color-border);
-  border-radius: 6px;
-  background: var(--color-surface);
-  color: var(--color-text);
-  cursor: pointer;
-  transition: background-color 0.15s ease, border-color 0.15s ease;
-  padding: 0;
-  line-height: 1;
-}
-
-.theme-toggle:hover {
-  background: var(--color-bg);
-  border-color: var(--color-text-muted);
-}
-
-.theme-toggle svg {
-  width: 18px;
-  height: 18px;
-}
-
-/* ── Methodology: Table of Contents ───────────────────────────── */
-
-.methodology-layout {
-  display: flex;
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 40px 24px 80px;
-  gap: 48px;
-}
-
-.methodology-toc {
-  position: sticky;
-  top: 24px;
-  flex-shrink: 0;
-  width: 200px;
-  align-self: flex-start;
-  max-height: calc(100vh - 48px);
-  overflow-y: auto;
-}
-
-.methodology-toc-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.methodology-toc-item {
-  margin-bottom: 2px;
-}
-
-.methodology-toc-link {
-  display: block;
-  padding: 6px 12px;
-  font-size: 13px;
-  color: var(--color-text-muted);
-  text-decoration: none;
-  border-left: 2px solid transparent;
-  transition: color 0.15s ease, border-color 0.15s ease;
-  line-height: 1.4;
-}
-
-.methodology-toc-link:hover {
-  color: var(--color-text);
-  text-decoration: none;
-}
-
-.methodology-toc-link.active {
-  color: var(--color-text);
-  border-left-color: var(--color-dem);
-  font-weight: 600;
-}
-
-.methodology-content {
-  flex: 1;
-  min-width: 0;
-}
-
-/* Smooth scrolling for anchor links */
-html {
-  scroll-behavior: smooth;
-}
-
-/* Anchor link offset for fixed headers */
-.methodology-content section[id] {
-  scroll-margin-top: 24px;
-}
-
-/* Anchor link icon on section headings */
-.section-anchor {
-  display: inline-block;
-  margin-left: 8px;
-  color: var(--color-border);
-  text-decoration: none;
-  font-size: 0.7em;
-  vertical-align: middle;
-  opacity: 0;
-  transition: opacity 0.15s ease;
-}
-
-h2:hover .section-anchor,
-.section-anchor:focus {
-  opacity: 1;
-  color: var(--color-text-muted);
-}
-
-/* Expandable section toggle */
-.expandable-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  cursor: pointer;
-  padding: 0;
-  border: none;
-  background: none;
-  width: 100%;
-  text-align: left;
-  color: inherit;
-  font: inherit;
-}
-
-.expandable-header:hover {
-  color: var(--color-dem);
-}
-
-.expand-icon {
-  flex-shrink: 0;
-  width: 20px;
-  height: 20px;
-  transition: transform 0.2s ease;
-  color: var(--color-text-muted);
-}
-
-.expand-icon.expanded {
-  transform: rotate(180deg);
-}
-
-.expandable-body {
-  overflow: hidden;
-  transition: max-height 0.3s ease, opacity 0.2s ease;
-}
-
-.expandable-body.collapsed {
-  max-height: 0;
-  opacity: 0;
-}
-
-.expandable-body.expanded {
-  max-height: 2000px;
-  opacity: 1;
-}
-
-/* ── Mobile layout (< 768px) ───────────────────────────────────── */
-@media (max-width: 767px) {
-  body {
-    overflow: auto;
-  }
-
-  .app-shell {
-    flex-direction: column !important;
-    height: auto !important;
-    min-height: 100vh;
-    overflow: visible !important;
-  }
-
-  .map-pane {
-    flex: none !important;
-    width: 100% !important;
-    height: 45vh !important;
-    min-height: 250px;
-  }
-
-  .panel-pane {
-    width: 100% !important;
-    border-left: none !important;
-    border-top: 1px solid var(--color-border);
-    overflow: visible !important;
-    /* Allow panel to grow to fit content */
-    flex: 1 1 auto !important;
-  }
-
-  .panel-scroll {
-    overflow: auto !important;
-    /* Let it be as tall as its content — page scrolls */
-    max-height: none !important;
-  }
-
-  /* ── Map overlay controls ── */
-  .map-toggle-btn {
-    padding: 8px 14px !important;
-    font-size: 12px !important;
-  }
-
-  /* Legend: compact horizontal layout on mobile */
-  .map-legend {
-    bottom: 12px !important;
-    left: 8px !important;
-    padding: 5px 8px !important;
-    font-size: 10px !important;
-    max-width: calc(100vw - 16px);
-    display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: wrap !important;
-    gap: 4px 10px !important;
-  }
-
-  .map-legend-item {
-    margin-bottom: 0 !important;
-  }
-
-  /* ── Tab bar ── */
-  .tab-bar {
-    overflow-x: auto !important;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-  }
-
-  .tab-bar::-webkit-scrollbar {
-    display: none;
-  }
-
-  .tab-link {
-    padding: 12px 16px !important;
-    font-size: 14px !important;
-    white-space: nowrap;
-  }
-
-  /* ── Compare table: horizontal scroll ── */
-  .compare-table-scroll {
-    overflow-x: auto !important;
-    -webkit-overflow-scrolling: touch;
-    margin: 0 -16px;
-    padding: 0 16px;
-  }
-
-  .compare-table-scroll table {
-    min-width: 420px;
-    table-layout: auto !important;
-  }
-
-  .compare-table-scroll col {
-    width: auto !important;
-  }
-
-  /* ── Forecast county table: constrained height with scroll ── */
-  .forecast-county-table-wrap {
-    max-height: 320px;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    border: 1px solid var(--color-border);
-    border-radius: 4px;
-  }
-
-  .forecast-county-table-wrap thead th {
-    position: sticky;
-    top: 0;
-    background: var(--color-surface);
-    z-index: 1;
-  }
-
-  /* ── County detail page ── */
-  .county-detail-article {
-    padding: 24px 16px 60px !important;
-  }
-
-  .county-detail-article h1 {
-    font-size: 24px !important;
-  }
-
-  .county-demo-grid {
-    grid-template-columns: 1fr !important;
-  }
-
-  .county-siblings-grid {
-    grid-template-columns: 1fr !important;
-  }
-
-  /* ── Methodology: hide TOC on mobile, full-width content ── */
-  .methodology-layout {
-    flex-direction: column;
-    padding: 24px 16px 60px;
-    gap: 0;
-  }
-
-  .methodology-toc {
-    display: none;
-  }
-
-  .methodology-content {
-    width: 100%;
-  }
-
-  /* ── Generic touch targets ── */
-  button,
-  select,
-  a {
-    min-height: 44px;
-  }
-
-  /* Inline icon buttons (close, collapse, remove) can stay smaller */
-  button[aria-label="Close panel"],
-  button[aria-label="Expand panel"],
-  button[aria-label="Collapse panel"],
-  button[title="Remove"],
-  .theme-toggle,
-  .expandable-header {
-    min-height: unset;
-  }
-}
-
-/* ── Tablet TOC breakpoint (< 1024px but >= 768px) ─────────── */
-@media (min-width: 768px) and (max-width: 1023px) {
-  .methodology-toc {
-    width: 160px;
-  }
-
-  .methodology-toc-link {
-    font-size: 12px;
-    padding: 5px 10px;
-  }
-}
+/* ── shadcn required blocks (DO NOT MODIFY) ───────────────────── */
 
 @theme inline { --font-heading: var(--font-sans); --font-sans: var(--font-sans); --color-sidebar-ring: var(--sidebar-ring); --color-sidebar-border: var(--sidebar-border); --color-sidebar-accent-foreground: var(--sidebar-accent-foreground); --color-sidebar-accent: var(--sidebar-accent); --color-sidebar-primary-foreground: var(--sidebar-primary-foreground); --color-sidebar-primary: var(--sidebar-primary); --color-sidebar-foreground: var(--sidebar-foreground); --color-sidebar: var(--sidebar); --color-chart-5: var(--chart-5); --color-chart-4: var(--chart-4); --color-chart-3: var(--chart-3); --color-chart-2: var(--chart-2); --color-chart-1: var(--chart-1); --color-ring: var(--ring); --color-input: var(--input); --color-border: var(--border); --color-destructive: var(--destructive); --color-accent-foreground: var(--accent-foreground); --color-accent: var(--accent); --color-muted-foreground: var(--muted-foreground); --color-muted: var(--muted); --color-secondary-foreground: var(--secondary-foreground); --color-secondary: var(--secondary); --color-primary-foreground: var(--primary-foreground); --color-primary: var(--primary); --color-popover-foreground: var(--popover-foreground); --color-popover: var(--popover); --color-card-foreground: var(--card-foreground); --color-card: var(--card); --color-foreground: var(--foreground); --color-background: var(--background); --radius-sm: calc(var(--radius) * 0.6); --radius-md: calc(var(--radius) * 0.8); --radius-lg: var(--radius); --radius-xl: calc(var(--radius) * 1.4); --radius-2xl: calc(var(--radius) * 1.8); --radius-3xl: calc(var(--radius) * 2.2); --radius-4xl: calc(var(--radius) * 2.6); }
 
