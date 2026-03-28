@@ -133,6 +133,24 @@ def test_section_weights_model():
     assert mpi2.section_weights.model_prior == 0.3
 
 
+def test_prior_weight_exact_zero_polls_dominate(mock_model):
+    """With prior_weight=0.0 exactly, polls should completely dominate predictions.
+
+    Regression test for bug where `0.0 > 0` was False, skipping covariance
+    inflation and preventing polls from moving type means.
+    """
+    polls = [(0.60, 500, "AL")]
+    result = predict_race(
+        race="test", polls=polls, prior_weight=0.0, **mock_model,
+    )
+    mean_pred = result["pred_dem_share"].mean()
+    # With pw=0 and a D+60 poll, the weighted state prediction should be
+    # well above the type priors (~0.49) — closer to the poll than the prior.
+    assert mean_pred > 0.55, (
+        f"prior_weight=0 should let polls dominate, but mean pred={mean_pred:.3f}"
+    )
+
+
 def test_higher_prior_weight_anchors_closer(mock_model):
     """Higher model_prior weight should keep predictions closer to the prior."""
     polls = [(0.60, 500, "AL")]

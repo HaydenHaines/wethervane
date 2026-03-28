@@ -218,7 +218,11 @@ def predict_race(
 
     # Scale prior precision by prior_weight (lower weight = less informative prior,
     # so polls pull predictions further from the baseline).
-    if prior_weight != 1.0 and prior_weight > 0:
+    # At pw=0 the user wants "trust only polls" — inflate covariance enormously
+    # so the Bayesian update posterior collapses onto the poll likelihood.
+    if prior_weight == 0.0:
+        type_cov = type_cov * 1e6
+    elif prior_weight != 1.0:
         type_cov = type_cov / prior_weight
 
     if polls:
