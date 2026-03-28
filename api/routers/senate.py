@@ -12,6 +12,13 @@ router = APIRouter(tags=["senate"])
 DEM_SAFE_SEATS = 47
 GOP_SAFE_SEATS = 53
 
+SENATE_2026_STATES = {
+    "AL", "AK", "AR", "CO", "DE", "GA", "IA", "ID", "IL", "KS",
+    "KY", "LA", "MA", "ME", "MI", "MN", "MS", "MT", "NC", "NE",
+    "NH", "NJ", "NM", "OK", "OR", "RI", "SC", "SD", "TN", "TX",
+    "VA", "WV", "WY",
+}
+
 # Rating margin thresholds (margin = dem_share - 0.5)
 _TOSSUP_MAX = 0.03
 _LEAN_MAX = 0.08
@@ -68,33 +75,20 @@ def get_senate_overview(
 ) -> dict:
     """Return the national Senate forecast summary for the landing page.
 
-    Queries all Senate races from the predictions table, computes vote-weighted
-    state_pred per race, maps to a rating, and returns aggregate headline data.
+    Uses tract-level type priors + behavior layer adjustment for off-cycle
+    races. Produces vote-weighted state predictions per Senate race.
     """
-    version_id = request.app.state.version_id
+    # Use tract priors + behavior layer for state-level predictions
+    type_scores = getattr(request.app.state, "type_scores", None)
+    type_priors = getattr(request.app.state, "type_priors", None)
+    ridge_priors = getattr(request.app.state, "ridge_priors", {})
+    tract_fips = getattr(request.app.state, "type_county_fips", [])
+    tract_states = getattr(request.app.state, "tract_states", {})
+    tract_votes = getattr(request.app.state, "tract_votes", {})
+    behavior_tau = getattr(request.app.state, "behavior_tau", None)
+    behavior_delta = getattr(request.app.state, "behavior_delta", None)
 
-    # Vote-weighted state prediction per Senate race
-    rows = db.execute(
-        """
-        SELECT
-            p.race,
-            CASE WHEN SUM(COALESCE(c.total_votes_2024, 0)) > 0
-                 THEN SUM(p.pred_dem_share * COALESCE(c.total_votes_2024, 0))
-                      / SUM(COALESCE(c.total_votes_2024, 0))
-                 ELSE AVG(p.pred_dem_share)
-            END AS state_pred,
-            MIN(c.state_abbr) AS state_abbr
-        FROM predictions p
-        JOIN counties c ON p.county_fips = c.county_fips
-        WHERE p.version_id = ?
-          AND LOWER(p.race) LIKE '%senate%'
-        GROUP BY p.race
-        ORDER BY p.race
-        """,
-        [version_id],
-    ).fetchdf()
-
-    if rows.empty:
+    if type_scores is None or not tract_fips:
         return {
             "headline": "No Senate Forecasts Available",
             "subtitle": "predictions not yet loaded",
@@ -117,11 +111,45 @@ def get_senate_overview(
     except Exception:
         poll_counts = {}
 
+    # Compute behavior-adjusted baseline predictions per state.
+    # Apply τ+δ to tract priors for off-cycle races (Senate = off-cycle).
+    import numpy as np
+    priors = np.array([ridge_priors.get(f, 0.45) for f in tract_fips])
+
+    if behavior_tau is not None and behavior_delta is not None and type_scores.shape[1] == len(behavior_tau):
+        from src.behavior.voter_behavior import apply_behavior_adjustment
+        adjusted = apply_behavior_adjustment(priors, type_scores, behavior_tau, behavior_delta, is_offcycle=True)
+    else:
+        adjusted = priors
+
+    # Vote-weighted state predictions
+    state_preds = {}
+    for i, fips in enumerate(tract_fips):
+        st = tract_states.get(fips)
+        if not st:
+            continue
+        votes = tract_votes.get(fips, 0)
+        if st not in state_preds:
+            state_preds[st] = {"weighted_sum": 0.0, "total_votes": 0}
+        state_preds[st]["weighted_sum"] += adjusted[i] * votes
+        state_preds[st]["total_votes"] += votes
+
+    for st in state_preds:
+        tv = state_preds[st]["total_votes"]
+        state_preds[st] = state_preds[st]["weighted_sum"] / tv if tv > 0 else 0.5
+
+    # Build race list from SENATE_2026_STATES
+    rows = []
+    for st in sorted(SENATE_2026_STATES):
+        race = f"2026 {st} Senate"
+        state_pred = state_preds.get(st, 0.5)
+        rows.append({"race": race, "state_pred": state_pred, "state_abbr": st})
+
     races = []
-    for _, row in rows.iterrows():
+    for row in rows:
         race = row["race"]
-        state_pred = float(row["state_pred"]) if not pd.isna(row["state_pred"]) else 0.5
-        state_abbr = str(row["state_abbr"])
+        state_pred = row["state_pred"]
+        state_abbr = row["state_abbr"]
 
         margin = state_pred - 0.5
         rating = _margin_to_rating(margin)
