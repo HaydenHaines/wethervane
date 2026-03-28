@@ -155,21 +155,19 @@ export default function MapShell() {
     // State polygons — instant, ~700KB
     fetch("/states-us.geojson").then((r) => r.json()).then(setStateGeo);
 
-    // Senate ratings for state coloring
+    // Senate state colors — includes non-contested states colored by party
     fetch(`${API_BASE}/senate/overview`)
       .then((r) => r.json())
       .then((data) => {
-        const ratings = new Map<string, string>();
-        for (const race of data.races) {
-          // API currently has a bug where race.state is always "AK";
-          // extract the real state from the race string instead
-          const abbr = stateFromRace(race.race) ?? race.state;
-          const color = ratingColor(race.rating as Rating);
-          if (color) ratings.set(abbr, color);
+        const colors = new Map<string, string>();
+        if (data.state_colors) {
+          for (const [st, hex] of Object.entries(data.state_colors)) {
+            colors.set(st, hex as string);
+          }
         }
-        setStateRatings(ratings);
+        setStateRatings(colors);
       })
-      .catch(() => {/* senate ratings are non-critical */});
+      .catch(() => {/* senate colors are non-critical */});
 
     // Super-type + type metadata (needed for tract tooltips/popups)
     Promise.all([

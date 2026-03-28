@@ -12,6 +12,21 @@ router = APIRouter(tags=["senate"])
 DEM_SAFE_SEATS = 47
 GOP_SAFE_SEATS = 53
 
+# Current Senate composition: which party holds each state's seats.
+# "D" = Democrat, "R" = Republican, "I" = Independent (caucuses with D).
+# For map coloring, non-contested states show their overall delegation color.
+SENATE_DELEGATION = {
+    "AL": "R", "AK": "R", "AZ": "D", "AR": "R", "CA": "D", "CO": "D",
+    "CT": "D", "DE": "D", "FL": "R", "GA": "D", "HI": "D", "ID": "R",
+    "IL": "D", "IN": "R", "IA": "R", "KS": "R", "KY": "R", "LA": "R",
+    "ME": "split", "MD": "D", "MA": "D", "MI": "D", "MN": "D", "MS": "R",
+    "MO": "R", "MT": "R", "NE": "R", "NV": "D", "NH": "D", "NJ": "D",
+    "NM": "D", "NY": "D", "NC": "R", "ND": "R", "OH": "R", "OK": "R",
+    "OR": "D", "PA": "split", "RI": "D", "SC": "R", "SD": "R", "TN": "R",
+    "TX": "R", "UT": "R", "VT": "D", "VA": "D", "WA": "D", "WV": "R",
+    "WI": "split", "WY": "R", "DC": "D",
+}
+
 SENATE_2026_STATES = {
     "AL", "AK", "AR", "CO", "DE", "GA", "IA", "ID", "IL", "KS",
     "KY", "LA", "MA", "ME", "MI", "MN", "MS", "MT", "NC", "NE",
@@ -177,10 +192,31 @@ def get_senate_overview(
 
     headline, subtitle = _build_headline(races)
 
+    # Build state_colors map: every state gets a hex color for the map.
+    # Contested states → rating-based color. Non-contested → delegation party color.
+    # Dusty Ink palette
+    _RATING_COLORS = {
+        "safe_d": "#2d4a6f", "likely_d": "#4b6d90", "lean_d": "#7e9ab5",
+        "tossup": "#b5a995",
+        "lean_r": "#c4907a", "likely_r": "#9e5e4e", "safe_r": "#6e3535",
+    }
+    _PARTY_COLORS = {"D": "#4b6d90", "R": "#9e5e4e", "split": "#b5a995"}
+
+    race_by_state = {r["state"]: r for r in races}
+    state_colors = {}
+    for st, delegation in SENATE_DELEGATION.items():
+        if st in race_by_state:
+            # Contested: use race rating color
+            state_colors[st] = _RATING_COLORS.get(race_by_state[st]["rating"], "#b5a995")
+        else:
+            # Not contested in 2026: use delegation color (lighter shade)
+            state_colors[st] = _PARTY_COLORS.get(delegation, "#eae7e2")
+
     return {
         "headline": headline,
         "subtitle": subtitle,
         "dem_seats_safe": DEM_SAFE_SEATS,
         "gop_seats_safe": GOP_SAFE_SEATS,
         "races": races,
+        "state_colors": state_colors,
     }
