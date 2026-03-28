@@ -12,7 +12,7 @@ low access to primary care) have shifted significantly toward Republicans since
 2016. Health features complement the CDC mortality and COVID vaccination data
 already in the pipeline.
 
-**Features produced (18 total):**
+**Features produced (33 total):**
   premature_death_rate          : Years of Potential Life Lost rate per 100K (age-adj)
   adult_smoking_pct             : % adults who currently smoke
   adult_obesity_pct             : % adults with BMI ≥ 30
@@ -83,6 +83,22 @@ CHR_FEATURE_COLS = [
     "life_expectancy",
     "diabetes_prevalence_pct",
     "poor_mental_health_days",
+    # Expanded CHR measures (available in chr_2024.parquet)
+    "drug_overdose_deaths_rate",
+    "suicide_rate",
+    "firearm_fatalities_rate",
+    "food_insecurity_pct",
+    "social_associations_rate",
+    "voter_turnout_pct",
+    "disconnected_youth_pct",
+    "residential_segregation",
+    "homeownership_pct",
+    "census_participation_pct",
+    "free_reduced_lunch_pct",
+    "alcohol_impaired_driving_deaths_pct",
+    "injury_deaths_rate",
+    "single_parent_households_pct",
+    "homicide_rate",
 ]
 
 
@@ -147,6 +163,14 @@ def compute_chr_features(df: pd.DataFrame) -> pd.DataFrame:
         "high_school_completion_pct",
         "some_college_pct",
         "diabetes_prevalence_pct",
+        "food_insecurity_pct",
+        "voter_turnout_pct",
+        "disconnected_youth_pct",
+        "homeownership_pct",
+        "census_participation_pct",
+        "free_reduced_lunch_pct",
+        "alcohol_impaired_driving_deaths_pct",
+        "single_parent_households_pct",
     }
 
     for col in CHR_FEATURE_COLS:

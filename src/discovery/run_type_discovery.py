@@ -21,6 +21,7 @@ import numpy as np
 import pandas as pd
 import yaml
 from sklearn.cluster import KMeans
+from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 
 
@@ -121,13 +122,15 @@ def discover_types(
     j: int,
     random_state: int = 42,
     temperature: float = 10.0,
+    pca_components: int | None = None,
 ) -> TypeDiscoveryResult:
-    """KMeans clustering on county shift vectors.
+    """KMeans clustering on county shift vectors, with optional PCA compression.
 
     Parameters
     ----------
     shift_matrix : ndarray of shape (N, D)
         County shift vectors (log-odds shifts). N counties, D shift dimensions.
+        Should already be scaled and presidential-weighted.
     j : int
         Number of types to discover.
     random_state : int
@@ -137,6 +140,11 @@ def discover_types(
         T=1.0 = original inverse-distance baseline.
         T=10.0 = production default, reduces calibration MAE by ~37%.
         See scripts/experiment_soft_membership.py for derivation.
+    pca_components : int or None
+        If set, apply PCA to reduce shift_matrix to this many dimensions
+        before KMeans. None = no PCA (backward compatible default).
+        Presidential shifts are highly correlated, so 33→15 typically retains
+        90%+ variance.
 
     Returns
     -------
@@ -145,6 +153,15 @@ def discover_types(
         dominant type assignments, type size fractions, and identity
         rotation matrix.
     """
+    # Optional PCA dimensionality reduction
+    if pca_components is not None and pca_components < shift_matrix.shape[1]:
+        pca = PCA(n_components=pca_components, random_state=random_state)
+        shift_matrix = pca.fit_transform(shift_matrix)
+        cumulative_var = pca.explained_variance_ratio_.cumsum()
+        print(f"PCA: {shift_matrix.shape[1]} components retain "
+              f"{cumulative_var[-1]:.1%} variance "
+              f"(top-5: {', '.join(f'{v:.1%}' for v in cumulative_var[:5])})")
+
     km = KMeans(n_clusters=j, random_state=random_state, n_init=10)
     labels = km.fit_predict(shift_matrix)
     centroids = km.cluster_centers_  # (J, D)
@@ -185,6 +202,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="KMeans type discovery")
     parser.add_argument("--j", type=int, default=None, help="Number of types (overrides config)")
     parser.add_argument("--min-year", type=int, default=2008, help="Minimum start year for shift pairs (default: 2008)")
+    parser.add_argument("--pca", type=int, default=None, help="PCA components before KMeans (overrides config)")
     args = parser.parse_args()
 
     # Load config
@@ -206,6 +224,13 @@ def main() -> None:
             )
 
     temperature = float(config["types"].get("temperature", 10.0))
+    # --pca CLI overrides config; --pca 0 explicitly disables PCA
+    if args.pca is not None:
+        pca_components = args.pca if args.pca > 0 else None
+    else:
+        pca_components = config["types"].get("pca_components")
+    if pca_components is not None:
+        pca_components = int(pca_components)
 
     # Load shift matrix
     shifts_path = PROJECT_ROOT / "data" / "shifts" / "county_shifts_multiyear.parquet"
@@ -242,9 +267,10 @@ def main() -> None:
         print(f"Applied presidential weight={presidential_weight} to {len(pres_indices)} columns (post-scaling)")
 
     print(f"Shift matrix: {shift_matrix.shape[0]} counties x {shift_matrix.shape[1]} dims (min_year={args.min_year})")
-    print(f"Discovering J={j} types via KMeans (temperature={temperature})...")
+    pca_msg = f", pca_components={pca_components}" if pca_components else ""
+    print(f"Discovering J={j} types via KMeans (temperature={temperature}{pca_msg})...")
 
-    result = discover_types(shift_matrix, j=j, temperature=temperature)
+    result = discover_types(shift_matrix, j=j, temperature=temperature, pca_components=pca_components)
 
     unique, counts = np.unique(result.dominant_types, return_counts=True)
     print(f"Type sizes: {sorted(counts.tolist(), reverse=True)}")

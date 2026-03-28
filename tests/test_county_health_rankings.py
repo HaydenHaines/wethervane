@@ -307,8 +307,8 @@ class TestConstants:
         assert required.issubset(set(OUTPUT_COLUMNS))
 
     def test_chr_feature_cols_count(self):
-        """CHR_FEATURE_COLS must have 18 features (violent_crime_rate removed from CHR 2023+)."""
-        assert len(CHR_FEATURE_COLS) == 18
+        """CHR_FEATURE_COLS must have 33 features (18 original + 15 expanded from chr_2024)."""
+        assert len(CHR_FEATURE_COLS) == 33
 
     def test_default_year_and_fallback_differ(self):
         """DEFAULT_YEAR and FALLBACK_YEAR must be different years."""
