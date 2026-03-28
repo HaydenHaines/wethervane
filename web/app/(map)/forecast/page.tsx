@@ -1,5 +1,5 @@
-import { ForecastView } from "@/components/ForecastView";
+import { SenateOverview } from "@/components/SenateOverview";
 
 export default function ForecastPage() {
-  return <ForecastView />;
+  return <SenateOverview />;
 }

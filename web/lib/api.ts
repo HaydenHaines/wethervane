@@ -218,6 +218,29 @@ export interface PollRow {
   pollster: string | null;
 }
 
+export interface SenateRaceData {
+  state: string;
+  race: string;
+  slug: string;
+  rating: string;
+  margin: number;
+  n_polls: number;
+}
+
+export interface SenateOverviewData {
+  headline: string;
+  subtitle: string;
+  dem_seats_safe: number;
+  gop_seats_safe: number;
+  races: SenateRaceData[];
+}
+
+export async function fetchSenateOverview(): Promise<SenateOverviewData> {
+  const res = await fetch(`${API_BASE}/senate/overview`);
+  if (!res.ok) throw new Error(`/senate/overview failed: ${res.status}`);
+  return res.json();
+}
+
 export async function fetchPolls(params: {
   race?: string;
   state?: string;
