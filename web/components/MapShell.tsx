@@ -4,7 +4,6 @@ import DeckGL from "@deck.gl/react";
 import { WebMercatorViewport } from "@deck.gl/core";
 import { GeoJsonLayer } from "@deck.gl/layers";
 import { fetchCounties, fetchSuperTypes, fetchTypes, type CountyRow, type TypeSummary } from "@/lib/api";
-import { formatMargin } from "@/lib/typeDisplay";
 import { useMapContext } from "@/components/MapContext";
 import { CommunityPanel } from "@/components/CommunityPanel";
 import { TypePanel } from "@/components/TypePanel";
@@ -13,26 +12,10 @@ import { TractPopup, type TractPopupData } from "@/components/TractPopup";
 
 // ── Tooltip helpers ──────────────────────────────────────────────────────────
 
-/** Format dem share as political lean: "D+5.2" or "R+3.1" */
-function formatLeanLocal(share: number | null | undefined): string {
-  if (share == null) return "";
-  return formatMargin(share);
-}
-
 /** Format income as "$XX,XXX" */
 function formatIncome(income: number | null | undefined): string {
   if (income == null) return "";
   return `$${Math.round(income).toLocaleString("en-US")}`;
-}
-
-/** Convert log_pop_density to a readable category */
-function densityCategory(logDensity: number | null | undefined): string {
-  if (logDensity == null) return "";
-  const density = Math.exp(logDensity);
-  if (density >= 2000) return "Urban";
-  if (density >= 500) return "Suburban";
-  if (density >= 100) return "Exurban";
-  return "Rural";
 }
 
 /** Format a percentage value (0–1) as "XX%" */
@@ -134,11 +117,8 @@ export default function MapShell() {
   const [tractGeojson, setTractGeojson] = useState<any>(null);
   const [countyMap, setCountyMap] = useState<Record<string, CountyRow>>({});
   const [superTypeMap, setSuperTypeMap] = useState<Map<number, SuperTypeInfo>>(new Map());
-  const [typeNameMap, setTypeNameMap] = useState<Map<number, string>>(new Map());
   const [typeDataMap, setTypeDataMap] = useState<Map<number, TypeSummary>>(new Map());
   const [hasTypeData, setHasTypeData] = useState(false);
-  const [showTracts, setShowTracts] = useState(false);
-  const [tractLoading, setTractLoading] = useState(false);
   const [tooltip, setTooltip] = useState<{ x: number; y: number; text: string } | null>(null);
   const [tractContext, setTractContext] = useState<TractContext | null>(null);
   const [tractPopup, setTractPopup] = useState<TractPopupData | null>(null);
@@ -193,14 +173,11 @@ export default function MapShell() {
       });
       setSuperTypeMap(stMap);
 
-      // Build fine type name map and full type data map from API
-      const tnMap = new Map<number, string>();
+      // Build full type data map from API (used by TractPopup for n_counties, mean_pred_dem_share)
       const tdMap = new Map<number, TypeSummary>();
       (types as TypeSummary[]).forEach((t) => {
-        tnMap.set(t.type_id, t.display_name);
         tdMap.set(t.type_id, t);
       });
-      setTypeNameMap(tnMap);
       setTypeDataMap(tdMap);
 
       // Build county map
@@ -230,19 +207,13 @@ export default function MapShell() {
     });
   }, []);
 
-  // Lazy-load tract GeoJSON on first toggle (15MB, too large for initial load)
-  const loadTracts = useCallback(() => {
-    if (tractGeojson || tractLoading) return;
-    setTractLoading(true);
+  // Eagerly load tract GeoJSON on mount — tract view is always active
+  useEffect(() => {
     fetch("/tracts-us.geojson")
       .then((r) => r.json())
-      .then((tractGeo) => {
-        setTractGeojson(tractGeo);
-        setTractLoading(false);
-        setShowTracts(true);
-      })
-      .catch(() => setTractLoading(false));
-  }, [tractGeojson, tractLoading]);
+      .then(setTractGeojson)
+      .catch(() => {/* tract layer stays null; map shows empty */});
+  }, []);
 
   const getColor = useCallback(
     (f: any): [number, number, number, number] => {
@@ -265,7 +236,7 @@ export default function MapShell() {
       // Fallback for legacy community data (no type data)
       return [180, 180, 180, 120] as [number, number, number, number];
     },
-    [selectedTypeId, hasTypeData, showTracts, forecastChoropleth]
+    [selectedTypeId, hasTypeData, forecastChoropleth]
   );
 
   const getLineColor = useCallback(
@@ -301,19 +272,17 @@ export default function MapShell() {
 
   const getSuperTypeName = useCallback(
     (superTypeId: number, feature?: any): string => {
-      if (!showTracts) {
-        return superTypeMap.get(superTypeId)?.name ?? `Type ${superTypeId}`;
-      }
-      // Tract view: read from GeoJSON property, fall back to map, then generic
+      // Tract view: read from GeoJSON property, fall back to API map, then generic
       const geoName = feature?.properties?.super_type_name;
       if (geoName) return geoName;
       return superTypeMap.get(superTypeId)?.name ?? `Type ${superTypeId}`;
     },
-    [showTracts, superTypeMap]
+    [superTypeMap]
   );
 
-  const activeData = showTracts && tractGeojson ? tractGeojson : geojson;
-  const layerId = showTracts && tractGeojson ? "tract-communities" : "counties";
+  // Tract community polygons are the sole map view
+  const activeData = tractGeojson;
+  const layerId = "tract-communities";
 
   const layers = activeData
     ? [
@@ -328,77 +297,45 @@ export default function MapShell() {
           getLineWidth,
           lineWidthUnits: "meters",
           updateTriggers: {
-            getFillColor: [selectedCommunityId, selectedTypeId, hasTypeData, showTracts, forecastChoropleth],
+            getFillColor: [selectedCommunityId, selectedTypeId, hasTypeData, forecastChoropleth],
             getLineColor: [forecastState, countyMap],
-            getLineWidth: [selectedCommunityId, selectedTypeId, hasTypeData, showTracts, forecastState, countyMap],
+            getLineWidth: [selectedCommunityId, selectedTypeId, hasTypeData, forecastState, countyMap],
           },
           onHover: ({ object, x, y }: any) => {
             if (object) {
-              if (showTracts && tractGeojson) {
-                const st = object.properties?.super_type;
-                const tid = object.properties?.type_id;
-                const n = object.properties?.n_tracts;
-                const area = object.properties?.area_sqkm;
-                const stName = getSuperTypeName(st, object);
-                // Demographic properties embedded at type level
-                const income = formatIncome(object.properties?.median_hh_income);
-                const college = formatPct(object.properties?.pct_ba_plus);
-                const white = formatPct(object.properties?.pct_white_nh);
-                const black = formatPct(object.properties?.pct_black);
-                const hispanic = formatPct(object.properties?.pct_hispanic);
-                // Build rich tooltip
-                const lines: string[] = [
-                  `${stName}  ·  Type ${tid}`,
-                  `${n} tracts · ${Math.round(area)} km²`,
-                ];
-                const stats: string[] = [];
-                if (income) stats.push(`Income: ${income}`);
-                if (college) stats.push(`College+: ${college}`);
-                if (stats.length > 0) lines.push(stats.join("  ·  "));
-                const raceStats: string[] = [];
-                if (white) raceStats.push(`White NH: ${white}`);
-                if (black) raceStats.push(`Black: ${black}`);
-                if (hispanic) raceStats.push(`Hispanic: ${hispanic}`);
-                if (raceStats.length > 0) lines.push(raceStats.join("  ·  "));
-                setTooltip({ x, y, text: lines.join("\n") });
-              } else {
-                const fips = object.properties?.county_fips;
-                const name = object.properties?.county_name || fips;
-                if (hasTypeData) {
-                  const dt = object.properties?.dominant_type;
-                  const st = object.properties?.super_type;
-                  const stName = getSuperTypeName(st, object);
-                  const typeName = typeNameMap.get(dt) ?? `Type ${dt}`;
-                  // Enrich with predictions and type demographics
-                  const county = countyMap[fips];
-                  const typeInfo = typeDataMap.get(dt);
-                  const lean = formatLeanLocal(county?.pred_dem_share);
-                  const income = formatIncome(typeInfo?.median_hh_income);
-                  const college = formatPct(typeInfo?.pct_bachelors_plus);
-                  const white = formatPct(typeInfo?.pct_white_nh);
-                  const density = densityCategory(typeInfo?.log_pop_density);
-                  // Build tooltip lines
-                  const lines: string[] = [`${name}`, `${typeName}  ·  ${stName}`];
-                  if (lean) lines.push(`Lean: ${lean}`);
-                  const stats: string[] = [];
-                  if (income) stats.push(`Income: ${income}`);
-                  if (college) stats.push(`College+: ${college}`);
-                  if (white) stats.push(`White NH: ${white}`);
-                  if (density) stats.push(`Density: ${density}`);
-                  if (stats.length > 0) lines.push(stats.join("  ·  "));
-                  setTooltip({ x, y, text: lines.join("\n") });
-                } else {
-                  const cid = object.properties?.community_id;
-                  setTooltip({ x, y, text: `${name}\nCommunity ${cid}` });
-                }
-              }
+              const st = object.properties?.super_type;
+              const tid = object.properties?.type_id;
+              const n = object.properties?.n_tracts;
+              const area = object.properties?.area_sqkm;
+              const stName = getSuperTypeName(st, object);
+              // Demographic properties embedded at type level
+              const income = formatIncome(object.properties?.median_hh_income);
+              const college = formatPct(object.properties?.pct_ba_plus);
+              const white = formatPct(object.properties?.pct_white_nh);
+              const black = formatPct(object.properties?.pct_black);
+              const hispanic = formatPct(object.properties?.pct_hispanic);
+              // Build rich tooltip
+              const lines: string[] = [
+                `${stName}  ·  Type ${tid}`,
+                `${n} tracts · ${Math.round(area)} km²`,
+              ];
+              const stats: string[] = [];
+              if (income) stats.push(`Income: ${income}`);
+              if (college) stats.push(`College+: ${college}`);
+              if (stats.length > 0) lines.push(stats.join("  ·  "));
+              const raceStats: string[] = [];
+              if (white) raceStats.push(`White NH: ${white}`);
+              if (black) raceStats.push(`Black: ${black}`);
+              if (hispanic) raceStats.push(`Hispanic: ${hispanic}`);
+              if (raceStats.length > 0) lines.push(raceStats.join("  ·  "));
+              setTooltip({ x, y, text: lines.join("\n") });
             } else {
               setTooltip(null);
             }
           },
           onClick: ({ object, x, y }: any) => {
             if (object) {
-              if (showTracts && object.properties?.n_tracts != null) {
+              if (object.properties?.n_tracts != null) {
                 // Tract view: show popup at click location
                 const props = object.properties;
                 const current = tractPopup;
@@ -424,26 +361,10 @@ export default function MapShell() {
                     y,
                   });
                 }
-                // Clear county-level selections
+                // Clear type/community selections when clicking a tract polygon
                 setSelectedTypeId(null);
                 setSelectedCommunityId(null);
                 setTractContext(null);
-              } else if (hasTypeData) {
-                const dt = object.properties?.dominant_type ?? object.properties?.type_id;
-                if (dt !== undefined && dt >= 0) {
-                  setSelectedTypeId(dt === selectedTypeId ? null : dt);
-                  setSelectedCommunityId(null);
-                  setTractPopup(null);
-                  setTractContext(null);
-                }
-              } else {
-                const cid = object.properties?.community_id;
-                if (cid !== undefined && cid >= 0) {
-                  setSelectedCommunityId(cid === selectedCommunityId ? null : cid);
-                  setSelectedTypeId(null);
-                  setTractPopup(null);
-                  setTractContext(null);
-                }
               }
             } else {
               // Click on empty map space — dismiss tract popup
@@ -454,27 +375,16 @@ export default function MapShell() {
       ]
     : [];
 
-  // Build legend from API data — only show super-types that appear in counties
+  // Build legend: collect super-type IDs from tract GeoJSON features and extract names
   const activeSuperTypeIds = new Set<number>();
-  if (hasTypeData && !showTracts) {
-    Object.values(countyMap).forEach((c) => {
-      if (c.super_type !== null) activeSuperTypeIds.add(c.super_type);
-    });
-  } else if (showTracts && tractGeojson) {
-    tractGeojson.features?.forEach((f: any) => {
-      const st = f.properties?.super_type;
-      if (st != null && st >= 0) activeSuperTypeIds.add(st);
-    });
-  }
-
-  // For tract view, extract super-type names from GeoJSON features
   const tractSuperTypeNames = new Map<number, string>();
-  if (showTracts && tractGeojson) {
+  if (tractGeojson) {
     tractGeojson.features?.forEach((f: any) => {
       const st = f.properties?.super_type;
       const name = f.properties?.super_type_name;
-      if (st != null && name && !tractSuperTypeNames.has(st)) {
-        tractSuperTypeNames.set(st, name);
+      if (st != null && st >= 0) {
+        activeSuperTypeIds.add(st);
+        if (name && !tractSuperTypeNames.has(st)) tractSuperTypeNames.set(st, name);
       }
     });
   }
@@ -484,9 +394,7 @@ export default function MapShell() {
     .map((id) => ({
       id,
       color: getColorForSuperType(id),
-      label: showTracts
-        ? (tractSuperTypeNames.get(id) ?? `Type ${id}`)
-        : (superTypeMap.get(id)?.name ?? `Type ${id}`),
+      label: tractSuperTypeNames.get(id) ?? superTypeMap.get(id)?.name ?? `Type ${id}`,
     }));
 
   return (
@@ -539,41 +447,6 @@ export default function MapShell() {
           </div>
         );
       })()}
-
-      {/* County/Tract toggle — always shown, lazy-loads tract data on first click */}
-      <button
-        className="map-toggle-btn"
-        onClick={() => {
-          if (tractGeojson) {
-            setShowTracts((prev) => !prev);
-            // Clear selections when switching views — county and tract IDs are independent
-            setTractPopup(null);
-            setSelectedTypeId(null);
-            setTractContext(null);
-          } else {
-            loadTracts();
-          }
-        }}
-        disabled={tractLoading}
-        style={{
-          position: "absolute",
-          top: 12,
-          left: 16,
-          background: showTracts ? "#2166ac" : "white",
-          color: showTracts ? "white" : "#333",
-          border: "1px solid var(--color-border)",
-          borderRadius: "4px",
-          padding: "6px 14px",
-          fontSize: "12px",
-          fontFamily: "var(--font-sans)",
-          cursor: tractLoading ? "wait" : "pointer",
-          fontWeight: 600,
-          boxShadow: "0 1px 3px rgba(0,0,0,0.15)",
-          opacity: tractLoading ? 0.7 : 1,
-        }}
-      >
-        {tractLoading ? "Loading tracts…" : showTracts ? "Tract Communities" : "County Types"} ▾
-      </button>
 
       {/* Forecast choropleth legend — replaces super-type legend when active */}
       {forecastChoropleth && (
