@@ -273,6 +273,11 @@ class RaceDetail(BaseModel):
     n_counties: int
     polls: list[RacePoll]
     type_breakdown: list[TypeBreakdown]
+    forecast_mode: str = "local"
+    state_pred_national: float | None = None
+    state_pred_local: float | None = None
+    candidate_effect_margin: float | None = None
+    n_polls: int = 0
 
 
 # ── Embed widget ─────────────────────────────────────────────────────────

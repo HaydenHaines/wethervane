@@ -1,0 +1,176 @@
+"""Forecast engine: θ_prior → θ_national → δ_race → county predictions.
+
+This module orchestrates the hierarchical poll decomposition model.
+Voters move slowly (θ_prior from decade of elections); polls move quickly
+(θ_national captures current sentiment; δ_race captures candidate effects).
+"""
+
+from __future__ import annotations
+
+from dataclasses import dataclass
+
+import numpy as np
+
+from src.prediction.national_environment import estimate_theta_national
+from src.prediction.candidate_effects import estimate_delta_race
+
+
+def compute_theta_prior(
+    type_scores: np.ndarray,  # (n_counties, J) — soft membership
+    county_priors: np.ndarray,  # (n_counties,) — baseline Dem share
+) -> np.ndarray:
+    """Convert county-level priors to type-level θ_prior.
+
+    θ_prior[j] = Σ_c W[c,j] · prior[c] / Σ_c W[c,j]
+    Weighted average of county priors by type membership.
+    """
+    # Ensure non-negative weights (soft membership should already be non-negative)
+    W = np.abs(type_scores)
+    type_totals = W.sum(axis=0)  # (J,)
+    # Avoid division by zero for types with no member counties
+    type_totals = np.where(type_totals > 0, type_totals, 1.0)
+    theta = (W.T @ county_priors) / type_totals  # (J,)
+    return theta
+
+
+@dataclass
+class ForecastResult:
+    """Result for a single race."""
+
+    theta_prior: np.ndarray  # (J,)
+    theta_national: np.ndarray  # (J,)
+    delta_race: np.ndarray  # (J,)
+    county_preds_national: np.ndarray  # (n_counties,) — θ_national mode
+    county_preds_local: np.ndarray  # (n_counties,) — θ_national + δ mode
+    n_polls: int
+
+
+def build_W_state(
+    state: str,
+    type_scores: np.ndarray,  # (n_counties, J)
+    states: list[str],
+    county_votes: np.ndarray,  # (n_counties,)
+) -> np.ndarray:
+    """Build W vector for a state: vote-weighted mean of county type memberships."""
+    mask = np.array([s == state for s in states])
+    if not mask.any():
+        J = type_scores.shape[1]
+        return np.ones(J) / J  # Uniform fallback
+
+    state_scores = np.abs(type_scores[mask])
+    state_votes = county_votes[mask]
+
+    if state_votes.sum() > 0:
+        weights = state_votes / state_votes.sum()
+        W = (state_scores * weights[:, np.newaxis]).sum(axis=0)
+    else:
+        W = state_scores.mean(axis=0)
+
+    W_sum = W.sum()
+    return W / W_sum if W_sum > 0 else np.ones(type_scores.shape[1]) / type_scores.shape[1]
+
+
+def _build_poll_arrays(
+    polls_by_race: dict[str, list[dict]],
+    type_scores: np.ndarray,
+    states: list[str],
+    county_votes: np.ndarray,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, list[str]]:
+    """Build W, y, sigma arrays from all polls across all races.
+
+    Returns: (W_all, y_all, sigma_all, race_labels)
+    """
+    W_rows: list[np.ndarray] = []
+    y_vals: list[float] = []
+    sigma_vals: list[float] = []
+    race_labels: list[str] = []
+
+    for race_id, polls in polls_by_race.items():
+        for p in polls:
+            state = p["state"]
+            dem_share = p["dem_share"]
+            n_sample = p["n_sample"]
+
+            W_row = build_W_state(state, type_scores, states, county_votes)
+            sigma = np.sqrt(dem_share * (1 - dem_share) / max(n_sample, 1))
+
+            W_rows.append(W_row)
+            y_vals.append(dem_share)
+            sigma_vals.append(max(sigma, 1e-6))  # Floor to avoid div-by-zero
+            race_labels.append(race_id)
+
+    J = type_scores.shape[1]
+    if not W_rows:
+        return np.empty((0, J)), np.empty(0), np.empty(0), []
+
+    return (
+        np.array(W_rows),
+        np.array(y_vals),
+        np.array(sigma_vals),
+        race_labels,
+    )
+
+
+def run_forecast(
+    type_scores: np.ndarray,  # (n_counties, J)
+    county_priors: np.ndarray,  # (n_counties,)
+    states: list[str],  # (n_counties,) state per county
+    county_votes: np.ndarray,  # (n_counties,) votes per county
+    polls_by_race: dict[str, list[dict]],  # race_id -> list of poll dicts
+    races: list[str],  # all race IDs to forecast
+    lam: float = 1.0,  # θ_national regularization
+    mu: float = 1.0,  # δ_race regularization
+    generic_ballot_shift: float = 0.0,
+) -> dict[str, ForecastResult]:
+    """Run the full hierarchical forecast for all races.
+
+    1. Compute θ_prior from county priors
+    2. Estimate θ_national from all polls pooled
+    3. For each race, estimate δ_race from residuals
+    4. Produce county predictions in both modes
+    """
+    J = type_scores.shape[1]
+
+    # Apply generic ballot shift to county priors
+    adjusted_priors = county_priors + generic_ballot_shift
+
+    # Step 1: θ_prior
+    theta_prior = compute_theta_prior(type_scores, adjusted_priors)
+
+    # Step 2: Build poll arrays and estimate θ_national
+    W_all, y_all, sigma_all, race_labels = _build_poll_arrays(
+        polls_by_race, type_scores, states, county_votes,
+    )
+    theta_national = estimate_theta_national(W_all, y_all, sigma_all, theta_prior, lam)
+
+    # Step 3 & 4: Per-race δ and predictions
+    results: dict[str, ForecastResult] = {}
+    for race_id in races:
+        # Get this race's polls
+        race_polls = polls_by_race.get(race_id, [])
+        n_polls = len(race_polls)
+
+        if n_polls > 0:
+            # Build race-specific W and residuals
+            race_W, race_y, race_sigma, _ = _build_poll_arrays(
+                {race_id: race_polls}, type_scores, states, county_votes,
+            )
+            residuals = race_y - race_W @ theta_national
+            delta = estimate_delta_race(race_W, residuals, race_sigma, J, mu)
+        else:
+            delta = np.zeros(J)
+
+        # County predictions
+        county_preds_national = type_scores @ theta_national
+        county_preds_local = type_scores @ (theta_national + delta)
+
+        results[race_id] = ForecastResult(
+            theta_prior=theta_prior,
+            theta_national=theta_national,
+            delta_race=delta,
+            county_preds_national=county_preds_national,
+            county_preds_local=county_preds_local,
+            n_polls=n_polls,
+        )
+
+    return results

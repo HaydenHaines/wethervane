@@ -460,50 +460,80 @@ def run() -> None:
             if race_polls:
                 poll_lookup[race] = race_polls
 
-    # Iterate over ALL registered races (not just polled ones).
-    # Races without polls get baseline predictions (model prior only).
+    # Iterate over ALL registered races using the new forecast engine.
+    # Produces dual-mode output: "national" (θ_national only) and
+    # "local" (θ_national + δ_race) for every race.
     from src.assembly.define_races import load_races
+    from src.prediction.forecast_engine import run_forecast
 
     registry = load_races(2026)
+    all_race_ids = [r.race_id for r in registry]
     log.info("Race registry: %d races loaded", len(registry))
 
+    # Build polls_by_race dict for the forecast engine
+    polls_by_race: dict[str, list[dict]] = {}
+    for race_id, poll_list in poll_lookup.items():
+        polls_by_race[race_id] = [
+            {"dem_share": p[0], "n_sample": p[1], "state": p[2]}
+            for p in poll_list
+        ]
+
+    # Load county votes for vote-weighted W construction
+    county_votes = np.ones(len(county_fips))  # fallback: equal weight
+    votes_path = PROJECT_ROOT / "data" / "raw" / "medsl_county_presidential_2024.parquet"
+    if votes_path.exists():
+        vdf = pd.read_parquet(votes_path)
+        if "county_fips" in vdf.columns and "totalvotes" in vdf.columns:
+            vmap = dict(zip(
+                vdf["county_fips"].astype(str).str.zfill(5),
+                vdf["totalvotes"],
+            ))
+            county_votes = np.array([vmap.get(f, 1.0) for f in county_fips])
+
+    # Run the hierarchical forecast: θ_prior → θ_national → δ_race
+    forecast_results = run_forecast(
+        type_scores=type_scores,
+        county_priors=county_prior_values,
+        states=states,
+        county_votes=county_votes,
+        polls_by_race=polls_by_race,
+        races=all_race_ids,
+        lam=1.0,   # TODO: learn from calibration (Plan C)
+        mu=1.0,    # TODO: learn from calibration (Plan C)
+    )
+
+    # Convert ForecastResult → DataFrame rows (both modes per race)
     all_predictions = []
-    for race_def in registry:
-        race = race_def.race_id
-        race_polls = poll_lookup.get(race, None)
-        result = predict_race(
-            race=race,
-            polls=race_polls,
-            type_scores=type_scores,
-            type_covariance=type_covariance,
-            type_priors=type_priors,
-            county_fips=county_fips,
-            states=states,
-            county_names=county_names,
-            county_priors=county_prior_values,
-        )
-        result["race"] = race
-        all_predictions.append(result)
+    for race_id, fr in forecast_results.items():
+        for mode in ("national", "local"):
+            preds = fr.county_preds_national if mode == "national" else fr.county_preds_local
+            row = pd.DataFrame({
+                "county_fips": county_fips,
+                "state": states,
+                "county_name": county_names,
+                "pred_dem_share": preds,
+                "race": race_id,
+                "forecast_mode": mode,
+            })
+            all_predictions.append(row)
 
     if poll_lookup:
-        # Warn about polls that don't match any registered race
-        unmatched = set(poll_lookup.keys()) - {r.race_id for r in registry}
+        unmatched = set(poll_lookup.keys()) - set(all_race_ids)
         if unmatched:
             log.warning("Polls for unregistered races (ignored): %s", unmatched)
 
-    # Generate national baseline for all counties (no poll adjustment).
-    # Useful as a reference for the generic national environment.
-    baseline = predict_race(
-        race="baseline",
-        type_scores=type_scores,
-        type_covariance=type_covariance,
-        type_priors=type_priors,
-        county_fips=county_fips,
-        states=states,
-        county_names=county_names,
-        county_priors=county_prior_values,
-    )
-    baseline["race"] = "baseline"
+    # Generate baseline (pure model prior, no polls, no GB shift)
+    from src.prediction.forecast_engine import compute_theta_prior
+    theta_baseline = compute_theta_prior(type_scores, county_prior_values)
+    baseline_preds = type_scores @ theta_baseline
+    baseline = pd.DataFrame({
+        "county_fips": county_fips,
+        "state": states,
+        "county_name": county_names,
+        "pred_dem_share": baseline_preds,
+        "race": "baseline",
+        "forecast_mode": "national",
+    })
     all_predictions.append(baseline)
 
     if all_predictions:

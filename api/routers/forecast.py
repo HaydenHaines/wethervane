@@ -175,10 +175,12 @@ def get_race_detail(
     slug: str,
     request: Request,
     db: duckdb.DuckDBPyConnection = Depends(get_db),
+    mode: str = Query("local", description="Forecast mode: 'national' or 'local'"),
 ) -> RaceDetail:
     """Return state-level prediction, polls, and type breakdown for a single race."""
     version_id = request.app.state.version_id
     race = slug_to_race(slug)
+    forecast_mode = mode if mode in ("national", "local") else "local"
 
     # Look up race metadata from the races table (preferred) or fall back to
     # slug parsing for backward compatibility with pre-registry predictions.
@@ -208,19 +210,49 @@ def get_race_detail(
     if not exists or exists[0] == 0:
         raise HTTPException(status_code=404, detail=f"Race '{race}' not found")
 
-    # State-level prediction: mean of county pred_dem_share for this race+state
+    # Check if forecast_mode column exists (backward compat)
+    _has_mode = "forecast_mode" in [
+        row[0] for row in db.execute("DESCRIBE predictions").fetchall()
+    ]
+    _mode_filter = "AND p.forecast_mode = ?" if _has_mode else ""
+    _mode_params = [forecast_mode] if _has_mode else []
+
+    # State-level prediction for the requested mode
     pred_row = db.execute(
-        """
+        f"""
         SELECT AVG(p.pred_dem_share) AS state_pred, COUNT(*) AS n_counties
         FROM predictions p
         JOIN counties c ON p.county_fips = c.county_fips
-        WHERE p.version_id = ? AND p.race = ? AND c.state_abbr = ?
+        WHERE p.version_id = ? AND p.race = ? AND c.state_abbr = ? {_mode_filter}
         """,
-        [version_id, race, state_abbr],
+        [version_id, race, state_abbr] + _mode_params,
     ).fetchone()
 
     prediction = None if (pred_row is None or pred_row[0] is None) else float(pred_row[0])
     n_counties = int(pred_row[1]) if pred_row else 0
+
+    # Also get the other mode's prediction for comparison
+    other_mode = "national" if forecast_mode == "local" else "local"
+    other_pred_row = None
+    if _has_mode:
+        other_pred_row = db.execute(
+            """
+            SELECT AVG(p.pred_dem_share) AS state_pred
+            FROM predictions p
+            JOIN counties c ON p.county_fips = c.county_fips
+            WHERE p.version_id = ? AND p.race = ? AND c.state_abbr = ?
+              AND p.forecast_mode = ?
+            """,
+            [version_id, race, state_abbr, other_mode],
+        ).fetchone()
+    state_pred_national = None
+    state_pred_local = None
+    if forecast_mode == "local":
+        state_pred_local = prediction
+        state_pred_national = float(other_pred_row[0]) if other_pred_row and other_pred_row[0] else None
+    else:
+        state_pred_national = prediction
+        state_pred_local = float(other_pred_row[0]) if other_pred_row and other_pred_row[0] else None
 
     # Polls for this race
     polls_df = db.execute(
@@ -255,12 +287,12 @@ def get_race_detail(
         JOIN counties c ON p.county_fips = c.county_fips
         JOIN county_type_assignments cta ON p.county_fips = cta.county_fips
         JOIN types t ON cta.dominant_type = t.type_id
-        WHERE p.version_id = ? AND p.race = ? AND c.state_abbr = ?
+        WHERE p.version_id = ? AND p.race = ? AND c.state_abbr = ? {_mode_filter}
         GROUP BY cta.dominant_type, t.display_name
         ORDER BY COUNT(*) DESC
         LIMIT 5
         """,
-        [version_id, race, state_abbr],
+        [version_id, race, state_abbr] + _mode_params,
     ).fetchdf()
 
     type_breakdown: list[TypeBreakdown] = [
@@ -273,6 +305,10 @@ def get_race_detail(
         for _, row in breakdown_df.iterrows()
     ]
 
+    candidate_effect = None
+    if state_pred_local is not None and state_pred_national is not None:
+        candidate_effect = state_pred_local - state_pred_national
+
     return RaceDetail(
         race=race,
         slug=slug,
@@ -283,6 +319,11 @@ def get_race_detail(
         n_counties=n_counties,
         polls=polls,
         type_breakdown=type_breakdown,
+        forecast_mode=forecast_mode,
+        state_pred_national=state_pred_national,
+        state_pred_local=state_pred_local,
+        candidate_effect_margin=candidate_effect,
+        n_polls=len(polls),
     )
 
 

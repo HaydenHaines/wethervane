@@ -125,13 +125,14 @@ CREATE TABLE IF NOT EXISTS predictions (
     county_fips    VARCHAR  NOT NULL,
     race           VARCHAR  NOT NULL,
     version_id     VARCHAR  NOT NULL,
+    forecast_mode  VARCHAR  NOT NULL DEFAULT 'local',
     pred_dem_share DOUBLE,
     pred_std       DOUBLE,
     pred_lo90      DOUBLE,
     pred_hi90      DOUBLE,
     state_pred     DOUBLE,
     poll_avg       DOUBLE,
-    PRIMARY KEY (county_fips, race, version_id)
+    PRIMARY KEY (county_fips, race, version_id, forecast_mode)
 );
 
 CREATE TABLE IF NOT EXISTS community_sigma (
@@ -352,7 +353,7 @@ def _build_predictions(preds: pd.DataFrame, version_id: str) -> pd.DataFrame:
     df = preds.copy()
     df["version_id"] = version_id
     cols = [
-        "county_fips", "race", "version_id",
+        "county_fips", "race", "version_id", "forecast_mode",
         "pred_dem_share", "pred_std", "pred_lo90", "pred_hi90",
         "state_pred", "poll_avg",
     ]
