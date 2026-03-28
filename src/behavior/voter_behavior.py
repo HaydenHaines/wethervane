@@ -168,9 +168,9 @@ def train_and_save(
     score_cols = [c for c in assignments.columns if c.endswith("_score")]
     n_types = len(score_cols)
 
-    # Set index to GEOID
+    # Set index to GEOID, dedup if needed (clustering may produce dupes)
     if "GEOID" in assignments.columns:
-        assignments = assignments.set_index("GEOID")
+        assignments = assignments.drop_duplicates(subset="GEOID").set_index("GEOID")
 
     tau = compute_turnout_ratios(tract_votes, assignments, n_types)
     delta = compute_choice_shifts(tract_votes, assignments, tau, n_types)
