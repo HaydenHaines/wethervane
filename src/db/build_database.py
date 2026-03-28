@@ -66,6 +66,7 @@ from src.description.generate_narratives import generate_all_narratives  # noqa:
 from src.db.domains.model import ingest as ingest_model, create_tables as model_ddl  # noqa: E402
 from src.db.domains.polling import ingest as ingest_polling, create_tables as polling_ddl  # noqa: E402
 COUNTY_TYPE_ASSIGNMENTS_PATH = PROJECT_ROOT / "data" / "communities" / "county_type_assignments_full.parquet"
+TRACT_TYPE_ASSIGNMENTS_PATH = PROJECT_ROOT / "data" / "tracts" / "national_tract_assignments.parquet"
 SUPER_TYPES_PATH = PROJECT_ROOT / "data" / "communities" / "super_types.parquet"
 DEMOGRAPHICS_INTERPOLATED_PATH = PROJECT_ROOT / "data" / "assembled" / "demographics_interpolated.parquet"
 
@@ -193,6 +194,12 @@ CREATE TABLE IF NOT EXISTS types (
 
 CREATE TABLE IF NOT EXISTS county_type_assignments (
     county_fips    VARCHAR NOT NULL,
+    dominant_type  INTEGER,
+    super_type     INTEGER
+);
+
+CREATE TABLE IF NOT EXISTS tract_type_assignments (
+    tract_geoid    VARCHAR PRIMARY KEY,
     dominant_type  INTEGER,
     super_type     INTEGER
 );
@@ -375,6 +382,7 @@ def validate_contract(con: duckdb.DuckDBPyConnection) -> list[str]:
         "super_types": ["super_type_id", "display_name"],
         "types": ["type_id", "super_type_id", "display_name"],
         "county_type_assignments": ["county_fips", "dominant_type", "super_type"],
+        "tract_type_assignments": ["tract_geoid", "dominant_type", "super_type"],
         "counties": ["county_fips", "state_abbr", "county_name", "total_votes_2024"],
         "type_scores": ["county_fips", "type_id", "score"],
         "type_priors": ["type_id", "mean_dem_share"],
@@ -486,6 +494,7 @@ def build(db_path: Path, reset: bool = False, project_root: Path | None = None) 
     _county_acs_path = _data / "assembled" / "county_acs_features.parquet"
     _type_profiles_path = _data / "communities" / "type_profiles.parquet"
     _county_type_assignments_path = _data / "communities" / "county_type_assignments_full.parquet"
+    _tract_type_assignments_path = _data / "tracts" / "national_tract_assignments.parquet"
     _super_types_path = _data / "communities" / "super_types.parquet"
     _demographics_interpolated_path = _data / "assembled" / "demographics_interpolated.parquet"
 
@@ -775,6 +784,31 @@ def build(db_path: Path, reset: bool = False, project_root: Path | None = None) 
     else:
         log.info("No county_type_assignments_full.parquet found; skipping")
 
+    # ── Ingest tract type assignments ──────────────────────────────────────────
+    # The source parquet has 112,257 rows but only 81,129 unique GEOIDs (some
+    # tracts appear in multiple state runs). Dedup on GEOID before loading.
+    if _tract_type_assignments_path.exists():
+        tta_df = pd.read_parquet(
+            _tract_type_assignments_path,
+            columns=["GEOID", "dominant_type", "super_type"],
+        )
+        tta_df = tta_df.drop_duplicates(subset="GEOID")
+        tta_df = tta_df.rename(columns={"GEOID": "tract_geoid"})
+        tta_df["dominant_type"] = tta_df["dominant_type"].astype("int32")
+        tta_df["super_type"] = tta_df["super_type"].astype("int32")
+        con.execute("DROP TABLE IF EXISTS tract_type_assignments")
+        con.execute(
+            "CREATE TABLE tract_type_assignments "
+            "(tract_geoid VARCHAR PRIMARY KEY, dominant_type INTEGER, super_type INTEGER)"
+        )
+        con.register("_tta_view", tta_df)
+        con.execute("INSERT INTO tract_type_assignments SELECT * FROM _tta_view")
+        con.unregister("_tta_view")
+        n_tta = con.execute("SELECT COUNT(*) FROM tract_type_assignments").fetchone()[0]
+        log.info("Ingested tract_type_assignments: %d rows (from %d source rows)", n_tta, len(tta_df) + (112257 - 81129))
+    else:
+        log.info("No national_tract_assignments.parquet found; skipping tract_type_assignments")
+
     # ── Ingest super-types ─────────────────────────────────────────────────────
     if _super_types_path.exists():
         st_df = pd.read_parquet(_super_types_path)
@@ -820,8 +854,8 @@ def build(db_path: Path, reset: bool = False, project_root: Path | None = None) 
     print("\n=== wethervane.duckdb summary ===")
     for table in ["counties", "model_versions", "community_assignments", "type_assignments",
                    "county_shifts", "predictions", "community_sigma", "community_profiles",
-                   "county_demographics", "types", "county_type_assignments", "super_types",
-                   "type_covariance", "demographics_interpolated",
+                   "county_demographics", "types", "county_type_assignments", "tract_type_assignments",
+                   "super_types", "type_covariance", "demographics_interpolated",
                    "type_scores", "type_priors", "ridge_county_priors", "polls", "poll_notes",
                    "races"]:
         try:

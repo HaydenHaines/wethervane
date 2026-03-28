@@ -16,6 +16,8 @@ def _make_valid_db() -> duckdb.DuckDBPyConnection:
     con.execute("INSERT INTO types VALUES (0, 0, 'Test Type')")
     con.execute("CREATE TABLE county_type_assignments (county_fips VARCHAR, dominant_type INTEGER, super_type INTEGER)")
     con.execute("INSERT INTO county_type_assignments VALUES ('12001', 0, 0)")
+    con.execute("CREATE TABLE tract_type_assignments (tract_geoid VARCHAR PRIMARY KEY, dominant_type INTEGER, super_type INTEGER)")
+    con.execute("INSERT INTO tract_type_assignments VALUES ('01001020100', 0, 0)")
     # Domain tables (required by updated contract)
     con.execute("CREATE TABLE type_scores (county_fips VARCHAR, type_id INTEGER, score FLOAT, version_id VARCHAR)")
     con.execute("CREATE TABLE type_priors (type_id INTEGER, mean_dem_share FLOAT, version_id VARCHAR)")
