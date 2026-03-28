@@ -13,7 +13,7 @@ import pandas as pd
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from api.routers import communities, counties, forecast, meta
+from api.routers import communities, counties, forecast, meta, senate
 from src.propagation.crosstab_w_builder import CROSSTAB_DIMENSION_MAP, build_affinity_index
 
 log = logging.getLogger(__name__)
@@ -332,6 +332,7 @@ def create_app(lifespan_override=None) -> FastAPI:
     app.include_router(communities.router, prefix="/api/v1")
     app.include_router(counties.router, prefix="/api/v1")
     app.include_router(forecast.router, prefix="/api/v1")
+    app.include_router(senate.router, prefix="/api/v1")
 
     return app
 
