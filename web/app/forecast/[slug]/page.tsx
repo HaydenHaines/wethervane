@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { marginLabel, formatMargin } from "@/lib/typeDisplay";
+import ForecastToggle from "@/components/ForecastToggle";
 
 // ── Types ─────────────────────────────────────────────────────────────────
 
@@ -28,6 +29,11 @@ interface RaceDetail {
   n_counties: number;
   polls: RacePoll[];
   type_breakdown: TypeBreakdown[];
+  forecast_mode?: string;
+  state_pred_national?: number | null;
+  state_pred_local?: number | null;
+  candidate_effect_margin?: number | null;
+  n_polls?: number;
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────
@@ -379,6 +385,15 @@ export default async function RaceDetailPage({ params }: PageProps) {
           </p>
         )}
       </section>
+
+      {/* Forecast mode toggle */}
+      <ForecastToggle
+        slug={data.slug}
+        nPolls={data.n_polls ?? data.polls.length}
+        statePredNational={data.state_pred_national ?? null}
+        statePredLocal={data.state_pred_local ?? null}
+        candidateEffectMargin={data.candidate_effect_margin ?? null}
+      />
 
       {/* Recent polls table */}
       <section style={{ marginBottom: 40 }}>
