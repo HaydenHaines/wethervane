@@ -118,6 +118,7 @@ class ForecastRow(BaseModel):
     pred_hi90: float | None
     state_pred: float | None
     poll_avg: float | None
+    dominant_type: int | None = None
 
 
 class PollInput(BaseModel):

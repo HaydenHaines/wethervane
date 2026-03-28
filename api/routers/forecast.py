@@ -505,6 +505,7 @@ def _forecast_poll_types(
                 pred_hi90=float(row["ci_upper"]),
                 state_pred=state_pred_val,
                 poll_avg=poll.dem_share,
+                dominant_type=int(row["dominant_type"]) if "dominant_type" in row.index else None,
             )
         )
     return results
@@ -731,6 +732,7 @@ def update_forecast_with_multi_polls(
                 pred_hi90=float(row["ci_upper"]),
                 state_pred=state_pred_val,
                 poll_avg=float(np.mean([p[0] for p in race_polls])),
+                dominant_type=int(row["dominant_type"]) if "dominant_type" in row.index else None,
             )
             for _, row in result_df.iterrows()
         ]

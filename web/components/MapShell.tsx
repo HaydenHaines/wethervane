@@ -219,8 +219,9 @@ export default function MapShell() {
     (f: any): [number, number, number, number] => {
       // Forecast choropleth mode: color by dem_share
       if (forecastChoropleth) {
-        const fips: string = f.properties?.county_fips ?? "";
-        const share = forecastChoropleth.get(fips);
+        // Community polygons are keyed by type_id, not county_fips
+        const typeId: string = String(f.properties?.type_id ?? f.properties?.dominant_type ?? "");
+        const share = forecastChoropleth.get(typeId);
         if (share !== undefined) return choroplethColor(share);
         return [200, 200, 200, 120]; // no data
       }

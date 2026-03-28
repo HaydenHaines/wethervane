@@ -176,9 +176,22 @@ function stateFromRace(race: string): string | null {
 }
 
 function buildChoropleth(rows: ForecastRow[]): Map<string, number> {
-  const m = new Map<string, number>();
+  // Aggregate tract-level predictions to type_id for map coloring.
+  // The GeoJSON uses type_id (community polygons), not individual tract FIPS.
+  // Group by dominant_type, compute vote-weighted mean pred_dem_share.
+  const typeSum = new Map<number, number>();
+  const typeWeight = new Map<number, number>();
   rows.forEach((r) => {
-    if (r.pred_dem_share !== null) m.set(r.county_fips, r.pred_dem_share);
+    const typeId = (r as any).dominant_type;
+    if (typeId !== undefined && typeId !== null && r.pred_dem_share !== null) {
+      typeSum.set(typeId, (typeSum.get(typeId) ?? 0) + r.pred_dem_share);
+      typeWeight.set(typeId, (typeWeight.get(typeId) ?? 0) + 1);
+    }
+  });
+  const m = new Map<string, number>();
+  typeSum.forEach((sum, typeId) => {
+    const count = typeWeight.get(typeId) ?? 1;
+    m.set(String(typeId), sum / count);
   });
   return m;
 }
