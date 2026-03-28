@@ -5,6 +5,7 @@ import { fetchSenateOverview, type SenateOverviewData, type SenateRaceData } fro
 import { DUSTY_INK, type Rating } from "@/lib/colors";
 import { SenateControlBar, type ControlBarRace } from "@/components/SenateControlBar";
 import { RaceCard } from "@/components/RaceCard";
+import { useMapContext } from "@/components/MapContext";
 
 const KEY_RATINGS: Set<string> = new Set(["tossup", "lean_d", "lean_r"]);
 
@@ -23,14 +24,22 @@ export function SenateOverview() {
   const [data, setData] = useState<SenateOverviewData | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  const { setZoomedState, setForecastState } = useMapContext();
+
   useEffect(() => {
     fetchSenateOverview()
       .then(setData)
       .catch((e) => setError(e.message));
   }, []);
 
-  function handleRaceClick(slug: string) {
-    router.push(`/forecast/${slug}`);
+  function handleRaceClick(slug: string, state?: string) {
+    if (state && setZoomedState) {
+      // Zoom the map to this state — same behavior as clicking the state on the map
+      setZoomedState(state);
+      setForecastState(state);
+    } else {
+      router.push(`/forecast/${slug}`);
+    }
   }
 
   if (error) {
@@ -125,7 +134,7 @@ export function SenateOverview() {
                 rating={r.rating as Rating}
                 margin={r.margin}
                 nPolls={r.n_polls}
-                onClick={() => handleRaceClick(r.slug)}
+                onClick={() => handleRaceClick(r.slug, r.state)}
               />
             ))}
           </div>
@@ -160,7 +169,7 @@ export function SenateOverview() {
                 rating={r.rating as Rating}
                 margin={r.margin}
                 nPolls={r.n_polls}
-                onClick={() => handleRaceClick(r.slug)}
+                onClick={() => handleRaceClick(r.slug, r.state)}
               />
             ))}
           </div>

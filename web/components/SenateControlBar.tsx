@@ -14,7 +14,7 @@ export interface SenateControlBarProps {
   races: ControlBarRace[];
   demSeats: number;
   gopSeats: number;
-  onRaceClick: (slug: string) => void;
+  onRaceClick: (slug: string, state?: string) => void;
 }
 
 const RATING_ORDER: Rating[] = [
@@ -69,7 +69,7 @@ export function SenateControlBar({ races, demSeats, gopSeats, onRaceClick }: Sen
           return bucket.map((race) => (
             <div
               key={race.slug}
-              onClick={() => onRaceClick(race.slug)}
+              onClick={() => onRaceClick(race.slug, race.state)}
               onMouseEnter={() => setHoveredSlug(race.slug)}
               onMouseLeave={() => setHoveredSlug(null)}
               style={{
