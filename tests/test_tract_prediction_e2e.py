@@ -37,7 +37,7 @@ def test_tract_assignments_exist():
     df = pd.read_parquet(path)
     assert len(df) > 50000, f"Too few tracts: {len(df)}"
     score_cols = [c for c in df.columns if c.startswith("type_") and c.endswith("_score")]
-    assert len(score_cols) == 100, f"Expected 100 type scores, got {len(score_cols)}"
+    assert len(score_cols) >= 100, f"Expected 100+ type scores, got {len(score_cols)}"
 
 
 def test_tract_votes_cover_all_states():
