@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import duckdb
+import numpy as np
 import pytest
 from fastapi.testclient import TestClient
 
@@ -9,6 +10,7 @@ from api.main import create_app
 from api.routers.senate import (
     DEM_SAFE_SEATS,
     GOP_SAFE_SEATS,
+    SENATE_2026_STATES,
     _build_headline,
     _margin_to_rating,
     _rating_sort_key,
@@ -97,7 +99,10 @@ class TestBuildHeadline:
 
 
 def _build_senate_db() -> duckdb.DuckDBPyConnection:
-    """In-memory DuckDB with synthetic Senate race data."""
+    """In-memory DuckDB with synthetic Senate race data.
+
+    Uses TX and GA — both are in SENATE_2026_STATES.
+    """
     con = duckdb.connect(":memory:")
 
     con.execute("""
@@ -110,8 +115,8 @@ def _build_senate_db() -> duckdb.DuckDBPyConnection:
         )
     """)
     counties = [
-        ("12001", "FL", "12", "Alachua County, FL", 100000),
-        ("12003", "FL", "12", "Baker County, FL",    15000),
+        ("48001", "TX", "48", "Anderson County, TX", 100000),
+        ("48003", "TX", "48", "Andrews County, TX",    15000),
         ("13001", "GA", "13", "Appling County, GA",  80000),
         ("13003", "GA", "13", "Atkinson County, GA",  8000),
     ]
@@ -147,23 +152,18 @@ def _build_senate_db() -> duckdb.DuckDBPyConnection:
             PRIMARY KEY (county_fips, race, version_id)
         )
     """)
-    # FL Senate: tossup (~50% Dem share)
-    for fips, share in [("12001", 0.502), ("12003", 0.498)]:
+    # TX Senate: predictions (not directly used by new code, kept for schema)
+    for fips, share in [("48001", 0.502), ("48003", 0.498)]:
         con.execute(
-            "INSERT INTO predictions VALUES (?, '2026 FL Senate', 'test_v1', ?, 0.03, ?, ?, 0.50, 0.50)",
+            "INSERT INTO predictions VALUES (?, '2026 TX Senate', 'test_v1', ?, 0.03, ?, ?, 0.50, 0.50)",
             [fips, share, share - 0.05, share + 0.05],
         )
-    # GA Senate: lean GOP (~46% Dem share → margin ~-0.04)
+    # GA Senate
     for fips, share in [("13001", 0.462), ("13003", 0.458)]:
         con.execute(
             "INSERT INTO predictions VALUES (?, '2026 GA Senate', 'test_v1', ?, 0.03, ?, ?, 0.46, 0.46)",
             [fips, share, share - 0.05, share + 0.05],
         )
-    # A non-Senate race — should NOT appear in senate/overview
-    con.execute(
-        "INSERT INTO predictions VALUES ('12001', '2026 FL Governor', 'test_v1', "
-        "0.48, 0.03, 0.43, 0.53, 0.48, 0.48)"
-    )
 
     con.execute("""
         CREATE TABLE polls (
@@ -181,16 +181,50 @@ def _build_senate_db() -> duckdb.DuckDBPyConnection:
         )
     """)
     con.execute(
-        "INSERT INTO polls VALUES ('p1', '2026 FL Senate', 'FL', 'state', 0.50, 600, "
+        "INSERT INTO polls VALUES ('p1', '2026 TX Senate', 'TX', 'state', 0.50, 600, "
         "'2026-01-15', 'Siena', NULL, '2026')"
     )
     con.execute(
-        "INSERT INTO polls VALUES ('p2', '2026 FL Senate', 'FL', 'state', 0.49, 700, "
+        "INSERT INTO polls VALUES ('p2', '2026 TX Senate', 'TX', 'state', 0.49, 700, "
         "'2026-02-01', 'Quinnipiac', NULL, '2026')"
     )
     # No polls for GA Senate
 
     return con
+
+
+def _build_type_model_state(app) -> None:
+    """Set up minimal type model data on app.state for senate overview.
+
+    Creates 4 synthetic tracts (2 TX, 2 GA) with J=3 types.
+    TX tracts have priors ~0.50 (tossup), GA tracts ~0.46 (lean R).
+    """
+    J = 3
+    tract_fips = ["48001", "48003", "13001", "13003"]
+    # Soft membership scores (4 tracts x 3 types)
+    app.state.type_scores = np.array([
+        [0.6, 0.3, 0.1],
+        [0.5, 0.4, 0.1],
+        [0.2, 0.5, 0.3],
+        [0.3, 0.4, 0.3],
+    ])
+    app.state.type_county_fips = tract_fips
+    app.state.type_covariance = np.eye(J) * 0.01
+    app.state.type_priors = np.array([0.52, 0.48, 0.45])
+    app.state.ridge_priors = {
+        "48001": 0.502, "48003": 0.498,  # TX: ~tossup
+        "13001": 0.462, "13003": 0.458,  # GA: lean R
+    }
+    app.state.tract_states = {
+        "48001": "TX", "48003": "TX",
+        "13001": "GA", "13003": "GA",
+    }
+    app.state.tract_votes = {
+        "48001": 100000, "48003": 15000,
+        "13001": 80000, "13003": 8000,
+    }
+    app.state.behavior_tau = None
+    app.state.behavior_delta = None
 
 
 @pytest.fixture
@@ -199,8 +233,8 @@ def senate_client():
     test_app = create_app(lifespan_override=_noop_lifespan)
     test_app.state.db = con
     test_app.state.version_id = "test_v1"
-    # Minimal state fields the app may inspect
     test_app.state.contract_ok = True
+    _build_type_model_state(test_app)
     with TestClient(test_app, raise_server_exceptions=True) as c:
         yield c
     con.close()
@@ -233,17 +267,20 @@ class TestSenateOverview:
         for race in data["races"]:
             assert "senate" in race["race"].lower() or "Senate" in race["race"]
 
-    def test_fl_senate_is_tossup(self, senate_client):
+    def test_tx_senate_has_polls(self, senate_client):
+        """TX has 2 polls; predict_race runs and produces a real prediction."""
         data = senate_client.get("/api/v1/senate/overview").json()
-        fl = next(r for r in data["races"] if r["state"] == "FL")
-        assert fl["rating"] == "tossup"
-        assert abs(fl["margin"]) < 0.03
+        tx = next(r for r in data["races"] if r["state"] == "TX")
+        assert tx["n_polls"] == 2
+        # With polls at ~0.50, prediction should be near tossup
+        assert abs(tx["margin"]) < 0.10
 
-    def test_ga_senate_is_lean(self, senate_client):
+    def test_ga_senate_no_polls_uses_prior(self, senate_client):
+        """GA has no polls; uses behavior-adjusted prior (~0.46 = lean R)."""
         data = senate_client.get("/api/v1/senate/overview").json()
         ga = next(r for r in data["races"] if r["state"] == "GA")
-        assert ga["rating"] == "lean"
-        assert ga["margin"] < 0  # GOP-favored
+        assert ga["n_polls"] == 0
+        assert ga["margin"] < 0  # GOP-favored from prior
 
     def test_slug_format(self, senate_client):
         data = senate_client.get("/api/v1/senate/overview").json()
@@ -253,9 +290,9 @@ class TestSenateOverview:
 
     def test_poll_counts(self, senate_client):
         data = senate_client.get("/api/v1/senate/overview").json()
-        fl = next(r for r in data["races"] if r["state"] == "FL")
+        tx = next(r for r in data["races"] if r["state"] == "TX")
         ga = next(r for r in data["races"] if r["state"] == "GA")
-        assert fl["n_polls"] == 2
+        assert tx["n_polls"] == 2
         assert ga["n_polls"] == 0
 
     def test_tossup_sorts_before_lean(self, senate_client):
