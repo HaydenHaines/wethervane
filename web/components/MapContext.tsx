@@ -14,6 +14,9 @@ interface MapContextValue {
   setForecastState: (s: string | null) => void;
   forecastChoropleth: Map<string, number> | null;
   setForecastChoropleth: (m: Map<string, number> | null) => void;
+  // Progressive map: zoomed-into state
+  zoomedState: string | null;
+  setZoomedState: (s: string | null) => void;
 }
 
 const MapContext = createContext<MapContextValue>({
@@ -28,6 +31,8 @@ const MapContext = createContext<MapContextValue>({
   setForecastState: () => {},
   forecastChoropleth: null,
   setForecastChoropleth: () => {},
+  zoomedState: null,
+  setZoomedState: () => {},
 });
 
 export function MapProvider({ children }: { children: React.ReactNode }) {
@@ -36,6 +41,7 @@ export function MapProvider({ children }: { children: React.ReactNode }) {
   const [compareTypeIds, setCompareTypeIds] = useState<number[]>([]);
   const [forecastState, setForecastState] = useState<string | null>(null);
   const [forecastChoropleth, setForecastChoropleth] = useState<Map<string, number> | null>(null);
+  const [zoomedState, setZoomedState] = useState<string | null>(null);
 
   const addToComparison = useCallback((id: number) => {
     setCompareTypeIds((prev) => {
@@ -52,6 +58,7 @@ export function MapProvider({ children }: { children: React.ReactNode }) {
       compareTypeIds, setCompareTypeIds, addToComparison,
       forecastState, setForecastState,
       forecastChoropleth, setForecastChoropleth,
+      zoomedState, setZoomedState,
     }}>
       {children}
     </MapContext.Provider>

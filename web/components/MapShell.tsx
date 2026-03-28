@@ -1,10 +1,10 @@
 "use client";
 import { useState, useEffect, useCallback, useRef } from "react";
 import DeckGL from "@deck.gl/react";
-import { WebMercatorViewport } from "@deck.gl/core";
+import { FlyToInterpolator } from "@deck.gl/core";
 import { GeoJsonLayer } from "@deck.gl/layers";
 import { fetchCounties, fetchSuperTypes, fetchTypes, type CountyRow, type TypeSummary } from "@/lib/api";
-import { dustyInkChoropleth } from "@/lib/colors";
+import { dustyInkChoropleth, ratingColor, type Rating } from "@/lib/colors";
 import { useMapContext } from "@/components/MapContext";
 import { CommunityPanel } from "@/components/CommunityPanel";
 import { TypePanel } from "@/components/TypePanel";
@@ -74,76 +74,106 @@ const INITIAL_VIEW = {
 /** Partisan lean color scale: Dusty Ink muted academic palette. */
 const choroplethColor = dustyInkChoropleth;
 
-/** Extract all [lon, lat] pairs from a GeoJSON geometry. */
-function extractCoords(geometry: any): [number, number][] {
-  if (!geometry) return [];
-  const recurse = (arr: any): [number, number][] => {
-    if (!Array.isArray(arr)) return [];
-    if (typeof arr[0] === "number") return [[arr[0], arr[1]]];
-    return arr.flatMap(recurse);
-  };
-  return recurse(geometry.coordinates);
+/** Parse a hex color string (#rrggbb) to [r, g, b]. */
+function hexToRgb(hex: string): [number, number, number] {
+  return [
+    parseInt(hex.slice(1, 3), 16),
+    parseInt(hex.slice(3, 5), 16),
+    parseInt(hex.slice(5, 7), 16),
+  ];
 }
+
+/** Compute bounding box [minLng, minLat, maxLng, maxLat] from a GeoJSON geometry. */
+function bboxFromGeometry(geometry: any): [number, number, number, number] {
+  let minLng = Infinity, maxLng = -Infinity, minLat = Infinity, maxLat = -Infinity;
+  const recurse = (arr: any) => {
+    if (!Array.isArray(arr)) return;
+    if (typeof arr[0] === "number") {
+      const [lng, lat] = arr;
+      if (lng < minLng) minLng = lng;
+      if (lng > maxLng) maxLng = lng;
+      if (lat < minLat) minLat = lat;
+      if (lat > maxLat) maxLat = lat;
+      return;
+    }
+    arr.forEach(recurse);
+  };
+  recurse(geometry.coordinates);
+  return [minLng, minLat, maxLng, maxLat];
+}
+
+/** Compute a reasonable zoom level from a bounding box span. */
+function zoomFromBbox(minLng: number, minLat: number, maxLng: number, maxLat: number): number {
+  const lngSpan = maxLng - minLng;
+  const latSpan = maxLat - minLat;
+  const span = Math.max(lngSpan, latSpan);
+  // log2(360/span) gives roughly the zoom for that span to fill the viewport
+  return Math.min(9, Math.max(4, Math.log2(360 / span) - 0.5));
+}
+
+/** Extract state abbreviation from a race string like "2026 GA Senate". */
+function stateFromRace(race: string): string | null {
+  const m = race.match(/\d{4}\s+([A-Z]{2})\s+/);
+  return m ? m[1] : null;
+}
+
+const API_BASE = process.env.NEXT_PUBLIC_API_URL
+  ? `${process.env.NEXT_PUBLIC_API_URL}/api/v1`
+  : "/api/v1";
+
+const TRANSITION_MS = 800;
 
 export default function MapShell() {
   const {
     selectedCommunityId, setSelectedCommunityId,
     selectedTypeId, setSelectedTypeId,
     forecastState, forecastChoropleth,
+    zoomedState, setZoomedState,
   } = useMapContext();
   const containerRef = useRef<HTMLDivElement>(null);
   const [viewState, setViewState] = useState<any>(INITIAL_VIEW);
-  const [geojson, setGeojson] = useState<any>(null);
-  const [tractGeojson, setTractGeojson] = useState<any>(null);
-  const [countyMap, setCountyMap] = useState<Record<string, CountyRow>>({});
+
+  // State-level data (loaded on mount, ~700KB)
+  const [stateGeo, setStateGeo] = useState<any>(null);
+  const [stateRatings, setStateRatings] = useState<Map<string, string>>(new Map());
+
+  // Per-state tract data (loaded on state click)
+  const [stateTracts, setStateTracts] = useState<any>(null);
+  const [loadingTracts, setLoadingTracts] = useState(false);
+
+  // Existing data structures retained for tract interaction
   const [superTypeMap, setSuperTypeMap] = useState<Map<number, SuperTypeInfo>>(new Map());
   const [typeDataMap, setTypeDataMap] = useState<Map<number, TypeSummary>>(new Map());
-  const [hasTypeData, setHasTypeData] = useState(false);
   const [tooltip, setTooltip] = useState<{ x: number; y: number; text: string } | null>(null);
   const [tractContext, setTractContext] = useState<TractContext | null>(null);
   const [tractPopup, setTractPopup] = useState<TractPopupData | null>(null);
 
-  // Pan to selected forecast state whenever it changes
+  // ── On mount: load states + senate ratings + type metadata ──────────────
   useEffect(() => {
-    if (!forecastState || !geojson || Object.keys(countyMap).length === 0) return;
-    let minLon = Infinity, maxLon = -Infinity, minLat = Infinity, maxLat = -Infinity;
-    let found = false;
-    for (const feature of geojson.features) {
-      const fips = feature.properties?.county_fips;
-      if (countyMap[fips]?.state_abbr !== forecastState) continue;
-      found = true;
-      for (const [lon, lat] of extractCoords(feature.geometry)) {
-        if (lon < minLon) minLon = lon;
-        if (lon > maxLon) maxLon = lon;
-        if (lat < minLat) minLat = lat;
-        if (lat > maxLat) maxLat = lat;
-      }
-    }
-    if (!found) return;
-    const container = containerRef.current;
-    const width = container?.clientWidth ?? 800;
-    const height = container?.clientHeight ?? 600;
-    try {
-      const vp = new WebMercatorViewport({ width, height });
-      const { longitude, latitude, zoom } = vp.fitBounds(
-        [[minLon, minLat], [maxLon, maxLat]],
-        { padding: 48 }
-      );
-      setViewState((prev: any) => ({ ...prev, longitude, latitude, zoom, transitionDuration: 600 }));
-    } catch {
-      // fitBounds can throw for degenerate bounds (single-county states etc.); ignore
-    }
-  }, [forecastState, geojson, countyMap]);
+    // State polygons — instant, ~700KB
+    fetch("/states-us.geojson").then((r) => r.json()).then(setStateGeo);
 
-  useEffect(() => {
+    // Senate ratings for state coloring
+    fetch(`${API_BASE}/senate/overview`)
+      .then((r) => r.json())
+      .then((data) => {
+        const ratings = new Map<string, string>();
+        for (const race of data.races) {
+          // API currently has a bug where race.state is always "AK";
+          // extract the real state from the race string instead
+          const abbr = stateFromRace(race.race) ?? race.state;
+          const color = ratingColor(race.rating as Rating);
+          if (color) ratings.set(abbr, color);
+        }
+        setStateRatings(ratings);
+      })
+      .catch(() => {/* senate ratings are non-critical */});
+
+    // Super-type + type metadata (needed for tract tooltips/popups)
     Promise.all([
-      fetch("/counties-us.geojson").then((r) => r.json()),
-      fetchCounties(),
       fetchSuperTypes().catch(() => []),
       fetchTypes().catch(() => []),
-    ]).then(([geo, counties, superTypes, types]) => {
-
-      // Build super-type map from API
+    ]).then(([superTypes, types]) => {
       const stMap = new Map<number, SuperTypeInfo>();
       superTypes.forEach((st: any) => {
         stMap.set(st.super_type_id, {
@@ -153,107 +183,69 @@ export default function MapShell() {
       });
       setSuperTypeMap(stMap);
 
-      // Build full type data map from API (used by TractPopup for n_counties, mean_pred_dem_share)
       const tdMap = new Map<number, TypeSummary>();
-      (types as TypeSummary[]).forEach((t) => {
-        tdMap.set(t.type_id, t);
-      });
+      (types as TypeSummary[]).forEach((t) => tdMap.set(t.type_id, t));
       setTypeDataMap(tdMap);
-
-      // Build county map
-      const map: Record<string, CountyRow> = {};
-      let typeDataPresent = false;
-      counties.forEach((c: CountyRow) => {
-        map[c.county_fips] = c;
-        if (c.super_type !== null) typeDataPresent = true;
-      });
-      setCountyMap(map);
-      setHasTypeData(typeDataPresent);
-
-      // Enrich GeoJSON
-      const enriched = {
-        ...geo,
-        features: geo.features.map((f: any) => ({
-          ...f,
-          properties: {
-            ...f.properties,
-            community_id: map[f.properties.county_fips]?.community_id ?? -1,
-            dominant_type: map[f.properties.county_fips]?.dominant_type ?? -1,
-            super_type: map[f.properties.county_fips]?.super_type ?? -1,
-          },
-        })),
-      };
-      setGeojson(enriched);
     });
   }, []);
 
-  // Eagerly load tract GeoJSON on mount — tract view is always active
+  // ── Pan to forecast state (from Forecast tab) ──────────────────────────
   useEffect(() => {
-    fetch("/tracts-us.geojson")
+    if (!forecastState || !stateGeo) return;
+    const feature = stateGeo.features.find(
+      (f: any) => f.properties?.state_abbr === forecastState
+    );
+    if (!feature) return;
+    // When forecast tab selects a state, zoom into it and load tracts
+    handleStateClick(forecastState);
+  }, [forecastState, stateGeo]);
+
+  // ── State click: load tracts + zoom ────────────────────────────────────
+  const handleStateClick = useCallback((stateAbbr: string) => {
+    setZoomedState(stateAbbr);
+    setLoadingTracts(true);
+    setTractPopup(null);
+
+    fetch(`/tracts/${stateAbbr}.geojson`)
       .then((r) => r.json())
-      .then(setTractGeojson)
-      .catch(() => {/* tract layer stays null; map shows empty */});
-  }, []);
+      .then(setStateTracts)
+      .catch(() => setStateTracts(null))
+      .finally(() => setLoadingTracts(false));
 
-  const getColor = useCallback(
-    (f: any): [number, number, number, number] => {
-      // Forecast choropleth mode: color by dem_share
-      if (forecastChoropleth) {
-        // Community polygons are keyed by type_id, not county_fips
-        const typeId: string = String(f.properties?.type_id ?? f.properties?.dominant_type ?? "");
-        const share = forecastChoropleth.get(typeId);
-        if (share !== undefined) return choroplethColor(share);
-        return [200, 200, 200, 120]; // no data
+    // Zoom to state bounding box
+    if (stateGeo) {
+      const feature = stateGeo.features.find(
+        (f: any) => f.properties?.state_abbr === stateAbbr
+      );
+      if (feature) {
+        const [minLng, minLat, maxLng, maxLat] = bboxFromGeometry(feature.geometry);
+        setViewState((prev: any) => ({
+          ...prev,
+          longitude: (minLng + maxLng) / 2,
+          latitude: (minLat + maxLat) / 2,
+          zoom: zoomFromBbox(minLng, minLat, maxLng, maxLat),
+          transitionDuration: TRANSITION_MS,
+          transitionInterpolator: new FlyToInterpolator(),
+        }));
       }
+    }
+  }, [stateGeo, setZoomedState]);
 
-      const st: number = f.properties?.super_type ?? -1;
-      const dt: number = f.properties?.dominant_type ?? f.properties?.type_id ?? -1;
-
-      if (st >= 0 || hasTypeData) {
-        const isSelected = selectedTypeId !== null && dt === selectedTypeId;
-        const base = getColorForSuperType(st);
-        return [...base, isSelected ? 255 : 180] as [number, number, number, number];
-      }
-      // Fallback for legacy community data (no type data)
-      return [180, 180, 180, 120] as [number, number, number, number];
-    },
-    [selectedTypeId, hasTypeData, forecastChoropleth]
-  );
-
-  const getLineColor = useCallback(
-    (f: any): [number, number, number, number] => {
-      // Highlight selected forecast state with white outline
-      if (forecastState) {
-        const fips: string = f.properties?.county_fips ?? "";
-        if (countyMap[fips]?.state_abbr === forecastState) {
-          return [255, 255, 255, 220];
-        }
-      }
-      return [80, 80, 80, 120];
-    },
-    [forecastState, countyMap]
-  );
-
-  const getLineWidth = useCallback(
-    (f: any): number => {
-      // Forecast state highlight: thicker borders
-      if (forecastState) {
-        const fips: string = f.properties?.county_fips ?? "";
-        if (countyMap[fips]?.state_abbr === forecastState) return 600;
-      }
-      if (hasTypeData) {
-        const dt: number = f.properties?.dominant_type ?? -1;
-        return selectedTypeId !== null && dt === selectedTypeId ? 800 : 200;
-      }
-      const cid: number = f.properties?.community_id ?? -1;
-      return selectedCommunityId !== null && cid === selectedCommunityId ? 800 : 200;
-    },
-    [selectedCommunityId, selectedTypeId, hasTypeData, forecastState, countyMap]
-  );
+  // ── Back to national ───────────────────────────────────────────────────
+  const handleBackToNational = useCallback(() => {
+    setZoomedState(null);
+    setStateTracts(null);
+    setTractPopup(null);
+    setViewState((prev: any) => ({
+      ...prev,
+      ...INITIAL_VIEW,
+      transitionDuration: TRANSITION_MS,
+      transitionInterpolator: new FlyToInterpolator(),
+    }));
+  }, [setZoomedState]);
 
   const getSuperTypeName = useCallback(
     (superTypeId: number, feature?: any): string => {
-      // Tract view: read from GeoJSON property, fall back to API map, then generic
       const geoName = feature?.properties?.super_type_name;
       if (geoName) return geoName;
       return superTypeMap.get(superTypeId)?.name ?? `Type ${superTypeId}`;
@@ -261,106 +253,168 @@ export default function MapShell() {
     [superTypeMap]
   );
 
-  // Tract community polygons are the sole map view
-  const activeData = tractGeojson;
-  const layerId = "tract-communities";
+  // ── Build layers ──────────────────────────────────────────────────────
+  const layers: any[] = [];
 
-  const layers = activeData
-    ? [
-        new GeoJsonLayer({
-          id: layerId,
-          data: activeData,
-          pickable: true,
-          stroked: true,
-          filled: true,
-          getFillColor: getColor as any,
-          getLineColor: getLineColor as any,
-          getLineWidth,
-          lineWidthUnits: "meters",
-          updateTriggers: {
-            getFillColor: [selectedCommunityId, selectedTypeId, hasTypeData, forecastChoropleth],
-            getLineColor: [forecastState, countyMap],
-            getLineWidth: [selectedCommunityId, selectedTypeId, hasTypeData, forecastState, countyMap],
-          },
-          onHover: ({ object, x, y }: any) => {
-            if (object) {
-              const st = object.properties?.super_type;
-              const tid = object.properties?.type_id;
-              const n = object.properties?.n_tracts;
-              const area = object.properties?.area_sqkm;
-              const stName = getSuperTypeName(st, object);
-              // Demographic properties embedded at type level
-              const income = formatIncome(object.properties?.median_hh_income);
-              const college = formatPct(object.properties?.pct_ba_plus);
-              const white = formatPct(object.properties?.pct_white_nh);
-              const black = formatPct(object.properties?.pct_black);
-              const hispanic = formatPct(object.properties?.pct_hispanic);
-              // Build rich tooltip
-              const lines: string[] = [
-                `${stName}  ·  Type ${tid}`,
-                `${n} tracts · ${Math.round(area)} km²`,
-              ];
-              const stats: string[] = [];
-              if (income) stats.push(`Income: ${income}`);
-              if (college) stats.push(`College+: ${college}`);
-              if (stats.length > 0) lines.push(stats.join("  ·  "));
-              const raceStats: string[] = [];
-              if (white) raceStats.push(`White NH: ${white}`);
-              if (black) raceStats.push(`Black: ${black}`);
-              if (hispanic) raceStats.push(`Hispanic: ${hispanic}`);
-              if (raceStats.length > 0) lines.push(raceStats.join("  ·  "));
-              setTooltip({ x, y, text: lines.join("\n") });
-            } else {
-              setTooltip(null);
-            }
-          },
-          onClick: ({ object, x, y }: any) => {
-            if (object) {
-              if (object.properties?.n_tracts != null) {
-                // Tract view: show popup at click location
-                const props = object.properties;
-                const current = tractPopup;
-                if (current && current.feature.type_id === props.type_id && current.feature.n_tracts === props.n_tracts) {
-                  // Click same tract polygon again — dismiss popup
-                  setTractPopup(null);
-                } else {
-                  setTractPopup({
-                    feature: {
-                      type_id: props.type_id,
-                      super_type: props.super_type,
-                      super_type_name: getSuperTypeName(props.super_type, object),
-                      n_tracts: props.n_tracts,
-                      area_sqkm: props.area_sqkm ?? 0,
-                      median_hh_income: props.median_hh_income,
-                      pct_ba_plus: props.pct_ba_plus,
-                      pct_white_nh: props.pct_white_nh,
-                      pct_black: props.pct_black,
-                      pct_hispanic: props.pct_hispanic,
-                      evangelical_share: props.evangelical_share,
-                    },
-                    x,
-                    y,
-                  });
-                }
-                // Clear type/community selections when clicking a tract polygon
-                setSelectedTypeId(null);
-                setSelectedCommunityId(null);
-                setTractContext(null);
+  // Layer 1: State polygons (always visible)
+  if (stateGeo) {
+    layers.push(
+      new GeoJsonLayer({
+        id: "states",
+        data: stateGeo,
+        filled: true,
+        stroked: true,
+        getFillColor: ((f: any) => {
+          const abbr = f.properties?.state_abbr;
+          // Desaturate non-zoomed states when zoomed in
+          if (zoomedState && abbr !== zoomedState) {
+            return [234, 231, 226, 60];
+          }
+          // Zoomed-into state: transparent fill (tracts will show through)
+          if (zoomedState && abbr === zoomedState) {
+            return [0, 0, 0, 0];
+          }
+          // National view: color by senate rating
+          const color = stateRatings.get(abbr);
+          if (color) {
+            const [r, g, b] = hexToRgb(color);
+            return [r, g, b, 180];
+          }
+          return [234, 231, 226, 180]; // no senate race — neutral
+        }) as any,
+        getLineColor: ((f: any) => {
+          const abbr = f.properties?.state_abbr;
+          if (zoomedState && abbr === zoomedState) {
+            return [100, 95, 88, 200]; // bold border on zoomed state
+          }
+          if (zoomedState) {
+            return [180, 175, 168, 40]; // faded border on other states
+          }
+          return [180, 175, 168, 120]; // normal border
+        }) as any,
+        lineWidthMinPixels: 1,
+        pickable: !zoomedState, // only clickable in national view
+        onClick: (info: any) => {
+          const abbr = info.object?.properties?.state_abbr;
+          if (abbr) handleStateClick(abbr);
+        },
+        onHover: ({ object, x, y }: any) => {
+          if (!zoomedState && object) {
+            const abbr = object.properties?.state_abbr;
+            const name = object.properties?.state_name;
+            setTooltip({ x, y, text: name ?? abbr });
+          } else if (!zoomedState) {
+            setTooltip(null);
+          }
+        },
+        updateTriggers: {
+          getFillColor: [zoomedState, stateRatings],
+          getLineColor: [zoomedState],
+        },
+      })
+    );
+  }
+
+  // Layer 2: Tract polygons (only when zoomed into a state)
+  if (zoomedState && stateTracts) {
+    layers.push(
+      new GeoJsonLayer({
+        id: "tracts",
+        data: stateTracts,
+        filled: true,
+        stroked: true,
+        getFillColor: ((f: any) => {
+          // Forecast choropleth mode: color by dem_share
+          if (forecastChoropleth) {
+            const typeId = String(f.properties?.type_id ?? "");
+            const share = forecastChoropleth.get(typeId);
+            if (share !== undefined) return choroplethColor(share);
+            return [200, 200, 200, 120];
+          }
+          // Default: super-type coloring
+          const st = f.properties?.super_type ?? -1;
+          const base = getColorForSuperType(st);
+          return [...base, 180];
+        }) as any,
+        getLineColor: [200, 195, 188, 40],
+        lineWidthMinPixels: 0.5,
+        pickable: true,
+        onHover: ({ object, x, y }: any) => {
+          if (object) {
+            const st = object.properties?.super_type;
+            const tid = object.properties?.type_id;
+            const n = object.properties?.n_tracts;
+            const area = object.properties?.area_sqkm;
+            const stName = getSuperTypeName(st, object);
+            const income = formatIncome(object.properties?.median_hh_income);
+            const college = formatPct(object.properties?.pct_ba_plus);
+            const white = formatPct(object.properties?.pct_white_nh);
+            const black = formatPct(object.properties?.pct_black);
+            const hispanic = formatPct(object.properties?.pct_hispanic);
+            const lines: string[] = [
+              `${stName}  ·  Type ${tid}`,
+              `${n} tracts · ${Math.round(area)} km²`,
+            ];
+            const stats: string[] = [];
+            if (income) stats.push(`Income: ${income}`);
+            if (college) stats.push(`College+: ${college}`);
+            if (stats.length > 0) lines.push(stats.join("  ·  "));
+            const raceStats: string[] = [];
+            if (white) raceStats.push(`White NH: ${white}`);
+            if (black) raceStats.push(`Black: ${black}`);
+            if (hispanic) raceStats.push(`Hispanic: ${hispanic}`);
+            if (raceStats.length > 0) lines.push(raceStats.join("  ·  "));
+            setTooltip({ x, y, text: lines.join("\n") });
+          } else {
+            setTooltip(null);
+          }
+        },
+        onClick: ({ object, x, y }: any) => {
+          if (object) {
+            if (object.properties?.n_tracts != null) {
+              const props = object.properties;
+              const current = tractPopup;
+              if (current && current.feature.type_id === props.type_id && current.feature.n_tracts === props.n_tracts) {
+                setTractPopup(null);
+              } else {
+                setTractPopup({
+                  feature: {
+                    type_id: props.type_id,
+                    super_type: props.super_type,
+                    super_type_name: getSuperTypeName(props.super_type, object),
+                    n_tracts: props.n_tracts,
+                    area_sqkm: props.area_sqkm ?? 0,
+                    median_hh_income: props.median_hh_income,
+                    pct_ba_plus: props.pct_ba_plus,
+                    pct_white_nh: props.pct_white_nh,
+                    pct_black: props.pct_black,
+                    pct_hispanic: props.pct_hispanic,
+                    evangelical_share: props.evangelical_share,
+                  },
+                  x,
+                  y,
+                });
               }
-            } else {
-              // Click on empty map space — dismiss tract popup
-              setTractPopup(null);
+              setSelectedTypeId(null);
+              setSelectedCommunityId(null);
+              setTractContext(null);
             }
-          },
-        }),
-      ]
-    : [];
+          } else {
+            setTractPopup(null);
+          }
+        },
+        updateTriggers: {
+          getFillColor: [forecastChoropleth],
+        },
+      })
+    );
+  }
 
-  // Build legend: collect super-type IDs from tract GeoJSON features and extract names
+  // ── Build legend from tract features when zoomed ──────────────────────
   const activeSuperTypeIds = new Set<number>();
   const tractSuperTypeNames = new Map<number, string>();
-  if (tractGeojson) {
-    tractGeojson.features?.forEach((f: any) => {
+  if (zoomedState && stateTracts) {
+    stateTracts.features?.forEach((f: any) => {
       const st = f.properties?.super_type;
       const name = f.properties?.super_type_name;
       if (st != null && st >= 0) {
@@ -387,6 +441,49 @@ export default function MapShell() {
         layers={layers}
         style={{ background: "#e8ecf0" }}
       />
+
+      {/* Back to national button */}
+      {zoomedState && (
+        <button
+          onClick={handleBackToNational}
+          style={{
+            position: "absolute",
+            top: 12,
+            left: 12,
+            zIndex: 10,
+            padding: "6px 12px",
+            borderRadius: 4,
+            border: "1px solid #e0ddd8",
+            background: "#fafaf8",
+            color: "#3a3632",
+            fontSize: 12,
+            cursor: "pointer",
+            fontFamily: "var(--font-sans)",
+          }}
+        >
+          &larr; Back to national
+        </button>
+      )}
+
+      {/* Loading indicator for tract fetch */}
+      {loadingTracts && (
+        <div
+          style={{
+            position: "absolute",
+            top: 12,
+            left: zoomedState ? 160 : 12,
+            zIndex: 10,
+            padding: "4px 10px",
+            borderRadius: 4,
+            background: "rgba(20, 24, 32, 0.75)",
+            color: "#f0f4f8",
+            fontSize: 11,
+            fontFamily: "var(--font-sans)",
+          }}
+        >
+          Loading tracts...
+        </div>
+      )}
 
       {tooltip && (() => {
         const lines = tooltip.text.split("\n");
@@ -460,8 +557,8 @@ export default function MapShell() {
         </div>
       )}
 
-      {/* Super-type legend — hidden when forecast choropleth is active */}
-      {!forecastChoropleth && legendEntries.length > 0 && (
+      {/* Super-type legend — shown when zoomed with tracts, no forecast choropleth */}
+      {!forecastChoropleth && zoomedState && legendEntries.length > 0 && (
         <div
           className="map-legend"
           style={{
@@ -488,15 +585,49 @@ export default function MapShell() {
         </div>
       )}
 
+      {/* Senate rating legend — national view only */}
+      {!forecastChoropleth && !zoomedState && stateRatings.size > 0 && (
+        <div
+          className="map-legend"
+          style={{
+            position: "absolute",
+            bottom: 24,
+            left: 16,
+            background: "var(--color-surface)",
+            border: "1px solid var(--color-border)",
+            borderRadius: "4px",
+            padding: "8px 12px",
+            fontSize: "11px",
+            fontFamily: "var(--font-sans)",
+          }}
+        >
+          {[
+            { label: "Safe D", color: "#2d4a6f" },
+            { label: "Likely D", color: "#4b6d90" },
+            { label: "Lean D", color: "#7e9ab5" },
+            { label: "Tossup", color: "#b5a995" },
+            { label: "Lean R", color: "#c4907a" },
+            { label: "Likely R", color: "#9e5e4e" },
+            { label: "Safe R", color: "#6e3535" },
+            { label: "No race", color: "#eae7e2" },
+          ].map(({ label, color }) => (
+            <div key={label} className="map-legend-item" style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "2px" }}>
+              <div style={{ width: 12, height: 12, borderRadius: 2, background: color }} />
+              <span style={{ color: "var(--color-text-muted)" }}>{label}</span>
+            </div>
+          ))}
+        </div>
+      )}
+
       {/* Side panels */}
-      {selectedCommunityId !== null && !hasTypeData && (
+      {selectedCommunityId !== null && (
         <CommunityPanel
           communityId={selectedCommunityId}
           onClose={() => setSelectedCommunityId(null)}
         />
       )}
 
-      {selectedTypeId !== null && hasTypeData && (
+      {selectedTypeId !== null && (
         <TypePanel
           typeId={selectedTypeId}
           superTypeMap={superTypeMap}
