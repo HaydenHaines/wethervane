@@ -261,19 +261,20 @@ def test_category_weighting():
 def test_presidential_weighting():
     from src.experiments.run_experiment import _apply_presidential_weight
 
-    cols = ["pres_d_shift_16_20", "pres_r_shift_16_20", "house_d_shift_16_18_sc", "pct_white_nh"]
+    # Use current REGISTRY column names (tract-primary pipeline)
+    cols = ["pres_shift_2016_2020", "pres_dem_share_2020", "pct_white_nh", "median_age"]
     rng = np.random.default_rng(77)
     data = rng.standard_normal((10, 4))
     df = pd.DataFrame(data, columns=cols)
 
     result = _apply_presidential_weight(df, presidential_weight=2.5)
 
-    # Presidential columns multiplied by 2.5
-    np.testing.assert_allclose(result["pres_d_shift_16_20"].values, data[:, 0] * 2.5)
-    np.testing.assert_allclose(result["pres_r_shift_16_20"].values, data[:, 1] * 2.5)
+    # Presidential columns (both presidential_shifts and presidential_lean subcategories) multiplied by 2.5
+    np.testing.assert_allclose(result["pres_shift_2016_2020"].values, data[:, 0] * 2.5)
+    np.testing.assert_allclose(result["pres_dem_share_2020"].values, data[:, 1] * 2.5)
     # Non-presidential columns unchanged
-    np.testing.assert_allclose(result["house_d_shift_16_18_sc"].values, data[:, 2])
-    np.testing.assert_allclose(result["pct_white_nh"].values, data[:, 3])
+    np.testing.assert_allclose(result["pct_white_nh"].values, data[:, 2])
+    np.testing.assert_allclose(result["median_age"].values, data[:, 3])
 
 
 # ── Test: minmax scaling ─────────────────────────────────────────────────────

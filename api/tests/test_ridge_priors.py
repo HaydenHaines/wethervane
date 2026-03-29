@@ -40,13 +40,14 @@ _TEST_TYPE_SCORES = _TEST_TYPE_SCORES / _abs.sum(axis=1, keepdims=True)
 _TEST_TYPE_COVARIANCE = np.eye(TEST_J, dtype=np.float64) * 0.01 + 0.005
 _TEST_TYPE_PRIORS = np.full(TEST_J, 0.44, dtype=np.float64)
 
-# Ridge priors: each test county gets a specific value
+# Tract-level priors (11-digit GEOIDs) — matches new tract-primary architecture.
+# ridge_priors is now loaded from tract_priors.parquet, not from DuckDB.
 RIDGE_PRIOR_VALUES = {
-    "12001": 0.55,
-    "12003": 0.38,
-    "13001": 0.41,
-    "13003": 0.36,
-    "01001": 0.52,
+    "12001020100": 0.55,
+    "12001020200": 0.38,
+    "13001020100": 0.41,
+    "13001020200": 0.36,
+    "01001020100": 0.52,
 }
 
 
@@ -84,7 +85,12 @@ class TestRidgePriorsStartupLoading:
     """Test that lifespan() loads ridge_county_priors.parquet into app.state.ridge_priors."""
 
     def test_ridge_priors_loaded_from_db(self, tmp_path):
-        """Ridge priors in DuckDB → app.state.ridge_priors populated."""
+        """Tract priors parquet present → app.state.ridge_priors populated.
+
+        The ridge_priors dict is now loaded from data/tracts/tract_priors.parquet
+        (not from DuckDB's ridge_county_priors table). Keys are 11-digit tract
+        GEOIDs; values are prior Dem vote shares.
+        """
         import duckdb
         db_path = tmp_path / "wethervane.duckdb"
         con = duckdb.connect(str(db_path))
@@ -111,16 +117,19 @@ class TestRidgePriorsStartupLoading:
             "CREATE TABLE community_assignments (county_fips VARCHAR, community_id INTEGER, "
             "k INTEGER, version_id VARCHAR)"
         )
-        con.execute(
-            "CREATE TABLE ridge_county_priors (county_fips VARCHAR, "
-            "ridge_pred_dem_share DOUBLE, version_id VARCHAR)"
-        )
-        for fips, val in RIDGE_PRIOR_VALUES.items():
-            con.execute(
-                "INSERT INTO ridge_county_priors VALUES (?, ?, ?)",
-                [fips.zfill(5), val, "v1"],
-            )
         con.close()
+
+        # Create tract_priors.parquet in the expected location
+        tracts_dir = tmp_path / "data" / "tracts"
+        tracts_dir.mkdir(parents=True)
+        tract_df = pd.DataFrame({
+            "tract_geoid": list(RIDGE_PRIOR_VALUES.keys()),
+            "tract_prior": list(RIDGE_PRIOR_VALUES.values()),
+            # state_abbr derived from first 2 digits of GEOID (FIPS state code)
+            "state_abbr": ["FL", "FL", "GA", "GA", "AL"],
+            "total_votes": [1000, 800, 900, 700, 600],
+        })
+        tract_df.to_parquet(tracts_dir / "tract_priors.parquet", index=False)
 
         captured_state: dict = {}
 
@@ -134,6 +143,7 @@ class TestRidgePriorsStartupLoading:
         import os
         os.environ["WETHERVANE_DATA_DIR"] = str(tmp_path)
         os.environ["WETHERVANE_DB_PATH"] = str(db_path)
+        os.environ["WETHERVANE_PROJECT_ROOT"] = str(tmp_path)
         try:
             test_app = create_app(lifespan_override=_capturing_lifespan)
             with TestClient(test_app):
@@ -141,13 +151,18 @@ class TestRidgePriorsStartupLoading:
         finally:
             del os.environ["WETHERVANE_DATA_DIR"]
             del os.environ["WETHERVANE_DB_PATH"]
+            del os.environ["WETHERVANE_PROJECT_ROOT"]
 
         assert len(captured_state["ridge_priors"]) == len(RIDGE_PRIOR_VALUES)
-        for fips, expected in RIDGE_PRIOR_VALUES.items():
-            assert captured_state["ridge_priors"][fips.zfill(5)] == pytest.approx(expected)
+        for geoid, expected in RIDGE_PRIOR_VALUES.items():
+            assert captured_state["ridge_priors"][geoid] == pytest.approx(expected)
 
     def test_ridge_priors_empty_when_file_missing(self, tmp_path):
-        """Ridge priors parquet absent → app.state.ridge_priors = {}."""
+        """tract_priors.parquet absent → app.state.ridge_priors = {}.
+
+        When the parquet file doesn't exist the lifespan catches the FileNotFoundError
+        and sets ridge_priors to an empty dict, allowing the API to start normally.
+        """
         import duckdb
         db_path = tmp_path / "wethervane.duckdb"
         con = duckdb.connect(str(db_path))
@@ -176,6 +191,10 @@ class TestRidgePriorsStartupLoading:
         )
         con.close()
 
+        # Do NOT create tract_priors.parquet — it should be absent
+        tracts_dir = tmp_path / "data" / "tracts"
+        assert not (tracts_dir / "tract_priors.parquet").exists()
+
         captured_state: dict = {}
 
         @asynccontextmanager
@@ -187,6 +206,7 @@ class TestRidgePriorsStartupLoading:
         import os
         os.environ["WETHERVANE_DATA_DIR"] = str(tmp_path)
         os.environ["WETHERVANE_DB_PATH"] = str(db_path)
+        os.environ["WETHERVANE_PROJECT_ROOT"] = str(tmp_path)
         try:
             test_app = create_app(lifespan_override=_capturing_lifespan)
             with TestClient(test_app):
@@ -194,6 +214,7 @@ class TestRidgePriorsStartupLoading:
         finally:
             del os.environ["WETHERVANE_DATA_DIR"]
             del os.environ["WETHERVANE_DB_PATH"]
+            del os.environ["WETHERVANE_PROJECT_ROOT"]
 
         assert captured_state["ridge_priors"] == {}
 
