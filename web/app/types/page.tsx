@@ -145,6 +145,13 @@ export default async function TypesPage() {
         <span>Types</span>
       </nav>
 
+      {/* Explore sub-navigation */}
+      <div className="flex gap-4 text-sm mb-6">
+        <span className="font-semibold text-[var(--color-text)]">Types</span>
+        <a href="/explore/map" className="text-[var(--color-text-subtle)] hover:text-[var(--color-text)]">Map</a>
+        <a href="/explore/shifts" className="text-[var(--color-text-subtle)] hover:text-[var(--color-text)]">Shifts</a>
+      </div>
+
       {/* Header */}
       <div style={{ marginBottom: 40 }}>
         <p
