@@ -315,3 +315,10 @@ class CountyDetail(BaseModel):
     pred_dem_share: float | None = None
     demographics: dict[str, float]
     sibling_counties: list[SiblingCounty]
+
+
+class ElectionHistoryPoint(BaseModel):
+    year: int
+    election_type: str   # "president" | "senate" | "governor"
+    dem_share: float
+    total_votes: int | None = None

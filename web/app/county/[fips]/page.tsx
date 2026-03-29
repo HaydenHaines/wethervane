@@ -4,6 +4,7 @@ import { MarginDisplay } from "@/components/shared/MarginDisplay";
 import { RatingBadge } from "@/components/shared/RatingBadge";
 import { DemographicsPanel } from "@/components/detail/DemographicsPanel";
 import { SimilarCounties } from "@/components/detail/SimilarCounties";
+import { CountyElectionHistory, type ElectionHistoryPoint } from "@/components/detail/CountyElectionHistory";
 import { Breadcrumbs } from "@/components/nav/Breadcrumbs";
 import { marginToRating, getSuperTypeColor, rgbToHex } from "@/lib/config/palette";
 import { formatMargin } from "@/lib/format";
@@ -64,6 +65,18 @@ async function fetchCounty(fips: string): Promise<CountyDetail | null> {
     return res.json();
   } catch {
     return null;
+  }
+}
+
+async function fetchCountyHistory(fips: string): Promise<ElectionHistoryPoint[]> {
+  try {
+    const res = await fetch(`${API_BASE}/api/v1/counties/${fips}/history`, {
+      next: { revalidate: 86400 },
+    });
+    if (!res.ok) return [];
+    return res.json();
+  } catch {
+    return [];
   }
 }
 
@@ -138,7 +151,10 @@ export async function generateStaticParams() {
 
 export default async function CountyPage({ params }: PageProps) {
   const { fips } = await params;
-  const data = await fetchCounty(fips);
+  const [data, history] = await Promise.all([
+    fetchCounty(fips),
+    fetchCountyHistory(fips),
+  ]);
 
   if (!data) {
     return (
@@ -311,18 +327,22 @@ export default async function CountyPage({ params }: PageProps) {
             marginBottom: 16,
           }}
         >
-          Electoral Shift History
+          Election History
         </h2>
-        <p style={{ fontSize: 14, color: "var(--color-text-muted)", margin: 0 }}>
-          County-level shift history coming soon. See the{" "}
-          <a
-            href={`/type/${data.dominant_type}`}
-            style={{ color: "var(--color-dem)", textDecoration: "none" }}
-          >
-            {data.type_display_name}
-          </a>{" "}
-          type page for the shift profile of this county&apos;s electoral community.
-        </p>
+        {history.length > 0 ? (
+          <CountyElectionHistory history={history} />
+        ) : (
+          <p style={{ fontSize: 14, color: "var(--color-text-muted)", margin: 0 }}>
+            No election history data available for this county. See the{" "}
+            <a
+              href={`/type/${data.dominant_type}`}
+              style={{ color: "var(--color-dem)", textDecoration: "none" }}
+            >
+              {data.type_display_name}
+            </a>{" "}
+            type page for the shift profile of this county&apos;s electoral community.
+          </p>
+        )}
       </section>
 
       {/* Similar Counties */}

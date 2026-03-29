@@ -107,10 +107,22 @@ Z_MOD = 0.6
 Z_LOW = 0.3
 
 # Minimum absolute values for race/ethnicity labels (avoid noise amplification)
+# For "Majority-Black" specifically: require pct_black > 0.50 (i.e. actually majority).
+# The z-score threshold (3.0) corresponds to ~30% Black which is NOT a majority.
+# Using a separate key to enforce stricter absolute minimums per label.
 _MIN_ABS: dict[str, float] = {
     "pct_black": 0.15,
     "pct_hispanic": 0.10,
     "pct_asian": 0.05,
+}
+
+# Per-label absolute minimums — override _MIN_ABS for specific positive labels.
+# Key: (feature, positive_label) → minimum absolute value required.
+_MIN_ABS_PER_LABEL: dict[tuple[str, str], float] = {
+    # "Majority-Black" must mean the Black population is genuinely the majority.
+    ("pct_black", "Majority-Black"): 0.50,
+    # "Asian" label requires at least 10% Asian (not just z-score elevated)
+    ("pct_asian", "Asian"): 0.10,
 }
 
 # ---------------------------------------------------------------------------
@@ -278,9 +290,14 @@ def _top_tokens(
         label = _get_label(feat, z, thresh, pos, neg)
         if not label or label in tokens or label in exclude:
             continue
-        # Enforce minimum absolute value for race features
+        # Enforce minimum absolute value for race/ethnicity features
         if feat in _MIN_ABS and raw_row is not None and feat in raw_row.index:
             if float(raw_row[feat]) < _MIN_ABS[feat]:
+                continue
+        # Enforce per-label absolute minimums (e.g., "Majority-Black" requires >50% Black)
+        if raw_row is not None and feat in raw_row.index:
+            per_label_min = _MIN_ABS_PER_LABEL.get((feat, label))
+            if per_label_min is not None and float(raw_row[feat]) < per_label_min:
                 continue
         tokens.append(label)
         seen_families.add(fam)
@@ -1155,6 +1172,46 @@ def _disambiguate(
             if len(set(lean_labels.values())) >= 2:
                 for tid in tids:
                     final[tid] = f"{name} {lean_labels[tid]}"
+
+    # Pass 2.5 — geographic frontier detection for near-empty types
+    # Some types consist entirely of Alaska Census Areas or similar sparsely-populated
+    # geographic entities with near-zero demographic data.  These types cannot be
+    # distinguished by vocabulary z-scores, so they fall through to ordinals unless
+    # we catch them first and assign geographic labels.
+    #
+    # Detection criteria: n_counties <= 3 AND (median_hh_income < 5_000 OR median_age < 5)
+    # These thresholds safely identify types whose demographic averages are driven by
+    # unincorporated land areas with essentially no measured population.
+    _frontier_counter = [0]  # use list for closure mutability
+
+    def _is_frontier(tid: int) -> bool:
+        """Return True if type has near-zero demographics (unincorporated frontier)."""
+        row = profiles.loc[profiles["type_id"] == tid]
+        if row.empty:
+            return False
+        r = row.iloc[0]
+        n = int(r.get("n_counties", 99))
+        income = float(r.get("median_hh_income", 99999))
+        age = float(r.get("median_age", 99))
+        return n <= 3 and (income < 5_000 or age < 5)
+
+    for name, tids in list(_get_dupes(final).items()):
+        frontier_tids = [t for t in tids if _is_frontier(t)]
+        if not frontier_tids:
+            continue
+        # Rename frontier types that still share a name with others
+        still_duped = [t for t in frontier_tids if final[t] == name]
+        for tid in still_duped:
+            _frontier_counter[0] += 1
+            final[tid] = f"Alaska Census Area {_ORDINALS[_frontier_counter[0]].strip() or 'I'}"
+        # If the base type is also frontier (all are frontier), keep it as "Alaska Frontier"
+        non_frontier_siblings = [t for t in tids if t not in frontier_tids]
+        if not non_frontier_siblings:
+            # All are frontier — rename the first one too
+            first = _pop_order(tids)[0]
+            if _is_frontier(first):
+                _frontier_counter[0] += 1
+                final[first] = f"Alaska Frontier"
 
     # Pass 3 — ordinal suffixes for any remaining duplicates
     for name, tids in _get_dupes(final).items():

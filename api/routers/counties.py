@@ -1,11 +1,26 @@
 from __future__ import annotations
 
+import os
+from pathlib import Path
+
 import duckdb
 import pandas as pd
 from fastapi import APIRouter, Depends, HTTPException, Request
 
 from api.db import get_db
-from api.models import CountyDetail, CountyRow, SiblingCounty
+from api.models import CountyDetail, CountyRow, ElectionHistoryPoint, SiblingCounty
+
+# Parquet files live under $WETHERVANE_DATA_DIR/assembled/ (default: data/assembled/)
+_DATA_DIR = Path(os.environ.get("WETHERVANE_DATA_DIR", "data"))
+_ASSEMBLED = _DATA_DIR / "assembled"
+
+# Presidential election years available as parquet files
+_PRES_YEARS = [2000, 2004, 2008, 2012, 2016, 2020, 2024]
+# Senate election years available
+_SEN_YEARS = [2002, 2004, 2006, 2008, 2010, 2012, 2014, 2016, 2018, 2020, 2022]
+# Governor election years available
+_GOV_YEARS_ALGARA = [1994, 1998, 2002, 2006, 2010, 2014, 2018]
+_GOV_YEARS_MEDSL = [2022]
 
 router = APIRouter(tags=["counties"])
 
@@ -201,3 +216,97 @@ def get_county_detail(
         demographics=demographics,
         sibling_counties=sibling_counties,
     )
+
+
+def _read_share(path: Path, fips: str, col: str, total_col: str) -> tuple[float, int | None] | None:
+    """Read a single county's dem_share and total_votes from a parquet file.
+
+    Returns (dem_share, total_votes) or None if county not found or value is NaN.
+    """
+    if not path.exists():
+        return None
+    try:
+        df = pd.read_parquet(path, columns=["county_fips", col, total_col])
+    except Exception:
+        # Column may not exist (e.g. old schema)
+        try:
+            df = pd.read_parquet(path, columns=["county_fips", col])
+            df[total_col] = None
+        except Exception:
+            return None
+    row = df[df["county_fips"] == fips]
+    if row.empty:
+        return None
+    val = row[col].values[0]
+    if pd.isna(val):
+        return None
+    total = row[total_col].values[0] if total_col in row.columns else None
+    total_int: int | None = None if (total is None or pd.isna(total)) else int(total)
+    return float(val), total_int
+
+
+@router.get("/counties/{fips}/history", response_model=list[ElectionHistoryPoint])
+def get_county_history(fips: str):
+    """Return raw election results (Dem two-party share) for a county across all available cycles.
+
+    Covers presidential (2000-2024), Senate (2002-2022), and gubernatorial (1994-2022) elections
+    where county-level parquet data is available.  Years with no data for this county are omitted.
+    Results are sorted by year then election_type.
+    """
+    points: list[ElectionHistoryPoint] = []
+
+    # Presidential
+    for year in _PRES_YEARS:
+        path = _ASSEMBLED / f"medsl_county_presidential_{year}.parquet"
+        result = _read_share(path, fips, f"pres_dem_share_{year}", f"pres_total_{year}")
+        if result is not None:
+            dem_share, total_votes = result
+            points.append(ElectionHistoryPoint(
+                year=year,
+                election_type="president",
+                dem_share=dem_share,
+                total_votes=total_votes,
+            ))
+
+    # Senate
+    for year in _SEN_YEARS:
+        path = _ASSEMBLED / f"medsl_county_senate_{year}.parquet"
+        result = _read_share(path, fips, f"senate_dem_share_{year}", f"senate_total_{year}")
+        if result is not None:
+            dem_share, total_votes = result
+            points.append(ElectionHistoryPoint(
+                year=year,
+                election_type="senate",
+                dem_share=dem_share,
+                total_votes=total_votes,
+            ))
+
+    # Governor — Algara & Amlani dataset
+    for year in _GOV_YEARS_ALGARA:
+        path = _ASSEMBLED / f"algara_county_governor_{year}.parquet"
+        result = _read_share(path, fips, f"gov_dem_share_{year}", f"gov_total_{year}")
+        if result is not None:
+            dem_share, total_votes = result
+            points.append(ElectionHistoryPoint(
+                year=year,
+                election_type="governor",
+                dem_share=dem_share,
+                total_votes=total_votes,
+            ))
+
+    # Governor — MEDSL 2022
+    for year in _GOV_YEARS_MEDSL:
+        path = _ASSEMBLED / f"medsl_county_2022_governor.parquet"
+        result = _read_share(path, fips, f"gov_dem_share_{year}", f"gov_total_{year}")
+        if result is not None:
+            dem_share, total_votes = result
+            points.append(ElectionHistoryPoint(
+                year=year,
+                election_type="governor",
+                dem_share=dem_share,
+                total_votes=total_votes,
+            ))
+
+    # Sort by year, then election_type for consistent ordering
+    points.sort(key=lambda p: (p.year, p.election_type))
+    return points
