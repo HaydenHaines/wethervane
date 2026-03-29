@@ -67,30 +67,28 @@ class TestRatingSortKey:
 
 
 class TestBuildHeadline:
-    def test_many_tossups(self):
+    def test_knife_edge(self):
+        """When projected seats are within 2, headline says 'Knife's Edge'."""
+        # DEM_SAFE=47, GOP_SAFE=53. Need dem_favored - gop_favored to bring
+        # the gap to within 2. 6 Dem-leaning races → 53 vs 53 → diff=0.
+        races = [{"rating": "lean", "margin": 0.05}] * 6
+        headline, subtitle = _build_headline(races)
+        assert "Knife" in headline
+
+    def test_gop_favored(self):
+        """With no competitive races going Dem, GOP holds its safe-seat lead."""
         races = [
             {"rating": "tossup", "margin": 0.01},
             {"rating": "tossup", "margin": -0.01},
             {"rating": "tossup", "margin": 0.02},
         ]
         headline, subtitle = _build_headline(races)
-        assert "Competitive" in headline
-
-    def test_gop_favored(self):
-        races = [
-            {"rating": "lean", "margin": -0.05},
-            {"rating": "likely", "margin": -0.10},
-            {"rating": "lean", "margin": -0.04},
-        ]
-        headline, subtitle = _build_headline(races)
         assert "Republican" in headline
 
     def test_dem_favored(self):
-        races = [
-            {"rating": "lean", "margin": 0.05},
-            {"rating": "likely", "margin": 0.10},
-            {"rating": "lean", "margin": 0.04},
-        ]
+        """Enough Dem-favored races to overcome the safe-seat deficit."""
+        # Need 9+ Dem-leaning to get dem_projected=56 vs gop_projected=53, diff=3
+        races = [{"rating": "lean", "margin": 0.05}] * 9
         headline, subtitle = _build_headline(races)
         assert "Democrat" in headline
 
