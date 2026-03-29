@@ -30,7 +30,10 @@ export default function LandingPage() {
 
       {data && (
         <div className="flex justify-center pb-8">
-          <FreshnessStamp pollCount={totalPolls} />
+          <FreshnessStamp
+            pollCount={totalPolls}
+            updatedAt={data.updated_at ?? undefined}
+          />
         </div>
       )}
     </div>

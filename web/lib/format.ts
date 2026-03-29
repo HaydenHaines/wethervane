@@ -28,11 +28,12 @@ export function formatCurrency(value: number): string {
 
 /** Format a plain number with locale grouping. "1066710" -> "1,066,710" */
 export function formatNumber(value: number, decimals = 1): string {
-  // Integers display without decimals, floats get fixed precision
-  if (Number.isInteger(value)) {
-    return value.toLocaleString("en-US");
-  }
-  return value.toFixed(decimals);
+  // Always use locale grouping (commas) and trim trailing zeros.
+  // "259178.3" -> "259,178.3"; "35.0" -> "35"; "1066710" -> "1,066,710"
+  return value.toLocaleString("en-US", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: decimals,
+  });
 }
 
 /**

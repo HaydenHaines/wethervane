@@ -58,9 +58,14 @@ const FIELD_CONFIG: Record<string, FieldConfig> = {
   pct_owner_occupied:     { label: "Owner-occupied housing",  format: "percent",  section: "economics", order: 1 },
   pct_wfh:                { label: "Work from home",          format: "percent",  section: "economics", order: 2 },
   pct_management:         { label: "Management workers",      format: "percent",  section: "economics", order: 3 },
+  pct_transit:            { label: "Transit commuters",       format: "percent",  section: "economics", order: 4 },
+  pct_car:                { label: "Car commuters",           format: "percent",  section: "economics", order: 5 },
+  net_migration_rate:     { label: "Net migration rate",      format: "percent",  section: "economics", order: 6 },
+  inflow_outflow_ratio:   { label: "Inflow/outflow ratio",    format: "number",   section: "economics", order: 7 },
 
   // -- Education --
   pct_bachelors_plus:     { label: "Bachelor's degree+",  format: "percent", section: "education", order: 0 },
+  pct_graduate:           { label: "Graduate degree+",    format: "percent", section: "education", order: 1 },
 
   // -- Religion --
   // GOTCHA: religious_adherence_rate is per-1,000 population (RCMS convention),
@@ -74,9 +79,10 @@ const FIELD_CONFIG: Record<string, FieldConfig> = {
   religious_adherence_rate: { label: "Religious adherence",   format: "per1000_to_pct", section: "religion", order: 5 },
 
   // -- Geography --
-  pop_total:              { label: "Total population",     format: "number",  section: "geography", order: 0 },
-  median_age:             { label: "Median age",           format: "number",  section: "geography", order: 1 },
-  log_pop_density:        { label: "Log population density", format: "number", section: "geography", order: 2 },
+  pop_total:              { label: "Total population",  format: "number",  section: "geography", order: 0 },
+  median_age:             { label: "Median age",         format: "number",  section: "geography", order: 1 },
+  land_area_sq_mi:        { label: "Land area (sq mi)",  format: "number",  section: "geography", order: 2 },
+  pop_per_sq_mi:          { label: "Population density", format: "number",  section: "geography", order: 3 },
 
   // -- Political --
   mean_dem_share:         { label: "Mean Dem share",       format: "margin",  section: "political", order: 0 },
@@ -123,6 +129,8 @@ export const SKIP_FIELDS = new Set([
   "commute_total", "commute_car", "commute_transit", "commute_wfh",
   "n_counties",
   "log_median_hh_income",
+  // log-transformed columns are not meaningful to display directly
+  "log_pop_density",
   "avg_inflow_income", "migration_diversity",
   "narrative",
 ]);

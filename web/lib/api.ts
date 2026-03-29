@@ -239,6 +239,8 @@ export interface SenateOverviewData {
   dem_seats_safe: number;
   gop_seats_safe: number;
   races: SenateRaceData[];
+  /** ISO date string of the most recently scraped poll, if available. */
+  updated_at?: string | null;
 }
 
 export async function fetchSenateOverview(): Promise<SenateOverviewData> {

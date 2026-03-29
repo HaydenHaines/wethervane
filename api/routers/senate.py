@@ -70,22 +70,38 @@ def _build_headline(races: list[dict]) -> tuple[str, str]:
 
     Returns (headline, subtitle).
     """
-    dem_leaning = sum(
-        1 for r in races
-        if r["margin"] > 0 or (r["rating"] == "tossup")
-    )
-    gop_leaning = len(races) - dem_leaning
-
-    competitive = [r for r in races if r["rating"] in ("tossup", "lean")]
+    # Count races where the model favors each party (tossups split as contested)
+    dem_favored = sum(1 for r in races if r["margin"] > _TOSSUP_MAX)
+    gop_favored = sum(1 for r in races if r["margin"] < -_TOSSUP_MAX)
     n_tossup = sum(1 for r in races if r["rating"] == "tossup")
+    competitive = [r for r in races if r["rating"] in ("tossup", "lean")]
+    n_competitive = len(competitive)
 
-    if n_tossup >= 3:
-        return "Senate Highly Competitive", "multiple tossup races in play"
-    if gop_leaning > dem_leaning:
-        return "Republicans Favored", "to retain control of the Senate"
-    if dem_leaning > gop_leaning:
-        return "Democrats Favored", "to flip Senate control"
-    return "Senate Battle for Control", "outcome uncertain across competitive races"
+    # Seat projections: safe seats plus clearly-favored contested seats
+    dem_projected = DEM_SAFE_SEATS + dem_favored
+    gop_projected = GOP_SAFE_SEATS + gop_favored
+
+    seat_diff = dem_projected - gop_projected
+
+    if abs(seat_diff) <= 2:
+        subtitle_parts = [f"{n_tossup} tossup" if n_tossup == 1 else f"{n_tossup} tossups"]
+        if n_competitive > n_tossup:
+            subtitle_parts.append(f"{n_competitive - n_tossup} more lean races")
+        return (
+            "Senate Control on a Knife's Edge",
+            f"{' · '.join(subtitle_parts)} in play",
+        )
+    if gop_projected > dem_projected:
+        if gop_projected >= 55:
+            subtitle = f"GOP projected {gop_projected} seats · {n_competitive} competitive races"
+            return "Republicans Strongly Favored to Hold the Senate", subtitle
+        subtitle = f"GOP projected {gop_projected} seats · {n_competitive} competitive races"
+        return "Republicans Favored to Hold the Senate", subtitle
+    if gop_projected >= 55:
+        subtitle = f"Dems projected {dem_projected} seats · {n_competitive} competitive races"
+        return "Democrats Strongly Favored to Flip the Senate", subtitle
+    subtitle = f"Dems projected {dem_projected} seats · {n_competitive} competitive races"
+    return "Democrats Favored to Flip the Senate", subtitle
 
 
 @router.get("/senate/overview")
@@ -253,6 +269,17 @@ def get_senate_overview(
             # Not contested in 2026: use delegation color (lighter shade)
             state_colors[st] = _PARTY_COLORS.get(delegation, "#eae7e2")
 
+    # Freshness: report the most recent poll date scraped, if available
+    updated_at: str | None = None
+    try:
+        row = db.execute(
+            "SELECT MAX(date) AS max_date FROM polls WHERE date IS NOT NULL"
+        ).fetchone()
+        if row and row[0]:
+            updated_at = str(row[0])
+    except Exception:
+        pass
+
     return {
         "headline": headline,
         "subtitle": subtitle,
@@ -260,4 +287,5 @@ def get_senate_overview(
         "gop_seats_safe": GOP_SAFE_SEATS,
         "races": races,
         "state_colors": state_colors,
+        "updated_at": updated_at,
     }
