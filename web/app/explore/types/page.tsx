@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import Link from "next/link";
 import { TypeGrid } from "@/components/explore/TypeGrid";
 import { ScatterPlot } from "@/components/explore/ScatterPlot";
+import { ComparisonTable } from "@/components/explore/ComparisonTable";
 
 // ---------------------------------------------------------------------------
 // Metadata
@@ -155,6 +157,34 @@ export default function ExploreTypesPage() {
           All Types
         </h2>
         <TypeGrid />
+      </section>
+
+      {/* Comparison table section */}
+      <section style={{ marginTop: 56 }}>
+        <h2
+          style={{
+            fontFamily: "var(--font-serif)",
+            fontSize: 22,
+            fontWeight: 700,
+            margin: "0 0 8px",
+          }}
+        >
+          Compare Types
+        </h2>
+        <p
+          style={{
+            fontSize: 14,
+            color: "var(--color-text-muted)",
+            margin: "0 0 20px",
+            lineHeight: 1.6,
+          }}
+        >
+          Select up to 4 types to compare their demographic and political
+          profiles side-by-side. The comparison URL is shareable.
+        </p>
+        <Suspense fallback={null}>
+          <ComparisonTable />
+        </Suspense>
       </section>
 
       {/* Footer nav */}

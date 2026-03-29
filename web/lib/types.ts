@@ -48,7 +48,7 @@ export interface TypeSummary {
 
 export interface TypeCounty {
   county_fips: string;
-  county_name: string;
+  county_name: string | null;
   state_abbr: string;
 }
 
