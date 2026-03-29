@@ -1,6 +1,50 @@
 import Link from "next/link";
 
-export default function AboutPage() {
+// ── Types ──────────────────────────────────────────────────────────────────
+
+interface TypeSummary {
+  type_id: number;
+}
+
+interface SuperTypeSummary {
+  super_type_id: number;
+}
+
+// ── Data fetching ──────────────────────────────────────────────────────────
+
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8002";
+
+async function fetchCounts(): Promise<{ typeCount: number; superTypeCount: number }> {
+  try {
+    const [typesRes, superTypesRes] = await Promise.all([
+      fetch(`${API_BASE}/api/v1/types`, { next: { revalidate: 86400 } }),
+      fetch(`${API_BASE}/api/v1/super-types`, { next: { revalidate: 86400 } }),
+    ]);
+
+    const types: TypeSummary[] = typesRes.ok ? await typesRes.json() : [];
+    const superTypes: SuperTypeSummary[] = superTypesRes.ok ? await superTypesRes.json() : [];
+
+    return { typeCount: types.length, superTypeCount: superTypes.length };
+  } catch {
+    // Fallback: page still renders, stats show "—"
+    return { typeCount: 0, superTypeCount: 0 };
+  }
+}
+
+// ── Page ───────────────────────────────────────────────────────────────────
+
+export default async function AboutPage() {
+  const { typeCount, superTypeCount } = await fetchCounts();
+
+  const metrics = [
+    { label: "Counties", value: "3,154" },
+    { label: "Fine types", value: typeCount > 0 ? String(typeCount) : "—" },
+    { label: "Super-types", value: superTypeCount > 0 ? String(superTypeCount) : "—" },
+    { label: "Ensemble LOO r", value: "0.711" },
+    { label: "County RMSE", value: "7.3 pp" },
+    { label: "Covariance val r", value: "0.915" },
+  ];
+
   return (
     <div style={{ padding: "20px 16px" }}>
       {/* Title */}
@@ -53,7 +97,7 @@ export default function AboutPage() {
         memberships.
       </p>
 
-      {/* Full methodology link — prominent */}
+      {/* Full methodology link */}
       <Link
         href="/methodology"
         style={{
@@ -113,14 +157,7 @@ export default function AboutPage() {
             gap: "8px",
           }}
         >
-          {[
-            { label: "Counties", value: "3,154" },
-            { label: "Fine types", value: "100" },
-            { label: "Super-types", value: "5" },
-            { label: "Ensemble LOO r", value: "0.711" },
-            { label: "County RMSE", value: "7.3 pp" },
-            { label: "Covariance val r", value: "0.915" },
-          ].map((m) => (
+          {metrics.map((m) => (
             <div
               key={m.label}
               style={{

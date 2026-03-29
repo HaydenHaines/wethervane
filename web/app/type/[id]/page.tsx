@@ -4,6 +4,7 @@ import { MarginDisplay } from "@/components/shared/MarginDisplay";
 import { RatingBadge } from "@/components/shared/RatingBadge";
 import { DemographicsPanel } from "@/components/detail/DemographicsPanel";
 import { ShiftHistoryChart } from "@/components/detail/ShiftHistoryChart";
+import { Breadcrumbs } from "@/components/nav/Breadcrumbs";
 import { marginToRating, getSuperTypeColor, rgbToHex } from "@/lib/config/palette";
 import { formatMargin } from "@/lib/format";
 
@@ -197,49 +198,7 @@ export default async function TypePage({ params }: PageProps) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      {/* Breadcrumb */}
-      <nav
-        aria-label="breadcrumb"
-        style={{ fontSize: 13, color: "var(--color-text-muted)", marginBottom: 24 }}
-      >
-        <ol
-          style={{
-            listStyle: "none",
-            margin: 0,
-            padding: 0,
-            display: "flex",
-            flexWrap: "wrap",
-            alignItems: "center",
-            gap: "0 4px",
-          }}
-        >
-          <li>
-            <Link href="/" style={{ color: "var(--color-dem)", textDecoration: "none" }}>
-              Home
-            </Link>
-          </li>
-          <li aria-hidden="true">/</li>
-          <li>
-            <Link
-              href="/forecast"
-              style={{ color: "var(--color-dem)", textDecoration: "none" }}
-            >
-              Map
-            </Link>
-          </li>
-          <li aria-hidden="true">/</li>
-          <li>
-            <Link
-              href="/types"
-              style={{ color: "var(--color-dem)", textDecoration: "none" }}
-            >
-              Types
-            </Link>
-          </li>
-          <li aria-hidden="true">/</li>
-          <li aria-current="page">Type {data.type_id}</li>
-        </ol>
-      </nav>
+      <Breadcrumbs currentPage={`Type ${data.type_id}`} />
 
       {/* Header */}
       <h1

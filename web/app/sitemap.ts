@@ -1,54 +1,74 @@
 import { MetadataRoute } from "next";
 
+const BASE_URL = "https://wethervane.hhaines.duckdns.org";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8002";
+
+// ── Static pages ───────────────────────────────────────────────────────────
+
+const STATIC_PAGES: Array<{
+  path: string;
+  priority: number;
+  changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"];
+}> = [
+  { path: "",                    priority: 1.0, changeFrequency: "weekly"  },
+  { path: "/forecast/senate",    priority: 0.9, changeFrequency: "weekly"  },
+  { path: "/forecast/governor",  priority: 0.8, changeFrequency: "weekly"  },
+  { path: "/explore/types",      priority: 0.7, changeFrequency: "monthly" },
+  { path: "/methodology",        priority: 0.6, changeFrequency: "monthly" },
+  { path: "/about",              priority: 0.3, changeFrequency: "monthly" },
+];
+
+// ── Helpers ────────────────────────────────────────────────────────────────
+
+async function fetchJson<T>(path: string): Promise<T | null> {
+  try {
+    const res = await fetch(`${API_BASE}${path}`, { next: { revalidate: 86400 } });
+    if (!res.ok) return null;
+    return res.json() as Promise<T>;
+  } catch {
+    return null;
+  }
+}
+
+// ── Sitemap ────────────────────────────────────────────────────────────────
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const base = "https://wethervane.hhaines.duckdns.org";
+  const now = new Date();
 
   // Static pages
-  const staticPages = ["", "/forecast", "/types", "/about", "/methodology", "/methodology/accuracy", "/compare", "/explore"].map(
-    (path) => ({
-      url: `${base}${path}`,
-      lastModified: new Date(),
-      changeFrequency: "weekly" as const,
-      priority: path === "" ? 1.0 : 0.8,
-    })
-  );
+  const staticEntries: MetadataRoute.Sitemap = STATIC_PAGES.map(({ path, priority, changeFrequency }) => ({
+    url: `${BASE_URL}${path}`,
+    lastModified: now,
+    changeFrequency,
+    priority,
+  }));
 
-  // Fetch all county FIPS from API
-  const apiBase =
-    process.env.NEXT_PUBLIC_API_URL || "http://localhost:8002";
-  // Type pages: IDs 0-99 (statically known, no API call needed)
-  const typePages = Array.from({ length: 100 }, (_, i) => ({
-    url: `${base}/type/${i}`,
-    lastModified: new Date(),
+  // Race pages: /forecast/[slug]
+  const raceSlugs = await fetchJson<string[]>("/api/v1/forecast/race-slugs");
+  const raceEntries: MetadataRoute.Sitemap = (raceSlugs ?? []).map((slug) => ({
+    url: `${BASE_URL}/forecast/${slug}`,
+    lastModified: now,
+    changeFrequency: "weekly" as const,
+    priority: 0.9,
+  }));
+
+  // Type pages: /type/[id] — IDs fetched from API so the count reflects the live model
+  const types = await fetchJson<Array<{ type_id: number }>>("/api/v1/types");
+  const typeEntries: MetadataRoute.Sitemap = (types ?? []).map(({ type_id }) => ({
+    url: `${BASE_URL}/type/${type_id}`,
+    lastModified: now,
     changeFrequency: "monthly" as const,
     priority: 0.7,
   }));
 
-  try {
-    const [countiesRes, slugsRes] = await Promise.all([
-      fetch(`${apiBase}/api/v1/counties`),
-      fetch(`${apiBase}/api/v1/forecast/race-slugs`),
-    ]);
+  // County pages: /county/[fips]
+  const counties = await fetchJson<Array<{ county_fips: string }>>("/api/v1/counties");
+  const countyEntries: MetadataRoute.Sitemap = (counties ?? []).map(({ county_fips }) => ({
+    url: `${BASE_URL}/county/${county_fips}`,
+    lastModified: now,
+    changeFrequency: "monthly" as const,
+    priority: 0.5,
+  }));
 
-    const counties = countiesRes.ok ? await countiesRes.json() : [];
-    const raceSlugs: string[] = slugsRes.ok ? await slugsRes.json() : [];
-
-    const countyPages = counties.map((c: { county_fips: string }) => ({
-      url: `${base}/county/${c.county_fips}`,
-      lastModified: new Date(),
-      changeFrequency: "monthly" as const,
-      priority: 0.6,
-    }));
-
-    const racePages = raceSlugs.map((slug) => ({
-      url: `${base}/forecast/${slug}`,
-      lastModified: new Date(),
-      changeFrequency: "weekly" as const,
-      priority: 0.9,
-    }));
-
-    return [...staticPages, ...racePages, ...typePages, ...countyPages];
-  } catch {
-    return [...staticPages, ...typePages];
-  }
+  return [...staticEntries, ...raceEntries, ...typeEntries, ...countyEntries];
 }
