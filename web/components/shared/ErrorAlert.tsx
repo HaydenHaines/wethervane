@@ -5,7 +5,7 @@ import { AlertCircle } from "lucide-react";
 
 interface ErrorAlertProps {
   title: string;
-  message: string;
+  message?: string;
   retry?: () => void;
 }
 
@@ -15,7 +15,7 @@ export function ErrorAlert({ title, message, retry }: ErrorAlertProps) {
       <AlertCircle className="h-4 w-4" />
       <AlertTitle>{title}</AlertTitle>
       <AlertDescription>
-        {message}
+        {message ?? "Something went wrong."}
         {retry && (
           <button
             onClick={retry}
