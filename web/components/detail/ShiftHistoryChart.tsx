@@ -29,7 +29,17 @@ interface ShiftPoint {
   value: number;
 }
 
-const MARGIN = { top: 20, right: 24, bottom: 40, left: 56 };
+const MARGIN = { top: 36, right: 24, bottom: 40, left: 56 };
+
+/**
+ * Notable cycle annotations shown above inflection points.
+ * Key matches the axis label (e.g., "'04→'08") from parseShiftKey.
+ */
+const CYCLE_ANNOTATIONS: Record<string, string> = {
+  "'04→'08": "Obama",
+  "'12→'16": "Trump",
+  "'16→'20": "Biden",
+};
 const CHART_HEIGHT = 200;
 
 /** Parse a shift field key into a display label and sort key. */
@@ -142,6 +152,27 @@ export function ShiftHistoryChart({ shiftProfile }: ShiftHistoryChartProps) {
                   strokeWidth={1.5}
                 />
               </g>
+            );
+          })}
+
+          {/* Event annotations above notable inflection points */}
+          {points.map((pt) => {
+            const annotation = CYCLE_ANNOTATIONS[pt.label];
+            if (!annotation) return null;
+            const cx = xScale(pt.label) ?? 0;
+            return (
+              <text
+                key={`anno-${pt.sortKey}`}
+                x={cx}
+                y={-8}
+                textAnchor="middle"
+                fontSize={9}
+                fontFamily="var(--font-sans)"
+                fill="var(--color-text-subtle, var(--color-text-muted))"
+                opacity={0.65}
+              >
+                {annotation}
+              </text>
             );
           })}
 
