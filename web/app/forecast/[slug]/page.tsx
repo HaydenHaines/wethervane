@@ -257,6 +257,8 @@ export default async function RaceDetailPage({ params }: PageProps) {
         year={data.year}
         prediction={data.prediction}
         nCounties={data.n_counties}
+        lo90={data.prediction !== null ? data.prediction - 1.645 * predStd : null}
+        hi90={data.prediction !== null ? data.prediction + 1.645 * predStd : null}
       />
 
       {/* Outcome distribution dotplot */}
@@ -289,6 +291,18 @@ export default async function RaceDetailPage({ params }: PageProps) {
             </span>
           )}
         </h2>
+        {nPolls === 0 && (
+          <p
+            className="text-sm mb-4 rounded-md px-4 py-3"
+            style={{
+              color: "var(--color-text-muted)",
+              background: "var(--color-surface)",
+              border: "1px solid var(--color-border)",
+            }}
+          >
+            This forecast is based on the structural model prior — no race-specific polls have been incorporated yet.
+          </p>
+        )}
         <PollTable polls={data.polls} />
       </section>
 

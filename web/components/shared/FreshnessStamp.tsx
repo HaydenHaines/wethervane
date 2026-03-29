@@ -1,4 +1,4 @@
-import { timeAgo } from "@/lib/format";
+import { absoluteDate } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
 interface FreshnessStampProps {
@@ -11,7 +11,7 @@ export function FreshnessStamp({ updatedAt, pollCount, className }: FreshnessSta
   const parts: string[] = [];
 
   if (updatedAt) {
-    parts.push(`Updated ${timeAgo(updatedAt)}`);
+    parts.push(`Updated ${absoluteDate(updatedAt)}`);
   }
 
   if (pollCount !== undefined) {

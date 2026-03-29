@@ -120,6 +120,19 @@ export function parseMargin(
 // ---------------------------------------------------------------------------
 
 /**
+ * Format a date string or Date as a short absolute date string.
+ *
+ * Examples:
+ *   "2026-03-27" -> "Mar 27, 2026"
+ *   null -> "---"
+ */
+export function absoluteDate(date: string | Date | null): string {
+  if (!date) return "\u2014";
+  const d = typeof date === "string" ? new Date(date) : date;
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+}
+
+/**
  * Format a date string or Date as a human-readable "time ago" string.
  *
  * Examples:
