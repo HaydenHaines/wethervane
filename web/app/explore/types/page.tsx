@@ -1,9 +1,19 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { TypeGrid } from "@/components/explore/TypeGrid";
-import { ScatterPlot } from "@/components/explore/ScatterPlot";
 import { ComparisonTable } from "@/components/explore/ComparisonTable";
+import { Skeleton } from "@/components/ui/skeleton";
+
+// visx is a large bundle — load it dynamically to keep the initial JS payload small
+const ScatterPlot = dynamic(
+  () => import("@/components/explore/ScatterPlot").then((m) => m.ScatterPlot),
+  {
+    ssr: false,
+    loading: () => <Skeleton className="w-full h-[420px]" />,
+  },
+);
 
 // ---------------------------------------------------------------------------
 // Metadata

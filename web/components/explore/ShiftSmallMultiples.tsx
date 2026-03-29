@@ -108,7 +108,13 @@ function MiniChart({ entry, yScale, xScale, yZero }: MiniChartProps) {
       </div>
 
       {/* visx chart */}
-      <svg width={CHART_WIDTH} height={CHART_HEIGHT} style={{ display: "block" }}>
+      <svg
+        width={CHART_WIDTH}
+        height={CHART_HEIGHT}
+        style={{ display: "block" }}
+        role="img"
+        aria-label={`${displayName} presidential Dem shift across election cycles`}
+      >
         <Group left={MARGIN.left} top={MARGIN.top}>
           {/* Zero reference line */}
           <line

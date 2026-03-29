@@ -1,10 +1,26 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { RaceHero } from "@/components/forecast/RaceHero";
-import { QuantileDotplot } from "@/components/forecast/QuantileDotplot";
 import { PollTable } from "@/components/forecast/PollTable";
 import { TypesBreakdown } from "@/components/forecast/TypesBreakdown";
 import { marginToRating } from "@/lib/config/palette";
+import { Skeleton } from "@/components/ui/skeleton";
+
+// visx dotplot — heavy bundle, below the hero; load dynamically
+const QuantileDotplot = dynamic(
+  () =>
+    import("@/components/forecast/QuantileDotplot").then(
+      (m) => m.QuantileDotplot,
+    ),
+  {
+    ssr: false,
+    loading: () => <Skeleton className="w-full h-[160px]" />,
+  },
+);
+
+// Revalidate every 5 minutes — polls and forecast data update periodically
+export const revalidate = 300;
 
 // ── Types ─────────────────────────────────────────────────────────────────
 

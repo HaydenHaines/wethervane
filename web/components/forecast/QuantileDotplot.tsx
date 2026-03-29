@@ -148,6 +148,30 @@ export function QuantileDotplot({
         the Democrat wins. In{" "}
         <strong style={{ color: GOP_COLOR }}>{effectiveNDots - nDemWins}</strong>, the Republican wins.
       </p>
+
+      {/* Visually-hidden table for screen reader users */}
+      <table className="sr-only" aria-label="Outcome distribution data">
+        <caption>Model outcome distribution — {effectiveNDots} simulated scenarios</caption>
+        <thead>
+          <tr>
+            <th scope="col">Outcome</th>
+            <th scope="col">Scenarios</th>
+            <th scope="col">Percentage</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Democrat wins</td>
+            <td>{nDemWins}</td>
+            <td>{((nDemWins / effectiveNDots) * 100).toFixed(0)}%</td>
+          </tr>
+          <tr>
+            <td>Republican wins</td>
+            <td>{effectiveNDots - nDemWins}</td>
+            <td>{(((effectiveNDots - nDemWins) / effectiveNDots) * 100).toFixed(0)}%</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   );
 }

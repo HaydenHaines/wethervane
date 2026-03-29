@@ -1,6 +1,19 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ShiftSmallMultiples } from "@/components/explore/ShiftSmallMultiples";
+import dynamic from "next/dynamic";
+import { Skeleton } from "@/components/ui/skeleton";
+
+// visx is a large bundle — load dynamically to reduce initial page JS
+const ShiftSmallMultiples = dynamic(
+  () =>
+    import("@/components/explore/ShiftSmallMultiples").then(
+      (m) => m.ShiftSmallMultiples,
+    ),
+  {
+    ssr: false,
+    loading: () => <Skeleton className="w-full h-[400px]" />,
+  },
+);
 
 // ---------------------------------------------------------------------------
 // Metadata

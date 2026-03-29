@@ -345,7 +345,13 @@ export function ScatterPlot({ width = 640, height = 420 }: ScatterPlotProps) {
 
       {/* SVG plot */}
       <div style={{ position: "relative" }}>
-        <svg width={width} height={height} style={{ display: "block", maxWidth: "100%" }}>
+        <svg
+          width={width}
+          height={height}
+          style={{ display: "block", maxWidth: "100%" }}
+          role="img"
+          aria-label={`Scatter plot of ${yLabel} vs ${xLabel} for ${plotPoints.length} electoral types`}
+        >
           <Group left={MARGIN.left} top={MARGIN.top}>
             {/* Grid lines */}
             {xScale &&
@@ -395,6 +401,8 @@ export function ScatterPlot({ width = 640, height = 420 }: ScatterPlotProps) {
                     stroke={color}
                     strokeWidth={1}
                     style={{ cursor: "pointer", transition: "r 0.1s" }}
+                    role="img"
+                    aria-label={`${p.display_name}: ${xLabel} ${formatAxisValue(xField, xv)}, ${yLabel} ${formatAxisValue(yField, yv)}, ${p.n_counties} counties`}
                     onMouseEnter={() => handleMouseEnter({ p, xv, yv }, cx, cy)}
                     onMouseLeave={hideTooltip}
                     onTouchStart={() => handleTouchStart({ p, xv, yv }, cx, cy)}
