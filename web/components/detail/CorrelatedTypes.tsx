@@ -8,14 +8,15 @@
  *
  * Shows a compact card grid with: type name, super-type badge, political lean,
  * and a link to /type/[id].
+ *
+ * Accepts pre-fetched data as props from the SSR page to avoid client-side
+ * loading states. The SWR hooks are intentionally removed: all necessary data
+ * is available at render time from the parent server component.
  */
 
 "use client";
 
 import Link from "next/link";
-import { useMemo } from "react";
-import { useTypes } from "@/lib/hooks/use-types";
-import { useSuperTypes } from "@/lib/hooks/use-super-types";
 import { MarginDisplay } from "@/components/shared/MarginDisplay";
 import { getSuperTypeColor, rgbToHex } from "@/lib/config/palette";
 import type { TypeSummary, SuperTypeSummary } from "@/lib/types";
@@ -24,6 +25,10 @@ import type { TypeSummary, SuperTypeSummary } from "@/lib/types";
 const MAX_CORRELATED = 4;
 
 interface CorrelatedTypesProps {
+  /** All electoral type summaries — passed from the SSR page. */
+  allTypes: TypeSummary[];
+  /** All super-type summaries — passed from the SSR page. */
+  superTypes: SuperTypeSummary[];
   currentTypeId: number;
   superTypeId: number;
 }
@@ -125,32 +130,20 @@ function SiblingCard({ type, superType }: SiblingCardProps) {
   );
 }
 
-export function CorrelatedTypes({ currentTypeId, superTypeId }: CorrelatedTypesProps) {
-  const { data: types, isLoading: typesLoading } = useTypes();
-  const { data: superTypes, isLoading: stLoading } = useSuperTypes();
-
-  const superTypeMap = useMemo(
-    () => new Map((superTypes ?? []).map((st) => [st.super_type_id, st])),
-    [superTypes],
-  );
+export function CorrelatedTypes({
+  allTypes,
+  superTypes,
+  currentTypeId,
+  superTypeId,
+}: CorrelatedTypesProps) {
+  const superTypeMap = new Map(superTypes.map((st) => [st.super_type_id, st]));
 
   // Siblings: same super-type, excluding current type, up to MAX_CORRELATED
-  const siblings = useMemo(() => {
-    if (!types) return [];
-    return types
-      .filter(
-        (t) => t.super_type_id === superTypeId && t.type_id !== currentTypeId,
-      )
-      .slice(0, MAX_CORRELATED);
-  }, [types, superTypeId, currentTypeId]);
-
-  if (typesLoading || stLoading) {
-    return (
-      <p style={{ fontSize: 14, color: "var(--color-text-muted)" }}>
-        Loading similar types…
-      </p>
-    );
-  }
+  const siblings = allTypes
+    .filter(
+      (t) => t.super_type_id === superTypeId && t.type_id !== currentTypeId,
+    )
+    .slice(0, MAX_CORRELATED);
 
   if (siblings.length === 0) {
     return (

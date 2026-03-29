@@ -30,6 +30,18 @@ interface TypeDetail {
   counties: TypeCounty[];
 }
 
+interface TypeSummary {
+  type_id: number;
+  super_type_id: number;
+  display_name: string;
+  n_counties: number;
+  mean_pred_dem_share: number | null;
+  median_hh_income: number | null;
+  pct_bachelors_plus: number | null;
+  pct_white_nh: number | null;
+  log_pop_density: number | null;
+}
+
 interface SuperTypeSummary {
   super_type_id: number;
   display_name: string;
@@ -59,6 +71,18 @@ async function fetchType(id: string): Promise<TypeDetail | null> {
 async function fetchSuperTypes(): Promise<SuperTypeSummary[]> {
   try {
     const res = await fetch(`${API_BASE}/api/v1/super-types`, {
+      next: { revalidate: 3600 },
+    });
+    if (!res.ok) return [];
+    return res.json();
+  } catch {
+    return [];
+  }
+}
+
+async function fetchAllTypes(): Promise<TypeSummary[]> {
+  try {
+    const res = await fetch(`${API_BASE}/api/v1/types`, {
       next: { revalidate: 3600 },
     });
     if (!res.ok) return [];
@@ -126,7 +150,11 @@ export function generateStaticParams() {
 
 export default async function TypePage({ params }: PageProps) {
   const { id } = await params;
-  const [data, superTypes] = await Promise.all([fetchType(id), fetchSuperTypes()]);
+  const [data, superTypes, allTypes] = await Promise.all([
+    fetchType(id),
+    fetchSuperTypes(),
+    fetchAllTypes(),
+  ]);
 
   if (!data) {
     return (
@@ -311,6 +339,8 @@ export default async function TypePage({ params }: PageProps) {
           move together structurally.
         </p>
         <CorrelatedTypes
+          allTypes={allTypes}
+          superTypes={superTypes}
           currentTypeId={data.type_id}
           superTypeId={data.super_type_id}
         />

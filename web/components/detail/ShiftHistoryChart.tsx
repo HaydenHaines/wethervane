@@ -1,62 +1,60 @@
 /**
- * ShiftHistoryChart — displays electoral shift data from the API's shift_profile.
+ * ShiftHistoryChart — visx line chart showing presidential Dem shift over cycles.
  *
- * Renders shift values as a sorted table with partisan-colored bars for
- * visual context. Focuses on presidential shifts (pres_d_shift_*) by default
- * since those carry cross-state signal and are most meaningful to users.
+ * Displays how the type's mean Democratic presidential vote share has shifted
+ * across election cycles (e.g., '08→'12, '12→'16, etc.).
  *
- * The shift values are signed fractions (positive = Dem shift, negative = R shift).
+ * A midpoint line at 0 separates rightward from leftward cycles. Positive values
+ * indicate a Democratic gain; negative values indicate a Republican gain.
  */
 
-import { formatMargin } from "@/lib/format";
+"use client";
+
+import { useMemo } from "react";
+import { scaleLinear, scalePoint } from "@visx/scale";
+import { LinePath } from "@visx/shape";
+import { AxisBottom, AxisLeft } from "@visx/axis";
+import { Group } from "@visx/group";
+import { curveMonotoneX } from "@visx/curve";
 import { DUSTY_INK } from "@/lib/config/palette";
+import { formatMargin } from "@/lib/format";
 
 interface ShiftHistoryChartProps {
   shiftProfile: Record<string, number>;
 }
 
-interface ParsedShift {
-  key: string;
+interface ShiftPoint {
   label: string;
-  value: number;
-  /** Cycle pair string like "08→12" for sorting */
   sortKey: string;
+  value: number;
 }
 
-/** Parse a shift field key into a display label. */
+const MARGIN = { top: 20, right: 24, bottom: 40, left: 56 };
+const CHART_HEIGHT = 200;
+
+/** Parse a shift field key into a display label and sort key. */
 function parseShiftKey(key: string): { label: string; sortKey: string } | null {
-  // Match pres_d_shift_XX_YY
-  const match = /^pres_(d|r|turnout)_shift_(\d{2})_(\d{2})$/.exec(key);
+  const match = /^pres_d_shift_(\d{2})_(\d{2})$/.exec(key);
   if (!match) return null;
-  const [, type, from, to] = match;
-  const typeLabel =
-    type === "d" ? "Dem" : type === "r" ? "Rep" : "Turnout";
+  const [, from, to] = match;
   return {
-    label: `${typeLabel} shift '${from}→'${to}`,
-    sortKey: `${from}_${to}_${type}`,
+    label: `'${from}→'${to}`,
+    sortKey: `${from}_${to}`,
   };
 }
 
-/** Clamp a shift value to [-0.15, 0.15] for bar sizing. */
-function barWidth(value: number, maxMagnitude = 0.15): number {
-  return Math.min(Math.abs(value) / maxMagnitude, 1) * 100;
-}
-
 export function ShiftHistoryChart({ shiftProfile }: ShiftHistoryChartProps) {
-  const shifts: ParsedShift[] = [];
+  const points: ShiftPoint[] = useMemo(() => {
+    const raw: ShiftPoint[] = [];
+    for (const [key, value] of Object.entries(shiftProfile)) {
+      const parsed = parseShiftKey(key);
+      if (!parsed) continue;
+      raw.push({ label: parsed.label, sortKey: parsed.sortKey, value });
+    }
+    return raw.sort((a, b) => a.sortKey.localeCompare(b.sortKey));
+  }, [shiftProfile]);
 
-  for (const [key, value] of Object.entries(shiftProfile)) {
-    const parsed = parseShiftKey(key);
-    if (!parsed) continue;
-    // Only show Dem presidential shifts for cleaner display
-    if (!key.startsWith("pres_d_shift_")) continue;
-    shifts.push({ key, label: parsed.label, value, sortKey: parsed.sortKey });
-  }
-
-  // Sort chronologically
-  shifts.sort((a, b) => a.sortKey.localeCompare(b.sortKey));
-
-  if (shifts.length === 0) {
+  if (points.length === 0) {
     return (
       <p style={{ color: "var(--color-text-muted)", fontSize: 14 }}>
         No shift data available.
@@ -64,112 +62,125 @@ export function ShiftHistoryChart({ shiftProfile }: ShiftHistoryChartProps) {
     );
   }
 
+  const width = 680; // intrinsic width; ResponsiveContainer would be ideal but adds complexity
+  const innerWidth = width - MARGIN.left - MARGIN.right;
+  const innerHeight = CHART_HEIGHT - MARGIN.top - MARGIN.bottom;
+
+  const labels = points.map((p) => p.label);
+  const values = points.map((p) => p.value);
+  const minVal = Math.min(...values, -0.05);
+  const maxVal = Math.max(...values, 0.05);
+  // Symmetric around zero with some padding
+  const extent = Math.max(Math.abs(minVal), Math.abs(maxVal)) * 1.15;
+
+  const xScale = scalePoint({ domain: labels, range: [0, innerWidth], padding: 0.2 });
+  const yScale = scaleLinear({ domain: [-extent, extent], range: [innerHeight, 0], nice: true });
+
+  const zeroY = yScale(0);
+
   return (
     <div>
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "140px 1fr 72px",
-          gap: "2px 12px",
-          alignItems: "center",
-          fontSize: 13,
-        }}
+      <svg
+        viewBox={`0 0 ${width} ${CHART_HEIGHT}`}
+        style={{ width: "100%", height: "auto", overflow: "visible" }}
+        aria-label="Electoral shift line chart"
       >
-        {/* Header */}
-        <span style={{ color: "var(--color-text-muted)", fontWeight: 600 }}>Cycle</span>
-        <span style={{ color: "var(--color-text-muted)", fontWeight: 600 }}>Shift</span>
-        <span
-          style={{
-            color: "var(--color-text-muted)",
-            fontWeight: 600,
-            textAlign: "right",
-          }}
-        >
-          Value
-        </span>
+        <Group left={MARGIN.left} top={MARGIN.top}>
+          {/* Zero line */}
+          <line
+            x1={0}
+            x2={innerWidth}
+            y1={zeroY}
+            y2={zeroY}
+            stroke="var(--color-border)"
+            strokeWidth={1}
+            strokeDasharray="4 3"
+          />
 
-        {/* Data rows */}
-        {shifts.map((s) => {
-          const isDem = s.value >= 0;
-          const barColor = isDem ? DUSTY_INK.leanD : DUSTY_INK.leanR;
-          const width = barWidth(s.value);
+          {/* Partisan fill under the curve */}
+          {points.map((pt, i) => {
+            if (i === 0) return null;
+            const prev = points[i - 1];
+            const x0 = xScale(prev.label) ?? 0;
+            const x1 = xScale(pt.label) ?? 0;
+            const y0 = yScale(prev.value);
+            const y1 = yScale(pt.value);
+            const isDem = (pt.value + prev.value) / 2 >= 0;
+            return (
+              <polygon
+                key={pt.sortKey}
+                points={`${x0},${zeroY} ${x0},${y0} ${x1},${y1} ${x1},${zeroY}`}
+                fill={isDem ? DUSTY_INK.leanD : DUSTY_INK.leanR}
+                opacity={0.12}
+              />
+            );
+          })}
 
-          return (
-            <>
-              <span
-                key={`label-${s.key}`}
-                style={{ color: "var(--color-text)", paddingTop: 4 }}
-              >
-                {s.label}
-              </span>
-              <div
-                key={`bar-${s.key}`}
-                style={{
-                  height: 14,
-                  background: "var(--color-bg)",
-                  borderRadius: 2,
-                  overflow: "hidden",
-                  position: "relative",
-                }}
-              >
-                {isDem ? (
-                  <div
-                    style={{
-                      position: "absolute",
-                      left: "50%",
-                      top: 0,
-                      height: "100%",
-                      width: `${width / 2}%`,
-                      background: barColor,
-                      borderRadius: "0 2px 2px 0",
-                    }}
-                  />
-                ) : (
-                  <div
-                    style={{
-                      position: "absolute",
-                      right: "50%",
-                      top: 0,
-                      height: "100%",
-                      width: `${width / 2}%`,
-                      background: barColor,
-                      borderRadius: "2px 0 0 2px",
-                    }}
-                  />
-                )}
-                {/* Center line */}
-                <div
-                  style={{
-                    position: "absolute",
-                    left: "50%",
-                    top: 0,
-                    width: 1,
-                    height: "100%",
-                    background: "var(--color-border)",
-                  }}
+          {/* Main line */}
+          <LinePath
+            data={points}
+            x={(p) => xScale(p.label) ?? 0}
+            y={(p) => yScale(p.value)}
+            stroke={points[points.length - 1]?.value >= 0 ? DUSTY_INK.leanD : DUSTY_INK.leanR}
+            strokeWidth={2}
+            curve={curveMonotoneX}
+          />
+
+          {/* Data points */}
+          {points.map((pt) => {
+            const cx = xScale(pt.label) ?? 0;
+            const cy = yScale(pt.value);
+            const isDem = pt.value >= 0;
+            return (
+              <g key={pt.sortKey}>
+                <circle
+                  cx={cx}
+                  cy={cy}
+                  r={4}
+                  fill={isDem ? DUSTY_INK.leanD : DUSTY_INK.leanR}
+                  stroke="var(--color-bg)"
+                  strokeWidth={1.5}
                 />
-              </div>
-              <span
-                key={`val-${s.key}`}
-                style={{
-                  textAlign: "right",
-                  fontVariantNumeric: "tabular-nums",
-                  fontWeight: 600,
-                  color: isDem ? DUSTY_INK.leanD : DUSTY_INK.leanR,
-                  fontSize: 13,
-                }}
-              >
-                {formatMargin(0.5 + s.value)}
-              </span>
-            </>
-          );
-        })}
-      </div>
+              </g>
+            );
+          })}
+
+          {/* Axes */}
+          <AxisBottom
+            scale={xScale}
+            top={innerHeight}
+            tickLabelProps={{
+              fontSize: 11,
+              fill: "var(--color-text-muted)",
+              textAnchor: "middle",
+              fontFamily: "var(--font-sans)",
+            }}
+            stroke="var(--color-border)"
+            tickStroke="var(--color-border)"
+            tickLength={4}
+          />
+          <AxisLeft
+            scale={yScale}
+            tickFormat={(v) => formatMargin(0.5 + Number(v))}
+            tickLabelProps={{
+              fontSize: 10,
+              fill: "var(--color-text-muted)",
+              textAnchor: "end",
+              dx: -4,
+              fontFamily: "var(--font-sans)",
+            }}
+            numTicks={5}
+            stroke="var(--color-border)"
+            tickStroke="var(--color-border)"
+            tickLength={4}
+          />
+        </Group>
+      </svg>
       <p
         style={{
           fontSize: 12,
           color: "var(--color-text-subtle, var(--color-text-muted))",
-          marginTop: 12,
+          marginTop: 4,
         }}
       >
         Presidential Dem shift by cycle — mean across member counties. Positive = Dem gain.
