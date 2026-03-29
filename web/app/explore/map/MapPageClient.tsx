@@ -9,8 +9,7 @@
 
 import dynamic from "next/dynamic";
 import { useState } from "react";
-import { MapProvider } from "@/components/MapContext";
-import { useMapContext } from "@/components/MapContext";
+import { MapProvider, useMapContext } from "@/components/MapContext";
 import { MapOverlayToggle, type MapOverlay } from "@/components/explore/MapOverlayToggle";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
@@ -22,11 +21,12 @@ const MapShell = dynamic(() => import("@/components/map/MapShell"), { ssr: false
 // ---------------------------------------------------------------------------
 
 function MapPageInner() {
-  const { setForecastChoropleth } = useMapContext();
-  const [overlay, setOverlay] = useState<MapOverlay>("types");
+  const { setForecastChoropleth, overlayMode, setOverlayMode } = useMapContext();
+  const [overlay, setOverlay] = useState<MapOverlay>(overlayMode);
 
   function handleOverlayChange(next: MapOverlay) {
     setOverlay(next);
+    setOverlayMode(next);
     if (next === "types") {
       // Clear choropleth — MapShell will revert to super-type coloring
       setForecastChoropleth(null);

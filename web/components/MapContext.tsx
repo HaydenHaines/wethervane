@@ -2,6 +2,8 @@
 import { createContext, useContext, useState, useCallback, useEffect } from "react";
 
 export type LayoutMode = "content" | "dashboard";
+/** Which overlay the map is rendering nationally. */
+export type MapOverlayMode = "types" | "forecast";
 
 const LAYOUT_MODE_KEY = "wv-layout-mode";
 
@@ -24,6 +26,9 @@ interface MapContextValue {
   // Layout mode: content (split pane) or dashboard (full-viewport map)
   layoutMode: LayoutMode;
   setLayoutMode: (m: LayoutMode) => void;
+  // Map overlay toggle: types (stained glass) or forecast (partisan choropleth)
+  overlayMode: MapOverlayMode;
+  setOverlayMode: (m: MapOverlayMode) => void;
 }
 
 const MapContext = createContext<MapContextValue>({
@@ -42,6 +47,8 @@ const MapContext = createContext<MapContextValue>({
   setZoomedState: () => {},
   layoutMode: "content",
   setLayoutMode: () => {},
+  overlayMode: "types",
+  setOverlayMode: () => {},
 });
 
 export function MapProvider({ children }: { children: React.ReactNode }) {
@@ -52,6 +59,7 @@ export function MapProvider({ children }: { children: React.ReactNode }) {
   const [forecastChoropleth, setForecastChoropleth] = useState<Map<string, number> | null>(null);
   const [zoomedState, setZoomedState] = useState<string | null>(null);
   const [layoutMode, setLayoutModeState] = useState<LayoutMode>("content");
+  const [overlayMode, setOverlayMode] = useState<MapOverlayMode>("types");
 
   // Hydrate layoutMode from localStorage on mount
   useEffect(() => {
@@ -83,6 +91,7 @@ export function MapProvider({ children }: { children: React.ReactNode }) {
       forecastChoropleth, setForecastChoropleth,
       zoomedState, setZoomedState,
       layoutMode, setLayoutMode,
+      overlayMode, setOverlayMode,
     }}>
       {children}
     </MapContext.Provider>
