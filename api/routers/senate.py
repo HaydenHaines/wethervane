@@ -53,16 +53,21 @@ def _margin_to_rating(margin: float) -> str:
     abs_m = abs(margin)
     if abs_m < _TOSSUP_MAX:
         return "tossup"
+    direction = "_d" if margin > 0 else "_r"
     if abs_m < _LEAN_MAX:
-        return "lean"
+        return f"lean{direction}"
     if abs_m < _LIKELY_MAX:
-        return "likely"
-    return "safe"
+        return f"likely{direction}"
+    return f"safe{direction}"
 
 
 def _rating_sort_key(rating: str) -> int:
-    """Sort races with tossups first, safe last."""
-    return {"tossup": 0, "lean": 1, "likely": 2, "safe": 3}.get(rating, 4)
+    """Sort races: safe D first, through tossup, to safe R last."""
+    return {
+        "safe_d": 0, "likely_d": 1, "lean_d": 2,
+        "tossup": 3,
+        "lean_r": 4, "likely_r": 5, "safe_r": 6,
+    }.get(rating, 3)
 
 
 def _build_headline(races: list[dict]) -> tuple[str, str]:
@@ -74,7 +79,7 @@ def _build_headline(races: list[dict]) -> tuple[str, str]:
     dem_favored = sum(1 for r in races if r["margin"] > _TOSSUP_MAX)
     gop_favored = sum(1 for r in races if r["margin"] < -_TOSSUP_MAX)
     n_tossup = sum(1 for r in races if r["rating"] == "tossup")
-    competitive = [r for r in races if r["rating"] in ("tossup", "lean")]
+    competitive = [r for r in races if r["rating"] in ("tossup", "lean_d", "lean_r")]
     n_competitive = len(competitive)
 
     # Seat projections: safe seats plus clearly-favored contested seats
@@ -254,10 +259,14 @@ def get_senate_overview(
     # Dusty Ink palette
     _RATING_COLORS = {
         "safe_d": "#2d4a6f", "likely_d": "#4b6d90", "lean_d": "#7e9ab5",
-        "tossup": "#b5a995",
+        "tossup": "#8a6b8a",
         "lean_r": "#c4907a", "likely_r": "#9e5e4e", "safe_r": "#6e3535",
     }
-    _PARTY_COLORS = {"D": "#4b6d90", "R": "#9e5e4e", "split": "#b5a995"}
+    _PARTY_COLORS = {
+        "D": "#3a5f8a",    # Muted dark blue — clearly "Dem-held, no race"
+        "R": "#7a4a4a",    # Muted dark red — clearly "GOP-held, no race"
+        "split": "#5a5a5a",
+    }
 
     race_by_state = {r["state"]: r for r in races}
     state_colors = {}

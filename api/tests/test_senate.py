@@ -28,40 +28,41 @@ class TestMarginToRating:
         assert _margin_to_rating(0.0) == "tossup"
 
     def test_lean_between_3_and_8pp(self):
-        assert _margin_to_rating(0.05) == "lean"
-        assert _margin_to_rating(-0.05) == "lean"
-        assert _margin_to_rating(0.03) == "lean"
+        assert _margin_to_rating(0.05) == "lean_d"
+        assert _margin_to_rating(-0.05) == "lean_r"
+        assert _margin_to_rating(0.03) == "lean_d"
 
     def test_likely_between_8_and_15pp(self):
-        assert _margin_to_rating(0.10) == "likely"
-        assert _margin_to_rating(-0.10) == "likely"
-        assert _margin_to_rating(0.08) == "likely"
+        assert _margin_to_rating(0.10) == "likely_d"
+        assert _margin_to_rating(-0.10) == "likely_r"
+        assert _margin_to_rating(0.08) == "likely_d"
 
     def test_safe_above_15pp(self):
-        assert _margin_to_rating(0.20) == "safe"
-        assert _margin_to_rating(-0.20) == "safe"
-        assert _margin_to_rating(0.15) == "safe"
+        assert _margin_to_rating(0.20) == "safe_d"
+        assert _margin_to_rating(-0.20) == "safe_r"
+        assert _margin_to_rating(0.15) == "safe_d"
 
     def test_boundary_at_3pp_is_lean(self):
         # abs(margin) == 0.03 is NOT < 0.03, so it's lean
-        assert _margin_to_rating(0.03) == "lean"
+        assert _margin_to_rating(0.03) == "lean_d"
 
     def test_boundary_at_8pp_is_likely(self):
-        assert _margin_to_rating(0.08) == "likely"
+        assert _margin_to_rating(0.08) == "likely_d"
 
     def test_boundary_at_15pp_is_safe(self):
-        assert _margin_to_rating(0.15) == "safe"
+        assert _margin_to_rating(0.15) == "safe_d"
 
 
 class TestRatingSortKey:
-    def test_tossup_sorts_first(self):
-        assert _rating_sort_key("tossup") < _rating_sort_key("lean")
+    def test_tossup_in_middle(self):
+        assert _rating_sort_key("lean_d") < _rating_sort_key("tossup")
+        assert _rating_sort_key("tossup") < _rating_sort_key("lean_r")
 
-    def test_safe_sorts_last(self):
-        assert _rating_sort_key("safe") > _rating_sort_key("likely")
+    def test_safe_r_sorts_last(self):
+        assert _rating_sort_key("safe_r") > _rating_sort_key("likely_r")
 
     def test_full_order(self):
-        order = ["tossup", "lean", "likely", "safe"]
+        order = ["safe_d", "likely_d", "lean_d", "tossup", "lean_r", "likely_r", "safe_r"]
         keys = [_rating_sort_key(r) for r in order]
         assert keys == sorted(keys)
 
@@ -71,7 +72,7 @@ class TestBuildHeadline:
         """When projected seats are within 2, headline says 'Knife's Edge'."""
         # DEM_SAFE=47, GOP_SAFE=53. Need dem_favored - gop_favored to bring
         # the gap to within 2. 6 Dem-leaning races → 53 vs 53 → diff=0.
-        races = [{"rating": "lean", "margin": 0.05}] * 6
+        races = [{"rating": "lean_d", "margin": 0.05}] * 6
         headline, subtitle = _build_headline(races)
         assert "Knife" in headline
 
@@ -88,7 +89,7 @@ class TestBuildHeadline:
     def test_dem_favored(self):
         """Enough Dem-favored races to overcome the safe-seat deficit."""
         # Need 9+ Dem-leaning to get dem_projected=56 vs gop_projected=53, diff=3
-        races = [{"rating": "lean", "margin": 0.05}] * 9
+        races = [{"rating": "lean_d", "margin": 0.05}] * 9
         headline, subtitle = _build_headline(races)
         assert "Democrat" in headline
 
