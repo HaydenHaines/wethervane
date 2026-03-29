@@ -70,7 +70,7 @@ export default function ExploreShiftsPage() {
         }}
       >
         <Link
-          href="/forecast"
+          href="/explore/map"
           style={{ color: "var(--color-dem)", textDecoration: "none" }}
         >
           Map
