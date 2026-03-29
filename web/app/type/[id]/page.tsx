@@ -4,6 +4,8 @@ import { MarginDisplay } from "@/components/shared/MarginDisplay";
 import { RatingBadge } from "@/components/shared/RatingBadge";
 import { DemographicsPanel } from "@/components/detail/DemographicsPanel";
 import { ShiftHistoryChart } from "@/components/detail/ShiftHistoryChart";
+import { CorrelatedTypes } from "@/components/detail/CorrelatedTypes";
+import { MemberGeography } from "@/components/detail/MemberGeography";
 import { Breadcrumbs } from "@/components/nav/Breadcrumbs";
 import { marginToRating, getSuperTypeColor, rgbToHex } from "@/lib/config/palette";
 import { formatMargin } from "@/lib/format";
@@ -284,6 +286,74 @@ export default async function TypePage({ params }: PageProps) {
             Electoral Shift History
           </h2>
           <ShiftHistoryChart shiftProfile={data.shift_profile} />
+        </section>
+      )}
+
+      {/* Similar Types */}
+      <section style={{ marginBottom: 40 }}>
+        <h2
+          style={{
+            fontFamily: "var(--font-serif)",
+            fontSize: 22,
+            marginBottom: 8,
+          }}
+        >
+          Similar Types
+        </h2>
+        <p
+          style={{
+            fontSize: 14,
+            color: "var(--color-text-muted)",
+            marginBottom: 16,
+          }}
+        >
+          Other types in the <strong>{superTypeName}</strong> super-type that
+          move together structurally.
+        </p>
+        <CorrelatedTypes
+          currentTypeId={data.type_id}
+          superTypeId={data.super_type_id}
+        />
+      </section>
+
+      {/* Member Geography */}
+      {data.counties.length > 0 && (
+        <section style={{ marginBottom: 40 }}>
+          <h2
+            style={{
+              fontFamily: "var(--font-serif)",
+              fontSize: 22,
+              marginBottom: 8,
+            }}
+          >
+            Member Geography
+          </h2>
+          <p
+            style={{
+              fontSize: 14,
+              color: "var(--color-text-muted)",
+              marginBottom: 16,
+            }}
+          >
+            Counties classified as <strong>{data.display_name}</strong>{" "}
+            highlighted in{" "}
+            <span
+              style={{
+                display: "inline-block",
+                width: 10,
+                height: 10,
+                borderRadius: 2,
+                background: superTypeHex,
+                verticalAlign: "middle",
+              }}
+            />{" "}
+            {superTypeName} color.
+          </p>
+          <MemberGeography
+            typeId={data.type_id}
+            superTypeId={data.super_type_id}
+            counties={data.counties}
+          />
         </section>
       )}
 
