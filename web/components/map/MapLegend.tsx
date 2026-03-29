@@ -13,6 +13,7 @@
  */
 
 import { dustyInkChoropleth } from "@/lib/config/palette";
+import type { MapOverlayMode } from "@/components/MapContext";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -33,6 +34,8 @@ interface MapLegendProps {
   entries: LegendEntry[];
   /** Whether state ratings data has loaded (controls national legend visibility). */
   hasStateRatings: boolean;
+  /** Which overlay mode is active — controls which legend variant to show nationally. */
+  overlayMode: MapOverlayMode;
 }
 
 // ---------------------------------------------------------------------------
@@ -149,15 +152,24 @@ export function MapLegend({
   zoomedState,
   entries,
   hasStateRatings,
+  overlayMode,
 }: MapLegendProps) {
+  // Forecast choropleth is active — always show the partisan scale
   if (forecastChoropleth) {
     return <ForecastLegend />;
   }
 
+  // Zoomed into a state — show that state's super-types
   if (zoomedState) {
     return <SuperTypeLegend entries={entries} />;
   }
 
+  // National "Types" mode — show super-type legend (entries from national tracts)
+  if (overlayMode === "types") {
+    return <SuperTypeLegend entries={entries} />;
+  }
+
+  // National "Forecast" mode — show senate/state rating scale
   if (hasStateRatings) {
     return <SenateLegend />;
   }
