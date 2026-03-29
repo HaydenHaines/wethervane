@@ -29,7 +29,14 @@ interface ShiftPoint {
   value: number;
 }
 
-const MARGIN = { top: 20, right: 24, bottom: 40, left: 56 };
+const MARGIN = { top: 36, right: 24, bottom: 40, left: 56 };
+
+/** Labels for politically significant election transitions. */
+const ELECTION_ANNOTATIONS: Record<string, string> = {
+  "'04→'08": "Obama",
+  "'12→'16": "Trump",
+  "'16→'20": "Biden",
+};
 const CHART_HEIGHT = 200;
 
 /** Parse a shift field key into a display label and sort key. */
@@ -142,6 +149,27 @@ export function ShiftHistoryChart({ shiftProfile }: ShiftHistoryChartProps) {
                   strokeWidth={1.5}
                 />
               </g>
+            );
+          })}
+
+          {/* Election name annotations above notable data points */}
+          {points.map((pt) => {
+            const annotation = ELECTION_ANNOTATIONS[pt.label];
+            if (!annotation) return null;
+            const cx = xScale(pt.label) ?? 0;
+            const cy = yScale(pt.value);
+            return (
+              <text
+                key={`annotation-${pt.sortKey}`}
+                x={cx}
+                y={cy - 10}
+                textAnchor="middle"
+                fontSize={9}
+                fontFamily="var(--font-sans)"
+                fill="var(--color-text-subtle, var(--color-text-muted))"
+              >
+                {annotation}
+              </text>
             );
           })}
 

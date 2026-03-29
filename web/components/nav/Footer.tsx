@@ -35,7 +35,7 @@ export function Footer() {
           className="text-xs"
           style={{ color: "var(--color-text-subtle)" }}
         >
-          WetherVane &mdash; Community-based electoral forecasting
+          WetherVane &mdash; Community-based electoral forecasting &mdash; Built by Hayden Haines
         </p>
       </div>
     </footer>

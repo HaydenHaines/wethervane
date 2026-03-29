@@ -61,6 +61,13 @@ export function HeroSection({ data, isLoading }: HeroSectionProps) {
       >
         {data.subtitle}
       </p>
+
+      <p
+        className="max-w-md text-sm"
+        style={{ color: "var(--color-text-subtle, var(--color-text-muted))" }}
+      >
+        Based on electoral communities discovered from how places move together — not polls alone.
+      </p>
     </section>
   );
 }
