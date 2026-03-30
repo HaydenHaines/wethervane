@@ -145,81 +145,15 @@ See `docs/ARCHITECTURE.md` for the full technical specification.
 
 ```
 wethervane/
-├── CLAUDE.md                          # This file — project conventions for Claude Code
-├── README.md                          # Project overview and orientation
-├── docs/
-│   ├── VISION.md                      # Long-term vision and goals
-│   ├── ARCHITECTURE.md                # Full technical architecture
-│   ├── ASSUMPTIONS_LOG.md             # Explicit assumptions and their status
-│   ├── DATA_SOURCES.md                # Data source catalog and access notes
-│   ├── SOURCE_LOG.md                  # Academic and reference sources
-│   ├── DECISIONS_LOG.md               # Detailed decision records
-│   ├── adr/                           # Architecture Decision Records
-│   └── references/                    # Local reference web (see GOVERNANCE.md)
-│       ├── GOVERNANCE.md              # Rules for adding/removing references
-│       ├── RESOURCE_INDEX.md          # Stage-to-resource lookup table (start here)
-│       ├── stan/                      # Stan language, model patterns, cmdstanpy
-│       ├── data-sources/              # Census, ACS, election returns, surveys
-│       ├── methods/                   # MRP, NMF, Bayesian workflow
-│       ├── r-ecosystem/               # brms, rstanarm, survey package patterns
-│       └── _deprecated/               # Rejected approaches with notes
-├── research/
-│   ├── voter-stability-evidence.md    # Literature on voter behavior stability
-│   ├── cross-disciplinary-methods.md  # Methods borrowed from other fields
-│   ├── community-detection-research.md # Community detection algorithms review
-│   ├── methods_and_tools_research.md  # Tools and frameworks evaluation
-│   └── moneyball-politician-analytics.md # Political sabermetrics research direction
-├── src/
-│   ├── assembly/                      # Data assembly pipeline (Python)
-│   ├── discovery/                     # Shift-based community discovery (Python)
-│   │   ├── shift_vectors.py           # Compute electoral shift vectors from election returns
-│   │   ├── adjacency.py               # Build Queen-contiguity spatial adjacency graphs
-│   │   └── cluster.py                 # Hierarchical agglomerative clustering with spatial constraints
-│   ├── description/                   # Community characterization (Python)
-│   │   └── overlay_demographics.py    # Describe discovered communities via ACS/RCMS/LODES/IRS
-│   ├── detection/                     # Historical NMF community type discovery (shelved, comparison only)
-│   ├── covariance/                    # Historical covariance estimation (Python + Stan)
-│   ├── propagation/                   # Poll propagation model (R + Stan)
-│   │   ├── stan/                      # Stan model files (.stan)
-│   │   └── mrp/                       # MRP implementation (R scripts)
-│   ├── prediction/                    # Prediction and interpretation (Python)
-│   ├── validation/                    # Validation framework (Python + R)
-│   ├── viz/                           # Visualization (Python)
-│   └── sabermetrics/                  # Political sabermetrics silo (Python)
-│       ├── ingest.py                  # Data download and ID crosswalk
-│       ├── baselines.py               # District baseline computation
-│       ├── residuals.py               # Candidate residual / CTOV computation
-│       ├── legislative.py             # Legislative effectiveness stats
-│       └── composites.py              # Career summaries, fit scores, scouting
-├── data/                              # All data artifacts (gitignored)
-│   ├── raw/                           # Original downloaded data
-│   ├── assembled/                     # Cleaned and harmonized county-level data
-│   ├── communities/                   # Community type assignments
-│   ├── covariance/                    # Estimated covariance matrices
-│   ├── polls/                         # Polling data
-│   ├── predictions/                   # Model outputs
-│   ├── validation/                    # Holdout sets and validation results
-│   └── sabermetrics/                  # Politician stat records and composites
-├── api/                               # FastAPI backend (Phase 2)
-│   ├── main.py                        # App factory, lifespan (DB + sigma + weights)
-│   ├── db.py                          # DuckDB dependency
-│   ├── models.py                      # Pydantic response models
-│   ├── routers/                       # Endpoint implementations
-│   │   ├── meta.py                    # GET /health, GET /model/version
-│   │   ├── communities.py             # GET /communities, GET /communities/{id}
-│   │   ├── counties.py                # GET /counties
-│   │   └── forecast.py                # GET /forecast, POST /forecast/poll (stub)
-│   └── tests/                         # API unit tests (in-memory DuckDB fixtures)
-├── web/                               # Next.js frontend (Phase 2, in progress)
-│   └── public/
-│       └── counties-fl-ga-al.geojson  # FL+GA+AL county polygons for Deck.gl
-├── notebooks/                         # Exploratory Jupyter notebooks
-├── tests/                             # Unit and integration tests
-├── scripts/                           # One-off and utility scripts
-│   ├── fetch_fips_crosswalk.py        # Download Census FIPS→county name mapping
-│   └── build_county_geojson.py        # Generate FL+GA+AL GeoJSON from TIGER/Line
-├── pyproject.toml                     # Python project config and dependencies
-└── renv.lock                          # R dependency lockfile
+├── docs/          # ARCHITECTURE.md, DECISIONS_LOG.md, ROADMAP.md, DATA_SOURCES.md, adr/, references/
+├── research/      # Background literature and method comparisons
+├── src/           # Pipeline: assembly/, discovery/, description/, covariance/, prediction/, validation/, sabermetrics/
+├── data/          # (gitignored) raw/, assembled/, communities/, covariance/, polls/, predictions/
+├── api/           # FastAPI + DuckDB backend
+├── web/           # Next.js + Deck.gl frontend
+├── notebooks/     # Exploratory notebooks
+├── tests/         # Unit and integration tests
+└── scripts/       # One-off utilities
 ```
 
 ## Conventions
@@ -233,9 +167,9 @@ wethervane/
 - **Reproducibility**: All data transformations are scripted. No manual steps between raw data and outputs. Random seeds are pinned.
 
 ### Data
-- **Free data only for MVP**: Census, ACS, election returns, FEC, religious congregation data -- all publicly available at no cost.
-- **County-level primary**: The unit of analysis is the county (3,154 across all 50 states + DC). Tract-level refinement deferred to post-MVP when precinct data coverage improves.
-- **Soft assignment**: Counties have mixed membership across types via KMeans inverse-distance scores. Scores are always in [0,1], row-normalized to sum to 1.
+- **Free data only**: Census, ACS, election returns, FEC, religious congregation data -- all publicly available at no cost.
+- **Tracts are the unit of analysis** (migration in progress): ~81K tracts from DRA block data. County layer is production until tract model is validated and deployed.
+- **Soft assignment**: Tracts/counties have mixed membership across types via KMeans inverse-distance scores. Scores are always in [0,1], row-normalized to sum to 1.
 - **Census interpolation**: Decennial census (2000/2010/2020) linearly interpolated for election years. Provides time-matched demographics for type description and covariance construction.
 
 ### Code
@@ -248,22 +182,48 @@ wethervane/
 ### Dual Output
 - The model produces two estimates per community-type-county combination: **vote share** (D/R split) and **turnout** (participation rate). These are modeled jointly because they covary.
 
-## Code Quality Rule (MANDATORY)
+## Code Quality Rules (MANDATORY)
 
-**Every touch improves the code.** When you modify a file, leave it better than you found it. This is not optional.
+**Every touch improves the code.** When you modify a file, leave it better than you found it. This is not optional. If you encounter a violation in a file you're already modifying, fix it. If fixing it would be a large detour (>30 min), drop a `# DEBT:` comment and create a TODO instead.
 
-Specifically:
-- **No hacks.** If a solution feels hacky, stop and find the right one. If there isn't time, document the debt explicitly with `# DEBT:` and a one-line explanation — but this should be rare, not routine.
-- **No copy-paste.** If you're about to duplicate logic, extract it. Three similar lines are better than a premature abstraction, but three similar *blocks* are a mandatory extraction.
-- **No magic numbers.** Every literal that isn't self-evident (0, 1, "", True, None) gets a named constant or comes from config/data files.
-- **No God objects.** If a file does more than one thing, it's a candidate for splitting. If it's over 400 lines, it almost certainly needs splitting. The only exception is data files.
-- **No hardcoded data in code.** Thresholds, hyperparameters, and lookup tables belong in config files or data files — not inline in pipeline modules.
-- **Comments explain WHY, not WHAT.** Don't comment obvious code. Do comment non-obvious modeling decisions, workarounds, and constraints. Remove dead comments.
-- **Tests test behavior, not implementation.** If a test would break when you refactor internals without changing behavior, it's testing the wrong thing.
+### Structure
+- **No monolithic files.** Files over 400 lines are a mandatory split candidate. One file = one clear responsibility. The only exception is data files.
+- **No monolithic functions.** Each function does one thing. If you need "and" to describe what it does, it's two functions.
+- **No God objects.** Classes/modules that know too much or do too much are a split candidate.
+- **No dead code.** Commented-out blocks, unused variables, unreachable branches — delete them.
 
-If you encounter code that violates these rules in a file you're modifying, fix it — even if it wasn't part of your task. If fixing it would be a large detour (>30 min), add a `# DEBT:` comment and create a TODO instead.
+### Values & Configuration
+- **No magic numbers or strings.** Every literal that isn't self-evident (0, 1, "", True, None) gets a named constant or lives in a config file.
+- **No hardcoded parameters in pipeline code.** Thresholds, hyperparameters, lookup tables, model knobs → config files or data files, not inline.
+- **No hardcoded data in the frontend.** Names, counts, colors come from the API — never hardcoded. See API–Frontend Contract section.
 
-The goal: every file in the active codebase should be code you'd be proud to show in a portfolio. This is a public-facing research project.
+### Duplication & Abstraction
+- **DRY.** Every piece of logic has one unambiguous home. Three similar lines is fine; three similar *blocks* is a mandatory extraction.
+- **YAGNI.** Don't build for hypothetical future requirements. The right abstraction is what the task actually needs — no speculative layers.
+- **No copy-paste inheritance.** If you duplicated something to "customize it slightly," that's a DRY violation.
+
+### Naming
+- **Names are documentation.** `calculate_type_prior()` not `calc()`. Names explain what a value *means*, not how it's stored.
+- **No unexplained abbreviations.** `dem_share` is fine. `dsh` is not.
+- **Booleans are questions.** `is_off_cycle`, `has_poll_data` — not `flag`, `mode`, `status`.
+
+### Functions & Interfaces
+- **One level of abstraction per function.** A function that orchestrates calls should not also contain raw math. A function that does math should not also do I/O.
+- **No surprising side effects.** A function named `get_type_weights()` should not write to disk.
+- **Fail loud and early.** Validate at system boundaries (file loads, external APIs, user input). Don't silently swallow bad state.
+
+### Comments
+- **Comment like a Freshman CS student will review it.** Assume the reader is smart but has never seen this codebase, doesn't know the political science, and has no context for why the model works the way it does. Every non-obvious decision — the math, the modeling choice, the workaround — gets a plain-English explanation. If you had to think for more than 10 seconds about why the code does what it does, that's a comment.
+- **Comments explain WHY, not WHAT.** The code says what. Comments say why it must be that way, what was tried before, what constraint forced this design.
+- **No stale comments.** A comment that no longer matches the code is worse than no comment. Update or delete.
+- **`# DEBT:`** is the only acceptable marker for known violations — with a one-line explanation of what's wrong and why it's not fixed yet.
+
+### Testing
+- **Tests test behavior, not implementation.** A test that breaks when you refactor internals without changing behavior is testing the wrong thing.
+- **No mocking internals you own.** Mock external boundaries (APIs, filesystems), not your own functions.
+- **Every bug gets a regression test.** If it broke once, prove it can't break again.
+
+The goal: every file should be code you'd be proud to show in a portfolio. This is a public-facing research project.
 
 ## Commands
 
@@ -343,15 +303,6 @@ The API is the contract boundary between model pipeline and frontend. The fronte
 
 **REMAINING DEBT:** (1) No crosstab data ingested yet — Tier 1 is structural scaffolding only. (2) `method_reach_profiles` needs entries for phone_live, phone_ivr, and unknown methodologies to differentiate core vs full modes. (3) No GA tuning of propensity coefficients. See `docs/TODO-autonomous-improvements.md` for the full enrichment TODO list.
 
-### ~~Poll Propagation — Multi-Poll Collapse is Mathematically Wrong~~
-**RESOLVED 2026-03-26** (feat/forecasting, commit e710dc6): `predict_race` now accepts `polls: list[tuple[float, int, str]]`. Each poll stacks as its own W row. `update_forecast_with_multi_polls` passes the full weighted list instead of collapsing. Do not reopen unless a new mathematical issue is identified.
-
-### ~~Poll Propagation — Fragile State Extraction in API~~
-**RESOLVED 2026-03-26** (feat/forecasting, commit e710dc6): `_forecast_poll_types` now passes `polls=[(poll.dem_share, poll.n, poll.state)]` directly. `_extract_state_from_race` deleted. `state_filter` is now output-only. Do not reopen unless the polls interface changes.
-
-### ~~API Contract — `state_pred` Inconsistency~~
-**RESOLVED 2026-03-26** (feat/forecasting, commit e710dc6): `_forecast_poll_types` computes `state_pred_val` as mean `pred_dem_share` across counties matching `poll.state`. Both pipelines now populate the field. Do not reopen unless the computation method needs revision.
-
 ### Covariance — Cross-Race Underrepresentation
 **DEBT:** The type covariance Σ is built primarily from presidential shift data. Cross-race covariance between Senate/governor races and presidential races may be understated. Types are race-agnostic by design, but the Σ structure reflects presidential comovement more than Senate or governor comovement. Worth revisiting once Senate/governor shift data is more fully integrated into covariance construction.
 
@@ -373,34 +324,4 @@ The API is the contract boundary between model pipeline and frontend. The fronte
 
 ## Key Decisions Log
 
-| Date | Decision | Rationale |
-|------|----------|-----------|
-| 2026-03-10 | Python + R + Stan hybrid stack | Python for data wrangling and ML ecosystem; R for MRP (dominant in political science); Stan as the shared Bayesian engine both can call |
-| 2026-03-10 | Community-type soft assignment (mixed membership) | Counties are not monolithic -- a county can be 40% "rural evangelical" and 30% "college-town professional." Hard clustering loses this signal |
-| 2026-03-10 | FL+GA+AL proof-of-concept geography (226 counties) | Three-state cluster with diverse political geography (urban/rural, Black Belt, retirement communities, college towns). Large enough to test, small enough to iterate |
-| 2026-03-10 | Dual output: vote share + turnout | Turnout variation is a major source of prediction error in political models. Modeling it jointly with vote share through shared community structure captures an effect most models miss |
-| 2026-03-10 | Two-stage separation (non-political detection, political validation) | Core falsifiability mechanism. If community types discovered from religion/class/neighborhood do not predict political covariance, the hypothesis fails cleanly |
-| 2026-03-10 | Free public data only for MVP | Census, ACS, election returns, congregation data, public polls. No budget for proprietary data. Sufficient for proof of concept |
-| 2026-03-18 | K=7 NMF community types (canonical) | Separates Asian from Knowledge Worker/WFH — critical for geographic analysis. R²=0.661 (Strong). ~60% generic baseline is a valid finding, not a flaw. |
-| 2026-03-18 | Multi-election validation complete (2016+2018+2020) | R²=0.689/0.636/0.661 — hypothesis confirmed across three cycles. c6 (Hispanic) realignment (+4.9%→+1.2% swing) detected. c6 and c4 negatively correlated — key signal for Stan factor model. Historical election set: 2016 pres + 2018 gov (FL+GA only; AL uncontested) + 2020 pres. |
-| 2026-03-18 | Tikhonov ridge regression for 2022/2024 community back-calculation | Bayesian approach (bayesian_poll_update with Stan Sigma) fails for county-level back-calc: data precision (~670K per county × 67 counties) dominates prior precision (~500) by 1340:1 — posterior exits [0,1]. Vote-normalized Tikhonov solves `min_{0≤θ≤1} ||W_w·θ - y_w||² + λ||θ - θ₀||²`. Adaptive λ search finds minimum regularization keeping estimates physical. Prior chain: Stan(2016-2020) → 2022 governor → 2024 president. AL excluded from 2022 (MEDSL data quality); falls back to 2020 prior. |
-| 2026-03-18 | Stage 4 poll propagation implemented in Python (not R+Stan MRP) | Lightweight Gaussian Bayesian update in `src/propagation/propagate_polls.py`: mu_post = Sigma_post(Sigma_prior⁻¹ mu_prior + Σ_polls Hᵀσ⁻²y). Uses Stan covariance matrix but does not require running Stan for each forecast. Full MRP (R+Stan) deferred to post-MVP; Python approach sufficient for state-level polls. |
-| 2026-03-18 | 2026 forward prediction pipeline complete (placeholder polls) | `src/assembly/ingest_polls.py` + `data/polls/polls_2026.csv` + `src/prediction/predict_2026.py`. FL Senate: polls 43.9% → model 39.5% (R+21); GA Senate: polls 50.5% → model 43.4% (R+13). Model applies structural downward correction to FL consistent with 2022/2024 validation showing ~5pp poll overestimate of Democrats. County predictions saved to `data/predictions/county_predictions_2026.parquet`. |
-| 2026-03-18 | RCMS 2020 religious data integrated (county level) | `src/assembly/fetch_rcms.py` scrapes ARDA county map tool (parameterized GET, no login required). Produces `data/raw/rcms_county.parquet` (293 counties, 7 data cols). `build_features.py` computes 6 derived features → `data/assembled/county_rcms_features.parquet`. RCMS is county-level only; ACS tract features remain in separate file. 38 new tests in `tests/test_rcms.py`. |
-| 2026-03-18 | IRS SOI county-to-county migration edge list integrated | `src/assembly/fetch_irs_migration.py` downloads IRS SOI inflow CSVs (default: latest 3 year pairs: 2019-2020, 2020-2021, 2021-2022). Filters to flows involving FL/GA/AL, skips aggregate rows (statefips ≥ 96) and non-migrant same-county rows. Produces `data/raw/irs_migration.parquet` (edge list: origin_fips, dest_fips, n_returns, n_exemptions, agi, year_pair). Inflow-only design avoids double-counting. 48 new tests in `tests/test_irs_migration.py`. Feature computation from edge list deferred to post-MVP. |
-| 2026-03-18 | Shift-based community discovery replaces NMF-on-demographics | Communities now discovered directly from spatially correlated electoral shift vectors (9-dim: D/R/turnout changes across three election pairs), using hierarchical agglomerative clustering with Queen spatial contiguity. The historical two-stage approach (NMF on ACS+RCMS → political validation) achieved R²~0.66 but imposed an indirect discovery path. Shift-based approach is more direct: communities are defined by how they move politically, not demographic proxies. Falsifiability moves from "do demographics predict covariance?" to "do communities from pre-2024 shifts predict 2024 shifts?" See ADR-005. |
-| 2026-03-19 | County level is the primary model engine; tracts are a future refinement layer | Tract-level clustering produces r=-0.14 on holdout (data artifact: 6/9 shift dims are county-level MEDSL, so all tracts within a county receive identical values). County-level clustering produces r=0.93–0.98. County is the realistic common denominator for 2000–2024 data; tract-level refinement deferred to post-MVP when VEST-style harmonized precinct data for pre-2016 cycles becomes available. |
-| 2026-03-19 | County model extended to 2000–2024 via MEDSL presidential + Algara/Amlani governor | 3-cycle baseline (2016–2024) extended to 12 cycles (2000–2024). Adds 4 presidential pairs (2000→2004, …, 2012→2016) and 5 governor pairs (2002→2006, …, 2018→2022). Training dims: 6 → 30. Sources: MEDSL doi:10.7910/DVN/VOQCHQ; Algara/Amlani doi:10.7910/DVN/DGUMFI. AL 2018 governor was contested (Ivey vs Maddox, ~60/40) — real data used, no structural zeros. |
-| 2026-03-19 | Multi-year holdout r=0.87 (k=5, training col 16→20 vs holdout 20→24); 3-cycle baseline r=0.98 | Delta ~-0.11. Multi-year model is slightly weaker on short-run holdout: 30 dims average over 20 years of electoral history, pulling communities toward older patterns rather than recent momentum. This is expected and acceptable — temporal depth and structural robustness are the multi-year model's value, not short-run autocorrelation. Both approaches confirm strong community structure in FL/GA/AL electoral geography. |
-| 2026-03-19 | Phase 1 K selection: K=10 (holdout r=0.9027) | K selection sweep over K=5..30 with spatial Ward HAC and min community size 8. K=10 maximizes holdout Pearson r between community-mean pres_d_shift_16_20 (training) and pres_d_shift_20_24 (holdout). 3-cycle baseline at K=10 was r=0.941; multi-year model gives r=0.9027. |
-| 2026-03-19 | Phase 1 NMF types: J=7 | J sweep over 5-8; J=7 chosen for interpretability and consistency with project history. Type weights stored in county_type_assignments.parquet. |
-| 2026-03-19 | Phase 1 Stan Σ: county HAC model, T=5 elections | Stan rank-1 factor model fit on 5 elections (2016 pres, 2018 gov, 2020 pres, 2022 gov, 2024 pres). k_ref selected dynamically as most Democratic community. Σ stored at data/covariance/county_community_sigma.parquet. DuckDB has community_sigma table. |
-| 2026-03-19 | Phase 2 API architecture: FastAPI + DuckDB read-only + in-process Bayesian update | FastAPI opens wethervane.duckdb read-only at startup; loads K×K sigma, mu_prior, and weight matrices into app.state. All data endpoints are simple SQL queries via Depends(get_db). POST /forecast/poll calls bayesian_update() from src/prediction/predict_2026_hac.py (HAC K=10 pipeline) — NOT propagate_polls.py (old NMF K=7). Test isolation via create_app(lifespan_override=_noop_lifespan) factory + in-memory DuckDB fixture. |
-| 2026-03-19 | Phase 2 frontend: Next.js App Router + Deck.gl + Observable Plot | Persistent choropleth map (left) + tabbed right panel. Tab bar holds View 3 (Forecast) now; Views 2 and 4 slot in as future tabs. Community age slider (3–10 training pairs) deferred to future phase. Visual style: Clean Academic (light background, Georgia serif headings, #2166ac/#d73027 partisan colors). |
-| 2026-03-20 | Type-primary architecture pivot (ADR-006) | Types become the primary predictive engine, replacing HAC geographic communities. KMeans on 293 county shift vectors (33 training dims, 2008+, presidential×2.5 weighted) discovers J=43 types (J=20 was initial; refined to J=43 via leave-one-pair-out CV). Types carry covariance and prediction. Geographic communities deferred to tract phase. Motivated by: HAC K=10 produced "alternative states" (10 giant blobs), not the stained glass pattern of many small units colored by behavioral type. |
-| 2026-03-22 | J=20→43 based on leave-one-pair-out CV sweep | Formal CV across J=12..50. Optimal: J=43 (r=0.779 CV mean). Extended sweep to J=50 shows plateau ~43. Performance gain: holdout r 0.778→0.818 (+4%). Integrated into production pipeline. |
-| 2026-03-20 | KMeans for type discovery (not SVD/NMF) | SVD+varimax produced degenerate 2-type solution (r=0.35). NMF requires non-negative input. KMeans achieves holdout r=0.778 with presidential×2.5 weighting. |
-| 2026-03-20 | Economist-inspired covariance construction (not Stan estimation) | Construct J×J type covariance from demographic profiles (Pearson correlation + shrinkage toward all-1s + PD enforcement), following Heidemanns/Gelman/Morris 2020. Validated against observed comovement; hybrid fallback if off-diagonal r < 0.4. Stan factor model retained as ultimate fallback. Deterministic Python, no sampling needed. |
-| 2026-03-20 | Census interpolation for time-matched demographics | Decennial census 2000/2010/2020 at county level, linearly interpolated for election years. Demographics describe types and construct covariance. ACS 2022 preferred where it provides better temporal resolution. CPI-adjusted income before interpolation. |
-| 2026-03-20 | Hierarchical type nesting: J fine types → 5-8 super-types | Fine types give model resolution; super-types give public interpretability. Ward HAC on type loadings (no spatial constraint). Super-types are the "colors" of the stained glass map. |
-| 2026-03-20 | 293 counties in FL+GA+AL (not 226) | All three states included. Prior references to 226 counties were FL+GA only (pre-AL inclusion). |
+Full log in `docs/DECISIONS_LOG.md`. Covers all decisions from 2026-03-10 through current, including architecture pivots (ADR-006 type-primary), algorithm choices (KMeans, J=43), and pipeline decisions.
