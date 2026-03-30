@@ -238,6 +238,16 @@ class SuperTypeSummary(BaseModel):
     n_counties: int
 
 
+class CorrelatedType(BaseModel):
+    """A type most electorally correlated with a given type, from the LW covariance matrix."""
+    type_id: int
+    display_name: str
+    super_type_id: int
+    n_counties: int
+    mean_pred_dem_share: float | None
+    correlation: float
+
+
 class TypeScatterPoint(BaseModel):
     """One data point per type for the Shift Explorer scatter plot."""
     type_id: int

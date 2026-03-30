@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import numpy as np
 import pandas as pd
 import duckdb
 from fastapi import APIRouter, Depends, HTTPException, Request
@@ -9,6 +10,7 @@ from api.models import (
     CommunityDemographics,
     CommunityDetail,
     CommunitySummary,
+    CorrelatedType,
     CountyInCommunity,
     SuperTypeSummary,
     TypeCounty,
@@ -356,6 +358,60 @@ def get_type_scatter_data(db: duckdb.DuckDBPyConnection = Depends(get_db)):
             demographics=demographics,
             shift_profile=shift_by_type.get(tid, {}),
         ))
+
+    return results
+
+
+@router.get("/types/{type_id}/correlated", response_model=list[CorrelatedType])
+def get_correlated_types(
+    type_id: int,
+    request: Request,
+    db: duckdb.DuckDBPyConnection = Depends(get_db),
+    n: int = 5,
+):
+    """Return the N types most correlated with the given type, using the
+    Ledoit-Wolf regularized observed electoral correlation matrix."""
+    correlation = request.app.state.type_correlation
+    if correlation is None:
+        raise HTTPException(503, "Correlation matrix not loaded")
+
+    J = correlation.shape[0]
+    if type_id < 0 or type_id >= J:
+        raise HTTPException(404, f"Type {type_id} not found (valid: 0-{J-1})")
+
+    n = min(n, J - 1)  # can't return more than J-1 (excluding self)
+
+    row = correlation[type_id]
+    # Sort by correlation descending, excluding self
+    sorted_indices = np.argsort(-row)
+    top_indices = [int(i) for i in sorted_indices if i != type_id][:n]
+
+    version_id = request.app.state.version_id
+    results = []
+    for idx in top_indices:
+        type_row = db.execute(
+            """SELECT type_id, display_name, super_type_id,
+                      COUNT(DISTINCT cta.county_fips) AS n_counties,
+                      AVG(p.pred_dem_share) AS mean_pred_dem_share
+               FROM types t
+               LEFT JOIN county_type_assignments cta ON t.type_id = cta.dominant_type
+               LEFT JOIN predictions p ON cta.county_fips = p.county_fips
+               WHERE t.type_id = ? AND t.version_id = ?
+               GROUP BY t.type_id, t.display_name, t.super_type_id""",
+            [idx, version_id],
+        ).fetchone()
+        if type_row:
+            mean_share = None if type_row[4] is None or pd.isna(type_row[4]) else float(type_row[4])
+            results.append(
+                CorrelatedType(
+                    type_id=type_row[0],
+                    display_name=type_row[1],
+                    super_type_id=type_row[2],
+                    n_counties=type_row[3],
+                    mean_pred_dem_share=mean_share,
+                    correlation=round(float(row[idx]), 4),
+                )
+            )
 
     return results
 

@@ -273,6 +273,16 @@ async def lifespan(app: FastAPI):
         app.state.crosstab_affinity = None
         app.state.crosstab_state_means = {}
 
+    # ── Type correlation matrix (for similar-type queries) ──────────────────
+    corr_path = project_root / "data" / "covariance" / "type_correlation.parquet"
+    if corr_path.exists():
+        corr_df = pd.read_parquet(corr_path)
+        app.state.type_correlation = corr_df.values  # (J, J) numpy array
+        log.info("Loaded type correlation matrix: %s", corr_df.shape)
+    else:
+        app.state.type_correlation = None
+        log.warning("Type correlation matrix not found at %s", corr_path)
+
     # ── Behavior layer (τ + δ) ────────────────────────────────────────────────
     behavior_dir = data_dir / "behavior"
     tau_path = behavior_dir / "tau.npy"

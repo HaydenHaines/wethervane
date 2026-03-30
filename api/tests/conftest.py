@@ -310,6 +310,12 @@ def client():
     test_app.state.state_weights = state["state_weights"]
     test_app.state.county_weights = state["county_weights"]
     test_app.state.contract_ok = True
+    # 4×4 synthetic correlation matrix for the 4 test types
+    rng = np.random.default_rng(42)
+    _raw = rng.random((4, 4))
+    _sym = (_raw + _raw.T) / 2
+    np.fill_diagonal(_sym, 1.0)
+    test_app.state.type_correlation = _sym
 
     with TestClient(test_app, raise_server_exceptions=True) as c:
         yield c
