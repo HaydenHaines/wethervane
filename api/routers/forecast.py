@@ -812,6 +812,7 @@ def update_forecast_with_multi_polls(
 # ---------------------------------------------------------------------------
 
 SNAPSHOTS_DIR = Path(__file__).resolve().parents[2] / "data" / "forecast_snapshots"
+COMPARISONS_FILE = Path(__file__).resolve().parents[2] / "data" / "comparisons" / "ratings_2026.json"
 
 # Races that have real poll-adjusted predictions (not just baseline copies).
 # Only show changes for these to avoid cluttering with 60+ identical baseline races.
@@ -908,3 +909,129 @@ def get_forecast_changelog() -> ChangelogResponse:
         entries=entries,
         current_snapshot_date=snapshots[-1].get("date"),
     )
+
+
+# ---------------------------------------------------------------------------
+# Comparisons endpoint
+# ---------------------------------------------------------------------------
+
+@router.get("/forecast/comparisons")
+def get_forecast_comparisons(
+    request: Request,
+    db: duckdb.DuckDBPyConnection = Depends(get_db),
+) -> dict:
+    """Return WetherVane predictions alongside ratings from major forecasters.
+
+    Reads manual ratings from data/comparisons/ratings_2026.json and merges
+    with live state-level predictions from the database. Races with no manual
+    ratings entry still appear with WetherVane predictions only.
+    """
+    import json as _json
+
+    version_id = request.app.state.version_id
+
+    # Load manual ratings file
+    comparisons_data: dict = {}
+    if COMPARISONS_FILE.exists():
+        try:
+            comparisons_data = _json.loads(COMPARISONS_FILE.read_text())
+        except (_json.JSONDecodeError, OSError):
+            comparisons_data = {}
+
+    sources = comparisons_data.get("sources", [])
+    last_updated = comparisons_data.get("last_updated")
+    manual_ratings: dict[str, dict] = comparisons_data.get("ratings", {})
+
+    # Fetch vote-weighted state-level predictions for all races
+    try:
+        rows = db.execute(
+            """
+            SELECT
+                p.race,
+                CASE WHEN SUM(COALESCE(c.total_votes_2024, 0)) > 0
+                     THEN SUM(p.pred_dem_share * COALESCE(c.total_votes_2024, 0))
+                          / SUM(COALESCE(c.total_votes_2024, 0))
+                     ELSE AVG(p.pred_dem_share)
+                END AS state_pred,
+                AVG(p.pred_std) AS avg_std,
+                COUNT(*) AS n_counties
+            FROM predictions p
+            JOIN counties c ON p.county_fips = c.county_fips
+            WHERE p.version_id = ? AND p.race != 'baseline'
+            GROUP BY p.race
+            ORDER BY p.race
+            """,
+            [version_id],
+        ).fetchall()
+    except Exception:
+        rows = []
+
+    # Build per-race predictions dict
+    wv_predictions: dict[str, dict] = {}
+    for row in rows:
+        race_id, state_pred, avg_std, n_counties = row
+        pred_val = None if state_pred is None else float(state_pred)
+        rating = marginToRating(pred_val) if pred_val is not None else None
+        wv_predictions[race_id] = {
+            "pred_dem_share": pred_val,
+            "pred_std": None if avg_std is None else float(avg_std),
+            "rating": rating,
+            "n_counties": int(n_counties),
+            "slug": race_to_slug(race_id),
+        }
+
+    # Merge: all races that appear in either predictions or manual ratings
+    all_races = sorted(set(wv_predictions.keys()) | set(manual_ratings.keys()))
+
+    race_rows = []
+    for race_id in all_races:
+        wv = wv_predictions.get(race_id, {})
+        manual = manual_ratings.get(race_id, {})
+
+        # Parse race metadata from ID (e.g. "2026 FL Senate")
+        parts = race_id.split()
+        year = int(parts[0]) if parts and parts[0].isdigit() else 2026
+        state_abbr = parts[1] if len(parts) > 1 else ""
+        race_type = " ".join(parts[2:]) if len(parts) > 2 else ""
+
+        race_rows.append({
+            "race_id": race_id,
+            "slug": wv.get("slug") or race_to_slug(race_id),
+            "year": year,
+            "state_abbr": state_abbr,
+            "race_type": race_type,
+            "wethervane": {
+                "pred_dem_share": wv.get("pred_dem_share"),
+                "pred_std": wv.get("pred_std"),
+                "rating": wv.get("rating"),
+                "n_counties": wv.get("n_counties"),
+            },
+            "cook": manual.get("cook"),
+            "sabato": manual.get("sabato"),
+            "inside": manual.get("inside"),
+        })
+
+    return {
+        "last_updated": last_updated,
+        "sources": sources,
+        "races": race_rows,
+    }
+
+
+def marginToRating(dem_share: float) -> str:
+    """Python equivalent of the frontend marginToRating for API use."""
+    margin = dem_share - 0.5
+    abs_margin = abs(margin)
+    if abs_margin < 0.03:
+        return "tossup"
+    if margin > 0:
+        if abs_margin >= 0.15:
+            return "safe_d"
+        if abs_margin >= 0.08:
+            return "likely_d"
+        return "lean_d"
+    if abs_margin >= 0.15:
+        return "safe_r"
+    if abs_margin >= 0.08:
+        return "likely_r"
+    return "lean_r"
