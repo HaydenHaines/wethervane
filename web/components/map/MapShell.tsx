@@ -66,7 +66,17 @@ const choroplethColor = dustyInkChoropleth;
 // Component
 // ---------------------------------------------------------------------------
 
-export default function MapShell() {
+interface MapShellProps {
+  /**
+   * Controls the default rendering mode when no forecastChoropleth is active.
+   *  - "types"    : Stained-glass super-type coloring (default, used on /explore/map)
+   *  - "forecast" : State-rating coloring at national view; neutral grey tracts when zoomed.
+   *               Used on /forecast/* pages where competitive ratings are the primary signal.
+   */
+  defaultOverlayMode?: "types" | "forecast";
+}
+
+export default function MapShell({ defaultOverlayMode = "types" }: MapShellProps) {
   const {
     selectedCommunityId, setSelectedCommunityId,
     selectedTypeId, setSelectedTypeId,
@@ -289,6 +299,11 @@ export default function MapShell() {
             if (share !== undefined) return choroplethColor(share);
             return [200, 200, 200, 120];
           }
+          // On forecast pages, use a neutral tone instead of stained-glass coloring
+          // so the map doesn't imply community-type meaning on pages about race ratings.
+          if (defaultOverlayMode === "forecast") {
+            return [200, 195, 188, 140];
+          }
           const st = (f.properties?.super_type as number) ?? -1;
           const base = getColorForSuperType(st);
           return [...base, 180];
@@ -370,7 +385,7 @@ export default function MapShell() {
           }
         },
         updateTriggers: {
-          getFillColor: [forecastChoropleth],
+          getFillColor: [forecastChoropleth, defaultOverlayMode],
         },
       })
     );
@@ -392,12 +407,14 @@ export default function MapShell() {
       });
   }
 
+  // API display_name is the canonical source of truth for super-type labels.
+  // GeoJSON-embedded names are only a fallback for cases where the API hasn't loaded yet.
   const legendEntries: LegendEntry[] = Array.from(activeSuperTypeIds)
     .sort((a, b) => a - b)
     .map((id) => ({
       id,
       color: getColorForSuperType(id),
-      label: tractSuperTypeNames.get(id) ?? superTypeMap.get(id)?.name ?? `Type ${id}`,
+      label: superTypeMap.get(id)?.name ?? tractSuperTypeNames.get(id) ?? `Type ${id}`,
     }));
 
   // ── Render ────────────────────────────────────────────────────────────────
@@ -427,6 +444,7 @@ export default function MapShell() {
         zoomedState={zoomedState}
         entries={legendEntries}
         hasStateRatings={stateRatings.size > 0}
+        overlayMode={defaultOverlayMode}
       />
 
       {/* Side panels */}

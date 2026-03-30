@@ -29,10 +29,16 @@ interface MapLegendProps {
   forecastChoropleth: Map<string, number> | null;
   /** State abbreviation of the currently zoomed state, or null for national. */
   zoomedState: string | null;
-  /** Legend entries derived from loaded tract features. */
+  /** Legend entries derived from loaded tract features (API names take priority). */
   entries: LegendEntry[];
   /** Whether state ratings data has loaded (controls national legend visibility). */
   hasStateRatings: boolean;
+  /**
+   * Overlay mode — controls which legend is shown when zoomed into a state.
+   *  - "types"    : show the super-type stained-glass legend (default)
+   *  - "forecast" : show the senate ratings legend even when zoomed (tracts are neutral grey)
+   */
+  overlayMode?: "types" | "forecast";
 }
 
 // ---------------------------------------------------------------------------
@@ -149,12 +155,15 @@ export function MapLegend({
   zoomedState,
   entries,
   hasStateRatings,
+  overlayMode = "types",
 }: MapLegendProps) {
   if (forecastChoropleth) {
     return <ForecastLegend />;
   }
 
-  if (zoomedState) {
+  // In forecast mode, tracts render neutral grey — show the senate ratings
+  // legend even when zoomed so users always see the competitive-race color key.
+  if (zoomedState && overlayMode === "types") {
     return <SuperTypeLegend entries={entries} />;
   }
 
