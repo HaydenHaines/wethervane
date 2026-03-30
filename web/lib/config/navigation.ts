@@ -30,6 +30,7 @@ export const FOOTER_NAV: NavItem[] = [
   { label: "Types",       href: "/types" },
   { label: "Shifts",      href: "/explore" },
   { label: "Methodology", href: "/methodology" },
+  { label: "Shifts",      href: "/explore/shifts" },
   { label: "About",       href: "/methodology#about" },
   { label: "GitHub",      href: "https://github.com/HaydenHaines/wethervane", external: true },
 ];
