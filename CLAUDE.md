@@ -338,8 +338,10 @@ The API is the contract boundary between model pipeline and frontend. The fronte
 
 ## Known Tech Debt
 
-### Poll Ingestion — Rich Ingestion Model Needed
-**DEBT:** Current poll ingestion treats every poll as a scalar `(dem_share, n_sample)` pair. This leaves significant information on the table. Polls with crosstabs tell us *which types* were sampled heavily — a poll that oversampled college-educated voters should pull harder on types with high college-educated membership. The correct fix is to construct poll-specific W vectors from crosstab demographic composition rather than using a generic state-level W. This requires rebuilding the entire poll ingestion pipeline to ingest, store, and process crosstab data, and mapping crosstab demographic groups to the type structure. Until this is done, poll propagation is informationally impoverished.
+### Poll Ingestion — Rich Ingestion Model (Partially Resolved)
+**PARTIALLY RESOLVED 2026-03-30** (Phase 4 rich poll ingestion, S251–S252): Tiered W vector construction implemented in `src/prediction/poll_enrichment.py`. Three tiers: Tier 1 (crosstab-based W, structure ready but no crosstab data yet), Tier 2 (LV/RV propensity + methodology-based dimension adjustments via `data/config/poll_method_adjustments.json`), Tier 3 (state-level W fallback). Pipeline wired into `forecast_engine.py` via `w_builder` callable and `type_profiles` param. Poll quality weighting (`prepare_polls()`) applies time decay, pollster grade, and house effects. Integration test (S253): avg 2.64pp shift vs unweighted baseline across 7 Senate races. Core and full W vector modes currently produce identical results because `method_reach_profiles` only has one active entry (`online_panel: log_pop_density_shift`).
+
+**REMAINING DEBT:** (1) No crosstab data ingested yet — Tier 1 is structural scaffolding only. (2) `method_reach_profiles` needs entries for phone_live, phone_ivr, and unknown methodologies to differentiate core vs full modes. (3) No GA tuning of propensity coefficients. See `docs/TODO-autonomous-improvements.md` for the full enrichment TODO list.
 
 ### ~~Poll Propagation — Multi-Poll Collapse is Mathematically Wrong~~
 **RESOLVED 2026-03-26** (feat/forecasting, commit e710dc6): `predict_race` now accepts `polls: list[tuple[float, int, str]]`. Each poll stacks as its own W row. `update_forecast_with_multi_polls` passes the full weighted list instead of collapsing. Do not reopen unless a new mathematical issue is identified.
