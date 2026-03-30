@@ -23,6 +23,7 @@ Outputs:
 from __future__ import annotations
 
 import logging
+from datetime import date
 from pathlib import Path
 
 import numpy as np
@@ -494,6 +495,13 @@ def run() -> None:
             ))
             county_votes = np.array([vmap.get(f, 1.0) for f in county_fips])
 
+    # Load type profiles for W vector enrichment
+    type_profiles_path = PROJECT_ROOT / "data" / "communities" / "type_profiles.parquet"
+    type_profiles_df = None
+    if type_profiles_path.exists():
+        type_profiles_df = pd.read_parquet(type_profiles_path)
+        log.info("Loaded type profiles for poll enrichment: %d types", len(type_profiles_df))
+
     # Run the hierarchical forecast: θ_prior → θ_national → δ_race
     forecast_results = run_forecast(
         type_scores=type_scores,
@@ -504,6 +512,9 @@ def run() -> None:
         races=all_race_ids,
         lam=1.0,   # TODO: learn from calibration (Plan C)
         mu=1.0,    # TODO: learn from calibration (Plan C)
+        w_vector_mode="core",  # TODO: compare core vs full, set winner
+        reference_date=str(date.today()),
+        type_profiles=type_profiles_df,
     )
 
     # Convert ForecastResult → DataFrame rows (both modes per race)
