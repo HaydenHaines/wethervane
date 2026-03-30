@@ -7,9 +7,7 @@ import { MapProvider } from "@/components/MapContext";
 const MapShell = dynamic(() => import("@/components/map/MapShell"), {
   ssr: false,
   loading: () => (
-    <div className="flex items-center justify-center h-full text-[rgb(var(--color-text-muted))]">
-      Loading map…
-    </div>
+    <div className="w-full h-full bg-gray-200 dark:bg-gray-700 animate-pulse" />
   ),
 });
 

@@ -26,7 +26,7 @@ export function RaceCard({ race }: RaceCardProps) {
               <div className="text-xs text-muted-foreground mb-1">{race.state}</div>
               <MarginDisplay demShare={race.margin + 0.5} size="lg" />
             </div>
-            <RatingBadge rating={race.rating} />
+            <RatingBadge rating={race.rating} className="shrink-0" />
           </div>
           <FreshnessStamp pollCount={race.n_polls} />
         </CardContent>

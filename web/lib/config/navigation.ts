@@ -27,6 +27,7 @@ export const MAIN_NAV: NavItem[] = [
 /** Footer navigation links. */
 export const FOOTER_NAV: NavItem[] = [
   { label: "Methodology", href: "/methodology" },
+  { label: "Shifts",      href: "/explore/shifts" },
   { label: "About",       href: "/methodology#about" },
   { label: "GitHub",      href: "https://github.com/HaydenHaines/wethervane", external: true },
 ];
