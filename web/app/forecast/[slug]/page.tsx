@@ -62,6 +62,9 @@ interface RaceDetail {
   state_pred_local?: number | null;
   candidate_effect_margin?: number | null;
   n_polls?: number;
+  pred_std?: number | null;
+  pred_lo90?: number | null;
+  pred_hi90?: number | null;
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────
@@ -109,17 +112,8 @@ async function fetchRaceSlugs(): Promise<string[]> {
   }
 }
 
-/**
- * Estimate a reasonable state-level uncertainty for the dotplot.
- *
- * The model predicts county dem shares, which have high per-county uncertainty.
- * For a state-level aggregate, we use a much tighter uncertainty (~5pp = 0.05 std),
- * which is a reasonable heuristic given the model's LOO r of 0.71 on out-of-sample
- * states (implying residual std of roughly 5-8pp on the state aggregate).
- */
-function estimateStateLevelStd(): number {
-  return 0.065;
-}
+/** Fallback state-level std when API doesn't provide one. */
+const FALLBACK_STD = 0.065;
 
 // ── Metadata ──────────────────────────────────────────────────────────────
 
@@ -218,7 +212,9 @@ export default async function RaceDetailPage({ params }: PageProps) {
     ],
   };
 
-  const predStd = estimateStateLevelStd();
+  const predStd = data.pred_std ?? FALLBACK_STD;
+  const lo90 = data.pred_lo90 ?? (data.prediction !== null ? data.prediction - 1.645 * predStd : null);
+  const hi90 = data.pred_hi90 ?? (data.prediction !== null ? data.prediction + 1.645 * predStd : null);
   const nPolls = data.n_polls ?? data.polls.length;
 
   return (
@@ -257,8 +253,8 @@ export default async function RaceDetailPage({ params }: PageProps) {
         year={data.year}
         prediction={data.prediction}
         nCounties={data.n_counties}
-        lo90={data.prediction !== null ? data.prediction - 1.645 * predStd : null}
-        hi90={data.prediction !== null ? data.prediction + 1.645 * predStd : null}
+        lo90={lo90}
+        hi90={hi90}
       />
 
       {/* Outcome distribution dotplot */}

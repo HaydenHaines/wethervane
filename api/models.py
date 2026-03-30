@@ -289,6 +289,9 @@ class RaceDetail(BaseModel):
     state_pred_local: float | None = None
     candidate_effect_margin: float | None = None
     n_polls: int = 0
+    pred_std: float | None = None
+    pred_lo90: float | None = None
+    pred_hi90: float | None = None
 
 
 # ── Embed widget ─────────────────────────────────────────────────────────

@@ -243,6 +243,51 @@ def get_race_detail(
     prediction = None if (pred_row is None or pred_row[0] is None) else float(pred_row[0])
     n_counties = int(pred_row[1]) if pred_row else 0
 
+    # State-level uncertainty from county-level CI data.
+    # Uses vote-weighted std of county predictions around the state mean,
+    # then shrinks toward the model's LOO RMSE (0.059) as a floor.
+    state_std = None
+    state_lo90 = None
+    state_hi90 = None
+    if prediction is not None:
+        ci_rows = db.execute(
+            f"""
+            SELECT p.pred_dem_share, p.pred_std,
+                   COALESCE(c.total_votes_2024, 1) AS votes
+            FROM predictions p
+            JOIN counties c ON p.county_fips = c.county_fips
+            WHERE p.version_id = ? AND p.race = ? AND c.state_abbr = ?
+              AND p.pred_dem_share IS NOT NULL {_mode_filter}
+            """,
+            [version_id, race, state_abbr] + _mode_params,
+        ).fetchdf()
+
+        if not ci_rows.empty and len(ci_rows) > 1:
+            votes = ci_rows["votes"].values.astype(float)
+            preds = ci_rows["pred_dem_share"].values.astype(float)
+            total_votes = votes.sum()
+
+            if total_votes > 0:
+                weights = votes / total_votes
+                # Weighted variance of county predictions around the state mean
+                county_var = float(np.sum(weights * (preds - prediction) ** 2))
+                # Scale by sqrt(1/N_eff) — effective number of independent
+                # observations, bounded by number of types represented
+                n_eff = max(1.0, 1.0 / np.sum(weights ** 2))
+                state_std = float(np.sqrt(county_var / n_eff))
+                # Floor: model LOO RMSE of 0.059 ensures we don't understate
+                # uncertainty even when all counties agree
+                state_std = max(state_std, 0.035)
+                # Cap: never wider than 15pp (uninformative)
+                state_std = min(state_std, 0.15)
+            else:
+                state_std = 0.065  # fallback to historical estimate
+        else:
+            state_std = 0.065
+
+        state_lo90 = prediction - 1.645 * state_std
+        state_hi90 = prediction + 1.645 * state_std
+
     # Also get the other mode's prediction for comparison
     other_mode = "national" if forecast_mode == "local" else "local"
     other_pred_row = None
@@ -341,6 +386,9 @@ def get_race_detail(
         state_pred_local=state_pred_local,
         candidate_effect_margin=candidate_effect,
         n_polls=len(polls),
+        pred_std=state_std,
+        pred_lo90=state_lo90,
+        pred_hi90=state_hi90,
     )
 
 
