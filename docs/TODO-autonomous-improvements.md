@@ -155,3 +155,17 @@ These are research tasks — web search and evaluation, not code. Output should 
 ### Documentation (all done)
 - [x] README.md, ARCHITECTURE.md, ROADMAP.md, ASSUMPTIONS_LOG.md
 </details>
+
+---
+
+## Priority 4 — Rich Poll Ingestion (Future Work)
+
+These items build on the Tier 3 poll enrichment shipped in S249. See spec: `docs/superpowers/specs/2026-03-29-rich-poll-ingestion-design.md`.
+
+- [ ] **TODO-POLL-1: Crosstab Scraping Pipeline** — Per-pollster integrations for extracting demographic breakdowns from original poll releases (PDFs, pollster websites). Priority targets: Emerson College, Cygnal, Trafalgar, Quantus, TIPP Insights. No known structured API or aggregator exists. Enables Tier 2 W vectors — the biggest information gain. Each pollster is a separate parser.
+
+- [ ] **TODO-POLL-2: Undersampled Group Identification** — Compare poll's inferred/actual demographic coverage against the *political diversity within demographic groups* in the polled state. Core insight: demographic representation ≠ type representation. A poll weighted to 33% Black in GA can still miss that Atlanta Black voters (Type 29) behave differently from rural SW GA Black voters (Type 50). Output: per-type σ inflation for underrepresented types + API reporting of coverage gaps. Sample-size-aware (n=300 misses far more tracts than n=10000).
+
+- [ ] **TODO-POLL-3: House Effects as Type Signal** — Persistent house effects may reflect which types a pollster systematically reaches, not pollster bias. Trafalgar's R-lean may mean they reach rural evangelical types others miss. Future work: decompose house effects into type-reach profiles per pollster. Requires TODO-POLL-1 data to validate. Risk: double-counting if we both correct dem_share AND infer type composition from house effects. Resolution: replace house effect correction with type-reach inference once validated.
+
+- [ ] **TODO-MODEL-GA: State Prediction Tuning** — The forecast engine's county reconstruction (`type_scores @ theta`) can diverge from Ridge county priors (e.g., GA: Ridge R+2.1 vs engine D+10.4). This is a known consequence of type-level estimation projecting back to county level. Not a bug per se — the engine's hierarchical decomposition is the intended architecture — but predictions need validation against county-level ground truth. Tune λ/μ regularization and validate state-level aggregates against historical results.
