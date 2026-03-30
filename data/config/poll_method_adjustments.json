@@ -1,0 +1,22 @@
+{
+  "lv_propensity_coefficients": {
+    "median_age": 0.3,
+    "pct_owner_occupied": 0.4,
+    "pct_bachelors_plus": 0.3
+  },
+  "lv_downweight_factor": 0.5,
+  "rv_downweight_factor": 0.8,
+  "method_reach_profiles": {
+    "online_panel": {"log_pop_density_shift": 0.05},
+    "phone_ivr": {},
+    "phone_live": {},
+    "unknown": {}
+  },
+  "w_vector_dimensions": {
+    "core": ["evangelical_share", "catholic_share", "mainline_share"],
+    "full": [
+      "evangelical_share", "catholic_share", "mainline_share",
+      "log_pop_density", "median_hh_income", "pct_owner_occupied"
+    ]
+  }
+}
