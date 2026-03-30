@@ -150,3 +150,47 @@ class TestForecastResult:
         assert result.n_polls == 3
         assert len(result.county_preds_national) == 2
         assert len(result.county_preds_local) == 2
+
+
+from src.prediction.forecast_engine import prepare_polls
+
+
+class TestPreparePolls:
+    def test_returns_adjusted_dicts(self):
+        """prepare_polls should return dicts with adjusted dem_share and n_sample."""
+        raw = {
+            "2026 GA Senate": [
+                {"dem_share": 0.53, "n_sample": 600, "state": "GA",
+                 "date": "2026-03-01", "pollster": "Emerson College",
+                 "notes": "LV"},
+            ]
+        }
+        result = prepare_polls(raw, reference_date="2026-03-29")
+        assert "2026 GA Senate" in result
+        polls = result["2026 GA Senate"]
+        assert len(polls) == 1
+        p = polls[0]
+        # Should still have required fields
+        assert "dem_share" in p
+        assert "n_sample" in p
+        assert "state" in p
+        # n_sample should be reduced by time decay (28 days with 30-day half-life)
+        assert p["n_sample"] < 600
+
+    def test_preserves_state_and_notes(self):
+        """Metadata fields should survive the transformation."""
+        raw = {
+            "2026 GA Senate": [
+                {"dem_share": 0.53, "n_sample": 600, "state": "GA",
+                 "date": "2026-03-15", "pollster": "TestPollster",
+                 "notes": "RV; src=test"},
+            ]
+        }
+        result = prepare_polls(raw, reference_date="2026-03-29")
+        p = result["2026 GA Senate"][0]
+        assert p["state"] == "GA"
+        assert "notes" in p
+
+    def test_empty_input(self):
+        result = prepare_polls({}, reference_date="2026-03-29")
+        assert result == {}

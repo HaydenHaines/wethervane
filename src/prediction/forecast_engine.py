@@ -13,6 +13,66 @@ import numpy as np
 
 from src.prediction.national_environment import estimate_theta_national
 from src.prediction.candidate_effects import estimate_delta_race
+from src.propagation.propagate_polls import PollObservation
+from src.propagation.poll_weighting import apply_all_weights
+
+
+def prepare_polls(
+    polls_by_race: dict[str, list[dict]],
+    reference_date: str,
+    half_life_days: float = 30.0,
+) -> dict[str, list[dict]]:
+    """Apply quality weighting to raw poll dicts.
+
+    Converts dicts → PollObservation → apply_all_weights → back to dicts.
+    Returns polls with adjusted dem_share (house effects) and n_sample
+    (time decay, pollster grade, pre-primary discount).
+    """
+    if not polls_by_race:
+        return {}
+
+    # Flatten all polls, keeping race labels and original notes
+    all_obs: list[PollObservation] = []
+    all_notes: list[str] = []
+    race_labels: list[str] = []
+
+    for race_id, polls in polls_by_race.items():
+        for p in polls:
+            obs = PollObservation(
+                geography=p.get("state", ""),
+                dem_share=p["dem_share"],
+                n_sample=int(p["n_sample"]),
+                race=race_id,
+                date=p.get("date", ""),
+                pollster=p.get("pollster", ""),
+                geo_level=p.get("geo_level", "state"),
+            )
+            all_obs.append(obs)
+            all_notes.append(p.get("notes", ""))
+            race_labels.append(race_id)
+
+    # Apply all quality adjustments (house effects, primary discount, time decay, grade)
+    weighted = apply_all_weights(
+        all_obs,
+        reference_date=reference_date,
+        half_life_days=half_life_days,
+        poll_notes=all_notes,
+    )
+
+    # Reconstruct dicts grouped by race, preserving original notes
+    result: dict[str, list[dict]] = {}
+    for obs, notes, race_id in zip(weighted, all_notes, race_labels):
+        d = {
+            "dem_share": obs.dem_share,
+            "n_sample": obs.n_sample,
+            "state": obs.geography,
+            "date": obs.date,
+            "pollster": obs.pollster,
+            "notes": notes,
+        }
+        result.setdefault(race_id, []).append(d)
+
+    return result
 
 
 def compute_theta_prior(
