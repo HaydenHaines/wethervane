@@ -80,6 +80,20 @@ export interface SuperTypeSummary {
 }
 
 // ---------------------------------------------------------------------------
+// Correlated types (from LW electoral covariance matrix)
+// ---------------------------------------------------------------------------
+
+export interface CorrelatedTypeData {
+  type_id: number;
+  display_name: string;
+  super_type_id: number;
+  n_counties: number;
+  mean_pred_dem_share: number | null;
+  /** Ledoit-Wolf regularized electoral correlation coefficient [-1, 1] */
+  correlation: number;
+}
+
+// ---------------------------------------------------------------------------
 // Counties
 // ---------------------------------------------------------------------------
 

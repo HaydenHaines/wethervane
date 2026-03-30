@@ -1,17 +1,13 @@
 /**
- * CorrelatedTypes — cards for the 3-4 most structurally similar types.
+ * CorrelatedTypes — cards for the N most electorally similar types.
  *
- * "Similar" is defined as sharing the same super_type_id. This is the most
- * principled fallback when no covariance/similarity endpoint exists: super-types
- * are discovered via Ward HAC on type loadings, so co-membership in a super-type
- * means the types moved together historically.
+ * When `correlatedTypes` is provided (from the Ledoit-Wolf covariance matrix),
+ * it renders those with a correlation coefficient badge. Falls back to the
+ * super-type sibling approach when covariance data is unavailable.
  *
- * Shows a compact card grid with: type name, super-type badge, political lean,
- * and a link to /type/[id].
- *
- * Accepts pre-fetched data as props from the SSR page to avoid client-side
- * loading states. The SWR hooks are intentionally removed: all necessary data
- * is available at render time from the parent server component.
+ * All data is passed as props from the SSR page — no client-side SWR needed
+ * for the initial render. The `useCorrelatedTypes` hook exists for client
+ * components that want live updates.
  */
 
 "use client";
@@ -19,32 +15,38 @@
 import Link from "next/link";
 import { MarginDisplay } from "@/components/shared/MarginDisplay";
 import { getSuperTypeColor, rgbToHex } from "@/lib/config/palette";
-import type { TypeSummary, SuperTypeSummary } from "@/lib/types";
+import type { TypeSummary, SuperTypeSummary, CorrelatedTypeData } from "@/lib/types";
 
-/** Maximum number of sibling types to show. */
-const MAX_CORRELATED = 4;
+/** Maximum number of sibling types to show when falling back to super-type logic. */
+const MAX_SIBLING_FALLBACK = 4;
 
-interface CorrelatedTypesProps {
-  /** All electoral type summaries — passed from the SSR page. */
-  allTypes: TypeSummary[];
-  /** All super-type summaries — passed from the SSR page. */
-  superTypes: SuperTypeSummary[];
-  currentTypeId: number;
+// ── Shared card ──────────────────────────────────────────────────────────────
+
+interface CardShellProps {
+  typeId: number;
   superTypeId: number;
+  displayName: string;
+  nCounties: number;
+  meanPredDemShare: number | null;
+  superTypeName: string;
+  /** Optional correlation label, e.g. "r = 0.72". Only shown when using covariance data. */
+  correlationLabel?: string;
 }
 
-interface SiblingCardProps {
-  type: TypeSummary;
-  superType: SuperTypeSummary | undefined;
-}
-
-function SiblingCard({ type, superType }: SiblingCardProps) {
-  const accentHex = rgbToHex(getSuperTypeColor(type.super_type_id));
-  const stName = superType?.display_name ?? `Super-Type ${type.super_type_id}`;
+function TypeCard({
+  typeId,
+  superTypeId,
+  displayName,
+  nCounties,
+  meanPredDemShare,
+  superTypeName,
+  correlationLabel,
+}: CardShellProps) {
+  const accentHex = rgbToHex(getSuperTypeColor(superTypeId));
 
   return (
     <Link
-      href={`/type/${type.type_id}`}
+      href={`/type/${typeId}`}
       style={{ textDecoration: "none", display: "block" }}
     >
       <div
@@ -81,12 +83,17 @@ function SiblingCard({ type, superType }: SiblingCardProps) {
             maxWidth: "100%",
           }}
         >
-          {stName}
+          {superTypeName}
         </span>
 
         {/* Type name + lean */}
         <div
-          style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8 }}
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "flex-start",
+            gap: 8,
+          }}
         >
           <div style={{ minWidth: 0 }}>
             <div
@@ -98,7 +105,7 @@ function SiblingCard({ type, superType }: SiblingCardProps) {
                 marginBottom: 2,
               }}
             >
-              Type {type.type_id}
+              Type {typeId}
             </div>
             <div
               style={{
@@ -110,21 +117,58 @@ function SiblingCard({ type, superType }: SiblingCardProps) {
                 wordBreak: "break-word",
               }}
             >
-              {type.display_name}
+              {displayName}
             </div>
           </div>
           <div style={{ flexShrink: 0, paddingTop: 16 }}>
-            <MarginDisplay demShare={type.mean_pred_dem_share} size="sm" />
+            <MarginDisplay demShare={meanPredDemShare} size="sm" />
           </div>
         </div>
 
-        {/* County count */}
-        <div style={{ fontSize: 12, color: "var(--color-text-muted)", marginTop: 6 }}>
-          {type.n_counties} {type.n_counties === 1 ? "county" : "counties"}
+        {/* County count + correlation */}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginTop: 6,
+          }}
+        >
+          <span style={{ fontSize: 12, color: "var(--color-text-muted)" }}>
+            {nCounties} {nCounties === 1 ? "county" : "counties"}
+          </span>
+          {correlationLabel && (
+            <span
+              style={{
+                fontSize: 11,
+                fontWeight: 600,
+                color: "var(--color-text-muted)",
+                fontVariantNumeric: "tabular-nums",
+              }}
+            >
+              {correlationLabel}
+            </span>
+          )}
         </div>
       </div>
     </Link>
   );
+}
+
+// ── Component ────────────────────────────────────────────────────────────────
+
+interface CorrelatedTypesProps {
+  /** All electoral type summaries — used for the super-type fallback. */
+  allTypes: TypeSummary[];
+  /** All super-type summaries — used for display names. */
+  superTypes: SuperTypeSummary[];
+  currentTypeId: number;
+  superTypeId: number;
+  /**
+   * Real covariance-based correlated types from the API.
+   * When present these take precedence over the super-type fallback.
+   */
+  correlatedTypes?: CorrelatedTypeData[];
 }
 
 export function CorrelatedTypes({
@@ -132,15 +176,47 @@ export function CorrelatedTypes({
   superTypes,
   currentTypeId,
   superTypeId,
+  correlatedTypes,
 }: CorrelatedTypesProps) {
   const superTypeMap = new Map(superTypes.map((st) => [st.super_type_id, st]));
 
-  // Siblings: same super-type, excluding current type, up to MAX_CORRELATED
+  // ── Covariance-based path ─────────────────────────────────────────────────
+  if (correlatedTypes && correlatedTypes.length > 0) {
+    return (
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
+          gap: 12,
+        }}
+      >
+        {correlatedTypes.map((ct) => {
+          const stName =
+            superTypeMap.get(ct.super_type_id)?.display_name ??
+            `Super-Type ${ct.super_type_id}`;
+          return (
+            <TypeCard
+              key={ct.type_id}
+              typeId={ct.type_id}
+              superTypeId={ct.super_type_id}
+              displayName={ct.display_name}
+              nCounties={ct.n_counties}
+              meanPredDemShare={ct.mean_pred_dem_share}
+              superTypeName={stName}
+              correlationLabel={`r\u202f=\u202f${ct.correlation.toFixed(2)}`}
+            />
+          );
+        })}
+      </div>
+    );
+  }
+
+  // ── Super-type fallback ───────────────────────────────────────────────────
   const siblings = allTypes
     .filter(
       (t) => t.super_type_id === superTypeId && t.type_id !== currentTypeId,
     )
-    .slice(0, MAX_CORRELATED);
+    .slice(0, MAX_SIBLING_FALLBACK);
 
   if (siblings.length === 0) {
     return (
@@ -158,9 +234,22 @@ export function CorrelatedTypes({
         gap: 12,
       }}
     >
-      {siblings.map((t) => (
-        <SiblingCard key={t.type_id} type={t} superType={superTypeMap.get(t.super_type_id)} />
-      ))}
+      {siblings.map((t) => {
+        const stName =
+          superTypeMap.get(t.super_type_id)?.display_name ??
+          `Super-Type ${t.super_type_id}`;
+        return (
+          <TypeCard
+            key={t.type_id}
+            typeId={t.type_id}
+            superTypeId={t.super_type_id}
+            displayName={t.display_name}
+            nCounties={t.n_counties}
+            meanPredDemShare={t.mean_pred_dem_share}
+            superTypeName={stName}
+          />
+        );
+      })}
     </div>
   );
 }

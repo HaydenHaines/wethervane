@@ -251,6 +251,22 @@ export async function fetchSenateOverview(): Promise<SenateOverviewData> {
   return res.json();
 }
 
+export interface CorrelatedTypeData {
+  type_id: number;
+  display_name: string;
+  super_type_id: number;
+  n_counties: number;
+  mean_pred_dem_share: number | null;
+  /** Ledoit-Wolf regularized electoral correlation coefficient [-1, 1] */
+  correlation: number;
+}
+
+export async function fetchCorrelatedTypes(typeId: number, n = 4): Promise<CorrelatedTypeData[]> {
+  const res = await fetch(`${API_BASE}/types/${typeId}/correlated?n=${n}`);
+  if (!res.ok) throw new Error(`/types/${typeId}/correlated failed: ${res.status}`);
+  return res.json();
+}
+
 export async function fetchPolls(params: {
   race?: string;
   state?: string;

@@ -10,6 +10,8 @@ import { Breadcrumbs } from "@/components/nav/Breadcrumbs";
 import { marginToRating, getSuperTypeColor, rgbToHex } from "@/lib/config/palette";
 import { formatMargin } from "@/lib/format";
 
+import type { CorrelatedTypeData } from "@/lib/types";
+
 // ── Types ─────────────────────────────────────────────────────────────────
 
 interface TypeCounty {
@@ -92,6 +94,18 @@ async function fetchAllTypes(): Promise<TypeSummary[]> {
   }
 }
 
+async function fetchCorrelatedTypes(id: string): Promise<CorrelatedTypeData[]> {
+  try {
+    const res = await fetch(`${API_BASE}/api/v1/types/${id}/correlated?n=4`, {
+      next: { revalidate: 3600 },
+    });
+    if (!res.ok) return [];
+    return res.json();
+  } catch {
+    return [];
+  }
+}
+
 function stripStateSuffix(name: string | null): string {
   if (!name) return "Unknown County";
   return name.replace(/,\s*[A-Z]{2}$/, "");
@@ -150,10 +164,11 @@ export function generateStaticParams() {
 
 export default async function TypePage({ params }: PageProps) {
   const { id } = await params;
-  const [data, superTypes, allTypes] = await Promise.all([
+  const [data, superTypes, allTypes, correlatedTypes] = await Promise.all([
     fetchType(id),
     fetchSuperTypes(),
     fetchAllTypes(),
+    fetchCorrelatedTypes(id),
   ]);
 
   if (!data) {
@@ -335,14 +350,22 @@ export default async function TypePage({ params }: PageProps) {
             marginBottom: 16,
           }}
         >
-          Other types in the <strong>{superTypeName}</strong> super-type that
-          move together structurally.
+          {correlatedTypes.length > 0
+            ? "Types that move together electorally, ranked by observed covariance."
+            : `Other types in the `}
+          {correlatedTypes.length === 0 && (
+            <>
+              <strong>{superTypeName}</strong> super-type that move together
+              structurally.
+            </>
+          )}
         </p>
         <CorrelatedTypes
           allTypes={allTypes}
           superTypes={superTypes}
           currentTypeId={data.type_id}
           superTypeId={data.super_type_id}
+          correlatedTypes={correlatedTypes.length > 0 ? correlatedTypes : undefined}
         />
       </section>
 
