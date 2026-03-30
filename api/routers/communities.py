@@ -386,19 +386,18 @@ def get_correlated_types(
     sorted_indices = np.argsort(-row)
     top_indices = [int(i) for i in sorted_indices if i != type_id][:n]
 
-    version_id = request.app.state.version_id
     results = []
     for idx in top_indices:
         type_row = db.execute(
-            """SELECT type_id, display_name, super_type_id,
+            """SELECT t.type_id, t.display_name, t.super_type_id,
                       COUNT(DISTINCT cta.county_fips) AS n_counties,
                       AVG(p.pred_dem_share) AS mean_pred_dem_share
                FROM types t
                LEFT JOIN county_type_assignments cta ON t.type_id = cta.dominant_type
                LEFT JOIN predictions p ON cta.county_fips = p.county_fips
-               WHERE t.type_id = ? AND t.version_id = ?
+               WHERE t.type_id = ?
                GROUP BY t.type_id, t.display_name, t.super_type_id""",
-            [idx, version_id],
+            [idx],
         ).fetchone()
         if type_row:
             mean_share = None if type_row[4] is None or pd.isna(type_row[4]) else float(type_row[4])
