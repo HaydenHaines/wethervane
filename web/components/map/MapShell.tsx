@@ -66,14 +66,23 @@ const choroplethColor = dustyInkChoropleth;
 // Component
 // ---------------------------------------------------------------------------
 
-export default function MapShell() {
+interface MapShellProps {
+  /**
+   * Controls the default rendering mode when no forecastChoropleth is active.
+   *  - "types"    : Stained-glass super-type coloring (default, used on /explore/map)
+   *  - "forecast" : State-rating coloring at national view; neutral grey tracts when zoomed.
+   *               Used on /forecast/* pages where competitive ratings are the primary signal.
+   */
+  defaultOverlayMode?: "types" | "forecast";
+}
+
+export default function MapShell({ defaultOverlayMode = "types" }: MapShellProps) {
   const {
     selectedCommunityId, setSelectedCommunityId,
     selectedTypeId, setSelectedTypeId,
     forecastState, forecastChoropleth,
     zoomedState, setZoomedState,
     layoutMode,
-    overlayMode,
   } = useMapContext();
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -88,11 +97,6 @@ export default function MapShell() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [stateTracts, setStateTracts] = useState<Record<string, unknown> | null>(null);
   const [loadingTracts, setLoadingTracts] = useState(false);
-
-  // National tract GeoJSON for "Types" overlay mode
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [nationalTracts, setNationalTracts] = useState<Record<string, unknown> | null>(null);
-  const [loadingNationalTracts, setLoadingNationalTracts] = useState(false);
 
   // Type metadata for tract tooltips and popups
   const [superTypeMap, setSuperTypeMap] = useState<Map<number, SuperTypeInfo>>(new Map());
@@ -140,18 +144,6 @@ export default function MapShell() {
       setTypeDataMap(tdMap);
     });
   }, []);
-
-  // ── Load national tracts when "Types" overlay is active ──────────────────
-  useEffect(() => {
-    if (overlayMode !== "types") return;
-    if (nationalTracts || loadingNationalTracts) return;
-    setLoadingNationalTracts(true);
-    fetch("/tracts-us.geojson")
-      .then((r) => r.json())
-      .then(setNationalTracts)
-      .catch(() => { /* non-critical — fall back to empty state layer */ })
-      .finally(() => setLoadingNationalTracts(false));
-  }, [overlayMode, nationalTracts, loadingNationalTracts]);
 
   // ── Pan to forecast state when Forecast tab selects one ──────────────────
   useEffect(() => {
@@ -242,46 +234,9 @@ export default function MapShell() {
   );
 
   // ── Build deck.gl layers ──────────────────────────────────────────────────
-  // Render order: lower array index = rendered first (bottom of stack).
-  // "types" mode: national-tracts (fill) → states (borders only, on top)
-  // "forecast" mode: states (fill+borders) → state-tracts when zoomed
   const layers: unknown[] = [];
 
-  // Layer 0: National tract polygons for "Types" overlay (rendered below state borders)
-  if (overlayMode === "types" && !zoomedState && nationalTracts) {
-    layers.push(
-      new GeoJsonLayer({
-        id: "national-tracts",
-        data: nationalTracts as never,
-        filled: true,
-        stroked: false,
-        getFillColor: ((f: { properties?: Record<string, unknown> }) => {
-          const st = (f.properties?.super_type as number) ?? -1;
-          const base = getColorForSuperType(st);
-          return [...base, 200];
-        }) as never,
-        pickable: true,
-        onHover: ({ object, x, y }: { object?: { properties?: Record<string, unknown> }; x: number; y: number }) => {
-          if (object) {
-            const props = object.properties ?? {};
-            const st = props.super_type as number;
-            const stName = getSuperTypeName(st, object);
-            const tid = props.type_id;
-            setTooltip({ x, y, text: `${stName}  ·  Type ${tid}` });
-          } else {
-            setTooltip(null);
-          }
-        },
-        updateTriggers: {
-          getFillColor: [],
-        },
-      })
-    );
-  }
-
-  // Layer 1: State polygons
-  // In "types" mode: transparent fill + border only (tracts provide the fill).
-  // In "forecast" mode: senate rating fill colors, fully opaque.
+  // Layer 1: State polygons (always visible)
   if (stateGeo) {
     layers.push(
       new GeoJsonLayer({
@@ -293,8 +248,6 @@ export default function MapShell() {
           const abbr = f.properties?.state_abbr;
           if (zoomedState && abbr !== zoomedState) return [234, 231, 226, 60];
           if (zoomedState && abbr === zoomedState) return [0, 0, 0, 0];
-          // In "types" mode: transparent so tract colors show through
-          if (overlayMode === "types") return [0, 0, 0, 0];
           const color = abbr ? stateRatings.get(abbr) : undefined;
           if (color) {
             const [r, g, b] = hexToRgb(color);
@@ -306,11 +259,9 @@ export default function MapShell() {
           const abbr = f.properties?.state_abbr;
           if (zoomedState && abbr === zoomedState) return [100, 95, 88, 200];
           if (zoomedState) return [180, 175, 168, 40];
-          // In "types" mode: show borders over the stained-glass tracts
-          if (overlayMode === "types") return [120, 115, 108, 160];
           return [180, 175, 168, 120];
         }) as never,
-        lineWidthMinPixels: overlayMode === "types" ? 1.5 : 1,
+        lineWidthMinPixels: 1,
         pickable: !zoomedState,
         onClick: (info: { object?: { properties?: Record<string, string> } }) => {
           const abbr = info.object?.properties?.state_abbr;
@@ -326,9 +277,8 @@ export default function MapShell() {
           }
         },
         updateTriggers: {
-          getFillColor: [zoomedState, stateRatings, overlayMode],
-          getLineColor: [zoomedState, overlayMode],
-          lineWidthMinPixels: [overlayMode],
+          getFillColor: [zoomedState, stateRatings],
+          getLineColor: [zoomedState],
         },
       })
     );
@@ -348,6 +298,11 @@ export default function MapShell() {
             const share = forecastChoropleth.get(typeId);
             if (share !== undefined) return choroplethColor(share);
             return [200, 200, 200, 120];
+          }
+          // On forecast pages, use a neutral tone instead of stained-glass coloring
+          // so the map doesn't imply community-type meaning on pages about race ratings.
+          if (defaultOverlayMode === "forecast") {
+            return [200, 195, 188, 140];
           }
           const st = (f.properties?.super_type as number) ?? -1;
           const base = getColorForSuperType(st);
@@ -430,7 +385,7 @@ export default function MapShell() {
           }
         },
         updateTriggers: {
-          getFillColor: [forecastChoropleth],
+          getFillColor: [forecastChoropleth, defaultOverlayMode],
         },
       })
     );
@@ -440,32 +395,26 @@ export default function MapShell() {
   const activeSuperTypeIds = new Set<number>();
   const tractSuperTypeNames = new Map<number, string>();
 
-  // When zoomed: derive from the zoomed state's tracts
-  // When national types view: derive from the national tracts GeoJSON
-  const tractSource =
-    zoomedState && stateTracts
-      ? (stateTracts as { features: Array<{ properties?: Record<string, unknown> }> }).features
-      : overlayMode === "types" && !zoomedState && nationalTracts
-        ? (nationalTracts as { features: Array<{ properties?: Record<string, unknown> }> }).features
-        : null;
-
-  if (tractSource) {
-    tractSource.forEach((f) => {
-      const st = f.properties?.super_type as number;
-      const name = f.properties?.super_type_name as string | undefined;
-      if (st != null && st >= 0) {
-        activeSuperTypeIds.add(st);
-        if (name && !tractSuperTypeNames.has(st)) tractSuperTypeNames.set(st, name);
-      }
-    });
+  if (zoomedState && stateTracts) {
+    (stateTracts as { features: Array<{ properties?: Record<string, unknown> }> })
+      .features?.forEach((f) => {
+        const st = f.properties?.super_type as number;
+        const name = f.properties?.super_type_name as string | undefined;
+        if (st != null && st >= 0) {
+          activeSuperTypeIds.add(st);
+          if (name && !tractSuperTypeNames.has(st)) tractSuperTypeNames.set(st, name);
+        }
+      });
   }
 
+  // API display_name is the canonical source of truth for super-type labels.
+  // GeoJSON-embedded names are only a fallback for cases where the API hasn't loaded yet.
   const legendEntries: LegendEntry[] = Array.from(activeSuperTypeIds)
     .sort((a, b) => a - b)
     .map((id) => ({
       id,
       color: getColorForSuperType(id),
-      label: tractSuperTypeNames.get(id) ?? superTypeMap.get(id)?.name ?? `Type ${id}`,
+      label: superTypeMap.get(id)?.name ?? tractSuperTypeNames.get(id) ?? `Type ${id}`,
     }));
 
   // ── Render ────────────────────────────────────────────────────────────────
@@ -495,7 +444,7 @@ export default function MapShell() {
         zoomedState={zoomedState}
         entries={legendEntries}
         hasStateRatings={stateRatings.size > 0}
-        overlayMode={overlayMode}
+        overlayMode={defaultOverlayMode}
       />
 
       {/* Side panels */}

@@ -13,7 +13,6 @@
  */
 
 import { dustyInkChoropleth } from "@/lib/config/palette";
-import type { MapOverlayMode } from "@/components/MapContext";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -30,12 +29,16 @@ interface MapLegendProps {
   forecastChoropleth: Map<string, number> | null;
   /** State abbreviation of the currently zoomed state, or null for national. */
   zoomedState: string | null;
-  /** Legend entries derived from loaded tract features. */
+  /** Legend entries derived from loaded tract features (API names take priority). */
   entries: LegendEntry[];
   /** Whether state ratings data has loaded (controls national legend visibility). */
   hasStateRatings: boolean;
-  /** Which overlay mode is active — controls which legend variant to show nationally. */
-  overlayMode: MapOverlayMode;
+  /**
+   * Overlay mode — controls which legend is shown when zoomed into a state.
+   *  - "types"    : show the super-type stained-glass legend (default)
+   *  - "forecast" : show the senate ratings legend even when zoomed (tracts are neutral grey)
+   */
+  overlayMode?: "types" | "forecast";
 }
 
 // ---------------------------------------------------------------------------
@@ -152,24 +155,18 @@ export function MapLegend({
   zoomedState,
   entries,
   hasStateRatings,
-  overlayMode,
+  overlayMode = "types",
 }: MapLegendProps) {
-  // Forecast choropleth is active — always show the partisan scale
   if (forecastChoropleth) {
     return <ForecastLegend />;
   }
 
-  // Zoomed into a state — show that state's super-types
-  if (zoomedState) {
+  // In forecast mode, tracts render neutral grey — show the senate ratings
+  // legend even when zoomed so users always see the competitive-race color key.
+  if (zoomedState && overlayMode === "types") {
     return <SuperTypeLegend entries={entries} />;
   }
 
-  // National "Types" mode — show super-type legend (entries from national tracts)
-  if (overlayMode === "types") {
-    return <SuperTypeLegend entries={entries} />;
-  }
-
-  // National "Forecast" mode — show senate/state rating scale
   if (hasStateRatings) {
     return <SenateLegend />;
   }

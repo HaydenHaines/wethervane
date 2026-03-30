@@ -55,9 +55,11 @@ export default function ForecastLayout({ children }: { children: React.ReactNode
   return (
     <MapProvider>
       <div className="flex flex-col lg:flex-row h-[calc(100vh-3rem)]">
-        {/* Map pane — desktop only; hidden on mobile */}
+        {/* Map pane — desktop only; hidden on mobile.
+            defaultOverlayMode="forecast" keeps the focus on competitive ratings,
+            not community-type structure, on all /forecast/* pages. */}
         <div className="hidden lg:block lg:w-1/2 bg-[rgb(var(--color-bg))] border-r border-[rgb(var(--color-border))]">
-          <MapShell />
+          <MapShell defaultOverlayMode="forecast" />
         </div>
         {/* Panel pane */}
         <div className="flex-1 overflow-y-auto p-4 lg:p-6">
