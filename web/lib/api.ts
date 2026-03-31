@@ -231,6 +231,7 @@ export interface SenateRaceData {
   rating: string;
   margin: number;
   n_polls: number;
+  zone?: string;
 }
 
 export interface SenateOverviewData {
@@ -249,6 +250,8 @@ export interface SenateOverviewData {
   races: SenateRaceData[];
   /** Map from state abbreviation to hex color for the mini map. */
   state_colors?: Record<string, string>;
+  /** Seat counts per narrative zone (not_up_d, safe_up_d, contested_d, tossup, contested_r, safe_up_r, not_up_r). */
+  zone_counts?: Record<string, number>;
   /** ISO date string of the most recently scraped poll, if available. */
   updated_at?: string | null;
 }
@@ -256,6 +259,31 @@ export interface SenateOverviewData {
 export async function fetchSenateOverview(): Promise<SenateOverviewData> {
   const res = await fetch(`${API_BASE}/senate/overview`);
   if (!res.ok) throw new Error(`/senate/overview failed: ${res.status}`);
+  return res.json();
+}
+
+export interface StructuralContext {
+  baseline_year: number;
+  baseline_label: string;
+  baseline_dem_two_party: number;
+  dem_wins_at_baseline: number;
+  dem_holdover_seats: number;
+  total_dem_projected: number;
+  seats_needed_for_majority: number;
+  structural_gap: number;
+}
+
+export interface SenateScrollyContextData {
+  zone_counts: Record<string, number>;
+  not_up_d_states: string[];
+  not_up_r_states: string[];
+  structural_context: StructuralContext;
+  competitive_races: SenateRaceData[];
+}
+
+export async function fetchSenateScrollyContext(): Promise<SenateScrollyContextData> {
+  const res = await fetch(`${API_BASE}/senate/scrolly-context`);
+  if (!res.ok) throw new Error(`/senate/scrolly-context failed: ${res.status}`);
   return res.json();
 }
 
