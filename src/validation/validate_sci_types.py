@@ -21,6 +21,12 @@ only the upper triangle (~5.1M pairs) and filter to counties present in our
 type assignments (~3,154 counties). We sample for correlation analysis since
 pairwise operations on 3K+ counties are tractable but we don't need all pairs
 for statistical power.
+
+Module structure:
+- sci_loader.py     — SCI data loading and preprocessing
+- sci_similarity.py — pairwise type similarity + geodesic distance computation
+- validate_sci_types.py (this file) — result container, full validation pipeline,
+                                      report formatting, and CLI entry point
 """
 
 from __future__ import annotations
@@ -31,8 +37,26 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-from scipy.spatial.distance import cosine as cosine_distance
 from scipy.stats import pearsonr, spearmanr
+
+from src.validation.sci_loader import (  # noqa: F401
+    COUNTY_CENTROIDS_PATH,
+    OUTPUT_DIR,
+    SCI_PATH,
+    TYPE_ASSIGNMENTS_PATH,
+    fetch_county_centroids,
+    load_county_centroids,
+    load_sci_upper_triangle,
+    load_type_assignments,
+)
+from src.validation.sci_similarity import (  # noqa: F401
+    DISTANCE_BINS,
+    DISTANCE_LABELS,
+    add_geodesic_distance,
+    compute_partial_correlation,
+    compute_pairwise_type_similarity,
+    haversine_km,
+)
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s"
@@ -40,30 +64,6 @@ logging.basicConfig(
 log = logging.getLogger(__name__)
 
 PROJECT_ROOT = Path(__file__).parents[2]
-
-# Default paths (overridable for testing)
-SCI_PATH = PROJECT_ROOT / "data" / "raw" / "facebook_sci" / "us_counties.csv"
-TYPE_ASSIGNMENTS_PATH = (
-    PROJECT_ROOT / "data" / "communities" / "type_assignments.parquet"
-)
-COUNTY_CENTROIDS_PATH = (
-    PROJECT_ROOT / "data" / "raw" / "county_centroids_2020.csv"
-)
-OUTPUT_DIR = PROJECT_ROOT / "data" / "validation"
-
-# Haversine Earth radius in km
-_EARTH_RADIUS_KM = 6371.0
-
-# Distance bins for the proximity control (km)
-DISTANCE_BINS = [0, 100, 250, 500, 1000, 2000, 5000]
-DISTANCE_LABELS = [
-    "0-100km",
-    "100-250km",
-    "250-500km",
-    "500-1000km",
-    "1000-2000km",
-    "2000-5000km",
-]
 
 
 @dataclass
@@ -101,217 +101,6 @@ class SCITypeValidationResult:
     # Partial correlation: log(SCI) vs cosine sim, controlling for log(distance)
     partial_r_sci_cosine_given_distance: float = 0.0
     partial_p_sci_cosine_given_distance: float = 0.0
-
-
-def haversine_km(
-    lat1: np.ndarray,
-    lon1: np.ndarray,
-    lat2: np.ndarray,
-    lon2: np.ndarray,
-) -> np.ndarray:
-    """Vectorized haversine distance in km."""
-    lat1_r, lat2_r = np.radians(lat1), np.radians(lat2)
-    dlat = np.radians(lat2 - lat1)
-    dlon = np.radians(lon2 - lon1)
-    a = np.sin(dlat / 2) ** 2 + np.cos(lat1_r) * np.cos(lat2_r) * np.sin(dlon / 2) ** 2
-    return 2 * _EARTH_RADIUS_KM * np.arcsin(np.sqrt(a))
-
-
-def load_sci_upper_triangle(
-    path: Path,
-    valid_fips: set[str] | None = None,
-) -> pd.DataFrame:
-    """Load SCI data, keeping only upper triangle (user < friend) for unique pairs.
-
-    Parameters
-    ----------
-    path:
-        Path to the SCI CSV file.
-    valid_fips:
-        If provided, filter to pairs where both counties are in this set.
-
-    Returns
-    -------
-    DataFrame with columns: user_fips, friend_fips, scaled_sci.
-    """
-    log.info("Loading SCI data from %s", path)
-    df = pd.read_csv(
-        path,
-        usecols=["user_region", "friend_region", "scaled_sci"],
-        dtype={"user_region": str, "friend_region": str, "scaled_sci": np.int64},
-    )
-    log.info("  Raw rows: %d", len(df))
-
-    # Zero-pad FIPS to 5 chars
-    df["user_region"] = df["user_region"].str.zfill(5)
-    df["friend_region"] = df["friend_region"].str.zfill(5)
-
-    # Drop self-connections
-    df = df[df["user_region"] != df["friend_region"]].copy()
-
-    # Keep only upper triangle (user < friend) to deduplicate symmetric pairs
-    df = df[df["user_region"] < df["friend_region"]].copy()
-    log.info("  Upper-triangle rows: %d", len(df))
-
-    # Filter to valid FIPS if provided
-    if valid_fips is not None:
-        mask = df["user_region"].isin(valid_fips) & df["friend_region"].isin(valid_fips)
-        df = df[mask].copy()
-        log.info("  After FIPS filter: %d", len(df))
-
-    df = df.rename(columns={"user_region": "user_fips", "friend_region": "friend_fips"})
-    return df[["user_fips", "friend_fips", "scaled_sci"]].reset_index(drop=True)
-
-
-def load_type_assignments(path: Path) -> tuple[pd.DataFrame, np.ndarray, np.ndarray]:
-    """Load type assignments and extract score matrix + dominant types.
-
-    Returns
-    -------
-    (assignments_df, score_matrix, dominant_types)
-        score_matrix: (N, J) array of soft membership scores
-        dominant_types: (N,) array of primary type indices
-    """
-    log.info("Loading type assignments from %s", path)
-    df = pd.read_parquet(path)
-
-    score_cols = sorted(
-        [c for c in df.columns if c.endswith("_score")],
-        key=lambda c: int(c.split("_")[1]),
-    )
-    score_matrix = df[score_cols].values  # (N, J)
-    dominant_types = df["dominant_type"].values
-    log.info(
-        "  %d counties, %d types, dominant types range [%d, %d]",
-        len(df),
-        len(score_cols),
-        dominant_types.min(),
-        dominant_types.max(),
-    )
-    return df, score_matrix, dominant_types
-
-
-def load_county_centroids(path: Path) -> pd.DataFrame:
-    """Load county centroids (lat/lon) from Census Gazetteer file.
-
-    Expected columns: county_fips, latitude, longitude.
-    """
-    log.info("Loading county centroids from %s", path)
-    df = pd.read_csv(path, dtype={"county_fips": str})
-    df["county_fips"] = df["county_fips"].str.zfill(5)
-    log.info("  %d counties with centroids", len(df))
-    return df
-
-
-def compute_pairwise_type_similarity(
-    sci_pairs: pd.DataFrame,
-    fips_to_idx: dict[str, int],
-    score_matrix: np.ndarray,
-    dominant_types: np.ndarray,
-) -> pd.DataFrame:
-    """Add type similarity columns to SCI pair DataFrame.
-
-    Adds:
-    - same_type: bool, whether both counties share the same dominant type
-    - cosine_sim: cosine similarity of soft membership vectors
-    - log_sci: log10(scaled_sci)
-    - same_state: bool, whether both counties are in the same state
-    """
-    log.info("Computing pairwise type similarity for %d pairs...", len(sci_pairs))
-
-    user_idx = sci_pairs["user_fips"].map(fips_to_idx).values
-    friend_idx = sci_pairs["friend_fips"].map(fips_to_idx).values
-
-    # Same dominant type
-    sci_pairs = sci_pairs.copy()
-    sci_pairs["same_type"] = dominant_types[user_idx] == dominant_types[friend_idx]
-
-    # Cosine similarity of soft membership vectors (vectorized)
-    user_vecs = score_matrix[user_idx]  # (N_pairs, J)
-    friend_vecs = score_matrix[friend_idx]  # (N_pairs, J)
-    # cosine_sim = dot(u, v) / (||u|| * ||v||)
-    dot_products = np.sum(user_vecs * friend_vecs, axis=1)
-    user_norms = np.linalg.norm(user_vecs, axis=1)
-    friend_norms = np.linalg.norm(friend_vecs, axis=1)
-    # Avoid division by zero (shouldn't happen with valid scores)
-    denom = user_norms * friend_norms
-    denom = np.where(denom > 0, denom, 1.0)
-    sci_pairs["cosine_sim"] = dot_products / denom
-
-    # Log-scaled SCI
-    sci_pairs["log_sci"] = np.log10(sci_pairs["scaled_sci"].clip(lower=1))
-
-    # Same-state indicator
-    sci_pairs["same_state"] = (
-        sci_pairs["user_fips"].str[:2] == sci_pairs["friend_fips"].str[:2]
-    )
-
-    log.info(
-        "  Same-type pairs: %d (%.1f%%), different-type: %d",
-        sci_pairs["same_type"].sum(),
-        100 * sci_pairs["same_type"].mean(),
-        (~sci_pairs["same_type"]).sum(),
-    )
-    return sci_pairs
-
-
-def add_geodesic_distance(
-    pairs: pd.DataFrame,
-    centroids: pd.DataFrame,
-) -> pd.DataFrame:
-    """Add geodesic distance (km) between county centroids to pair DataFrame."""
-    log.info("Computing geodesic distances for %d pairs...", len(pairs))
-
-    centroid_map = centroids.set_index("county_fips")[["latitude", "longitude"]]
-
-    pairs = pairs.copy()
-    user_coords = pairs["user_fips"].map(centroid_map["latitude"]).values
-    user_lon = pairs["user_fips"].map(centroid_map["longitude"]).values
-    friend_coords = pairs["friend_fips"].map(centroid_map["latitude"]).values
-    friend_lon = pairs["friend_fips"].map(centroid_map["longitude"]).values
-
-    # Drop pairs where centroids are missing
-    valid_mask = ~(
-        np.isnan(user_coords)
-        | np.isnan(user_lon)
-        | np.isnan(friend_coords)
-        | np.isnan(friend_lon)
-    )
-    if not valid_mask.all():
-        n_dropped = (~valid_mask).sum()
-        log.warning("  %d pairs lack centroid data, dropping", n_dropped)
-        pairs = pairs[valid_mask].copy()
-        user_coords = user_coords[valid_mask]
-        user_lon = user_lon[valid_mask]
-        friend_coords = friend_coords[valid_mask]
-        friend_lon = friend_lon[valid_mask]
-
-    pairs["distance_km"] = haversine_km(
-        user_coords, user_lon, friend_coords, friend_lon
-    )
-    pairs["log_distance"] = np.log10(pairs["distance_km"].clip(lower=1))
-
-    log.info("  Distance range: %.0f - %.0f km", pairs["distance_km"].min(), pairs["distance_km"].max())
-    return pairs
-
-
-def compute_partial_correlation(
-    x: np.ndarray, y: np.ndarray, z: np.ndarray
-) -> tuple[float, float]:
-    """Partial Pearson correlation of x and y controlling for z.
-
-    Uses the standard formula: regress x on z, regress y on z, correlate
-    residuals.
-    """
-    # Residualize x on z
-    z_with_const = np.column_stack([z, np.ones_like(z)])
-    beta_x = np.linalg.lstsq(z_with_const, x, rcond=None)[0]
-    resid_x = x - z_with_const @ beta_x
-
-    beta_y = np.linalg.lstsq(z_with_const, y, rcond=None)[0]
-    resid_y = y - z_with_const @ beta_y
-
-    return pearsonr(resid_x, resid_y)
 
 
 def run_validation(
@@ -466,50 +255,6 @@ def run_validation(
             })
 
     return result
-
-
-def fetch_county_centroids(output_path: Path) -> pd.DataFrame:
-    """Download 2020 Census Gazetteer county centroids if not on disk.
-
-    Source: Census Bureau county gazetteer file (public domain, ~100KB).
-    """
-    if output_path.exists():
-        log.info("County centroids already on disk: %s", output_path)
-        return load_county_centroids(output_path)
-
-    import io
-    import zipfile
-    from urllib.request import urlopen
-
-    url = (
-        "https://www2.census.gov/geo/docs/maps-data/data/gazetteer/"
-        "2020_Gazetteer/2020_Gaz_counties_national.zip"
-    )
-    log.info("Downloading county centroids from %s", url)
-    with urlopen(url) as resp:
-        zip_data = resp.read()
-
-    with zipfile.ZipFile(io.BytesIO(zip_data)) as zf:
-        # The zip contains a single tab-delimited file
-        names = zf.namelist()
-        txt_name = [n for n in names if n.endswith(".txt")][0]
-        with zf.open(txt_name) as f:
-            raw = pd.read_csv(f, sep="\t", dtype={"GEOID": str})
-
-    # Census gazetteer has trailing whitespace in column names
-    raw.columns = raw.columns.str.strip()
-
-    # Standardize columns
-    centroids = pd.DataFrame({
-        "county_fips": raw["GEOID"].str.zfill(5),
-        "latitude": raw["INTPTLAT"].astype(float),
-        "longitude": raw["INTPTLONG"].astype(float),
-    })
-
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    centroids.to_csv(output_path, index=False)
-    log.info("Saved %d county centroids to %s", len(centroids), output_path)
-    return centroids
 
 
 def format_results(result: SCITypeValidationResult) -> str:

@@ -8,6 +8,7 @@ import { CorrelatedTypes } from "@/components/detail/CorrelatedTypes";
 import { MemberGeography } from "@/components/detail/MemberGeography";
 import { Breadcrumbs } from "@/components/nav/Breadcrumbs";
 import { marginToRating, getSuperTypeColor, rgbToHex } from "@/lib/config/palette";
+import { stripStateSuffix } from "@/lib/config/states";
 import { formatMargin } from "@/lib/format";
 
 import type { CorrelatedTypeData } from "@/lib/types";
@@ -104,11 +105,6 @@ async function fetchCorrelatedTypes(id: string): Promise<CorrelatedTypeData[]> {
   } catch {
     return [];
   }
-}
-
-function stripStateSuffix(name: string | null): string {
-  if (!name) return "Unknown County";
-  return name.replace(/,\s*[A-Z]{2}$/, "");
 }
 
 // ── Metadata ──────────────────────────────────────────────────────────────

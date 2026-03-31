@@ -36,10 +36,6 @@ ADJ_NPZ = PROJECT_ROOT / "data" / "communities" / "county_adjacency.npz"
 ADJ_FIPS = PROJECT_ROOT / "data" / "communities" / "county_adjacency.fips.txt"
 CONFIG_PATH = PROJECT_ROOT / "config" / "model.yaml"
 
-# Column index within the 30 training cols that corresponds to pres_d_shift_16_20
-# (the most recent presidential D-shift in training = direct counterpart to holdout col 0)
-_PRES_D_16_20_TRAINING_IDX = 12
-
 
 @dataclass
 class KSweepResult:
@@ -57,9 +53,19 @@ def run_k_sweep(
     holdout_cols: list[str],
     k_values: Sequence[int],
     min_community_size: int = 8,
-    training_comparison_idx: int = _PRES_D_16_20_TRAINING_IDX,
+    training_comparison_col: str = "pres_d_shift_16_20",
 ) -> list[KSweepResult]:
     """Run Ward HAC at multiple K values, return holdout accuracy per valid K."""
+    # Resolve the comparison column to an index once, so the rest of the function
+    # uses stable integer indexing into numpy arrays. Name-based lookup means adding
+    # new election pairs to TRAINING_SHIFT_COLS won't silently shift the index.
+    if training_comparison_col not in train_cols:
+        raise ValueError(
+            f"training_comparison_col='{training_comparison_col}' not found in train_cols. "
+            f"Available: {train_cols}"
+        )
+    training_comparison_idx = train_cols.index(training_comparison_col)
+
     # Align shifts to adjacency order
     indexed = shifts_df.set_index("county_fips")
     aligned = indexed.reindex(fips_list)
@@ -68,12 +74,6 @@ def run_k_sweep(
         log.warning("Filling %d counties with NaN shifts (column means)", n_missing)
         aligned[train_cols + holdout_cols] = aligned[train_cols + holdout_cols].fillna(
             aligned[train_cols + holdout_cols].mean()
-        )
-
-    if training_comparison_idx >= len(train_cols):
-        raise ValueError(
-            f"training_comparison_idx={training_comparison_idx} is out of range "
-            f"for train_cols (len={len(train_cols)})"
         )
 
     train_arr = aligned[train_cols].values        # (N, n_train)

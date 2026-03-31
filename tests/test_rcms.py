@@ -45,6 +45,13 @@ EXPECTED_COUNTY_COUNTS = {"AL": 67, "FL": 67, "GA": 159, "TX": 254, "CA": 58}
 EXPECTED_MIN_COUNTIES = 3000
 EXPECTED_MIN_STATES = 50
 
+# Alpha [5.0, 1.0, 1.5, 2.0, 2.5] creates a concentrated Dirichlet distribution with mode
+# near category 0 (evangelical). This reflects the Deep South religious landscape
+# (high evangelical concentration) and is used to generate realistic-but-not-uniform
+# adherence counts across the five tracked traditions: evangelical, mainline, catholic,
+# black_protestant, and other.
+_TEST_DIRICHLET_ALPHA = [5.0, 1.0, 1.5, 2.0, 2.5]
+
 
 # ---------------------------------------------------------------------------
 # Fixtures
@@ -68,7 +75,7 @@ def synthetic_rcms() -> pd.DataFrame:
     # Draw fractions that sum to ≤ 1 (real RCMS constraint: each tradition ≤ total)
     # Use Dirichlet to ensure properly normalized fractions for 5 "buckets"
     # (evangelical, mainline, catholic, black_protestant, other)
-    alpha = np.array([5.0, 1.0, 1.5, 2.0, 2.5])  # biased toward evangelical (Deep South)
+    alpha = np.array(_TEST_DIRICHLET_ALPHA)  # biased toward evangelical (Deep South)
     fracs = rng.dirichlet(alpha, size=n)  # shape: (n, 5), rows sum to 1
     evang_frac = fracs[:, 0]
     mainline_frac = fracs[:, 1]

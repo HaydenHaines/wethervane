@@ -155,6 +155,12 @@ def _cross_compliance(con: duckdb.DuckDBPyConnection, version_id: str) -> None:
     max_ts = con.execute("SELECT MAX(type_id) FROM type_scores WHERE version_id=?", [version_id]).fetchone()[0]
     max_tc = con.execute("SELECT MAX(type_i) FROM type_covariance WHERE version_id=?", [version_id]).fetchone()[0]
     max_tp = con.execute("SELECT MAX(type_id) FROM type_priors WHERE version_id=?", [version_id]).fetchone()[0]
+    if max_ts is None or max_tc is None or max_tp is None:
+        raise DomainIngestionError(
+            "model", "type tables",
+            f"one or more type tables are empty for version {version_id}: "
+            f"type_scores max={max_ts}, type_covariance max={max_tc}, type_priors max={max_tp}"
+        )
     if not (max_ts == max_tc == max_tp):
         raise DomainIngestionError(
             "model", "type tables",

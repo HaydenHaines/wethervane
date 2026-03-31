@@ -4,9 +4,11 @@ import { Skeleton } from "@/components/ui/skeleton";
 interface HeroSectionProps {
   data: SenateOverviewData | undefined;
   isLoading: boolean;
+  /** Number of electoral communities in the current model (from /model/version). */
+  communityCount: number;
 }
 
-export function HeroSection({ data, isLoading }: HeroSectionProps) {
+export function HeroSection({ data, isLoading, communityCount }: HeroSectionProps) {
   if (isLoading || !data) {
     return (
       <section className="flex flex-col items-center gap-4 py-12 text-center">
@@ -66,7 +68,7 @@ export function HeroSection({ data, isLoading }: HeroSectionProps) {
         className="max-w-lg text-sm"
         style={{ color: "var(--color-text-subtle, var(--color-text-muted))", opacity: 0.75 }}
       >
-        Based on 100 electoral communities discovered from how places move together — not polls alone.
+        Based on {communityCount} electoral communities discovered from how places move together — not polls alone.
       </p>
     </section>
   );

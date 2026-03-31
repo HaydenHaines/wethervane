@@ -78,7 +78,24 @@ def download_baf_cd(state_fips: str, state_abbr: str) -> pd.DataFrame:
     response = urllib.request.urlopen(url, timeout=60)
     z = zipfile.ZipFile(io.BytesIO(response.read()))
 
-    with z.open(cd_filename) as f:
+    # Validate ZIP contents before opening — Census has changed file naming conventions
+    # between redistricting cycles (e.g., adding subdirectories or changing separators)
+    available = z.namelist()
+    cd_matches = [f for f in available if "CD" in f and f.endswith(".txt")]
+    if not cd_matches:
+        raise FileNotFoundError(
+            f"No Block Assignment CD file found in ZIP for {state_abbr}. "
+            f"Available files: {available}. URL: {url}"
+        )
+    # Prefer exact match; fall back to first pattern match
+    target = cd_filename if cd_filename in available else cd_matches[0]
+    if target != cd_filename:
+        log.warning(
+            "BAF CD filename mismatch for %s: expected %r, using %r",
+            state_abbr, cd_filename, target,
+        )
+
+    with z.open(target) as f:
         df = pd.read_csv(
             f,
             sep="|",

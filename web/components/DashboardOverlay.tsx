@@ -4,8 +4,8 @@ import { useMapContext } from "@/components/MapContext";
 import { fetchPolls, feedMultiplePolls, type PollRow, type ForecastRow } from "@/lib/api";
 import { DUSTY_INK } from "@/lib/colors";
 import { formatMargin, marginColor } from "@/lib/typeDisplay";
+import { ELECTION_YEAR } from "@/lib/config/election";
 
-const YEAR = "2026";
 const PANEL_WIDTH = 340;
 const MAX_POLLS = 5;
 
@@ -55,7 +55,7 @@ export function DashboardOverlay() {
   // Fetch polls when zoomed state changes
   useEffect(() => {
     if (!visible || !zoomedState) return;
-    fetchPolls({ state: zoomedState, cycle: YEAR })
+    fetchPolls({ state: zoomedState, cycle: ELECTION_YEAR })
       .then((rows) => {
         setPolls(rows);
         // Derive race name from first poll
@@ -73,7 +73,7 @@ export function DashboardOverlay() {
     setLoading(true);
     try {
       const result = await feedMultiplePolls({
-        cycle: YEAR,
+        cycle: ELECTION_YEAR,
         state: zoomedState,
         race: raceName ?? undefined,
       });

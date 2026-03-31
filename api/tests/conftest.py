@@ -32,6 +32,11 @@ TEST_COMMUNITIES = {
 }
 TEST_RACES = ["FL_Senate"]
 
+# Covariance matrix shape for test sigma: diagonal dominance with mild shared structure.
+# These values are deliberately small so no community overwhelms the Bayesian update.
+_SIGMA_DIAGONAL_VARIANCE = 0.01   # per-community variance in test sigma matrix
+_SIGMA_OFF_DIAGONAL_COV = 0.005   # shared covariance between communities in test matrix
+
 
 def _build_test_db() -> duckdb.DuckDBPyConnection:
     """Build an in-memory DuckDB with synthetic data matching the real schema."""
@@ -143,7 +148,7 @@ def _build_test_db() -> duckdb.DuckDBPyConnection:
             PRIMARY KEY (community_id_row, community_id_col, version_id)
         )
     """)
-    sigma = np.eye(TEST_K) * 0.01 + np.ones((TEST_K, TEST_K)) * 0.005
+    sigma = np.eye(TEST_K) * _SIGMA_DIAGONAL_VARIANCE + np.ones((TEST_K, TEST_K)) * _SIGMA_OFF_DIAGONAL_COV
     for i in range(TEST_K):
         for j in range(TEST_K):
             con.execute(
@@ -265,7 +270,7 @@ def _build_test_db() -> duckdb.DuckDBPyConnection:
 
 def _build_test_state(K: int = TEST_K) -> dict:
     """Build synthetic in-memory state (sigma, mu_prior, weights)."""
-    sigma = np.eye(K) * 0.01 + np.ones((K, K)) * 0.005
+    sigma = np.eye(K) * _SIGMA_DIAGONAL_VARIANCE + np.ones((K, K)) * _SIGMA_OFF_DIAGONAL_COV
     mu_prior = np.full(K, 0.42)
 
     # State weights: K communities per state

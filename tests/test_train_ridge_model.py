@@ -440,13 +440,14 @@ class TestPredict2026TypesFallback:
 
     def test_fallback_no_ridge_file(self, synthetic_run_data, monkeypatch):
         """predict_2026_types.run() works with no Ridge model file."""
-        from src.prediction import predict_2026_types
+        from src.prediction import county_priors, predict_2026_types
 
         data = synthetic_run_data
         tmp_path = data["tmp_path"]
 
-        # Point run() at tmp_path data dirs by monkey-patching PROJECT_ROOT
+        # Point run() and county_priors at tmp_path data dirs by monkey-patching PROJECT_ROOT
         monkeypatch.setattr(predict_2026_types, "PROJECT_ROOT", tmp_path)
+        monkeypatch.setattr(county_priors, "PROJECT_ROOT", tmp_path)
 
         # Ensure no Ridge model file exists (data/ is under tmp_path, but
         # PROJECT_ROOT is patched to tmp_path so path resolves to tmp_path/data/...)
@@ -463,11 +464,12 @@ class TestPredict2026TypesFallback:
 
     def test_ridge_priors_override_historical(self, synthetic_run_data, monkeypatch):
         """When Ridge priors file exists, predictions differ from pure historical."""
-        from src.prediction import predict_2026_types
+        from src.prediction import county_priors, predict_2026_types
 
         data = synthetic_run_data
         tmp_path = data["tmp_path"]
         monkeypatch.setattr(predict_2026_types, "PROJECT_ROOT", tmp_path)
+        monkeypatch.setattr(county_priors, "PROJECT_ROOT", tmp_path)
 
         # First run: no Ridge file (historical priors)
         predict_2026_types.run()
@@ -511,11 +513,12 @@ class TestPredict2026TypesFallback:
           3. Partial Ridge coverage (0.99 for half) produces different predictions
              than pure historical alone — confirming the priors flow through.
         """
-        from src.prediction import predict_2026_types
+        from src.prediction import county_priors, predict_2026_types
 
         data = synthetic_run_data
         tmp_path = data["tmp_path"]
         monkeypatch.setattr(predict_2026_types, "PROJECT_ROOT", tmp_path)
+        monkeypatch.setattr(county_priors, "PROJECT_ROOT", tmp_path)
 
         # First run: no Ridge priors (pure historical baseline)
         predict_2026_types.run()

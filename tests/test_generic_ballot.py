@@ -20,7 +20,7 @@ from src.prediction.generic_ballot import (
     compute_gb_shift,
     load_generic_ballot_polls,
 )
-from src.prediction.predict_2026_types import predict_race
+from src.prediction.forecast_runner import predict_race
 
 
 # ---------------------------------------------------------------------------

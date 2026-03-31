@@ -118,14 +118,19 @@ def _download_file(file_id: int, cache_path: Path) -> Path:
 # ── Shared aggregation logic ───────────────────────────────────────────────────
 
 def _normalise_fips(series: pd.Series) -> pd.Series:
-    """Convert county_fips (float or int or str) to zero-padded 5-char string."""
-    return (
-        pd.to_numeric(series, errors="coerce")
-        .fillna(0)
-        .astype(int)
-        .astype(str)
-        .str.zfill(5)
-    )
+    """Convert county_fips (float or int or str) to zero-padded 5-char string.
+
+    Raises ValueError if any values cannot be parsed as numeric (NaN after coerce),
+    since "00000" is not a valid FIPS code and would silently corrupt join keys.
+    """
+    numeric = pd.to_numeric(series, errors="coerce")
+    bad = numeric.isna()
+    if bad.any():
+        raise ValueError(
+            f"_normalise_fips: {bad.sum()} unparseable FIPS value(s): "
+            f"{series[bad].unique().tolist()[:5]}"
+        )
+    return numeric.astype(int).astype(str).str.zfill(5)
 
 
 def _aggregate_to_county(df: pd.DataFrame, year: int) -> pd.DataFrame:

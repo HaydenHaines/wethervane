@@ -43,6 +43,21 @@ _TOSSUP_MAX = 0.03
 _LEAN_MAX = 0.08
 _LIKELY_MAX = 0.15
 
+# Map colors — Dusty Ink palette.
+# Contested states → rating-based color; non-contested → delegation party color.
+_RATING_COLORS = {
+    "safe_d": "#2d4a6f", "likely_d": "#4b6d90", "lean_d": "#7e9ab5",
+    "tossup": "#8a6b8a",
+    "lean_r": "#c4907a", "likely_r": "#9e5e4e", "safe_r": "#6e3535",
+}
+_PARTY_COLORS = {
+    "D": "#3a5f8a",    # Muted dark blue — clearly "Dem-held, no race"
+    "R": "#7a4a4a",    # Muted dark red — clearly "GOP-held, no race"
+    "split": "#5a5a5a",
+}
+_UNCONTESTED_FALLBACK_COLOR = "#b5a995"  # neutral beige — uncontested seats with no delegation data
+_PARTY_UNKNOWN_COLOR = "#eae7e2"  # off-white — unknown delegation party
+
 
 def _margin_to_rating(margin: float) -> str:
     """Convert signed Dem margin to a rating label.
@@ -206,27 +221,15 @@ def get_senate_overview(
 
     # Build state_colors map: every state gets a hex color for the map.
     # Contested states → rating-based color. Non-contested → delegation party color.
-    # Dusty Ink palette
-    _RATING_COLORS = {
-        "safe_d": "#2d4a6f", "likely_d": "#4b6d90", "lean_d": "#7e9ab5",
-        "tossup": "#8a6b8a",
-        "lean_r": "#c4907a", "likely_r": "#9e5e4e", "safe_r": "#6e3535",
-    }
-    _PARTY_COLORS = {
-        "D": "#3a5f8a",    # Muted dark blue — clearly "Dem-held, no race"
-        "R": "#7a4a4a",    # Muted dark red — clearly "GOP-held, no race"
-        "split": "#5a5a5a",
-    }
-
     race_by_state = {r["state"]: r for r in races}
     state_colors = {}
     for st, delegation in SENATE_DELEGATION.items():
         if st in race_by_state:
             # Contested: use race rating color
-            state_colors[st] = _RATING_COLORS.get(race_by_state[st]["rating"], "#b5a995")
+            state_colors[st] = _RATING_COLORS.get(race_by_state[st]["rating"], _UNCONTESTED_FALLBACK_COLOR)
         else:
             # Not contested in 2026: use delegation color (lighter shade)
-            state_colors[st] = _PARTY_COLORS.get(delegation, "#eae7e2")
+            state_colors[st] = _PARTY_COLORS.get(delegation, _PARTY_UNKNOWN_COLOR)
 
     # Freshness: report the most recent poll date scraped, if available
     updated_at: str | None = None

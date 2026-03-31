@@ -36,6 +36,31 @@ export const DUSTY_INK = {
   mapEmpty:   "#eae7e2",
 } as const;
 
+/**
+ * Dusty Ink partisan palette — authoritative source for all partisan colors in
+ * the UI. Components must import from here; no component defines its own
+ * partisan colors.
+ *
+ * Color roles:
+ * - DEM_PRIMARY / GOP_PRIMARY  — prediction trend lines and text accents
+ * - DEM_SECONDARY / GOP_SECONDARY — scatter dots and softer markers
+ * - DEM_SAFE / GOP_SAFE        — safe-seat segments in the balance bar
+ * - TOSSUP                      — tossup/neutral marker
+ */
+export const PALETTE = {
+  // Primary partisan colors for trend lines and prediction accents
+  DEM_PRIMARY:   "#2166ac",
+  GOP_PRIMARY:   "#c0392b",
+  // Secondary partisan colors for scatter dots and softer elements
+  DEM_SECONDARY: "#4b6d90",   // = DUSTY_INK.likelyD
+  GOP_SECONDARY: "#9e5e4e",   // = DUSTY_INK.likelyR
+  // Safe-seat shades for the balance bar
+  DEM_SAFE:      "#2d4a6f",   // = DUSTY_INK.safeD
+  GOP_SAFE:      "#6e3535",   // = DUSTY_INK.safeR
+  // Neutral / tossup
+  TOSSUP:        "#8a6b8a",   // = DUSTY_INK.tossup
+} as const;
+
 /** Map from Rating enum to hex color. */
 export const RATING_COLORS: Record<Rating, string> = {
   safe_d:   DUSTY_INK.safeD,

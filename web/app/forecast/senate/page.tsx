@@ -5,9 +5,8 @@ import { BalanceBar } from "@/components/forecast/BalanceBar";
 import { RaceCardGrid } from "@/components/forecast/RaceCardGrid";
 import { ErrorAlert } from "@/components/shared/ErrorAlert";
 import { Skeleton } from "@/components/ui/skeleton";
-
-/** Tossup + lean races are "key races" */
-const KEY_RATINGS = new Set(["tossup", "lean_d", "lean_r"]);
+import { KEY_RATING_SET } from "@/lib/config/ratings";
+import { ELECTION_YEAR } from "@/lib/config/election";
 
 export default function SenatePage() {
   const { data, error, isLoading, mutate } = useSenateOverview();
@@ -30,12 +29,12 @@ export default function SenatePage() {
     );
   }
 
-  const keyRaces = data.races.filter((r) => KEY_RATINGS.has(r.rating));
-  const otherRaces = data.races.filter((r) => !KEY_RATINGS.has(r.rating));
+  const keyRaces = data.races.filter((r) => KEY_RATING_SET.has(r.rating));
+  const otherRaces = data.races.filter((r) => !KEY_RATING_SET.has(r.rating));
 
   return (
     <div>
-      <h1 className="font-serif text-2xl font-bold mb-4">2026 United States Senate</h1>
+      <h1 className="font-serif text-2xl font-bold mb-4">{ELECTION_YEAR} United States Senate</h1>
 
       <BalanceBar
         races={data.races}

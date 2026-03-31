@@ -297,7 +297,10 @@ def main() -> None:
 
     zero_cols = [c for c in TRAINING_SHIFT_COLS if shifts[c].abs().max() < 1e-10]
     if zero_cols:
-        log.warning("These training columns are all-zero (missing data): %s", zero_cols)
+        raise ValueError(
+            f"All-zero training columns detected — data is missing for these shift pairs: "
+            f"{zero_cols}. Re-run the relevant fetch scripts before building shifts."
+        )
 
 
 if __name__ == "__main__":

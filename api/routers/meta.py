@@ -1,6 +1,9 @@
 # api/routers/meta.py
 from __future__ import annotations
 
+import json
+from pathlib import Path
+
 import duckdb
 from fastapi import APIRouter, Depends, Request
 
@@ -15,6 +18,10 @@ from api.models import (
 )
 
 router = APIRouter(tags=["meta"])
+
+# Path to the accuracy metrics file written by the training pipeline.
+# Resolved relative to this file so it works regardless of working directory.
+_ACCURACY_METRICS_PATH = Path(__file__).resolve().parents[2] / "data" / "model" / "accuracy_metrics.json"
 
 
 @router.get("/health", response_model=HealthResponse)
@@ -59,10 +66,19 @@ def model_version(db: duckdb.DuckDBPyConnection = Depends(get_db)):
 def model_accuracy() -> AccuracyResponse:
     """Return model backtesting and validation accuracy metrics.
 
-    These metrics are hardcoded because they are stable model metadata that
-    only changes on retrain. They reflect the type-primary-v1.0 model state
-    as documented in MEMORY.md and CLAUDE.md baselines.
+    Reads from data/model/accuracy_metrics.json written by the training pipeline.
+    Falls back to embedded defaults if the file is absent (dev/test environments).
     """
+    if _ACCURACY_METRICS_PATH.exists():
+        with open(_ACCURACY_METRICS_PATH) as f:
+            raw = json.load(f)
+        return AccuracyResponse(
+            overall=OverallAccuracy(**raw["overall"]),
+            cross_election=[CrossElectionResult(**r) for r in raw["cross_election"]],
+            method_comparison=[MethodComparison(**r) for r in raw["method_comparison"]],
+        )
+    # Fallback: return the baseline values from the last known training run.
+    # Update data/model/accuracy_metrics.json after retraining.
     return AccuracyResponse(
         overall=OverallAccuracy(
             loo_r=0.711,

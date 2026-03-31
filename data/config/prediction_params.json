@@ -1,0 +1,9 @@
+{
+  "_comment": "Hyperparameters for the type-primary forecast pipeline (predict_2026_types.py / forecast_engine.run_forecast).",
+  "_tuning_notes": "lam and mu are regularization strengths for the hierarchical poll decomposition model (θ_national and δ_race respectively). Both set to 1.0 pending calibration (Plan C). w_vector_mode controls W vector construction tier in poll_enrichment.py — 'core' uses propensity+state fallback only; 'full' adds method-reach adjustments.",
+  "forecast": {
+    "lam": 1.0,
+    "mu": 1.0,
+    "w_vector_mode": "core"
+  }
+}

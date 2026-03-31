@@ -26,6 +26,13 @@ from api.models import (
     TypeBreakdown,
 )
 
+# Uncertainty model parameters — see docs/ARCHITECTURE.md for calibration notes
+_STATE_STD_FLOOR = 0.035      # minimum state-level std; prevents over-confidence when counties agree
+_STATE_STD_CAP = 0.15         # hard cap; beyond this, the race is essentially a coin flip
+_STATE_STD_FALLBACK = 0.065   # used when poll-derived std is unavailable
+_MATRIX_JITTER = 1e-8         # Tikhonov regularization keeps covariance PD during matrix inversion
+_Z90 = 1.645                  # z-score for 90% confidence interval
+
 router = APIRouter(tags=["forecast"])
 
 
@@ -280,16 +287,16 @@ def get_race_detail(
                 state_std = float(np.sqrt(county_var / n_eff))
                 # Floor: model LOO RMSE of 0.059 ensures we don't understate
                 # uncertainty even when all counties agree
-                state_std = max(state_std, 0.035)
+                state_std = max(state_std, _STATE_STD_FLOOR)
                 # Cap: never wider than 15pp (uninformative)
-                state_std = min(state_std, 0.15)
+                state_std = min(state_std, _STATE_STD_CAP)
             else:
-                state_std = 0.065  # fallback to historical estimate
+                state_std = _STATE_STD_FALLBACK  # fallback to historical estimate
         else:
-            state_std = 0.065
+            state_std = _STATE_STD_FALLBACK
 
-        state_lo90 = prediction - 1.645 * state_std
-        state_hi90 = prediction + 1.645 * state_std
+        state_lo90 = prediction - _Z90 * state_std
+        state_hi90 = prediction + _Z90 * state_std
 
     # Also get the other mode's prediction for comparison
     other_mode = "national" if forecast_mode == "local" else "local"
@@ -589,8 +596,8 @@ def _forecast_poll_types(
     type_priors: np.ndarray,
     type_county_fips: list[str],
 ) -> list[ForecastRow]:
-    """Type-based Bayesian update using predict_race from predict_2026_types."""
-    from src.prediction.predict_2026_types import predict_race
+    """Type-based Bayesian update using predict_race from forecast_runner."""
+    from src.prediction.forecast_runner import predict_race
 
     # Tract-level lookups from app.state (no DuckDB query needed)
     tract_states = getattr(request.app.state, "tract_states", {})
@@ -658,7 +665,7 @@ def _forecast_poll_types(
                 state_abbr=row["state"],
                 race=poll.race,
                 pred_dem_share=float(row["pred_dem_share"]),
-                pred_std=float(row["ci_upper"] - row["ci_lower"]) / (2 * 1.645),
+                pred_std=float(row["ci_upper"] - row["ci_lower"]) / (2 * _Z90),
                 pred_lo90=float(row["ci_lower"]),
                 pred_hi90=float(row["ci_upper"]),
                 state_pred=state_pred_val,
@@ -667,6 +674,49 @@ def _forecast_poll_types(
             )
         )
     return results
+
+
+def _run_bayesian_update(
+    mu_prior: np.ndarray,
+    sigma: np.ndarray,
+    w_matrix: np.ndarray,
+    poll_means: np.ndarray,
+    poll_stds: np.ndarray,
+) -> tuple[np.ndarray, np.ndarray]:
+    """Compute a Gaussian Bayesian update for type/community means given polls.
+
+    This is the shared math kernel used by both the type-based and HAC community-based
+    forecast paths.  The update follows standard Gaussian conditioning:
+
+        posterior precision = prior precision + W^T R^{-1} W
+        posterior mean      = Sigma_post (Sigma_prior^{-1} mu_prior + W^T R^{-1} y)
+
+    where R = diag(sigma_poll^2) is the measurement noise covariance.
+
+    Args:
+        mu_prior:   Prior mean vector, shape (K,).
+        sigma:      Prior covariance matrix, shape (K, K).
+        w_matrix:   Weight matrix, shape (n_polls, K).  Each row is the geographic
+                    type/community composition of one polled area (W vector).
+        poll_means: Observed Democratic share for each poll, shape (n_polls,).
+        poll_stds:  Measurement uncertainty (std) for each poll, shape (n_polls,).
+                    Computed from binomial variance: sqrt(p*(1-p)/n).
+
+    Returns:
+        Tuple of (mu_post, sigma_post):
+            mu_post    — posterior mean, shape (K,).
+            sigma_post — posterior covariance, shape (K, K).  Callers that need
+                         per-community standard deviations can use sqrt(diag(sigma_post)).
+    """
+    K = len(mu_prior)
+    R = np.diag(poll_stds ** 2)
+    # Tikhonov regularization keeps the prior covariance positive definite under
+    # floating-point noise.  _MATRIX_JITTER is tiny relative to true eigenvalues.
+    sigma_inv = np.linalg.inv(sigma + np.eye(K) * _MATRIX_JITTER)
+    sigma_post_inv = sigma_inv + w_matrix.T @ np.linalg.inv(R) @ w_matrix
+    sigma_post = np.linalg.inv(sigma_post_inv)
+    mu_post = sigma_post @ (sigma_inv @ mu_prior + w_matrix.T @ np.linalg.solve(R, poll_means))
+    return mu_post, sigma_post
 
 
 def _forecast_poll_hac(
@@ -691,15 +741,10 @@ def _forecast_poll_hac(
         raise HTTPException(status_code=404, detail=f"State {poll.state} not found in weights")
 
     W = state_row[weight_cols].values  # shape (1, K)
-    y = np.array([poll.dem_share])
-    sigma_poll = np.array([np.sqrt(poll.dem_share * (1 - poll.dem_share) / poll.n)])
+    poll_means = np.array([poll.dem_share])
+    poll_stds = np.array([np.sqrt(poll.dem_share * (1 - poll.dem_share) / poll.n)])
 
-    # Bayesian update
-    R = np.diag(sigma_poll ** 2)
-    sigma_inv = np.linalg.inv(sigma + np.eye(K) * 1e-8)
-    sigma_post_inv = sigma_inv + W.T @ np.linalg.inv(R) @ W
-    sigma_post = np.linalg.inv(sigma_post_inv)
-    mu_post = sigma_post @ (sigma_inv @ mu_prior + W.T @ np.linalg.solve(R, y))
+    mu_post, sigma_post = _run_bayesian_update(mu_prior, sigma, W, poll_means, poll_stds)
 
     # Map community posteriors → county predictions via hard assignment
     version_id = request.app.state.version_id
@@ -731,8 +776,8 @@ def _forecast_poll_hac(
                 race=poll.race,
                 pred_dem_share=pred,
                 pred_std=std,
-                pred_lo90=pred - 1.645 * std,
-                pred_hi90=pred + 1.645 * std,
+                pred_lo90=pred - _Z90 * std,
+                pred_hi90=pred + _Z90 * std,
                 state_pred=state_pred_val,
                 poll_avg=poll.dem_share,
             )
@@ -822,7 +867,7 @@ def update_forecast_with_multi_polls(
     type_county_fips = getattr(request.app.state, "type_county_fips", None)
 
     if all(x is not None for x in [type_scores, type_covariance, type_priors, type_county_fips]):
-        from src.prediction.predict_2026_types import predict_race
+        from src.prediction.forecast_runner import predict_race
 
         # Tract-level lookups from app.state (no DuckDB query needed)
         tract_states = getattr(request.app.state, "tract_states", {})
@@ -885,7 +930,7 @@ def update_forecast_with_multi_polls(
                 state_abbr=row["state"],
                 race=body.race or race_polls[0][2],
                 pred_dem_share=float(row["pred_dem_share"]),
-                pred_std=float(row["ci_upper"] - row["ci_lower"]) / (2 * 1.645),
+                pred_std=float(row["ci_upper"] - row["ci_lower"]) / (2 * _Z90),
                 pred_lo90=float(row["ci_lower"]),
                 pred_hi90=float(row["ci_upper"]),
                 state_pred=state_pred_val,

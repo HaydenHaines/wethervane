@@ -1,5 +1,19 @@
 # api/tests/test_model_accuracy.py
 """Tests for GET /api/v1/model/accuracy endpoint."""
+import pytest
+
+# These values mirror data/model/accuracy_metrics.json (the seed file).
+# Update this file after any model retrain that changes these metrics.
+EXPECTED_LOO_R = pytest.approx(0.711, abs=0.05)
+EXPECTED_HOLDOUT_R = pytest.approx(0.698, abs=0.05)
+EXPECTED_COHERENCE = pytest.approx(0.783, abs=0.05)
+EXPECTED_RMSE = pytest.approx(0.073, abs=0.005)
+EXPECTED_COVARIANCE_VAL_R = pytest.approx(0.915, abs=0.05)
+EXPECTED_N_COUNTIES = 3154
+EXPECTED_N_TYPES = 100
+EXPECTED_N_SUPER_TYPES = 5
+# Ensemble LOO r (best method); must equal EXPECTED_LOO_R by definition.
+EXPECTED_ENSEMBLE_LOO_R = pytest.approx(0.711, abs=0.05)
 
 
 def test_accuracy_returns_200(client):
@@ -22,14 +36,14 @@ def test_accuracy_overall_shape(client):
 
 def test_accuracy_overall_values(client):
     overall = client.get("/api/v1/model/accuracy").json()["overall"]
-    assert overall["loo_r"] == 0.711
-    assert overall["holdout_r"] == 0.698
-    assert overall["coherence"] == 0.783
-    assert overall["rmse"] == 0.073
-    assert overall["covariance_val_r"] == 0.915
-    assert overall["n_counties"] == 3154
-    assert overall["n_types"] == 100
-    assert overall["n_super_types"] == 5
+    assert overall["loo_r"] == EXPECTED_LOO_R
+    assert overall["holdout_r"] == EXPECTED_HOLDOUT_R
+    assert overall["coherence"] == EXPECTED_COHERENCE
+    assert overall["rmse"] == EXPECTED_RMSE
+    assert overall["covariance_val_r"] == EXPECTED_COVARIANCE_VAL_R
+    assert overall["n_counties"] == EXPECTED_N_COUNTIES
+    assert overall["n_types"] == EXPECTED_N_TYPES
+    assert overall["n_super_types"] == EXPECTED_N_SUPER_TYPES
 
 
 def test_accuracy_cross_election(client):
@@ -72,4 +86,4 @@ def test_accuracy_ensemble_is_best(client):
     methods = data["method_comparison"]
     loo_values = [m["loo_r"] for m in methods]
     # The ensemble should achieve the highest LOO r
-    assert max(loo_values) == 0.711
+    assert max(loo_values) == EXPECTED_ENSEMBLE_LOO_R

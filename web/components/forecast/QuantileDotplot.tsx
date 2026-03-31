@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { Group } from "@visx/group";
 import { scaleLinear } from "@visx/scale";
 import { useMediaQuery } from "@/lib/hooks/use-media-query";
+import { PALETTE } from "@/lib/config/palette";
 
 // Normal distribution quantile (probit) via rational approximation.
 // Accurate to ~1e-5 for p in (0.0001, 0.9999).
@@ -63,8 +64,6 @@ interface QuantileDotplotProps {
   height?: number;
 }
 
-const DEM_COLOR = "#4b6d90";
-const GOP_COLOR = "#9e5e4e";
 const DOT_RADIUS = 5;
 const COLS = 20;
 
@@ -133,7 +132,7 @@ export function QuantileDotplot({
                 cx={cx}
                 cy={cy}
                 r={DOT_RADIUS}
-                fill={isDem ? DEM_COLOR : GOP_COLOR}
+                fill={isDem ? PALETTE.DEM_SECONDARY : PALETTE.GOP_SECONDARY}
                 opacity={0.85}
               />
             );
@@ -144,9 +143,9 @@ export function QuantileDotplot({
       {/* Caption */}
       <p className="text-sm text-muted-foreground mt-2">
         In{" "}
-        <strong style={{ color: DEM_COLOR }}>{nDemWins}</strong> of {effectiveNDots} scenarios,
+        <strong style={{ color: PALETTE.DEM_SECONDARY }}>{nDemWins}</strong> of {effectiveNDots} scenarios,
         the Democrat wins. In{" "}
-        <strong style={{ color: GOP_COLOR }}>{effectiveNDots - nDemWins}</strong>, the Republican wins.
+        <strong style={{ color: PALETTE.GOP_SECONDARY }}>{effectiveNDots - nDemWins}</strong>, the Republican wins.
       </p>
 
       {/* Visually-hidden table for screen reader users */}

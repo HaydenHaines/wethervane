@@ -18,6 +18,8 @@ from src.propagation.crosstab_w_builder import CROSSTAB_DIMENSION_MAP, build_aff
 
 log = logging.getLogger(__name__)
 
+_FLAT_DEM_SHARE_PRIOR = 0.45  # uninformative prior when no historical community data is available
+
 
 def _get_current_version_id(db: duckdb.DuckDBPyConnection) -> str:
     row = db.execute(
@@ -62,7 +64,7 @@ def _load_mu_prior(db: duckdb.DuckDBPyConnection, version_id: str, K: int) -> np
            ORDER BY ca.community_id""",
         [version_id],
     ).fetchdf()
-    mu = np.full(K, 0.45)
+    mu = np.full(K, _FLAT_DEM_SHARE_PRIOR)
     for _, r in rows.iterrows():
         idx = int(r["community_id"])
         if 0 <= idx < K:

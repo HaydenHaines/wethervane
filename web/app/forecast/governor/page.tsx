@@ -1,3 +1,5 @@
+import { ELECTION_YEAR, GOVERNOR_RACES_COUNT } from "@/lib/config/election";
+
 /**
  * Governor overview page.
  *
@@ -8,9 +10,9 @@
 export default function GovernorPage() {
   return (
     <div>
-      <h1 className="font-serif text-2xl font-bold mb-4">2026 Governor Races</h1>
+      <h1 className="font-serif text-2xl font-bold mb-4">{ELECTION_YEAR} Governor Races</h1>
       <p className="text-sm mb-6" style={{ color: "var(--color-text-muted)" }}>
-        36 governors are on the ballot in 2026, including 11 open seats.
+        {GOVERNOR_RACES_COUNT} governors are on the ballot in {ELECTION_YEAR}, including 11 open seats.
       </p>
 
       {/* Coming soon notice */}

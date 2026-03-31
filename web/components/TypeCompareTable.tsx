@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
 import { fetchTypes, fetchTypeDetail, type TypeSummary, type TypeDetail } from "@/lib/api";
+import { PALETTE } from "@/lib/config/palette";
 import {
   DEMO_DISPLAY,
   DEMO_SKIP,
@@ -395,9 +396,11 @@ export function TypeCompareTable() {
                             padding: "4px 4px",
                             fontSize: "12px",
                             fontWeight: "500",
+                            // Subtle blue tint from the Dem primary color; alpha scales
+                            // 0→1 where 1 = highest value in this metric across types.
                             background:
                               value != null && alpha > 0.05
-                                ? `rgba(33, 102, 172, ${alpha * 0.15})`
+                                ? `${PALETTE.DEM_PRIMARY}${Math.round(alpha * 0.15 * 255).toString(16).padStart(2, "0")}`
                                 : undefined,
                           }}
                         >

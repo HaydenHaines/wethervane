@@ -1,6 +1,7 @@
 "use client";
 
 import { useSenateOverview } from "@/lib/hooks/use-senate-overview";
+import { useModelVersion } from "@/lib/hooks/use-model-version";
 import { HeroSection } from "@/components/landing/HeroSection";
 import { RaceTicker } from "@/components/landing/RaceTicker";
 import { EntryPoints } from "@/components/landing/EntryPoints";
@@ -11,6 +12,7 @@ import { MiniMap } from "@/components/landing/MiniMap";
 
 export default function LandingPage() {
   const { data, error, isLoading, mutate } = useSenateOverview();
+  const { communityCount } = useModelVersion();
 
   const totalPolls = data?.races.reduce((sum, r) => sum + r.n_polls, 0);
 
@@ -26,7 +28,7 @@ export default function LandingPage() {
         </div>
       )}
 
-      <HeroSection data={data} isLoading={isLoading} />
+      <HeroSection data={data} isLoading={isLoading} communityCount={communityCount} />
 
       {data && (
         <div className="max-w-4xl mx-auto px-4">

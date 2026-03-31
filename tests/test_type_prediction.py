@@ -8,10 +8,8 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from src.prediction.predict_2026_types import (
-    compute_county_priors_from_data,
-    predict_race,
-)
+from src.prediction.county_priors import compute_county_priors_from_data
+from src.prediction.forecast_runner import predict_race
 
 
 # ---------------------------------------------------------------------------

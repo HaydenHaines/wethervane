@@ -35,21 +35,27 @@ def tiny_adjacency(tiny_shifts):
 
 def test_k_sweep_returns_results(tiny_shifts, tiny_adjacency):
     df, fips = tiny_shifts
+    train_cols = list(df.columns[1:31])
     results = run_k_sweep(df, fips, tiny_adjacency,
-                          train_cols=list(df.columns[1:31]),
+                          train_cols=train_cols,
                           holdout_cols=list(df.columns[31:]),
                           k_values=[3, 5],
-                          min_community_size=2)
+                          min_community_size=2,
+                          # Synthetic cols are named shift_0..shift_29; use shift_12
+                          # to mirror the production index of pres_d_shift_16_20.
+                          training_comparison_col="shift_12")
     assert len(results) >= 1
 
 
 def test_k_sweep_result_fields(tiny_shifts, tiny_adjacency):
     df, fips = tiny_shifts
+    train_cols = list(df.columns[1:31])
     results = run_k_sweep(df, fips, tiny_adjacency,
-                          train_cols=list(df.columns[1:31]),
+                          train_cols=train_cols,
                           holdout_cols=list(df.columns[31:]),
                           k_values=[3],
-                          min_community_size=2)
+                          min_community_size=2,
+                          training_comparison_col="shift_12")
     r = results[0]
     assert hasattr(r, 'k')
     assert hasattr(r, 'holdout_r')
@@ -64,7 +70,8 @@ def test_k_sweep_skips_small_communities(tiny_shifts, tiny_adjacency):
                           train_cols=list(df.columns[1:31]),
                           holdout_cols=list(df.columns[31:]),
                           k_values=[3, 5],
-                          min_community_size=15)
+                          min_community_size=15,
+                          training_comparison_col="shift_12")
     for r in results:
         assert r.min_community_size >= 15
 

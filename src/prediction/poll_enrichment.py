@@ -21,6 +21,12 @@ from src.prediction.propensity_model import compute_propensity_scores, load_conf
 _LV_PATTERN = re.compile(r"\bLV\b", re.IGNORECASE)
 _RV_PATTERN = re.compile(r"\bRV\b", re.IGNORECASE)
 
+# Controls how steeply similarity decays with normalized demographic distance.
+# Higher values make the W vector more peaked (more weight on the closest type);
+# lower values spread weight more evenly. 5.0 was chosen empirically: at distance=1.0
+# (one normalized unit apart), similarity drops to 1/6 ≈ 0.17.
+_SIMILARITY_SHARPNESS = 5.0
+
 
 def parse_methodology(notes: str | None) -> str:
     """Extract LV/RV methodology from poll notes string. Returns "LV", "RV", or ""."""
@@ -180,7 +186,7 @@ def build_W_from_raw_sample(
             diffs_sq += ((poll_val - type_vals) / col_range) ** 2
 
     distance = np.sqrt(diffs_sq / len(dims))
-    similarity = 1.0 / (1.0 + distance * 5.0)
+    similarity = 1.0 / (1.0 + distance * _SIMILARITY_SHARPNESS)
 
     W = similarity * state_type_weights
     W_sum = W.sum()

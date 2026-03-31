@@ -22,6 +22,7 @@ Outputs:
 """
 from __future__ import annotations
 
+import json
 import logging
 from datetime import date
 from pathlib import Path
@@ -30,6 +31,8 @@ import numpy as np
 import pandas as pd
 
 from src.core import config as _cfg
+from src.prediction.county_priors import load_county_priors_with_ridge
+from src.prediction.forecast_engine import compute_theta_prior, run_forecast
 
 log = logging.getLogger(__name__)
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -37,332 +40,32 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 # State FIPS -> abbreviation (all 50 states + DC, sourced from config/model.yaml)
 _STATE_FIPS_TO_ABBR: dict[str, str] = _cfg.STATE_ABBR
 
+# ---------------------------------------------------------------------------
+# Forecast hyperparameters — loaded from data/config/prediction_params.json.
+# lam: θ_national regularization strength (TODO: calibrate — Plan C)
+# mu: δ_race regularization strength (TODO: calibrate — Plan C)
+# w_vector_mode: W vector construction tier ("core" vs "full" — benchmark first)
+# ---------------------------------------------------------------------------
+_PARAMS_PATH = PROJECT_ROOT / "data" / "config" / "prediction_params.json"
+_forecast_params: dict = json.loads(_PARAMS_PATH.read_text())["forecast"]
+_LAM: float = _forecast_params["lam"]
+_MU: float = _forecast_params["mu"]
+_W_VECTOR_MODE: str = _forecast_params["w_vector_mode"]
 
-def compute_county_priors(
-    county_fips: list[str],
-    assembled_dir: Path | None = None,
-) -> np.ndarray:
-    """Compute county-level prior Dem share from historical election results.
 
-    Uses the most recent presidential Dem share as the primary prior.
-    Falls back to mean across available elections if 2024 is missing.
-    Falls back to 0.45 (generic prior) if no data available.
-
-    Parameters
-    ----------
-    county_fips : list[str]
-        FIPS codes (zero-padded to 5 digits).
-    assembled_dir : Path or None
-        Directory containing MEDSL county parquet files.
-        Defaults to PROJECT_ROOT / "data" / "assembled".
+def _load_type_data() -> tuple[list[str], np.ndarray, np.ndarray, np.ndarray]:
+    """Load type assignments, covariance, and priors from disk.
 
     Returns
     -------
-    ndarray of shape (N,)
-        Prior Dem share per county, one per FIPS in county_fips.
-    """
-    if assembled_dir is None:
-        assembled_dir = PROJECT_ROOT / "data" / "assembled"
-
-    N = len(county_fips)
-    fips_set = set(county_fips)
-
-    # Load available presidential results (most recent first)
-    years = [2024, 2020, 2016, 2012, 2008]
-    dem_shares: dict[str, list[float]] = {f: [] for f in county_fips}
-
-    for year in years:
-        path = assembled_dir / f"medsl_county_presidential_{year}.parquet"
-        if not path.exists():
-            continue
-        df = pd.read_parquet(path)
-        df["county_fips"] = df["county_fips"].astype(str).str.zfill(5)
-        share_col = f"pres_dem_share_{year}"
-        if share_col not in df.columns:
-            continue
-        for _, row in df.iterrows():
-            fips = row["county_fips"]
-            if fips in fips_set:
-                val = row[share_col]
-                if pd.notna(val):
-                    dem_shares[fips].append(float(val))
-
-    # Build prior array: use most recent available, fall back to mean, then 0.45
-    priors = np.full(N, 0.45)
-    for i, fips in enumerate(county_fips):
-        vals = dem_shares[fips]
-        if vals:
-            priors[i] = vals[0]  # most recent (2024 first in years list)
-
-    return priors
-
-
-def compute_county_priors_from_data(
-    county_fips: list[str],
-    dem_share_map: dict[str, float],
-    fallback: float = 0.45,
-) -> np.ndarray:
-    """Compute county-level priors from a pre-built FIPS->dem_share mapping.
-
-    This is the testable pure-function version (no file I/O).
-
-    Parameters
-    ----------
     county_fips : list[str]
-        FIPS codes.
-    dem_share_map : dict[str, float]
-        Mapping from FIPS to Dem share (e.g., from 2024 results).
-    fallback : float
-        Default Dem share for counties not in the map.
-
-    Returns
-    -------
-    ndarray of shape (N,)
-    """
-    return np.array([dem_share_map.get(f, fallback) for f in county_fips])
-
-
-def predict_race(
-    race: str,
-    type_scores: np.ndarray,
-    type_covariance: np.ndarray,
-    type_priors: np.ndarray,
-    county_fips: list[str],
-    polls: list[
-        tuple[float, int, str] | tuple[float, int, str, np.ndarray | None]
-    ]
-    | None = None,
-    states: list[str] | None = None,
-    county_names: list[str] | None = None,
-    state_filter: str | None = None,
-    county_priors: np.ndarray | None = None,
-    prior_weight: float = 1.0,
-    generic_ballot_shift: float = 0.0,
-) -> pd.DataFrame:
-    """Produce county-level predictions from type structure.
-
-    Uses county-level priors (each county's own historical baseline) when
-    provided. Types determine only the covariance structure (how poll
-    observations shift predictions). The prediction formula is:
-
-        county_pred = county_prior + type_covariance_adjustment
-
-    where the adjustment comes from the Bayesian update on type means, and
-    each county's adjustment is the score-weighted shift in type means.
-
-    When county_priors is None, falls back to type-mean priors (legacy).
-
-    Multiple polls are stacked into a single Bayesian update: each poll
-    contributes one row to the W matrix (n_polls × J), enabling exact
-    multi-poll inference rather than collapsing to a single effective poll.
-    This preserves geographic information when polls cover different states.
-
-    Parameters
-    ----------
-    race : str
-        Election race label (e.g. "FL Senate").
     type_scores : ndarray of shape (N, J)
-        County type scores (soft membership, can be negative).
     type_covariance : ndarray of shape (J, J)
-        Type covariance matrix.
     type_priors : ndarray of shape (J,)
-        Prior Dem share per type (used for Bayesian update baseline).
-    county_fips : list[str]
-        FIPS codes for each county (length N).
-    polls : list of (dem_share, n, state_abbr) tuples or None
-        Poll observations. Each tuple is one poll: Democratic two-party
-        share (0-1), sample size, and the state abbreviation whose type
-        composition defines the observation equation (W row). Multiple
-        polls are stacked into a single multi-row Bayesian update.
-        None = use prior only (no poll adjustment).
-    states : list[str] or None
-        State abbreviation per county. Derived from FIPS if None.
-    county_names : list[str] or None
-        County names. Set to empty string if None.
-    state_filter : str or None
-        If provided, filter output rows to this state abbreviation.
-        Does NOT affect which polls are applied — poll state comes
-        from each tuple in `polls`.
-    county_priors : ndarray of shape (N,) or None
-        Per-county prior Dem share (historical baseline). When provided,
-        predictions use county baselines + type covariance adjustments.
-        When None, falls back to type-mean weighted predictions (legacy).
-
-    Returns
-    -------
-    pd.DataFrame
-        Columns: county_fips, state, county_name, pred_dem_share,
-        ci_lower, ci_upper, dominant_type, super_type
     """
-    N, J = type_scores.shape
-    assert len(county_fips) == N
-    assert type_covariance.shape == (J, J)
-    assert len(type_priors) == J
-    if county_priors is not None:
-        assert len(county_priors) == N
-
-    # Apply generic ballot shift to county priors before prediction
-    if generic_ballot_shift != 0.0 and county_priors is not None:
-        from src.prediction.generic_ballot import apply_gb_shift
-
-        county_priors = apply_gb_shift(county_priors, generic_ballot_shift)
-
-    # Derive states from FIPS if not provided
-    if states is None:
-        states = [_STATE_FIPS_TO_ABBR.get(f[:2], "??") for f in county_fips]
-    if county_names is None:
-        county_names = [""] * N
-
-    # ── Type-level Bayesian update ──────────────────────────────────────────
-    type_means = type_priors.copy().astype(float)
-    type_cov = type_covariance.copy().astype(float)
-
-    # Scale prior precision by prior_weight (lower weight = less informative prior,
-    # so polls pull predictions further from the baseline).
-    # At pw=0 the user wants "trust only polls" — inflate covariance enormously
-    # so the Bayesian update posterior collapses onto the poll likelihood.
-    if prior_weight == 0.0:
-        type_cov = type_cov * 1e6
-    elif prior_weight != 1.0:
-        type_cov = type_cov / prior_weight
-
-    if polls:
-        # Each poll contributes one W row: the type composition of its state.
-        # Stacking all rows into a single update preserves geographic information
-        # across polls covering different states (vs. collapsing to one scalar).
-        W_rows = []
-        y_vals = []
-        sigma_vals = []
-        for poll_tuple in polls:
-            dem_share = poll_tuple[0]
-            n = poll_tuple[1]
-            poll_state = poll_tuple[2]
-            w_override = poll_tuple[3] if len(poll_tuple) > 3 else None
-
-            if w_override is not None:
-                # Crosstab-derived W vector: use directly
-                w_sum = float(w_override.sum())
-                W_row = w_override / w_sum if w_sum > 0 else np.ones(J) / J
-            elif poll_state:
-                state_mask = np.array([s == poll_state for s in states])
-                if state_mask.any():
-                    state_scores = type_scores[state_mask]
-                    W_row = np.abs(state_scores).mean(axis=0)
-                    W_sum = W_row.sum()
-                    W_row = W_row / W_sum if W_sum > 0 else np.ones(J) / J
-                else:
-                    W_row = np.ones(J) / J
-            else:
-                W_row = np.ones(J) / J
-            W_rows.append(W_row)
-            y_vals.append(dem_share)
-            sigma_vals.append(np.sqrt(dem_share * (1 - dem_share) / n))
-
-        type_means, type_cov = _bayesian_update(
-            mu_prior=type_means,
-            sigma_prior=type_cov,
-            W=np.array(W_rows),
-            y=np.array(y_vals),
-            sigma_polls=np.array(sigma_vals),
-        )
-
-    # ── Map type estimates back to counties ─────────────────────────────────
-    abs_scores = np.abs(type_scores)
-    weight_sums = abs_scores.sum(axis=1)
-    weight_sums = np.where(weight_sums == 0, 1.0, weight_sums)  # avoid div by zero
-
-    if county_priors is not None:
-        # County-level prior approach:
-        # 1. Compute the type-level shift from the Bayesian update
-        type_shift = type_means - type_priors.astype(float)
-        # 2. Each county's adjustment = score-weighted average of type shifts
-        county_adjustment = (abs_scores * type_shift[None, :]).sum(axis=1) / weight_sums
-        # 3. Blend county priors toward type-weighted baseline using prior_weight.
-        #    pw=1.0 → use county_priors (Ridge model); pw=0.0 → use type-mean baseline.
-        #    This is what the forecast weight slider controls in the UI.
-        type_prior_baseline = (
-            (abs_scores * type_priors.astype(float)[None, :]).sum(axis=1) / weight_sums
-        )
-        effective_priors = (
-            prior_weight * county_priors.astype(float)
-            + (1 - prior_weight) * type_prior_baseline
-        )
-        # 4. Final prediction = blended baseline + adjustment
-        pred_dem_share = effective_priors + county_adjustment
-    else:
-        # Legacy: type-mean weighted predictions
-        pred_dem_share = (abs_scores * type_means[None, :]).sum(axis=1) / weight_sums
-
-    # Clip to [0, 1]
-    pred_dem_share = np.clip(pred_dem_share, 0.0, 1.0)
-
-    # ── Uncertainty from covariance diagonal + type weights ─────────────────
-    type_std = np.sqrt(np.diag(type_cov))
-    county_std = (abs_scores * type_std[None, :]).sum(axis=1) / weight_sums
-
-    ci_lower = np.clip(pred_dem_share - 1.645 * county_std, 0.0, 1.0)
-    ci_upper = np.clip(pred_dem_share + 1.645 * county_std, 0.0, 1.0)
-
-    # Dominant type per county
-    dominant_type = np.argmax(np.abs(type_scores), axis=1)
-
-    # Super-type: set to -1 here; the calling code should join against
-    # type_assignments.parquet (which has the authoritative super_type from nest_types).
-    super_type = np.full(N, -1, dtype=int)
-
-    result = pd.DataFrame({
-        "county_fips": county_fips,
-        "state": states,
-        "county_name": county_names,
-        "pred_dem_share": pred_dem_share,
-        "ci_lower": ci_lower,
-        "ci_upper": ci_upper,
-        "dominant_type": dominant_type,
-        "super_type": super_type,
-    })
-
-    if state_filter is not None:
-        result = result[result["state"] == state_filter].reset_index(drop=True)
-
-    return result
-
-
-def _bayesian_update(
-    mu_prior: np.ndarray,
-    sigma_prior: np.ndarray,
-    W: np.ndarray,
-    y: np.ndarray,
-    sigma_polls: np.ndarray,
-) -> tuple[np.ndarray, np.ndarray]:
-    """Gaussian Bayesian update: posterior mean and covariance.
-
-    Same mathematical formulation as predict_2026_hac.bayesian_update.
-    """
-    R = np.diag(sigma_polls ** 2)
-    sigma_prior_inv = np.linalg.inv(
-        sigma_prior + np.eye(len(mu_prior)) * 1e-8
-    )
-    sigma_post_inv = sigma_prior_inv + W.T @ np.linalg.inv(R) @ W
-    sigma_post = np.linalg.inv(sigma_post_inv)
-    mu_post = sigma_post @ (
-        sigma_prior_inv @ mu_prior + W.T @ np.linalg.solve(R, y)
-    )
-    return mu_post, sigma_post
-
-
-# ---------------------------------------------------------------------------
-# CLI entry point
-# ---------------------------------------------------------------------------
-
-
-def run() -> None:
-    """Load inputs from data/ and produce type-based 2026 predictions."""
     type_assignments_path = PROJECT_ROOT / "data" / "communities" / "type_assignments.parquet"
     type_cov_path = PROJECT_ROOT / "data" / "covariance" / "type_covariance.parquet"
-    polls_path = PROJECT_ROOT / "data" / "polls" / "polls_2026.csv"
-    crosswalk_path = PROJECT_ROOT / "data" / "raw" / "fips_county_crosswalk.csv"
 
-    # Load type assignments (county scores)
     log.info("Loading type assignments from %s", type_assignments_path)
     ta_df = pd.read_parquet(type_assignments_path)
     county_fips = ta_df["county_fips"].astype(str).str.zfill(5).tolist()
@@ -370,13 +73,12 @@ def run() -> None:
     type_scores = ta_df[score_cols].values
     J = type_scores.shape[1]
 
-    # Load type covariance
     log.info("Loading type covariance from %s", type_cov_path)
     cov_df = pd.read_parquet(type_cov_path)
     type_covariance = cov_df.values[:J, :J]
 
-    # Load type priors from 2024 actual results (population-weighted Dem share per type)
-    # These are used as the baseline for the Bayesian update (type-level)
+    # Load type priors from 2024 actual results (population-weighted Dem share per type).
+    # These are used as the baseline for the Bayesian update (type-level).
     type_priors = np.full(J, 0.45)
     priors_path = PROJECT_ROOT / "data" / "communities" / "type_priors.parquet"
     if priors_path.exists():
@@ -388,68 +90,77 @@ def run() -> None:
                     type_priors[t] = row["prior_dem_share"]
     log.info("Type priors: %s", np.round(type_priors, 3))
 
-    # Load county-level priors: Ridge-predicted if available, else historical
-    ridge_priors_path = PROJECT_ROOT / "data" / "models" / "ridge_model" / "ridge_county_priors.parquet"
-    county_prior_values = compute_county_priors(county_fips)  # baseline fallback
+    return county_fips, type_scores, type_covariance, type_priors
 
-    if ridge_priors_path.exists():
-        log.info("Loading Ridge county priors from %s", ridge_priors_path)
-        ridge_df = pd.read_parquet(ridge_priors_path)
-        ridge_df["county_fips"] = ridge_df["county_fips"].astype(str).str.zfill(5)
-        ridge_map = dict(zip(ridge_df["county_fips"], ridge_df["ridge_pred_dem_share"]))
-        n_matched = sum(1 for f in county_fips if f in ridge_map)
-        n_fallback = len(county_fips) - n_matched
-        for i, fips in enumerate(county_fips):
-            if fips in ridge_map:
-                county_prior_values[i] = ridge_map[fips]
-        log.info(
-            "Ridge priors: %d/%d counties matched; %d using historical fallback",
-            n_matched, len(county_fips), n_fallback,
-        )
-        print(f"Using Ridge priors for {n_matched}/{len(county_fips)} counties "
-              f"({n_fallback} fallback to historical)")
-    else:
-        log.info(
-            "Ridge model not found at %s — using historical county priors",
-            ridge_priors_path,
-        )
-        n_with_data = np.sum(county_prior_values != 0.45)
-        log.info(
-            "County priors (historical): %d/%d counties have data, range [%.3f, %.3f]",
-            n_with_data, len(county_fips),
-            county_prior_values.min(), county_prior_values.max(),
-        )
 
-    # Derive states and names
+def _load_county_metadata(county_fips: list[str]) -> tuple[list[str], list[str]]:
+    """Derive state abbreviations and county names from FIPS codes.
+
+    Returns
+    -------
+    states : list[str]
+    county_names : list[str]
+    """
     states = [_STATE_FIPS_TO_ABBR.get(f[:2], "??") for f in county_fips]
     county_names = [""] * len(county_fips)
+
+    crosswalk_path = PROJECT_ROOT / "data" / "raw" / "fips_county_crosswalk.csv"
     if crosswalk_path.exists():
         xwalk = pd.read_csv(crosswalk_path, dtype=str)
         xwalk["county_fips"] = xwalk["county_fips"].str.zfill(5)
         name_map = dict(zip(xwalk["county_fips"], xwalk["county_name"]))
         county_names = [name_map.get(f, "") for f in county_fips]
 
-    # Load polls
+    return states, county_names
+
+
+def _load_county_votes(county_fips: list[str]) -> np.ndarray:
+    """Load 2024 total vote counts per county for vote-weighted W construction.
+
+    Falls back to equal weight (1.0 per county) if the file is unavailable.
+    """
+    county_votes = np.ones(len(county_fips))
+    votes_path = PROJECT_ROOT / "data" / "raw" / "medsl_county_presidential_2024.parquet"
+    if votes_path.exists():
+        vdf = pd.read_parquet(votes_path)
+        if "county_fips" in vdf.columns and "totalvotes" in vdf.columns:
+            vmap = dict(zip(
+                vdf["county_fips"].astype(str).str.zfill(5),
+                vdf["totalvotes"],
+            ))
+            county_votes = np.array([vmap.get(f, 1.0) for f in county_fips])
+    return county_votes
+
+
+def _load_polls(
+    county_fips: list[str],
+) -> tuple[dict[str, list[dict]], dict[str, list[tuple[float, int, str]]]]:
+    """Load and prepare state-level polls from polls_2026.csv.
+
+    Returns
+    -------
+    polls_by_race : dict[str, list[dict]]
+        For the new forecast engine (run_forecast).
+    poll_lookup : dict[str, list[tuple]]
+        Legacy format used for unmatched-race warnings.
+    """
+    polls_path = PROJECT_ROOT / "data" / "polls" / "polls_2026.csv"
     log.info("Loading polls from %s", polls_path)
     polls = pd.read_csv(polls_path)
+
     # Normalize column name
     if "geography" in polls.columns and "state" not in polls.columns:
         polls = polls.rename(columns={"geography": "state"})
 
-    # Group polls by race so each race receives all its polls in a single
-    # stacked Bayesian update (rather than collapsing to one effective poll).
-    # We keep individual rows — no aggregation — to preserve geographic
-    # information when multiple polls cover different states.
-    poll_agg = polls[polls.get("geo_level", pd.Series(["state"] * len(polls))) == "state"].copy()
+    # Keep only state-level polls (drop district or national polls)
     if "geo_level" in polls.columns:
         poll_agg = polls[polls["geo_level"] == "state"].copy()
     else:
         poll_agg = polls.copy()
 
-    # Build poll lookup: race_id -> list of poll tuples
-    # This decouples poll availability from the race iteration loop.
+    # Build race -> list of poll tuples (legacy format used for warning check)
     poll_lookup: dict[str, list[tuple[float, int, str]]] = {}
-    if poll_agg is not None and len(poll_agg) > 0:
+    if len(poll_agg) > 0:
         for race, race_group in poll_agg.groupby("race"):
             if race.startswith("2026 Generic Ballot"):
                 continue
@@ -465,35 +176,25 @@ def run() -> None:
             if race_polls:
                 poll_lookup[race] = race_polls
 
-    # Iterate over ALL registered races using the new forecast engine.
-    # Produces dual-mode output: "national" (θ_national only) and
-    # "local" (θ_national + δ_race) for every race.
-    from src.assembly.define_races import load_races
-    from src.prediction.forecast_engine import run_forecast
-
-    registry = load_races(2026)
-    all_race_ids = [r.race_id for r in registry]
-    log.info("Race registry: %d races loaded", len(registry))
-
-    # Build polls_by_race dict for the forecast engine
-    polls_by_race: dict[str, list[dict]] = {}
-    for race_id, poll_list in poll_lookup.items():
-        polls_by_race[race_id] = [
+    # Convert to dict format expected by run_forecast
+    polls_by_race: dict[str, list[dict]] = {
+        race_id: [
             {"dem_share": p[0], "n_sample": p[1], "state": p[2]}
             for p in poll_list
         ]
+        for race_id, poll_list in poll_lookup.items()
+    }
 
-    # Load county votes for vote-weighted W construction
-    county_votes = np.ones(len(county_fips))  # fallback: equal weight
-    votes_path = PROJECT_ROOT / "data" / "raw" / "medsl_county_presidential_2024.parquet"
-    if votes_path.exists():
-        vdf = pd.read_parquet(votes_path)
-        if "county_fips" in vdf.columns and "totalvotes" in vdf.columns:
-            vmap = dict(zip(
-                vdf["county_fips"].astype(str).str.zfill(5),
-                vdf["totalvotes"],
-            ))
-            county_votes = np.array([vmap.get(f, 1.0) for f in county_fips])
+    return polls_by_race, poll_lookup
+
+
+def run() -> None:
+    """Load inputs from data/ and produce type-based 2026 predictions."""
+    county_fips, type_scores, type_covariance, type_priors = _load_type_data()
+    county_prior_values = load_county_priors_with_ridge(county_fips)
+    states, county_names = _load_county_metadata(county_fips)
+    county_votes = _load_county_votes(county_fips)
+    polls_by_race, poll_lookup = _load_polls(county_fips)
 
     # Load type profiles for W vector enrichment
     type_profiles_path = PROJECT_ROOT / "data" / "communities" / "type_profiles.parquet"
@@ -502,7 +203,15 @@ def run() -> None:
         type_profiles_df = pd.read_parquet(type_profiles_path)
         log.info("Loaded type profiles for poll enrichment: %d types", len(type_profiles_df))
 
-    # Run the hierarchical forecast: θ_prior → θ_national → δ_race
+    # Iterate over ALL registered races using the hierarchical forecast engine.
+    # Produces dual-mode output: "national" (θ_national only) and
+    # "local" (θ_national + δ_race) for every race.
+    from src.assembly.define_races import load_races
+
+    registry = load_races(2026)
+    all_race_ids = [r.race_id for r in registry]
+    log.info("Race registry: %d races loaded", len(registry))
+
     forecast_results = run_forecast(
         type_scores=type_scores,
         county_priors=county_prior_values,
@@ -510,9 +219,9 @@ def run() -> None:
         county_votes=county_votes,
         polls_by_race=polls_by_race,
         races=all_race_ids,
-        lam=1.0,   # TODO: learn from calibration (Plan C)
-        mu=1.0,    # TODO: learn from calibration (Plan C)
-        w_vector_mode="core",  # TODO: compare core vs full, set winner
+        lam=_LAM,
+        mu=_MU,
+        w_vector_mode=_W_VECTOR_MODE,
         reference_date=str(date.today()),
         type_profiles=type_profiles_df,
     )
@@ -538,23 +247,18 @@ def run() -> None:
             log.warning("Polls for unregistered races (ignored): %s", unmatched)
 
     # Generate baseline (pure model prior, no polls, no GB shift)
-    from src.prediction.forecast_engine import compute_theta_prior
     theta_baseline = compute_theta_prior(type_scores, county_prior_values)
     baseline_preds = type_scores @ theta_baseline
-    baseline = pd.DataFrame({
+    all_predictions.append(pd.DataFrame({
         "county_fips": county_fips,
         "state": states,
         "county_name": county_names,
         "pred_dem_share": baseline_preds,
         "race": "baseline",
         "forecast_mode": "national",
-    })
-    all_predictions.append(baseline)
+    }))
 
-    if all_predictions:
-        output = pd.concat(all_predictions, ignore_index=True)
-    else:
-        output = pd.DataFrame()
+    output = pd.concat(all_predictions, ignore_index=True) if all_predictions else pd.DataFrame()
 
     out_path = PROJECT_ROOT / "data" / "predictions" / "county_predictions_2026_types.parquet"
     out_path.parent.mkdir(parents=True, exist_ok=True)

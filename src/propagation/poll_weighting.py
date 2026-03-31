@@ -93,9 +93,15 @@ def _get_sb_quality(pollster_name: str) -> float | None:
 
 
 def reset_sb_cache() -> None:
-    """Reset the Silver Bulletin availability flag (useful in tests)."""
+    """Reset all Silver Bulletin and house effect caches (for testing).
+
+    Resets the availability flag AND the house effect caches so that tests
+    calling this function start from a completely clean state — no stale
+    house effect data from a previous test run.
+    """
     global _SB_AVAILABLE
     _SB_AVAILABLE = None
+    reset_house_effect_cache()
 
 
 # ---------------------------------------------------------------------------

@@ -1,0 +1,109 @@
+# Census Bureau API configuration for decennial census data.
+#
+# last_verified: date each URL was last confirmed working
+# Add new census years here (do not modify Python source).
+#
+# Structure per year:
+#   primary:    SF1/DHC endpoint — race, age, housing
+#   supplemental: SF3/ACS5 endpoint — income, education, commute
+#
+# Variable naming convention:
+#   Keys starting with "_" are intermediate columns used to derive
+#   composite columns (e.g. housing_owner, educ_bachelors_plus)
+#   and are dropped from the final output.
+
+years:
+  2000:
+    last_verified: "2026-03-01"
+    primary:
+      base_url: "https://api.census.gov/data/2000/dec/sf1"
+      vars:
+        P001001: "pop_total"
+        P004005: "pop_white_nh"
+        P004006: "pop_black"
+        P004008: "pop_asian"
+        P004002: "pop_hispanic"
+        P013001: "median_age"
+        H001001: "housing_total"
+        H004002: "_housing_owner_mortgage"
+        H004003: "_housing_owner_free"
+    supplemental:
+      base_url: "https://api.census.gov/data/2000/dec/sf3"
+      vars:
+        P053001: "median_hh_income"
+        P037001: "educ_total"
+        P037015: "_educ_male_ba"
+        P037016: "_educ_male_ma"
+        P037017: "_educ_male_prof"
+        P037018: "_educ_male_doc"
+        P037032: "_educ_female_ba"
+        P037033: "_educ_female_ma"
+        P037034: "_educ_female_prof"
+        P037035: "_educ_female_doc"
+        P030001: "commute_total"
+        P030003: "commute_car"
+        P030005: "commute_transit"
+        P030016: "commute_wfh"
+
+  2010:
+    last_verified: "2026-03-01"
+    primary:
+      base_url: "https://api.census.gov/data/2010/dec/sf1"
+      vars:
+        P001001: "pop_total"
+        P005003: "pop_white_nh"
+        P005004: "pop_black"
+        P005006: "pop_asian"
+        P005010: "pop_hispanic"
+        P013001: "median_age"
+        H001001: "housing_total"
+        H004002: "_housing_owner_mortgage"
+        H004003: "_housing_owner_free"
+    supplemental:
+      base_url: "https://api.census.gov/data/2010/acs/acs5"
+      vars:
+        B19013_001E: "median_hh_income"
+        B15002_001E: "educ_total"
+        B15002_015E: "_educ_male_ba"
+        B15002_016E: "_educ_male_ma"
+        B15002_017E: "_educ_male_prof"
+        B15002_018E: "_educ_male_doc"
+        B15002_032E: "_educ_female_ba"
+        B15002_033E: "_educ_female_ma"
+        B15002_034E: "_educ_female_prof"
+        B15002_035E: "_educ_female_doc"
+        B08301_001E: "commute_total"
+        B08301_003E: "commute_car"
+        B08301_010E: "commute_transit"
+        B08301_021E: "commute_wfh"
+
+  2020:
+    last_verified: "2026-03-01"
+    primary:
+      base_url: "https://api.census.gov/data/2020/dec/dhc"
+      vars:
+        P1_001N: "pop_total"
+        P5_003N: "pop_white_nh"
+        P5_004N: "pop_black"
+        P5_006N: "pop_asian"
+        P5_010N: "pop_hispanic"
+        P13_001N: "median_age"
+        H1_001N: "housing_total"
+        H10_002N: "housing_owner"
+    supplemental:
+      base_url: "https://api.census.gov/data/2020/acs/acs5"
+      vars:
+        B19013_001E: "median_hh_income"
+        B15002_001E: "educ_total"
+        B15002_015E: "_educ_male_ba"
+        B15002_016E: "_educ_male_ma"
+        B15002_017E: "_educ_male_prof"
+        B15002_018E: "_educ_male_doc"
+        B15002_032E: "_educ_female_ba"
+        B15002_033E: "_educ_female_ma"
+        B15002_034E: "_educ_female_prof"
+        B15002_035E: "_educ_female_doc"
+        B08301_001E: "commute_total"
+        B08301_003E: "commute_car"
+        B08301_010E: "commute_transit"
+        B08301_021E: "commute_wfh"

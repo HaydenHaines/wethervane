@@ -320,40 +320,39 @@ class TestSenateOverviewEmptyDB:
     """Endpoint gracefully handles a DB with no Senate predictions."""
 
     def test_returns_empty_races_list(self):
-        con = duckdb.connect(":memory:")
-        con.execute(
-            "CREATE TABLE model_versions (version_id VARCHAR PRIMARY KEY, role VARCHAR, "
-            "k INTEGER, j INTEGER, shift_type VARCHAR, vote_share_type VARCHAR, "
-            "n_training_dims INTEGER, n_holdout_dims INTEGER, holdout_r VARCHAR, "
-            "geography VARCHAR, description VARCHAR, created_at TIMESTAMP)"
-        )
-        con.execute(
-            "INSERT INTO model_versions VALUES ('v1', 'current', 3, 7, 'logodds', "
-            "'total', 30, 3, '0.90', 'test', 'test', '2026-01-01')"
-        )
-        con.execute(
-            "CREATE TABLE counties (county_fips VARCHAR PRIMARY KEY, state_abbr VARCHAR, "
-            "state_fips VARCHAR, county_name VARCHAR, total_votes_2024 INTEGER)"
-        )
-        con.execute(
-            "CREATE TABLE predictions (county_fips VARCHAR, race VARCHAR, version_id VARCHAR, "
-            "pred_dem_share DOUBLE, pred_std DOUBLE, pred_lo90 DOUBLE, pred_hi90 DOUBLE, "
-            "state_pred DOUBLE, poll_avg DOUBLE)"
-        )
-        con.execute(
-            "CREATE TABLE polls (poll_id VARCHAR PRIMARY KEY, race VARCHAR, geography VARCHAR, "
-            "geo_level VARCHAR, dem_share FLOAT, n_sample INTEGER, date VARCHAR, "
-            "pollster VARCHAR, notes VARCHAR, cycle VARCHAR)"
-        )
+        with duckdb.connect(":memory:") as con:
+            con.execute(
+                "CREATE TABLE model_versions (version_id VARCHAR PRIMARY KEY, role VARCHAR, "
+                "k INTEGER, j INTEGER, shift_type VARCHAR, vote_share_type VARCHAR, "
+                "n_training_dims INTEGER, n_holdout_dims INTEGER, holdout_r VARCHAR, "
+                "geography VARCHAR, description VARCHAR, created_at TIMESTAMP)"
+            )
+            con.execute(
+                "INSERT INTO model_versions VALUES ('v1', 'current', 3, 7, 'logodds', "
+                "'total', 30, 3, '0.90', 'test', 'test', '2026-01-01')"
+            )
+            con.execute(
+                "CREATE TABLE counties (county_fips VARCHAR PRIMARY KEY, state_abbr VARCHAR, "
+                "state_fips VARCHAR, county_name VARCHAR, total_votes_2024 INTEGER)"
+            )
+            con.execute(
+                "CREATE TABLE predictions (county_fips VARCHAR, race VARCHAR, version_id VARCHAR, "
+                "pred_dem_share DOUBLE, pred_std DOUBLE, pred_lo90 DOUBLE, pred_hi90 DOUBLE, "
+                "state_pred DOUBLE, poll_avg DOUBLE)"
+            )
+            con.execute(
+                "CREATE TABLE polls (poll_id VARCHAR PRIMARY KEY, race VARCHAR, geography VARCHAR, "
+                "geo_level VARCHAR, dem_share FLOAT, n_sample INTEGER, date VARCHAR, "
+                "pollster VARCHAR, notes VARCHAR, cycle VARCHAR)"
+            )
 
-        test_app = create_app(lifespan_override=_noop_lifespan)
-        test_app.state.db = con
-        test_app.state.version_id = "v1"
-        test_app.state.contract_ok = True
+            test_app = create_app(lifespan_override=_noop_lifespan)
+            test_app.state.db = con
+            test_app.state.version_id = "v1"
+            test_app.state.contract_ok = True
 
-        with TestClient(test_app, raise_server_exceptions=True) as c:
-            resp = c.get("/api/v1/senate/overview")
-        con.close()
+            with TestClient(test_app, raise_server_exceptions=True) as c:
+                resp = c.get("/api/v1/senate/overview")
 
         assert resp.status_code == 200
         data = resp.json()

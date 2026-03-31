@@ -2,7 +2,7 @@
 import numpy as np
 import pytest
 
-from src.prediction.predict_2026_types import predict_race
+from src.prediction.forecast_runner import predict_race
 
 
 @pytest.fixture

@@ -27,7 +27,7 @@ def main():
     type_scores = ta_df[score_cols].values
 
     # County priors
-    from src.prediction.predict_2026_types import compute_county_priors
+    from src.prediction.county_priors import compute_county_priors
     county_priors = compute_county_priors(county_fips)
     ridge_path = PROJECT_ROOT / "data" / "models" / "ridge_model" / "ridge_county_priors.parquet"
     if ridge_path.exists():

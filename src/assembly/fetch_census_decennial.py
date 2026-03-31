@@ -19,6 +19,7 @@ from pathlib import Path
 
 import pandas as pd
 import requests
+import yaml
 from dotenv import load_dotenv
 
 from src.core import config as _cfg
@@ -38,123 +39,41 @@ STATES: dict[str, str] = _cfg.STATES  # abbr → fips prefix
 
 PROJECT_ROOT = Path(__file__).parents[2]
 OUTPUT_DIR = PROJECT_ROOT / "data" / "assembled"
+_CENSUS_API_CONFIG_PATH = PROJECT_ROOT / "data" / "config" / "census_api_config.yaml"
 
 MAX_RETRIES = 3
 RETRY_BACKOFF_S = 5
 
 # ── Variable crosswalk per year ───────────────────────────────────────────────
 # Each year has two endpoints.  For each endpoint we define:
-#   url_key  — config key for the API URL
 #   base_url — full Census API base URL
 #   vars     — dict mapping Census variable codes to friendly names
 #              OR to None if the variable is used in a derived column
+#
+# Config lives in data/config/census_api_config.yaml so Census URLs and
+# variable codes can be updated without touching Python source.
 
-YEAR_CONFIG = {
-    2000: {
-        "primary": {
-            "base_url": "https://api.census.gov/data/2000/dec/sf1",
-            "vars": {
-                "P001001": "pop_total",
-                "P004005": "pop_white_nh",
-                "P004006": "pop_black",
-                "P004008": "pop_asian",
-                "P004002": "pop_hispanic",
-                "P013001": "median_age",
-                "H001001": "housing_total",
-                "H004002": "_housing_owner_mortgage",
-                "H004003": "_housing_owner_free",
-            },
-        },
-        "supplemental": {
-            "base_url": "https://api.census.gov/data/2000/dec/sf3",
-            "vars": {
-                "P053001": "median_hh_income",
-                "P037001": "educ_total",
-                "P037015": "_educ_male_ba",
-                "P037016": "_educ_male_ma",
-                "P037017": "_educ_male_prof",
-                "P037018": "_educ_male_doc",
-                "P037032": "_educ_female_ba",
-                "P037033": "_educ_female_ma",
-                "P037034": "_educ_female_prof",
-                "P037035": "_educ_female_doc",
-                "P030001": "commute_total",
-                "P030003": "commute_car",
-                "P030005": "commute_transit",
-                "P030016": "commute_wfh",
-            },
-        },
-    },
-    2010: {
-        "primary": {
-            "base_url": "https://api.census.gov/data/2010/dec/sf1",
-            "vars": {
-                "P001001": "pop_total",
-                "P005003": "pop_white_nh",
-                "P005004": "pop_black",
-                "P005006": "pop_asian",
-                "P005010": "pop_hispanic",
-                "P013001": "median_age",
-                "H001001": "housing_total",
-                "H004002": "_housing_owner_mortgage",
-                "H004003": "_housing_owner_free",
-            },
-        },
-        "supplemental": {
-            "base_url": "https://api.census.gov/data/2010/acs/acs5",
-            "vars": {
-                "B19013_001E": "median_hh_income",
-                "B15002_001E": "educ_total",
-                "B15002_015E": "_educ_male_ba",
-                "B15002_016E": "_educ_male_ma",
-                "B15002_017E": "_educ_male_prof",
-                "B15002_018E": "_educ_male_doc",
-                "B15002_032E": "_educ_female_ba",
-                "B15002_033E": "_educ_female_ma",
-                "B15002_034E": "_educ_female_prof",
-                "B15002_035E": "_educ_female_doc",
-                "B08301_001E": "commute_total",
-                "B08301_003E": "commute_car",
-                "B08301_010E": "commute_transit",
-                "B08301_021E": "commute_wfh",
-            },
-        },
-    },
-    2020: {
-        "primary": {
-            "base_url": "https://api.census.gov/data/2020/dec/dhc",
-            "vars": {
-                "P1_001N": "pop_total",
-                "P5_003N": "pop_white_nh",
-                "P5_004N": "pop_black",
-                "P5_006N": "pop_asian",
-                "P5_010N": "pop_hispanic",
-                "P13_001N": "median_age",
-                "H1_001N": "housing_total",
-                "H10_002N": "housing_owner",
-            },
-        },
-        "supplemental": {
-            "base_url": "https://api.census.gov/data/2020/acs/acs5",
-            "vars": {
-                "B19013_001E": "median_hh_income",
-                "B15002_001E": "educ_total",
-                "B15002_015E": "_educ_male_ba",
-                "B15002_016E": "_educ_male_ma",
-                "B15002_017E": "_educ_male_prof",
-                "B15002_018E": "_educ_male_doc",
-                "B15002_032E": "_educ_female_ba",
-                "B15002_033E": "_educ_female_ma",
-                "B15002_034E": "_educ_female_prof",
-                "B15002_035E": "_educ_female_doc",
-                "B08301_001E": "commute_total",
-                "B08301_003E": "commute_car",
-                "B08301_010E": "commute_transit",
-                "B08301_021E": "commute_wfh",
-            },
-        },
-    },
-}
+
+def _load_year_config() -> dict:
+    """Load Census API config from data/config/census_api_config.yaml.
+
+    Returns the ``years`` subtree as a plain dict keyed by integer year.
+    Raises FileNotFoundError if the config file is missing — the file is
+    checked into source control and should always be present.
+    """
+    if not _CENSUS_API_CONFIG_PATH.exists():
+        raise FileNotFoundError(
+            f"Census API config not found: {_CENSUS_API_CONFIG_PATH}. "
+            "Run git checkout or restore the file from source control."
+        )
+    with open(_CENSUS_API_CONFIG_PATH) as f:
+        raw = yaml.safe_load(f)
+    # YAML parses integer keys as ints when they are bare numbers, but be
+    # explicit: ensure all year keys are ints so YEAR_CONFIG[2020] works.
+    return {int(year): cfg for year, cfg in raw["years"].items()}
+
+
+YEAR_CONFIG = _load_year_config()
 
 # ── Fetch ─────────────────────────────────────────────────────────────────────
 

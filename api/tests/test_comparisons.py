@@ -90,7 +90,11 @@ class TestComparisonsEndpoint:
             assert " " not in row["slug"], f"Slug contains space: {row['slug']}"
 
     def test_handles_missing_comparisons_file_gracefully(self, client):
-        """When the ratings file doesn't exist, endpoint should still return predictions."""
+        """When the ratings file doesn't exist, endpoint should still return predictions.
+
+        With no file on disk, all external ratings (cook, sabato, inside) must be None —
+        the endpoint must not raise, and must not invent rating strings from thin air.
+        """
         with patch(
             "api.routers.forecast.COMPARISONS_FILE",
             Path("/nonexistent/path/ratings_2026.json"),
@@ -100,9 +104,19 @@ class TestComparisonsEndpoint:
         data = resp.json()
         # Should still return race rows from the DB
         assert "races" in data
-        # External ratings will be null since file is missing
+        assert len(data["races"]) > 0
+        # All external ratings must be None when the file is missing — not empty strings
+        # and not fallback values. This verifies the patch actually changed behavior.
         for row in data["races"]:
-            assert row["cook"] is None or isinstance(row["cook"], str)
+            assert row["cook"] is None, (
+                f"Expected cook=None when ratings file is missing, got {row['cook']!r}"
+            )
+            assert row.get("sabato") is None, (
+                f"Expected sabato=None when ratings file is missing, got {row.get('sabato')!r}"
+            )
+            assert row.get("inside") is None, (
+                f"Expected inside=None when ratings file is missing, got {row.get('inside')!r}"
+            )
 
     def test_sources_list_from_file(self, client):
         """When ratings file exists, sources should be populated."""

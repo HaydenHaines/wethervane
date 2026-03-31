@@ -10,13 +10,10 @@ import { useTooltip, TooltipWithBounds, defaultStyles } from "@visx/tooltip";
 import { localPoint } from "@visx/event";
 import { usePollTrend } from "@/lib/hooks/use-poll-trend";
 import type { PollTrendPoll } from "@/lib/types";
+import { PALETTE } from "@/lib/config/palette";
 
 // ── Design tokens ──────────────────────────────────────────────────────────
 
-const DEM_COLOR = "#4b6d90";
-const GOP_COLOR = "#9e5e4e";
-const DEM_TREND_COLOR = "#2166ac";
-const GOP_TREND_COLOR = "#c0392b";
 const TICK_COLOR = "var(--color-text-muted, #888)";
 const GRID_COLOR = "var(--color-border, #e2e8f0)";
 
@@ -216,7 +213,7 @@ export function PollTrendChart({ slug, width = 560 }: PollTrendChartProps) {
               data={trendWithDates.dates.map((d, i) => ({ x: xScale(d), y: yScale(trendWithDates.dem[i]) }))}
               x={(d) => d.x}
               y={(d) => d.y}
-              stroke={DEM_TREND_COLOR}
+              stroke={PALETTE.DEM_PRIMARY}
               strokeWidth={2.5}
               curve={curveMonotoneX}
               strokeLinecap="round"
@@ -229,7 +226,7 @@ export function PollTrendChart({ slug, width = 560 }: PollTrendChartProps) {
               data={trendWithDates.dates.map((d, i) => ({ x: xScale(d), y: yScale(trendWithDates.rep[i]) }))}
               x={(d) => d.x}
               y={(d) => d.y}
-              stroke={GOP_TREND_COLOR}
+              stroke={PALETTE.GOP_PRIMARY}
               strokeWidth={2.5}
               curve={curveMonotoneX}
               strokeLinecap="round"
@@ -243,7 +240,7 @@ export function PollTrendChart({ slug, width = 560 }: PollTrendChartProps) {
               cx={xScale(poll._date)}
               cy={yScale(poll.dem_share)}
               r={dotRadius(poll.sample_size)}
-              fill={DEM_COLOR}
+              fill={PALETTE.DEM_SECONDARY}
               opacity={0.7}
               style={{ cursor: "pointer" }}
               onMouseMove={(e) => handleMouseMove(e, poll)}
@@ -260,7 +257,7 @@ export function PollTrendChart({ slug, width = 560 }: PollTrendChartProps) {
                 cx={xScale(poll._date)}
                 cy={yScale(repShare)}
                 r={dotRadius(poll.sample_size)}
-                fill={GOP_COLOR}
+                fill={PALETTE.GOP_SECONDARY}
                 opacity={0.7}
                 style={{ cursor: "pointer" }}
                 onMouseMove={(e) => handleMouseMove(e, { ...poll, dem_share: repShare })}
@@ -292,8 +289,8 @@ export function PollTrendChart({ slug, width = 560 }: PollTrendChartProps) {
 
       {/* Legend */}
       <div className="flex gap-4 mt-1 text-xs" style={{ color: "var(--color-text-muted)" }}>
-        <span style={{ color: DEM_TREND_COLOR, fontWeight: 600 }}>— Dem trend</span>
-        <span style={{ color: GOP_TREND_COLOR, fontWeight: 600 }}>— Rep trend</span>
+        <span style={{ color: PALETTE.DEM_PRIMARY, fontWeight: 600 }}>— Dem trend</span>
+        <span style={{ color: PALETTE.GOP_PRIMARY, fontWeight: 600 }}>— Rep trend</span>
         <span>· dots = individual polls (size = sample size)</span>
       </div>
 
@@ -315,9 +312,9 @@ export function PollTrendChart({ slug, width = 560 }: PollTrendChartProps) {
             {tooltipData.poll.pollster ?? "Unknown pollster"}
           </div>
           <div>{tooltipData.poll.date}</div>
-          <div style={{ color: DEM_TREND_COLOR }}>Dem: {formatPct(tooltipData.poll.dem_share)}</div>
+          <div style={{ color: PALETTE.DEM_PRIMARY }}>Dem: {formatPct(tooltipData.poll.dem_share)}</div>
           {tooltipData.poll.rep_share !== null && tooltipData.poll.rep_share !== undefined && (
-            <div style={{ color: GOP_TREND_COLOR }}>Rep: {formatPct(tooltipData.poll.rep_share)}</div>
+            <div style={{ color: PALETTE.GOP_PRIMARY }}>Rep: {formatPct(tooltipData.poll.rep_share)}</div>
           )}
           {tooltipData.poll.sample_size !== null && tooltipData.poll.sample_size !== undefined && (
             <div>n = {tooltipData.poll.sample_size.toLocaleString()}</div>

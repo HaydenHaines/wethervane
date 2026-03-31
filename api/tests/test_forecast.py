@@ -129,13 +129,25 @@ _rng = np.random.default_rng(99)
 _TEST_TYPE_SCORES = _rng.uniform(-1, 1, size=(len(TEST_FIPS), _TEST_J)).astype(np.float64)
 _abs_ts = np.abs(_TEST_TYPE_SCORES)
 _TEST_TYPE_SCORES = _TEST_TYPE_SCORES / _abs_ts.sum(axis=1, keepdims=True)
-_TEST_TYPE_COVARIANCE = np.eye(_TEST_J, dtype=np.float64) * 0.01 + 0.005
+
+# Per-type diagonal variance and shared off-diagonal covariance for the synthetic Σ.
+_TYPE_COV_DIAGONAL_VARIANCE = 0.01
+_TYPE_COV_OFF_DIAGONAL_COV = 0.005
+_TEST_TYPE_COVARIANCE = (
+    np.eye(_TEST_J, dtype=np.float64) * _TYPE_COV_DIAGONAL_VARIANCE + _TYPE_COV_OFF_DIAGONAL_COV
+)
 _TEST_TYPE_PRIORS = np.full(_TEST_J, 0.44, dtype=np.float64)
+
+# Affinity bounds: linspace endpoints used to create meaningful type-level variation.
+# Positive = types that index above average on this demographic dimension.
+# Negative = types that index below average.
+_AFFINITY_POSITIVE = 0.3   # same-party type similarity
+_AFFINITY_NEGATIVE = -0.3  # cross-party type similarity
 
 # Synthetic affinity index: one dimension with meaningful values
 _TEST_AFFINITY = {
-    "education_college": np.linspace(-0.3, 0.3, _TEST_J),
-    "education_noncollege": np.linspace(0.3, -0.3, _TEST_J),
+    "education_college": np.linspace(_AFFINITY_NEGATIVE, _AFFINITY_POSITIVE, _TEST_J),
+    "education_noncollege": np.linspace(_AFFINITY_POSITIVE, _AFFINITY_NEGATIVE, _TEST_J),
     "race_white": np.zeros(_TEST_J),
     "race_black": np.zeros(_TEST_J),
     "race_hispanic": np.zeros(_TEST_J),
@@ -236,7 +248,15 @@ class TestCrosstabWOverrideSinglePoll:
         finally:
             test_db.close()
 
-    @pytest.mark.xfail(reason="Crosstab W override not yet wired into single-poll endpoint")
+    @pytest.mark.skip(
+        reason=(
+            "Crosstab W override is not yet wired into _forecast_poll_types. "
+            "The crosstab affinity index (app.state.crosstab_affinity) is loaded at startup "
+            "but _forecast_poll_types passes only state-mean W to predict_race. "
+            "Enable this test once crosstab-adjusted W construction is wired into "
+            "_forecast_poll_types in api/routers/forecast.py."
+        )
+    )
     def test_crosstab_w_produces_different_predictions_than_no_crosstab(self):
         """Crosstab-adjusted W should produce different predictions from state-mean W.
 

@@ -40,17 +40,35 @@ def _make_client(db=None):
 class TestPollTrendEndpoint:
     """Tests for the poll-trend endpoint."""
 
-    def test_returns_200_for_race_with_polls(self, client: TestClient):
-        """The endpoint returns 200 and valid structure for a race that has polls."""
-        resp = client.get("/api/v1/forecast/race/fl-senate/poll-trend")
-        # The test DB has race "FL_Senate"; slug "fl-senate" maps to "Fl Senate"
-        # which differs from "FL_Senate". We inject a direct match in conftest.
-        # This test verifies the endpoint accepts the slug format without crashing.
-        assert resp.status_code in (200, 404)  # 404 if no matching polls in test DB
+    def test_returns_200_with_matching_polls(self, client: TestClient):
+        """The endpoint returns 200 and a non-empty polls list for a race that exists.
+
+        The test DB has a poll with race='FL_Senate'. race_to_slug('FL_Senate') → 'fl_senate',
+        and slug_to_race('fl_senate') returns 'fl_senate' (< 3 parts → passthrough), which
+        matches via LOWER(race) = LOWER('fl_senate') = LOWER('FL_Senate').
+        """
+        resp = client.get("/api/v1/forecast/race/fl_senate/poll-trend")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert len(data["polls"]) >= 1
+
+    def test_returns_200_with_empty_polls_for_unknown_slug(self, client: TestClient):
+        """The endpoint always returns 200; missing races produce an empty polls list.
+
+        Slugs that don't match any race in the DB return an empty polls list and null trend,
+        not a 404 error. This is intentional: the poll-trend endpoint is informational and
+        a missing race is not an error from the caller's perspective.
+        """
+        resp = client.get("/api/v1/forecast/race/xx-unknown-race-2099/poll-trend")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["polls"] == []
+        assert data["trend"] is None
 
     def test_response_structure(self, client: TestClient):
-        """Response always has race, slug, polls, and trend fields."""
-        resp = client.get("/api/v1/forecast/race/fl-senate/poll-trend")
+        """Response always has race, slug, polls, and trend fields regardless of match."""
+        resp = client.get("/api/v1/forecast/race/fl_senate/poll-trend")
+        assert resp.status_code == 200
         data = resp.json()
         assert "race" in data
         assert "slug" in data
@@ -61,96 +79,94 @@ class TestPollTrendEndpoint:
         """A slug with no matching polls returns an empty polls list and null trend."""
         import duckdb
 
-        con = duckdb.connect(":memory:")
-        con.execute("""
-            CREATE TABLE polls (
-                poll_id VARCHAR NOT NULL,
-                race VARCHAR NOT NULL,
-                geography VARCHAR NOT NULL,
-                geo_level VARCHAR NOT NULL,
-                dem_share FLOAT NOT NULL,
-                n_sample INTEGER NOT NULL,
-                date VARCHAR,
-                pollster VARCHAR,
-                notes VARCHAR,
-                cycle VARCHAR NOT NULL,
-                PRIMARY KEY (poll_id)
-            )
-        """)
-        # No rows — empty table
+        with duckdb.connect(":memory:") as con:
+            con.execute("""
+                CREATE TABLE polls (
+                    poll_id VARCHAR NOT NULL,
+                    race VARCHAR NOT NULL,
+                    geography VARCHAR NOT NULL,
+                    geo_level VARCHAR NOT NULL,
+                    dem_share FLOAT NOT NULL,
+                    n_sample INTEGER NOT NULL,
+                    date VARCHAR,
+                    pollster VARCHAR,
+                    notes VARCHAR,
+                    cycle VARCHAR NOT NULL,
+                    PRIMARY KEY (poll_id)
+                )
+            """)
+            # No rows — empty table
 
-        client = _make_client(db=con)
-        resp = client.get("/api/v1/forecast/race/xx-senate-2026/poll-trend")
+            client = _make_client(db=con)
+            resp = client.get("/api/v1/forecast/race/xx-senate-2026/poll-trend")
         assert resp.status_code == 200
         data = resp.json()
         assert data["polls"] == []
         assert data["trend"] is None
-        con.close()
 
     def test_one_poll_returns_null_trend(self):
         """A single poll cannot produce a meaningful trend line; trend is None."""
         import duckdb
 
-        con = duckdb.connect(":memory:")
-        con.execute("""
-            CREATE TABLE polls (
-                poll_id VARCHAR NOT NULL,
-                race VARCHAR NOT NULL,
-                geography VARCHAR NOT NULL,
-                geo_level VARCHAR NOT NULL,
-                dem_share FLOAT NOT NULL,
-                n_sample INTEGER NOT NULL,
-                date VARCHAR,
-                pollster VARCHAR,
-                notes VARCHAR,
-                cycle VARCHAR NOT NULL,
-                PRIMARY KEY (poll_id)
-            )
-        """)
-        con.execute("""
-            INSERT INTO polls VALUES
-            ('x1', '2026 GA Senate', 'GA', 'state', 0.47, 800, '2026-02-01', 'Emerson', NULL, '2026')
-        """)
+        with duckdb.connect(":memory:") as con:
+            con.execute("""
+                CREATE TABLE polls (
+                    poll_id VARCHAR NOT NULL,
+                    race VARCHAR NOT NULL,
+                    geography VARCHAR NOT NULL,
+                    geo_level VARCHAR NOT NULL,
+                    dem_share FLOAT NOT NULL,
+                    n_sample INTEGER NOT NULL,
+                    date VARCHAR,
+                    pollster VARCHAR,
+                    notes VARCHAR,
+                    cycle VARCHAR NOT NULL,
+                    PRIMARY KEY (poll_id)
+                )
+            """)
+            con.execute("""
+                INSERT INTO polls VALUES
+                ('x1', '2026 GA Senate', 'GA', 'state', 0.47, 800, '2026-02-01', 'Emerson', NULL, '2026')
+            """)
 
-        client = _make_client(db=con)
-        resp = client.get("/api/v1/forecast/race/2026-ga-senate/poll-trend")
+            client = _make_client(db=con)
+            resp = client.get("/api/v1/forecast/race/2026-ga-senate/poll-trend")
         assert resp.status_code == 200
         data = resp.json()
         assert len(data["polls"]) == 1
         assert data["trend"] is None  # single poll → no trend
-        con.close()
 
     def test_multiple_polls_returns_trend(self):
         """Multiple polls produce a non-null trend with the correct number of points."""
         import duckdb
 
-        con = duckdb.connect(":memory:")
-        con.execute("""
-            CREATE TABLE polls (
-                poll_id VARCHAR NOT NULL,
-                race VARCHAR NOT NULL,
-                geography VARCHAR NOT NULL,
-                geo_level VARCHAR NOT NULL,
-                dem_share FLOAT NOT NULL,
-                n_sample INTEGER NOT NULL,
-                date VARCHAR,
-                pollster VARCHAR,
-                notes VARCHAR,
-                cycle VARCHAR NOT NULL,
-                PRIMARY KEY (poll_id)
+        with duckdb.connect(":memory:") as con:
+            con.execute("""
+                CREATE TABLE polls (
+                    poll_id VARCHAR NOT NULL,
+                    race VARCHAR NOT NULL,
+                    geography VARCHAR NOT NULL,
+                    geo_level VARCHAR NOT NULL,
+                    dem_share FLOAT NOT NULL,
+                    n_sample INTEGER NOT NULL,
+                    date VARCHAR,
+                    pollster VARCHAR,
+                    notes VARCHAR,
+                    cycle VARCHAR NOT NULL,
+                    PRIMARY KEY (poll_id)
+                )
+            """)
+            con.executemany(
+                "INSERT INTO polls VALUES (?, '2026 FL Governor', 'FL', 'state', ?, ?, ?, 'Siena', NULL, '2026')",
+                [
+                    ("p1", 0.45, 600, "2026-01-10"),
+                    ("p2", 0.47, 700, "2026-02-05"),
+                    ("p3", 0.46, 650, "2026-03-01"),
+                ],
             )
-        """)
-        con.executemany(
-            "INSERT INTO polls VALUES (?, '2026 FL Governor', 'FL', 'state', ?, ?, ?, 'Siena', NULL, '2026')",
-            [
-                ("p1", 0.45, 600, "2026-01-10"),
-                ("p2", 0.47, 700, "2026-02-05"),
-                ("p3", 0.46, 650, "2026-03-01"),
-            ],
-        )
 
-        client = _make_client(db=con)
-        resp = client.get("/api/v1/forecast/race/2026-fl-governor/poll-trend")
+            client = _make_client(db=con)
+            resp = client.get("/api/v1/forecast/race/2026-fl-governor/poll-trend")
         assert resp.status_code == 200
         data = resp.json()
         assert len(data["polls"]) == 3
@@ -158,40 +174,39 @@ class TestPollTrendEndpoint:
         assert len(data["trend"]["dates"]) == 3
         assert len(data["trend"]["dem_trend"]) == 3
         assert len(data["trend"]["rep_trend"]) == 3
-        con.close()
 
     def test_trend_values_are_valid_shares(self):
         """All trend values must be in [0, 1] and dem + rep should sum to 1.0."""
         import duckdb
 
-        con = duckdb.connect(":memory:")
-        con.execute("""
-            CREATE TABLE polls (
-                poll_id VARCHAR NOT NULL,
-                race VARCHAR NOT NULL,
-                geography VARCHAR NOT NULL,
-                geo_level VARCHAR NOT NULL,
-                dem_share FLOAT NOT NULL,
-                n_sample INTEGER NOT NULL,
-                date VARCHAR,
-                pollster VARCHAR,
-                notes VARCHAR,
-                cycle VARCHAR NOT NULL,
-                PRIMARY KEY (poll_id)
+        with duckdb.connect(":memory:") as con:
+            con.execute("""
+                CREATE TABLE polls (
+                    poll_id VARCHAR NOT NULL,
+                    race VARCHAR NOT NULL,
+                    geography VARCHAR NOT NULL,
+                    geo_level VARCHAR NOT NULL,
+                    dem_share FLOAT NOT NULL,
+                    n_sample INTEGER NOT NULL,
+                    date VARCHAR,
+                    pollster VARCHAR,
+                    notes VARCHAR,
+                    cycle VARCHAR NOT NULL,
+                    PRIMARY KEY (poll_id)
+                )
+            """)
+            con.executemany(
+                "INSERT INTO polls VALUES (?, '2026 MI Senate', 'MI', 'state', ?, ?, ?, 'Glengariff', NULL, '2026')",
+                [
+                    ("q1", 0.50, 600, "2026-01-15"),
+                    ("q2", 0.52, 800, "2026-02-20"),
+                    ("q3", 0.49, 700, "2026-03-10"),
+                    ("q4", 0.51, 550, "2026-04-01"),
+                ],
             )
-        """)
-        con.executemany(
-            "INSERT INTO polls VALUES (?, '2026 MI Senate', 'MI', 'state', ?, ?, ?, 'Glengariff', NULL, '2026')",
-            [
-                ("q1", 0.50, 600, "2026-01-15"),
-                ("q2", 0.52, 800, "2026-02-20"),
-                ("q3", 0.49, 700, "2026-03-10"),
-                ("q4", 0.51, 550, "2026-04-01"),
-            ],
-        )
 
-        client = _make_client(db=con)
-        resp = client.get("/api/v1/forecast/race/2026-mi-senate/poll-trend")
+            client = _make_client(db=con)
+            resp = client.get("/api/v1/forecast/race/2026-mi-senate/poll-trend")
         assert resp.status_code == 200
         data = resp.json()
         trend = data["trend"]
@@ -201,38 +216,37 @@ class TestPollTrendEndpoint:
             assert 0.0 <= dem <= 1.0, f"dem_trend value out of range: {dem}"
             assert 0.0 <= rep <= 1.0, f"rep_trend value out of range: {rep}"
             assert abs(dem + rep - 1.0) < 1e-4, f"dem+rep should sum to 1: {dem}+{rep}"
-        con.close()
 
     def test_poll_fields_are_complete(self):
         """Each poll in the response includes all expected fields."""
         import duckdb
 
-        con = duckdb.connect(":memory:")
-        con.execute("""
-            CREATE TABLE polls (
-                poll_id VARCHAR NOT NULL,
-                race VARCHAR NOT NULL,
-                geography VARCHAR NOT NULL,
-                geo_level VARCHAR NOT NULL,
-                dem_share FLOAT NOT NULL,
-                n_sample INTEGER NOT NULL,
-                date VARCHAR,
-                pollster VARCHAR,
-                notes VARCHAR,
-                cycle VARCHAR NOT NULL,
-                PRIMARY KEY (poll_id)
+        with duckdb.connect(":memory:") as con:
+            con.execute("""
+                CREATE TABLE polls (
+                    poll_id VARCHAR NOT NULL,
+                    race VARCHAR NOT NULL,
+                    geography VARCHAR NOT NULL,
+                    geo_level VARCHAR NOT NULL,
+                    dem_share FLOAT NOT NULL,
+                    n_sample INTEGER NOT NULL,
+                    date VARCHAR,
+                    pollster VARCHAR,
+                    notes VARCHAR,
+                    cycle VARCHAR NOT NULL,
+                    PRIMARY KEY (poll_id)
+                )
+            """)
+            con.executemany(
+                "INSERT INTO polls VALUES (?, '2026 NC Senate', 'NC', 'state', ?, ?, ?, ?, NULL, '2026')",
+                [
+                    ("r1", 0.48, 900, "2026-01-20", "Cygnal"),
+                    ("r2", 0.50, 1100, "2026-03-05", "Quinnipiac"),
+                ],
             )
-        """)
-        con.executemany(
-            "INSERT INTO polls VALUES (?, '2026 NC Senate', 'NC', 'state', ?, ?, ?, ?, NULL, '2026')",
-            [
-                ("r1", 0.48, 900, "2026-01-20", "Cygnal"),
-                ("r2", 0.50, 1100, "2026-03-05", "Quinnipiac"),
-            ],
-        )
 
-        client = _make_client(db=con)
-        resp = client.get("/api/v1/forecast/race/2026-nc-senate/poll-trend")
+            client = _make_client(db=con)
+            resp = client.get("/api/v1/forecast/race/2026-nc-senate/poll-trend")
         assert resp.status_code == 200
         data = resp.json()
 
@@ -244,4 +258,3 @@ class TestPollTrendEndpoint:
             assert "sample_size" in poll
             # rep_share should be 1 - dem_share
             assert abs(poll["rep_share"] - (1.0 - poll["dem_share"])) < 1e-4
-        con.close()

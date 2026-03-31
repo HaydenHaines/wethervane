@@ -93,31 +93,31 @@ class TestRidgePriorsStartupLoading:
         """
         import duckdb
         db_path = tmp_path / "wethervane.duckdb"
-        con = duckdb.connect(str(db_path))
-        con.execute(
-            "CREATE TABLE model_versions (version_id VARCHAR PRIMARY KEY, role VARCHAR, "
-            "k INTEGER, j INTEGER, shift_type VARCHAR, vote_share_type VARCHAR, "
-            "n_training_dims INTEGER, n_holdout_dims INTEGER, holdout_r VARCHAR, "
-            "geography VARCHAR, description VARCHAR, created_at TIMESTAMP)"
-        )
-        con.execute(
-            "INSERT INTO model_versions VALUES ('v1', 'current', 3, 4, 'logodds', "
-            "'total', 30, 3, '0.70', 'test', 'test', '2026-01-01')"
-        )
-        con.execute(
-            "CREATE TABLE community_sigma (community_id_row INTEGER, "
-            "community_id_col INTEGER, sigma_value DOUBLE, version_id VARCHAR)"
-        )
-        con.execute(
-            "CREATE TABLE predictions (county_fips VARCHAR, race VARCHAR, "
-            "version_id VARCHAR, pred_dem_share DOUBLE, pred_std DOUBLE, "
-            "pred_lo90 DOUBLE, pred_hi90 DOUBLE, state_pred DOUBLE, poll_avg DOUBLE)"
-        )
-        con.execute(
-            "CREATE TABLE community_assignments (county_fips VARCHAR, community_id INTEGER, "
-            "k INTEGER, version_id VARCHAR)"
-        )
-        con.close()
+        # Use context manager so the file handle is released before lifespan re-opens it.
+        with duckdb.connect(str(db_path)) as con:
+            con.execute(
+                "CREATE TABLE model_versions (version_id VARCHAR PRIMARY KEY, role VARCHAR, "
+                "k INTEGER, j INTEGER, shift_type VARCHAR, vote_share_type VARCHAR, "
+                "n_training_dims INTEGER, n_holdout_dims INTEGER, holdout_r VARCHAR, "
+                "geography VARCHAR, description VARCHAR, created_at TIMESTAMP)"
+            )
+            con.execute(
+                "INSERT INTO model_versions VALUES ('v1', 'current', 3, 4, 'logodds', "
+                "'total', 30, 3, '0.70', 'test', 'test', '2026-01-01')"
+            )
+            con.execute(
+                "CREATE TABLE community_sigma (community_id_row INTEGER, "
+                "community_id_col INTEGER, sigma_value DOUBLE, version_id VARCHAR)"
+            )
+            con.execute(
+                "CREATE TABLE predictions (county_fips VARCHAR, race VARCHAR, "
+                "version_id VARCHAR, pred_dem_share DOUBLE, pred_std DOUBLE, "
+                "pred_lo90 DOUBLE, pred_hi90 DOUBLE, state_pred DOUBLE, poll_avg DOUBLE)"
+            )
+            con.execute(
+                "CREATE TABLE community_assignments (county_fips VARCHAR, community_id INTEGER, "
+                "k INTEGER, version_id VARCHAR)"
+            )
 
         # Create tract_priors.parquet in the expected location
         tracts_dir = tmp_path / "data" / "tracts"
@@ -165,31 +165,31 @@ class TestRidgePriorsStartupLoading:
         """
         import duckdb
         db_path = tmp_path / "wethervane.duckdb"
-        con = duckdb.connect(str(db_path))
-        con.execute(
-            "CREATE TABLE model_versions (version_id VARCHAR PRIMARY KEY, role VARCHAR, "
-            "k INTEGER, j INTEGER, shift_type VARCHAR, vote_share_type VARCHAR, "
-            "n_training_dims INTEGER, n_holdout_dims INTEGER, holdout_r VARCHAR, "
-            "geography VARCHAR, description VARCHAR, created_at TIMESTAMP)"
-        )
-        con.execute(
-            "INSERT INTO model_versions VALUES ('v1', 'current', 3, 4, 'logodds', "
-            "'total', 30, 3, '0.70', 'test', 'test', '2026-01-01')"
-        )
-        con.execute(
-            "CREATE TABLE community_sigma (community_id_row INTEGER, "
-            "community_id_col INTEGER, sigma_value DOUBLE, version_id VARCHAR)"
-        )
-        con.execute(
-            "CREATE TABLE predictions (county_fips VARCHAR, race VARCHAR, "
-            "version_id VARCHAR, pred_dem_share DOUBLE, pred_std DOUBLE, "
-            "pred_lo90 DOUBLE, pred_hi90 DOUBLE, state_pred DOUBLE, poll_avg DOUBLE)"
-        )
-        con.execute(
-            "CREATE TABLE community_assignments (county_fips VARCHAR, community_id INTEGER, "
-            "k INTEGER, version_id VARCHAR)"
-        )
-        con.close()
+        # Use context manager so the file handle is released before lifespan re-opens it.
+        with duckdb.connect(str(db_path)) as con:
+            con.execute(
+                "CREATE TABLE model_versions (version_id VARCHAR PRIMARY KEY, role VARCHAR, "
+                "k INTEGER, j INTEGER, shift_type VARCHAR, vote_share_type VARCHAR, "
+                "n_training_dims INTEGER, n_holdout_dims INTEGER, holdout_r VARCHAR, "
+                "geography VARCHAR, description VARCHAR, created_at TIMESTAMP)"
+            )
+            con.execute(
+                "INSERT INTO model_versions VALUES ('v1', 'current', 3, 4, 'logodds', "
+                "'total', 30, 3, '0.70', 'test', 'test', '2026-01-01')"
+            )
+            con.execute(
+                "CREATE TABLE community_sigma (community_id_row INTEGER, "
+                "community_id_col INTEGER, sigma_value DOUBLE, version_id VARCHAR)"
+            )
+            con.execute(
+                "CREATE TABLE predictions (county_fips VARCHAR, race VARCHAR, "
+                "version_id VARCHAR, pred_dem_share DOUBLE, pred_std DOUBLE, "
+                "pred_lo90 DOUBLE, pred_hi90 DOUBLE, state_pred DOUBLE, poll_avg DOUBLE)"
+            )
+            con.execute(
+                "CREATE TABLE community_assignments (county_fips VARCHAR, community_id INTEGER, "
+                "k INTEGER, version_id VARCHAR)"
+            )
 
         # Do NOT create tract_priors.parquet — it should be absent
         tracts_dir = tmp_path / "data" / "tracts"
@@ -232,14 +232,15 @@ class TestForecastUsesRidgePriors:
 
         payload = {"state": "FL", "race": "FL_Senate", "dem_share": 0.48, "n": 800}
 
-        with TestClient(app_ridge, raise_server_exceptions=True) as c_ridge:
-            resp_ridge = c_ridge.post("/api/v1/forecast/poll", json=payload)
+        try:
+            with TestClient(app_ridge, raise_server_exceptions=True) as c_ridge:
+                resp_ridge = c_ridge.post("/api/v1/forecast/poll", json=payload)
 
-        with TestClient(app_no_ridge, raise_server_exceptions=True) as c_no_ridge:
-            resp_no_ridge = c_no_ridge.post("/api/v1/forecast/poll", json=payload)
-
-        db_ridge.close()
-        db_no_ridge.close()
+            with TestClient(app_no_ridge, raise_server_exceptions=True) as c_no_ridge:
+                resp_no_ridge = c_no_ridge.post("/api/v1/forecast/poll", json=payload)
+        finally:
+            db_ridge.close()
+            db_no_ridge.close()
 
         assert resp_ridge.status_code == 200
         assert resp_no_ridge.status_code == 200
@@ -264,10 +265,11 @@ class TestForecastUsesRidgePriors:
 
         payload = {"state": "FL", "race": "FL_Senate", "dem_share": 0.48, "n": 100}
 
-        with TestClient(app_ridge, raise_server_exceptions=True) as c:
-            resp = c.post("/api/v1/forecast/poll", json=payload)
-
-        db.close()
+        try:
+            with TestClient(app_ridge, raise_server_exceptions=True) as c:
+                resp = c.post("/api/v1/forecast/poll", json=payload)
+        finally:
+            db.close()
 
         assert resp.status_code == 200
         data = resp.json()
@@ -284,10 +286,11 @@ class TestForecastUsesRidgePriors:
 
         payload = {"state": "FL", "race": "FL_Senate", "dem_share": 0.48, "n": 800}
 
-        with TestClient(app_ridge, raise_server_exceptions=True) as c:
-            resp = c.post("/api/v1/forecast/poll", json=payload)
-
-        db.close()
+        try:
+            with TestClient(app_ridge, raise_server_exceptions=True) as c:
+                resp = c.post("/api/v1/forecast/poll", json=payload)
+        finally:
+            db.close()
 
         assert resp.status_code == 200
         for row in resp.json():
@@ -305,14 +308,15 @@ class TestForecastUsesRidgePriors:
         payload = {"cycle": 2022, "state": "FL", "race": "FL_Senate",
                    "half_life_days": 30, "apply_quality": False}
 
-        with TestClient(app_ridge, raise_server_exceptions=True) as c_ridge:
-            resp_ridge = c_ridge.post("/api/v1/forecast/polls", json=payload)
+        try:
+            with TestClient(app_ridge, raise_server_exceptions=True) as c_ridge:
+                resp_ridge = c_ridge.post("/api/v1/forecast/polls", json=payload)
 
-        with TestClient(app_no_ridge, raise_server_exceptions=True) as c_no_ridge:
-            resp_no_ridge = c_no_ridge.post("/api/v1/forecast/polls", json=payload)
-
-        db_ridge.close()
-        db_no_ridge.close()
+            with TestClient(app_no_ridge, raise_server_exceptions=True) as c_no_ridge:
+                resp_no_ridge = c_no_ridge.post("/api/v1/forecast/polls", json=payload)
+        finally:
+            db_ridge.close()
+            db_no_ridge.close()
 
         # Both may 404 if no poll CSV for 2022 FL_Senate — that's fine.
         # If both succeed, check they differ.
@@ -340,10 +344,11 @@ class TestRidgePriorsFallback:
 
         payload = {"state": "FL", "race": "FL_Senate", "dem_share": 0.48, "n": 800}
 
-        with TestClient(app_no_ridge, raise_server_exceptions=True) as c:
-            resp = c.post("/api/v1/forecast/poll", json=payload)
-
-        db.close()
+        try:
+            with TestClient(app_no_ridge, raise_server_exceptions=True) as c:
+                resp = c.post("/api/v1/forecast/poll", json=payload)
+        finally:
+            db.close()
 
         assert resp.status_code == 200
         data = resp.json()
@@ -374,8 +379,9 @@ class TestRidgePriorsFallback:
 
         payload = {"state": "FL", "race": "FL_Senate", "dem_share": 0.48, "n": 800}
 
-        with TestClient(test_app, raise_server_exceptions=True) as c:
-            resp = c.post("/api/v1/forecast/poll", json=payload)
-
-        test_db.close()
+        try:
+            with TestClient(test_app, raise_server_exceptions=True) as c:
+                resp = c.post("/api/v1/forecast/poll", json=payload)
+        finally:
+            test_db.close()
         assert resp.status_code == 200

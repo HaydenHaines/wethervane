@@ -44,19 +44,33 @@ from src.prediction.train_ridge_model import (
 
 log = logging.getLogger(__name__)
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
+_ENSEMBLE_CONFIG_PATH = PROJECT_ROOT / "data" / "config" / "ensemble_params.json"
 
-# HGB hyperparameters (updated 2026-03-26: max_iter 300→800, lr 0.05→0.1, max_depth 4→5, min_samples_leaf 20→30)
-HGB_PARAMS = {
-    "max_iter": 800,
-    "learning_rate": 0.1,
-    "max_depth": 5,
-    "min_samples_leaf": 30,
-    "l2_regularization": 1.0,
-    "random_state": 42,
-}
 
-ENSEMBLE_RIDGE_WEIGHT = 0.5
-ENSEMBLE_HGB_WEIGHT = 0.5
+def _load_ensemble_config() -> dict:
+    """Load HGB hyperparameters and blend weights from the config file.
+
+    Keeping these values out of source code means they can be updated after a
+    grid-search retrain without touching Python. The config file is the single
+    source of truth for tunable parameters.
+
+    Raises FileNotFoundError if the config is missing so callers fail loudly
+    instead of silently using stale defaults.
+    """
+    if not _ENSEMBLE_CONFIG_PATH.exists():
+        raise FileNotFoundError(
+            f"Ensemble config not found: {_ENSEMBLE_CONFIG_PATH}. "
+            "Restore from source control or re-run grid search."
+        )
+    with open(_ENSEMBLE_CONFIG_PATH) as f:
+        return json.load(f)
+
+
+_ENSEMBLE_CONFIG = _load_ensemble_config()
+
+# Re-exported for backwards compatibility with tests and callers that reference
+# HGB_PARAMS directly. Prefer _ENSEMBLE_CONFIG["hgb"] for new code.
+HGB_PARAMS: dict = _ENSEMBLE_CONFIG["hgb"]
 
 
 def train_and_save(
@@ -136,8 +150,9 @@ def train_and_save(
     log.info("RidgeCV: alpha=%.4g, train R²=%.4f", alpha, r2_ridge)
 
     # ── Fit HistGradientBoostingRegressor ────────────────────────────────────
-    log.info("Fitting HGB with params: %s", HGB_PARAMS)
-    hgb = HistGradientBoostingRegressor(**HGB_PARAMS)
+    hgb_params = _ENSEMBLE_CONFIG["hgb"]
+    log.info("Fitting HGB with params: %s", hgb_params)
+    hgb = HistGradientBoostingRegressor(**hgb_params)
     hgb.fit(X_fit, y_fit)
 
     r2_hgb = float(hgb.score(X_fit, y_fit))
@@ -149,10 +164,11 @@ def train_and_save(
     ridge_pred_matched = rcv.predict(X)    # shape: (n_matched,)
     hgb_pred_matched = hgb.predict(X)     # shape: (n_matched,)
 
-    # 50/50 blend
+    ridge_weight = _ENSEMBLE_CONFIG["ensemble"]["ridge_weight"]
+    hgb_weight = _ENSEMBLE_CONFIG["ensemble"]["hgb_weight"]
     ensemble_pred = (
-        ENSEMBLE_RIDGE_WEIGHT * ridge_pred_matched
-        + ENSEMBLE_HGB_WEIGHT * hgb_pred_matched
+        ridge_weight * ridge_pred_matched
+        + hgb_weight * hgb_pred_matched
     )
     ensemble_pred = np.clip(ensemble_pred, 0.0, 1.0)
 
@@ -173,13 +189,15 @@ def train_and_save(
         "r2_ridge": r2_ridge,
         "r2_train": r2_ridge,  # kept for backward compat with existing tests
         "r2_hgb": r2_hgb,
-        "ensemble_method": "50pct_ridge_50pct_hgb",
-        "ensemble_ridge_weight": ENSEMBLE_RIDGE_WEIGHT,
-        "ensemble_hgb_weight": ENSEMBLE_HGB_WEIGHT,
-        "hgb_params": HGB_PARAMS,
-        "loo_r_ridge": 0.650,     # measured in S197
-        "loo_r_hgb": 0.687,       # measured in exp1b_hgb_full_loo.py
-        "loo_r_ensemble": 0.690,  # measured in exp1b_hgb_full_loo.py
+        "ensemble_method": f"{int(ridge_weight * 100)}pct_ridge_{int(hgb_weight * 100)}pct_hgb",
+        "ensemble_ridge_weight": ridge_weight,
+        "ensemble_hgb_weight": hgb_weight,
+        "hgb_params": hgb_params,
+        # DEBT: write training metrics to data/model/training_metrics.json after retrain
+        # rather than embedding empirical LOO results as hardcoded literals here.
+        "loo_r_ridge": "see data/model/accuracy_metrics.json",
+        "loo_r_hgb": "see data/model/accuracy_metrics.json",
+        "loo_r_ensemble": "see data/model/accuracy_metrics.json",
         "feature_names": feature_names,
         "n_counties": int(len(priors_df)),
         "n_training_samples": int(n_fit),

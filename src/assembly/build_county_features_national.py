@@ -58,7 +58,6 @@ from __future__ import annotations
 import logging
 from pathlib import Path
 
-import numpy as np
 import pandas as pd
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
@@ -182,7 +181,8 @@ BEA_FEATURE_COLS = [
     "gdp_growth",
 ]
 
-# CDC mortality features (exclude reserved all-NaN cols: heart_disease_rate, cancer_rate, suicide_rate)
+# CDC mortality features (exclude reserved all-NaN cols: heart_disease_rate, cancer_rate,
+# suicide_rate)
 CDC_MORTALITY_FEATURE_COLS = [
     "drug_overdose_rate",
     "despair_death_rate",
@@ -232,6 +232,85 @@ TRANSPORT_FEATURE_COLS = [
     "transport_dead_end_proportion",
     "transport_circuity_avg",
 ]
+
+
+def _merge_feature_block(
+    df: pd.DataFrame,
+    source_df: pd.DataFrame,
+    feature_cols: list[str],
+    label: str,
+    *,
+    allow_partial_cols: bool = False,
+    fill_zero: bool = False,
+    skip_cols_in_df: bool = False,
+) -> pd.DataFrame:
+    """Merge one feature source into the accumulating county dataframe.
+
+    Encapsulates the repeated validate → select cols → merge → impute pattern so
+    each data-source block in build_national_features() is 1-2 lines instead of ~15.
+
+    Parameters
+    ----------
+    df:
+        The accumulating merged dataframe (ACS spine + previously merged sources).
+    source_df:
+        The incoming feature dataframe to merge in.
+    feature_cols:
+        The declared list of feature columns for this source (e.g. RCMS_FEATURE_COLS).
+    label:
+        Human-readable name used in log messages (e.g. "RCMS", "BEA").
+    allow_partial_cols:
+        When True, silently restrict feature_cols to columns that actually exist in
+        source_df. Useful for sources whose schema may vary (BEA, CDC, COVID, VA,
+        Transport). When False (default), all declared feature_cols must be present.
+    fill_zero:
+        When True, impute NaN values with 0 rather than the state median. Used for
+        binary flag sources like USDA where absence means "not classified".
+    skip_cols_in_df:
+        When True, skip any feature_cols that are already present in df before
+        merging. Used for the expanded-CHR pass to avoid duplicate columns.
+
+    Returns
+    -------
+    Updated dataframe with source features merged and imputed.
+    """
+    # Validate FIPS format on source before touching the spine
+    if not source_df["county_fips"].str.len().eq(5).all():
+        raise ValueError(f"{label} county_fips must be 5-char zero-padded strings")
+
+    # Determine which columns to bring in from source_df
+    cols_to_merge = feature_cols
+    if allow_partial_cols:
+        cols_to_merge = [c for c in feature_cols if c in source_df.columns]
+    if skip_cols_in_df:
+        cols_to_merge = [c for c in cols_to_merge if c not in df.columns]
+
+    if not cols_to_merge:
+        log.info("No new %s columns to merge — skipping", label)
+        return df
+
+    df = df.merge(source_df[["county_fips"] + cols_to_merge], on="county_fips", how="left")
+
+    # After merging, check which declared cols actually landed in df
+    # (allow_partial_cols may have reduced the set further)
+    actual_feature_cols = [c for c in cols_to_merge if c in df.columns]
+
+    if not actual_feature_cols:
+        return df
+
+    n_missing = df[actual_feature_cols[0]].isna().sum()
+    if n_missing == 0:
+        return df
+
+    if fill_zero:
+        for col in actual_feature_cols:
+            df[col] = df[col].fillna(0)
+        log.info("%d counties lack %s data — filled missing flags with 0", n_missing, label)
+    else:
+        log.info("%d counties lack %s data — imputing with state-level medians", n_missing, label)
+        df = _impute_state_medians(df, actual_feature_cols)
+
+    return df
 
 
 def _impute_state_medians(df: pd.DataFrame, cols: list[str]) -> pd.DataFrame:
@@ -304,254 +383,122 @@ def build_national_features(
     -------
     DataFrame with county_fips, pop_total, and all available feature columns.
     """
-    # Validate FIPS format
+    # Validate ACS and RCMS FIPS format up front — both are required, non-optional sources.
+    # All optional sources are validated inside _merge_feature_block.
     if not acs["county_fips"].str.len().eq(5).all():
         raise ValueError("ACS county_fips must be 5-char zero-padded strings")
     if not rcms["county_fips"].str.len().eq(5).all():
         raise ValueError("RCMS county_fips must be 5-char zero-padded strings")
 
     # Left join: keep all ACS counties, bring in RCMS where available
-    rcms_cols = ["county_fips"] + RCMS_FEATURE_COLS
-    merged = acs.merge(rcms[rcms_cols], on="county_fips", how="left")
-
+    merged = acs.merge(rcms[["county_fips"] + RCMS_FEATURE_COLS], on="county_fips", how="left")
     n_missing_rcms = merged[RCMS_FEATURE_COLS[0]].isna().sum()
     if n_missing_rcms > 0:
-        log.info(
-            "%d counties lack RCMS data — imputing with state-level medians",
-            n_missing_rcms,
-        )
+        log.info("%d counties lack RCMS data — imputing with state-level medians", n_missing_rcms)
         merged = _impute_state_medians(merged, RCMS_FEATURE_COLS)
 
     # ── QCEW industry features ───────────────────────────────────────────────
+    # QCEW is multi-year; aggregate to the latest available year before merging.
     if qcew is not None:
-        if not qcew["county_fips"].str.len().eq(5).all():
-            raise ValueError("QCEW county_fips must be 5-char zero-padded strings")
-
-        # Aggregate to latest available year (2023)
         latest_year = qcew["year"].max()
         log.info("Aggregating QCEW to latest year: %d", latest_year)
         qcew_latest = qcew[qcew["year"] == latest_year][["county_fips"] + QCEW_FEATURE_COLS].copy()
-
-        merged = merged.merge(qcew_latest, on="county_fips", how="left")
-
-        n_missing_qcew = merged[QCEW_FEATURE_COLS[0]].isna().sum()
-        if n_missing_qcew > 0:
-            log.info(
-                "%d counties lack QCEW data — imputing with state-level medians",
-                n_missing_qcew,
-            )
-            merged = _impute_state_medians(merged, QCEW_FEATURE_COLS)
+        merged = _merge_feature_block(merged, qcew_latest, QCEW_FEATURE_COLS, "QCEW")
 
     # ── CHR health features ──────────────────────────────────────────────────
     if chr_df is not None:
-        if not chr_df["county_fips"].str.len().eq(5).all():
-            raise ValueError("CHR county_fips must be 5-char zero-padded strings")
-
-        chr_cols = ["county_fips"] + CHR_FEATURE_COLS
-        merged = merged.merge(chr_df[chr_cols], on="county_fips", how="left")
-
-        n_missing_chr = merged[CHR_FEATURE_COLS[0]].isna().sum()
-        if n_missing_chr > 0:
-            log.info(
-                "%d counties lack CHR data — imputing with state-level medians",
-                n_missing_chr,
-            )
-            merged = _impute_state_medians(merged, CHR_FEATURE_COLS)
+        merged = _merge_feature_block(merged, chr_df, CHR_FEATURE_COLS, "CHR")
 
     # ── Migration features ───────────────────────────────────────────────────
     if migration is not None:
-        if not migration["county_fips"].str.len().eq(5).all():
-            raise ValueError("Migration county_fips must be 5-char zero-padded strings")
-
-        mig_cols = ["county_fips"] + MIGRATION_FEATURE_COLS
-        merged = merged.merge(migration[mig_cols], on="county_fips", how="left")
-
-        n_missing_mig = merged[MIGRATION_FEATURE_COLS[0]].isna().sum()
-        if n_missing_mig > 0:
-            log.info(
-                "%d counties lack migration data — imputing with state-level medians",
-                n_missing_mig,
-            )
-            merged = _impute_state_medians(merged, MIGRATION_FEATURE_COLS)
+        merged = _merge_feature_block(merged, migration, MIGRATION_FEATURE_COLS, "Migration")
 
     # ── Urbanicity features ──────────────────────────────────────────────────
     if urbanicity is not None:
-        if not urbanicity["county_fips"].str.len().eq(5).all():
-            raise ValueError("Urbanicity county_fips must be 5-char zero-padded strings")
-
-        urb_cols = ["county_fips"] + URBANICITY_FEATURE_COLS
-        merged = merged.merge(urbanicity[urb_cols], on="county_fips", how="left")
-
-        n_missing_urb = merged[URBANICITY_FEATURE_COLS[0]].isna().sum()
-        if n_missing_urb > 0:
-            log.info(
-                "%d counties lack urbanicity data — imputing with state-level medians",
-                n_missing_urb,
-            )
-            merged = _impute_state_medians(merged, URBANICITY_FEATURE_COLS)
+        merged = _merge_feature_block(merged, urbanicity, URBANICITY_FEATURE_COLS, "Urbanicity")
 
     # ── SCI social connectedness features ────────────────────────────────────
     if sci is not None:
-        if not sci["county_fips"].str.len().eq(5).all():
-            raise ValueError("SCI county_fips must be 5-char zero-padded strings")
-
-        sci_cols = ["county_fips"] + SCI_FEATURE_COLS
-        merged = merged.merge(sci[sci_cols], on="county_fips", how="left")
-
-        n_missing_sci = merged[SCI_FEATURE_COLS[0]].isna().sum()
-        if n_missing_sci > 0:
-            log.info(
-                "%d counties lack SCI data — imputing with state-level medians",
-                n_missing_sci,
-            )
-            merged = _impute_state_medians(merged, SCI_FEATURE_COLS)
+        merged = _merge_feature_block(merged, sci, SCI_FEATURE_COLS, "SCI")
 
     # ── Broadband / internet access features ────────────────────────────────
     if broadband is not None:
-        if not broadband["county_fips"].str.len().eq(5).all():
-            raise ValueError("Broadband county_fips must be 5-char zero-padded strings")
-
-        bb_cols = ["county_fips"] + BROADBAND_FEATURE_COLS
-        merged = merged.merge(broadband[bb_cols], on="county_fips", how="left")
-
-        n_missing_bb = merged[BROADBAND_FEATURE_COLS[0]].isna().sum()
-        if n_missing_bb > 0:
-            log.info(
-                "%d counties lack broadband data — imputing with state-level medians",
-                n_missing_bb,
-            )
-            merged = _impute_state_medians(merged, BROADBAND_FEATURE_COLS)
+        merged = _merge_feature_block(merged, broadband, BROADBAND_FEATURE_COLS, "Broadband")
 
     # ── BEA income/GDP features ─────────────────────────────────────────────
+    # allow_partial_cols=True: BEA schema may vary; only merge columns present in source.
     if bea is not None:
-        if not bea["county_fips"].str.len().eq(5).all():
-            raise ValueError("BEA county_fips must be 5-char zero-padded strings")
-
-        bea_cols = ["county_fips"] + BEA_FEATURE_COLS
-        available_bea = [c for c in bea_cols if c in bea.columns]
-        merged = merged.merge(bea[available_bea], on="county_fips", how="left")
-
-        actual_bea_feats = [c for c in BEA_FEATURE_COLS if c in merged.columns]
-        if actual_bea_feats:
-            n_missing = merged[actual_bea_feats[0]].isna().sum()
-            if n_missing > 0:
-                log.info(
-                    "%d counties lack BEA data — imputing with state-level medians",
-                    n_missing,
-                )
-                merged = _impute_state_medians(merged, actual_bea_feats)
+        merged = _merge_feature_block(merged, bea, BEA_FEATURE_COLS, "BEA", allow_partial_cols=True)
 
     # ── CDC mortality features ──────────────────────────────────────────────
+    # allow_partial_cols=True: some mortality columns are reserved/all-NaN in some runs.
     if cdc_mortality is not None:
-        if not cdc_mortality["county_fips"].str.len().eq(5).all():
-            raise ValueError("CDC mortality county_fips must be 5-char zero-padded strings")
-
-        cdc_cols = ["county_fips"] + CDC_MORTALITY_FEATURE_COLS
-        available_cdc = [c for c in cdc_cols if c in cdc_mortality.columns]
-        merged = merged.merge(cdc_mortality[available_cdc], on="county_fips", how="left")
-
-        actual_cdc_feats = [c for c in CDC_MORTALITY_FEATURE_COLS if c in merged.columns]
-        if actual_cdc_feats:
-            n_missing = merged[actual_cdc_feats[0]].isna().sum()
-            if n_missing > 0:
-                log.info(
-                    "%d counties lack CDC mortality data — imputing with state-level medians",
-                    n_missing,
-                )
-                merged = _impute_state_medians(merged, actual_cdc_feats)
+        merged = _merge_feature_block(
+            merged,
+            cdc_mortality,
+            CDC_MORTALITY_FEATURE_COLS,
+            "CDC mortality",
+            allow_partial_cols=True,
+        )
 
     # ── COVID vaccination features ──────────────────────────────────────────
     if covid is not None:
-        if not covid["county_fips"].str.len().eq(5).all():
-            raise ValueError("COVID county_fips must be 5-char zero-padded strings")
-
-        covid_cols = ["county_fips"] + COVID_FEATURE_COLS
-        available_covid = [c for c in covid_cols if c in covid.columns]
-        merged = merged.merge(covid[available_covid], on="county_fips", how="left")
-
-        actual_covid_feats = [c for c in COVID_FEATURE_COLS if c in merged.columns]
-        if actual_covid_feats:
-            n_missing = merged[actual_covid_feats[0]].isna().sum()
-            if n_missing > 0:
-                log.info(
-                    "%d counties lack COVID vaccination data — imputing with state-level medians",
-                    n_missing,
-                )
-                merged = _impute_state_medians(merged, actual_covid_feats)
+        merged = _merge_feature_block(
+            merged,
+            covid,
+            COVID_FEATURE_COLS,
+            "COVID vaccination",
+            allow_partial_cols=True,
+        )
 
     # ── VA disability features ──────────────────────────────────────────────
     if va is not None:
-        if not va["county_fips"].str.len().eq(5).all():
-            raise ValueError("VA county_fips must be 5-char zero-padded strings")
-
-        va_cols = ["county_fips"] + VA_FEATURE_COLS
-        available_va = [c for c in va_cols if c in va.columns]
-        merged = merged.merge(va[available_va], on="county_fips", how="left")
-
-        actual_va_feats = [c for c in VA_FEATURE_COLS if c in merged.columns]
-        if actual_va_feats:
-            n_missing = merged[actual_va_feats[0]].isna().sum()
-            if n_missing > 0:
-                log.info(
-                    "%d counties lack VA disability data — imputing with state-level medians",
-                    n_missing,
-                )
-                merged = _impute_state_medians(merged, actual_va_feats)
+        merged = _merge_feature_block(
+            merged,
+            va,
+            VA_FEATURE_COLS,
+            "VA disability",
+            allow_partial_cols=True,
+        )
 
     # ── USDA economic typology features ─────────────────────────────────────
+    # fill_zero=True: binary flags — absence of a flag means "not classified", not missing.
     if usda is not None:
-        if not usda["county_fips"].str.len().eq(5).all():
-            raise ValueError("USDA county_fips must be 5-char zero-padded strings")
-
-        usda_cols = ["county_fips"] + USDA_FEATURE_COLS
-        available_usda = [c for c in usda_cols if c in usda.columns]
-        merged = merged.merge(usda[available_usda], on="county_fips", how="left")
-
-        # USDA flags: fill missing with 0 (absence of flag = not classified)
-        actual_usda_feats = [c for c in USDA_FEATURE_COLS if c in merged.columns]
-        for col in actual_usda_feats:
-            merged[col] = merged[col].fillna(0)
+        merged = _merge_feature_block(
+            merged,
+            usda,
+            USDA_FEATURE_COLS,
+            "USDA typology",
+            allow_partial_cols=True,
+            fill_zero=True,
+        )
 
     # ── DOT transportation features ─────────────────────────────────────────
     if transport is not None:
-        if not transport["county_fips"].str.len().eq(5).all():
-            raise ValueError("Transport county_fips must be 5-char zero-padded strings")
-
-        tr_cols = ["county_fips"] + TRANSPORT_FEATURE_COLS
-        available_tr = [c for c in tr_cols if c in transport.columns]
-        merged = merged.merge(transport[available_tr], on="county_fips", how="left")
-
-        actual_tr_feats = [c for c in TRANSPORT_FEATURE_COLS if c in merged.columns]
-        if actual_tr_feats:
-            n_missing = merged[actual_tr_feats[0]].isna().sum()
-            if n_missing > 0:
-                log.info(
-                    "%d counties lack transportation data — imputing with state-level medians",
-                    n_missing,
-                )
-                merged = _impute_state_medians(merged, actual_tr_feats)
+        merged = _merge_feature_block(
+            merged,
+            transport,
+            TRANSPORT_FEATURE_COLS,
+            "Transportation",
+            allow_partial_cols=True,
+        )
 
     # ── Expanded CHR features (if available in the assembled CHR file) ──────
-    # These come from the same chr_df but are separate columns added by the
-    # expanded fetch. Only merge if they exist in the input.
+    # These come from the same chr_df but are columns added by the expanded fetch.
+    # skip_cols_in_df=True avoids re-merging columns already brought in by the CHR pass above.
     if chr_df is not None:
         available_expanded = [c for c in CHR_EXPANDED_COLS if c in chr_df.columns]
         if available_expanded:
-            exp_cols = ["county_fips"] + available_expanded
-            # Avoid duplicate merge — only merge columns not already in merged
-            new_cols = [c for c in available_expanded if c not in merged.columns]
-            if new_cols:
-                merged = merged.merge(
-                    chr_df[["county_fips"] + new_cols], on="county_fips", how="left"
-                )
-                n_missing = merged[new_cols[0]].isna().sum()
-                if n_missing > 0:
-                    log.info(
-                        "%d counties lack expanded CHR data — imputing with state-level medians",
-                        n_missing,
-                    )
-                    merged = _impute_state_medians(merged, new_cols)
-                log.info("Added %d expanded CHR features", len(new_cols))
+            merged = _merge_feature_block(
+                merged,
+                chr_df,
+                CHR_EXPANDED_COLS,
+                "expanded CHR",
+                allow_partial_cols=True,
+                skip_cols_in_df=True,
+            )
+            n_added = sum(c in merged.columns for c in CHR_EXPANDED_COLS)
+            log.info("Added %d expanded CHR features", n_added)
 
     return merged.reset_index(drop=True)
 
@@ -674,10 +621,20 @@ def main() -> None:
         log.warning("Transportation features not found at %s — skipping", TRANSPORT_PATH)
 
     features = build_national_features(
-        acs, rcms, qcew=qcew, chr_df=chr_df,
-        migration=migration, urbanicity=urbanicity, sci=sci, broadband=broadband,
-        bea=bea, cdc_mortality=cdc_mortality, covid=covid,
-        va=va, usda=usda, transport=transport,
+        acs,
+        rcms,
+        qcew=qcew,
+        chr_df=chr_df,
+        migration=migration,
+        urbanicity=urbanicity,
+        sci=sci,
+        broadband=broadband,
+        bea=bea,
+        cdc_mortality=cdc_mortality,
+        covid=covid,
+        va=va,
+        usda=usda,
+        transport=transport,
     )
 
     n_na_any = features.isnull().any(axis=1).sum()
@@ -698,7 +655,11 @@ def main() -> None:
     # Sanity check: FIPS format
     bad_fips = features[~features["county_fips"].str.match(r"^\d{5}$")]
     if len(bad_fips):
-        log.error("%d rows with malformed county_fips: %s", len(bad_fips), bad_fips["county_fips"].tolist()[:5])
+        log.error(
+            "%d rows with malformed county_fips: %s",
+            len(bad_fips),
+            bad_fips["county_fips"].tolist()[:5],
+        )
 
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     features.to_parquet(OUTPUT_PATH, index=False)
@@ -706,9 +667,17 @@ def main() -> None:
 
     # Summary stats for key features
     log.info("\nFeature summary (all counties):")
-    summary_cols = ["pct_white_nh", "pct_black", "pct_hispanic", "pct_bachelors_plus",
-                    "median_hh_income", "evangelical_share", "catholic_share",
-                    "pct_broadband", "pct_no_internet"]
+    summary_cols = [
+        "pct_white_nh",
+        "pct_black",
+        "pct_hispanic",
+        "pct_bachelors_plus",
+        "median_hh_income",
+        "evangelical_share",
+        "catholic_share",
+        "pct_broadband",
+        "pct_no_internet",
+    ]
     for col in summary_cols:
         if col not in features.columns:
             continue

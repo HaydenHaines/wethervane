@@ -7,6 +7,7 @@ import { SimilarCounties } from "@/components/detail/SimilarCounties";
 import { CountyElectionHistory, type ElectionHistoryPoint } from "@/components/detail/CountyElectionHistory";
 import { Breadcrumbs } from "@/components/nav/Breadcrumbs";
 import { marginToRating, getSuperTypeColor, rgbToHex } from "@/lib/config/palette";
+import { STATE_NAMES, stripStateSuffix } from "@/lib/config/states";
 import { formatMargin } from "@/lib/format";
 
 // ── Types ─────────────────────────────────────────────────────────────────
@@ -41,20 +42,6 @@ const API_BASE =
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:8002";
 
 const SITE_URL = "https://wethervane.hhaines.duckdns.org";
-
-const STATE_NAMES: Record<string, string> = {
-  AL: "Alabama", AK: "Alaska", AZ: "Arizona", AR: "Arkansas", CA: "California",
-  CO: "Colorado", CT: "Connecticut", DE: "Delaware", FL: "Florida", GA: "Georgia",
-  HI: "Hawaii", ID: "Idaho", IL: "Illinois", IN: "Indiana", IA: "Iowa",
-  KS: "Kansas", KY: "Kentucky", LA: "Louisiana", ME: "Maine", MD: "Maryland",
-  MA: "Massachusetts", MI: "Michigan", MN: "Minnesota", MS: "Mississippi",
-  MO: "Missouri", MT: "Montana", NE: "Nebraska", NV: "Nevada", NH: "New Hampshire",
-  NJ: "New Jersey", NM: "New Mexico", NY: "New York", NC: "North Carolina",
-  ND: "North Dakota", OH: "Ohio", OK: "Oklahoma", OR: "Oregon", PA: "Pennsylvania",
-  RI: "Rhode Island", SC: "South Carolina", SD: "South Dakota", TN: "Tennessee",
-  TX: "Texas", UT: "Utah", VT: "Vermont", VA: "Virginia", WA: "Washington",
-  WV: "West Virginia", WI: "Wisconsin", WY: "Wyoming", DC: "District of Columbia",
-};
 
 async function fetchCounty(fips: string): Promise<CountyDetail | null> {
   try {
@@ -91,11 +78,6 @@ async function fetchAllFips(): Promise<string[]> {
   } catch {
     return [];
   }
-}
-
-function stripStateSuffix(name: string | null): string {
-  if (!name) return "Unknown County";
-  return name.replace(/,\s*[A-Z]{2}$/, "");
 }
 
 // ── Metadata ──────────────────────────────────────────────────────────────
