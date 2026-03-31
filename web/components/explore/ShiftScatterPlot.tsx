@@ -258,7 +258,7 @@ export function ShiftScatterPlot({
     if (svg) {
       // Reusable helper: find the nearest plotData point to a pixel position (mx, my)
       // within the plot's inner frame. Returns null if no point is within 30px.
-      function findNearest(mx: number, my: number) {
+      const findNearest = (mx: number, my: number) => {
         const plotLeft = 48;
         const plotRight = effectiveWidth - 8;
         const plotTop = 12;
