@@ -3,6 +3,8 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import { PollTable } from "@/components/forecast/PollTable";
 import { TypesBreakdown } from "@/components/forecast/TypesBreakdown";
+import { HistoricalContextCard } from "@/components/forecast/HistoricalContextCard";
+import type { HistoricalContext } from "@/components/forecast/HistoricalContextCard";
 import { marginToRating } from "@/lib/config/palette";
 import { STATE_NAMES } from "@/lib/config/states";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -80,6 +82,7 @@ interface RaceDetail {
   pred_std?: number | null;
   pred_lo90?: number | null;
   pred_hi90?: number | null;
+  historical_context?: HistoricalContext | null;
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────
@@ -309,6 +312,15 @@ export default async function RaceDetailPage({ params }: PageProps) {
           </h2>
           <TypesBreakdown types={data.type_breakdown} stateName={stateName} />
         </section>
+      )}
+
+      {/* Historical context — only rendered for the 15 tracked competitive races */}
+      {data.historical_context && (
+        <HistoricalContextCard
+          context={data.historical_context}
+          stateName={stateName}
+          stateAbbr={data.state_abbr}
+        />
       )}
 
       {/* Model notes */}
