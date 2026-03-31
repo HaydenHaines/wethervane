@@ -1,41 +1,33 @@
 import { test, expect } from "@playwright/test";
 
-test("map loads and shows county polygons", async ({ page }) => {
+test("landing page loads and shows entry points", async ({ page }) => {
   await page.goto("/");
-  await expect(page).toHaveURL(/\/forecast/);
-  const canvas = page.locator("canvas");
-  await expect(canvas).toBeVisible({ timeout: 10_000 });
+  const main = page.locator("main");
+  await expect(main).toBeVisible({ timeout: 10_000 });
+  const heading = page.getByText("Closest Races");
+  await expect(heading).toBeVisible({ timeout: 10_000 });
 });
 
-test("clicking a county opens the community panel", async ({ page }) => {
-  await page.goto("/forecast");
-  await page.locator("canvas").waitFor({ timeout: 10_000 });
-  await page.mouse.click(300, 300);
-  await page.waitForTimeout(500);
-  const panel = page.locator("text=/Community \\d+/");
-  const panelCount = await panel.count();
-  expect(panelCount).toBeGreaterThanOrEqual(0);
+test("landing page has navigation to forecast", async ({ page }) => {
+  await page.goto("/");
+  const forecastLink = page.locator('a[href="/forecast"]');
+  await expect(forecastLink.first()).toBeVisible({ timeout: 10_000 });
 });
 
-test("forecast tab loads race predictions", async ({ page }) => {
-  await page.goto("/forecast");
-  const select = page.locator("select");
-  await expect(select).toBeVisible({ timeout: 10_000 });
-  const options = await select.locator("option").count();
-  expect(options).toBeGreaterThan(0);
+test("forecast senate page loads race data", async ({ page }) => {
+  await page.goto("/forecast/senate");
+  const h1 = page.locator("h1");
+  await expect(h1).toBeVisible({ timeout: 30_000 });
+  const text = await h1.textContent();
+  expect(text).toContain("Senate");
 });
 
-test("feed-a-poll updates predictions", async ({ page }) => {
-  await page.goto("/forecast");
-  const updateBtn = page.locator("text=Update");
-  await expect(updateBtn).toBeVisible({ timeout: 10_000 });
-  const slider = page.locator('input[type="range"]');
-  await slider.evaluate((el: HTMLInputElement) => {
-    el.value = "0.55";
-    el.dispatchEvent(new Event("input", { bubbles: true }));
-    el.dispatchEvent(new Event("change", { bubbles: true }));
-  });
-  await updateBtn.click();
-  const resetBtn = page.locator("text=Reset to baseline");
-  await expect(resetBtn).toBeVisible({ timeout: 5_000 });
+test("forecast senate page has race cards in DOM", async ({ page }) => {
+  await page.goto("/forecast/senate");
+  await expect(page.locator("h1")).toBeVisible({ timeout: 30_000 });
+  // Race cards may be below the fold — check attached state
+  const raceLinks = page.locator('a[href^="/forecast/2026-"]');
+  await raceLinks.first().waitFor({ state: "attached", timeout: 10_000 });
+  const count = await raceLinks.count();
+  expect(count).toBeGreaterThan(0);
 });

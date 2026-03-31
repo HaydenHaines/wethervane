@@ -1,14 +1,19 @@
 import { defineConfig } from "@playwright/test";
 
+const port = process.env.PORT ?? "3001";
+
 export default defineConfig({
   testDir: "./e2e",
+  /* Run tests sequentially to avoid overloading the API */
+  fullyParallel: false,
+  workers: 1,
   use: {
-    baseURL: "http://localhost:3000",
+    baseURL: `http://localhost:${port}`,
     headless: true,
   },
   webServer: {
-    command: "npm run start",
-    url: "http://localhost:3000",
+    command: `PORT=${port} npm run start`,
+    url: `http://localhost:${port}`,
     reuseExistingServer: !process.env.CI,
     timeout: 30_000,
   },
