@@ -309,9 +309,6 @@ The API is the contract boundary between model pipeline and frontend. The fronte
 ### Fundamentals — State-Level Signal Investigation Needed
 **DEBT:** Fundamentals modeling is currently conceived as a national signal ("it's the economy, stupid"). However, regional economic conditions likely vary in how they hit different types — a manufacturing downturn hits Rust Belt working-class types differently than coastal knowledge-worker types. Worth investigating whether BLS, BEA regional Fed, or BEA state-level data can support state- or type-level fundamentals signals rather than a single national scalar.
 
-### Forecast Tab — Map Performance on Recalculate
-**DEBT:** The "Recalculate" button in the Forecast tab re-renders the full map choropleth. At national scale (3,154 counties + 81K tracts) this is a heavy draw. Consider rendering a state-only zoomed view when a state is selected in the Forecast tab, rather than re-rendering the full national map on every recalculate.
-
 ## Constraints
 
 - **Free data only**: Census, ACS, election returns, congregation data, public polls. No paid subscriptions.
