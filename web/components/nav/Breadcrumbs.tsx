@@ -57,7 +57,7 @@ export function Breadcrumbs({ currentPage, extraParents }: BreadcrumbsProps) {
           {crumb.href && !isLast ? (
             <Link
               href={crumb.href}
-              style={{ color: "var(--color-dem)", textDecoration: "none" }}
+              style={{ color: "var(--color-dem)", textDecoration: "none", padding: "8px 4px" }}
             >
               {crumb.label}
             </Link>

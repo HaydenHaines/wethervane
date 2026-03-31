@@ -21,8 +21,8 @@ function ForecastTabs() {
   const isGovernor = pathname.startsWith("/forecast/governor");
 
   const tabStyle = (active: boolean): React.CSSProperties => ({
-    padding: "6px 16px",
-    fontSize: 13,
+    padding: "10px 16px",
+    fontSize: 14,
     fontWeight: 600,
     borderRadius: 6,
     textDecoration: "none",
@@ -82,7 +82,7 @@ export default function ForecastLayout({ children }: { children: React.ReactNode
   return (
     <MapProvider>
       <ForecastStateNavigator />
-      <div className="flex flex-col lg:flex-row h-[calc(100vh-3rem)]">
+      <div className="flex flex-col lg:flex-row lg:h-[calc(100vh-3rem)]">
         {/* Map pane — desktop only; hidden on mobile.
             defaultOverlayMode="forecast" keeps the focus on competitive ratings,
             not community-type structure, on all /forecast/* pages. */}
@@ -90,7 +90,7 @@ export default function ForecastLayout({ children }: { children: React.ReactNode
           <MapShell defaultOverlayMode="forecast" />
         </div>
         {/* Panel pane */}
-        <div className="flex-1 overflow-y-auto p-4 lg:p-6">
+        <div className="flex-1 lg:overflow-y-auto p-4 lg:p-6">
           <ForecastTabs />
           {children}
         </div>
