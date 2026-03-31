@@ -1,6 +1,7 @@
 "use client";
 
 import { useSenateOverview } from "@/lib/hooks/use-senate-overview";
+import { ChamberProbabilityBanner } from "@/components/forecast/ChamberProbabilityBanner";
 import { OverviewBlendControls } from "@/components/forecast/OverviewBlendControls";
 import { ErrorAlert } from "@/components/shared/ErrorAlert";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -38,6 +39,9 @@ export default function SenatePage() {
       <h1 className="font-serif text-2xl font-bold mb-4">
         {ELECTION_YEAR} United States Senate
       </h1>
+
+      {/* Chamber control probability — "One Big Number" anchor above the balance bar */}
+      <ChamberProbabilityBanner />
 
       {/*
        * OverviewBlendControls owns the BalanceBar, blend sliders, and race
