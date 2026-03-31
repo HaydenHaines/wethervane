@@ -444,3 +444,73 @@ class TestBlendEndpoint:
             assert data["pred_lo90"] <= data["prediction"] <= data["pred_hi90"], (
                 f"CI bounds do not bracket prediction: {data}"
             )
+
+
+class TestHistoricalContext:
+    """Tests for historical context in race detail and standalone /history endpoint."""
+
+    def test_race_detail_includes_historical_context_field(self, race_client):
+        """Race detail response always includes historical_context key (may be None)."""
+        resp = race_client.get("/api/v1/forecast/race/2026-fl-senate")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert "historical_context" in data
+
+    def test_race_detail_historical_context_none_for_untracked_race(self, race_client):
+        """Races not in historical_results.json return historical_context=None."""
+        resp = race_client.get("/api/v1/forecast/race/2026-fl-senate")
+        data = resp.json()
+        # FL Senate is not in the 15 tracked competitive races
+        assert data["historical_context"] is None
+
+    def test_history_endpoint_404_for_untracked_race(self, race_client):
+        """/history endpoint returns 404 for races not in historical_results.json."""
+        resp = race_client.get("/api/v1/forecast/race/2026-fl-senate/history")
+        assert resp.status_code == 404
+
+    def test_history_endpoint_mi_senate_data(self, race_client):
+        """MI Senate history matches known 2020 result (Peters D+1.9)."""
+        resp = race_client.get("/api/v1/forecast/race/2026-mi-senate/history")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["last_race"]["year"] == 2020
+        assert data["last_race"]["winner"] == "Gary Peters"
+        assert data["last_race"]["party"] == "D"
+        assert abs(data["last_race"]["margin"] - 1.9) < 0.01
+
+    def test_history_endpoint_pa_governor_data(self, race_client):
+        """PA Governor history matches known 2022 result (Shapiro D+14.8)."""
+        resp = race_client.get("/api/v1/forecast/race/2026-pa-governor/history")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["last_race"]["year"] == 2022
+        assert data["last_race"]["winner"] == "Josh Shapiro"
+        assert data["last_race"]["party"] == "D"
+        assert abs(data["last_race"]["margin"] - 14.8) < 0.01
+
+    def test_history_presidential_margin_sign_convention(self, race_client):
+        """Presidential margin is negative for Trump wins (Rep advantage)."""
+        resp = race_client.get("/api/v1/forecast/race/2026-mi-senate/history")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["presidential_2024"]["party"] == "R"
+        assert data["presidential_2024"]["margin"] < 0
+
+    def test_history_forecast_shift_none_in_standalone_endpoint(self, race_client):
+        """Standalone /history endpoint returns forecast_shift=None (no prediction context)."""
+        resp = race_client.get("/api/v1/forecast/race/2026-mi-senate/history")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["forecast_shift"] is None
+
+    def test_history_endpoint_returns_structure(self, race_client):
+        """Tracked races return proper historical_context structure with expected fields."""
+        resp = race_client.get("/api/v1/forecast/race/2026-mi-senate/history")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert "last_race" in data
+        assert "presidential_2024" in data
+        last = data["last_race"]
+        assert all(k in last for k in ("year", "winner", "party", "margin"))
+        pres = data["presidential_2024"]
+        assert all(k in pres for k in ("winner", "party", "margin"))
