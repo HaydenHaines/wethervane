@@ -58,6 +58,9 @@ interface TypeBreakdown {
   display_name: string;
   n_counties: number;
   mean_pred_dem_share: number | null;
+  // Total 2024 votes across counties of this type in the state (from API).
+  // Types are pre-sorted by this value descending so urban types appear first.
+  total_votes: number | null;
 }
 
 interface RaceDetail {

@@ -336,11 +336,39 @@ class TestGetRaceDetail:
         assert "display_name" in t
         assert "n_counties" in t
         assert "mean_pred_dem_share" in t
+        # total_votes enables vote-weighted sort order (GitHub #21)
+        assert "total_votes" in t
 
     def test_type_breakdown_limited_to_5(self, race_client):
         resp = race_client.get("/api/v1/forecast/race/2026-fl-senate")
         data = resp.json()
         assert len(data["type_breakdown"]) <= 5
+
+    def test_type_breakdown_sorted_by_vote_contribution(self, race_client):
+        """Types must be ordered by total votes descending, not county count.
+
+        FL Senate test data has two types:
+          - type 2 (Urban Progressive): county 12001 with 100,000 votes
+          - type 0 (Rural Conservative): county 12003 with 15,000 votes
+
+        Urban Progressive has more votes but only 1 county vs Rural Conservative's 1
+        county. A county-count sort would be a tie; a vote-weighted sort puts Urban
+        Progressive first because it contributes far more electoral weight. This is
+        the fix for GitHub issue #21 (Michigan showing only rural types).
+        """
+        resp = race_client.get("/api/v1/forecast/race/2026-fl-senate")
+        data = resp.json()
+        breakdown = data["type_breakdown"]
+        assert len(breakdown) >= 2, "Need at least 2 types to verify ordering"
+        votes = [t["total_votes"] for t in breakdown]
+        # Every entry should have total_votes populated from the counties table
+        assert all(v is not None for v in votes), "total_votes should be non-null"
+        # Types must be in descending vote-contribution order
+        assert votes == sorted(votes, reverse=True), (
+            f"Types not sorted by vote contribution: {votes}"
+        )
+        # The heaviest type (Urban Progressive, 100K) must come before the lighter one
+        assert votes[0] > votes[-1]
 
     def test_404_for_invalid_slug(self, race_client):
         resp = race_client.get("/api/v1/forecast/race/9999-xx-fake-race")
