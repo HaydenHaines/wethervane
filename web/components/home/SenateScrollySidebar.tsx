@@ -78,7 +78,7 @@ export function SenateScrollySidebar({
               className="flex-1 min-h-[4px] rounded-sm transition-opacity duration-300"
               style={{
                 backgroundColor: seg.color,
-                opacity: activeZone === null || activeZone === seg.zone ? 1 : 0.2,
+                opacity: isSegmentActive(seg.zone, activeZone) ? 1 : 0.2,
               }}
             />
           ))}
@@ -89,6 +89,21 @@ export function SenateScrollySidebar({
           controlled by className from parent) */}
     </>
   );
+}
+
+/**
+ * Determines if a sidebar segment should be highlighted for the active zone.
+ * When the battleground zone (tossup) is active, all competitive segments
+ * (contested_d, tossup, contested_r) highlight together.
+ */
+function isSegmentActive(segmentZone: string, activeZone: string | null): boolean {
+  if (activeZone === null) return true; // nothing active = all visible
+  if (segmentZone === activeZone) return true;
+  // Battleground zone highlights all competitive seats
+  if (activeZone === "tossup") {
+    return segmentZone === "contested_d" || segmentZone === "contested_r";
+  }
+  return false;
 }
 
 /**
@@ -120,7 +135,7 @@ export function SenateScrollySidebarMobile({
           className="flex-1 transition-opacity duration-300"
           style={{
             backgroundColor: seg.color,
-            opacity: activeZone === null || activeZone === seg.zone ? 1 : 0.2,
+            opacity: isSegmentActive(seg.zone, activeZone) ? 1 : 0.2,
           }}
         />
       ))}

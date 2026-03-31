@@ -118,7 +118,7 @@ export function ScrollyNarrative({ scrollyData, overviewData }: ScrollyNarrative
           {/* ── Zone 3: The Structural Problem ─────────────────────── */}
           <section
             ref={zone3Ref}
-            data-zone="tossup"
+            data-zone="contested_d"
             className="py-20 border-b border-[var(--color-border)]"
           >
             <div className="max-w-2xl">
@@ -157,7 +157,7 @@ export function ScrollyNarrative({ scrollyData, overviewData }: ScrollyNarrative
           {/* ── Zone 4: Battleground ───────────────────────────────── */}
           <section
             ref={zone4Ref}
-            data-zone="contested_d"
+            data-zone="tossup"
             className="py-20 border-b border-[var(--color-border)]"
           >
             <div className="max-w-2xl">
