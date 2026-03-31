@@ -75,5 +75,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.5,
   }));
 
-  return [...staticEntries, ...raceEntries, ...typeEntries, ...countyEntries];
+  // State hub pages: /state/[abbr]
+  const STATE_ABBRS = [
+    "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DC", "DE", "FL", "GA",
+    "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA",
+    "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY",
+    "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX",
+    "UT", "VT", "VA", "WA", "WV", "WI", "WY",
+  ];
+  const stateEntries: MetadataRoute.Sitemap = STATE_ABBRS.map((abbr) => ({
+    url: `${BASE_URL}/state/${abbr}`,
+    lastModified: now,
+    changeFrequency: "weekly" as const,
+    priority: 0.8,
+  }));
+
+  return [...staticEntries, ...raceEntries, ...typeEntries, ...countyEntries, ...stateEntries];
 }

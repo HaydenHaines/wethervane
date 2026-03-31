@@ -68,6 +68,10 @@ export const BREADCRUMB_ROUTES: Record<string, BreadcrumbSegment[]> = {
   "/county/[fips]": [
     { label: "Home", href: "/" },
   ],
+  "/state/[abbr]": [
+    { label: "Home", href: "/" },
+    { label: "Forecast", href: "/forecast" },
+  ],
   "/changelog": [
     { label: "Home", href: "/" },
     { label: "Forecast", href: "/forecast" },
