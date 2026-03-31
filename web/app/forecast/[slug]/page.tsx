@@ -1,32 +1,31 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import { RaceHero } from "@/components/forecast/RaceHero";
 import { PollTable } from "@/components/forecast/PollTable";
 import { TypesBreakdown } from "@/components/forecast/TypesBreakdown";
 import { marginToRating } from "@/lib/config/palette";
 import { STATE_NAMES } from "@/lib/config/states";
 import { Skeleton } from "@/components/ui/skeleton";
 
-// visx dotplot — heavy bundle, below the hero; load dynamically
-const QuantileDotplot = dynamic(
+// RaceBlendControls owns the hero, dotplot, and blend sliders.
+// It is "use client" because it manages slider state and fires API calls.
+// The rest of this page remains a Server Component (SSR).
+const RaceBlendControls = dynamic(
   () =>
-    import("@/components/forecast/QuantileDotplot").then(
-      (m) => m.QuantileDotplot,
+    import("@/components/forecast/RaceBlendControls").then(
+      (m) => m.RaceBlendControls,
     ),
   {
     ssr: false,
-    loading: () => <Skeleton className="w-full h-[160px]" />,
-  },
-);
-
-// Weight sliders — client-only interactivity, no SSR needed
-const SectionWeightSliders = dynamic(
-  () =>
-    import("@/components/forecast/SectionWeightSliders").then(
-      (m) => m.SectionWeightSliders,
+    // Skeleton sized to match the hero + dotplot area during hydration
+    loading: () => (
+      <div className="space-y-4 mb-10">
+        <Skeleton className="w-3/4 h-12" />
+        <Skeleton className="w-1/2 h-6" />
+        <Skeleton className="w-full h-[160px] mt-6" />
+      </div>
     ),
-  { ssr: false },
+  },
 );
 
 // Poll trend chart — visx + SWR, client-only
@@ -245,37 +244,31 @@ export default async function RaceDetailPage({ params }: PageProps) {
         </ol>
       </nav>
 
-      {/* Hero — large margin, rating badge, CI */}
-      <RaceHero
+      {/*
+        RaceBlendControls is a client component that owns:
+          - RaceHero (margin, rating badge, CI bounds) — live-updated by blend
+          - Outcome Distribution dotplot — live-updated by blend
+          - Forecast Blend section with SectionWeightSliders
+
+        It hydrates with SSR values and recalculates via
+        POST /api/v1/forecast/race/{slug}/blend on slider changes (400ms debounce).
+      */}
+      <RaceBlendControls
+        slug={slug}
+        apiBase={API_BASE}
+        initialPrediction={data.prediction}
+        initialPredStd={predStd}
+        initialLo90={lo90}
+        initialHi90={hi90}
+        hasPolls={nPolls > 0}
+        statePredLocal={data.state_pred_local}
+        statePredNational={data.state_pred_national}
         stateName={stateName}
         raceType={data.race_type}
         year={data.year}
-        prediction={data.prediction}
         nCounties={data.n_counties}
-        lo90={lo90}
-        hi90={hi90}
         nPolls={nPolls}
       />
-
-      {/* Outcome distribution dotplot */}
-      {data.prediction !== null && (
-        <section className="mb-10">
-          <h2 className="font-serif text-xl mb-4" style={{ fontFamily: "var(--font-serif)" }}>
-            Outcome Distribution
-          </h2>
-          <p className="text-sm mb-3" style={{ color: "var(--color-text-muted)" }}>
-            Each dot represents one possible scenario. The distribution is derived
-            from the model&apos;s prediction and estimated uncertainty (±{(predStd * 100).toFixed(0)}pp std).
-          </p>
-          <QuantileDotplot
-            predDemShare={data.prediction}
-            predStd={predStd}
-            nDots={100}
-            width={480}
-            height={160}
-          />
-        </section>
-      )}
 
       {/* Polls section */}
       <section className="mb-10">
@@ -317,44 +310,6 @@ export default async function RaceDetailPage({ params }: PageProps) {
           <TypesBreakdown types={data.type_breakdown} stateName={stateName} />
         </section>
       )}
-
-      {/* Forecast blend controls — only shown when polls are available to blend */}
-      <section className="mb-10">
-        <h2 className="font-serif text-xl mb-4" style={{ fontFamily: "var(--font-serif)" }}>
-          Forecast Blend
-        </h2>
-        {nPolls > 0 ? (
-          <>
-            <p className="text-sm mb-3" style={{ color: "var(--color-text-muted)" }}>
-              Adjust how the forecast weights the structural model prior against available polling data.
-              {data.state_pred_local !== null && data.state_pred_local !== undefined && (
-                <> State-level model prior: <span className="font-mono">{((data.state_pred_local) * 100).toFixed(1)}% D</span>.</>
-              )}
-              {data.state_pred_national !== null && data.state_pred_national !== undefined && (
-                <> National-adjusted: <span className="font-mono">{((data.state_pred_national) * 100).toFixed(1)}% D</span>.</>
-              )}
-            </p>
-            <SectionWeightSliders
-              initial={{
-                model_prior: 60,
-                state_polls: 30,
-                national_polls: 10,
-              }}
-            />
-          </>
-        ) : (
-          <p
-            className="text-sm rounded-md px-4 py-3"
-            style={{
-              color: "var(--color-text-muted)",
-              background: "var(--color-surface)",
-              border: "1px solid var(--color-border)",
-            }}
-          >
-            Blend controls will appear here once polling data is available for this race.
-          </p>
-        )}
-      </section>
 
       {/* Model notes */}
       <section

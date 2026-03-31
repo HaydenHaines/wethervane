@@ -380,3 +380,67 @@ class TestGetRaceDetail:
         data = resp.json()
         assert data["race_type"] == "Governor"
         assert data["state_abbr"] == "FL"
+
+
+class TestBlendEndpoint:
+    """Tests for POST /forecast/race/{slug}/blend — GitHub issue #13."""
+
+    def test_returns_blend_result_structure(self, race_client):
+        resp = race_client.post(
+            "/api/v1/forecast/race/2026-fl-senate/blend",
+            json={"model_prior": 60, "state_polls": 30, "national_polls": 10},
+        )
+        assert resp.status_code == 200
+        data = resp.json()
+        # All four keys must be present (may be null if no type model loaded)
+        for key in ("prediction", "pred_std", "pred_lo90", "pred_hi90"):
+            assert key in data, f"Missing key: {key}"
+
+    def test_no_polls_race_returns_structural_prior(self, race_client):
+        """Race without polls returns stored prediction, not null."""
+        resp = race_client.post(
+            "/api/v1/forecast/race/2026-al-governor/blend",
+            json={"model_prior": 80, "state_polls": 15, "national_polls": 5},
+        )
+        assert resp.status_code == 200
+        data = resp.json()
+        # Structural prior should be available even without polls
+        assert data["prediction"] is not None
+        assert isinstance(data["prediction"], float)
+
+    def test_different_weights_accepted(self, race_client):
+        """Any valid weight combination (sum need not be 100 for the API, but
+        typical usage will pass sliders summing to 100)."""
+        for weights in [
+            {"model_prior": 100, "state_polls": 0, "national_polls": 0},
+            {"model_prior": 0, "state_polls": 100, "national_polls": 0},
+            {"model_prior": 33, "state_polls": 33, "national_polls": 34},
+        ]:
+            resp = race_client.post(
+                "/api/v1/forecast/race/2026-fl-senate/blend",
+                json=weights,
+            )
+            assert resp.status_code == 200, f"Failed for weights {weights}: {resp.text}"
+
+    def test_invalid_slug_returns_fallback_not_500(self, race_client):
+        """Unknown slug should return a graceful non-5xx response or 404."""
+        resp = race_client.post(
+            "/api/v1/forecast/race/9999-zz-fake/blend",
+            json={"model_prior": 60, "state_polls": 30, "national_polls": 10},
+        )
+        # Either 404 (race not found) or 200 with null prediction is acceptable.
+        # What is NOT acceptable is a 500 internal server error.
+        assert resp.status_code != 500
+
+    def test_ci_bounds_bracket_prediction(self, race_client):
+        """When prediction and CI bounds are present, lo90 <= prediction <= hi90."""
+        resp = race_client.post(
+            "/api/v1/forecast/race/2026-al-governor/blend",
+            json={"model_prior": 60, "state_polls": 30, "national_polls": 10},
+        )
+        assert resp.status_code == 200
+        data = resp.json()
+        if data["prediction"] is not None and data["pred_lo90"] is not None:
+            assert data["pred_lo90"] <= data["prediction"] <= data["pred_hi90"], (
+                f"CI bounds do not bracket prediction: {data}"
+            )

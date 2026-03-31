@@ -138,6 +138,33 @@ class SectionWeights(BaseModel):
     national_polls: float = Field(1.0, ge=0.0, le=2.0)
 
 
+class BlendWeights(BaseModel):
+    """Section weights expressed as 0–100 percentages (must sum to 100).
+
+    The race detail page uses this scale so sliders map directly to
+    percentages.  The backend normalises to [0, 1] multipliers before
+    passing into the prediction engine.
+    """
+
+    model_prior: float = Field(60.0, ge=0.0, le=100.0)
+    state_polls: float = Field(30.0, ge=0.0, le=100.0)
+    national_polls: float = Field(10.0, ge=0.0, le=100.0)
+
+
+class BlendResult(BaseModel):
+    """Slim forecast result returned by the blend recalculation endpoint.
+
+    Contains only the values displayed in the hero and dotplot so the
+    response payload is small and the client can update incrementally
+    without re-fetching the full race detail.
+    """
+
+    prediction: float | None
+    pred_std: float | None
+    pred_lo90: float | None
+    pred_hi90: float | None
+
+
 class GenericBallotInfo(BaseModel):
     """National environment adjustment derived from generic ballot polling.
 
