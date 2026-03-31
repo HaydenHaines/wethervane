@@ -911,6 +911,19 @@ def _compute_poll_trend(polls_df: "pd.DataFrame") -> PollTrend | None:
     return PollTrend(dates=trend_dates, dem_trend=trend_dem, rep_trend=trend_rep)
 
 
+def _format_baseline_label(pres_baseline: float) -> str:
+    """Format the presidential baseline as a party-margin label, e.g. 'R+3.2' or 'D+0.5'.
+
+    The label measures how far the 2024 presidential Dem share deviates from 50/50.
+    shift = pres_baseline - 0.5; negative shift → Republican advantage → 'R+X'.
+    """
+    shift = pres_baseline - 0.5
+    magnitude = round(abs(shift) * 100, 1)
+    if shift < 0:
+        return f"R+{magnitude}"
+    return f"D+{magnitude}"
+
+
 @router.get("/forecast/generic-ballot", response_model=GenericBallotInfo)
 def get_generic_ballot(
     manual_shift: float | None = Query(
@@ -918,6 +931,7 @@ def get_generic_ballot(
     ),
 ) -> GenericBallotInfo:
     """Return the national environment adjustment from generic ballot polling."""
+    from src.prediction.generic_ballot import PRES_DEM_SHARE_2024_NATIONAL
     from src.prediction.generic_ballot import compute_gb_shift as _compute
 
     info = _compute(manual_shift=manual_shift)
@@ -928,6 +942,8 @@ def get_generic_ballot(
         shift_pp=info.shift * 100,
         n_polls=info.n_polls,
         source=info.source,
+        baseline_year=2024,
+        baseline_label=_format_baseline_label(PRES_DEM_SHARE_2024_NATIONAL),
     )
 
 

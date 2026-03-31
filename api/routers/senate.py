@@ -106,6 +106,33 @@ _UNCONTESTED_FALLBACK_COLOR = "#b5a995"  # neutral beige — uncontested seats w
 _PARTY_UNKNOWN_COLOR = "#eae7e2"  # off-white — unknown delegation party
 
 
+def _rating_to_zone(rating: str, incumbent: str) -> str:
+    """Map a race rating + incumbent party to a scrollytelling zone label.
+
+    Zone categories group seats into seven buckets for narrative display:
+      - safe_up_d   D incumbent, model rates safe/likely D
+      - contested_d D incumbent, model rates lean D (close but Dem-favored)
+      - tossup       tossup regardless of incumbent
+      - contested_r  R incumbent, model rates lean R (close but R-favored)
+      - safe_up_r   R incumbent, model rates safe/likely R
+
+    Edge cases where the rating side disagrees with the incumbent
+    (e.g. D-held seat rated lean_r) are resolved by the **rating**, not
+    the incumbent.  The model's view of the race determines the zone.
+    """
+    if rating == "tossup":
+        return "tossup"
+    # Determine direction from rating label
+    if rating in ("safe_d", "likely_d"):
+        return "safe_up_d"
+    if rating == "lean_d":
+        return "contested_d"
+    if rating == "lean_r":
+        return "contested_r"
+    # safe_r or likely_r
+    return "safe_up_r"
+
+
 def _margin_to_rating(margin: float) -> str:
     """Convert signed Dem margin to a rating label.
 
@@ -276,6 +303,11 @@ def get_senate_overview(
             margin = _DEFAULT_SAFE_MARGIN if incumbent_party == "D" else -_DEFAULT_SAFE_MARGIN
             rating = "safe_d" if incumbent_party == "D" else "safe_r"
 
+        # Zone derives from model rating; incumbent_party is always from _CLASS_II_INCUMBENT
+        # even when the model has a prediction (so edge cases resolve via rating side).
+        incumbent_party = _CLASS_II_INCUMBENT.get(state_abbr, "R")
+        zone = _rating_to_zone(rating, incumbent_party)
+
         races.append({
             "state": state_abbr,
             "race": race,
@@ -283,6 +315,7 @@ def get_senate_overview(
             "rating": rating,
             "margin": round(margin, 4),
             "n_polls": n_polls,
+            "zone": zone,
         })
 
     # Sort: tossups first, then lean, likely, safe; break ties alphabetically by state
@@ -313,6 +346,24 @@ def get_senate_overview(
     except Exception:
         pass
 
+    # Compute zone_counts: seats in each of the 7 narrative buckets.
+    # The Class II contested seats come from the races list (all 33).
+    # Holdover (not-up) seats come from SENATE_DELEGATION minus the 33 Class II states.
+    # Note: SENATE_DELEGATION has 51 entries (50 states + DC); each entry represents
+    # the *overall* delegation, which has 2 seats.  But we want seats not up in 2026,
+    # which is 100 - 33 = 67 seats total (34D + 33R computed from _CLASS_II_INCUMBENT).
+    # We track those via _DEM_HOLDOVER_SEATS and GOP_SAFE_SEATS - _GOP_CLASS_II_COUNT.
+    _gop_holdover = GOP_SAFE_SEATS - _GOP_CLASS_II_COUNT
+    zone_counts: dict[str, int] = {
+        "not_up_d": _DEM_HOLDOVER_SEATS,
+        "safe_up_d": sum(1 for r in races if r["zone"] == "safe_up_d"),
+        "contested_d": sum(1 for r in races if r["zone"] == "contested_d"),
+        "tossup": sum(1 for r in races if r["zone"] == "tossup"),
+        "contested_r": sum(1 for r in races if r["zone"] == "contested_r"),
+        "safe_up_r": sum(1 for r in races if r["zone"] == "safe_up_r"),
+        "not_up_r": _gop_holdover,
+    }
+
     return {
         "headline": headline,
         "subtitle": subtitle,
@@ -323,6 +374,7 @@ def get_senate_overview(
         "dem_projected": dem_projected,
         "gop_projected": gop_projected,
         "races": races,
+        "zone_counts": zone_counts,
         "state_colors": state_colors,
         "updated_at": updated_at,
     }
@@ -580,3 +632,157 @@ def get_chamber_probability(
         dem_holdover=_DEM_HOLDOVER_SEATS,
         n_sims=n_simulations,
     )
+
+
+# ── Scrolly-context endpoint ─────────────────────────────────────────────────
+
+
+def _compute_baseline_label(pres_dem_share: float) -> str:
+    """Format the 2024 presidential Dem share as a party-margin label.
+
+    Measures how far the national Dem two-party share deviates from 50/50:
+      shift = pres_dem_share - 0.5
+      negative shift → Republican advantage → "R+X.X"
+      positive shift → Democrat advantage → "D+X.X"
+
+    Example: 0.4841 → shift=-0.0159 → "R+1.6"
+    """
+    shift = pres_dem_share - 0.5
+    magnitude = round(abs(shift) * 100, 1)
+    if shift < 0:
+        return f"R+{magnitude}"
+    return f"D+{magnitude}"
+
+
+@router.get("/senate/scrolly-context")
+def get_scrolly_context(
+    request: Request,
+    db: duckdb.DuckDBPyConnection = Depends(get_db),
+) -> dict:
+    """Return narrative context data for the scrollytelling homepage.
+
+    Provides the structural framing needed to tell the story of the 2026
+    Senate map:
+    - zone_counts: how many seats fall in each of the 7 narrative buckets
+    - not_up states: which states are sitting out the election cycle
+    - structural_context: what Democrats would need to win at the baseline
+
+    This endpoint shares prediction data with /senate/overview (same DB
+    queries) so both views stay in sync automatically.
+    """
+    from src.prediction.generic_ballot import PRES_DEM_SHARE_2024_NATIONAL
+
+    # ── Re-use the same prediction + fallback logic as /senate/overview ──────
+    version_id = getattr(request.app.state, "version_id", None)
+
+    _has_mode = False
+    if version_id:
+        try:
+            _has_mode = "forecast_mode" in [
+                row[0] for row in db.execute("DESCRIBE predictions").fetchall()
+            ]
+        except Exception:
+            pass
+    _mode_filter = "AND p.forecast_mode = 'local'" if _has_mode else ""
+
+    races: list[dict] = []
+    for st in sorted(SENATE_2026_STATES):
+        race = f"2026 {st} Senate"
+        slug = race.lower().replace(" ", "-")
+        incumbent_party = _CLASS_II_INCUMBENT.get(st, "R")
+
+        if version_id:
+            row = db.execute(
+                f"""
+                SELECT
+                    CASE WHEN SUM(COALESCE(c.total_votes_2024, 0)) > 0
+                         THEN SUM(p.pred_dem_share * COALESCE(c.total_votes_2024, 0))
+                              / SUM(COALESCE(c.total_votes_2024, 0))
+                         ELSE AVG(p.pred_dem_share)
+                    END AS state_pred
+                FROM predictions p
+                JOIN counties c ON p.county_fips = c.county_fips
+                WHERE p.version_id = ?
+                  AND p.race = ?
+                  AND c.state_abbr = ?
+                  {_mode_filter}
+                """,
+                [version_id, race, st],
+            ).fetchone()
+        else:
+            row = None
+
+        if row and row[0] is not None:
+            margin = float(row[0]) - 0.5
+            rating = _margin_to_rating(margin)
+        else:
+            margin = _DEFAULT_SAFE_MARGIN if incumbent_party == "D" else -_DEFAULT_SAFE_MARGIN
+            rating = "safe_d" if incumbent_party == "D" else "safe_r"
+
+        zone = _rating_to_zone(rating, incumbent_party)
+        races.append({
+            "state": st,
+            "race": race,
+            "slug": slug,
+            "rating": rating,
+            "margin": round(margin, 4),
+            "n_polls": 0,  # not needed for scrolly context
+            "zone": zone,
+        })
+
+    # ── Zone counts ──────────────────────────────────────────────────────────
+    _gop_holdover = GOP_SAFE_SEATS - _GOP_CLASS_II_COUNT
+    zone_counts: dict[str, int] = {
+        "not_up_d": _DEM_HOLDOVER_SEATS,
+        "safe_up_d": sum(1 for r in races if r["zone"] == "safe_up_d"),
+        "contested_d": sum(1 for r in races if r["zone"] == "contested_d"),
+        "tossup": sum(1 for r in races if r["zone"] == "tossup"),
+        "contested_r": sum(1 for r in races if r["zone"] == "contested_r"),
+        "safe_up_r": sum(1 for r in races if r["zone"] == "safe_up_r"),
+        "not_up_r": _gop_holdover,
+    }
+
+    # ── Not-up states ────────────────────────────────────────────────────────
+    # States in SENATE_DELEGATION that have no Class II seat up in 2026.
+    # "D" includes independents who caucus with Democrats.
+    not_up_d_states = sorted(
+        st for st, party in SENATE_DELEGATION.items()
+        if st not in SENATE_2026_STATES and party in ("D", "I")
+    )
+    not_up_r_states = sorted(
+        st for st, party in SENATE_DELEGATION.items()
+        if st not in SENATE_2026_STATES and party == "R"
+    )
+
+    # ── Structural context ───────────────────────────────────────────────────
+    # Counts how many Class II races Democrats currently win at the model's
+    # predicted margins (margin > 0 means Dem-favored; tossups excluded).
+    dem_wins_at_baseline = sum(1 for r in races if r["margin"] > 0)
+    total_dem_projected = _DEM_HOLDOVER_SEATS + dem_wins_at_baseline
+    seats_needed_for_majority = 51
+    structural_gap = seats_needed_for_majority - total_dem_projected
+
+    baseline_label = _compute_baseline_label(PRES_DEM_SHARE_2024_NATIONAL)
+
+    structural_context = {
+        "baseline_year": 2024,
+        "baseline_label": baseline_label,
+        "baseline_dem_two_party": PRES_DEM_SHARE_2024_NATIONAL,
+        "dem_wins_at_baseline": dem_wins_at_baseline,
+        "dem_holdover_seats": _DEM_HOLDOVER_SEATS,
+        "total_dem_projected": total_dem_projected,
+        "seats_needed_for_majority": seats_needed_for_majority,
+        "structural_gap": structural_gap,
+    }
+
+    # ── Competitive races ────────────────────────────────────────────────────
+    competitive_ratings = {"lean_d", "tossup", "lean_r"}
+    competitive_races = [r for r in races if r["rating"] in competitive_ratings]
+
+    return {
+        "zone_counts": zone_counts,
+        "not_up_d_states": not_up_d_states,
+        "not_up_r_states": not_up_r_states,
+        "structural_context": structural_context,
+        "competitive_races": competitive_races,
+    }

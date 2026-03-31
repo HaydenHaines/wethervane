@@ -218,6 +218,14 @@ class GenericBallotInfo(BaseModel):
     source: str
     """'auto' (computed from polls CSV) or 'manual' (caller-provided)."""
 
+    baseline_year: int = 2024
+    """Election year used as the structural prior baseline (always 2024 for now)."""
+
+    baseline_label: str = ""
+    """Human-readable label for the presidential baseline, e.g. 'R+3.2' or 'D+0.5'.
+    Derived from pres_baseline: shift = pres_baseline - 0.5; negative → 'R+X', positive → 'D+X'.
+    """
+
 
 class MultiPollInput(BaseModel):
     cycle: str              # e.g. "2020", "2022"
