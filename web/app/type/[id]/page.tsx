@@ -303,11 +303,20 @@ export default async function TypePage({ params }: PageProps) {
             style={{
               fontFamily: "var(--font-serif)",
               fontSize: 22,
-              marginBottom: 16,
+              marginBottom: 4,
             }}
           >
             Demographics
           </h2>
+          <p
+            style={{
+              fontSize: 13,
+              color: "var(--color-text-muted)",
+              marginBottom: 16,
+            }}
+          >
+            Values shown are averages across all member counties of this type.
+          </p>
           <DemographicsPanel demographics={data.demographics} />
         </section>
       )}

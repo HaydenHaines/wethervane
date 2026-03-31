@@ -272,6 +272,11 @@ class TypeBreakdown(BaseModel):
     display_name: str
     n_counties: int
     mean_pred_dem_share: float | None
+    # Total 2024 votes across counties of this type in the state.
+    # Used to sort types by electoral weight rather than raw county count —
+    # without this, states like MI show only rural types because they have
+    # more small counties than urban ones (see GitHub #21).
+    total_votes: int | None = None
 
 
 class RaceDetail(BaseModel):

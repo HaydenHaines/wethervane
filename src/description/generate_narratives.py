@@ -108,7 +108,7 @@ def _phrase_for(feature: str, z: float) -> str | None:
         return f"{adv} {low_phrase}"
 
 
-# ── Urbanicity categorisation ─────────────────────────────────────────────────
+# ── Urbanicity categorization ─────────────────────────────────────────────────
 
 def _urbanicity_label(z_density: float) -> str:
     if z_density >= 1.5:
@@ -199,7 +199,7 @@ def generate_type_narrative(profile: dict[str, float], display_name: str) -> str
             feature_clause = f"{phrases[0]} and {phrases[1]}"
         else:
             feature_clause = f"{phrases[0]}, {phrases[1]}, and {phrases[2]}"
-        sentence2 = f"These areas are characterised by {feature_clause}."
+        sentence2 = f"These areas are characterized by {feature_clause}."
     else:
         # Fallback for types near the demographic average
         sentence2 = "Demographically, these areas are close to the regional average across most dimensions."

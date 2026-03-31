@@ -347,21 +347,27 @@ def get_race_detail(
         for _, row in polls_df.iterrows()
     ]
 
-    # Type breakdown: top 5 types by county count in this state for this race
+    # Type breakdown: top 5 types by total vote contribution in this state.
+    # Sorted by SUM(total_votes_2024) DESC so urban/high-population types
+    # appear first even when they cover fewer counties. Without this,
+    # states like MI show only rural types because small rural counties
+    # outnumber large urban ones. Falls back to COUNT(*) when votes are NULL.
+    # (GitHub issue #21)
     breakdown_df = db.execute(
         f"""
         SELECT
             cta.dominant_type AS type_id,
             t.display_name,
             COUNT(*) AS n_counties,
-            AVG(p.pred_dem_share) AS mean_pred_dem_share
+            AVG(p.pred_dem_share) AS mean_pred_dem_share,
+            SUM(COALESCE(c.total_votes_2024, 0)) AS total_votes
         FROM predictions p
         JOIN counties c ON p.county_fips = c.county_fips
         JOIN county_type_assignments cta ON p.county_fips = cta.county_fips
         JOIN types t ON cta.dominant_type = t.type_id
         WHERE p.version_id = ? AND p.race = ? AND c.state_abbr = ? {_mode_filter}
         GROUP BY cta.dominant_type, t.display_name
-        ORDER BY COUNT(*) DESC
+        ORDER BY SUM(COALESCE(c.total_votes_2024, 0)) DESC, COUNT(*) DESC
         LIMIT 5
         """,
         [version_id, race, state_abbr] + _mode_params,
@@ -373,6 +379,7 @@ def get_race_detail(
             display_name=row["display_name"],
             n_counties=int(row["n_counties"]),
             mean_pred_dem_share=None if pd.isna(row["mean_pred_dem_share"]) else float(row["mean_pred_dem_share"]),
+            total_votes=int(row["total_votes"]) if row["total_votes"] else None,
         )
         for _, row in breakdown_df.iterrows()
     ]

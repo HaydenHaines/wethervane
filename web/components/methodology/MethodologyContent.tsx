@@ -485,12 +485,6 @@ export function MethodologyContent() {
 
           {/* Page hero — not a scroll section, just an intro header */}
           <header className="mb-8 pt-2">
-            <p
-              className="text-xs font-semibold uppercase tracking-widest mb-3"
-              style={{ color: "var(--color-text-muted)", fontFamily: "var(--font-sans)" }}
-            >
-              WetherVane
-            </p>
             <h1
               className="font-serif text-4xl font-bold leading-tight mb-4"
               style={{ fontFamily: "var(--font-serif)" }}

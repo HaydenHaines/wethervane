@@ -154,18 +154,6 @@ export default async function TypesPage() {
 
       {/* Header */}
       <div style={{ marginBottom: 40 }}>
-        <p
-          style={{
-            fontFamily: "var(--font-sans)",
-            fontSize: 13,
-            letterSpacing: "0.08em",
-            textTransform: "uppercase",
-            color: "var(--color-text-muted)",
-            margin: "0 0 12px",
-          }}
-        >
-          WetherVane
-        </p>
         <h1
           style={{
             fontFamily: "var(--font-serif)",
