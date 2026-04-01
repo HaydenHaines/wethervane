@@ -96,7 +96,7 @@ class TestComparisonsEndpoint:
         the endpoint must not raise, and must not invent rating strings from thin air.
         """
         with patch(
-            "api.routers.forecast.COMPARISONS_FILE",
+            "api.routers.forecast.comparisons.COMPARISONS_FILE",
             Path("/nonexistent/path/ratings_2026.json"),
         ):
             resp = client.get("/api/v1/forecast/comparisons")
@@ -151,7 +151,7 @@ class TestComparisonsEndpoint:
             tmp_path = Path(f.name)
 
         try:
-            with patch("api.routers.forecast.COMPARISONS_FILE", tmp_path):
+            with patch("api.routers.forecast.comparisons.COMPARISONS_FILE", tmp_path):
                 resp = client.get("/api/v1/forecast/comparisons")
             assert resp.status_code == 200
             data = resp.json()

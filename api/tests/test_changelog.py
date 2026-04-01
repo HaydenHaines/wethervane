@@ -42,7 +42,7 @@ def mock_snapshots_dir():
         }
         (tmppath / "2026-03-29.json").write_text(json.dumps(s2))
 
-        with patch("api.routers.forecast.SNAPSHOTS_DIR", tmppath):
+        with patch("api.routers.forecast.changelog.SNAPSHOTS_DIR", tmppath):
             yield tmppath
 
 
@@ -89,14 +89,14 @@ def test_changelog_initial_entry_has_null_before(mock_snapshots_dir):
 
 def test_changelog_empty_dir():
     with tempfile.TemporaryDirectory() as tmpdir:
-        with patch("api.routers.forecast.SNAPSHOTS_DIR", Path(tmpdir)):
+        with patch("api.routers.forecast.changelog.SNAPSHOTS_DIR", Path(tmpdir)):
             result = get_forecast_changelog()
             assert result.entries == []
             assert result.current_snapshot_date is None
 
 
 def test_changelog_nonexistent_dir():
-    with patch("api.routers.forecast.SNAPSHOTS_DIR", Path("/nonexistent/path")):
+    with patch("api.routers.forecast.changelog.SNAPSHOTS_DIR", Path("/nonexistent/path")):
         result = get_forecast_changelog()
         assert result.entries == []
 
