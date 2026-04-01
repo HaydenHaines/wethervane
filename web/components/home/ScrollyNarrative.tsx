@@ -249,8 +249,8 @@ export function ScrollyNarrative({ scrollyData, overviewData }: ScrollyNarrative
             <div className="flex flex-wrap gap-3">
               <Link
                 href="/forecast"
-                className="inline-flex items-center rounded-md px-5 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-80"
-                style={{ background: DUSTY_INK.safeD }}
+                className="inline-flex items-center rounded-md px-5 py-2.5 text-sm font-semibold transition-opacity hover:opacity-80"
+                style={{ background: DUSTY_INK.safeD, color: "white" }}
               >
                 All Senate races &rarr;
               </Link>
