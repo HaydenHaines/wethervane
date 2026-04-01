@@ -75,7 +75,7 @@ def run_race_prediction(
     try:
         mu_prior, _ = load_prior(state=state)          # most recent year
         prior_year = "most recent"
-    except Exception:
+    except (FileNotFoundError, KeyError, ValueError):
         mu_prior, _ = load_prior(state=state, year=2020)
         prior_year = "2020 (fallback)"
 

@@ -191,7 +191,7 @@ def get_community(
                 congregations_per_1000=_f(r["congregations_per_1000"]),
                 religious_adherence_rate=_f(r["religious_adherence_rate"]),
             )
-    except Exception:
+    except duckdb.Error:
         # community_profiles table may not exist in test DBs — graceful fallback
         pass
 
@@ -305,7 +305,7 @@ def get_type_scatter_data(db: duckdb.DuckDBPyConnection = Depends(get_db)):
         shift_col_names = [
             c for c in shift_cols_row.columns if c not in ("county_fips", "version_id")
         ]
-    except Exception:
+    except duckdb.Error:
         pass
 
     # Get all county-type assignments and shifts in one join
@@ -329,7 +329,7 @@ def get_type_scatter_data(db: duckdb.DuckDBPyConnection = Depends(get_db)):
                     if col in row and not pd.isna(row[col]):
                         profile[col] = float(row[col])
                 shift_by_type[tid] = profile
-        except Exception:
+        except duckdb.Error:
             pass
 
     def _f(v) -> float | None:
@@ -485,13 +485,16 @@ def get_type(
         ).fetchdf()
         if not demo_row.empty:
             r = demo_row.iloc[0]
-            skip_cols = {"type_id", "super_type_id", "display_name", "n_counties"}
+            skip_cols = {"type_id", "super_type_id", "display_name", "n_counties", "narrative"}
             for col in demo_row.columns:
                 if col not in skip_cols:
                     val = r[col]
                     if not pd.isna(val):
-                        demographics[col] = float(val)
-    except Exception:
+                        try:
+                            demographics[col] = float(val)
+                        except (ValueError, TypeError):
+                            pass
+    except duckdb.Error:
         pass
 
     # Shift profile: mean shifts across member counties
@@ -513,7 +516,7 @@ def get_type(
                     if col in shift_rows.columns:
                         val = shift_rows[col].mean()
                         shift_profile[col] = float(val) if not pd.isna(val) else 0.0
-        except Exception:
+        except duckdb.Error:
             pass
 
     # Compute mean prediction across member counties
@@ -527,7 +530,7 @@ def get_type(
             ).fetchone()
             if pred_row and pred_row[0] is not None:
                 mean_pred = float(pred_row[0])
-        except Exception:
+        except duckdb.Error:
             pass
 
     return TypeDetail(

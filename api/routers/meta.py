@@ -29,7 +29,7 @@ def health(request: Request, db: duckdb.DuckDBPyConnection = Depends(get_db)):
     try:
         db.execute("SELECT 1")
         db_status = "connected"
-    except Exception:
+    except duckdb.Error:
         db_status = "error"
     contract = "ok" if getattr(request.app.state, "contract_ok", True) else "degraded"
     return HealthResponse(status="ok", db=db_status, contract=contract)

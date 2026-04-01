@@ -157,7 +157,7 @@ def main() -> None:
         from kneed import KneeLocator
         kl = KneeLocator(k_sweep, variances, curve="convex", direction="decreasing", S=1.0)
         elbow_k = int(kl.knee) if kl.knee is not None else None
-    except Exception:
+    except (ImportError, ValueError):
         elbow_k = None
 
     log.info("Elbow k: %s", elbow_k)
