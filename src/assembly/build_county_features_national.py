@@ -73,6 +73,7 @@ URBANICITY_PATH = PROJECT_ROOT / "data" / "assembled" / "county_urbanicity_featu
 SCI_PATH = PROJECT_ROOT / "data" / "assembled" / "county_sci_features.parquet"
 BROADBAND_PATH = PROJECT_ROOT / "data" / "assembled" / "county_broadband_features.parquet"
 BEA_PATH = PROJECT_ROOT / "data" / "assembled" / "county_bea_features.parquet"
+BEA_STATE_PATH = PROJECT_ROOT / "data" / "assembled" / "county_bea_state_features.parquet"
 CDC_MORTALITY_PATH = PROJECT_ROOT / "data" / "assembled" / "county_cdc_mortality_features.parquet"
 COVID_PATH = PROJECT_ROOT / "data" / "assembled" / "county_covid_features.parquet"
 VA_PATH = PROJECT_ROOT / "data" / "assembled" / "va_disability_features.parquet"
@@ -189,12 +190,19 @@ BROADBAND_FEATURE_COLS = [
     "broadband_gap",
 ]
 
-# BEA income/GDP features (Bureau of Economic Analysis)
+# BEA income/GDP features (Bureau of Economic Analysis, county-level)
 BEA_FEATURE_COLS = [
     "pci",
     "pci_growth",
     "gdp_per_capita",
     "gdp_growth",
+]
+
+# BEA state-level GDP and income features (mapped from state to county via FIPS prefix)
+# These are macro-economic context signals distinct from the county-level income shares.
+BEA_STATE_FEATURE_COLS = [
+    "bea_state_gdp_millions",
+    "bea_state_income_per_capita",
 ]
 
 # CDC mortality features (exclude reserved all-NaN cols: heart_disease_rate, cancer_rate,
@@ -383,6 +391,7 @@ def build_national_features(
     sci: pd.DataFrame | None = None,
     broadband: pd.DataFrame | None = None,
     bea: pd.DataFrame | None = None,
+    bea_state: pd.DataFrame | None = None,
     cdc_mortality: pd.DataFrame | None = None,
     covid: pd.DataFrame | None = None,
     va: pd.DataFrame | None = None,
@@ -445,6 +454,18 @@ def build_national_features(
     # allow_partial_cols=True: BEA schema may vary; only merge columns present in source.
     if bea is not None:
         merged = _merge_feature_block(merged, bea, BEA_FEATURE_COLS, "BEA", allow_partial_cols=True)
+
+    # ── BEA state-level GDP and income features ──────────────────────────────
+    # State-level macro signals (GDP in millions, income per capita) mapped from
+    # state to county via FIPS prefix. Complements county-level BEA income shares.
+    if bea_state is not None:
+        merged = _merge_feature_block(
+            merged,
+            bea_state,
+            BEA_STATE_FEATURE_COLS,
+            "BEA state",
+            allow_partial_cols=True,
+        )
 
     # ── CDC mortality features ──────────────────────────────────────────────
     # allow_partial_cols=True: some mortality columns are reserved/all-NaN in some runs.
@@ -596,6 +617,7 @@ def main() -> None:
     sci = _load_optional_source(SCI_PATH, "SCI county")
     broadband = _load_optional_source(BROADBAND_PATH, "Broadband county")
     bea = _load_optional_source(BEA_PATH, "BEA county")
+    bea_state = _load_optional_source(BEA_STATE_PATH, "BEA state GDP/income")
     cdc_mortality = _load_optional_source(CDC_MORTALITY_PATH, "CDC mortality county")
     covid = _load_optional_source(COVID_PATH, "COVID vaccination county")
     va = _load_optional_source(VA_PATH, "VA disability county")
@@ -613,6 +635,7 @@ def main() -> None:
         sci=sci,
         broadband=broadband,
         bea=bea,
+        bea_state=bea_state,
         cdc_mortality=cdc_mortality,
         covid=covid,
         va=va,
