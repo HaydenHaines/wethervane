@@ -27,6 +27,7 @@ from __future__ import annotations
 
 import json
 import logging
+import subprocess
 from datetime import date
 from pathlib import Path
 
@@ -92,6 +93,78 @@ def _read_loo_metric(method_name: str) -> float | None:
     except (json.JSONDecodeError, KeyError):
         log.warning("Could not read LOO metric from %s", _ACCURACY_METRICS_PATH)
     return None
+
+
+def _get_git_sha() -> str | None:
+    """Return the short HEAD SHA of the current repo, or None if unavailable.
+
+    Using the SHA alongside the training date gives an exact reproducibility
+    anchor — you can always checkout the commit and re-run training to get
+    identical artifacts.
+    """
+    try:
+        return subprocess.check_output(
+            ["git", "rev-parse", "--short", "HEAD"],
+            cwd=PROJECT_ROOT,
+            stderr=subprocess.DEVNULL,
+        ).decode().strip()
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        return None
+
+
+def _compute_rmse_by_dominant_type(
+    matched_fips: np.ndarray,
+    ensemble_pred: np.ndarray,
+    y: np.ndarray,
+    type_assignments_path: Path,
+) -> dict[str, float]:
+    """Compute per-dominant-type RMSE to surface type-level prediction quality.
+
+    Counties that lack a 2024 target (y == NaN) are excluded from RMSE
+    computation for their type. Types with fewer than 5 valid observations
+    are skipped to avoid noisy per-type estimates.
+
+    Returns a dict mapping dominant_type (str) → rmse (float), sorted by
+    descending RMSE so the worst-performing types appear first.
+    """
+    try:
+        ta = pd.read_parquet(type_assignments_path, columns=["county_fips", "dominant_type"])
+        ta = ta.set_index("county_fips")
+    except Exception as exc:
+        log.warning("Could not load type assignments for per-type RMSE: %s", exc)
+        return {}
+
+    fips_series = pd.Series(matched_fips)
+    dominant = fips_series.map(ta["dominant_type"]).values
+
+    rmse_by_type: dict[str, float] = {}
+    valid = ~np.isnan(y)
+    for dt in np.unique(dominant[~pd.isnull(dominant)]):
+        mask = (dominant == dt) & valid
+        if mask.sum() < 5:
+            continue
+        residuals = y[mask] - ensemble_pred[mask]
+        rmse_by_type[str(int(dt))] = float(np.sqrt(np.mean(residuals ** 2)))
+
+    return dict(sorted(rmse_by_type.items(), key=lambda kv: kv[1], reverse=True))
+
+
+def _top_features_by_ridge_coef(
+    rcv: RidgeCV,
+    feature_names: list[str],
+    n: int = 20,
+) -> list[dict]:
+    """Return the top-n features ranked by absolute Ridge coefficient magnitude.
+
+    Provides a lightweight feature importance signal without running a full
+    permutation importance sweep. Useful for quick sanity checks after retrain.
+    """
+    coefs = rcv.coef_
+    order = np.argsort(np.abs(coefs))[::-1][:n]
+    return [
+        {"feature": feature_names[i], "ridge_coef": float(coefs[i])}
+        for i in order
+    ]
 
 
 def _resolve_ensemble_paths(
@@ -266,8 +339,19 @@ def train_and_save(
         "n_demo_features": n_demo,
     }
 
+    # Compute additional metrics for traceability and per-type diagnostics.
+    # git_sha ties this artifact to an exact reproducible code state.
+    # rmse_by_dominant_type surfaces which type clusters are hardest to predict.
+    # top_20_features provides a quick post-retrain sanity check without a full
+    # permutation sweep.
+    rmse_by_dominant_type = _compute_rmse_by_dominant_type(
+        matched_fips, ensemble_pred[valid_mask], y_fit, type_assignments_path
+    )
+    top_20_features = _top_features_by_ridge_coef(rcv, feature_names)
+
     training_metrics = {
         "date_trained": str(date.today()),
+        "git_sha": _get_git_sha(),
         "n_training_samples": int(n_fit),
         "n_counties_output": int(len(matched_fips)),
         "n_features": int(X_fit.shape[1]),
@@ -285,6 +369,8 @@ def train_and_save(
         },
         "loo_r_ridge": meta["loo_r_ridge"],
         "loo_r_ensemble": meta["loo_r_ensemble"],
+        "rmse_by_dominant_type": rmse_by_dominant_type,
+        "top_20_features": top_20_features,
         "target": "pres_dem_share_2024",
         "history_years": _HISTORY_YEARS,
     }

@@ -12,6 +12,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import pytest
+from sklearn.linear_model import RidgeCV
 
 
 # ---------------------------------------------------------------------------
@@ -348,6 +349,87 @@ class TestEnsembleMetadata:
         assert tm["ridge"]["train_r2"] >= 0.0
         assert tm["ensemble"]["pred_min"] >= 0.0
         assert tm["ensemble"]["pred_max"] <= 1.0
+        # New fields from issue #130
+        assert "git_sha" in tm, "Missing git_sha in training_metrics.json"
+        assert "top_20_features" in tm, "Missing top_20_features in training_metrics.json"
+        assert "rmse_by_dominant_type" in tm, "Missing rmse_by_dominant_type in training_metrics.json"
+
+    def test_training_metrics_top_features_shape(self, tmp_path):
+        """top_20_features must be a list of dicts with 'feature' and 'ridge_coef' keys."""
+        from src.prediction.train_ensemble_model import train_and_save
+        import src.prediction.train_ensemble_model as mod
+
+        n = 40
+        ta_df = _make_type_assignments(n, j=6)
+        demo_df = _make_demographics(n, n_demo=4)
+
+        ta_path = tmp_path / "type_assignments.parquet"
+        demo_path = tmp_path / "county_features_national.parquet"
+        assembled_dir = tmp_path / "assembled"
+        output_dir = tmp_path / "ensemble_output"
+        ta_df.to_parquet(ta_path, index=False)
+        demo_df.to_parquet(demo_path, index=False)
+
+        for year, seed in zip([2008, 2012, 2016, 2020, 2024], range(5)):
+            _write_election_parquet(assembled_dir, year, n, seed)
+
+        metrics_path = tmp_path / "training_metrics.json"
+        original_path = mod._TRAINING_METRICS_PATH
+        mod._TRAINING_METRICS_PATH = metrics_path
+        try:
+            train_and_save(
+                type_assignments_path=ta_path,
+                demographics_path=demo_path,
+                assembled_dir=assembled_dir,
+                output_dir=output_dir,
+            )
+        finally:
+            mod._TRAINING_METRICS_PATH = original_path
+
+        tm = json.loads(metrics_path.read_text())
+        top = tm["top_20_features"]
+        assert isinstance(top, list), "top_20_features must be a list"
+        assert len(top) <= 20, "top_20_features must have at most 20 entries"
+        assert len(top) > 0, "top_20_features must be non-empty"
+        for entry in top:
+            assert "feature" in entry, "Each top feature entry must have 'feature'"
+            assert "ridge_coef" in entry, "Each top feature entry must have 'ridge_coef'"
+
+    def test_training_metrics_git_sha_is_string_or_none(self, tmp_path):
+        """git_sha must be a string (or null) — never raise."""
+        from src.prediction.train_ensemble_model import train_and_save
+        import src.prediction.train_ensemble_model as mod
+
+        n = 40
+        ta_df = _make_type_assignments(n, j=6)
+        demo_df = _make_demographics(n, n_demo=4)
+
+        ta_path = tmp_path / "type_assignments.parquet"
+        demo_path = tmp_path / "county_features_national.parquet"
+        assembled_dir = tmp_path / "assembled"
+        output_dir = tmp_path / "ensemble_output"
+        ta_df.to_parquet(ta_path, index=False)
+        demo_df.to_parquet(demo_path, index=False)
+
+        for year, seed in zip([2008, 2012, 2016, 2020, 2024], range(5)):
+            _write_election_parquet(assembled_dir, year, n, seed)
+
+        metrics_path = tmp_path / "training_metrics.json"
+        original_path = mod._TRAINING_METRICS_PATH
+        mod._TRAINING_METRICS_PATH = metrics_path
+        try:
+            train_and_save(
+                type_assignments_path=ta_path,
+                demographics_path=demo_path,
+                assembled_dir=assembled_dir,
+                output_dir=output_dir,
+            )
+        finally:
+            mod._TRAINING_METRICS_PATH = original_path
+
+        tm = json.loads(metrics_path.read_text())
+        sha = tm.get("git_sha")
+        assert sha is None or isinstance(sha, str), "git_sha must be str or null"
 
 
 # ---------------------------------------------------------------------------
@@ -406,3 +488,136 @@ class TestReadLooMetric:
             assert _read_loo_metric("Ridge+HGB ensemble") is None
         finally:
             mod._ACCURACY_METRICS_PATH = original
+
+
+# ---------------------------------------------------------------------------
+# Test: _get_git_sha
+# ---------------------------------------------------------------------------
+
+class TestGetGitSha:
+    """_get_git_sha must return a string or None — never raise."""
+
+    def test_returns_string_or_none(self):
+        """Returns a short SHA string or None in any environment."""
+        from src.prediction.train_ensemble_model import _get_git_sha
+        result = _get_git_sha()
+        assert result is None or isinstance(result, str)
+
+    def test_sha_looks_like_short_sha(self):
+        """If a SHA is returned it should be a non-empty alphanumeric string."""
+        from src.prediction.train_ensemble_model import _get_git_sha
+        result = _get_git_sha()
+        if result is not None:
+            assert len(result) >= 4, "SHA too short"
+            assert result.isalnum(), "SHA should be alphanumeric"
+
+
+# ---------------------------------------------------------------------------
+# Test: _top_features_by_ridge_coef
+# ---------------------------------------------------------------------------
+
+class TestTopFeaturesByRidgeCoef:
+    """_top_features_by_ridge_coef must return sorted feature entries."""
+
+    def _make_fitted_ridge(self, n_features: int = 15) -> tuple:
+        """Fit a minimal RidgeCV and return (rcv, feature_names)."""
+        rng = np.random.RandomState(42)
+        X = rng.randn(50, n_features)
+        y = rng.randn(50)
+        rcv = RidgeCV(alphas=[0.1, 1.0, 10.0])
+        rcv.fit(X, y)
+        feature_names = [f"feat_{i}" for i in range(n_features)]
+        return rcv, feature_names
+
+    def test_returns_at_most_n_features(self):
+        """Returns at most n entries."""
+        from src.prediction.train_ensemble_model import _top_features_by_ridge_coef
+        rcv, names = self._make_fitted_ridge(15)
+        result = _top_features_by_ridge_coef(rcv, names, n=10)
+        assert len(result) <= 10
+
+    def test_returns_correct_keys(self):
+        """Each entry has 'feature' and 'ridge_coef' keys."""
+        from src.prediction.train_ensemble_model import _top_features_by_ridge_coef
+        rcv, names = self._make_fitted_ridge(12)
+        result = _top_features_by_ridge_coef(rcv, names, n=5)
+        for entry in result:
+            assert "feature" in entry
+            assert "ridge_coef" in entry
+            assert isinstance(entry["ridge_coef"], float)
+
+    def test_sorted_by_abs_coef_descending(self):
+        """Features are ordered by |ridge_coef| descending."""
+        from src.prediction.train_ensemble_model import _top_features_by_ridge_coef
+        rcv, names = self._make_fitted_ridge(20)
+        result = _top_features_by_ridge_coef(rcv, names, n=20)
+        abs_coefs = [abs(e["ridge_coef"]) for e in result]
+        assert abs_coefs == sorted(abs_coefs, reverse=True), "Not sorted by |coef| desc"
+
+
+# ---------------------------------------------------------------------------
+# Test: _compute_rmse_by_dominant_type
+# ---------------------------------------------------------------------------
+
+class TestComputeRmseByDominantType:
+    """_compute_rmse_by_dominant_type must compute per-type RMSE correctly."""
+
+    def _make_type_assignments_with_dominant(
+        self, n: int = 30, j: int = 4, seed: int = 5
+    ) -> pd.DataFrame:
+        rng = np.random.RandomState(seed)
+        fips = [f"{i:05d}" for i in range(1, n + 1)]
+        scores = rng.rand(n, j)
+        scores = scores / scores.sum(axis=1, keepdims=True)
+        score_cols = {f"type_{k}_score": scores[:, k] for k in range(j)}
+        dominant = np.argmax(scores, axis=1)
+        return pd.DataFrame({"county_fips": fips, "dominant_type": dominant, **score_cols})
+
+    def test_returns_dict(self, tmp_path):
+        """Function returns a dict (possibly empty)."""
+        from src.prediction.train_ensemble_model import _compute_rmse_by_dominant_type
+
+        n = 30
+        ta_df = self._make_type_assignments_with_dominant(n)
+        ta_path = tmp_path / "type_assignments.parquet"
+        ta_df.to_parquet(ta_path, index=False)
+
+        rng = np.random.RandomState(0)
+        matched_fips = ta_df["county_fips"].values
+        ensemble_pred = rng.uniform(0.3, 0.7, n)
+        y = rng.uniform(0.3, 0.7, n)
+
+        result = _compute_rmse_by_dominant_type(matched_fips, ensemble_pred, y, ta_path)
+        assert isinstance(result, dict)
+
+    def test_rmse_values_are_nonnegative(self, tmp_path):
+        """All RMSE values must be >= 0."""
+        from src.prediction.train_ensemble_model import _compute_rmse_by_dominant_type
+
+        n = 40
+        ta_df = self._make_type_assignments_with_dominant(n, j=3)
+        ta_path = tmp_path / "type_assignments.parquet"
+        ta_df.to_parquet(ta_path, index=False)
+
+        rng = np.random.RandomState(1)
+        matched_fips = ta_df["county_fips"].values
+        ensemble_pred = rng.uniform(0.2, 0.8, n)
+        y = rng.uniform(0.2, 0.8, n)
+
+        result = _compute_rmse_by_dominant_type(matched_fips, ensemble_pred, y, ta_path)
+        for k, v in result.items():
+            assert v >= 0.0, f"Negative RMSE for type {k}: {v}"
+
+    def test_returns_empty_on_missing_file(self, tmp_path):
+        """Returns empty dict when type_assignments file doesn't exist."""
+        from src.prediction.train_ensemble_model import _compute_rmse_by_dominant_type
+
+        rng = np.random.RandomState(2)
+        matched_fips = np.array([f"{i:05d}" for i in range(10)])
+        ensemble_pred = rng.uniform(0.3, 0.7, 10)
+        y = rng.uniform(0.3, 0.7, 10)
+
+        result = _compute_rmse_by_dominant_type(
+            matched_fips, ensemble_pred, y, tmp_path / "nonexistent.parquet"
+        )
+        assert result == {}
