@@ -39,7 +39,7 @@ A political modeling platform that discovers electoral communities directly from
 - County holdout r: 0.698 (J=100, StandardScaler+pw=8, national 3,154 counties)
 - County holdout LOO r: 0.448 (type-mean baseline, S196; honest generalization metric)
 - County holdout LOO r (Ridge): 0.533 (Ridge scores+county_mean, J=100, S197)
-- County holdout LOO r (Ridge+all): 0.671 (Ridge scores+county_mean+54 features from 7 sources, N=3,106, S203) — NEW BEST
+- County holdout LOO r (Ridge+all): 0.695 (Ridge scores+county_mean+114 features from 10 sources, N=3,106, S303) — NEW BEST
 - County covariance val r: 0.915 (observed LW-regularized, S196; was 0.556 with demographic construction)
 - County coherence: 0.783
 - County RMSE: 0.073
