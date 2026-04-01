@@ -33,6 +33,7 @@ import pandas as pd
 from src.core import config as _cfg
 from src.prediction.county_priors import load_county_priors_with_ridge
 from src.prediction.forecast_engine import compute_theta_prior, run_forecast
+from src.prediction.generic_ballot import compute_gb_shift
 
 log = logging.getLogger(__name__)
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -208,6 +209,15 @@ def run() -> None:
         type_profiles_df = pd.read_parquet(type_profiles_path)
         log.info("Loaded type profiles for poll enrichment: %d types", len(type_profiles_df))
 
+    # Compute generic ballot shift from national polls.  This adjusts county
+    # priors toward the current national environment before the Bayesian update.
+    gb_info = compute_gb_shift()
+    gb_shift = gb_info.shift
+    log.info(
+        "Generic ballot shift: %+.1f pp (%d polls, source=%s)",
+        gb_shift * 100, gb_info.n_polls, gb_info.source,
+    )
+
     # Iterate over ALL registered races using the hierarchical forecast engine.
     # Produces dual-mode output: "national" (θ_national only) and
     # "local" (θ_national + δ_race) for every race.
@@ -226,6 +236,7 @@ def run() -> None:
         races=all_race_ids,
         lam=_LAM,
         mu=_MU,
+        generic_ballot_shift=gb_shift,
         w_vector_mode=_W_VECTOR_MODE,
         reference_date=str(date.today()),
         type_profiles=type_profiles_df,
