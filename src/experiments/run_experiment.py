@@ -411,7 +411,7 @@ def run_experiment(
         )
         if result.returncode == 0:
             git_commit = result.stdout.strip()
-    except Exception:
+    except (OSError, subprocess.SubprocessError):
         pass
 
     meta = {

@@ -163,7 +163,7 @@ def generate_type_validation_report(
                     # Fall back to original scores (already aligned)
                     county_fips_arr = shifts_fips
                     scores_for_augmented = scores
-            except Exception:
+            except (KeyError, ValueError):
                 county_fips_arr = shifts_fips
                 scores_for_augmented = scores
         else:
@@ -192,7 +192,7 @@ def generate_type_validation_report(
             st_df = pd.read_parquet(super_types_parquet)
             if "super_type_id" in st_df.columns and "display_name" in st_df.columns:
                 super_type_names_map = dict(zip(st_df["super_type_id"], st_df["display_name"]))
-        except Exception as e:
+        except (FileNotFoundError, KeyError, ValueError) as e:
             log.warning("Could not load super_types.parquet: %s", e)
 
     def _compute_super_type_rmse(st_labels_int: np.ndarray) -> dict[str, float] | None:
@@ -236,7 +236,7 @@ def generate_type_validation_report(
                 rmse_super_type = _compute_super_type_rmse(
                     assignments_df["super_type"].values.astype(int)
                 )
-        except Exception as e:
+        except (KeyError, ValueError, TypeError) as e:
             log.warning("rmse_by_super_type failed: %s", e)
 
     # --- Covariance validation (if data available) ---
@@ -270,7 +270,7 @@ def generate_type_validation_report(
                 constructed, scores, training_matrix, election_col_groups
             )
             log.info("Covariance validation r = %.3f", cov_validation_r)
-        except Exception as e:
+        except (FileNotFoundError, KeyError, ValueError) as e:
             log.warning("Covariance validation failed: %s", e)
 
     # --- Assemble report ---

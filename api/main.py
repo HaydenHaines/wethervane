@@ -187,7 +187,7 @@ async def lifespan(app: FastAPI):
             "Loaded tract type data: %d tracts × %d types",
             app.state.type_scores.shape[0], J,
         )
-    except Exception as exc:
+    except (FileNotFoundError, KeyError, ValueError) as exc:
         log.warning("Could not load tract type data: %s", exc)
         app.state.type_scores = None
         app.state.type_county_fips = None
@@ -207,7 +207,7 @@ async def lifespan(app: FastAPI):
             zip(tract_priors_df["tract_geoid"], tract_priors_df["total_votes"])
         )
         log.info("Loaded tract priors: %d tracts", len(app.state.ridge_priors))
-    except Exception as exc:
+    except (FileNotFoundError, KeyError, ValueError) as exc:
         log.warning("Could not load tract priors: %s", exc)
         app.state.ridge_priors = {}
         app.state.tract_states = {}
@@ -217,7 +217,7 @@ async def lifespan(app: FastAPI):
     try:
         app.state.state_weights, app.state.county_weights = _load_hac_weights_from_db(db, version_id)
         log.info("Loaded HAC weights: %d states", len(app.state.state_weights))
-    except Exception as exc:
+    except (duckdb.Error, KeyError, ValueError) as exc:
         log.warning("Could not load HAC weights from DB: %s", exc)
         app.state.state_weights = pd.DataFrame()
         app.state.county_weights = pd.DataFrame()
@@ -270,7 +270,7 @@ async def lifespan(app: FastAPI):
                 state_means[str(state_abbr)] = dim_means
         app.state.crosstab_state_means = state_means
         log.info("Computed per-state crosstab demographic means for %d states", len(state_means))
-    except Exception as exc:
+    except (FileNotFoundError, KeyError, ValueError, duckdb.Error) as exc:
         log.warning("Could not build crosstab affinity index: %s", exc)
         app.state.crosstab_affinity = None
         app.state.crosstab_state_means = {}
@@ -308,7 +308,7 @@ async def lifespan(app: FastAPI):
         app.state.pollster_grades = grades
         app.state.pollster_grades_normalized = norm_grades
         log.info("Loaded pollster grades: %d pollsters", len(grades))
-    except Exception as e:
+    except (ImportError, FileNotFoundError, KeyError, ValueError) as e:
         app.state.pollster_grades = {}
         app.state.pollster_grades_normalized = {}
         log.warning("Failed to load pollster grades: %s", e)
@@ -324,7 +324,7 @@ async def lifespan(app: FastAPI):
             if not result or result[0] == 0:
                 log.warning("CONTRACT: missing table %s — frontend will show degraded state", table_name)
                 contract_ok = False
-        except Exception:
+        except duckdb.Error:
             contract_ok = False
     app.state.contract_ok = contract_ok
     log.info("Contract status: %s", "ok" if contract_ok else "degraded")

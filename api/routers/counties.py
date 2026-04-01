@@ -227,12 +227,12 @@ def _read_share(path: Path, fips: str, col: str, total_col: str) -> tuple[float,
         return None
     try:
         df = pd.read_parquet(path, columns=["county_fips", col, total_col])
-    except Exception:
+    except (KeyError, ValueError):
         # Column may not exist (e.g. old schema)
         try:
             df = pd.read_parquet(path, columns=["county_fips", col])
             df[total_col] = None
-        except Exception:
+        except (KeyError, ValueError):
             return None
     row = df[df["county_fips"] == fips]
     if row.empty:
