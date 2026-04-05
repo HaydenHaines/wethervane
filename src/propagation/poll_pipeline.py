@@ -1,8 +1,9 @@
 """Poll weighting orchestration: combined pipeline, aggregation, and CSV loading.
 
 Ties together the individual weighting steps (house effects, time decay,
-pollster quality, primary discount) into a single ``apply_all_weights``
-pipeline, and provides inverse-variance aggregation and CSV poll loading.
+pollster quality, primary discount, and methodology quality) into a single
+``apply_all_weights`` pipeline, and provides inverse-variance aggregation and
+CSV poll loading.
 """
 
 from __future__ import annotations
@@ -16,6 +17,10 @@ from src.propagation.poll_decay import (
     _PRE_PRIMARY_DISCOUNT,
     apply_primary_discount,
     apply_time_decay,
+)
+from src.propagation.poll_methodology import (
+    _DEFAULT_METHODOLOGY_WEIGHTS,
+    apply_methodology_weights,
 )
 from src.propagation.poll_quality import apply_pollster_quality
 from src.propagation.propagate_polls import PollObservation
@@ -37,6 +42,9 @@ def apply_all_weights(
     primary_calendar_path: Path | str | None = None,
     primary_discount_factor: float = _PRE_PRIMARY_DISCOUNT,
     accuracy_path: Path | str | None = None,
+    poll_methodologies: list[str | None] | None = None,
+    methodology_weights: dict[str, float] | None = None,
+    apply_methodology: bool = True,
 ) -> list[PollObservation]:
     """Apply all weighting steps to a list of polls.
 
@@ -45,16 +53,37 @@ def apply_all_weights(
          so that downstream weighting operates on bias-corrected shares.
       2. Pre/post-primary discount (scales n_sample for pre-primary polls).
       3. Time decay (reduces effective N for older polls).
-      4. Pollster quality (rescales effective N by quality grade).
+      4. Pollster quality (rescales effective N by RMSE / Silver Bulletin / grade).
+      5. Methodology quality (rescales effective N by survey mode).
 
     House effect correction is skipped when ``apply_house_effects`` is False.
     Pre-primary discounting is skipped when ``use_primary_discount`` is False.
     Pollster quality is skipped when ``apply_quality`` is False.
+    Methodology quality is skipped when ``apply_methodology`` is False or
+    ``poll_methodologies`` is None/empty.
 
     Pollster quality priority (see ``apply_pollster_quality`` for details):
       1. RMSE-based accuracy from ``accuracy_path`` (empirical backtest data).
       2. Silver Bulletin ratings when ``use_silver_bulletin`` is True.
       3. 538 grade embedded in poll_notes.
+
+    Methodology quality multipliers (see ``poll_methodology.py`` for details):
+      - phone: 1.15x — live-phone; gold standard accuracy.
+      - mixed: 1.05x — blended mode; decent quality.
+      - online: 0.90x — online panel; higher house effects.
+      - IVR: 0.85x — robocall; worst track record.
+      - unknown: 1.00x — neutral; no adjustment.
+
+    Parameters
+    ----------
+    poll_methodologies:
+        Parallel list of methodology strings (e.g. "phone", "online", "IVR",
+        "mixed", "unknown") for each poll in ``polls``.  None or an entry of
+        None/empty string means neutral (no methodology adjustment).  When
+        this argument is None the methodology step is skipped entirely.
+    methodology_weights:
+        Custom multiplier table mapping methodology strings to floats.  When
+        None, uses ``_DEFAULT_METHODOLOGY_WEIGHTS`` from ``poll_methodology``.
     """
     working = list(polls)
     if apply_house_effects:
@@ -74,6 +103,11 @@ def apply_all_weights(
             use_silver_bulletin=use_silver_bulletin,
             accuracy_path=accuracy,
         )
+    # Methodology quality multiplier — applied last so it stacks multiplicatively
+    # on top of the existing quality weight (RMSE / Silver Bulletin / grade).
+    if apply_methodology and poll_methodologies is not None and len(poll_methodologies) > 0:
+        mw = methodology_weights if methodology_weights is not None else _DEFAULT_METHODOLOGY_WEIGHTS
+        working = apply_methodology_weights(working, poll_methodologies, weights=mw)
     return working
 
 

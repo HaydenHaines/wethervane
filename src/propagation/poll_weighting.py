@@ -3,10 +3,11 @@
 This module is a backward-compatible facade that re-exports all public
 symbols from the focused sub-modules introduced in #110:
 
-  - ``poll_quality``  -- Silver Bulletin ratings and 538 grade fallback
-  - ``house_effects`` -- house effect (partisan bias) correction
-  - ``poll_decay``    -- time decay and pre-primary discount
-  - ``poll_pipeline`` -- orchestration, aggregation, and CSV loading
+  - ``poll_quality``      -- Silver Bulletin ratings and 538 grade fallback
+  - ``house_effects``     -- house effect (partisan bias) correction
+  - ``poll_decay``        -- time decay and pre-primary discount
+  - ``poll_methodology``  -- methodology-based quality multipliers (phone > mixed > online > IVR)
+  - ``poll_pipeline``     -- orchestration, aggregation, and CSV loading
 
 All existing imports from ``src.propagation.poll_weighting`` continue to work.
 
@@ -59,6 +60,18 @@ from src.propagation.poll_decay import (  # noqa: F401
     apply_primary_discount,
     apply_time_decay,
     election_day_for_cycle,
+)
+
+# ---------------------------------------------------------------------------
+# Re-export from poll_methodology
+# ---------------------------------------------------------------------------
+from src.propagation.poll_methodology import (  # noqa: F401
+    _DEFAULT_METHODOLOGY_WEIGHTS,
+    _MISSING_METHODOLOGY_MULTIPLIER,
+    _VALID_METHODOLOGIES,
+    apply_methodology_weights,
+    load_methodology_weights,
+    methodology_to_multiplier,
 )
 
 # ---------------------------------------------------------------------------

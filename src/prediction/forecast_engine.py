@@ -28,12 +28,13 @@ def prepare_polls(
     half_life_days: float = 30.0,
     pre_primary_discount: float = 0.5,
     accuracy_path: Path | None = None,
+    methodology_weights: dict[str, float] | None = None,
 ) -> dict[str, list[dict]]:
     """Apply quality weighting to raw poll dicts.
 
     Converts dicts → PollObservation → apply_all_weights → back to dicts.
     Returns polls with adjusted dem_share (house effects) and n_sample
-    (time decay, pollster grade, pre-primary discount).
+    (time decay, pollster grade, pre-primary discount, methodology quality).
 
     Parameters
     ----------
@@ -47,13 +48,21 @@ def prepare_polls(
         Optional path to pollster_accuracy.json.  When provided, RMSE-based
         quality weights are used in place of grade-based weights for any
         pollster that appears in the accuracy data.
+    methodology_weights:
+        Optional mapping of methodology strings (e.g. "phone", "online") to
+        quality multipliers.  When provided, each poll's n_sample is multiplied
+        by the factor for its methodology tag (from the "methodology" key in the
+        poll dict).  When None, methodology weighting is skipped.  Pass
+        ``_DEFAULT_METHODOLOGY_WEIGHTS`` from ``poll_methodology`` to use the
+        built-in defaults loaded from prediction_params.json.
     """
     if not polls_by_race:
         return {}
 
-    # Flatten all polls, keeping race labels and original notes
+    # Flatten all polls, keeping race labels, original notes, and methodology tags
     all_obs: list[PollObservation] = []
     all_notes: list[str] = []
+    all_methodologies: list[str | None] = []
     race_labels: list[str] = []
 
     for race_id, polls in polls_by_race.items():
@@ -69,9 +78,16 @@ def prepare_polls(
             )
             all_obs.append(obs)
             all_notes.append(p.get("notes", ""))
+            # Extract methodology tag; None = missing (treated as neutral)
+            raw_method = p.get("methodology", None)
+            all_methodologies.append(raw_method if raw_method else None)
             race_labels.append(race_id)
 
-    # Apply all quality adjustments (house effects, primary discount, time decay, grade/RMSE)
+    # Apply all quality adjustments:
+    # house effects, primary discount, time decay, grade/RMSE, methodology.
+    # Pass poll_methodologies=None when methodology_weights is None to skip
+    # the methodology step entirely (caller opted out by omitting weights).
+    effective_methodologies = all_methodologies if methodology_weights is not None else None
     weighted = apply_all_weights(
         all_obs,
         reference_date=reference_date,
@@ -79,6 +95,8 @@ def prepare_polls(
         poll_notes=all_notes,
         primary_discount_factor=pre_primary_discount,
         accuracy_path=accuracy_path,
+        poll_methodologies=effective_methodologies,
+        methodology_weights=methodology_weights,
     )
 
     # Reconstruct dicts grouped by race, preserving original notes
@@ -228,6 +246,7 @@ def run_forecast(
     half_life_days: float = 30.0,  # poll time-decay half-life; see prediction_params.json
     pre_primary_discount: float = 0.5,  # n_sample factor for pre-primary polls
     accuracy_path: Path | None = None,  # path to pollster_accuracy.json for RMSE weights
+    methodology_weights: dict[str, float] | None = None,  # see prediction_params.json
 ) -> dict[str, ForecastResult]:
     """Run the full hierarchical forecast for all races.
 
@@ -246,8 +265,8 @@ def run_forecast(
     theta_prior = compute_theta_prior(type_scores, adjusted_priors)
 
     # Step 1.5: Apply poll quality weighting.
-    # half_life_days and pre_primary_discount come from prediction_params.json via
-    # the caller (predict_2026_types.run).  Function defaults serve as fallbacks
+    # Parameters come from prediction_params.json via the caller
+    # (predict_2026_types.run).  Function defaults serve as fallbacks
     # when called from tests or other contexts that don't supply config.
     working_polls = polls_by_race
     if reference_date:
@@ -257,6 +276,7 @@ def run_forecast(
             half_life_days=half_life_days,
             pre_primary_discount=pre_primary_discount,
             accuracy_path=accuracy_path,
+            methodology_weights=methodology_weights,
         )
 
     # Step 1.6: Build W vector builder if type_profiles available

@@ -73,6 +73,17 @@ _ACCURACY_PATH: Path | None = (
     if _USE_POLLSTER_RMSE_WEIGHTS
     else None
 )
+# Methodology-based quality multipliers.  Loaded from prediction_params.json so
+# weights can be updated without code changes.  Falls back to module defaults.
+from src.propagation.poll_methodology import (  # noqa: E402
+    _DEFAULT_METHODOLOGY_WEIGHTS,
+    load_methodology_weights,
+)
+_METHODOLOGY_WEIGHTS: dict[str, float] = (
+    load_methodology_weights(_PARAMS_PATH)
+    if _poll_weighting_params.get("methodology_weights")
+    else dict(_DEFAULT_METHODOLOGY_WEIGHTS)
+)
 
 
 def _load_type_data() -> tuple[list[str], np.ndarray, np.ndarray, np.ndarray]:
@@ -259,6 +270,7 @@ def run() -> None:
         half_life_days=_HALF_LIFE_DAYS,
         pre_primary_discount=_PRE_PRIMARY_DISCOUNT,
         accuracy_path=_ACCURACY_PATH,
+        methodology_weights=_METHODOLOGY_WEIGHTS,
     )
 
     # Convert ForecastResult → DataFrame rows (both modes per race)
