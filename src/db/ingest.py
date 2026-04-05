@@ -218,6 +218,79 @@ def _ingest_predictions(
 
 
 
+def _update_narratives_with_predictions(
+    con: duckdb.DuckDBPyConnection,
+    paths: dict[str, Path],
+) -> None:
+    """Enrich type narratives with political lean + trend after predictions are loaded.
+
+    Called as a second pass after _ingest_types_and_assignments and prediction ingestion,
+    so that the final narratives include model-based lean labels and electoral trend
+    observations derived from shift history.
+    """
+    if not paths["type_profiles"].exists():
+        log.info("No type_profiles.parquet found; skipping narrative enrichment")
+        return
+
+    try:
+        # Load prediction averages per type from the now-ingested predictions table
+        pred_rows = con.execute(
+            """
+            SELECT cta.dominant_type AS type_id,
+                   AVG(p.pred_dem_share) AS mean_pred
+            FROM county_type_assignments cta
+            JOIN predictions p ON cta.county_fips = p.county_fips
+            GROUP BY cta.dominant_type
+            """
+        ).fetchall()
+        predictions = {int(r[0]): float(r[1]) for r in pred_rows if r[1] is not None}
+
+        # Load shift averages per type from the now-ingested county_shifts table
+        available_shift_cols = {
+            c for c in con.execute("SELECT * FROM county_shifts LIMIT 0").fetchdf().columns
+        }
+
+        def _agg(col: str) -> str:
+            return f"AVG(cs.{col})" if col in available_shift_cols else "NULL"
+
+        shift_rows = con.execute(
+            f"""
+            SELECT
+                cta.dominant_type               AS type_id,
+                {_agg('pres_d_shift_12_16')}    AS shift_12_16,
+                {_agg('pres_d_shift_16_20')}    AS shift_16_20,
+                {_agg('pres_d_shift_20_24')}    AS shift_20_24
+            FROM county_type_assignments cta
+            JOIN county_shifts cs ON cta.county_fips = cs.county_fips
+            GROUP BY cta.dominant_type
+            """
+        ).fetchall()
+        shifts = {
+            int(r[0]): {
+                "shift_12_16": float(r[1]) if r[1] is not None else None,
+                "shift_16_20": float(r[2]) if r[2] is not None else None,
+                "shift_20_24": float(r[3]) if r[3] is not None else None,
+            }
+            for r in shift_rows
+        }
+
+        narratives = generate_all_narratives(
+            profiles_path=str(paths["type_profiles"]),
+            predictions=predictions,
+            shifts=shifts,
+        )
+        for type_id, narrative in narratives.items():
+            con.execute(
+                "UPDATE types SET narrative = ? WHERE type_id = ?",
+                [narrative, type_id],
+            )
+        log.info(
+            "Enriched %d type narratives with political lean + trend", len(narratives)
+        )
+    except Exception as exc:
+        log.warning("Narrative enrichment failed (%s); narratives retain demographic-only version", exc)
+
+
 def _ingest_types_and_assignments(
     con: duckdb.DuckDBPyConnection,
     paths: dict[str, Path],
@@ -419,5 +492,12 @@ def ingest_all(
         log.info("Ingested demographics_interpolated: %d rows", len(di_df))
     else:
         log.info("No demographics_interpolated.parquet found; skipping")
+
+    # Regenerate narratives with political lean now that predictions are in the DB.
+    # The first-pass narrative generation (in _ingest_types_and_assignments above)
+    # only has demographic z-scores.  This second pass adds political lean + trend
+    # by joining the newly-ingested predictions and shifts tables.
+    con = _cycle_connection(con, db_path, "pre-narrative-update")
+    _update_narratives_with_predictions(con, paths)
     del con  # use del (not close()) to avoid crash on corrupted heap
     gc.collect()

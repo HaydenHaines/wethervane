@@ -18,6 +18,8 @@ import pytest
 from src.description.generate_narratives import (
     generate_all_narratives,
     generate_type_narrative,
+    _lean_label,
+    _trend_sentence,
     _FEATURE_PHRASES,
     _adverb,
     _income_label,
@@ -199,6 +201,136 @@ class TestGenerateTypeNarrative:
         p["n_counties"] = 12.0
         result = generate_type_narrative(p, "Sample Type")
         assert "12" in result
+
+    def test_political_lean_dem_included_when_prediction_provided(self):
+        """When mean_pred_dem_share is provided, the narrative should mention lean."""
+        result = generate_type_narrative(
+            self._profile_all_zero(), "Test Type", mean_pred_dem_share=0.56
+        )
+        assert "D+" in result, f"Expected D+ lean label in: {result!r}"
+
+    def test_political_lean_rep_included_when_prediction_provided(self):
+        """Republican-leaning types should show R+ in the narrative."""
+        result = generate_type_narrative(
+            self._profile_all_zero(), "Test Type", mean_pred_dem_share=0.42
+        )
+        assert "R+" in result, f"Expected R+ lean label in: {result!r}"
+
+    def test_no_lean_when_no_prediction(self):
+        """Without prediction data, no lean label should appear."""
+        result = generate_type_narrative(self._profile_all_zero(), "Test Type")
+        assert "D+" not in result and "R+" not in result
+
+    def test_political_lean_with_trend_dem(self):
+        """Types trending toward Democrats should mention that trend."""
+        result = generate_type_narrative(
+            self._profile_all_zero(),
+            "Test Type",
+            mean_pred_dem_share=0.48,
+            shift_12_16=0.05,
+            shift_16_20=0.06,
+            shift_20_24=0.04,
+        )
+        assert "democrats" in result.lower() or "democratic" in result.lower()
+
+    def test_political_lean_with_trend_rep(self):
+        """Types trending toward Republicans should mention that trend."""
+        result = generate_type_narrative(
+            self._profile_all_zero(),
+            "Test Type",
+            mean_pred_dem_share=0.52,
+            shift_12_16=-0.05,
+            shift_16_20=-0.06,
+            shift_20_24=-0.04,
+        )
+        assert "republican" in result.lower()
+
+    def test_political_lean_no_trend_for_flat_shifts(self):
+        """Mixed/small shifts should not produce a trend sentence."""
+        result = generate_type_narrative(
+            self._profile_all_zero(),
+            "Test Type",
+            mean_pred_dem_share=0.50,
+            shift_12_16=0.01,
+            shift_16_20=-0.01,
+            shift_20_24=0.01,
+        )
+        # Lean label should be present, trend sentence should not
+        assert "lean" in result.lower()
+        assert "trend" not in result.lower() and "shifted" not in result.lower()
+
+    def test_political_lean_close_race_decimal(self):
+        """Close races (< 5pp) should show one decimal place in the lean label."""
+        result = generate_type_narrative(
+            self._profile_all_zero(), "Test Type", mean_pred_dem_share=0.523
+        )
+        # D+2.3 is the expected label — verify decimal is present
+        assert re.search(r"[DR]\+\d+\.\d+", result), (
+            f"Expected decimal lean label in close-race narrative: {result!r}"
+        )
+
+
+# ── Unit tests for _lean_label and _trend_sentence ───────────────────────────
+
+class TestLeanLabel:
+    def test_dem_blowout(self):
+        # 0.65 → D+15 (15pp margin)
+        assert _lean_label(0.65) == "D+15"
+
+    def test_rep_blowout(self):
+        # 0.30 → R+20 (20pp margin)
+        assert _lean_label(0.30) == "R+20"
+
+    def test_dem_close(self):
+        # 0.523 → D+2.3pp
+        assert _lean_label(0.523) == "D+2.3"
+
+    def test_rep_close(self):
+        # 0.478 → R+2.2pp
+        assert _lean_label(0.478) == "R+2.2"
+
+    def test_exact_tossup(self):
+        # 0.50 → D+0.0
+        assert _lean_label(0.50) == "D+0.0"
+
+    def test_moderate_dem(self):
+        # 0.56 → D+6.0 rounds to D+6
+        assert _lean_label(0.56) == "D+6"
+
+    def test_moderate_rep(self):
+        # 0.44 → R+6.0 rounds to R+6
+        assert _lean_label(0.44) == "R+6"
+
+
+class TestTrendSentence:
+    def test_consistent_r_shift_returns_sentence(self):
+        result = _trend_sentence(-0.05, -0.07, -0.04)
+        assert result is not None
+        assert "republican" in result.lower()
+
+    def test_consistent_d_shift_returns_sentence(self):
+        result = _trend_sentence(0.05, 0.07, 0.04)
+        assert result is not None
+        assert "democrat" in result.lower()
+
+    def test_mixed_small_shifts_returns_none(self):
+        result = _trend_sentence(0.01, -0.01, 0.02)
+        assert result is None
+
+    def test_none_shifts_handled(self):
+        # Only one shift available — not enough for trend
+        result = _trend_sentence(None, None, -0.05)
+        assert result is None
+
+    def test_large_recent_r_shift_mentioned(self):
+        result = _trend_sentence(0.05, -0.02, -0.12)
+        assert result is not None
+        assert "republican" in result.lower()
+
+    def test_large_recent_d_shift_mentioned(self):
+        result = _trend_sentence(-0.05, 0.02, 0.12)
+        assert result is not None
+        assert "democrat" in result.lower()
 
 
 # ── Integration tests against real data ──────────────────────────────────────

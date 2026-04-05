@@ -1,8 +1,13 @@
 """Auto-generate 2-3 sentence human-readable descriptions for each type.
 
-Uses z-score profiles computed from type_profiles.parquet to produce
-template-based narratives without LLM calls.  Output style: 538-audience,
-accessible language, no raw z-score numbers exposed.
+Uses z-score profiles computed from type_profiles.parquet and mean prediction
+data to produce template-based narratives without LLM calls.  Output style:
+538-audience, accessible language, no raw z-score numbers exposed.
+
+Narrative structure (3 sentences):
+  1. Geography/setting overview (urbanicity, income, county count)
+  2. Most distinctive demographic features (top 3 by |z-score|)
+  3. Political lean + trend signal (from mean predicted Dem share + shifts)
 
 Usage
 -----
@@ -138,8 +143,70 @@ def _income_label(z_income: float) -> str:
 
 # ── Core generator ────────────────────────────────────────────────────────────
 
-def generate_type_narrative(profile: dict[str, float], display_name: str) -> str:
-    """Generate a 2-3 sentence description from demographic z-scores.
+def _lean_label(dem_share: float) -> str:
+    """Convert a predicted two-party Democratic share to a lean label.
+
+    Examples: 0.58 → "D+8", 0.46 → "R+4", 0.502 → "D+0.4"
+    """
+    margin_pp = (dem_share - 0.5) * 100
+    party = "D" if margin_pp >= 0 else "R"
+    magnitude = abs(margin_pp)
+    # Round to one decimal for close races, integer for blowouts
+    if magnitude < 5:
+        return f"{party}+{magnitude:.1f}"
+    return f"{party}+{round(magnitude)}"
+
+
+def _trend_sentence(
+    shift_12_16: float | None,
+    shift_16_20: float | None,
+    shift_20_24: float | None,
+) -> str | None:
+    """Return a trend observation if recent shifts show a consistent direction.
+
+    A "consistent" trend requires at least two of the three recent shifts to
+    point in the same direction.  Only called when we have at least two shifts.
+
+    The shift values are Democratic-share changes (positive = Dem gain).
+    Threshold of ±0.03 (3pp) filters out noise from near-zero cycles.
+
+    Returns None when there is no clear trend to narrate.
+    """
+    shifts: list[float] = [
+        s for s in (shift_12_16, shift_16_20, shift_20_24) if s is not None
+    ]
+    if len(shifts) < 2:
+        return None
+
+    # Most recent and overall direction
+    recent_shift = shifts[-1]
+    dem_gains = sum(1 for s in shifts if s > 0.03)
+    dem_losses = sum(1 for s in shifts if s < -0.03)
+
+    # Consistent swing toward Republicans (each recent cycle)
+    if dem_losses >= 2 and recent_shift < -0.03:
+        return "These communities have shifted toward Republicans in recent elections."
+    # Consistent swing toward Democrats
+    if dem_gains >= 2 and recent_shift > 0.03:
+        return "These communities have trended toward Democrats in recent elections."
+    # Recent sharp reversal (most recent cycle large and opposite earlier trend)
+    if recent_shift < -0.08:
+        return "These communities moved sharply toward Republicans in 2020–2024."
+    if recent_shift > 0.08:
+        return "These communities moved sharply toward Democrats in 2020–2024."
+
+    return None
+
+
+def generate_type_narrative(
+    profile: dict[str, float],
+    display_name: str,
+    mean_pred_dem_share: float | None = None,
+    shift_12_16: float | None = None,
+    shift_16_20: float | None = None,
+    shift_20_24: float | None = None,
+) -> str:
+    """Generate a 2-3 sentence description from demographic z-scores and predictions.
 
     Parameters
     ----------
@@ -147,6 +214,15 @@ def generate_type_narrative(profile: dict[str, float], display_name: str) -> str
         Dict mapping feature name to z-score (standardised across all types).
     display_name:
         The type's display name, used as the subject of the first sentence.
+    mean_pred_dem_share:
+        Mean predicted Democratic two-party share across member counties (0–1).
+        When provided, the third sentence describes political lean and trend.
+    shift_12_16:
+        Mean Democratic share shift from 2012→2016 across member counties.
+    shift_16_20:
+        Mean Democratic share shift from 2016→2020 across member counties.
+    shift_20_24:
+        Mean Democratic share shift from 2020→2024 across member counties.
 
     Returns
     -------
@@ -204,20 +280,36 @@ def generate_type_narrative(profile: dict[str, float], display_name: str) -> str
         # Fallback for types near the demographic average
         sentence2 = "Demographically, these areas are close to the regional average across most dimensions."
 
-    # ── Sentence 3: migration / growth note (if distinctive) ─────────────────
-    migration_z = profile.get("net_migration_rate", 0.0)
-    inflow_income_z = profile.get("avg_inflow_income", 0.0)
-    diversity_z = profile.get("migration_diversity", 0.0)
-
+    # ── Sentence 3: political lean + trend ───────────────────────────────────
+    # When prediction data is available, describe the political character.
+    # This replaces the migration-only third sentence — political lean is
+    # more useful context for a forecast site's audience.
     sentence3 = ""
-    if abs(migration_z) >= 1.0:
-        direction = "strong population growth driven by in-migration" if migration_z > 0 else "persistent population loss"
-        if migration_z > 0 and inflow_income_z >= 0.75:
-            sentence3 = f"These communities are experiencing {direction}, with arriving residents tending to have above-average incomes."
-        elif migration_z > 0 and diversity_z >= 0.75:
-            sentence3 = f"These communities are experiencing {direction} from a wide variety of origin locations."
+    if mean_pred_dem_share is not None:
+        lean = _lean_label(mean_pred_dem_share)
+        trend = _trend_sentence(shift_12_16, shift_16_20, shift_20_24)
+        if trend:
+            sentence3 = f"The model forecasts an average lean of {lean}. {trend}"
         else:
-            sentence3 = f"These communities are experiencing {direction}."
+            sentence3 = f"The model forecasts an average lean of {lean}."
+    else:
+        # Fallback: migration / growth note when no prediction data
+        migration_z = profile.get("net_migration_rate", 0.0)
+        inflow_income_z = profile.get("avg_inflow_income", 0.0)
+        diversity_z = profile.get("migration_diversity", 0.0)
+
+        if abs(migration_z) >= 1.0:
+            direction = (
+                "strong population growth driven by in-migration"
+                if migration_z > 0
+                else "persistent population loss"
+            )
+            if migration_z > 0 and inflow_income_z >= 0.75:
+                sentence3 = f"These communities are experiencing {direction}, with arriving residents tending to have above-average incomes."
+            elif migration_z > 0 and diversity_z >= 0.75:
+                sentence3 = f"These communities are experiencing {direction} from a wide variety of origin locations."
+            else:
+                sentence3 = f"These communities are experiencing {direction}."
 
     if sentence3:
         return f"{sentence1} {sentence2} {sentence3}"
@@ -226,13 +318,25 @@ def generate_type_narrative(profile: dict[str, float], display_name: str) -> str
 
 # ── Batch generator ───────────────────────────────────────────────────────────
 
-def generate_all_narratives(profiles_path: str | None = None) -> dict[int, str]:
+def generate_all_narratives(
+    profiles_path: str | None = None,
+    predictions: dict[int, float] | None = None,
+    shifts: dict[int, dict[str, float]] | None = None,
+) -> dict[int, str]:
     """Generate narratives for all types.
 
     Parameters
     ----------
     profiles_path:
         Path to type_profiles.parquet.  Defaults to the canonical pipeline path.
+    predictions:
+        Dict mapping type_id to mean predicted Democratic share (0–1).
+        When provided, each narrative includes political lean in sentence 3.
+    shifts:
+        Dict mapping type_id to a dict with keys:
+        ``shift_12_16``, ``shift_16_20``, ``shift_20_24``
+        (mean Democratic share shifts across member counties).
+        Only used when ``predictions`` is also provided.
 
     Returns
     -------
@@ -261,7 +365,18 @@ def generate_all_narratives(profiles_path: str | None = None) -> dict[int, str]:
         z_row = z_df.iloc[i].to_dict()
         # Inject raw n_counties so narrative can use it
         z_row["n_counties"] = float(row["n_counties"])
-        narrative = generate_type_narrative(z_row, display_name)
+
+        # Extract prediction and shift data if available
+        pred = predictions.get(type_id) if predictions else None
+        type_shifts = shifts.get(type_id, {}) if shifts else {}
+        narrative = generate_type_narrative(
+            z_row,
+            display_name,
+            mean_pred_dem_share=pred,
+            shift_12_16=type_shifts.get("shift_12_16"),
+            shift_16_20=type_shifts.get("shift_16_20"),
+            shift_20_24=type_shifts.get("shift_20_24"),
+        )
         narratives[type_id] = narrative
         log.debug("Type %d: %s", type_id, narrative[:80])
 
