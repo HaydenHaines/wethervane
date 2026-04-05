@@ -198,6 +198,45 @@ export default async function Image({
         {/* Spacer */}
         <div style={{ display: "flex", flex: 1 }} />
 
+        {/* Partisan lean bar — D vs R split */}
+        {data.prediction !== null && (
+          <div style={{ display: "flex", flexDirection: "column", marginTop: 24, marginBottom: 8 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
+              <span style={{ fontSize: 16, color: "#2166ac", fontWeight: 600 }}>
+                Dem {(data.prediction * 100).toFixed(1)}%
+              </span>
+              <span style={{ fontSize: 16, color: "#d73027", fontWeight: 600 }}>
+                Rep {((1 - data.prediction) * 100).toFixed(1)}%
+              </span>
+            </div>
+            {/* The bar itself — split at the prediction value */}
+            <div
+              style={{
+                display: "flex",
+                height: 16,
+                borderRadius: 8,
+                overflow: "hidden",
+                border: "1px solid #ddd",
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  width: `${data.prediction * 100}%`,
+                  background: "#2166ac",
+                }}
+              />
+              <div
+                style={{
+                  display: "flex",
+                  flex: 1,
+                  background: "#d73027",
+                }}
+              />
+            </div>
+          </div>
+        )}
+
         {/* Footer branding */}
         <div
           style={{
