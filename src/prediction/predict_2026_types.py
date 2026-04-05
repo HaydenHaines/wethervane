@@ -65,6 +65,14 @@ _W_VECTOR_MODE: str = _forecast_params["w_vector_mode"]
 _poll_weighting_params: dict = _all_params.get("poll_weighting", {})
 _HALF_LIFE_DAYS: float = float(_poll_weighting_params.get("half_life_days", 30.0))
 _PRE_PRIMARY_DISCOUNT: float = float(_poll_weighting_params.get("pre_primary_discount", 0.5))
+# When True, use empirical RMSE data from pollster_accuracy.json to weight polls.
+# Falls back to Silver Bulletin / 538-grade weights for unknown pollsters.
+_USE_POLLSTER_RMSE_WEIGHTS: bool = bool(_poll_weighting_params.get("use_pollster_rmse_weights", True))
+_ACCURACY_PATH: Path | None = (
+    PROJECT_ROOT / "data" / "experiments" / "pollster_accuracy.json"
+    if _USE_POLLSTER_RMSE_WEIGHTS
+    else None
+)
 
 
 def _load_type_data() -> tuple[list[str], np.ndarray, np.ndarray, np.ndarray]:
@@ -250,6 +258,7 @@ def run() -> None:
         type_profiles=type_profiles_df,
         half_life_days=_HALF_LIFE_DAYS,
         pre_primary_discount=_PRE_PRIMARY_DISCOUNT,
+        accuracy_path=_ACCURACY_PATH,
     )
 
     # Convert ForecastResult → DataFrame rows (both modes per race)

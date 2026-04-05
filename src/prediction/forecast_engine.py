@@ -8,6 +8,7 @@ Voters move slowly (θ_prior from decade of elections); polls move quickly
 from __future__ import annotations
 
 from dataclasses import dataclass
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 import numpy as np
@@ -26,6 +27,7 @@ def prepare_polls(
     reference_date: str,
     half_life_days: float = 30.0,
     pre_primary_discount: float = 0.5,
+    accuracy_path: Path | None = None,
 ) -> dict[str, list[dict]]:
     """Apply quality weighting to raw poll dicts.
 
@@ -41,6 +43,10 @@ def prepare_polls(
     pre_primary_discount:
         Multiplicative n_sample factor for pre-primary polls.  Comes from
         prediction_params.json ``poll_weighting.pre_primary_discount``; defaults to 0.5.
+    accuracy_path:
+        Optional path to pollster_accuracy.json.  When provided, RMSE-based
+        quality weights are used in place of grade-based weights for any
+        pollster that appears in the accuracy data.
     """
     if not polls_by_race:
         return {}
@@ -65,13 +71,14 @@ def prepare_polls(
             all_notes.append(p.get("notes", ""))
             race_labels.append(race_id)
 
-    # Apply all quality adjustments (house effects, primary discount, time decay, grade)
+    # Apply all quality adjustments (house effects, primary discount, time decay, grade/RMSE)
     weighted = apply_all_weights(
         all_obs,
         reference_date=reference_date,
         half_life_days=half_life_days,
         poll_notes=all_notes,
         primary_discount_factor=pre_primary_discount,
+        accuracy_path=accuracy_path,
     )
 
     # Reconstruct dicts grouped by race, preserving original notes
@@ -220,6 +227,7 @@ def run_forecast(
     type_profiles: pd.DataFrame | None = None,
     half_life_days: float = 30.0,  # poll time-decay half-life; see prediction_params.json
     pre_primary_discount: float = 0.5,  # n_sample factor for pre-primary polls
+    accuracy_path: Path | None = None,  # path to pollster_accuracy.json for RMSE weights
 ) -> dict[str, ForecastResult]:
     """Run the full hierarchical forecast for all races.
 
@@ -248,6 +256,7 @@ def run_forecast(
             reference_date,
             half_life_days=half_life_days,
             pre_primary_discount=pre_primary_discount,
+            accuracy_path=accuracy_path,
         )
 
     # Step 1.6: Build W vector builder if type_profiles available

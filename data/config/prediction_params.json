@@ -12,7 +12,9 @@
   "poll_weighting": {
     "_half_life_notes": "Exponential decay half-life in days. At 30 days a poll loses half its effective weight. Shorter values prioritize recency; longer values retain more historical polling signal. Calibrate via scripts/experiments/sweep_poll_half_life.py.",
     "_pre_primary_discount_notes": "Multiplicative factor applied to n_sample for polls conducted before the primary. Pre-primary polls are less informative about general election matchups. Must be in (0, 1]. 0.5 = pre-primary polls count for half.",
+    "_use_pollster_rmse_weights_notes": "When true, pollster quality is weighted by empirical RMSE from data/experiments/pollster_accuracy.json (backtest results) rather than Silver Bulletin grades. RMSE weights replace grade-based weights for any pollster found in the accuracy file; grade-based weights remain as fallback for unknown pollsters.",
     "half_life_days": 30.0,
-    "pre_primary_discount": 0.5
+    "pre_primary_discount": 0.5,
+    "use_pollster_rmse_weights": true
   }
 }

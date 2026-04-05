@@ -36,6 +36,7 @@ def apply_all_weights(
     use_primary_discount: bool = True,
     primary_calendar_path: Path | str | None = None,
     primary_discount_factor: float = _PRE_PRIMARY_DISCOUNT,
+    accuracy_path: Path | str | None = None,
 ) -> list[PollObservation]:
     """Apply all weighting steps to a list of polls.
 
@@ -50,9 +51,10 @@ def apply_all_weights(
     Pre-primary discounting is skipped when ``use_primary_discount`` is False.
     Pollster quality is skipped when ``apply_quality`` is False.
 
-    When Silver Bulletin XLSX is present and ``use_silver_bulletin`` is True,
-    pollster quality uses Silver Bulletin ratings (priority 1).  Otherwise
-    falls back to 538 grade embedded in poll_notes (priority 2).
+    Pollster quality priority (see ``apply_pollster_quality`` for details):
+      1. RMSE-based accuracy from ``accuracy_path`` (empirical backtest data).
+      2. Silver Bulletin ratings when ``use_silver_bulletin`` is True.
+      3. 538 grade embedded in poll_notes.
     """
     working = list(polls)
     if apply_house_effects:
@@ -65,8 +67,12 @@ def apply_all_weights(
         )
     working = apply_time_decay(working, reference_date, half_life_days)
     if apply_quality:
+        accuracy = Path(accuracy_path) if accuracy_path is not None else None
         working = apply_pollster_quality(
-            working, poll_notes, use_silver_bulletin=use_silver_bulletin
+            working,
+            poll_notes,
+            use_silver_bulletin=use_silver_bulletin,
+            accuracy_path=accuracy,
         )
     return working
 
