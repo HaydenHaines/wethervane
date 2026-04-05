@@ -292,10 +292,18 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     openGraph: {
       title,
       description,
-      type: "website",
+      type: "article",
       siteName: "WetherVane",
+      images: [
+        {
+          url: `/state/${upperAbbr}/opengraph-image`,
+          width: 1200,
+          height: 630,
+          alt: `${stateName} 2026 election forecast — WetherVane`,
+        },
+      ],
     },
-    twitter: { card: "summary", title, description },
+    twitter: { card: "summary_large_image", title, description },
     alternates: {
       canonical: `${SITE_URL}/state/${upperAbbr}`,
     },

@@ -61,6 +61,95 @@ test.describe("State detail pages (/state/[abbr])", () => {
       );
       expect(realErrors).toHaveLength(0);
     });
+
+    test("page has correct meta title containing 'Georgia'", async ({ page }) => {
+      await page.goto(url);
+      await expect(page).toHaveTitle(/Georgia/i);
+    });
+
+    test("page has meta description", async ({ page }) => {
+      await page.goto(url);
+      const desc = await page.locator('meta[name="description"]').getAttribute("content");
+      expect(desc).toBeTruthy();
+      expect((desc ?? "").length).toBeGreaterThan(20);
+    });
+
+    test("page has Open Graph title tag", async ({ page }) => {
+      await page.goto(url);
+      const ogTitle = await page.locator('meta[property="og:title"]').getAttribute("content");
+      expect(ogTitle).toBeTruthy();
+      expect(ogTitle).toContain("Georgia");
+    });
+
+    test("page has Open Graph description tag", async ({ page }) => {
+      await page.goto(url);
+      const ogDesc = await page.locator('meta[property="og:description"]').getAttribute("content");
+      expect(ogDesc).toBeTruthy();
+      expect((ogDesc ?? "").length).toBeGreaterThan(20);
+    });
+
+    test("page has Open Graph image tag", async ({ page }) => {
+      await page.goto(url);
+      const ogImage = await page.locator('meta[property="og:image"]').getAttribute("content");
+      expect(ogImage).toBeTruthy();
+      expect(ogImage).toContain("opengraph-image");
+    });
+
+    test("page has Twitter card tag", async ({ page }) => {
+      await page.goto(url);
+      const twitterCard = await page.locator('meta[name="twitter:card"]').getAttribute("content");
+      expect(twitterCard).toBeTruthy();
+    });
+
+    test("page has canonical link tag", async ({ page }) => {
+      await page.goto(url);
+      const canonical = await page.locator('link[rel="canonical"]').getAttribute("href");
+      expect(canonical).toBeTruthy();
+      expect(canonical).toContain("/state/GA");
+    });
+
+    test("page has JSON-LD WebPage structured data", async ({ page }) => {
+      await page.goto(url);
+      const ldJson = await page.locator('script[type="application/ld+json"]').first().textContent();
+      expect(ldJson).toBeTruthy();
+      const parsed = JSON.parse(ldJson ?? "{}");
+      // Either the first script is a WebPage or there are multiple LD+JSON scripts
+      const isWebPage = parsed["@type"] === "WebPage" || parsed["@type"] === "BreadcrumbList";
+      expect(isWebPage).toBe(true);
+    });
+
+    test("page has JSON-LD BreadcrumbList structured data", async ({ page }) => {
+      await page.goto(url);
+      const allLdJson = page.locator('script[type="application/ld+json"]');
+      const count = await allLdJson.count();
+      expect(count).toBeGreaterThanOrEqual(2);
+
+      // Find the BreadcrumbList script
+      let hasBreadcrumb = false;
+      for (let i = 0; i < count; i++) {
+        const content = await allLdJson.nth(i).textContent();
+        const parsed = JSON.parse(content ?? "{}");
+        if (parsed["@type"] === "BreadcrumbList") {
+          hasBreadcrumb = true;
+          // Verify it contains Home + Forecast + Georgia
+          const items: Array<{ name: string }> = parsed.itemListElement ?? [];
+          const names = items.map((item) => item.name);
+          expect(names).toContain("Home");
+          expect(names.some((n) => n === "Georgia")).toBe(true);
+        }
+      }
+      expect(hasBreadcrumb).toBe(true);
+    });
+
+    test("page has visible breadcrumb navigation", async ({ page }) => {
+      await page.goto(url);
+      // Breadcrumb nav — aria-label is "breadcrumb" on the state page
+      const breadcrumb = page.locator('nav[aria-label="breadcrumb"]');
+      await expect(breadcrumb).toBeVisible({ timeout: 10_000 });
+      // Should contain links back to Home and Forecast
+      const homeLink = breadcrumb.locator('a[href="/"]');
+      await expect(homeLink).toBeVisible();
+    });
   });
 
   test.describe("/state/CA — California", () => {
