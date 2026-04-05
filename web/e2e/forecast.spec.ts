@@ -114,6 +114,41 @@ test.describe("Forecast flow", () => {
       const backLink = page.getByRole("link", { name: "← Back to Forecast" });
       await expect(backLink).toBeVisible({ timeout: 15_000 });
     });
+
+    test("poll trend chart renders when polls exist", async ({ page }) => {
+      await page.goto(raceSlug);
+      // Wait for main content to load
+      await expect(page.locator("article#main-content")).toBeVisible({ timeout: 15_000 });
+      // Poll trend chart is a client component — wait for it to hydrate
+      const chart = page.locator('svg[aria-label="Poll trend chart"]');
+      // If polls exist the chart SVG should be in the DOM (may be off-screen)
+      const table = page.locator('table[aria-label="Race polls"]');
+      const hasTable = await table.isVisible({ timeout: 10_000 }).catch(() => false);
+      if (hasTable) {
+        await expect(chart).toBeAttached({ timeout: 10_000 });
+      }
+    });
+
+    test("poll trend chart uncertainty bands render when polls exist", async ({ page }) => {
+      await page.goto(raceSlug);
+      await expect(page.locator("article#main-content")).toBeVisible({ timeout: 15_000 });
+      // Wait for poll table to confirm polls are present
+      const table = page.locator('table[aria-label="Race polls"]');
+      const hasTable = await table.isVisible({ timeout: 10_000 }).catch(() => false);
+      if (!hasTable) {
+        // No polls → no chart → skip
+        return;
+      }
+      // The uncertainty band is a visx-area-closed path element inside the chart SVG.
+      // It is aria-hidden (decorative), so we query by CSS class.
+      const chart = page.locator('svg[aria-label="Poll trend chart"]');
+      await expect(chart).toBeAttached({ timeout: 10_000 });
+      const bands = chart.locator("path.visx-area-closed");
+      // Expect at least one band (Dem + Rep = 2, but we check ≥ 1 to be lenient)
+      await expect(bands.first()).toBeAttached({ timeout: 10_000 });
+      const count = await bands.count();
+      expect(count).toBeGreaterThanOrEqual(1);
+    });
   });
 
   test.describe("Governor overview page", () => {

@@ -418,9 +418,17 @@ def get_poll_trend(
     Two-party Republican share is inferred as ``1 - dem_share`` since the polls
     table stores only the Democratic share.
 
+    The trend object also includes 95% CI bands derived from the 2022 backtest
+    RMSE by race type (Senate: ±3.7pp, Governor: ±5.5pp).
+
     Returns an empty polls list and ``trend=None`` when no polls are available.
     """
     race = slug_to_race(slug)
+
+    # Derive race type from the race label (e.g. "2026 GA Senate" → "senate")
+    # so we can select the appropriate empirical error floor for the CI band.
+    race_parts = race.lower().split()
+    race_type = " ".join(race_parts[2:]) if len(race_parts) >= 3 else ""
 
     polls_df = db.execute(
         """
@@ -452,17 +460,30 @@ def get_poll_trend(
         for _, row in polls_df.iterrows()
     ]
 
-    trend = _compute_poll_trend(polls_df)
+    trend = _compute_poll_trend(polls_df, race_type=race_type)
     return PollTrendResponse(race=race, slug=slug, polls=poll_points, trend=trend)
 
 
-def _compute_poll_trend(polls_df: "pd.DataFrame") -> PollTrend | None:
+def _compute_poll_trend(
+    polls_df: "pd.DataFrame",
+    race_type: str = "",
+) -> PollTrend | None:
     """Compute a 30-day rolling weighted moving average over poll data.
 
     Weights each poll by its sample size.  For each day in the trend output
     we average all polls within the preceding 30 days.  Output dates are
     the unique poll dates (no interpolation) — this keeps the response small
     and avoids inventing data between polls.
+
+    The returned ``PollTrend`` includes 95% confidence interval bands around
+    the trend line.  The half-width is 2 * empirical RMSE from the 2022
+    backtest by race type (see ``_get_std_floor``):
+    - Senate:   ±7.4pp  (2 × 3.7pp)
+    - Governor: ±11.0pp (2 × 5.5pp)
+
+    These bounds represent the *model's* prediction uncertainty, not the
+    variation across polls in the window.  They are constant-width bands that
+    shift up and down with the trend line.  Values are clamped to [0, 1].
 
     Returns ``None`` if there are fewer than 2 polls (no trend to fit).
     """
@@ -505,4 +526,22 @@ def _compute_poll_trend(polls_df: "pd.DataFrame") -> PollTrend | None:
     if not trend_dates:
         return None
 
-    return PollTrend(dates=trend_dates, dem_trend=trend_dem, rep_trend=trend_rep)
+    # 95% CI half-width = 2 × backtest RMSE by race type.
+    # _get_std_floor returns the std floor in fraction space (0.037 = 3.7pp).
+    ci_half = 2.0 * _get_std_floor(race_type)
+
+    # Build constant-width CI bands, clamped to valid share range [0, 1].
+    dem_ci_lower = [round(max(0.0, d - ci_half), 4) for d in trend_dem]
+    dem_ci_upper = [round(min(1.0, d + ci_half), 4) for d in trend_dem]
+    rep_ci_lower = [round(max(0.0, r - ci_half), 4) for r in trend_rep]
+    rep_ci_upper = [round(min(1.0, r + ci_half), 4) for r in trend_rep]
+
+    return PollTrend(
+        dates=trend_dates,
+        dem_trend=trend_dem,
+        rep_trend=trend_rep,
+        dem_ci_lower=dem_ci_lower,
+        dem_ci_upper=dem_ci_upper,
+        rep_ci_lower=rep_ci_lower,
+        rep_ci_upper=rep_ci_upper,
+    )

@@ -2,7 +2,7 @@
 
 import { useCallback, useMemo, useState } from "react";
 import { Group } from "@visx/group";
-import { LinePath } from "@visx/shape";
+import { AreaClosed, LinePath } from "@visx/shape";
 import { scaleLinear, scaleTime } from "@visx/scale";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import { curveMonotoneX } from "@visx/curve";
@@ -204,6 +204,48 @@ export function PollTrendChart({ slug, width = 560 }: PollTrendChartProps) {
               y2={yScale(0.5)}
               stroke={GRID_COLOR}
               strokeWidth={1.5}
+            />
+          )}
+
+          {/* Dem uncertainty band — 95% CI shaded region below/above the trend line.
+              Rendered before the trend line so the line stays visually on top.
+              Opacity 0.15 keeps the band subtle — visible but not dominant. */}
+          {trendWithDates && data?.trend?.dem_ci_lower && data.trend.dem_ci_upper && (
+            <AreaClosed
+              data={trendWithDates.dates.map((d, i) => ({
+                x: xScale(d),
+                y0: yScale(data.trend!.dem_ci_lower[i] ?? trendWithDates.dem[i]),
+                y1: yScale(data.trend!.dem_ci_upper[i] ?? trendWithDates.dem[i]),
+              }))}
+              x={(d) => d.x}
+              y0={(d) => d.y0}
+              y1={(d) => d.y1}
+              yScale={yScale}
+              curve={curveMonotoneX}
+              fill={PALETTE.DEM_PRIMARY}
+              fillOpacity={0.15}
+              stroke="none"
+              aria-hidden="true"
+            />
+          )}
+
+          {/* Rep uncertainty band — same approach, Republican color. */}
+          {trendWithDates && data?.trend?.rep_ci_lower && data.trend.rep_ci_upper && (
+            <AreaClosed
+              data={trendWithDates.dates.map((d, i) => ({
+                x: xScale(d),
+                y0: yScale(data.trend!.rep_ci_lower[i] ?? trendWithDates.rep[i]),
+                y1: yScale(data.trend!.rep_ci_upper[i] ?? trendWithDates.rep[i]),
+              }))}
+              x={(d) => d.x}
+              y0={(d) => d.y0}
+              y1={(d) => d.y1}
+              yScale={yScale}
+              curve={curveMonotoneX}
+              fill={PALETTE.GOP_PRIMARY}
+              fillOpacity={0.15}
+              stroke="none"
+              aria-hidden="true"
             />
           )}
 

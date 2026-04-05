@@ -539,10 +539,21 @@ class PollTrendPoll(BaseModel):
 
 
 class PollTrend(BaseModel):
-    """Smoothed trend line — dates and weighted moving-average shares."""
+    """Smoothed trend line — dates and weighted moving-average shares.
+
+    The CI fields hold 95% confidence bounds derived from the 2022 backtest RMSE
+    by race type (Senate: ±3.7pp, Governor: ±5.5pp).  They represent the
+    empirical uncertainty around the structural model, not the poll noise itself.
+    """
     dates: list[str]
     dem_trend: list[float]
     rep_trend: list[float]
+    # 95% CI = point estimate ± 2 * backtest_rmse, clamped to [0, 1].
+    # Parallel arrays matching ``dates`` length.
+    dem_ci_lower: list[float]
+    dem_ci_upper: list[float]
+    rep_ci_lower: list[float]
+    rep_ci_upper: list[float]
 
 
 class PollTrendResponse(BaseModel):

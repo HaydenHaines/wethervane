@@ -212,6 +212,11 @@ export interface PollTrend {
   dates: string[];
   dem_trend: number[];
   rep_trend: number[];
+  /** 95% CI bounds — 2 × backtest RMSE by race type (Senate ±7.4pp, Gov ±11pp). */
+  dem_ci_lower: number[];
+  dem_ci_upper: number[];
+  rep_ci_lower: number[];
+  rep_ci_upper: number[];
 }
 
 export interface PollTrendResponse {
