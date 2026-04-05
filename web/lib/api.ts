@@ -351,6 +351,24 @@ export async function fetchPollTrend(slug: string): Promise<import("@/lib/types"
 
 // ── Chamber probability ──────────────────────────────────────────────────
 
+// ── Seat balance timeline ────────────────────────────────────────────────
+
+/** One entry in the Senate seat balance time series. */
+export interface SeatHistoryEntry {
+  /** ISO date string, e.g. "2026-04-01". */
+  date: string;
+  /** Projected total Dem seats (holdover + contested wins). */
+  dem_projected: number;
+  /** Projected total GOP seats (holdover + contested wins). */
+  gop_projected: number;
+}
+
+export async function fetchSeatHistory(): Promise<SeatHistoryEntry[]> {
+  const res = await fetch(`${API_BASE}/forecast/seat-history`);
+  if (!res.ok) throw new Error(`/forecast/seat-history failed: ${res.status}`);
+  return res.json();
+}
+
 export interface SeatDistributionBucket {
   seats: number;
   probability: number;

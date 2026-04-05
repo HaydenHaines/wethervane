@@ -4,6 +4,7 @@ import { useState, useCallback, useRef, useEffect } from "react";
 import { SectionWeightSliders, SectionWeights } from "./SectionWeightSliders";
 import { BalanceBar } from "./BalanceBar";
 import { RaceCardGrid } from "./RaceCardGrid";
+import { SeatBalanceTimeline } from "./SeatBalanceTimeline";
 import type { SenateRaceData } from "@/lib/api";
 
 // How long to wait after the last slider move before firing the API call.
@@ -180,6 +181,11 @@ export function OverviewBlendControls({
         aria-busy={isLoading}
       >
         <BalanceBar races={races} demSeats={demSeats} gopSeats={gopSeats} />
+      </div>
+
+      {/* Seat balance timeline — shows projected seat counts changing over time */}
+      <div className="mb-6">
+        <SeatBalanceTimeline />
       </div>
 
       {/* Collapsible blend controls */}
