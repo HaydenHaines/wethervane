@@ -27,7 +27,7 @@ import pytest
 # Load the experiment module (lives in scripts/, not a package)
 # ---------------------------------------------------------------------------
 
-_MODULE_PATH = Path(__file__).parents[1] / "scripts" / "experiment_temporal_weighting.py"
+_MODULE_PATH = Path(__file__).parents[1] / "scripts" / "experiments" / "experiment_temporal_weighting.py"
 
 
 def _load_module():
