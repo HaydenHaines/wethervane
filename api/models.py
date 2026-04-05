@@ -372,6 +372,31 @@ class HistoricalContext(BaseModel):
     forecast_shift: float | None = None
 
 
+class PollConfidence(BaseModel):
+    """Diversity and coverage metrics for polls available for a race.
+
+    Confidence label derivation:
+    - "High":   3+ distinct pollsters AND 2+ distinct methodologies
+    - "Medium": 2+ distinct pollsters OR 2+ distinct methodologies (not both for High)
+    - "Low":    fewer than 2 pollsters or no polls at all
+
+    Methodology is inferred from the notes field using the LV/RV convention
+    used by all three poll sources (Wikipedia, 270toWin, RealClearPolling).
+    Polls with neither LV nor RV in their notes are labeled "Unknown".
+    """
+
+    n_polls: int
+    """Total number of polls for this race."""
+    n_pollsters: int
+    """Number of distinct pollster names."""
+    n_methodologies: int
+    """Number of distinct methodologies detected (LV, RV, Unknown)."""
+    label: str
+    """'High', 'Medium', or 'Low' based on diversity thresholds."""
+    tooltip: str
+    """Human-readable summary, e.g. '3 pollsters · 2 methods · 8 polls'."""
+
+
 class RaceDetail(BaseModel):
     race: str
     slug: str
@@ -391,6 +416,7 @@ class RaceDetail(BaseModel):
     pred_lo90: float | None = None
     pred_hi90: float | None = None
     historical_context: HistoricalContext | None = None
+    poll_confidence: PollConfidence | None = None
 
 
 # ── Embed widget ─────────────────────────────────────────────────────────

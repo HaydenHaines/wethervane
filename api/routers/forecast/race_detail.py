@@ -10,6 +10,7 @@ from api.db import get_db
 from api.models import (
     HistoricalContext,
     LastRaceResult,
+    PollConfidence,
     PollTrend,
     PollTrendPoll,
     PollTrendResponse,
@@ -31,6 +32,76 @@ from ._helpers import (
 )
 
 router = APIRouter(tags=["forecast"])
+
+# Methodology keywords in notes field, in priority order.
+# All three poll sources (Wikipedia, 270toWin, RealClearPolling) use LV/RV labels.
+_METHOD_PATTERNS: list[str] = ["LV", "RV"]
+
+
+def _infer_methodology(notes: str | None) -> str:
+    """Return the first matching methodology keyword found in poll notes.
+
+    Returns 'Unknown' when neither LV nor RV appears in the notes string,
+    or when notes is None.  This handles polls from sources that do not
+    record the voter screen in their notes.
+    """
+    if not notes:
+        return "Unknown"
+    for pattern in _METHOD_PATTERNS:
+        if pattern in notes:
+            return pattern
+    return "Unknown"
+
+
+def _compute_poll_confidence(polls_df: "pd.DataFrame") -> PollConfidence:
+    """Derive poll source diversity metrics and a confidence label from a polls DataFrame.
+
+    The DataFrame is expected to have 'pollster' and 'notes' columns, matching
+    what the polls table provides.  Empty or missing values are handled gracefully.
+
+    Confidence thresholds:
+    - "High":   3+ distinct pollsters AND 2+ distinct methodologies
+    - "Medium": 2+ distinct pollsters OR 2+ distinct methodologies
+    - "Low":    fewer than 2 pollsters (includes the zero-polls case)
+    """
+    if polls_df.empty:
+        return PollConfidence(
+            n_polls=0,
+            n_pollsters=0,
+            n_methodologies=0,
+            label="Low",
+            tooltip="No polls",
+        )
+
+    n_polls = len(polls_df)
+
+    # Count distinct non-null pollster names
+    n_pollsters = int(polls_df["pollster"].dropna().nunique())
+
+    # Infer methodology from notes and count distinct values
+    methodologies = polls_df["notes"].apply(_infer_methodology)
+    n_methodologies = int(methodologies.nunique())
+
+    # Derive label from diversity thresholds
+    if n_pollsters >= 3 and n_methodologies >= 2:
+        label = "High"
+    elif n_pollsters >= 2 or n_methodologies >= 2:
+        label = "Medium"
+    else:
+        label = "Low"
+
+    pollster_word = "pollster" if n_pollsters == 1 else "pollsters"
+    method_word = "method" if n_methodologies == 1 else "methods"
+    poll_word = "poll" if n_polls == 1 else "polls"
+    tooltip = f"{n_pollsters} {pollster_word} · {n_methodologies} {method_word} · {n_polls} {poll_word}"
+
+    return PollConfidence(
+        n_polls=n_polls,
+        n_pollsters=n_pollsters,
+        n_methodologies=n_methodologies,
+        label=label,
+        tooltip=tooltip,
+    )
 
 
 def _build_historical_context(slug: str, prediction: float | None) -> HistoricalContext | None:
@@ -196,10 +267,10 @@ def get_race_detail(
         state_pred_national = prediction
         state_pred_local = float(other_pred_row[0]) if other_pred_row and other_pred_row[0] else None
 
-    # Polls for this race
+    # Polls for this race — fetch notes so we can derive methodology for confidence scoring
     polls_df = db.execute(
         """
-        SELECT date, pollster, dem_share, n_sample
+        SELECT date, pollster, dem_share, n_sample, notes
         FROM polls
         WHERE cycle = ? AND LOWER(race) = LOWER(?)
         ORDER BY date
@@ -219,6 +290,8 @@ def get_race_detail(
         )
         for _, row in polls_df.iterrows()
     ]
+
+    poll_confidence = _compute_poll_confidence(polls_df)
 
     # Type breakdown: top 5 types by total vote contribution in this state.
     # Sorted by SUM(total_votes_2024) DESC so urban/high-population types
@@ -280,6 +353,7 @@ def get_race_detail(
         pred_lo90=state_lo90,
         pred_hi90=state_hi90,
         historical_context=_build_historical_context(slug, prediction),
+        poll_confidence=poll_confidence,
     )
 
 

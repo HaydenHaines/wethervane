@@ -206,10 +206,16 @@ def _build_race_detail_db() -> duckdb.DuckDBPyConnection:
             PRIMARY KEY (poll_id)
         )
     """)
+    # FL Senate: 2 pollsters, 2 methodologies (LV + RV) — Medium confidence (2 pollsters < 3 for High)
+    # FL Governor: 3 pollsters, 2 methodologies — High confidence
+    # AL Governor: no polls — Low confidence
     con.execute("""
         INSERT INTO polls VALUES
-        ('p1', '2026 FL Senate', 'FL', 'state', 0.45, 600, '2026-01-15', 'Siena', NULL, '2026'),
-        ('p2', '2026 FL Senate', 'FL', 'state', 0.47, 800, '2026-02-20', 'Quinnipiac', NULL, '2026')
+        ('p1', '2026 FL Senate', 'FL', 'state', 0.45, 600, '2026-01-15', 'Siena', 'D=45% R=55%; LV; src=rcp', '2026'),
+        ('p2', '2026 FL Senate', 'FL', 'state', 0.47, 800, '2026-02-20', 'Quinnipiac', 'D=47% R=53%; RV; src=rcp', '2026'),
+        ('p3', '2026 FL Governor', 'FL', 'state', 0.48, 700, '2026-01-10', 'Siena', 'D=48% R=52%; LV; src=rcp', '2026'),
+        ('p4', '2026 FL Governor', 'FL', 'state', 0.50, 900, '2026-02-15', 'Quinnipiac', 'D=50% R=50%; RV; src=rcp', '2026'),
+        ('p5', '2026 FL Governor', 'FL', 'state', 0.46, 500, '2026-03-01', 'Emerson', 'D=46% R=54%; LV; src=rcp', '2026')
     """)
 
     con.execute("CREATE TABLE poll_crosstabs (poll_id VARCHAR, demographic_group VARCHAR, group_value VARCHAR, dem_share FLOAT, n_sample INTEGER)")
@@ -514,3 +520,186 @@ class TestHistoricalContext:
         assert all(k in last for k in ("year", "winner", "party", "margin"))
         pres = data["presidential_2024"]
         assert all(k in pres for k in ("winner", "party", "margin"))
+
+
+# ── Poll confidence integration tests ────────────────────────────────────────
+
+
+class TestPollConfidence:
+    """Integration tests for poll_confidence field on the race detail response.
+
+    Test data (from _build_race_detail_db):
+    - FL Senate:   2 polls, 2 pollsters (Siena + Quinnipiac), 2 methods (LV + RV) → Medium
+    - FL Governor: 3 polls, 3 pollsters (Siena + Quinnipiac + Emerson), 2 methods (LV + RV) → High
+    - AL Governor: 0 polls → Low
+    """
+
+    def test_race_detail_includes_poll_confidence_field(self, race_client):
+        """Race detail response always includes poll_confidence key."""
+        resp = race_client.get("/api/v1/forecast/race/2026-fl-senate")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert "poll_confidence" in data
+
+    def test_poll_confidence_structure(self, race_client):
+        """poll_confidence has the expected sub-fields."""
+        resp = race_client.get("/api/v1/forecast/race/2026-fl-senate")
+        data = resp.json()
+        pc = data["poll_confidence"]
+        assert pc is not None
+        for field in ("n_polls", "n_pollsters", "n_methodologies", "label", "tooltip"):
+            assert field in pc, f"Missing poll_confidence field: {field}"
+
+    def test_medium_confidence_two_pollsters_two_methods(self, race_client):
+        """FL Senate: 2 pollsters + 2 methods = Medium (needs 3+ pollsters for High)."""
+        resp = race_client.get("/api/v1/forecast/race/2026-fl-senate")
+        data = resp.json()
+        pc = data["poll_confidence"]
+        assert pc["label"] == "Medium"
+        assert pc["n_pollsters"] == 2
+        assert pc["n_methodologies"] == 2
+        assert pc["n_polls"] == 2
+
+    def test_high_confidence_three_pollsters_two_methods(self, race_client):
+        """FL Governor: 3 pollsters + 2 methods → High confidence."""
+        resp = race_client.get("/api/v1/forecast/race/2026-fl-governor")
+        data = resp.json()
+        pc = data["poll_confidence"]
+        assert pc["label"] == "High"
+        assert pc["n_pollsters"] == 3
+        assert pc["n_methodologies"] == 2
+        assert pc["n_polls"] == 3
+
+    def test_low_confidence_no_polls(self, race_client):
+        """AL Governor: no polls → Low confidence with zero counts."""
+        resp = race_client.get("/api/v1/forecast/race/2026-al-governor")
+        data = resp.json()
+        pc = data["poll_confidence"]
+        assert pc["label"] == "Low"
+        assert pc["n_polls"] == 0
+        assert pc["n_pollsters"] == 0
+
+    def test_tooltip_is_human_readable_string(self, race_client):
+        """Tooltip must be a non-empty string mentioning pollsters and polls."""
+        resp = race_client.get("/api/v1/forecast/race/2026-fl-senate")
+        data = resp.json()
+        tooltip = data["poll_confidence"]["tooltip"]
+        assert isinstance(tooltip, str)
+        assert len(tooltip) > 0
+        assert "pollster" in tooltip or "pollsters" in tooltip
+        assert "poll" in tooltip
+
+    def test_tooltip_no_polls_message(self, race_client):
+        """Zero-poll races get a clear 'No polls' tooltip."""
+        resp = race_client.get("/api/v1/forecast/race/2026-al-governor")
+        data = resp.json()
+        assert data["poll_confidence"]["tooltip"] == "No polls"
+
+
+# ── Poll confidence unit tests ─────────────────────────────────────────────────
+
+
+class TestPollConfidenceUnit:
+    """Unit tests for _compute_poll_confidence and _infer_methodology helpers."""
+
+    def test_infer_methodology_lv(self):
+        from api.routers.forecast.race_detail import _infer_methodology
+
+        assert _infer_methodology("D=45% R=55%; LV; src=rcp") == "LV"
+
+    def test_infer_methodology_rv(self):
+        from api.routers.forecast.race_detail import _infer_methodology
+
+        assert _infer_methodology("D=47% R=53%; RV; src=wikipedia") == "RV"
+
+    def test_infer_methodology_none(self):
+        from api.routers.forecast.race_detail import _infer_methodology
+
+        assert _infer_methodology(None) == "Unknown"
+
+    def test_infer_methodology_no_match(self):
+        from api.routers.forecast.race_detail import _infer_methodology
+
+        assert _infer_methodology("D=45% R=55%; src=270towin") == "Unknown"
+
+    def test_compute_confidence_empty_df(self):
+        import pandas as pd
+
+        from api.routers.forecast.race_detail import _compute_poll_confidence
+
+        empty = pd.DataFrame(columns=["pollster", "notes"])
+        result = _compute_poll_confidence(empty)
+        assert result.label == "Low"
+        assert result.n_polls == 0
+        assert result.n_pollsters == 0
+        assert result.tooltip == "No polls"
+
+    def test_compute_confidence_single_pollster_single_method(self):
+        import pandas as pd
+
+        from api.routers.forecast.race_detail import _compute_poll_confidence
+
+        df = pd.DataFrame([
+            {"pollster": "Siena", "notes": "D=45% R=55%; LV; src=rcp"},
+        ])
+        result = _compute_poll_confidence(df)
+        assert result.label == "Low"
+        assert result.n_pollsters == 1
+        assert result.n_methodologies == 1
+
+    def test_compute_confidence_two_pollsters_one_method_is_medium(self):
+        import pandas as pd
+
+        from api.routers.forecast.race_detail import _compute_poll_confidence
+
+        df = pd.DataFrame([
+            {"pollster": "Siena", "notes": "D=45% R=55%; LV; src=rcp"},
+            {"pollster": "Quinnipiac", "notes": "D=47% R=53%; LV; src=rcp"},
+        ])
+        result = _compute_poll_confidence(df)
+        # 2 pollsters satisfies the OR condition → Medium
+        assert result.label == "Medium"
+
+    def test_compute_confidence_one_pollster_two_methods_is_medium(self):
+        import pandas as pd
+
+        from api.routers.forecast.race_detail import _compute_poll_confidence
+
+        df = pd.DataFrame([
+            {"pollster": "Siena", "notes": "D=45% R=55%; LV; src=rcp"},
+            {"pollster": "Siena", "notes": "D=44% R=56%; RV; src=rcp"},
+        ])
+        result = _compute_poll_confidence(df)
+        # 1 pollster but 2 methods satisfies the OR condition → Medium
+        assert result.label == "Medium"
+        assert result.n_pollsters == 1
+        assert result.n_methodologies == 2
+
+    def test_compute_confidence_high_threshold(self):
+        import pandas as pd
+
+        from api.routers.forecast.race_detail import _compute_poll_confidence
+
+        df = pd.DataFrame([
+            {"pollster": "Siena", "notes": "D=45% R=55%; LV; src=rcp"},
+            {"pollster": "Quinnipiac", "notes": "D=47% R=53%; RV; src=rcp"},
+            {"pollster": "Emerson", "notes": "D=46% R=54%; LV; src=rcp"},
+        ])
+        result = _compute_poll_confidence(df)
+        assert result.label == "High"
+        assert result.n_pollsters == 3
+        assert result.n_methodologies == 2
+
+    def test_tooltip_singular_plural(self):
+        import pandas as pd
+
+        from api.routers.forecast.race_detail import _compute_poll_confidence
+
+        df = pd.DataFrame([
+            {"pollster": "Siena", "notes": "D=45% R=55%; LV; src=rcp"},
+        ])
+        result = _compute_poll_confidence(df)
+        # singular forms for counts of 1
+        assert "1 pollster" in result.tooltip
+        assert "1 method" in result.tooltip
+        assert "1 poll" in result.tooltip

@@ -5,6 +5,8 @@ import { PollTable } from "@/components/forecast/PollTable";
 import { TypesBreakdown } from "@/components/forecast/TypesBreakdown";
 import { HistoricalContextCard } from "@/components/forecast/HistoricalContextCard";
 import type { HistoricalContext } from "@/components/forecast/HistoricalContextCard";
+import { PollConfidenceBadge } from "@/components/forecast/PollConfidenceBadge";
+import type { PollConfidence } from "@/components/forecast/PollConfidenceBadge";
 import { marginToRating } from "@/lib/config/palette";
 import { STATE_NAMES } from "@/lib/config/states";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -84,6 +86,7 @@ interface RaceDetail {
   pred_lo90?: number | null;
   pred_hi90?: number | null;
   historical_context?: HistoricalContext | null;
+  poll_confidence?: PollConfidence | null;
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────
@@ -276,12 +279,15 @@ export default async function RaceDetailPage({ params }: PageProps) {
 
       {/* Polls section */}
       <section className="mb-10">
-        <h2 className="font-serif text-xl mb-4" style={{ fontFamily: "var(--font-serif)" }}>
+        <h2 className="font-serif text-xl mb-4 flex flex-wrap items-center gap-2" style={{ fontFamily: "var(--font-serif)" }}>
           Recent Polls
           {nPolls > 0 && (
-            <span className="text-sm font-normal ml-2" style={{ color: "var(--color-text-muted)" }}>
+            <span className="text-sm font-normal" style={{ color: "var(--color-text-muted)" }}>
               ({nPolls} poll{nPolls !== 1 ? "s" : ""})
             </span>
+          )}
+          {data.poll_confidence && (
+            <PollConfidenceBadge confidence={data.poll_confidence} />
           )}
         </h2>
         {nPolls === 0 && (
