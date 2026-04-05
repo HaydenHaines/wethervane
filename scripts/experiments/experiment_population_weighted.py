@@ -34,7 +34,7 @@ from sklearn.cluster import KMeans
 # Paths
 # ---------------------------------------------------------------------------
 
-DATA_ROOT = Path(__file__).resolve().parent.parent
+DATA_ROOT = Path(__file__).resolve().parent.parent.parent
 
 SHIFTS_PATH = DATA_ROOT / "data/shifts/county_shifts_multiyear.parquet"
 CENSUS_PATH = DATA_ROOT / "data/assembled/census_2020.parquet"

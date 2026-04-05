@@ -41,7 +41,7 @@ from sklearn.preprocessing import StandardScaler
 # Constants — must match production pipeline in run_type_discovery.py
 # ---------------------------------------------------------------------------
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 SHIFTS_PATH = PROJECT_ROOT / "data" / "shifts" / "county_shifts_multiyear.parquet"
 OUTPUT_DIR = PROJECT_ROOT / "data" / "experiments"
 

@@ -27,7 +27,7 @@ import pytest
 # Load the experiment module (lives in scripts/, not a package)
 # ---------------------------------------------------------------------------
 
-_MODULE_PATH = Path(__file__).parents[1] / "scripts" / "experiment_j_sweep.py"
+_MODULE_PATH = Path(__file__).parents[1] / "scripts" / "experiments" / "experiment_j_sweep.py"
 
 
 def _load_module():

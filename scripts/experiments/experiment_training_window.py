@@ -21,7 +21,7 @@ from sklearn.preprocessing import StandardScaler
 
 warnings.filterwarnings("ignore")
 
-PROJECT_ROOT = __import__("pathlib").Path(__file__).resolve().parents[1]
+PROJECT_ROOT = __import__("pathlib").Path(__file__).resolve().parents[2]
 
 HOLDOUT_COLS = ["pres_d_shift_20_24", "pres_r_shift_20_24", "pres_turnout_shift_20_24"]
 PRESIDENTIAL_WEIGHT = 8.0

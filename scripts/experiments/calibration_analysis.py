@@ -29,7 +29,7 @@ from scipy import stats
 # back to the git common dir when the worktree has only a sparse data/ copy.
 
 _THIS_FILE = Path(__file__).resolve()
-_WORKTREE_ROOT = _THIS_FILE.parents[1]  # …/worktrees/agent-XXXX
+_WORKTREE_ROOT = _THIS_FILE.parents[2]  # …/worktrees/agent-XXXX
 
 
 def _find_data_root() -> Path:

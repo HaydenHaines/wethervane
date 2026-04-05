@@ -12,7 +12,7 @@ import numpy as np
 import pytest
 from sklearn.metrics import adjusted_rand_score, normalized_mutual_info_score
 
-from scripts.experiment_type_stability import (
+from scripts.experiments.experiment_type_stability import (
     align_labels_to_reference,
     compute_loo_r,
     temperature_soft_membership,

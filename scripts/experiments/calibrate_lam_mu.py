@@ -52,7 +52,7 @@ from scipy.stats import pearsonr
 # ---------------------------------------------------------------------------
 
 _THIS_FILE = Path(__file__).resolve()
-_WORKTREE_ROOT = _THIS_FILE.parents[1]
+_WORKTREE_ROOT = _THIS_FILE.parents[2]
 
 
 def _find_data_root() -> Path:

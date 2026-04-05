@@ -11,7 +11,7 @@ import pytest
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from scripts.calibration_analysis import (
+from scripts.experiments.calibration_analysis import (
     build_type_priors_from_election,
     compute_bias,
     compute_mae,
