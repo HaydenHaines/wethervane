@@ -550,3 +550,44 @@ class PollTrendResponse(BaseModel):
     slug: str
     polls: list[PollTrendPoll]
     trend: PollTrend | None
+
+
+# ── Pollster accuracy ────────────────────────────────────────────────────────
+
+
+class PollsterAccuracyEntry(BaseModel):
+    """Accuracy metrics for a single pollster, computed against 2022 backtest actuals."""
+
+    pollster: str
+    """Canonical pollster name."""
+
+    rank: int
+    """Rank by RMSE, 1 = most accurate."""
+
+    n_polls: int
+    """Number of polls included in this analysis."""
+
+    n_races: int
+    """Number of distinct races covered by this pollster."""
+
+    rmse_pp: float
+    """Root mean squared error in percentage points (lower = more accurate)."""
+
+    mean_error_pp: float
+    """Mean signed error in percentage points.
+    Positive = pollster systematically over-predicted Democratic share.
+    Negative = pollster systematically over-predicted Republican share.
+    """
+
+
+class PollsterAccuracyResponse(BaseModel):
+    """Ranked list of pollster accuracy metrics from the 2022 backtest."""
+
+    description: str
+    """Human-readable description of methodology."""
+
+    n_pollsters: int
+    """Total number of pollsters in the analysis."""
+
+    pollsters: list[PollsterAccuracyEntry]
+    """Pollsters sorted by rank (ascending RMSE -- best first)."""
