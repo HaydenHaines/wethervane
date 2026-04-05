@@ -12,10 +12,10 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 
-from src.prediction.national_environment import estimate_theta_national
 from src.prediction.candidate_effects import estimate_delta_race
-from src.propagation.propagate_polls import PollObservation
+from src.prediction.national_environment import estimate_theta_national
 from src.propagation.poll_weighting import apply_all_weights
+from src.propagation.propagate_polls import PollObservation
 
 if TYPE_CHECKING:
     import pandas as pd
@@ -25,12 +25,22 @@ def prepare_polls(
     polls_by_race: dict[str, list[dict]],
     reference_date: str,
     half_life_days: float = 30.0,
+    pre_primary_discount: float = 0.5,
 ) -> dict[str, list[dict]]:
     """Apply quality weighting to raw poll dicts.
 
     Converts dicts → PollObservation → apply_all_weights → back to dicts.
     Returns polls with adjusted dem_share (house effects) and n_sample
     (time decay, pollster grade, pre-primary discount).
+
+    Parameters
+    ----------
+    half_life_days:
+        Exponential decay half-life.  Comes from prediction_params.json
+        ``poll_weighting.half_life_days``; defaults to 30.0.
+    pre_primary_discount:
+        Multiplicative n_sample factor for pre-primary polls.  Comes from
+        prediction_params.json ``poll_weighting.pre_primary_discount``; defaults to 0.5.
     """
     if not polls_by_race:
         return {}
@@ -61,6 +71,7 @@ def prepare_polls(
         reference_date=reference_date,
         half_life_days=half_life_days,
         poll_notes=all_notes,
+        primary_discount_factor=pre_primary_discount,
     )
 
     # Reconstruct dicts grouped by race, preserving original notes
@@ -207,6 +218,8 @@ def run_forecast(
     w_vector_mode: str = "core",
     reference_date: str | None = None,
     type_profiles: pd.DataFrame | None = None,
+    half_life_days: float = 30.0,  # poll time-decay half-life; see prediction_params.json
+    pre_primary_discount: float = 0.5,  # n_sample factor for pre-primary polls
 ) -> dict[str, ForecastResult]:
     """Run the full hierarchical forecast for all races.
 
@@ -224,10 +237,18 @@ def run_forecast(
     # Step 1: θ_prior
     theta_prior = compute_theta_prior(type_scores, adjusted_priors)
 
-    # Step 1.5: Apply poll quality weighting
+    # Step 1.5: Apply poll quality weighting.
+    # half_life_days and pre_primary_discount come from prediction_params.json via
+    # the caller (predict_2026_types.run).  Function defaults serve as fallbacks
+    # when called from tests or other contexts that don't supply config.
     working_polls = polls_by_race
     if reference_date:
-        working_polls = prepare_polls(polls_by_race, reference_date)
+        working_polls = prepare_polls(
+            polls_by_race,
+            reference_date,
+            half_life_days=half_life_days,
+            pre_primary_discount=pre_primary_discount,
+        )
 
     # Step 1.6: Build W vector builder if type_profiles available
     w_builder = None

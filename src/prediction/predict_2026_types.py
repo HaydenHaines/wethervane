@@ -53,10 +53,18 @@ _STATE_FIPS_TO_ABBR: dict[str, str] = _cfg.STATE_ABBR
 # w_vector_mode: W vector construction tier ("core" vs "full" — benchmark first)
 # ---------------------------------------------------------------------------
 _PARAMS_PATH = PROJECT_ROOT / "data" / "config" / "prediction_params.json"
-_forecast_params: dict = json.loads(_PARAMS_PATH.read_text())["forecast"]
+_all_params: dict = json.loads(_PARAMS_PATH.read_text())
+_forecast_params: dict = _all_params["forecast"]
 _LAM: float = _forecast_params["lam"]
 _MU: float = _forecast_params["mu"]
 _W_VECTOR_MODE: str = _forecast_params["w_vector_mode"]
+
+# Poll weighting hyperparameters.  These live in prediction_params.json so they
+# can be swept via scripts/experiments/sweep_poll_half_life.py without touching
+# source code.  Function-level defaults in poll_decay.py serve as fallbacks.
+_poll_weighting_params: dict = _all_params.get("poll_weighting", {})
+_HALF_LIFE_DAYS: float = float(_poll_weighting_params.get("half_life_days", 30.0))
+_PRE_PRIMARY_DISCOUNT: float = float(_poll_weighting_params.get("pre_primary_discount", 0.5))
 
 
 def _load_type_data() -> tuple[list[str], np.ndarray, np.ndarray, np.ndarray]:
@@ -240,6 +248,8 @@ def run() -> None:
         w_vector_mode=_W_VECTOR_MODE,
         reference_date=str(date.today()),
         type_profiles=type_profiles_df,
+        half_life_days=_HALF_LIFE_DAYS,
+        pre_primary_discount=_PRE_PRIMARY_DISCOUNT,
     )
 
     # Convert ForecastResult → DataFrame rows (both modes per race)
