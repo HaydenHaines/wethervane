@@ -358,10 +358,8 @@ def _ingest_types_and_assignments(
             tta_df["super_type"] = None
 
         tta_df["dominant_type"] = tta_df["dominant_type"].astype("int32")
-        # super_type may have NaNs; use nullable int
-        tta_df["super_type"] = pd.array(
-            tta_df["super_type"].fillna(-1).astype("int32"), dtype="Int32"
-        ).where(tta_df["super_type"].notna(), None)
+        # super_type may have NaNs; use nullable Int32 (pd.NA for missing)
+        tta_df["super_type"] = tta_df["super_type"].astype("Int32")
 
         con.execute("DROP TABLE IF EXISTS tract_type_assignments")
         con.execute(
