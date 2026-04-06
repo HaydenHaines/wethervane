@@ -213,18 +213,27 @@ def build_W_poll(
 ) -> np.ndarray | list[dict]:
     """Construct poll-specific W vector at the best available tier.
 
+    Priority order (highest to lowest):
+      Tier 2: crosstab data (per-group pct_of_sample) → multiple W+y observations
+      Tier 1: raw sample demographics (pct_of_sample aggregated) → single skewed W
+      Tier 3: methodology adjustments only → single adjusted W
+
     Returns:
       - Tier 1 & 3: np.ndarray of shape (J,)
       - Tier 2: list of {"W": ndarray, "y": float, "sigma": float} dicts
     """
-    if raw_sample_demographics is not None:
-        return build_W_from_raw_sample(
-            poll, raw_sample_demographics, type_profiles, state_type_weights,
-        )
+    # Tier 2 takes priority: per-group crosstab data produces multiple observations.
+    # Each observation has a demographic-specific W vector and the group's dem_share.
     if poll_crosstabs is not None:
         return build_W_from_crosstabs(
             poll, poll_crosstabs, type_profiles, state_type_weights,
         )
+    # Tier 1: raw sample composition adjusts the state-level W toward matching types.
+    if raw_sample_demographics is not None:
+        return build_W_from_raw_sample(
+            poll, raw_sample_demographics, type_profiles, state_type_weights,
+        )
+    # Tier 3: no demographic data — apply LV/RV screen and methodology reach adjustments.
     return build_W_with_adjustments(
         poll, type_profiles, state_type_weights, w_vector_mode=w_vector_mode,
     )

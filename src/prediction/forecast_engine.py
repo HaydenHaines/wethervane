@@ -230,6 +230,62 @@ def _build_poll_arrays(
     )
 
 
+def _extract_crosstabs_from_xt(poll: dict) -> list[dict] | None:
+    """Extract xt_* fields from a poll dict and convert to crosstab observation dicts.
+
+    Each xt_ field encodes the fraction of the poll sample in a demographic group
+    (e.g. ``xt_race_black=0.13`` means 13% of respondents identify as Black).
+    We pair this sample fraction with the poll's topline dem_share as a proxy for
+    the group-level vote intention — a rough approximation when per-group vote shares
+    are unavailable.
+
+    The resulting crosstab list feeds ``build_W_from_crosstabs()``, which constructs
+    a demographic-specific W vector per group.  Each W is weighted by the type-profile
+    column for that demographic, concentrating signal on types that demographically
+    resemble the polled group.
+
+    Returns None when no xt_ data is present so the caller falls through to Tier 1/3.
+    """
+    dem_share = poll.get("dem_share")
+    n_sample = poll.get("n_sample", 600)
+
+    if dem_share is None:
+        return None
+
+    crosstabs: list[dict] = []
+    for key, value in poll.items():
+        if not key.startswith("xt_"):
+            continue
+        # Column naming convention: xt_<group>_<value>
+        # e.g. xt_race_black → group="race", value="black"
+        remainder = key[3:]  # strip "xt_" prefix
+        parts = remainder.split("_", 1)
+        if len(parts) != 2 or not parts[0] or not parts[1]:
+            continue
+        try:
+            pct = float(value)
+        except (TypeError, ValueError):
+            continue
+        # Skip missing/NaN values (float('nan') != float('nan'))
+        if pct != pct or pct <= 0:
+            continue
+        crosstabs.append({
+            "demographic_group": parts[0],
+            "group_value": parts[1],
+            "pct_of_sample": pct,
+            # Use topline dem_share as proxy for group-level vote share.
+            # This is an approximation — we do not have per-group vote shares
+            # from the xt_ columns (which encode sample composition only).
+            # The value still matters: it becomes the y observation that the
+            # Bayesian update pulls theta toward.  Using the topline is conservative
+            # (no additional cross-group variation injected) while still allowing
+            # the group-specific W vector to route the signal to matching types.
+            "dem_share": float(dem_share),
+        })
+
+    return crosstabs if crosstabs else None
+
+
 def _extract_raw_demographics(poll: dict) -> dict[str, float] | None:
     """Extract xt_* fields from a poll dict and map them to type_profiles column names.
 
@@ -325,14 +381,20 @@ def run_forecast(
                 state_type_weight_cache[st] = build_W_state(
                     st, type_scores, states, county_votes,
                 )
-            # Attempt Tier 1: extract xt_* demographic composition data and
-            # map to type_profiles column names.  When the poll has no xt_
-            # data this returns None and build_W_poll falls back to Tier 3.
-            raw_demographics = _extract_raw_demographics(poll)
+            # Tier 2 (highest priority): extract xt_* fields as per-group
+            # crosstab dicts.  Each group becomes a separate Bayesian observation
+            # with a demographic-specific W vector.  When xt_ data is absent
+            # this returns None and we fall through to Tier 1.
+            crosstabs = _extract_crosstabs_from_xt(poll)
+            # Tier 1 fallback: map xt_* keys to type_profiles column names for
+            # a single W vector shift.  Returns None when no xt_ data is present,
+            # signalling Tier 3 (methodology-only adjustments).
+            raw_demographics = _extract_raw_demographics(poll) if crosstabs is None else None
             return build_W_poll(
                 poll=poll,
                 type_profiles=type_profiles,
                 state_type_weights=state_type_weight_cache[st],
+                poll_crosstabs=crosstabs,
                 raw_sample_demographics=raw_demographics,
                 w_vector_mode=w_vector_mode,
             )
