@@ -16,6 +16,7 @@ Reads:
     data/assembled/usda_typology_features.parquet      (3,100+ counties × 14 cols)
     data/assembled/transportation_features.parquet     (3,100+ counties × 8 cols)
     data/assembled/county_bea_growth_features.parquet  (3,144 counties × 4 cols)
+    data/assembled/bea_county_income.parquet           (3,114 counties × 3 cols)
 
 Outputs:
     data/assembled/county_features_national.parquet  (3,100+ counties × ~90 cols)
@@ -81,6 +82,7 @@ VA_PATH = PROJECT_ROOT / "data" / "assembled" / "va_disability_features.parquet"
 USDA_PATH = PROJECT_ROOT / "data" / "assembled" / "usda_typology_features.parquet"
 TRANSPORT_PATH = PROJECT_ROOT / "data" / "assembled" / "transportation_features.parquet"
 BEA_GROWTH_PATH = PROJECT_ROOT / "data" / "assembled" / "county_bea_growth_features.parquet"
+BEA_INCOME_PATH = PROJECT_ROOT / "data" / "assembled" / "bea_county_income.parquet"
 OUTPUT_PATH = PROJECT_ROOT / "data" / "assembled" / "county_features_national.parquet"
 
 # How many malformed FIPS to show in the error log before truncating.
@@ -255,6 +257,13 @@ BEA_GROWTH_FEATURE_COLS = [
     "bea_income_growth_1yr",
 ]
 
+# BEA income composition features (county-level personal income breakdown)
+BEA_INCOME_FEATURE_COLS = [
+    "earnings_share",
+    "transfers_share",
+    "investment_share",
+]
+
 # DOT transportation features (aggregated from tract-level)
 TRANSPORT_FEATURE_COLS = [
     "transport_pop_density",
@@ -407,6 +416,7 @@ def build_national_features(
     usda: pd.DataFrame | None = None,
     transport: pd.DataFrame | None = None,
     bea_growth: pd.DataFrame | None = None,
+    bea_income: pd.DataFrame | None = None,
 ) -> pd.DataFrame:
     """Join all assembled county feature sources into a single feature matrix.
 
@@ -485,6 +495,19 @@ def build_national_features(
             bea_growth,
             BEA_GROWTH_FEATURE_COLS,
             "BEA growth",
+            allow_partial_cols=True,
+        )
+
+    # ── BEA income composition features ────────────────────────────────────
+    # County-level personal income breakdown: earnings vs transfers vs investment.
+    # Transfer-dependent counties (rural, retirement) vote differently from
+    # wage-economy counties. County-level from CAINC4 via fetch_bea_income.py.
+    if bea_income is not None:
+        merged = _merge_feature_block(
+            merged,
+            bea_income,
+            BEA_INCOME_FEATURE_COLS,
+            "BEA income composition",
             allow_partial_cols=True,
         )
 
@@ -645,6 +668,7 @@ def main() -> None:
     usda = _load_optional_source(USDA_PATH, "USDA typology county")
     transport = _load_optional_source(TRANSPORT_PATH, "Transportation county")
     bea_growth = _load_optional_source(BEA_GROWTH_PATH, "BEA growth county")
+    bea_income = _load_optional_source(BEA_INCOME_PATH, "BEA income composition county")
 
     # ── Build ────────────────────────────────────────────────────────────────
     features = build_national_features(
@@ -664,6 +688,7 @@ def main() -> None:
         usda=usda,
         transport=transport,
         bea_growth=bea_growth,
+        bea_income=bea_income,
     )
 
     # ── Quality checks, save, summary ────────────────────────────────────────
