@@ -227,6 +227,48 @@ class GenericBallotInfo(BaseModel):
     """
 
 
+class FundamentalsResponse(BaseModel):
+    """Structural fundamentals model output.
+
+    The fundamentals model predicts a national Dem share shift based on
+    presidential approval, GDP growth, unemployment, and CPI inflation.
+    It is blended with the generic ballot shift at a configurable weight.
+    """
+
+    shift: float
+    """Fundamentals-predicted Dem share shift (fraction, e.g. 0.011 = +1.1pp)."""
+
+    shift_pp: float
+    """shift expressed in percentage points."""
+
+    approval_contribution_pp: float
+    """Approval rating component (pp)."""
+
+    gdp_contribution_pp: float
+    """GDP growth component (pp)."""
+
+    unemployment_contribution_pp: float
+    """Unemployment rate component (pp)."""
+
+    cpi_contribution_pp: float
+    """CPI inflation component (pp)."""
+
+    loo_rmse_pp: float
+    """Leave-one-out RMSE (pp) — the uncertainty estimate."""
+
+    n_training: int
+    """Number of historical midterm cycles used for calibration."""
+
+    weight: float
+    """Blending weight (0–1) used to combine with generic ballot."""
+
+    combined_shift_pp: float
+    """The final blended shift: weight * fundamentals + (1-weight) * generic_ballot (pp)."""
+
+    snapshot: dict
+    """Current-cycle input values used to compute the shift."""
+
+
 class MultiPollInput(BaseModel):
     cycle: str              # e.g. "2020", "2022"
     state: str              # e.g. "FL"

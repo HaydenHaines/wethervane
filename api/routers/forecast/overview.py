@@ -6,7 +6,7 @@ import pandas as pd
 from fastapi import APIRouter, Depends, Query, Request
 
 from api.db import get_db
-from api.models import ForecastRow, GenericBallotInfo
+from api.models import ForecastRow, FundamentalsResponse, GenericBallotInfo
 
 from ._helpers import _BASELINE_YEAR, _format_baseline_label, race_to_slug
 
@@ -166,4 +166,58 @@ def get_generic_ballot(
         source=info.source,
         baseline_year=_BASELINE_YEAR,
         baseline_label=_format_baseline_label(PRES_DEM_SHARE_2024_NATIONAL),
+    )
+
+
+@router.get("/forecast/fundamentals", response_model=FundamentalsResponse)
+def get_fundamentals() -> FundamentalsResponse:
+    """Return the structural fundamentals model prediction for the current cycle.
+
+    The fundamentals model uses presidential approval, GDP growth, unemployment,
+    and CPI inflation to estimate a structural Dem share shift — independent of
+    any polling data.  It is blended with the generic ballot shift at a
+    configurable weight (default 30%) to produce the combined environment prior.
+    """
+    import json as _json
+    from pathlib import Path
+
+    from src.prediction.fundamentals import (
+        compute_fundamentals_shift as _compute_fund,
+        load_fundamentals_snapshot as _load_snap,
+    )
+    from src.prediction.generic_ballot import compute_gb_shift as _compute_gb
+
+    # Load config for the blending weight
+    params_path = Path(__file__).resolve().parents[3] / "data" / "config" / "prediction_params.json"
+    params = _json.loads(params_path.read_text()) if params_path.exists() else {}
+    fund_params = params.get("fundamentals", {})
+    weight = float(fund_params.get("fundamentals_weight", 0.3))
+    enabled = bool(fund_params.get("enabled", False))
+
+    snapshot = _load_snap()
+    fund_info = _compute_fund(snapshot)
+    gb_info = _compute_gb()
+
+    combined_pp = weight * fund_info.shift * 100 + (1 - weight) * gb_info.shift * 100
+
+    return FundamentalsResponse(
+        shift=fund_info.shift,
+        shift_pp=round(fund_info.shift * 100, 2),
+        approval_contribution_pp=round(fund_info.approval_contribution * 100, 2),
+        gdp_contribution_pp=round(fund_info.gdp_contribution * 100, 2),
+        unemployment_contribution_pp=round(fund_info.unemployment_contribution * 100, 2),
+        cpi_contribution_pp=round(fund_info.cpi_contribution * 100, 2),
+        loo_rmse_pp=round(fund_info.loo_rmse * 100, 2),
+        n_training=fund_info.n_training,
+        weight=weight if enabled else 0.0,
+        combined_shift_pp=round(combined_pp, 2) if enabled else round(gb_info.shift * 100, 2),
+        snapshot={
+            "cycle": snapshot.cycle,
+            "in_party": snapshot.in_party,
+            "approval_net_oct": snapshot.approval_net_oct,
+            "gdp_q2_growth_pct": snapshot.gdp_q2_growth_pct,
+            "unemployment_oct": snapshot.unemployment_oct,
+            "cpi_yoy_oct": snapshot.cpi_yoy_oct,
+            "consumer_sentiment": snapshot.consumer_sentiment,
+        },
     )

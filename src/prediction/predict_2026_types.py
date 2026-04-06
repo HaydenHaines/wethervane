@@ -33,6 +33,10 @@ import pandas as pd
 from src.core import config as _cfg
 from src.prediction.county_priors import load_county_priors_with_ridge
 from src.prediction.forecast_engine import compute_theta_prior, run_forecast
+from src.prediction.fundamentals import (
+    compute_fundamentals_shift,
+    load_fundamentals_snapshot,
+)
 from src.prediction.generic_ballot import compute_gb_shift
 
 log = logging.getLogger(__name__)
@@ -84,6 +88,12 @@ _METHODOLOGY_WEIGHTS: dict[str, float] = (
     if _poll_weighting_params.get("methodology_weights")
     else dict(_DEFAULT_METHODOLOGY_WEIGHTS)
 )
+# Fundamentals model configuration.  When enabled, the structural fundamentals
+# shift is blended with the generic ballot shift to produce a combined national
+# environment prior.  Weight of 0.0 = pure GB (old behavior), 1.0 = pure fundamentals.
+_fundamentals_params: dict = _all_params.get("fundamentals", {})
+_FUNDAMENTALS_ENABLED: bool = bool(_fundamentals_params.get("enabled", False))
+_FUNDAMENTALS_WEIGHT: float = float(_fundamentals_params.get("fundamentals_weight", 0.3))
 
 
 def _load_type_data() -> tuple[list[str], np.ndarray, np.ndarray, np.ndarray]:
@@ -266,6 +276,28 @@ def run() -> None:
         "Generic ballot shift: %+.1f pp (%d polls, source=%s)",
         gb_shift * 100, gb_info.n_polls, gb_info.source,
     )
+
+    # Optionally blend in the structural fundamentals shift (approval, GDP,
+    # unemployment, CPI).  The combined shift is:
+    #   shift = w * fundamentals + (1 - w) * generic_ballot
+    # where w = fundamentals_weight from prediction_params.json.
+    if _FUNDAMENTALS_ENABLED:
+        try:
+            snapshot = load_fundamentals_snapshot()
+            fund_info = compute_fundamentals_shift(snapshot)
+            w = _FUNDAMENTALS_WEIGHT
+            combined_shift = w * fund_info.shift + (1 - w) * gb_shift
+            log.info(
+                "Fundamentals shift: %+.1f pp (LOO RMSE=%.1f pp, weight=%.0f%%)",
+                fund_info.shift * 100, fund_info.loo_rmse * 100, w * 100,
+            )
+            log.info(
+                "Combined environment shift: %+.1f pp (was %+.1f pp GB-only)",
+                combined_shift * 100, gb_shift * 100,
+            )
+            gb_shift = combined_shift
+        except (FileNotFoundError, ValueError) as exc:
+            log.warning("Fundamentals model unavailable, using GB only: %s", exc)
 
     # Iterate over ALL registered races using the hierarchical forecast engine.
     # Produces dual-mode output: "national" (θ_national only) and

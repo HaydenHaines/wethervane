@@ -24,5 +24,11 @@
       "IVR": 0.85,
       "unknown": 1.00
     }
+  },
+  "fundamentals": {
+    "_notes": "Fundamentals model configuration. The fundamentals shift is a structural prior based on presidential approval, GDP, unemployment, and CPI. It is blended with the generic ballot shift to produce the combined national environment adjustment.",
+    "_weight_notes": "fundamentals_weight controls the blend: 0.0 = use only generic ballot (current behavior), 1.0 = use only fundamentals, 0.3 = 30% fundamentals + 70% generic ballot. Start conservative (0.3) because the fundamentals model has only 13 training points and LOO RMSE ~3.9pp.",
+    "enabled": true,
+    "fundamentals_weight": 0.3
   }
 }
