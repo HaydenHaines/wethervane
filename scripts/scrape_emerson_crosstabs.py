@@ -65,10 +65,30 @@ XT_COLUMNS = [
 # Known Emerson article URLs for 2026 races.
 # Each article publishes a Google Sheets crosstab with a demographics section.
 KNOWN_ARTICLE_URLS: list[str] = [
+    # FL (2026-04-02): Governor + Senate general election
     "https://emersoncollegepolling.com/florida-2026-poll-donalds-leads-gop-primary-for-governor-republicans-outpace-democrats-in-florida-elections/",
+    # GA (2026-03-05): Senate general election
     "https://emersoncollegepolling.com/georgia-2026-poll-senator-ossoff-starts-re-election-near-50-and-outpaces-gop-field/",
+    # ME (2026-03-26): Senate + Governor
     "https://emersoncollegepolling.com/maine-2026-poll-platner-leads-gov-mills-democrats-lead-sen-collins-in-maine/",
+    # TX (2026-03-01): Primary polls (no general election match expected)
     "https://emersoncollegepolling.com/texas-2026-primary-poll-talarico-paxton-with-narrow-edges-in-senate-primaries/",
+    # TX (2026-01-15): Governor + Senate general election
+    "https://emersoncollegepolling.com/texas-2026-poll/",
+    # AZ (2025-11-14): Governor
+    "https://emersoncollegepolling.com/arizona-2026-governor/",
+    # NV (2025-11-21): Governor
+    "https://emersoncollegepolling.com/nevada-2026-poll/",
+    # OH (2025-12-11): Governor + Senate
+    "https://emersoncollegepolling.com/ohio-2026-poll-democrats-make-gains-in-races-for-governor-and-us-senate/",
+    # MI (2026-01-29): Senate
+    "https://emersoncollegepolling.com/michigan-2026-poll-crowded-democratic-senate-primary-remains-wide-open/",
+    # MN (2026-02-11): Senate + Governor
+    "https://emersoncollegepolling.com/minnesota-2026-poll-democrats-lead-gop-as-voters-cite-threats-to-democracy/",
+    # NC (2025-08-01): Senate
+    "https://emersoncollegepolling.com/north-carolina-2026-poll-cooper-starts-us-senate-race-with-six-point-lead-and-clear-name-recognition-advantage-over-whatley/",
+    # NH (2026-03-23): Senate
+    "https://emersoncollegepolling.com/new-hampshire-2026-sununu-leads-gop-nomination-ties-pappas-for-senate/",
 ]
 
 # Map from Emerson article URL → state abbreviation.
