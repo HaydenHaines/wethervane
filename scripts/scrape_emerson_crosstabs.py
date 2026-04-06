@@ -350,8 +350,15 @@ def _find_general_election_question(rows: list[list[str]]) -> Optional[str]:
     """Find the question text in row 0 that asks about the general election.
 
     Emerson crosstab CSVs have the question header text in row 0.  We look for
-    the first non-empty cell that contains "general election" — this is the
-    start of the column block we need to parse for vote shares.
+    the first non-empty cell that matches an election question pattern.
+
+    Two known formats:
+      GA/ME:  "If the 2026 general election for U.S. Senate..."
+      FL:     "If the 2026 election for Governor were held today..."
+
+    We match any cell containing "election for" + either "Senate" or "Governor"
+    (case-insensitive).  This covers both formats and avoids matching primary
+    election questions (which use "Primary" rather than "election for").
 
     Returns the raw question text string, or None if not found.
     """
@@ -360,8 +367,14 @@ def _find_general_election_question(rows: list[list[str]]) -> Optional[str]:
     row0 = rows[0]
     for cell in row0:
         cell_stripped = cell.strip()
-        if "general election" in cell_stripped.lower() and cell_stripped:
-            return cell_stripped
+        if not cell_stripped:
+            continue
+        cell_lower = cell_stripped.lower()
+        # Match "general election for" (GA/ME) or "election for {Senate|Governor}"
+        # without "primary" (FL format uses "election for" without "general").
+        if "election for" in cell_lower and "primary" not in cell_lower:
+            if "senate" in cell_lower or "governor" in cell_lower:
+                return cell_stripped
     return None
 
 
