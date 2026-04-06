@@ -209,14 +209,36 @@ def _load_polls(
             if race_polls:
                 poll_lookup[race] = race_polls
 
-    # Convert to dict format expected by run_forecast
-    polls_by_race: dict[str, list[dict]] = {
-        race_id: [
-            {"dem_share": p[0], "n_sample": p[1], "state": p[2]}
-            for p in poll_list
+    # Build the rich dict format expected by run_forecast, including any
+    # xt_* demographic composition columns present in the CSV.  These enable
+    # Tier 1 W vector construction (raw_sample_demographics) inside the
+    # forecast engine — polls without xt_ data fall back to Tier 3 as before.
+    xt_cols = [c for c in poll_agg.columns if c.startswith("xt_")]
+    polls_by_race: dict[str, list[dict]] = {}
+    for race_id, poll_list in poll_lookup.items():
+        race_dicts: list[dict] = []
+        # Re-iterate the filtered DataFrame rows to capture xt_ columns.
+        # poll_lookup already filtered to state-level non-generic-ballot rows,
+        # so we match on race and use the same geo_level guard.
+        race_rows = poll_agg[
+            (poll_agg["race"] == race_id)
+            & (poll_agg.get("geo_level", pd.Series(["state"] * len(poll_agg))) == "state")
         ]
-        for race_id, poll_list in poll_lookup.items()
-    }
+        for _, row in race_rows.iterrows():
+            poll_dict: dict = {
+                "dem_share": float(row["dem_share"]),
+                "n_sample": int(row["n_sample"]) if pd.notna(row["n_sample"]) else 600,
+                "state": str(row["state"]),
+            }
+            # Attach xt_ fields that have non-null values; downstream code
+            # maps these to type_profiles columns before passing to build_W_poll.
+            for col in xt_cols:
+                val = row.get(col)
+                if val is not None and pd.notna(val):
+                    poll_dict[col] = float(val)
+            race_dicts.append(poll_dict)
+        if race_dicts:
+            polls_by_race[race_id] = race_dicts
 
     return polls_by_race, poll_lookup
 

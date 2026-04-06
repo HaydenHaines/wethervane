@@ -230,6 +230,37 @@ def _build_poll_arrays(
     )
 
 
+def _extract_raw_demographics(poll: dict) -> dict[str, float] | None:
+    """Extract xt_* fields from a poll dict and map them to type_profiles column names.
+
+    Polls loaded from polls_2026.csv carry xt_* keys (e.g. ``xt_education_college``)
+    when crosstab data is available.  The Tier 1 W builder (``build_W_from_raw_sample``)
+    expects keys that match ``type_profiles`` column names rather than xt_ keys, so we
+    translate them here using the same dimension map that the crosstab W builder uses.
+
+    Returns None when no xt_ data is present so that callers can fall back to Tier 3.
+    """
+    # Lazy import avoids a circular dependency: forecast_engine → poll_enrichment,
+    # but crosstab_w_builder is in propagation so there is no cycle.
+    from src.propagation.crosstab_w_builder import CROSSTAB_DIMENSION_MAP
+
+    raw: dict[str, float] = {}
+    for key, value in poll.items():
+        if not key.startswith("xt_"):
+            continue
+        # xt_education_college → education_college (strip the "xt_" prefix)
+        dim_key = key[3:]  # e.g. "education_college"
+        col = CROSSTAB_DIMENSION_MAP.get(dim_key)
+        # Inverted dimensions (noncollege, rural) map to None in the dimension
+        # map because they are derived from their parent.  Skip them here —
+        # build_W_from_raw_sample computes similarity directly from the columns
+        # present, so including the parent (college) is sufficient.
+        if col is not None:
+            raw[col] = float(value)
+
+    return raw if raw else None
+
+
 def run_forecast(
     type_scores: np.ndarray,  # (n_counties, J)
     county_priors: np.ndarray,  # (n_counties,)
@@ -294,10 +325,15 @@ def run_forecast(
                 state_type_weight_cache[st] = build_W_state(
                     st, type_scores, states, county_votes,
                 )
+            # Attempt Tier 1: extract xt_* demographic composition data and
+            # map to type_profiles column names.  When the poll has no xt_
+            # data this returns None and build_W_poll falls back to Tier 3.
+            raw_demographics = _extract_raw_demographics(poll)
             return build_W_poll(
                 poll=poll,
                 type_profiles=type_profiles,
                 state_type_weights=state_type_weight_cache[st],
+                raw_sample_demographics=raw_demographics,
                 w_vector_mode=w_vector_mode,
             )
 
