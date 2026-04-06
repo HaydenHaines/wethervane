@@ -1,0 +1,2016 @@
+{
+  "metadata": {
+    "total_polls": 204,
+    "polls_with_xt_data": 24,
+    "polls_analyzed": 24,
+    "active_xt_columns": [
+      "xt_education_college",
+      "xt_education_noncollege",
+      "xt_race_white",
+      "xt_race_black",
+      "xt_race_hispanic",
+      "xt_race_asian",
+      "xt_age_senior"
+    ],
+    "mappable_xt_columns": [
+      "xt_education_college",
+      "xt_race_white",
+      "xt_race_black",
+      "xt_race_hispanic",
+      "xt_race_asian"
+    ],
+    "oversample_threshold": 1.2,
+    "undersample_threshold": 0.8
+  },
+  "summary": {
+    "by_group": {
+      "xt_education_college": {
+        "label": "College-educated",
+        "n_undersampled": 0,
+        "n_oversampled": 24,
+        "n_representative": 0,
+        "n_total_polls": 24,
+        "top_affected_types": []
+      },
+      "xt_race_asian": {
+        "label": "Asian",
+        "n_undersampled": 7,
+        "n_oversampled": 10,
+        "n_representative": 3,
+        "n_total_polls": 20,
+        "top_affected_types": [
+          {
+            "type_label": "30: Black-Belt Evangelical",
+            "n_races_affected": 4
+          },
+          {
+            "type_label": "4: Rural Unchurched Wealth-Magnet",
+            "n_races_affected": 4
+          },
+          {
+            "type_label": "66: Churched Affluent",
+            "n_races_affected": 4
+          },
+          {
+            "type_label": "73: Black-Belt Rural Catholic",
+            "n_races_affected": 4
+          },
+          {
+            "type_label": "53: Evangelical Border Cosmopolitan",
+            "n_races_affected": 4
+          }
+        ]
+      },
+      "xt_race_black": {
+        "label": "Black",
+        "n_undersampled": 1,
+        "n_oversampled": 16,
+        "n_representative": 3,
+        "n_total_polls": 20,
+        "top_affected_types": [
+          {
+            "type_label": "73: Black-Belt Rural Catholic",
+            "n_races_affected": 1
+          },
+          {
+            "type_label": "0: Black-Belt Rural Devout",
+            "n_races_affected": 1
+          },
+          {
+            "type_label": "92: Rural Evangelical Devout Older II",
+            "n_races_affected": 1
+          },
+          {
+            "type_label": "48: Majority-Black Rural",
+            "n_races_affected": 1
+          },
+          {
+            "type_label": "49: Deep-Rural Evangelical Growing",
+            "n_races_affected": 1
+          }
+        ]
+      },
+      "xt_race_hispanic": {
+        "label": "Hispanic",
+        "n_undersampled": 10,
+        "n_oversampled": 9,
+        "n_representative": 1,
+        "n_total_polls": 20,
+        "top_affected_types": [
+          {
+            "type_label": "62: Deep-Rural Evangelical Working-Class",
+            "n_races_affected": 5
+          },
+          {
+            "type_label": "33: Hispanic Deep-Rural Young",
+            "n_races_affected": 5
+          },
+          {
+            "type_label": "79: Rural Mainline Blue-Collar Inflow",
+            "n_races_affected": 5
+          },
+          {
+            "type_label": "74: Rural Evangelical Churched",
+            "n_races_affected": 5
+          },
+          {
+            "type_label": "84: Deep-Rural Evangelical Inflow",
+            "n_races_affected": 5
+          }
+        ]
+      },
+      "xt_race_white": {
+        "label": "White (non-Hispanic)",
+        "n_undersampled": 1,
+        "n_oversampled": 5,
+        "n_representative": 16,
+        "n_total_polls": 22,
+        "top_affected_types": [
+          {
+            "type_label": "10: Rural Evangelical Low-Income Anglo-Majority",
+            "n_races_affected": 1
+          },
+          {
+            "type_label": "55: Mainline Working-Class",
+            "n_races_affected": 1
+          },
+          {
+            "type_label": "83: Evangelical Border Insular",
+            "n_races_affected": 1
+          },
+          {
+            "type_label": "73: Black-Belt Rural Catholic",
+            "n_races_affected": 1
+          },
+          {
+            "type_label": "42: Black-Belt Mainline",
+            "n_races_affected": 1
+          }
+        ]
+      }
+    },
+    "undersampled_ranking": [
+      {
+        "group": "xt_race_hispanic",
+        "label": "Hispanic",
+        "n_polls_undersampled": 10
+      },
+      {
+        "group": "xt_race_asian",
+        "label": "Asian",
+        "n_polls_undersampled": 7
+      },
+      {
+        "group": "xt_race_black",
+        "label": "Black",
+        "n_polls_undersampled": 1
+      },
+      {
+        "group": "xt_race_white",
+        "label": "White (non-Hispanic)",
+        "n_polls_undersampled": 1
+      }
+    ]
+  },
+  "per_poll_results": [
+    {
+      "race": "2026 AZ Governor",
+      "state": "AZ",
+      "pollster": "Emerson College",
+      "date": "2025-11-10",
+      "n_sample": 850,
+      "n_groups_analyzed": 5,
+      "n_undersampled": 1,
+      "n_oversampled": 2,
+      "gaps": [
+        {
+          "demographic_group": "xt_education_college",
+          "label": "College-educated",
+          "poll_share": 0.355,
+          "population_share": 0.1822,
+          "ratio": 1.9485,
+          "status": "oversampled"
+        },
+        {
+          "demographic_group": "xt_race_white",
+          "label": "White (non-Hispanic)",
+          "poll_share": 0.712,
+          "population_share": 0.6351,
+          "ratio": 1.121,
+          "status": "representative"
+        },
+        {
+          "demographic_group": "xt_race_black",
+          "label": "Black",
+          "poll_share": 0.026,
+          "population_share": 0.1633,
+          "ratio": 0.1592,
+          "status": "undersampled",
+          "affected_types": [
+            {
+              "type_id": 73,
+              "display_name": "Black-Belt Rural Catholic",
+              "group_share": 0.197,
+              "state_weight": 0.4589,
+              "exposure": 0.5537
+            },
+            {
+              "type_id": 0,
+              "display_name": "Black-Belt Rural Devout",
+              "group_share": 0.2261,
+              "state_weight": 0.2049,
+              "exposure": 0.2837
+            },
+            {
+              "type_id": 92,
+              "display_name": "Rural Evangelical Devout Older II",
+              "group_share": 0.0646,
+              "state_weight": 0.1262,
+              "exposure": 0.0499
+            },
+            {
+              "type_id": 48,
+              "display_name": "Majority-Black Rural",
+              "group_share": 0.6813,
+              "state_weight": 0.0084,
+              "exposure": 0.0351
+            },
+            {
+              "type_id": 49,
+              "display_name": "Deep-Rural Evangelical Growing",
+              "group_share": 0.0999,
+              "state_weight": 0.0386,
+              "exposure": 0.0236
+            }
+          ]
+        },
+        {
+          "demographic_group": "xt_race_hispanic",
+          "label": "Hispanic",
+          "poll_share": 0.187,
+          "population_share": 0.1195,
+          "ratio": 1.5643,
+          "status": "oversampled"
+        },
+        {
+          "demographic_group": "xt_race_asian",
+          "label": "Asian",
+          "poll_share": 0.022,
+          "population_share": 0.0196,
+          "ratio": 1.1225,
+          "status": "representative"
+        }
+      ]
+    },
+    {
+      "race": "2026 FL Governor",
+      "state": "FL",
+      "pollster": "Emerson College",
+      "date": "2026-03-31",
+      "n_sample": 1125,
+      "n_groups_analyzed": 5,
+      "n_undersampled": 1,
+      "n_oversampled": 3,
+      "gaps": [
+        {
+          "demographic_group": "xt_education_college",
+          "label": "College-educated",
+          "poll_share": 0.482,
+          "population_share": 0.2898,
+          "ratio": 1.6634,
+          "status": "oversampled"
+        },
+        {
+          "demographic_group": "xt_race_white",
+          "label": "White (non-Hispanic)",
+          "poll_share": 0.556,
+          "population_share": 0.6639,
+          "ratio": 0.8375,
+          "status": "representative"
+        },
+        {
+          "demographic_group": "xt_race_black",
+          "label": "Black",
+          "poll_share": 0.178,
+          "population_share": 0.1441,
+          "ratio": 1.2352,
+          "status": "oversampled"
+        },
+        {
+          "demographic_group": "xt_race_hispanic",
+          "label": "Hispanic",
+          "poll_share": 0.214,
+          "population_share": 0.1082,
+          "ratio": 1.9771,
+          "status": "oversampled"
+        },
+        {
+          "demographic_group": "xt_race_asian",
+          "label": "Asian",
+          "poll_share": 0.01,
+          "population_share": 0.0262,
+          "ratio": 0.3816,
+          "status": "undersampled",
+          "affected_types": [
+            {
+              "type_id": 30,
+              "display_name": "Black-Belt Evangelical",
+              "group_share": 0.0355,
+              "state_weight": 0.5475,
+              "exposure": 0.7413
+            },
+            {
+              "type_id": 4,
+              "display_name": "Rural Unchurched Wealth-Magnet",
+              "group_share": 0.0237,
+              "state_weight": 0.0743,
+              "exposure": 0.0673
+            },
+            {
+              "type_id": 66,
+              "display_name": "Churched Affluent",
+              "group_share": 0.0517,
+              "state_weight": 0.0168,
+              "exposure": 0.0331
+            },
+            {
+              "type_id": 73,
+              "display_name": "Black-Belt Rural Catholic",
+              "group_share": 0.0296,
+              "state_weight": 0.0188,
+              "exposure": 0.0213
+            },
+            {
+              "type_id": 53,
+              "display_name": "Evangelical Border Cosmopolitan",
+              "group_share": 0.0288,
+              "state_weight": 0.0184,
+              "exposure": 0.0202
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "race": "2026 FL Governor",
+      "state": "FL",
+      "pollster": "Emerson College",
+      "date": "2026-04-02",
+      "n_sample": 1125,
+      "n_groups_analyzed": 5,
+      "n_undersampled": 1,
+      "n_oversampled": 3,
+      "gaps": [
+        {
+          "demographic_group": "xt_education_college",
+          "label": "College-educated",
+          "poll_share": 0.482,
+          "population_share": 0.2898,
+          "ratio": 1.6634,
+          "status": "oversampled"
+        },
+        {
+          "demographic_group": "xt_race_white",
+          "label": "White (non-Hispanic)",
+          "poll_share": 0.556,
+          "population_share": 0.6639,
+          "ratio": 0.8375,
+          "status": "representative"
+        },
+        {
+          "demographic_group": "xt_race_black",
+          "label": "Black",
+          "poll_share": 0.178,
+          "population_share": 0.1441,
+          "ratio": 1.2352,
+          "status": "oversampled"
+        },
+        {
+          "demographic_group": "xt_race_hispanic",
+          "label": "Hispanic",
+          "poll_share": 0.214,
+          "population_share": 0.1082,
+          "ratio": 1.9771,
+          "status": "oversampled"
+        },
+        {
+          "demographic_group": "xt_race_asian",
+          "label": "Asian",
+          "poll_share": 0.01,
+          "population_share": 0.0262,
+          "ratio": 0.3816,
+          "status": "undersampled",
+          "affected_types": [
+            {
+              "type_id": 30,
+              "display_name": "Black-Belt Evangelical",
+              "group_share": 0.0355,
+              "state_weight": 0.5475,
+              "exposure": 0.7413
+            },
+            {
+              "type_id": 4,
+              "display_name": "Rural Unchurched Wealth-Magnet",
+              "group_share": 0.0237,
+              "state_weight": 0.0743,
+              "exposure": 0.0673
+            },
+            {
+              "type_id": 66,
+              "display_name": "Churched Affluent",
+              "group_share": 0.0517,
+              "state_weight": 0.0168,
+              "exposure": 0.0331
+            },
+            {
+              "type_id": 73,
+              "display_name": "Black-Belt Rural Catholic",
+              "group_share": 0.0296,
+              "state_weight": 0.0188,
+              "exposure": 0.0213
+            },
+            {
+              "type_id": 53,
+              "display_name": "Evangelical Border Cosmopolitan",
+              "group_share": 0.0288,
+              "state_weight": 0.0184,
+              "exposure": 0.0202
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "race": "2026 FL Senate",
+      "state": "FL",
+      "pollster": "Emerson College",
+      "date": "2026-03-31",
+      "n_sample": 1125,
+      "n_groups_analyzed": 5,
+      "n_undersampled": 1,
+      "n_oversampled": 3,
+      "gaps": [
+        {
+          "demographic_group": "xt_education_college",
+          "label": "College-educated",
+          "poll_share": 0.482,
+          "population_share": 0.2898,
+          "ratio": 1.6634,
+          "status": "oversampled"
+        },
+        {
+          "demographic_group": "xt_race_white",
+          "label": "White (non-Hispanic)",
+          "poll_share": 0.556,
+          "population_share": 0.6639,
+          "ratio": 0.8375,
+          "status": "representative"
+        },
+        {
+          "demographic_group": "xt_race_black",
+          "label": "Black",
+          "poll_share": 0.178,
+          "population_share": 0.1441,
+          "ratio": 1.2352,
+          "status": "oversampled"
+        },
+        {
+          "demographic_group": "xt_race_hispanic",
+          "label": "Hispanic",
+          "poll_share": 0.214,
+          "population_share": 0.1082,
+          "ratio": 1.9771,
+          "status": "oversampled"
+        },
+        {
+          "demographic_group": "xt_race_asian",
+          "label": "Asian",
+          "poll_share": 0.01,
+          "population_share": 0.0262,
+          "ratio": 0.3816,
+          "status": "undersampled",
+          "affected_types": [
+            {
+              "type_id": 30,
+              "display_name": "Black-Belt Evangelical",
+              "group_share": 0.0355,
+              "state_weight": 0.5475,
+              "exposure": 0.7413
+            },
+            {
+              "type_id": 4,
+              "display_name": "Rural Unchurched Wealth-Magnet",
+              "group_share": 0.0237,
+              "state_weight": 0.0743,
+              "exposure": 0.0673
+            },
+            {
+              "type_id": 66,
+              "display_name": "Churched Affluent",
+              "group_share": 0.0517,
+              "state_weight": 0.0168,
+              "exposure": 0.0331
+            },
+            {
+              "type_id": 73,
+              "display_name": "Black-Belt Rural Catholic",
+              "group_share": 0.0296,
+              "state_weight": 0.0188,
+              "exposure": 0.0213
+            },
+            {
+              "type_id": 53,
+              "display_name": "Evangelical Border Cosmopolitan",
+              "group_share": 0.0288,
+              "state_weight": 0.0184,
+              "exposure": 0.0202
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "race": "2026 FL Senate",
+      "state": "FL",
+      "pollster": "Emerson College",
+      "date": "2026-04-02",
+      "n_sample": 1125,
+      "n_groups_analyzed": 5,
+      "n_undersampled": 1,
+      "n_oversampled": 3,
+      "gaps": [
+        {
+          "demographic_group": "xt_education_college",
+          "label": "College-educated",
+          "poll_share": 0.482,
+          "population_share": 0.2898,
+          "ratio": 1.6634,
+          "status": "oversampled"
+        },
+        {
+          "demographic_group": "xt_race_white",
+          "label": "White (non-Hispanic)",
+          "poll_share": 0.556,
+          "population_share": 0.6639,
+          "ratio": 0.8375,
+          "status": "representative"
+        },
+        {
+          "demographic_group": "xt_race_black",
+          "label": "Black",
+          "poll_share": 0.178,
+          "population_share": 0.1441,
+          "ratio": 1.2352,
+          "status": "oversampled"
+        },
+        {
+          "demographic_group": "xt_race_hispanic",
+          "label": "Hispanic",
+          "poll_share": 0.214,
+          "population_share": 0.1082,
+          "ratio": 1.9771,
+          "status": "oversampled"
+        },
+        {
+          "demographic_group": "xt_race_asian",
+          "label": "Asian",
+          "poll_share": 0.01,
+          "population_share": 0.0262,
+          "ratio": 0.3816,
+          "status": "undersampled",
+          "affected_types": [
+            {
+              "type_id": 30,
+              "display_name": "Black-Belt Evangelical",
+              "group_share": 0.0355,
+              "state_weight": 0.5475,
+              "exposure": 0.7413
+            },
+            {
+              "type_id": 4,
+              "display_name": "Rural Unchurched Wealth-Magnet",
+              "group_share": 0.0237,
+              "state_weight": 0.0743,
+              "exposure": 0.0673
+            },
+            {
+              "type_id": 66,
+              "display_name": "Churched Affluent",
+              "group_share": 0.0517,
+              "state_weight": 0.0168,
+              "exposure": 0.0331
+            },
+            {
+              "type_id": 73,
+              "display_name": "Black-Belt Rural Catholic",
+              "group_share": 0.0296,
+              "state_weight": 0.0188,
+              "exposure": 0.0213
+            },
+            {
+              "type_id": 53,
+              "display_name": "Evangelical Border Cosmopolitan",
+              "group_share": 0.0288,
+              "state_weight": 0.0184,
+              "exposure": 0.0202
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "race": "2026 GA Senate",
+      "state": "GA",
+      "pollster": "Emerson College",
+      "date": "2026-03-02",
+      "n_sample": 1000,
+      "n_groups_analyzed": 5,
+      "n_undersampled": 1,
+      "n_oversampled": 2,
+      "gaps": [
+        {
+          "demographic_group": "xt_education_college",
+          "label": "College-educated",
+          "poll_share": 0.395,
+          "population_share": 0.2052,
+          "ratio": 1.9248,
+          "status": "oversampled"
+        },
+        {
+          "demographic_group": "xt_race_white",
+          "label": "White (non-Hispanic)",
+          "poll_share": 0.602,
+          "population_share": 0.7251,
+          "ratio": 0.8302,
+          "status": "representative"
+        },
+        {
+          "demographic_group": "xt_race_black",
+          "label": "Black",
+          "poll_share": 0.286,
+          "population_share": 0.0753,
+          "ratio": 3.8004,
+          "status": "oversampled"
+        },
+        {
+          "demographic_group": "xt_race_hispanic",
+          "label": "Hispanic",
+          "poll_share": 0.081,
+          "population_share": 0.1079,
+          "ratio": 0.7504,
+          "status": "undersampled",
+          "affected_types": [
+            {
+              "type_id": 92,
+              "display_name": "Rural Evangelical Devout Older II",
+              "group_share": 0.2345,
+              "state_weight": 0.1514,
+              "exposure": 0.3289
+            },
+            {
+              "type_id": 62,
+              "display_name": "Deep-Rural Evangelical Working-Class",
+              "group_share": 0.1711,
+              "state_weight": 0.1026,
+              "exposure": 0.1626
+            },
+            {
+              "type_id": 49,
+              "display_name": "Deep-Rural Evangelical Growing",
+              "group_share": 0.0823,
+              "state_weight": 0.1416,
+              "exposure": 0.1079
+            },
+            {
+              "type_id": 69,
+              "display_name": "Rural Mainline Blue-Collar Growing",
+              "group_share": 0.1365,
+              "state_weight": 0.0621,
+              "exposure": 0.0785
+            },
+            {
+              "type_id": 29,
+              "display_name": "Rural Evangelical Devout Older IV",
+              "group_share": 0.0752,
+              "state_weight": 0.0574,
+              "exposure": 0.04
+            }
+          ]
+        },
+        {
+          "demographic_group": "xt_race_asian",
+          "label": "Asian",
+          "poll_share": 0.017,
+          "population_share": 0.0207,
+          "ratio": 0.8224,
+          "status": "representative"
+        }
+      ]
+    },
+    {
+      "race": "2026 GA Senate",
+      "state": "GA",
+      "pollster": "Emerson College",
+      "date": "2026-03-05",
+      "n_sample": 1000,
+      "n_groups_analyzed": 5,
+      "n_undersampled": 1,
+      "n_oversampled": 2,
+      "gaps": [
+        {
+          "demographic_group": "xt_education_college",
+          "label": "College-educated",
+          "poll_share": 0.395,
+          "population_share": 0.2052,
+          "ratio": 1.9248,
+          "status": "oversampled"
+        },
+        {
+          "demographic_group": "xt_race_white",
+          "label": "White (non-Hispanic)",
+          "poll_share": 0.602,
+          "population_share": 0.7251,
+          "ratio": 0.8302,
+          "status": "representative"
+        },
+        {
+          "demographic_group": "xt_race_black",
+          "label": "Black",
+          "poll_share": 0.286,
+          "population_share": 0.0753,
+          "ratio": 3.8004,
+          "status": "oversampled"
+        },
+        {
+          "demographic_group": "xt_race_hispanic",
+          "label": "Hispanic",
+          "poll_share": 0.081,
+          "population_share": 0.1079,
+          "ratio": 0.7504,
+          "status": "undersampled",
+          "affected_types": [
+            {
+              "type_id": 92,
+              "display_name": "Rural Evangelical Devout Older II",
+              "group_share": 0.2345,
+              "state_weight": 0.1514,
+              "exposure": 0.3289
+            },
+            {
+              "type_id": 62,
+              "display_name": "Deep-Rural Evangelical Working-Class",
+              "group_share": 0.1711,
+              "state_weight": 0.1026,
+              "exposure": 0.1626
+            },
+            {
+              "type_id": 49,
+              "display_name": "Deep-Rural Evangelical Growing",
+              "group_share": 0.0823,
+              "state_weight": 0.1416,
+              "exposure": 0.1079
+            },
+            {
+              "type_id": 69,
+              "display_name": "Rural Mainline Blue-Collar Growing",
+              "group_share": 0.1365,
+              "state_weight": 0.0621,
+              "exposure": 0.0785
+            },
+            {
+              "type_id": 29,
+              "display_name": "Rural Evangelical Devout Older IV",
+              "group_share": 0.0752,
+              "state_weight": 0.0574,
+              "exposure": 0.04
+            }
+          ]
+        },
+        {
+          "demographic_group": "xt_race_asian",
+          "label": "Asian",
+          "poll_share": 0.017,
+          "population_share": 0.0207,
+          "ratio": 0.8224,
+          "status": "representative"
+        }
+      ]
+    },
+    {
+      "race": "2026 ME Senate",
+      "state": "ME",
+      "pollster": "Emerson College",
+      "date": "2026-03-23",
+      "n_sample": 1075,
+      "n_groups_analyzed": 2,
+      "n_undersampled": 0,
+      "n_oversampled": 2,
+      "gaps": [
+        {
+          "demographic_group": "xt_education_college",
+          "label": "College-educated",
+          "poll_share": 0.44,
+          "population_share": 0.2416,
+          "ratio": 1.8212,
+          "status": "oversampled"
+        },
+        {
+          "demographic_group": "xt_race_white",
+          "label": "White (non-Hispanic)",
+          "poll_share": 0.912,
+          "population_share": 0.7282,
+          "ratio": 1.2524,
+          "status": "oversampled"
+        }
+      ]
+    },
+    {
+      "race": "2026 ME Senate",
+      "state": "ME",
+      "pollster": "Emerson College",
+      "date": "2026-03-26",
+      "n_sample": 1075,
+      "n_groups_analyzed": 2,
+      "n_undersampled": 0,
+      "n_oversampled": 2,
+      "gaps": [
+        {
+          "demographic_group": "xt_education_college",
+          "label": "College-educated",
+          "poll_share": 0.44,
+          "population_share": 0.2416,
+          "ratio": 1.8212,
+          "status": "oversampled"
+        },
+        {
+          "demographic_group": "xt_race_white",
+          "label": "White (non-Hispanic)",
+          "poll_share": 0.912,
+          "population_share": 0.7282,
+          "ratio": 1.2524,
+          "status": "oversampled"
+        }
+      ]
+    },
+    {
+      "race": "2026 MI Senate",
+      "state": "MI",
+      "pollster": "Emerson College",
+      "date": "2026-01-25",
+      "n_sample": 1000,
+      "n_groups_analyzed": 5,
+      "n_undersampled": 0,
+      "n_oversampled": 3,
+      "gaps": [
+        {
+          "demographic_group": "xt_education_college",
+          "label": "College-educated",
+          "poll_share": 0.363,
+          "population_share": 0.1956,
+          "ratio": 1.8562,
+          "status": "oversampled"
+        },
+        {
+          "demographic_group": "xt_race_white",
+          "label": "White (non-Hispanic)",
+          "poll_share": 0.768,
+          "population_share": 0.8258,
+          "ratio": 0.9301,
+          "status": "representative"
+        },
+        {
+          "demographic_group": "xt_race_black",
+          "label": "Black",
+          "poll_share": 0.125,
+          "population_share": 0.0524,
+          "ratio": 2.3847,
+          "status": "oversampled"
+        },
+        {
+          "demographic_group": "xt_race_hispanic",
+          "label": "Hispanic",
+          "poll_share": 0.059,
+          "population_share": 0.0649,
+          "ratio": 0.9097,
+          "status": "representative"
+        },
+        {
+          "demographic_group": "xt_race_asian",
+          "label": "Asian",
+          "poll_share": 0.013,
+          "population_share": 0.008,
+          "ratio": 1.6337,
+          "status": "oversampled"
+        }
+      ]
+    },
+    {
+      "race": "2026 MN Governor",
+      "state": "MN",
+      "pollster": "Emerson College",
+      "date": "2026-02-08",
+      "n_sample": 1000,
+      "n_groups_analyzed": 5,
+      "n_undersampled": 2,
+      "n_oversampled": 3,
+      "gaps": [
+        {
+          "demographic_group": "xt_education_college",
+          "label": "College-educated",
+          "poll_share": 0.441,
+          "population_share": 0.233,
+          "ratio": 1.8928,
+          "status": "oversampled"
+        },
+        {
+          "demographic_group": "xt_race_white",
+          "label": "White (non-Hispanic)",
+          "poll_share": 0.847,
+          "population_share": 0.6694,
+          "ratio": 1.2652,
+          "status": "oversampled"
+        },
+        {
+          "demographic_group": "xt_race_black",
+          "label": "Black",
+          "poll_share": 0.058,
+          "population_share": 0.0483,
+          "ratio": 1.2005,
+          "status": "oversampled"
+        },
+        {
+          "demographic_group": "xt_race_hispanic",
+          "label": "Hispanic",
+          "poll_share": 0.025,
+          "population_share": 0.1603,
+          "ratio": 0.156,
+          "status": "undersampled",
+          "affected_types": [
+            {
+              "type_id": 31,
+              "display_name": "Hispanic Catholic",
+              "group_share": 0.3906,
+              "state_weight": 0.2142,
+              "exposure": 0.522
+            },
+            {
+              "type_id": 62,
+              "display_name": "Deep-Rural Evangelical Working-Class",
+              "group_share": 0.1711,
+              "state_weight": 0.217,
+              "exposure": 0.2316
+            },
+            {
+              "type_id": 6,
+              "display_name": "Rural Mainline Older Blue-Collar",
+              "group_share": 0.0544,
+              "state_weight": 0.2785,
+              "exposure": 0.0946
+            },
+            {
+              "type_id": 27,
+              "display_name": "Mixed Border White-Collar",
+              "group_share": 0.0458,
+              "state_weight": 0.088,
+              "exposure": 0.0252
+            },
+            {
+              "type_id": 75,
+              "display_name": "Rural Older",
+              "group_share": 0.0669,
+              "state_weight": 0.0592,
+              "exposure": 0.0247
+            }
+          ]
+        },
+        {
+          "demographic_group": "xt_race_asian",
+          "label": "Asian",
+          "poll_share": 0.022,
+          "population_share": 0.0517,
+          "ratio": 0.4256,
+          "status": "undersampled",
+          "affected_types": [
+            {
+              "type_id": 31,
+              "display_name": "Hispanic Catholic",
+              "group_share": 0.1084,
+              "state_weight": 0.2142,
+              "exposure": 0.449
+            },
+            {
+              "type_id": 62,
+              "display_name": "Deep-Rural Evangelical Working-Class",
+              "group_share": 0.1001,
+              "state_weight": 0.217,
+              "exposure": 0.4204
+            },
+            {
+              "type_id": 27,
+              "display_name": "Mixed Border White-Collar",
+              "group_share": 0.0292,
+              "state_weight": 0.088,
+              "exposure": 0.0497
+            },
+            {
+              "type_id": 6,
+              "display_name": "Rural Mainline Older Blue-Collar",
+              "group_share": 0.0077,
+              "state_weight": 0.2785,
+              "exposure": 0.0414
+            },
+            {
+              "type_id": 75,
+              "display_name": "Rural Older",
+              "group_share": 0.0164,
+              "state_weight": 0.0592,
+              "exposure": 0.0187
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "race": "2026 MN Senate",
+      "state": "MN",
+      "pollster": "Emerson College",
+      "date": "2026-02-08",
+      "n_sample": 1000,
+      "n_groups_analyzed": 5,
+      "n_undersampled": 2,
+      "n_oversampled": 3,
+      "gaps": [
+        {
+          "demographic_group": "xt_education_college",
+          "label": "College-educated",
+          "poll_share": 0.441,
+          "population_share": 0.233,
+          "ratio": 1.8928,
+          "status": "oversampled"
+        },
+        {
+          "demographic_group": "xt_race_white",
+          "label": "White (non-Hispanic)",
+          "poll_share": 0.847,
+          "population_share": 0.6694,
+          "ratio": 1.2652,
+          "status": "oversampled"
+        },
+        {
+          "demographic_group": "xt_race_black",
+          "label": "Black",
+          "poll_share": 0.058,
+          "population_share": 0.0483,
+          "ratio": 1.2005,
+          "status": "oversampled"
+        },
+        {
+          "demographic_group": "xt_race_hispanic",
+          "label": "Hispanic",
+          "poll_share": 0.025,
+          "population_share": 0.1603,
+          "ratio": 0.156,
+          "status": "undersampled",
+          "affected_types": [
+            {
+              "type_id": 31,
+              "display_name": "Hispanic Catholic",
+              "group_share": 0.3906,
+              "state_weight": 0.2142,
+              "exposure": 0.522
+            },
+            {
+              "type_id": 62,
+              "display_name": "Deep-Rural Evangelical Working-Class",
+              "group_share": 0.1711,
+              "state_weight": 0.217,
+              "exposure": 0.2316
+            },
+            {
+              "type_id": 6,
+              "display_name": "Rural Mainline Older Blue-Collar",
+              "group_share": 0.0544,
+              "state_weight": 0.2785,
+              "exposure": 0.0946
+            },
+            {
+              "type_id": 27,
+              "display_name": "Mixed Border White-Collar",
+              "group_share": 0.0458,
+              "state_weight": 0.088,
+              "exposure": 0.0252
+            },
+            {
+              "type_id": 75,
+              "display_name": "Rural Older",
+              "group_share": 0.0669,
+              "state_weight": 0.0592,
+              "exposure": 0.0247
+            }
+          ]
+        },
+        {
+          "demographic_group": "xt_race_asian",
+          "label": "Asian",
+          "poll_share": 0.022,
+          "population_share": 0.0517,
+          "ratio": 0.4256,
+          "status": "undersampled",
+          "affected_types": [
+            {
+              "type_id": 31,
+              "display_name": "Hispanic Catholic",
+              "group_share": 0.1084,
+              "state_weight": 0.2142,
+              "exposure": 0.449
+            },
+            {
+              "type_id": 62,
+              "display_name": "Deep-Rural Evangelical Working-Class",
+              "group_share": 0.1001,
+              "state_weight": 0.217,
+              "exposure": 0.4204
+            },
+            {
+              "type_id": 27,
+              "display_name": "Mixed Border White-Collar",
+              "group_share": 0.0292,
+              "state_weight": 0.088,
+              "exposure": 0.0497
+            },
+            {
+              "type_id": 6,
+              "display_name": "Rural Mainline Older Blue-Collar",
+              "group_share": 0.0077,
+              "state_weight": 0.2785,
+              "exposure": 0.0414
+            },
+            {
+              "type_id": 75,
+              "display_name": "Rural Older",
+              "group_share": 0.0164,
+              "state_weight": 0.0592,
+              "exposure": 0.0187
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "race": "2026 MN Senate",
+      "state": "MN",
+      "pollster": "Emerson College",
+      "date": "2026-02-11",
+      "n_sample": 1000,
+      "n_groups_analyzed": 5,
+      "n_undersampled": 2,
+      "n_oversampled": 3,
+      "gaps": [
+        {
+          "demographic_group": "xt_education_college",
+          "label": "College-educated",
+          "poll_share": 0.441,
+          "population_share": 0.233,
+          "ratio": 1.8928,
+          "status": "oversampled"
+        },
+        {
+          "demographic_group": "xt_race_white",
+          "label": "White (non-Hispanic)",
+          "poll_share": 0.847,
+          "population_share": 0.6694,
+          "ratio": 1.2652,
+          "status": "oversampled"
+        },
+        {
+          "demographic_group": "xt_race_black",
+          "label": "Black",
+          "poll_share": 0.058,
+          "population_share": 0.0483,
+          "ratio": 1.2005,
+          "status": "oversampled"
+        },
+        {
+          "demographic_group": "xt_race_hispanic",
+          "label": "Hispanic",
+          "poll_share": 0.025,
+          "population_share": 0.1603,
+          "ratio": 0.156,
+          "status": "undersampled",
+          "affected_types": [
+            {
+              "type_id": 31,
+              "display_name": "Hispanic Catholic",
+              "group_share": 0.3906,
+              "state_weight": 0.2142,
+              "exposure": 0.522
+            },
+            {
+              "type_id": 62,
+              "display_name": "Deep-Rural Evangelical Working-Class",
+              "group_share": 0.1711,
+              "state_weight": 0.217,
+              "exposure": 0.2316
+            },
+            {
+              "type_id": 6,
+              "display_name": "Rural Mainline Older Blue-Collar",
+              "group_share": 0.0544,
+              "state_weight": 0.2785,
+              "exposure": 0.0946
+            },
+            {
+              "type_id": 27,
+              "display_name": "Mixed Border White-Collar",
+              "group_share": 0.0458,
+              "state_weight": 0.088,
+              "exposure": 0.0252
+            },
+            {
+              "type_id": 75,
+              "display_name": "Rural Older",
+              "group_share": 0.0669,
+              "state_weight": 0.0592,
+              "exposure": 0.0247
+            }
+          ]
+        },
+        {
+          "demographic_group": "xt_race_asian",
+          "label": "Asian",
+          "poll_share": 0.022,
+          "population_share": 0.0517,
+          "ratio": 0.4256,
+          "status": "undersampled",
+          "affected_types": [
+            {
+              "type_id": 31,
+              "display_name": "Hispanic Catholic",
+              "group_share": 0.1084,
+              "state_weight": 0.2142,
+              "exposure": 0.449
+            },
+            {
+              "type_id": 62,
+              "display_name": "Deep-Rural Evangelical Working-Class",
+              "group_share": 0.1001,
+              "state_weight": 0.217,
+              "exposure": 0.4204
+            },
+            {
+              "type_id": 27,
+              "display_name": "Mixed Border White-Collar",
+              "group_share": 0.0292,
+              "state_weight": 0.088,
+              "exposure": 0.0497
+            },
+            {
+              "type_id": 6,
+              "display_name": "Rural Mainline Older Blue-Collar",
+              "group_share": 0.0077,
+              "state_weight": 0.2785,
+              "exposure": 0.0414
+            },
+            {
+              "type_id": 75,
+              "display_name": "Rural Older",
+              "group_share": 0.0164,
+              "state_weight": 0.0592,
+              "exposure": 0.0187
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "race": "2026 NH Senate",
+      "state": "NH",
+      "pollster": "Emerson College",
+      "date": "2026-03-23",
+      "n_sample": 1100,
+      "n_groups_analyzed": 1,
+      "n_undersampled": 0,
+      "n_oversampled": 1,
+      "gaps": [
+        {
+          "demographic_group": "xt_education_college",
+          "label": "College-educated",
+          "poll_share": 0.512,
+          "population_share": 0.2032,
+          "ratio": 2.5194,
+          "status": "oversampled"
+        }
+      ]
+    },
+    {
+      "race": "2026 NH Senate",
+      "state": "NH",
+      "pollster": "Emerson College",
+      "date": "2026-03-26",
+      "n_sample": 1100,
+      "n_groups_analyzed": 1,
+      "n_undersampled": 0,
+      "n_oversampled": 1,
+      "gaps": [
+        {
+          "demographic_group": "xt_education_college",
+          "label": "College-educated",
+          "poll_share": 0.512,
+          "population_share": 0.2032,
+          "ratio": 2.5194,
+          "status": "oversampled"
+        }
+      ]
+    },
+    {
+      "race": "2026 NV Governor",
+      "state": "NV",
+      "pollster": "Emerson College",
+      "date": "2025-11-18",
+      "n_sample": 800,
+      "n_groups_analyzed": 5,
+      "n_undersampled": 1,
+      "n_oversampled": 4,
+      "gaps": [
+        {
+          "demographic_group": "xt_education_college",
+          "label": "College-educated",
+          "poll_share": 0.339,
+          "population_share": 0.1819,
+          "ratio": 1.8633,
+          "status": "oversampled"
+        },
+        {
+          "demographic_group": "xt_race_white",
+          "label": "White (non-Hispanic)",
+          "poll_share": 0.634,
+          "population_share": 0.8446,
+          "ratio": 0.7506,
+          "status": "undersampled",
+          "affected_types": [
+            {
+              "type_id": 10,
+              "display_name": "Rural Evangelical Low-Income Anglo-Majority",
+              "group_share": 0.9048,
+              "state_weight": 0.6534,
+              "exposure": 0.6999
+            },
+            {
+              "type_id": 55,
+              "display_name": "Mainline Working-Class",
+              "group_share": 0.7981,
+              "state_weight": 0.1672,
+              "exposure": 0.158
+            },
+            {
+              "type_id": 83,
+              "display_name": "Evangelical Border Insular",
+              "group_share": 0.7526,
+              "state_weight": 0.0316,
+              "exposure": 0.0282
+            },
+            {
+              "type_id": 73,
+              "display_name": "Black-Belt Rural Catholic",
+              "group_share": 0.557,
+              "state_weight": 0.0297,
+              "exposure": 0.0196
+            },
+            {
+              "type_id": 42,
+              "display_name": "Black-Belt Mainline",
+              "group_share": 0.6751,
+              "state_weight": 0.0237,
+              "exposure": 0.019
+            }
+          ]
+        },
+        {
+          "demographic_group": "xt_race_black",
+          "label": "Black",
+          "poll_share": 0.069,
+          "population_share": 0.0443,
+          "ratio": 1.5565,
+          "status": "oversampled"
+        },
+        {
+          "demographic_group": "xt_race_hispanic",
+          "label": "Hispanic",
+          "poll_share": 0.169,
+          "population_share": 0.0556,
+          "ratio": 3.037,
+          "status": "oversampled"
+        },
+        {
+          "demographic_group": "xt_race_asian",
+          "label": "Asian",
+          "poll_share": 0.051,
+          "population_share": 0.0091,
+          "ratio": 5.6055,
+          "status": "oversampled"
+        }
+      ]
+    },
+    {
+      "race": "2026 OH Governor",
+      "state": "OH",
+      "pollster": "Emerson College",
+      "date": "2025-08-19",
+      "n_sample": 1000,
+      "n_groups_analyzed": 5,
+      "n_undersampled": 1,
+      "n_oversampled": 3,
+      "gaps": [
+        {
+          "demographic_group": "xt_education_college",
+          "label": "College-educated",
+          "poll_share": 0.355,
+          "population_share": 0.2008,
+          "ratio": 1.7678,
+          "status": "oversampled"
+        },
+        {
+          "demographic_group": "xt_race_white",
+          "label": "White (non-Hispanic)",
+          "poll_share": 0.813,
+          "population_share": 0.7813,
+          "ratio": 1.0405,
+          "status": "representative"
+        },
+        {
+          "demographic_group": "xt_race_black",
+          "label": "Black",
+          "poll_share": 0.116,
+          "population_share": 0.0639,
+          "ratio": 1.8148,
+          "status": "oversampled"
+        },
+        {
+          "demographic_group": "xt_race_hispanic",
+          "label": "Hispanic",
+          "poll_share": 0.038,
+          "population_share": 0.089,
+          "ratio": 0.4269,
+          "status": "undersampled",
+          "affected_types": [
+            {
+              "type_id": 33,
+              "display_name": "Hispanic Deep-Rural Young",
+              "group_share": 0.9115,
+              "state_weight": 0.0196,
+              "exposure": 0.2009
+            },
+            {
+              "type_id": 79,
+              "display_name": "Rural Mainline Blue-Collar Inflow",
+              "group_share": 0.1007,
+              "state_weight": 0.09,
+              "exposure": 0.1019
+            },
+            {
+              "type_id": 74,
+              "display_name": "Rural Evangelical Churched",
+              "group_share": 0.0522,
+              "state_weight": 0.172,
+              "exposure": 0.1009
+            },
+            {
+              "type_id": 84,
+              "display_name": "Deep-Rural Evangelical Inflow",
+              "group_share": 0.2178,
+              "state_weight": 0.039,
+              "exposure": 0.0955
+            },
+            {
+              "type_id": 37,
+              "display_name": "Hispanic Deep-Rural Retiree",
+              "group_share": 0.4041,
+              "state_weight": 0.0204,
+              "exposure": 0.0927
+            }
+          ]
+        },
+        {
+          "demographic_group": "xt_race_asian",
+          "label": "Asian",
+          "poll_share": 0.011,
+          "population_share": 0.0082,
+          "ratio": 1.3386,
+          "status": "oversampled"
+        }
+      ]
+    },
+    {
+      "race": "2026 OH Governor",
+      "state": "OH",
+      "pollster": "Emerson College",
+      "date": "2025-08-22",
+      "n_sample": 1000,
+      "n_groups_analyzed": 5,
+      "n_undersampled": 1,
+      "n_oversampled": 3,
+      "gaps": [
+        {
+          "demographic_group": "xt_education_college",
+          "label": "College-educated",
+          "poll_share": 0.355,
+          "population_share": 0.2008,
+          "ratio": 1.7678,
+          "status": "oversampled"
+        },
+        {
+          "demographic_group": "xt_race_white",
+          "label": "White (non-Hispanic)",
+          "poll_share": 0.813,
+          "population_share": 0.7813,
+          "ratio": 1.0405,
+          "status": "representative"
+        },
+        {
+          "demographic_group": "xt_race_black",
+          "label": "Black",
+          "poll_share": 0.116,
+          "population_share": 0.0639,
+          "ratio": 1.8148,
+          "status": "oversampled"
+        },
+        {
+          "demographic_group": "xt_race_hispanic",
+          "label": "Hispanic",
+          "poll_share": 0.038,
+          "population_share": 0.089,
+          "ratio": 0.4269,
+          "status": "undersampled",
+          "affected_types": [
+            {
+              "type_id": 33,
+              "display_name": "Hispanic Deep-Rural Young",
+              "group_share": 0.9115,
+              "state_weight": 0.0196,
+              "exposure": 0.2009
+            },
+            {
+              "type_id": 79,
+              "display_name": "Rural Mainline Blue-Collar Inflow",
+              "group_share": 0.1007,
+              "state_weight": 0.09,
+              "exposure": 0.1019
+            },
+            {
+              "type_id": 74,
+              "display_name": "Rural Evangelical Churched",
+              "group_share": 0.0522,
+              "state_weight": 0.172,
+              "exposure": 0.1009
+            },
+            {
+              "type_id": 84,
+              "display_name": "Deep-Rural Evangelical Inflow",
+              "group_share": 0.2178,
+              "state_weight": 0.039,
+              "exposure": 0.0955
+            },
+            {
+              "type_id": 37,
+              "display_name": "Hispanic Deep-Rural Retiree",
+              "group_share": 0.4041,
+              "state_weight": 0.0204,
+              "exposure": 0.0927
+            }
+          ]
+        },
+        {
+          "demographic_group": "xt_race_asian",
+          "label": "Asian",
+          "poll_share": 0.011,
+          "population_share": 0.0082,
+          "ratio": 1.3386,
+          "status": "oversampled"
+        }
+      ]
+    },
+    {
+      "race": "2026 OH Governor",
+      "state": "OH",
+      "pollster": "Emerson College",
+      "date": "2025-12-08",
+      "n_sample": 850,
+      "n_groups_analyzed": 5,
+      "n_undersampled": 1,
+      "n_oversampled": 3,
+      "gaps": [
+        {
+          "demographic_group": "xt_education_college",
+          "label": "College-educated",
+          "poll_share": 0.355,
+          "population_share": 0.2008,
+          "ratio": 1.7678,
+          "status": "oversampled"
+        },
+        {
+          "demographic_group": "xt_race_white",
+          "label": "White (non-Hispanic)",
+          "poll_share": 0.813,
+          "population_share": 0.7813,
+          "ratio": 1.0405,
+          "status": "representative"
+        },
+        {
+          "demographic_group": "xt_race_black",
+          "label": "Black",
+          "poll_share": 0.116,
+          "population_share": 0.0639,
+          "ratio": 1.8148,
+          "status": "oversampled"
+        },
+        {
+          "demographic_group": "xt_race_hispanic",
+          "label": "Hispanic",
+          "poll_share": 0.038,
+          "population_share": 0.089,
+          "ratio": 0.4269,
+          "status": "undersampled",
+          "affected_types": [
+            {
+              "type_id": 33,
+              "display_name": "Hispanic Deep-Rural Young",
+              "group_share": 0.9115,
+              "state_weight": 0.0196,
+              "exposure": 0.2009
+            },
+            {
+              "type_id": 79,
+              "display_name": "Rural Mainline Blue-Collar Inflow",
+              "group_share": 0.1007,
+              "state_weight": 0.09,
+              "exposure": 0.1019
+            },
+            {
+              "type_id": 74,
+              "display_name": "Rural Evangelical Churched",
+              "group_share": 0.0522,
+              "state_weight": 0.172,
+              "exposure": 0.1009
+            },
+            {
+              "type_id": 84,
+              "display_name": "Deep-Rural Evangelical Inflow",
+              "group_share": 0.2178,
+              "state_weight": 0.039,
+              "exposure": 0.0955
+            },
+            {
+              "type_id": 37,
+              "display_name": "Hispanic Deep-Rural Retiree",
+              "group_share": 0.4041,
+              "state_weight": 0.0204,
+              "exposure": 0.0927
+            }
+          ]
+        },
+        {
+          "demographic_group": "xt_race_asian",
+          "label": "Asian",
+          "poll_share": 0.011,
+          "population_share": 0.0082,
+          "ratio": 1.3386,
+          "status": "oversampled"
+        }
+      ]
+    },
+    {
+      "race": "2026 OH Governor",
+      "state": "OH",
+      "pollster": "Emerson College",
+      "date": "2025-12-11",
+      "n_sample": 850,
+      "n_groups_analyzed": 5,
+      "n_undersampled": 1,
+      "n_oversampled": 3,
+      "gaps": [
+        {
+          "demographic_group": "xt_education_college",
+          "label": "College-educated",
+          "poll_share": 0.355,
+          "population_share": 0.2008,
+          "ratio": 1.7678,
+          "status": "oversampled"
+        },
+        {
+          "demographic_group": "xt_race_white",
+          "label": "White (non-Hispanic)",
+          "poll_share": 0.813,
+          "population_share": 0.7813,
+          "ratio": 1.0405,
+          "status": "representative"
+        },
+        {
+          "demographic_group": "xt_race_black",
+          "label": "Black",
+          "poll_share": 0.116,
+          "population_share": 0.0639,
+          "ratio": 1.8148,
+          "status": "oversampled"
+        },
+        {
+          "demographic_group": "xt_race_hispanic",
+          "label": "Hispanic",
+          "poll_share": 0.038,
+          "population_share": 0.089,
+          "ratio": 0.4269,
+          "status": "undersampled",
+          "affected_types": [
+            {
+              "type_id": 33,
+              "display_name": "Hispanic Deep-Rural Young",
+              "group_share": 0.9115,
+              "state_weight": 0.0196,
+              "exposure": 0.2009
+            },
+            {
+              "type_id": 79,
+              "display_name": "Rural Mainline Blue-Collar Inflow",
+              "group_share": 0.1007,
+              "state_weight": 0.09,
+              "exposure": 0.1019
+            },
+            {
+              "type_id": 74,
+              "display_name": "Rural Evangelical Churched",
+              "group_share": 0.0522,
+              "state_weight": 0.172,
+              "exposure": 0.1009
+            },
+            {
+              "type_id": 84,
+              "display_name": "Deep-Rural Evangelical Inflow",
+              "group_share": 0.2178,
+              "state_weight": 0.039,
+              "exposure": 0.0955
+            },
+            {
+              "type_id": 37,
+              "display_name": "Hispanic Deep-Rural Retiree",
+              "group_share": 0.4041,
+              "state_weight": 0.0204,
+              "exposure": 0.0927
+            }
+          ]
+        },
+        {
+          "demographic_group": "xt_race_asian",
+          "label": "Asian",
+          "poll_share": 0.011,
+          "population_share": 0.0082,
+          "ratio": 1.3386,
+          "status": "oversampled"
+        }
+      ]
+    },
+    {
+      "race": "2026 OH Senate",
+      "state": "OH",
+      "pollster": "Emerson College",
+      "date": "2025-12-08",
+      "n_sample": 850,
+      "n_groups_analyzed": 5,
+      "n_undersampled": 1,
+      "n_oversampled": 3,
+      "gaps": [
+        {
+          "demographic_group": "xt_education_college",
+          "label": "College-educated",
+          "poll_share": 0.355,
+          "population_share": 0.2008,
+          "ratio": 1.7678,
+          "status": "oversampled"
+        },
+        {
+          "demographic_group": "xt_race_white",
+          "label": "White (non-Hispanic)",
+          "poll_share": 0.813,
+          "population_share": 0.7813,
+          "ratio": 1.0405,
+          "status": "representative"
+        },
+        {
+          "demographic_group": "xt_race_black",
+          "label": "Black",
+          "poll_share": 0.116,
+          "population_share": 0.0639,
+          "ratio": 1.8148,
+          "status": "oversampled"
+        },
+        {
+          "demographic_group": "xt_race_hispanic",
+          "label": "Hispanic",
+          "poll_share": 0.038,
+          "population_share": 0.089,
+          "ratio": 0.4269,
+          "status": "undersampled",
+          "affected_types": [
+            {
+              "type_id": 33,
+              "display_name": "Hispanic Deep-Rural Young",
+              "group_share": 0.9115,
+              "state_weight": 0.0196,
+              "exposure": 0.2009
+            },
+            {
+              "type_id": 79,
+              "display_name": "Rural Mainline Blue-Collar Inflow",
+              "group_share": 0.1007,
+              "state_weight": 0.09,
+              "exposure": 0.1019
+            },
+            {
+              "type_id": 74,
+              "display_name": "Rural Evangelical Churched",
+              "group_share": 0.0522,
+              "state_weight": 0.172,
+              "exposure": 0.1009
+            },
+            {
+              "type_id": 84,
+              "display_name": "Deep-Rural Evangelical Inflow",
+              "group_share": 0.2178,
+              "state_weight": 0.039,
+              "exposure": 0.0955
+            },
+            {
+              "type_id": 37,
+              "display_name": "Hispanic Deep-Rural Retiree",
+              "group_share": 0.4041,
+              "state_weight": 0.0204,
+              "exposure": 0.0927
+            }
+          ]
+        },
+        {
+          "demographic_group": "xt_race_asian",
+          "label": "Asian",
+          "poll_share": 0.011,
+          "population_share": 0.0082,
+          "ratio": 1.3386,
+          "status": "oversampled"
+        }
+      ]
+    },
+    {
+      "race": "2026 TX Governor",
+      "state": "TX",
+      "pollster": "Emerson College",
+      "date": "2026-01-12",
+      "n_sample": 1165,
+      "n_groups_analyzed": 5,
+      "n_undersampled": 0,
+      "n_oversampled": 3,
+      "gaps": [
+        {
+          "demographic_group": "xt_education_college",
+          "label": "College-educated",
+          "poll_share": 0.398,
+          "population_share": 0.2061,
+          "ratio": 1.9308,
+          "status": "oversampled"
+        },
+        {
+          "demographic_group": "xt_race_white",
+          "label": "White (non-Hispanic)",
+          "poll_share": 0.59,
+          "population_share": 0.6989,
+          "ratio": 0.8442,
+          "status": "representative"
+        },
+        {
+          "demographic_group": "xt_race_black",
+          "label": "Black",
+          "poll_share": 0.125,
+          "population_share": 0.1194,
+          "ratio": 1.0471,
+          "status": "representative"
+        },
+        {
+          "demographic_group": "xt_race_hispanic",
+          "label": "Hispanic",
+          "poll_share": 0.223,
+          "population_share": 0.1193,
+          "ratio": 1.8695,
+          "status": "oversampled"
+        },
+        {
+          "demographic_group": "xt_race_asian",
+          "label": "Asian",
+          "poll_share": 0.029,
+          "population_share": 0.0124,
+          "ratio": 2.3418,
+          "status": "oversampled"
+        }
+      ]
+    },
+    {
+      "race": "2026 TX Governor",
+      "state": "TX",
+      "pollster": "Emerson College",
+      "date": "2026-01-15",
+      "n_sample": 1165,
+      "n_groups_analyzed": 5,
+      "n_undersampled": 0,
+      "n_oversampled": 3,
+      "gaps": [
+        {
+          "demographic_group": "xt_education_college",
+          "label": "College-educated",
+          "poll_share": 0.398,
+          "population_share": 0.2061,
+          "ratio": 1.9308,
+          "status": "oversampled"
+        },
+        {
+          "demographic_group": "xt_race_white",
+          "label": "White (non-Hispanic)",
+          "poll_share": 0.59,
+          "population_share": 0.6989,
+          "ratio": 0.8442,
+          "status": "representative"
+        },
+        {
+          "demographic_group": "xt_race_black",
+          "label": "Black",
+          "poll_share": 0.125,
+          "population_share": 0.1194,
+          "ratio": 1.0471,
+          "status": "representative"
+        },
+        {
+          "demographic_group": "xt_race_hispanic",
+          "label": "Hispanic",
+          "poll_share": 0.223,
+          "population_share": 0.1193,
+          "ratio": 1.8695,
+          "status": "oversampled"
+        },
+        {
+          "demographic_group": "xt_race_asian",
+          "label": "Asian",
+          "poll_share": 0.029,
+          "population_share": 0.0124,
+          "ratio": 2.3418,
+          "status": "oversampled"
+        }
+      ]
+    },
+    {
+      "race": "2026 TX Senate",
+      "state": "TX",
+      "pollster": "Emerson College",
+      "date": "2026-01-12",
+      "n_sample": 1165,
+      "n_groups_analyzed": 5,
+      "n_undersampled": 0,
+      "n_oversampled": 3,
+      "gaps": [
+        {
+          "demographic_group": "xt_education_college",
+          "label": "College-educated",
+          "poll_share": 0.398,
+          "population_share": 0.2061,
+          "ratio": 1.9308,
+          "status": "oversampled"
+        },
+        {
+          "demographic_group": "xt_race_white",
+          "label": "White (non-Hispanic)",
+          "poll_share": 0.59,
+          "population_share": 0.6989,
+          "ratio": 0.8442,
+          "status": "representative"
+        },
+        {
+          "demographic_group": "xt_race_black",
+          "label": "Black",
+          "poll_share": 0.125,
+          "population_share": 0.1194,
+          "ratio": 1.0471,
+          "status": "representative"
+        },
+        {
+          "demographic_group": "xt_race_hispanic",
+          "label": "Hispanic",
+          "poll_share": 0.223,
+          "population_share": 0.1193,
+          "ratio": 1.8695,
+          "status": "oversampled"
+        },
+        {
+          "demographic_group": "xt_race_asian",
+          "label": "Asian",
+          "poll_share": 0.029,
+          "population_share": 0.0124,
+          "ratio": 2.3418,
+          "status": "oversampled"
+        }
+      ]
+    }
+  ]
+}
