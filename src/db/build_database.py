@@ -71,8 +71,13 @@ COVARIANCE_DIR = DATA_DIR / "covariance"
 SIGMA_PATH = COVARIANCE_DIR / "county_community_sigma.parquet"
 
 # ── Tract assignments ──────────────────────────────────────────────────────────
-TRACTS_DIR = DATA_DIR / "tracts"
-TRACT_TYPE_ASSIGNMENTS_PATH = TRACTS_DIR / "national_tract_assignments.parquet"
+# T.6: Migrated from data/tracts/national_tract_assignments.parquet (J=130)
+# to data/communities/tract_type_assignments.parquet (J=100).
+TRACT_TYPE_ASSIGNMENTS_PATH = COMMUNITIES_DIR / "tract_type_assignments.parquet"
+
+# ── Tract predictions ──────────────────────────────────────────────────────────
+PREDICTIONS_DIR = DATA_DIR / "predictions"
+TRACT_PREDICTIONS_2026_PATH = PREDICTIONS_DIR / "tract_predictions_2026.parquet"
 
 # ── Model version metadata ─────────────────────────────────────────────────────
 VERSIONS_DIR = DATA_DIR / "models" / "versions"
@@ -133,7 +138,9 @@ def _resolve_paths(project_root: Path) -> dict[str, Path]:
         "county_acs": data / "assembled" / "county_acs_features.parquet",
         "type_profiles": communities / "type_profiles.parquet",
         "county_type_assignments": communities / "county_type_assignments_full.parquet",
-        "tract_type_assignments": data / "tracts" / "national_tract_assignments.parquet",
+        # T.6: J=100 file in data/communities/ (was data/tracts/ at J=130)
+        "tract_type_assignments": communities / "tract_type_assignments.parquet",
+        "tract_predictions": predictions / "tract_predictions_2026.parquet",
         "super_types": communities / "super_types.parquet",
         "demographics_interpolated": data / "assembled" / "demographics_interpolated.parquet",
     }

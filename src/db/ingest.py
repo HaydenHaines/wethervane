@@ -332,18 +332,37 @@ def _ingest_types_and_assignments(
     else:
         log.info("No county_type_assignments_full.parquet found; skipping")
 
-    # Tract type assignments — dedup on GEOID because the source parquet has
-    # 112,257 rows but only 81,129 unique GEOIDs (some tracts appear in
-    # multiple state runs).
+    # Tract type assignments — J=100 file uses tract_geoid (not GEOID) and has
+    # no super_type column.  Derive super_type from dominant_type using the
+    # county_type_assignments mapping (same 100-type→5-super-type mapping).
+    # Source file has 80,507 unique rows (no deduplication needed).
     if paths["tract_type_assignments"].exists():
         tta_df = pd.read_parquet(
             paths["tract_type_assignments"],
-            columns=["GEOID", "dominant_type", "super_type"],
+            columns=["tract_geoid", "dominant_type"],
         )
-        tta_df = tta_df.drop_duplicates(subset="GEOID")
-        tta_df = tta_df.rename(columns={"GEOID": "tract_geoid"})
+        # Build dominant_type → super_type mapping from county assignments
+        if paths["county_type_assignments"].exists():
+            cta_df = pd.read_parquet(paths["county_type_assignments"],
+                                      columns=["dominant_type", "super_type"])
+            type_to_super = cta_df.groupby("dominant_type")["super_type"].first().to_dict()
+            tta_df["super_type"] = tta_df["dominant_type"].map(type_to_super)
+            n_unmapped = tta_df["super_type"].isna().sum()
+            if n_unmapped:
+                log.warning(
+                    "tract_type_assignments: %d rows have dominant_type not in county mapping",
+                    n_unmapped,
+                )
+        else:
+            log.warning("county_type_assignments_full.parquet missing — super_type will be NULL")
+            tta_df["super_type"] = None
+
         tta_df["dominant_type"] = tta_df["dominant_type"].astype("int32")
-        tta_df["super_type"] = tta_df["super_type"].astype("int32")
+        # super_type may have NaNs; use nullable int
+        tta_df["super_type"] = pd.array(
+            tta_df["super_type"].fillna(-1).astype("int32"), dtype="Int32"
+        ).where(tta_df["super_type"].notna(), None)
+
         con.execute("DROP TABLE IF EXISTS tract_type_assignments")
         con.execute(
             "CREATE TABLE tract_type_assignments "
@@ -353,9 +372,13 @@ def _ingest_types_and_assignments(
         con.execute("INSERT INTO tract_type_assignments SELECT * FROM _tta_view")
         con.unregister("_tta_view")
         n_tta = con.execute("SELECT COUNT(*) FROM tract_type_assignments").fetchone()[0]
-        log.info("Ingested tract_type_assignments: %d rows (from %d source rows)", n_tta, len(tta_df) + (112257 - 81129))
+        log.info(
+            "Ingested tract_type_assignments (J=100): %d rows from %s",
+            n_tta,
+            paths["tract_type_assignments"].name,
+        )
     else:
-        log.info("No national_tract_assignments.parquet found; skipping tract_type_assignments")
+        log.info("No tract_type_assignments.parquet found; skipping tract_type_assignments")
 
     # Super-types
     if paths["super_types"].exists():
@@ -365,6 +388,38 @@ def _ingest_types_and_assignments(
         log.info("Ingested super_types: %d rows", len(st_df))
     else:
         log.info("No super_types.parquet found; skipping")
+
+
+def _ingest_tract_predictions(
+    con: duckdb.DuckDBPyConnection,
+    paths: dict[str, Path],
+) -> None:
+    """Ingest tract-level 2026 predictions from tract_predictions_2026.parquet.
+
+    The source file has 11.4M rows (80K tracts × 142 race×mode combinations).
+    We use DuckDB's native parquet reader to avoid loading the entire DataFrame
+    into Python memory — the same pattern used for county_type_assignments.
+    """
+    p = paths.get("tract_predictions")
+    if p is None or not p.exists():
+        log.info("No tract_predictions_2026.parquet found; skipping tract_predictions table")
+        return
+
+    # Use DuckDB's read_parquet() directly: avoids Python bridge overhead for 11M rows.
+    # The schema CREATE TABLE IF NOT EXISTS already defines tract_predictions, so we
+    # just truncate and reload rather than DROP+CREATE (preserves schema constraints).
+    con.execute("DELETE FROM tract_predictions")
+    parquet_path_str = str(p)
+    con.execute(
+        f"""
+        INSERT INTO tract_predictions
+            (tract_geoid, race, forecast_mode, pred_dem_share, state_pred_dem_share, state)
+        SELECT tract_geoid, race, forecast_mode, pred_dem_share, state_pred_dem_share, state
+        FROM read_parquet('{parquet_path_str}')
+        """
+    )
+    n = con.execute("SELECT COUNT(*) FROM tract_predictions").fetchone()[0]
+    log.info("Ingested tract_predictions: %d rows from %s", n, p.name)
 
 
 def _load_source_data(paths: dict[str, Path]) -> dict:
@@ -476,6 +531,9 @@ def ingest_all(
         log.info("No county_acs_features.parquet found; skipping")
     con = _cycle_connection(con, db_path, "post-demographics")
     _ingest_types_and_assignments(con, paths)
+    con = _cycle_connection(con, db_path, "post-types")
+
+    _ingest_tract_predictions(con, paths)
     con = _cycle_connection(con, db_path, "pre-domain")
 
     # Domain modules (model scores, polling)

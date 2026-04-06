@@ -140,6 +140,16 @@ CREATE TABLE IF NOT EXISTS tract_type_assignments (
     super_type     INTEGER
 );
 
+CREATE TABLE IF NOT EXISTS tract_predictions (
+    tract_geoid          VARCHAR NOT NULL,
+    race                 VARCHAR NOT NULL,
+    forecast_mode        VARCHAR NOT NULL DEFAULT 'national',
+    pred_dem_share       DOUBLE,
+    state_pred_dem_share DOUBLE,
+    state                VARCHAR,
+    PRIMARY KEY (tract_geoid, race, forecast_mode)
+);
+
 CREATE TABLE IF NOT EXISTS races (
     race_id    VARCHAR PRIMARY KEY,
     race_type  VARCHAR NOT NULL,

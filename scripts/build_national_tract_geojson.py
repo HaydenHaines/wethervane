@@ -32,7 +32,11 @@ TIGER_DIR = PROJECT_ROOT / "data" / "raw" / "tiger"
 TIGER_ZIP = TIGER_DIR / "cb_2020_us_tract_500k.zip"
 TIGER_SHP_DIR = TIGER_DIR / "cb_2020_us_tract_500k"
 
-ASSIGNMENTS_PATH = PROJECT_ROOT / "data" / "tracts" / "national_tract_assignments.parquet"
+# T.6: Migrated from data/tracts/national_tract_assignments.parquet (J=130, GEOID column)
+# to data/communities/tract_type_assignments.parquet (J=100, tract_geoid column, no super_type).
+# super_type is derived at runtime from dominant_type using county_type_assignments_full.parquet.
+ASSIGNMENTS_PATH = PROJECT_ROOT / "data" / "communities" / "tract_type_assignments.parquet"
+COUNTY_TYPE_ASSIGNMENTS_PATH = PROJECT_ROOT / "data" / "communities" / "county_type_assignments_full.parquet"
 FEATURES_PATH = PROJECT_ROOT / "data" / "tracts" / "tract_features.parquet"
 OUTPUT_PATH = PROJECT_ROOT / "web" / "public" / "tracts-us.geojson"
 
@@ -146,16 +150,25 @@ def compute_type_demographics(assignments: pd.DataFrame) -> dict[int, dict[str, 
         print(f"  WARNING: Features file not found at {FEATURES_PATH} — skipping demographics")
         return {}
 
-    # Only load columns that actually exist in the file
-    all_cols = pd.read_parquet(FEATURES_PATH, columns=["GEOID"]).columns.tolist()
+    # Only load columns that actually exist in the file.
+    # The features file may use GEOID or tract_geoid as the key column — check both.
+    try:
+        all_cols = pd.read_parquet(FEATURES_PATH, columns=["tract_geoid"]).columns.tolist()
+        geoid_col = "tract_geoid"
+    except Exception:
+        all_cols = pd.read_parquet(FEATURES_PATH, columns=["GEOID"]).columns.tolist()
+        geoid_col = "GEOID"
     avail_cols = [c for c in DEMO_COLS if c in all_cols]
-    features = pd.read_parquet(FEATURES_PATH, columns=["GEOID"] + avail_cols)
+    features = pd.read_parquet(FEATURES_PATH, columns=[geoid_col] + avail_cols)
+    features = features.rename(columns={geoid_col: "tract_geoid"})
     print(f"  Loaded {len(features):,} rows from tract_features.parquet ({len(avail_cols)} demo cols)")
 
-    # Join dominant_type onto features
+    # The assignments DataFrame now uses 'tract_geoid' as the key.
+    # Normalise assignments key to match features key.
+    assign_key = "tract_geoid" if "tract_geoid" in assignments.columns else "GEOID"
     merged = features.merge(
-        assignments[["GEOID", "dominant_type"]],
-        on="GEOID",
+        assignments[[assign_key, "dominant_type"]].rename(columns={assign_key: "tract_geoid"}),
+        on="tract_geoid",
         how="inner",
     )
     print(f"  Matched {len(merged):,} tracts for demographic averages")
@@ -200,17 +213,33 @@ def main() -> None:
 
     # 3. Load assignments
     print("Loading tract assignments...")
-    assignments = pd.read_parquet(ASSIGNMENTS_PATH)
+    assignments = pd.read_parquet(ASSIGNMENTS_PATH, columns=["tract_geoid", "dominant_type"])
     print(f"  Loaded {len(assignments):,} tract assignments")
 
-    # 4. Join
-    # Ensure GEOID is string in both
+    # 3b. Derive super_type from dominant_type via county_type_assignments mapping.
+    # The J=100 tract assignments file does not include super_type directly.
+    print("Deriving super_type from county_type_assignments mapping...")
+    if not COUNTY_TYPE_ASSIGNMENTS_PATH.exists():
+        print(f"  WARNING: {COUNTY_TYPE_ASSIGNMENTS_PATH} not found — super_type will be None")
+        assignments["super_type"] = None
+    else:
+        cta = pd.read_parquet(COUNTY_TYPE_ASSIGNMENTS_PATH, columns=["dominant_type", "super_type"])
+        type_to_super = cta.groupby("dominant_type")["super_type"].first().to_dict()
+        assignments["super_type"] = assignments["dominant_type"].map(type_to_super)
+        n_unmapped = assignments["super_type"].isna().sum()
+        if n_unmapped:
+            print(f"  WARNING: {n_unmapped:,} tracts have unmapped super_type")
+        print(f"  Derived {assignments['super_type'].notna().sum():,} super_type values")
+
+    # 4. Join — the J=100 file uses 'tract_geoid'; TIGER uses 'GEOID'.
+    # Normalise both to string before merging.
     tracts_gdf["GEOID"] = tracts_gdf["GEOID"].astype(str)
-    assignments["GEOID"] = assignments["GEOID"].astype(str)
+    assignments["tract_geoid"] = assignments["tract_geoid"].astype(str)
 
     joined = tracts_gdf.merge(
-        assignments[["GEOID", "dominant_type", "super_type"]],
-        on="GEOID",
+        assignments[["tract_geoid", "dominant_type", "super_type"]],
+        left_on="GEOID",
+        right_on="tract_geoid",
         how="inner",
     )
     print(f"  Matched {len(joined):,} / {len(assignments):,} assigned tracts "

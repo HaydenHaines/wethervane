@@ -39,6 +39,7 @@ def validate_contract(con: duckdb.DuckDBPyConnection) -> list[str]:
 
     optional = {
         "predictions": ["county_fips", "race", "pred_dem_share"],
+        "tract_predictions": ["tract_geoid", "race", "forecast_mode", "pred_dem_share"],
     }
 
     def _check_table(table: str, columns: list[str], is_required: bool) -> None:
@@ -93,6 +94,7 @@ def report_summary(con: duckdb.DuckDBPyConnection, db_path: Path) -> None:
         "counties", "model_versions", "community_assignments", "type_assignments",
         "county_shifts", "predictions", "community_sigma", "community_profiles",
         "county_demographics", "types", "county_type_assignments", "tract_type_assignments",
+        "tract_predictions",
         "super_types", "type_covariance", "demographics_interpolated",
         "type_scores", "type_priors", "ridge_county_priors", "polls", "poll_notes",
         "races",
