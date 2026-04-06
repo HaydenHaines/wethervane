@@ -3,6 +3,7 @@
 Reads:
     data/assembled/county_acs_features.parquet         (3,144 counties × 15 cols)
     data/assembled/county_rcms_features.parquet        (3,141 counties × 8 cols)
+    data/assembled/rcms_denomination_features.parquet  (3,143 counties × 5 cols)
     data/assembled/county_qcew_features.parquet        (12,768 rows county_fips×year × 12 cols)
     data/assembled/county_health_features.parquet      (3,143 counties × 33+ cols, expanded CHR)
     data/assembled/county_migration_features.parquet   (3,127 counties × 5 cols)
@@ -34,6 +35,9 @@ Derived ACS features (from build_county_acs_features.py):
 RCMS features (joined on county_fips):
     evangelical_share, mainline_share, catholic_share, black_protestant_share
     congregations_per_1000, religious_adherence_rate
+
+RCMS denomination features (joined on county_fips; from fetch_rcms_denominations.py):
+    lds_rate, muslim_rate, jewish_rate, hindu_sikh_rate  (all per 1,000 residents)
 
 QCEW features (industry mix, aggregated to 2023; joined on county_fips):
     manufacturing_share, government_share, healthcare_share, retail_share,
@@ -68,6 +72,7 @@ log = logging.getLogger(__name__)
 PROJECT_ROOT = Path(__file__).parents[2]
 ACS_PATH = PROJECT_ROOT / "data" / "assembled" / "county_acs_features.parquet"
 RCMS_PATH = PROJECT_ROOT / "data" / "assembled" / "county_rcms_features.parquet"
+RCMS_DENOM_PATH = PROJECT_ROOT / "data" / "assembled" / "rcms_denomination_features.parquet"
 QCEW_PATH = PROJECT_ROOT / "data" / "assembled" / "county_qcew_features.parquet"
 CHR_PATH = PROJECT_ROOT / "data" / "assembled" / "county_health_features.parquet"
 MIGRATION_PATH = PROJECT_ROOT / "data" / "assembled" / "county_migration_features.parquet"
@@ -108,6 +113,16 @@ RCMS_FEATURE_COLS = [
     "black_protestant_share",
     "congregations_per_1000",
     "religious_adherence_rate",
+]
+
+# Denomination-level features from RCMSCY20 CSV (per 1,000 residents).
+# LDS, Muslim, Jewish, and Hindu+Sikh have distinct electoral behavior and were
+# previously lumped into the RCMS "Other" category. Added in feat/denomination-features-v2.
+DENOMINATION_FEATURE_COLS = [
+    "lds_rate",
+    "muslim_rate",
+    "jewish_rate",
+    "hindu_sikh_rate",
 ]
 
 # QCEW industry-mix features (top_industry dropped: categorical; avg_annual_pay: ACS overlap)
@@ -417,6 +432,7 @@ def build_national_features(
     transport: pd.DataFrame | None = None,
     bea_growth: pd.DataFrame | None = None,
     bea_income: pd.DataFrame | None = None,
+    denominations: pd.DataFrame | None = None,
 ) -> pd.DataFrame:
     """Join all assembled county feature sources into a single feature matrix.
 
@@ -441,6 +457,19 @@ def build_national_features(
     if n_missing_rcms > 0:
         log.info("%d counties lack RCMS data — imputing with state-level medians", n_missing_rcms)
         merged = _impute_state_medians(merged, RCMS_FEATURE_COLS)
+
+    # ── RCMS denomination features ───────────────────────────────────────────
+    # LDS, Muslim, Jewish, Hindu+Sikh rates (per 1,000). Previously lumped in
+    # RCMS "Other" category. fill_zero=True: 0.0 means ~zero adherents, not missing.
+    if denominations is not None:
+        merged = _merge_feature_block(
+            merged,
+            denominations,
+            DENOMINATION_FEATURE_COLS,
+            "RCMS denominations",
+            allow_partial_cols=True,
+            fill_zero=True,
+        )
 
     # ── QCEW industry features ───────────────────────────────────────────────
     # QCEW is multi-year; aggregate to the latest available year before merging.
@@ -669,6 +698,7 @@ def main() -> None:
     transport = _load_optional_source(TRANSPORT_PATH, "Transportation county")
     bea_growth = _load_optional_source(BEA_GROWTH_PATH, "BEA growth county")
     bea_income = _load_optional_source(BEA_INCOME_PATH, "BEA income composition county")
+    denominations = _load_optional_source(RCMS_DENOM_PATH, "RCMS denomination county")
 
     # ── Build ────────────────────────────────────────────────────────────────
     features = build_national_features(
@@ -689,6 +719,7 @@ def main() -> None:
         transport=transport,
         bea_growth=bea_growth,
         bea_income=bea_income,
+        denominations=denominations,
     )
 
     # ── Quality checks, save, summary ────────────────────────────────────────
