@@ -72,14 +72,16 @@ export function TippingPointBar({ races }: TippingPointBarProps) {
       </p>
 
       {/* Outer wrapper: labels + bar in one aligned block */}
-      <div className="w-full">
-        {/* Holdover-seat labels above the bar */}
+      <div className="w-full overflow-hidden">
+        {/* Holdover-seat labels above the bar — abbreviated on mobile */}
         <div className="flex justify-between mb-1 text-xs font-medium">
           <span style={{ color: "var(--color-text-muted)" }}>
-            {DEM_HOLDOVER_SEATS} Dem Seats not on the ballot in 2026
+            <span className="hidden sm:inline">{DEM_HOLDOVER_SEATS} Dem Seats not on the ballot in 2026</span>
+            <span className="sm:hidden">{DEM_HOLDOVER_SEATS}D not up</span>
           </span>
           <span style={{ color: "var(--color-text-muted)" }}>
-            {GOP_HOLDOVER_SEATS} Republican Seats not on the ballot in 2026
+            <span className="hidden sm:inline">{GOP_HOLDOVER_SEATS} Republican Seats not on the ballot in 2026</span>
+            <span className="sm:hidden">{GOP_HOLDOVER_SEATS}R not up</span>
           </span>
         </div>
 
@@ -89,7 +91,7 @@ export function TippingPointBar({ races }: TippingPointBarProps) {
           style={{ height: BAR_HEIGHT + LABEL_AREA_HEIGHT }}
         >
           <div
-            className="flex w-full rounded-md overflow-visible border border-[rgb(var(--color-border))]"
+            className="flex w-full rounded-md overflow-hidden border border-[rgb(var(--color-border))]"
             style={{ height: BAR_HEIGHT }}
           >
             {sorted.map((race, idx) => {
@@ -101,7 +103,7 @@ export function TippingPointBar({ races }: TippingPointBarProps) {
               return (
                 <div
                   key={race.slug}
-                  className="relative flex items-center justify-center"
+                  className="relative flex items-center justify-center min-w-0"
                   style={{
                     flex: 1,
                     height: BAR_HEIGHT,
@@ -115,9 +117,10 @@ export function TippingPointBar({ races }: TippingPointBarProps) {
                   title={`${race.state}: ${race.margin >= 0 ? "D+" : "R+"}${(Math.abs(race.margin) * 100).toFixed(1)} (${race.rating})`}
                   aria-label={`${race.state}: ${race.rating}`}
                 >
-                  {/* State abbreviation inside the segment */}
+                  {/* State abbreviation — hidden on mobile where segments are
+                      too narrow (~11px at 375px / 33 seats) to display text */}
                   <span
-                    className="pointer-events-none select-none"
+                    className="pointer-events-none select-none hidden sm:inline"
                     style={{
                       fontSize: "9px",
                       fontWeight: 600,
