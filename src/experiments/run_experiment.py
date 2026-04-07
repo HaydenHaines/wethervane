@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import json
 import subprocess
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 
@@ -22,8 +22,7 @@ from sklearn.cluster import KMeans
 from sklearn.preprocessing import MinMaxScaler
 
 from src.discovery.nest_types import nest_types
-from src.discovery.run_type_discovery import discover_types
-from src.tracts.feature_registry import REGISTRY, FeatureSpec, select_features
+from src.tracts.feature_registry import REGISTRY
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
@@ -277,7 +276,6 @@ def run_experiment(
             n_clusters=j, n_init=n_init, random_state=random_state
         )
         labels = km.fit_predict(feature_matrix)
-        centroids = km.cluster_centers_
 
         # Compute holdout accuracy if we have holdout data
         mean_r = 0.0

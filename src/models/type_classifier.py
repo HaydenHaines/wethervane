@@ -14,8 +14,8 @@ from __future__ import annotations
 import logging
 from pathlib import Path
 
-import numpy as np
 import pandas as pd
+
 from src.models.nmf_types import run_nmf_classification
 
 log = logging.getLogger(__name__)

@@ -60,15 +60,14 @@ def holdout_accuracy_ridge_tract(
     """
     # Import training helpers to avoid duplicating the build/train logic
     from src.prediction.train_ridge_model_tract import (
+        _ALPHA_GRID,
+        _HISTORY_YEARS,
         _load_tract_elections,
         _resolve_tract_paths,
-        _HISTORY_YEARS,
         build_tract_feature_matrix,
         compute_tract_historical_mean,
         compute_tract_loo_predictions,
         load_tract_target,
-        _TRACT_METADATA_COLS,
-        _ALPHA_GRID,
     )
 
     try:

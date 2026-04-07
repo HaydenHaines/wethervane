@@ -291,7 +291,7 @@ def _apply_collision_free_replace(
 
         var2 = float(np.var(list(z_vals.values())))
         lbls = _assign_direction_labels(tids, z_vals, pos2, neg2, existing_tokens)
-        non_emp = [l for l in lbls.values() if l]
+        non_emp = [lbl for lbl in lbls.values() if lbl]
         if len(set(non_emp)) >= 2:
             candidates.append((var2, lbls))
 

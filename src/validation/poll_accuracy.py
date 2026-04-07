@@ -12,15 +12,16 @@ Designed to be called from validate_historical.py or any validation script.
 from __future__ import annotations
 
 import logging
+
+# Import propagate_polls from the sibling package
+import sys
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
 
-# Import propagate_polls from the sibling package
-import sys
 sys.path.insert(0, str(Path(__file__).parents[2]))
-from src.propagation.propagate_polls import CommunityPosterior, COMP_COLS
+from src.propagation.propagate_polls import COMP_COLS, CommunityPosterior
 
 log = logging.getLogger(__name__)
 

@@ -16,11 +16,11 @@ Outputs:
       state_fips, state_abbr, community_0, community_1, ...
 """
 from __future__ import annotations
+
 import logging
 from pathlib import Path
 
 import pandas as pd
-import numpy as np
 
 log = logging.getLogger(__name__)
 PROJECT_ROOT = Path(__file__).resolve().parents[2]

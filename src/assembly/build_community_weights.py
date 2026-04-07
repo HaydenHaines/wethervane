@@ -35,8 +35,8 @@ from __future__ import annotations
 import logging
 from pathlib import Path
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger(__name__)

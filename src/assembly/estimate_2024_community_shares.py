@@ -35,10 +35,10 @@ from scipy.optimize import lsq_linear
 PROJECT_ROOT = Path(__file__).parents[2]
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from src.propagation.propagate_polls import (
-    load_prior,
+from src.propagation.propagate_polls import (  # noqa: E402
     COMP_COLS,
     LABELS,
+    load_prior,
 )
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
@@ -79,10 +79,8 @@ def estimate_via_tikhonov(
     # AL was excluded from 2022 back-calc (data quality); fall back to 2020.
     try:
         mu_prior, _ = load_prior(state=state, year=2022)
-        prior_year = 2022
     except ValueError:
         mu_prior, _ = load_prior(state=state, year=2020)
-        prior_year = 2020
         log.info("  %s: no 2022 prior available, falling back to 2020", state)
 
     state_weights = county_weights_df[county_weights_df["state_abbr"] == state]

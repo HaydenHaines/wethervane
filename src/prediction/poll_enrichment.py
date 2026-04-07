@@ -17,7 +17,6 @@ import pandas as pd
 
 from src.prediction.propensity_model import compute_propensity_scores, load_config
 
-
 _LV_PATTERN = re.compile(r"\bLV\b", re.IGNORECASE)
 _RV_PATTERN = re.compile(r"\bRV\b", re.IGNORECASE)
 
@@ -150,7 +149,6 @@ def build_W_from_crosstabs(
             pop_share / poll_share.  When None (default), the raw pct_of_sample is
             used, preserving backward compatibility.
     """
-    J = len(state_type_weights)
     observations = []
 
     for xt in crosstabs:

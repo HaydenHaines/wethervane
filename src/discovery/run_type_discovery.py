@@ -284,7 +284,7 @@ def main() -> None:
 
     print(f"Shift matrix: {shift_matrix.shape[0]} counties x {shift_matrix.shape[1]} dims (min_year={args.min_year})")
     pca_msg = f", pca_components={pca_components}" if pca_components else ""
-    whiten_msg = f", pca_whiten=True" if (pca_components and pca_whiten) else ""
+    whiten_msg = ", pca_whiten=True" if (pca_components and pca_whiten) else ""
     print(f"Discovering J={j} types via KMeans (temperature={temperature}{pca_msg}{whiten_msg})...")
 
     result = discover_types(

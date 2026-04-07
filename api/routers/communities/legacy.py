@@ -1,8 +1,8 @@
 """Legacy community endpoints (HAC-based, retained for backward compat)."""
 from __future__ import annotations
 
-import pandas as pd
 import duckdb
+import pandas as pd
 from fastapi import APIRouter, Depends, HTTPException, Request
 
 from api.db import get_db

@@ -142,9 +142,6 @@ def compute_presidential_shifts(elections: pd.DataFrame) -> pd.DataFrame:
         late_votes = f"total_votes_{late_year}"
 
         # Both years must be present for a tract to get a shift value.
-        has_both = (
-            pres_wide.columns.isin([early_share, late_share, early_votes, late_votes])
-        )
         if not all(
             col in pres_wide.columns
             for col in [early_share, late_share, early_votes, late_votes]
@@ -202,14 +199,6 @@ def _consolidate_senate(elections: pd.DataFrame) -> pd.DataFrame:
     senate["race_type"] = "SEN"
     senate["state_fips"] = state_fips_from_tract(senate["tract_geoid"])
 
-    # Within each state-year, identify which original race_type had the highest
-    # aggregate total_votes (proxy for "this is the full regular election").
-    state_year_votes = (
-        senate.groupby(["state_fips", "year", "race_type"])["total_votes"]
-        .sum()
-        .reset_index()
-        .rename(columns={"total_votes": "state_total"})
-    )
     # The race_type column was already relabeled to 'SEN', so we need the
     # original to disambiguate. Store it before relabeling.
     senate_orig = elections[is_senate].copy()

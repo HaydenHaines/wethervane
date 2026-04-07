@@ -21,8 +21,6 @@ from fastapi import APIRouter, Depends, HTTPException, Query, Request
 
 from api.db import get_db
 from api.models import (
-    HistoricalContext,
-    PollConfidence,
     TypeBreakdown,
 )
 

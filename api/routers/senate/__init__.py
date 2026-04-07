@@ -9,10 +9,6 @@ so existing test imports continue to work unchanged.
 from fastapi import APIRouter
 
 from api.routers.senate._helpers import (  # noqa: F401 — re-exports for tests
-    DEM_SAFE_SEATS,
-    GOP_SAFE_SEATS,
-    SENATE_2026_STATES,
-    SENATE_DELEGATION,
     _CLASS_II_INCUMBENT,
     _DEFAULT_SAFE_MARGIN,
     _DEM_CLASS_II_COUNT,
@@ -20,6 +16,10 @@ from api.routers.senate._helpers import (  # noqa: F401 — re-exports for tests
     _GOP_CLASS_II_COUNT,
     _GOP_HOLDOVER_SEATS,
     _TOSSUP_MAX,
+    DEM_SAFE_SEATS,
+    GOP_SAFE_SEATS,
+    SENATE_2026_STATES,
+    SENATE_DELEGATION,
     _build_headline,
     _compute_baseline_label,
     _margin_to_rating,

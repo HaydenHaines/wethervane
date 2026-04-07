@@ -19,12 +19,12 @@ from pathlib import Path
 import geopandas as gpd
 import numpy as np
 import pandas as pd
-from scipy.sparse import csr_matrix, issparse
+from scipy.sparse import csr_matrix
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger(__name__)
 
-from src.core import config as _cfg
+from src.core import config as _cfg  # noqa: E402
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 TIGER_DIR = PROJECT_ROOT / "data" / "raw" / "tiger"
@@ -177,7 +177,6 @@ def _load_tiger_tracts() -> gpd.GeoDataFrame:
 
 def main() -> None:
     """Build adjacency matrix from TIGER shapefiles and save to disk."""
-    import pandas as pd  # local import to keep module-level imports lean
 
     log.info("Loading TIGER tract geometries …")
     gdf = _load_tiger_tracts()

@@ -1,16 +1,15 @@
 """Tests for GET /api/v1/forecast/race/{slug}/poll-trend endpoint."""
 from __future__ import annotations
 
-import pytest
 from fastapi.testclient import TestClient
 
+from api.main import create_app
 from api.tests.conftest import (
     TEST_VERSION,
     _build_test_db,
     _build_test_state,
     _noop_lifespan,
 )
-from api.main import create_app
 
 
 def _make_client(db=None):

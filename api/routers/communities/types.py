@@ -1,9 +1,9 @@
 """Electoral type endpoints: list, detail, scatter, correlated, super-types."""
 from __future__ import annotations
 
+import duckdb
 import numpy as np
 import pandas as pd
-import duckdb
 from fastapi import APIRouter, Depends, HTTPException, Request
 
 from api.db import get_db

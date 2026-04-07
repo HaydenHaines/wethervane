@@ -69,7 +69,7 @@ def nest_types(
         # Re-index to 0-based contiguous
         unique_labels = sorted(set(labels))
         remap = {old: new for new, old in enumerate(unique_labels)}
-        labels_0 = np.array([remap[l] for l in labels])
+        labels_0 = np.array([remap[lbl] for lbl in labels])
         label_maps[s] = labels_0
 
         if len(set(labels_0)) < 2:

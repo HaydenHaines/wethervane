@@ -5,16 +5,15 @@ covering the five core findings: same-type SCI lift, correlation with cosine
 similarity, cross-state persistence, partial correlation controlling for
 distance, and distance-binned analysis.
 """
-from __future__ import annotations
-
-import numpy as np
-
 # Import here instead of from validate_sci_types to avoid circular import.
 # SCITypeValidationResult is defined in validate_sci_types.py because it is
 # part of the public API contract. sci_report.py uses TYPE_CHECKING to allow
 # type hints without creating a circular dependency at runtime.
 from __future__ import annotations  # noqa: F811  (already at top — harmless duplicate)
+
 from typing import TYPE_CHECKING
+
+import numpy as np
 
 if TYPE_CHECKING:
     from src.validation.validate_sci_types import SCITypeValidationResult
@@ -41,8 +40,11 @@ def format_results(result: "SCITypeValidationResult") -> str:
         "",
         "| Metric | Same Type | Different Type | Ratio |",
         "|--------|-----------|----------------|-------|",
-        f"| Mean SCI | {result.mean_sci_same_type:,.0f} | {result.mean_sci_diff_type:,.0f} | {result.sci_ratio_same_over_diff:.2f}x |",
-        f"| Mean log10(SCI) | {result.mean_log_sci_same_type:.3f} | {result.mean_log_sci_diff_type:.3f} | +{result.mean_log_sci_same_type - result.mean_log_sci_diff_type:.3f} |",
+        (f"| Mean SCI | {result.mean_sci_same_type:,.0f} | "
+         f"{result.mean_sci_diff_type:,.0f} | {result.sci_ratio_same_over_diff:.2f}x |"),
+        (f"| Mean log10(SCI) | {result.mean_log_sci_same_type:.3f} | "
+         f"{result.mean_log_sci_diff_type:.3f} | "
+         f"+{result.mean_log_sci_same_type - result.mean_log_sci_diff_type:.3f} |"),
         "",
         "## Finding 2: SCI Correlates with Type Similarity",
         "",
@@ -76,7 +78,8 @@ def format_results(result: "SCITypeValidationResult") -> str:
             "Partial correlation of log(SCI) vs type cosine similarity,",
             "controlling for log(geodesic distance):",
             "",
-            f"- **Partial r**: {result.partial_r_sci_cosine_given_distance:.4f} (p={result.partial_p_sci_cosine_given_distance:.2e})",
+            (f"- **Partial r**: {result.partial_r_sci_cosine_given_distance:.4f} "
+             f"(p={result.partial_p_sci_cosine_given_distance:.2e})"),
             "",
             "This measures whether SCI adds information about type similarity",
             "beyond what geographic distance alone provides.",

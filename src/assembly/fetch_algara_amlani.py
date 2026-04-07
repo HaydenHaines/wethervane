@@ -27,7 +27,6 @@ handles structural zeros for truly uncontested cycles.
 
 from __future__ import annotations
 
-import sys
 from pathlib import Path
 
 import pandas as pd
@@ -76,7 +75,7 @@ def _download_raw() -> Path:
         print(f"[fetch_algara_amlani] Using cached file: {out_path}", flush=True)
         return out_path
 
-    print(f"[fetch_algara_amlani] Looking up file ID on Dataverse...", flush=True)
+    print("[fetch_algara_amlani] Looking up file ID on Dataverse...", flush=True)
     file_id = _get_file_id()
     url = f"{_DATAVERSE_BASE}/access/datafile/{file_id}"
     print(f"[fetch_algara_amlani] Downloading {_FILE_NAME} (file_id={file_id})...", flush=True)

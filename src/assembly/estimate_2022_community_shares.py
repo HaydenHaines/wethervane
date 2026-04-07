@@ -44,10 +44,10 @@ from scipy.optimize import lsq_linear
 PROJECT_ROOT = Path(__file__).parents[2]
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from src.propagation.propagate_polls import (
-    load_prior,
+from src.propagation.propagate_polls import (  # noqa: E402
     COMP_COLS,
     LABELS,
+    load_prior,
 )
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")

@@ -7,9 +7,8 @@ from pathlib import Path
 from unittest.mock import patch
 
 import pytest
-from fastapi.testclient import TestClient
 
-from api.routers.forecast import get_forecast_changelog, SNAPSHOTS_DIR
+from api.routers.forecast import get_forecast_changelog
 
 
 @pytest.fixture

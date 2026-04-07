@@ -38,7 +38,7 @@ ADJACENCY_DIR = PROJECT_ROOT / "data" / "communities"
 # (pres_d_shift_20_24) at community level.
 BASELINE = {5: 0.983, 7: 0.964, 10: 0.941, 15: 0.934, 20: 0.932}
 
-from src.assembly.build_county_shifts_multiyear import TRAINING_SHIFT_COLS, HOLDOUT_SHIFT_COLS
+from src.assembly.build_county_shifts_multiyear import TRAINING_SHIFT_COLS  # noqa: E402
 
 N_TRAINING_COLS = len(TRAINING_SHIFT_COLS)  # dynamic: 30 pres/gov + up to 24 senate dims
 
@@ -90,8 +90,8 @@ def community_correlation(
 def main() -> None:
     import pandas as pd
     from scipy.sparse import load_npz
-    from sklearn.cluster._agglomerative import _hc_cut
     from sklearn.cluster import AgglomerativeClustering
+    from sklearn.cluster._agglomerative import _hc_cut
     from sklearn.preprocessing import StandardScaler
 
     log.info("Loading multi-year county shifts from %s", SHIFTS_PATH)

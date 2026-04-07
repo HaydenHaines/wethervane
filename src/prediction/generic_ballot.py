@@ -32,6 +32,8 @@ import logging
 from dataclasses import dataclass
 from pathlib import Path
 
+import numpy as np
+
 log = logging.getLogger(__name__)
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -361,9 +363,9 @@ def compute_gb_shift(
 
 
 def apply_gb_shift(
-    county_priors: "import numpy as np; np.ndarray",  # type: ignore[valid-type]
+    county_priors: np.ndarray,
     shift: float,
-) -> "import numpy as np; np.ndarray":  # type: ignore[valid-type]
+) -> np.ndarray:
     """Apply a flat national environment shift to county priors.
 
     Each county's prior is shifted by the same amount (``shift``), then clipped
@@ -381,6 +383,5 @@ def apply_gb_shift(
     ndarray of shape (N,)
         Adjusted county priors.
     """
-    import numpy as np
     adjusted = county_priors.astype(float) + shift
     return np.clip(adjusted, _PRIOR_MIN, _PRIOR_MAX)

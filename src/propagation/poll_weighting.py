@@ -21,28 +21,6 @@ Usage:
 from __future__ import annotations
 
 # ---------------------------------------------------------------------------
-# Re-export from poll_quality
-# ---------------------------------------------------------------------------
-from src.propagation.poll_quality import (  # noqa: F401
-    _DEFAULT_GRADE_MULTIPLIERS,
-    _NO_GRADE_MULTIPLIER,
-    _RMSE_MAX_MULTIPLIER,
-    _RMSE_MIN_MULTIPLIER,
-    _SB_MAX_MULTIPLIER,
-    _SB_MIN_MULTIPLIER,
-    _get_sb_quality,
-    _numeric_grade_to_letter,
-    _rmse_to_multiplier,
-    _sb_score_to_multiplier,
-    apply_pollster_quality,
-    extract_grade_from_notes,
-    get_rmse_quality,
-    grade_to_multiplier,
-    reset_rmse_cache,
-    reset_sb_cache,
-)
-
-# ---------------------------------------------------------------------------
 # Re-export from house_effects
 # ---------------------------------------------------------------------------
 from src.propagation.house_effects import (  # noqa: F401
@@ -82,4 +60,26 @@ from src.propagation.poll_pipeline import (  # noqa: F401
     apply_all_weights,
     load_poll_notes,
     load_polls_with_notes,
+)
+
+# ---------------------------------------------------------------------------
+# Re-export from poll_quality
+# ---------------------------------------------------------------------------
+from src.propagation.poll_quality import (  # noqa: F401
+    _DEFAULT_GRADE_MULTIPLIERS,
+    _NO_GRADE_MULTIPLIER,
+    _RMSE_MAX_MULTIPLIER,
+    _RMSE_MIN_MULTIPLIER,
+    _SB_MAX_MULTIPLIER,
+    _SB_MIN_MULTIPLIER,
+    _get_sb_quality,
+    _numeric_grade_to_letter,
+    _rmse_to_multiplier,
+    _sb_score_to_multiplier,
+    apply_pollster_quality,
+    extract_grade_from_notes,
+    get_rmse_quality,
+    grade_to_multiplier,
+    reset_rmse_cache,
+    reset_sb_cache,
 )

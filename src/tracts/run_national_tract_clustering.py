@@ -18,7 +18,6 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-import yaml
 from scipy.stats import pearsonr
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
@@ -38,8 +37,8 @@ NESTING_DEMO_FEATURES = [
     # causes super-type boundaries to follow county lines.
 ]
 
-from src.discovery.nest_types import nest_types
-from src.discovery.run_type_discovery import temperature_soft_membership
+from src.discovery.nest_types import nest_types  # noqa: E402
+from src.discovery.run_type_discovery import temperature_soft_membership  # noqa: E402
 
 log = logging.getLogger(__name__)
 

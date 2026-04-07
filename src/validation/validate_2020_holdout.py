@@ -32,19 +32,16 @@ import pandas as pd
 PROJECT_ROOT = Path(__file__).parents[2]
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from src.propagation.propagate_polls import (
+from src.propagation.propagate_polls import (  # noqa: E402
+    COMP_COLS,
+    LABELS,
     PollObservation,
     bayesian_poll_update,
-    load_weight_vector,
-    CommunityPosterior,
-    COMP_COLS,
-    K,
-    LABELS,
 )
-from src.validation.poll_accuracy import (
-    predict_from_posterior,
-    county_actuals_from_vest,
+from src.validation.poll_accuracy import (  # noqa: E402
     accuracy_report,
+    county_actuals_from_vest,
+    predict_from_posterior,
     print_accuracy_table,
 )
 
@@ -159,7 +156,7 @@ def main() -> None:
     print("\n── County-level accuracy (vote-weighted) ──────────────────────────")
     print_accuracy_table([naive_acc, holdout_acc])
 
-    print(f"\n  For reference — in-sample (T=3 pooled prior from validate_2020.py):")
+    print("\n  For reference — in-sample (T=3 pooled prior from validate_2020.py):")
     print(f"    wMAE={INSAMPLE_WMAE:.3f}  Corr={INSAMPLE_CORR:.3f}")
     print()
     print("  KEY TEST: Does holdout correlation stay close to in-sample?")

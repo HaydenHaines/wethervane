@@ -60,7 +60,9 @@ _FEATURE_PHRASES: dict[str, tuple[str, str]] = {
     "pct_bachelors_plus":      ("high educational attainment", "low educational attainment"),
     "pct_graduate":            ("high graduate degree rates", "low graduate degree rates"),
     "median_hh_income":        ("high household incomes", "low household incomes"),
-    "pct_white_nh":            ("predominantly white non-Hispanic populations", "relatively few white non-Hispanic residents"),
+    "pct_white_nh":            (
+        "predominantly white non-Hispanic populations", "relatively few white non-Hispanic residents"
+    ),
     "pct_black":               ("large Black populations", "small Black populations"),
     "pct_hispanic":            ("large Hispanic populations", "small Hispanic populations"),
     "pct_asian":               ("large Asian populations", "small Asian populations"),
@@ -76,7 +78,9 @@ _FEATURE_PHRASES: dict[str, tuple[str, str]] = {
     "pct_wfh":                 ("high work-from-home rates", "low work-from-home rates"),
     "pct_transit":             ("high transit ridership", "minimal transit use"),
     # pct_car excluded — not insightful in narratives (near-universal everywhere)
-    "pct_management":          ("high rates of management and professional occupations", "low rates of management occupations"),
+    "pct_management":          (
+        "high rates of management and professional occupations", "low rates of management occupations"
+    ),
     "net_migration_rate":      ("strong population in-migration", "net population out-migration"),
     "avg_inflow_income":       ("high-income in-migrants", "lower-income in-migrants"),
     "migration_diversity":     ("diverse in-migration from many origins", "in-migration from a narrow set of origins"),
@@ -305,7 +309,10 @@ def generate_type_narrative(
                 else "persistent population loss"
             )
             if migration_z > 0 and inflow_income_z >= 0.75:
-                sentence3 = f"These communities are experiencing {direction}, with arriving residents tending to have above-average incomes."
+                sentence3 = (
+                    f"These communities are experiencing {direction}, "
+                    "with arriving residents tending to have above-average incomes."
+                )
             elif migration_z > 0 and diversity_z >= 0.75:
                 sentence3 = f"These communities are experiencing {direction} from a wide variety of origin locations."
             else:

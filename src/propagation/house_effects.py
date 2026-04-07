@@ -217,7 +217,7 @@ def _lookup_house_effect(
     # 1. Silver Bulletin — delegate fuzzy matching to the silver_bulletin module
     if sb_house_effects:
         try:
-            from src.assembly.silver_bulletin_ratings import _normalize, _name_similarity
+            from src.assembly.silver_bulletin_ratings import _name_similarity, _normalize
         except ImportError:  # pragma: no cover
             pass
         else:

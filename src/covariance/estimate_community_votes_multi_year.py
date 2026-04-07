@@ -199,7 +199,6 @@ def plot_multi_year(theta_matrix: pd.DataFrame, r2_by_year: dict[str, float], pa
     """
     elections = list(theta_matrix.columns)
     n_communities = len(COMP_COLS)
-    n_elections = len(elections)
 
     colors = {
         elections[0]: "#6366f1",  # indigo — 2016

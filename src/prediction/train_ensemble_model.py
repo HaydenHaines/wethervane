@@ -39,8 +39,6 @@ from sklearn.linear_model import RidgeCV
 from src.prediction.train_ridge_model import (
     _HISTORY_YEARS,
     build_feature_matrix,
-    compute_county_historical_mean,
-    load_target,
 )
 
 log = logging.getLogger(__name__)

@@ -12,23 +12,19 @@ Covers:
 from __future__ import annotations
 
 import duckdb
-import pytest
 from fastapi.testclient import TestClient
 
 from api.main import create_app
 from api.routers.senate import (
-    DEM_SAFE_SEATS,
-    GOP_SAFE_SEATS,
-    SENATE_2026_STATES,
-    _CLASS_II_INCUMBENT,
     _DEM_CLASS_II_COUNT,
     _DEM_HOLDOVER_SEATS,
     _GOP_CLASS_II_COUNT,
+    GOP_SAFE_SEATS,
+    SENATE_2026_STATES,
     _compute_baseline_label,
     _rating_to_zone,
 )
 from api.tests.conftest import _noop_lifespan
-
 
 # ── Unit tests: _rating_to_zone ─────────────────────────────────────────────
 
@@ -442,7 +438,7 @@ class TestGenericBallotBaselineFields:
 
     def test_baseline_year_present(self):
         """Response must include baseline_year."""
-        from api.tests.conftest import _build_test_db, _build_test_state, TEST_K, TEST_VERSION
+        from api.tests.conftest import TEST_K, TEST_VERSION, _build_test_db, _build_test_state
 
         test_db = _build_test_db()
         state = _build_test_state()
@@ -464,7 +460,7 @@ class TestGenericBallotBaselineFields:
 
     def test_baseline_label_present_and_r_plus(self):
         """baseline_label must be present and reflect R+ (2024 Dem share < 0.5)."""
-        from api.tests.conftest import _build_test_db, _build_test_state, TEST_K, TEST_VERSION
+        from api.tests.conftest import TEST_K, TEST_VERSION, _build_test_db, _build_test_state
 
         test_db = _build_test_db()
         state = _build_test_state()

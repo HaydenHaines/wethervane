@@ -559,7 +559,7 @@ def run(
     out_parquet, out_json = save_tract_priors(output_dir, matched_geoids, y_pred, meta)
 
     # ---- Summary ----
-    print(f"Tract Ridge model trained:")
+    print("Tract Ridge model trained:")
     print(f"  n_tracts    = {len(matched_geoids):,}")
     print(f"  n_train     = {n_fit:,} (with 2024 pres data)")
     print(f"  alpha       = {alpha:.4g}")

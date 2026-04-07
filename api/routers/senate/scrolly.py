@@ -4,21 +4,16 @@ from __future__ import annotations
 import logging
 
 import duckdb
-import pandas as pd
 from fastapi import APIRouter, Depends, Request
 
 from api.db import get_db
 from api.routers.senate._helpers import (
+    _DEM_HOLDOVER_SEATS,
     SENATE_2026_STATES,
     SENATE_DELEGATION,
-    _CLASS_II_INCUMBENT,
-    _DEM_HOLDOVER_SEATS,
     _compute_baseline_label,
-    _margin_to_rating,
-    _rating_to_zone,
     build_zone_counts,
     classify_race,
-    _DEFAULT_SAFE_MARGIN,
 )
 
 log = logging.getLogger(__name__)
@@ -90,7 +85,6 @@ def _build_structural_context(races: list[dict]) -> dict:
     Counts how many Class II races Democrats currently win at the model's
     predicted margins, and computes the gap to majority.
     """
-    from src.prediction.generic_ballot import PRES_DEM_SHARE_2024_NATIONAL
 
     dem_wins_at_baseline = sum(1 for r in races if r["margin"] > 0)
     total_dem_projected = _DEM_HOLDOVER_SEATS + dem_wins_at_baseline

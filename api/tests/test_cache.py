@@ -16,16 +16,13 @@ from __future__ import annotations
 import time
 from unittest.mock import patch
 
-import pytest
-
 from api.cache import TTLCache, make_cache_key
+from api.main import create_app
 from api.tests.conftest import (
     _build_test_db,
     _build_test_state,
     _noop_lifespan,
 )
-from api.main import create_app
-
 
 # ── TTLCache unit tests ───────────────────────────────────────────────────────
 

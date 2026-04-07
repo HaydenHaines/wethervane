@@ -25,11 +25,11 @@ from __future__ import annotations
 
 import io
 import logging
+import urllib.request
 import zipfile
 from pathlib import Path
 
 import pandas as pd
-import urllib.request
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger(__name__)

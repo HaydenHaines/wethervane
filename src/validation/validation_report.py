@@ -303,6 +303,7 @@ def _compute_covariance_validation(
 
     try:
         import pandas as pd
+
         from src.covariance.construct_type_covariance import (
             CovarianceResult,
             validate_covariance,

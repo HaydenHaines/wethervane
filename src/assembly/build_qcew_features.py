@@ -37,7 +37,6 @@ from __future__ import annotations
 import logging
 from pathlib import Path
 
-import numpy as np
 import pandas as pd
 
 from src.assembly.fetch_bls_qcew import TOTAL_INDUSTRY_CODE
@@ -159,7 +158,6 @@ def compute_shares(wide: pd.DataFrame) -> pd.DataFrame:
     result = wide[["county_fips", "year"]].copy()
 
     total_empl_col = f"empl_{TOTAL_INDUSTRY_CODE}"
-    total_empl = wide.get(total_empl_col, pd.Series(dtype=float))
 
     for sector_name, naics_code in SECTOR_CODES.items():
         empl_col = f"empl_{naics_code}"

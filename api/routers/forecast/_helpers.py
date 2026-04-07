@@ -144,7 +144,7 @@ def _lookup_pollster_grade(request: Request, pollster_name: str | None) -> str |
     if pollster_name in grades:
         return grades[pollster_name]
     # Normalized match
-    from src.assembly.silver_bulletin_ratings import _normalize, _name_similarity
+    from src.assembly.silver_bulletin_ratings import _name_similarity, _normalize
     norm = _normalize(pollster_name)
     if norm in norm_grades:
         return norm_grades[norm]

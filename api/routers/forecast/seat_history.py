@@ -21,14 +21,10 @@ from pathlib import Path
 from fastapi import APIRouter
 
 from api.routers.senate._helpers import (
-    DEM_SAFE_SEATS,
-    GOP_SAFE_SEATS,
-    SENATE_2026_STATES,
     _CLASS_II_INCUMBENT,
     _DEM_HOLDOVER_SEATS,
     _GOP_HOLDOVER_SEATS,
-    _build_headline,
-    classify_race,
+    SENATE_2026_STATES,
 )
 
 log = logging.getLogger(__name__)

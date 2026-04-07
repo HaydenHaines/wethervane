@@ -184,6 +184,8 @@ def get_fundamentals() -> FundamentalsResponse:
 
     from src.prediction.fundamentals import (
         compute_fundamentals_shift as _compute_fund,
+    )
+    from src.prediction.fundamentals import (
         load_fundamentals_snapshot as _load_snap,
     )
     from src.prediction.generic_ballot import compute_gb_shift as _compute_gb

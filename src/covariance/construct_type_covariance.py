@@ -471,7 +471,6 @@ def _loeo_validate_observed(
         log.warning("LOEO needs >= 3 elections, got %d", T)
         return float("nan")
 
-    type_shifts = _compute_type_shifts(type_scores, shift_matrix, election_col_groups)
     mask = ~np.eye(J, dtype=bool)
 
     # Full observed correlation (target)
@@ -563,8 +562,9 @@ def main() -> None:
     print("\n=== Type Covariance Construction Summary ===")
     print(f"  J (types):          {J}")
     print(f"  sigma_base:         {sigma_base}")
-    print(f"  method:             observed LW-regularised (primary)")
-    print(f"  LOEO validation_r:  {result.validation_r:.4f}" if not np.isnan(result.validation_r) else "  LOEO validation_r:  N/A")
+    print("  method:             observed LW-regularised (primary)")
+    loeo_str = f"{result.validation_r:.4f}" if not np.isnan(result.validation_r) else "N/A"
+    print(f"  LOEO validation_r:  {loeo_str}")
     print(f"  Correlation matrix saved to: {corr_path}")
     print(f"  Covariance matrix saved to:  {cov_path}")
 

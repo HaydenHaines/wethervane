@@ -86,8 +86,12 @@ def get_state_tract_predictions(
             tract_geoid=row["tract_geoid"],
             race=row["race"],
             forecast_mode=row["forecast_mode"],
-            pred_dem_share=float(row["pred_dem_share"]) if row["pred_dem_share"] is not None else None,
-            state_pred_dem_share=float(row["state_pred_dem_share"]) if row["state_pred_dem_share"] is not None else None,
+            pred_dem_share=(
+                float(row["pred_dem_share"]) if row["pred_dem_share"] is not None else None
+            ),
+            state_pred_dem_share=(
+                float(row["state_pred_dem_share"]) if row["state_pred_dem_share"] is not None else None
+            ),
             state=row["state"],
         )
         for _, row in rows.iterrows()

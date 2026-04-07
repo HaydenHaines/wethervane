@@ -6,17 +6,13 @@ the data directory to point at a temp directory with synthetic parquet files.
 """
 from __future__ import annotations
 
-import os
-import tempfile
 from pathlib import Path
 from unittest.mock import patch
 
 import pandas as pd
 import pytest
-from fastapi.testclient import TestClient
 
 from api.routers import historical as hist_module
-
 
 # ---------------------------------------------------------------------------
 # Helpers

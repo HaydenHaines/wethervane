@@ -40,9 +40,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional
 
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger(__name__)
@@ -369,12 +369,12 @@ def plot_posterior_comparison(
     y = np.arange(n)
     width = 0.35
 
-    bars_prior = ax.barh(y + width/2, prior_mu, width, color="#94a3b8",
-                          alpha=0.7, label="Prior (Stage 3)", xerr=1.645*prior_std_ord,
-                          error_kw={"ecolor": "#64748b", "capsize": 3})
-    bars_post = ax.barh(y - width/2, post_mu, width, color="#3b82f6",
-                         alpha=0.85, label="Posterior (after polls)", xerr=1.645*post_std,
-                         error_kw={"ecolor": "#1d4ed8", "capsize": 3})
+    ax.barh(y + width/2, prior_mu, width, color="#94a3b8",
+            alpha=0.7, label="Prior (Stage 3)", xerr=1.645*prior_std_ord,
+            error_kw={"ecolor": "#64748b", "capsize": 3})
+    ax.barh(y - width/2, post_mu, width, color="#3b82f6",
+            alpha=0.85, label="Posterior (after polls)", xerr=1.645*post_std,
+            error_kw={"ecolor": "#1d4ed8", "capsize": 3})
 
     ax.axvline(0.5, color="#ef4444", linestyle="--", linewidth=1.2, alpha=0.7)
     ax.set_yticks(y)
@@ -409,7 +409,7 @@ def main() -> None:
     print("Propagating the actual result as a poll should produce minimal shifts.")
 
     for state in ["FL", "GA", "AL"]:
-        posterior_s = validate_2020_roundtrip_state(state, Sigma_prior)
+        validate_2020_roundtrip_state(state, Sigma_prior)
 
     # ── Demo: propagate synthetic early-cycle 2026 FL polls ───────────────────
     print("\n" + "=" * 70)

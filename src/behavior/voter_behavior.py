@@ -280,7 +280,7 @@ def _print_tau_delta_summary(tau: np.ndarray, delta: np.ndarray, n_tracts: int) 
     print(f"Tracts contributing to training: {n_tracts:,}")
     print(f"Types (J): {len(tau)}")
 
-    print(f"\nτ (turnout ratio) distribution:")
+    print("\nτ (turnout ratio) distribution:")
     print(f"  mean={tau.mean():.3f}  std={tau.std():.3f}  "
           f"min={tau.min():.3f}  max={tau.max():.3f}")
 
@@ -294,7 +294,7 @@ def _print_tau_delta_summary(tau: np.ndarray, delta: np.ndarray, n_tracts: int) 
     print(f"  τ < 1.0: {pct_below_one:.0f}% of types "
           f"({'PASS' if pct_below_one > 60 else 'WARN — expected >60%'})")
 
-    print(f"\nδ (residual choice shift) distribution:")
+    print("\nδ (residual choice shift) distribution:")
     print(f"  mean={delta.mean():.4f}  std={delta.std():.4f}  "
           f"min={delta.min():.4f}  max={delta.max():.4f}")
 

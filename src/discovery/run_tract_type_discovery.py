@@ -430,7 +430,7 @@ def main() -> None:
     # Step 5: Save outputs.
     save_tract_types(tract_geoids, result, j, str(output_dir))
 
-    print(f"\nTract type discovery complete:")
+    print("\nTract type discovery complete:")
     print(f"  Tracts: {len(tract_geoids):,}")
     print(f"  Types: {j}")
     print(f"  Holdout r: {holdout_r:.4f}")

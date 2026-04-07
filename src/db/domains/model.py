@@ -14,7 +14,6 @@ import pandas as pd
 from pydantic import BaseModel, Field
 
 from src.db._utils import normalize_fips as _normalize_fips
-
 from src.db.domains import DomainIngestionError, DomainSpec
 
 log = logging.getLogger(__name__)
@@ -264,7 +263,6 @@ def _ingest_type_scores(con, version_id, path):
 
     # Validate score range via DuckDB parquet scan before inserting.
     p = str(path)
-    score_col_list = ", ".join(score_cols)
     # Quick range check: any score outside [0, 1]?
     range_check_parts = " OR ".join(
         f"CAST({col} AS DOUBLE) < 0 OR CAST({col} AS DOUBLE) > 1.0"

@@ -10,10 +10,10 @@ from fastapi import APIRouter, Depends, Query, Request
 from api.db import get_db
 from api.models import ChamberProbabilityResponse, SeatDistributionBucket
 from api.routers.senate._helpers import (
-    DEM_SAFE_SEATS,
-    SENATE_2026_STATES,
     _CLASS_II_INCUMBENT,
     _DEM_HOLDOVER_SEATS,
+    DEM_SAFE_SEATS,
+    SENATE_2026_STATES,
 )
 
 log = logging.getLogger(__name__)

@@ -237,13 +237,13 @@ def recalculate_overview_blend(
     """
     # Local import to avoid circular dependency (senate.py never imports forecast.py)
     from api.routers.senate import (
-        SENATE_2026_STATES,
-        _DEM_HOLDOVER_SEATS,
-        _GOP_HOLDOVER_SEATS,
         _CLASS_II_INCUMBENT,
         _DEFAULT_SAFE_MARGIN,
-        _margin_to_rating,
+        _DEM_HOLDOVER_SEATS,
+        _GOP_HOLDOVER_SEATS,
         _TOSSUP_MAX,
+        SENATE_2026_STATES,
+        _margin_to_rating,
     )
 
     race_summaries: list[OverviewBlendRaceSummary] = []

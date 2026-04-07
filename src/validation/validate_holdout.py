@@ -106,7 +106,6 @@ def main() -> None:
     from sklearn.preprocessing import StandardScaler
 
     from src.description.compare_to_nmf import within_community_variance
-    from src.discovery.build_adjacency import build_queen_adjacency
     from src.discovery.cluster_communities import cluster_at_threshold
 
     # ── 1. Load 9-dim shift vectors, aligned to adjacency geoid order ──────────

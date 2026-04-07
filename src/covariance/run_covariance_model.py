@@ -271,8 +271,6 @@ def extract_covariance(fit) -> tuple[pd.DataFrame, pd.DataFrame]:
 
 def plot_correlation_heatmap(rho_df: pd.DataFrame, path: Path) -> None:
     """Heatmap of posterior mean community correlation matrix."""
-    short_labels = [LABELS[c].split()[0] + "\n" + LABELS[c].split()[1] if len(LABELS[c].split()) > 1 else LABELS[c] for c in COMP_COLS]
-
     fig, ax = plt.subplots(figsize=(9, 8))
     im = ax.imshow(rho_df.values, cmap="RdBu_r", vmin=-1, vmax=1)
     ax.set_xticks(range(K))

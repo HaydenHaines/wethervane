@@ -28,25 +28,20 @@ import logging
 import sys
 from pathlib import Path
 
-import numpy as np
 import pandas as pd
 
 PROJECT_ROOT = Path(__file__).parents[2]
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from src.propagation.propagate_polls import (
+from src.propagation.propagate_polls import (  # noqa: E402
     PollObservation,
     bayesian_poll_update,
     load_prior,
-    load_weight_vector,
-    COMP_COLS,
-    K,
-    LABELS,
 )
-from src.validation.poll_accuracy import (
-    predict_from_posterior,
-    county_actuals_from_vest,
+from src.validation.poll_accuracy import (  # noqa: E402
     accuracy_report,
+    county_actuals_from_vest,
+    predict_from_posterior,
     print_accuracy_table,
 )
 

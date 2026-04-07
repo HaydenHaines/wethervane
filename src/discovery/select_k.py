@@ -22,6 +22,7 @@ import yaml
 from scipy.sparse import csr_matrix, load_npz
 from scipy.stats import pearsonr
 from sklearn.cluster import AgglomerativeClustering
+
 # Private sklearn API: stable in sklearn >=1.2. Public alternative would require
 # re-fitting at each K (10-50x slower). Verified with sklearn 1.8.0.
 from sklearn.cluster._agglomerative import _hc_cut
@@ -185,7 +186,7 @@ def main() -> None:
     fips_list = ADJ_FIPS.read_text().splitlines()
     W = load_npz(str(ADJ_NPZ))
 
-    from src.assembly.build_county_shifts_multiyear import TRAINING_SHIFT_COLS, HOLDOUT_SHIFT_COLS
+    from src.assembly.build_county_shifts_multiyear import HOLDOUT_SHIFT_COLS, TRAINING_SHIFT_COLS
     train_cols = TRAINING_SHIFT_COLS
     holdout_cols = HOLDOUT_SHIFT_COLS
 

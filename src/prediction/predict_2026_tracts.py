@@ -44,8 +44,8 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from src.core import config as _cfg
 from src.behavior.voter_behavior import apply_behavior_adjustment
+from src.core import config as _cfg
 from src.prediction.forecast_engine import run_forecast
 
 log = logging.getLogger(__name__)
@@ -381,12 +381,12 @@ def aggregate_to_states(
 
 def run() -> None:
     """Load tract inputs and produce 2026 tract-level and state-level predictions."""
-    from src.prediction.generic_ballot import compute_gb_shift
+    from src.assembly.define_races import load_races
     from src.prediction.fundamentals import (
         compute_fundamentals_shift,
         load_fundamentals_snapshot,
     )
-    from src.assembly.define_races import load_races
+    from src.prediction.generic_ballot import compute_gb_shift
 
     # Load prediction hyperparameters from the shared config file.
     params_path = PROJECT_ROOT / "data" / "config" / "prediction_params.json"

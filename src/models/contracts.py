@@ -4,8 +4,8 @@ These define the canonical column names and schemas for model outputs.
 All pipeline scripts must produce outputs matching these contracts.
 """
 from __future__ import annotations
-from dataclasses import dataclass, field
 
+from dataclasses import dataclass
 
 # ── Layer 1: Community assignments ───────────────────────────────────────────
 

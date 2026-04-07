@@ -14,7 +14,12 @@ from pathlib import Path
 import duckdb
 import pandas as pd
 
-from src.db._utils import normalize_fips as _normalize_fips, cycle_connection as _cycle_connection
+from src.db._utils import cycle_connection as _cycle_connection
+from src.db._utils import normalize_fips as _normalize_fips
+from src.db.domains.model import create_tables as model_ddl
+from src.db.domains.model import ingest as ingest_model
+from src.db.domains.polling import create_tables as polling_ddl
+from src.db.domains.polling import ingest as ingest_polling
 from src.db.transforms import (
     build_community_assignments,
     build_counties,
@@ -24,8 +29,6 @@ from src.db.transforms import (
     load_version_meta,
 )
 from src.description.generate_narratives import generate_all_narratives
-from src.db.domains.model import ingest as ingest_model, create_tables as model_ddl
-from src.db.domains.polling import ingest as ingest_polling, create_tables as polling_ddl
 
 log = logging.getLogger(__name__)
 

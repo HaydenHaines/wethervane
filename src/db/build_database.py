@@ -22,7 +22,6 @@ Usage
 from __future__ import annotations
 
 import argparse
-import gc
 import logging
 import sys
 from pathlib import Path
@@ -89,17 +88,17 @@ COUNTY_ACS_FEATURES_PATH = DATA_DIR / "assembled" / "county_acs_features.parquet
 DEMOGRAPHICS_INTERPOLATED_PATH = DATA_DIR / "assembled" / "demographics_interpolated.parquet"
 
 # ── DRY helpers re-exported for backward compat ──────────────────────────────
-from src.db._utils import normalize_fips, cycle_connection  # noqa: E402, F401
+from src.db._utils import cycle_connection, normalize_fips  # noqa: E402, F401, I001
+from src.db.ingest import ingest_all as _ingest_data  # noqa: E402
 
 # ── Sub-module imports ────────────────────────────────────────────────────────
 from src.db.schema import create_schema as _create_schema  # noqa: E402
-from src.db.ingest import ingest_all as _ingest_data  # noqa: E402
 from src.db.validate import (  # noqa: E402
-    validate_contract,
+    validate_contract,  # noqa: F401 — re-exported for tests
     report_summary as _report_summary,
     validate_integrity as _validate_integrity,
 )
-from src.db.transforms import (  # noqa: E402
+from src.db.transforms import (  # noqa: E402, F401
     load_version_meta as _load_version_meta,
     build_counties as _build_counties,
     build_county_shifts as _build_county_shifts,
@@ -107,8 +106,7 @@ from src.db.transforms import (  # noqa: E402
     build_type_assignments as _build_type_assignments,
     build_predictions as _build_predictions,
 )
-from src.db.ingest import insert_via_parquet as _insert_via_parquet  # noqa: E402
-
+from src.db.ingest import insert_via_parquet as _insert_via_parquet  # noqa: E402, F401
 
 # ---------------------------------------------------------------------------
 # Path resolution

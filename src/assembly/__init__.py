@@ -25,8 +25,9 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    import pandas as pd
     from pathlib import Path
+
+    import pandas as pd
 
 
 def fetch_election_returns(states: list[str], years: list[int]) -> "pd.DataFrame":

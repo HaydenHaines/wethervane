@@ -31,14 +31,12 @@ import pandas as pd
 PROJECT_ROOT = Path(__file__).parents[2]
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from src.propagation.propagate_polls import (
+from src.assembly.ingest_polls import list_races, load_polls  # noqa: E402
+from src.propagation.propagate_polls import (  # noqa: E402
     bayesian_poll_update,
     load_prior,
-    COMP_COLS,
-    LABELS,
 )
-from src.assembly.ingest_polls import load_polls, list_races
-from src.validation.poll_accuracy import predict_from_posterior
+from src.validation.poll_accuracy import predict_from_posterior  # noqa: E402
 
 logging.basicConfig(level=logging.WARNING, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger(__name__)
@@ -135,8 +133,6 @@ def print_race_results(result: dict, county_weights_df: pd.DataFrame, top_n: int
 
     # Top/bottom counties
     pred_sorted = pred.sort_values("pred_dem_share", ascending=False)
-    county_info = county_weights_df[["county_fips", "county_name"]].drop_duplicates() \
-        if "county_name" in county_weights_df.columns else None
 
     # Merge county names for display
     if "county_name" in county_weights_df.columns:
@@ -160,7 +156,7 @@ def main(race_filter: str | None = None, top_n: int = 5) -> None:
 
     print("\n" + "=" * 68)
     print("  2026 Election Forecast — Community-Weighted Bayesian Model")
-    print(f"  Prior chain: Stan(2016-2020) → 2022 gov → 2024 pres")
+    print("  Prior chain: Stan(2016-2020) → 2022 gov → 2024 pres")
     print("=" * 68)
 
     all_races = list_races("2026")

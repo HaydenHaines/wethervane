@@ -6,18 +6,18 @@ import tempfile
 from pathlib import Path
 from unittest.mock import patch
 
+import numpy as np
 import pytest
 from fastapi.testclient import TestClient
 
 from api.main import create_app
 from api.tests.conftest import (
-    TEST_VERSION,
     TEST_K,
+    TEST_VERSION,
     _build_test_db,
     _build_test_state,
     _noop_lifespan,
 )
-import numpy as np
 
 
 @pytest.fixture

@@ -3,7 +3,6 @@ from __future__ import annotations
 
 import duckdb
 import numpy as np
-import pandas as pd
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 
 from api.db import get_db

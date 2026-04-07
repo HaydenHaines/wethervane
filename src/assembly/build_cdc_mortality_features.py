@@ -49,7 +49,6 @@ from __future__ import annotations
 import logging
 from pathlib import Path
 
-import numpy as np
 import pandas as pd
 
 from src.assembly.fetch_cdc_wonder_mortality import (

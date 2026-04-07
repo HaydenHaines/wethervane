@@ -8,6 +8,11 @@ from fastapi.testclient import TestClient
 
 from api.main import create_app
 from api.routers.senate import (
+    _CLASS_II_INCUMBENT,
+    _DEM_CLASS_II_COUNT,
+    _DEM_HOLDOVER_SEATS,
+    _GOP_CLASS_II_COUNT,
+    _GOP_HOLDOVER_SEATS,
     DEM_SAFE_SEATS,
     GOP_SAFE_SEATS,
     SENATE_2026_STATES,
@@ -15,14 +20,8 @@ from api.routers.senate import (
     _margin_to_rating,
     _rating_sort_key,
     _simulate_chamber_probability,
-    _CLASS_II_INCUMBENT,
-    _DEM_CLASS_II_COUNT,
-    _GOP_CLASS_II_COUNT,
-    _DEM_HOLDOVER_SEATS,
-    _GOP_HOLDOVER_SEATS,
 )
 from api.tests.conftest import _noop_lifespan
-
 
 # ── Unit tests for helper functions ────────────────────────────────────────
 

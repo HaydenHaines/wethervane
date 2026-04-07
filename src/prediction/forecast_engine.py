@@ -252,7 +252,6 @@ def _extract_crosstabs_from_xt(poll: dict) -> list[dict] | None:
     Returns None when no xt_ data is present so the caller falls through to Tier 1/3.
     """
     dem_share = poll.get("dem_share")
-    n_sample = poll.get("n_sample", 600)
 
     if dem_share is None:
         return None

@@ -86,7 +86,8 @@ def _build_race_detail_db() -> duckdb.DuckDBPyConnection:
         )
     """)
     con.execute(
-        "INSERT INTO model_versions VALUES (?, 'current', 3, 4, 'logodds', 'total', 30, 3, '0.70', 'test', 'test', '2026-01-01')",
+        "INSERT INTO model_versions VALUES "
+        "(?, 'current', 3, 4, 'logodds', 'total', 30, 3, '0.70', 'test', 'test', '2026-01-01')",
         [TEST_VERSION],
     )
 
@@ -211,17 +212,32 @@ def _build_race_detail_db() -> duckdb.DuckDBPyConnection:
     # AL Governor: no polls — Low confidence
     con.execute("""
         INSERT INTO polls VALUES
-        ('p1', '2026 FL Senate', 'FL', 'state', 0.45, 600, '2026-01-15', 'Siena', 'D=45% R=55%; LV; src=rcp', '2026'),
-        ('p2', '2026 FL Senate', 'FL', 'state', 0.47, 800, '2026-02-20', 'Quinnipiac', 'D=47% R=53%; RV; src=rcp', '2026'),
-        ('p3', '2026 FL Governor', 'FL', 'state', 0.48, 700, '2026-01-10', 'Siena', 'D=48% R=52%; LV; src=rcp', '2026'),
-        ('p4', '2026 FL Governor', 'FL', 'state', 0.50, 900, '2026-02-15', 'Quinnipiac', 'D=50% R=50%; RV; src=rcp', '2026'),
-        ('p5', '2026 FL Governor', 'FL', 'state', 0.46, 500, '2026-03-01', 'Emerson', 'D=46% R=54%; LV; src=rcp', '2026')
+        ('p1', '2026 FL Senate', 'FL', 'state', 0.45, 600, '2026-01-15', 'Siena',
+         'D=45% R=55%; LV; src=rcp', '2026'),
+        ('p2', '2026 FL Senate', 'FL', 'state', 0.47, 800, '2026-02-20', 'Quinnipiac',
+         'D=47% R=53%; RV; src=rcp', '2026'),
+        ('p3', '2026 FL Governor', 'FL', 'state', 0.48, 700, '2026-01-10', 'Siena',
+         'D=48% R=52%; LV; src=rcp', '2026'),
+        ('p4', '2026 FL Governor', 'FL', 'state', 0.50, 900, '2026-02-15', 'Quinnipiac',
+         'D=50% R=50%; RV; src=rcp', '2026'),
+        ('p5', '2026 FL Governor', 'FL', 'state', 0.46, 500, '2026-03-01', 'Emerson',
+         'D=46% R=54%; LV; src=rcp', '2026')
     """)
 
-    con.execute("CREATE TABLE poll_crosstabs (poll_id VARCHAR, demographic_group VARCHAR, group_value VARCHAR, dem_share FLOAT, n_sample INTEGER)")
+    con.execute(
+        "CREATE TABLE poll_crosstabs "
+        "(poll_id VARCHAR, demographic_group VARCHAR, group_value VARCHAR, "
+        "dem_share FLOAT, n_sample INTEGER)"
+    )
     con.execute("CREATE TABLE poll_notes (poll_id VARCHAR, note_type VARCHAR, note_value VARCHAR)")
     con.execute("CREATE TABLE county_shifts (county_fips VARCHAR, version_id VARCHAR, pres_d_shift_00_04 DOUBLE)")
-    con.execute("CREATE TABLE county_demographics (county_fips VARCHAR PRIMARY KEY, pop_total BIGINT, pct_white_nh DOUBLE, pct_black DOUBLE, pct_asian DOUBLE, pct_hispanic DOUBLE, median_age DOUBLE, median_hh_income BIGINT, log_median_hh_income DOUBLE, pct_bachelors_plus DOUBLE, pct_graduate DOUBLE, pct_owner_occupied DOUBLE, pct_wfh DOUBLE, pct_transit DOUBLE, pct_management DOUBLE)")
+    con.execute(
+        "CREATE TABLE county_demographics (county_fips VARCHAR PRIMARY KEY, "
+        "pop_total BIGINT, pct_white_nh DOUBLE, pct_black DOUBLE, pct_asian DOUBLE, "
+        "pct_hispanic DOUBLE, median_age DOUBLE, median_hh_income BIGINT, "
+        "log_median_hh_income DOUBLE, pct_bachelors_plus DOUBLE, pct_graduate DOUBLE, "
+        "pct_owner_occupied DOUBLE, pct_wfh DOUBLE, pct_transit DOUBLE, pct_management DOUBLE)"
+    )
 
     return con
 
@@ -282,7 +298,10 @@ class TestGetRaceDetail:
         resp = race_client.get("/api/v1/forecast/race/2026-fl-senate")
         assert resp.status_code == 200
         data = resp.json()
-        required = {"race", "slug", "state_abbr", "race_type", "year", "prediction", "n_counties", "polls", "type_breakdown"}
+        required = {
+            "race", "slug", "state_abbr", "race_type", "year",
+            "prediction", "n_counties", "polls", "type_breakdown",
+        }
         for field in required:
             assert field in data, f"Missing field: {field}"
 

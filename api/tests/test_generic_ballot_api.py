@@ -5,17 +5,16 @@ Exercises the endpoint's response schema and the manual_shift override.
 from __future__ import annotations
 
 import pytest
+from fastapi.testclient import TestClient
 
+from api.main import create_app
 from api.tests.conftest import (
+    TEST_K,
+    TEST_VERSION,
     _build_test_db,
     _build_test_state,
     _noop_lifespan,
-    TEST_VERSION,
-    TEST_FIPS,
-    TEST_K,
 )
-from api.main import create_app
-from fastapi.testclient import TestClient
 
 
 @pytest.fixture

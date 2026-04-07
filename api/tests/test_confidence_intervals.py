@@ -20,7 +20,6 @@ from api.routers.forecast._helpers import (
     _get_std_floor,
 )
 
-
 # ── _get_std_floor unit tests ─────────────────────────────────────────────────
 
 

@@ -32,8 +32,8 @@ PRES_D_16_20_COL = 12  # index within 30 training cols = pres_d_shift_16_20
 
 
 def generate_report() -> dict:
+    from src.assembly.build_county_shifts_multiyear import HOLDOUT_SHIFT_COLS, TRAINING_SHIFT_COLS
     from src.core import config as _cfg_mod
-    from src.assembly.build_county_shifts_multiyear import TRAINING_SHIFT_COLS, HOLDOUT_SHIFT_COLS
 
     # Load K at runtime (not import-time) — select_k.py wrote it after module import
     k = _cfg_mod.load()["clustering"]["k"]

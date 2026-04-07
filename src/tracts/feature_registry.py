@@ -27,27 +27,27 @@ class FeatureSpec:
 
 _ELECTORAL: list[FeatureSpec] = [
     # Presidential shifts (log-odds, NOT state-centered — carry cross-state signal)
-    FeatureSpec("pres_shift_2008_2012", "electoral", "presidential_shifts", "dra", 2012, "Dem log-odds shift 2008→2012"),
-    FeatureSpec("pres_shift_2012_2016", "electoral", "presidential_shifts", "dra", 2016, "Dem log-odds shift 2012→2016"),
-    FeatureSpec("pres_shift_2016_2020", "electoral", "presidential_shifts", "dra", 2020, "Dem log-odds shift 2016→2020"),
-    FeatureSpec("pres_shift_2020_2024", "electoral", "presidential_shifts", "dra", 2024, "Dem log-odds shift 2020→2024"),
-    FeatureSpec("pres_turnout_shift_2016_2020", "electoral", "presidential_shifts", "dra", 2020, "Turnout proportional change 2016→2020"),
-    FeatureSpec("pres_turnout_shift_2020_2024", "electoral", "presidential_shifts", "dra", 2024, "Turnout proportional change 2020→2024"),
+    FeatureSpec("pres_shift_2008_2012", "electoral", "presidential_shifts", "dra", 2012, "Dem log-odds shift 2008→2012"),  # noqa: E501
+    FeatureSpec("pres_shift_2012_2016", "electoral", "presidential_shifts", "dra", 2016, "Dem log-odds shift 2012→2016"),  # noqa: E501
+    FeatureSpec("pres_shift_2016_2020", "electoral", "presidential_shifts", "dra", 2020, "Dem log-odds shift 2016→2020"),  # noqa: E501
+    FeatureSpec("pres_shift_2020_2024", "electoral", "presidential_shifts", "dra", 2024, "Dem log-odds shift 2020→2024"),  # noqa: E501
+    FeatureSpec("pres_turnout_shift_2016_2020", "electoral", "presidential_shifts", "dra", 2020, "Turnout proportional change 2016→2020"),  # noqa: E501
+    FeatureSpec("pres_turnout_shift_2020_2024", "electoral", "presidential_shifts", "dra", 2024, "Turnout proportional change 2020→2024"),  # noqa: E501
 
     # Governor shifts (log-odds, state-centered — proxy for candidate effect removal)
-    FeatureSpec("gov_shift_2010_2014", "electoral", "governor_shifts", "dra", 2014, "Gov Dem shift 2010→2014 (state-centered)"),
-    FeatureSpec("gov_shift_2014_2018", "electoral", "governor_shifts", "dra", 2018, "Gov Dem shift 2014→2018 (state-centered)"),
-    FeatureSpec("gov_shift_2018_2022", "electoral", "governor_shifts", "dra", 2022, "Gov Dem shift 2018→2022 (state-centered)"),
+    FeatureSpec("gov_shift_2010_2014", "electoral", "governor_shifts", "dra", 2014, "Gov Dem shift 2010→2014 (state-centered)"),  # noqa: E501
+    FeatureSpec("gov_shift_2014_2018", "electoral", "governor_shifts", "dra", 2018, "Gov Dem shift 2014→2018 (state-centered)"),  # noqa: E501
+    FeatureSpec("gov_shift_2018_2022", "electoral", "governor_shifts", "dra", 2022, "Gov Dem shift 2018→2022 (state-centered)"),  # noqa: E501
 
     # Senate shifts (log-odds, state-centered — proxy for candidate effect removal)
-    FeatureSpec("sen_shift_2010_2014", "electoral", "senate_shifts", "dra", 2014, "Senate Dem shift 2010→2014 (state-centered)"),
-    FeatureSpec("sen_shift_2014_2016", "electoral", "senate_shifts", "dra", 2016, "Senate Dem shift 2014→2016 (state-centered)"),
-    FeatureSpec("sen_shift_2016_2020", "electoral", "senate_shifts", "dra", 2020, "Senate Dem shift 2016→2020 (state-centered)"),
-    FeatureSpec("sen_shift_2020_2022", "electoral", "senate_shifts", "dra", 2022, "Senate Dem shift 2020→2022 (state-centered)"),
+    FeatureSpec("sen_shift_2010_2014", "electoral", "senate_shifts", "dra", 2014, "Senate Dem shift 2010→2014 (state-centered)"),  # noqa: E501
+    FeatureSpec("sen_shift_2014_2016", "electoral", "senate_shifts", "dra", 2016, "Senate Dem shift 2014→2016 (state-centered)"),  # noqa: E501
+    FeatureSpec("sen_shift_2016_2020", "electoral", "senate_shifts", "dra", 2020, "Senate Dem shift 2016→2020 (state-centered)"),  # noqa: E501
+    FeatureSpec("sen_shift_2020_2022", "electoral", "senate_shifts", "dra", 2022, "Senate Dem shift 2020→2022 (state-centered)"),  # noqa: E501
 
     # House shifts (log-odds, state-centered)
-    FeatureSpec("house_shift_2016_2018", "electoral", "house_shifts", "dra", 2018, "House Dem shift 2016→2018 (state-centered)"),
-    FeatureSpec("house_shift_2018_2020", "electoral", "house_shifts", "dra", 2020, "House Dem shift 2018→2020 (state-centered)"),
+    FeatureSpec("house_shift_2016_2018", "electoral", "house_shifts", "dra", 2018, "House Dem shift 2016→2018 (state-centered)"),  # noqa: E501
+    FeatureSpec("house_shift_2018_2020", "electoral", "house_shifts", "dra", 2020, "House Dem shift 2018→2020 (state-centered)"),  # noqa: E501
 
     # Presidential lean (dem_share levels)
     FeatureSpec("pres_dem_share_2016", "electoral", "presidential_lean", "dra", 2016, "Dem vote share 2016 president"),
@@ -60,8 +60,8 @@ _ELECTORAL: list[FeatureSpec] = [
     FeatureSpec("turnout_2024", "electoral", "turnout_level", "dra", 2024, "Total votes cast 2024 president"),
 
     # Turnout shift (proportional change in total votes)
-    FeatureSpec("turnout_shift_2016_2020", "electoral", "turnout_shift", "dra", 2020, "Turnout proportional change 2016→2020"),
-    FeatureSpec("turnout_shift_2020_2024", "electoral", "turnout_shift", "dra", 2024, "Turnout proportional change 2020→2024"),
+    FeatureSpec("turnout_shift_2016_2020", "electoral", "turnout_shift", "dra", 2020, "Turnout proportional change 2016→2020"),  # noqa: E501
+    FeatureSpec("turnout_shift_2020_2024", "electoral", "turnout_shift", "dra", 2024, "Turnout proportional change 2020→2024"),  # noqa: E501
 
     # Vote density (votes / sq km)
     FeatureSpec("vote_density_2020", "electoral", "vote_density", "dra", 2020, "Votes per sq km 2020"),
@@ -85,7 +85,7 @@ _DEMOGRAPHIC: list[FeatureSpec] = [
     FeatureSpec("pct_asian", "demographic", "race_ethnicity", "acs_tract", None, "Asian share"),
 
     # White working class
-    FeatureSpec("pct_wwc", "demographic", "white_working_class", "acs_tract", None, "White non-Hispanic * (1 - BA+) interaction"),
+    FeatureSpec("pct_wwc", "demographic", "white_working_class", "acs_tract", None, "White non-Hispanic * (1 - BA+) interaction"),  # noqa: E501
 
     # Foreign born
     FeatureSpec("pct_foreign_born", "demographic", "foreign_born", "acs_tract", None, "Foreign-born share"),
@@ -127,9 +127,9 @@ _DEMOGRAPHIC: list[FeatureSpec] = [
 # ── Religion features (~4) ───────────────────────────────────────────────────
 
 _RELIGION: list[FeatureSpec] = [
-    FeatureSpec("evangelical_share", "religion", "religion", "rcms_county", None, "Evangelical Protestant adherent share"),
+    FeatureSpec("evangelical_share", "religion", "religion", "rcms_county", None, "Evangelical Protestant adherent share"),  # noqa: E501
     FeatureSpec("catholic_share", "religion", "religion", "rcms_county", None, "Catholic adherent share"),
-    FeatureSpec("black_protestant_share", "religion", "religion", "rcms_county", None, "Black Protestant adherent share"),
+    FeatureSpec("black_protestant_share", "religion", "religion", "rcms_county", None, "Black Protestant adherent share"),  # noqa: E501
     FeatureSpec("adherence_rate", "religion", "religion", "rcms_county", None, "Total religious adherence rate"),
 ]
 

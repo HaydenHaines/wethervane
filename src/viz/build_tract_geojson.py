@@ -11,7 +11,6 @@ Usage:
 from __future__ import annotations
 
 import math
-import os
 import zipfile
 from pathlib import Path
 
@@ -262,7 +261,7 @@ def print_summary(gdf: gpd.GeoDataFrame, output_path: Path, size_mb: float) -> N
     mean_entropy = populated["membership_entropy"].mean()
     print()
     print(f"Mean membership entropy (populated tracts): {mean_entropy:.4f}")
-    print(f"  (0 = pure single-community, 1 = perfectly uniform across all 7)")
+    print("  (0 = pure single-community, 1 = perfectly uniform across all 7)")
 
     # Validate c1-c7 in [0, 1]
     all_valid = True

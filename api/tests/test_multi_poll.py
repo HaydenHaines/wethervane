@@ -1,8 +1,6 @@
 """Tests for the POST /forecast/polls multi-poll endpoint."""
 from __future__ import annotations
 
-import pytest
-
 
 class TestMultiPollEndpoint:
     def test_missing_cycle_returns_404(self, client):

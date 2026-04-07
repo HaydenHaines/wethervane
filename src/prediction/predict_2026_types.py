@@ -83,6 +83,7 @@ from src.propagation.poll_methodology import (  # noqa: E402
     _DEFAULT_METHODOLOGY_WEIGHTS,
     load_methodology_weights,
 )
+
 _METHODOLOGY_WEIGHTS: dict[str, float] = (
     load_methodology_weights(_PARAMS_PATH)
     if _poll_weighting_params.get("methodology_weights")

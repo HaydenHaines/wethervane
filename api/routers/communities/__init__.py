@@ -10,13 +10,13 @@ router.include_router(_types_router)
 
 # Re-export for backward compatibility
 from api.routers.communities.legacy import (  # noqa: E402, F401
-    list_communities,
     get_community,
+    list_communities,
 )
 from api.routers.communities.types import (  # noqa: E402, F401
-    list_types,
-    get_type_scatter_data,
     get_correlated_types,
     get_type,
+    get_type_scatter_data,
     list_super_types,
+    list_types,
 )

@@ -15,8 +15,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from api.cache import forecast_cache, make_cache_key
 from api.routers import cache as cache_router
-from api.routers import communities, counties, forecast, historical, meta, pollsters, senate, tracts
-from api.routers import governor
+from api.routers import communities, counties, forecast, governor, historical, meta, pollsters, senate, tracts
 from src.propagation.crosstab_w_builder import CROSSTAB_DIMENSION_MAP, build_affinity_index
 
 log = logging.getLogger(__name__)
@@ -265,7 +264,7 @@ def _load_behavior_layer(app, data_dir: Path) -> None:
 def _load_pollster_grades(app) -> None:
     """Load Silver Bulletin pollster grades for quality weighting."""
     try:
-        from src.assembly.silver_bulletin_ratings import load_pollster_grades, _normalize
+        from src.assembly.silver_bulletin_ratings import _normalize, load_pollster_grades
         grades = load_pollster_grades()
         app.state.pollster_grades = grades
         app.state.pollster_grades_normalized = {_normalize(n): g for n, g in grades.items()}

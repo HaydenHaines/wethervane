@@ -53,8 +53,8 @@ from src.validation.sci_similarity import (  # noqa: F401
     DISTANCE_BINS,
     DISTANCE_LABELS,
     add_geodesic_distance,
-    compute_partial_correlation,
     compute_pairwise_type_similarity,
+    compute_partial_correlation,
     haversine_km,
 )
 
@@ -279,8 +279,11 @@ def _format_finding_1(result: SCITypeValidationResult) -> list[str]:
         "",
         "| Metric | Same Type | Different Type | Ratio |",
         "|--------|-----------|----------------|-------|",
-        f"| Mean SCI | {result.mean_sci_same_type:,.0f} | {result.mean_sci_diff_type:,.0f} | {result.sci_ratio_same_over_diff:.2f}x |",
-        f"| Mean log10(SCI) | {result.mean_log_sci_same_type:.3f} | {result.mean_log_sci_diff_type:.3f} | +{result.mean_log_sci_same_type - result.mean_log_sci_diff_type:.3f} |",
+        (f"| Mean SCI | {result.mean_sci_same_type:,.0f} | "
+         f"{result.mean_sci_diff_type:,.0f} | {result.sci_ratio_same_over_diff:.2f}x |"),
+        (f"| Mean log10(SCI) | {result.mean_log_sci_same_type:.3f} | "
+         f"{result.mean_log_sci_diff_type:.3f} | "
+         f"+{result.mean_log_sci_same_type - result.mean_log_sci_diff_type:.3f} |"),
         "",
     ]
 
@@ -330,7 +333,8 @@ def _format_finding_4(result: SCITypeValidationResult) -> list[str]:
         "Partial correlation of log(SCI) vs type cosine similarity,",
         "controlling for log(geodesic distance):",
         "",
-        f"- **Partial r**: {result.partial_r_sci_cosine_given_distance:.4f} (p={result.partial_p_sci_cosine_given_distance:.2e})",
+        (f"- **Partial r**: {result.partial_r_sci_cosine_given_distance:.4f} "
+         f"(p={result.partial_p_sci_cosine_given_distance:.2e})"),
         "",
         "This measures whether SCI adds information about type similarity",
         "beyond what geographic distance alone provides.",
