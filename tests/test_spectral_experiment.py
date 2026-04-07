@@ -404,6 +404,10 @@ def test_run_kmeans_cluster_count(mod):
 # ---------------------------------------------------------------------------
 
 
+@pytest.mark.skipif(
+    not (Path(__file__).parents[1] / "data" / "shifts" / "county_shifts_multiyear.parquet").exists(),
+    reason="county_shifts_multiyear.parquet not available (CI environment)",
+)
 def test_load_data_no_holdout_in_training(mod):
     """Training columns must not include the three holdout columns."""
     X_weighted, X_raw, training_cols, holdout_cols = mod.load_data()

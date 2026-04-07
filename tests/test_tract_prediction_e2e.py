@@ -5,6 +5,11 @@ from pathlib import Path
 
 DATA_DIR = Path(__file__).resolve().parents[1] / "data"
 
+pytestmark = pytest.mark.skipif(
+    not (DATA_DIR / "communities" / "tract_type_assignments.parquet").exists(),
+    reason="Tract data not available (CI environment)",
+)
+
 
 def test_behavior_layer_files_exist():
     """Behavior layer artifacts must exist after training."""
