@@ -35,10 +35,15 @@ KNOWN_PDFS_2026: dict[tuple[str, str], str] = {
     ("2026-01-09", "2026-01-12"): "qsNv5iE",
     ("2026-01-16", "2026-01-19"): "z9wtNZI",
     ("2026-01-23", "2026-01-26"): "8FWGyNz",
+    ("2026-01-30", "2026-02-02"): "DDIQ8jz",
     ("2026-02-06", "2026-02-09"): "vNnwPx2",
+    ("2026-02-13", "2026-02-16"): "usZL1Jt",
+    ("2026-02-20", "2026-02-23"): "mhEVZMR",
+    ("2026-02-27", "2026-03-02"): "ubu5DXD",
     ("2026-03-06", "2026-03-09"): "EcCnfRV",
     ("2026-03-13", "2026-03-16"): "CwWXhS2",
     ("2026-03-20", "2026-03-23"): "o84FoNw",
+    ("2026-03-27", "2026-03-30"): "3wplfYX",
 }
 
 BASE_URL = "https://d3nkl3psvxxpe9.cloudfront.net/documents/econTabReport_{hash}.pdf"
@@ -131,7 +136,7 @@ def parse_header(pdf: pdfplumber.PDF) -> dict[str, str | int]:
     # Check first few pages for the header — it's on every page.
     for page in pdf.pages[:3]:
         text = page.extract_text() or ""
-        # Pattern: "Month DD - DD, YYYY - NNNN U.S. Adult Citizens"
+        # Pattern 1: same month — "March 20 - 23, 2026 - 1665 U.S. Adult Citizens"
         match = re.search(
             r"(\w+)\s+(\d+)\s*-\s*(\d+),\s*(\d{4})\s*-\s*(\d[\d,]*)\s*U\.?S\.?\s*Adult",
             text,
@@ -148,6 +153,27 @@ def parse_header(pdf: pdfplumber.PDF) -> dict[str, str | int]:
             return {
                 "date_start": f"{year}-{month:02d}-{day_start:02d}",
                 "date_end": f"{year}-{month:02d}-{day_end:02d}",
+                "n_total": n_total,
+            }
+        # Pattern 2: cross-month — "January 30 - February 2, 2026 - 1672 ..."
+        match = re.search(
+            r"(\w+)\s+(\d+)\s*-\s*(\w+)\s+(\d+),\s*(\d{4})\s*-\s*(\d[\d,]*)\s*U\.?S\.?\s*Adult",
+            text,
+        )
+        if match:
+            m1_name = match.group(1).lower()
+            day_start = int(match.group(2))
+            m2_name = match.group(3).lower()
+            day_end = int(match.group(4))
+            year = int(match.group(5))
+            n_total = int(match.group(6).replace(",", ""))
+            m1 = MONTH_MAP.get(m1_name)
+            m2 = MONTH_MAP.get(m2_name)
+            if m1 is None or m2 is None:
+                continue
+            return {
+                "date_start": f"{year}-{m1:02d}-{day_start:02d}",
+                "date_end": f"{year}-{m2:02d}-{day_end:02d}",
                 "n_total": n_total,
             }
     raise ValueError("Could not parse date/sample from PDF header")
