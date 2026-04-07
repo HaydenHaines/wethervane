@@ -395,6 +395,52 @@ export async function fetchChamberProbability(): Promise<ChamberProbabilityData>
   return res.json();
 }
 
+// ── Fundamentals model ───────────────────────────────────────────────────
+
+export interface FundamentalsSnapshot {
+  cycle: number;
+  in_party: string;
+  approval_net_oct: number | null;
+  gdp_q2_growth_pct: number | null;
+  unemployment_oct: number | null;
+  cpi_yoy_oct: number | null;
+  consumer_sentiment: number | null;
+}
+
+export interface FundamentalsData {
+  /** Dem two-party share shift (0-1 scale, positive = Dem gain). */
+  shift: number;
+  /** Same shift expressed in percentage points. */
+  shift_pp: number;
+  /** Contribution from presidential approval (pp). */
+  approval_contribution_pp: number;
+  /** Contribution from GDP growth (pp). */
+  gdp_contribution_pp: number;
+  /** Contribution from unemployment (pp). */
+  unemployment_contribution_pp: number;
+  /** Contribution from CPI inflation (pp). */
+  cpi_contribution_pp: number;
+  /** Leave-one-out RMSE across training cycles (pp). Indicates model uncertainty. */
+  loo_rmse_pp: number;
+  /** Number of historical midterm cycles used for training. */
+  n_training: number;
+  /** Blend weight assigned to the fundamentals component (0-1). */
+  weight: number;
+  /**
+   * Combined generic ballot shift (pp) — fundamentals blended with generic
+   * ballot polls.  This is the headline number for display.
+   */
+  combined_shift_pp: number;
+  /** Current-cycle economic snapshot values. */
+  snapshot: FundamentalsSnapshot;
+}
+
+export async function fetchFundamentals(): Promise<FundamentalsData> {
+  const res = await fetch(`${API_BASE}/forecast/fundamentals`);
+  if (!res.ok) throw new Error(`/forecast/fundamentals failed: ${res.status}`);
+  return res.json();
+}
+
 // ── Race margin history (sparklines) ─────────────────────────────────────
 
 /** One data point in a race's margin time series. */

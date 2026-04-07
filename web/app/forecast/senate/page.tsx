@@ -2,6 +2,7 @@
 
 import { useSenateOverview } from "@/lib/hooks/use-senate-overview";
 import { ChamberProbabilityBanner } from "@/components/forecast/ChamberProbabilityBanner";
+import { FundamentalsCard } from "@/components/forecast/FundamentalsCard";
 import { OverviewBlendControls } from "@/components/forecast/OverviewBlendControls";
 import { ErrorAlert } from "@/components/shared/ErrorAlert";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -42,6 +43,9 @@ export default function SenatePage() {
 
       {/* Chamber control probability — "One Big Number" anchor above the balance bar */}
       <ChamberProbabilityBanner />
+
+      {/* National Environment — fundamentals model: approval + economy → structural shift */}
+      <FundamentalsCard />
 
       {/*
        * OverviewBlendControls owns the BalanceBar, blend sliders, and race

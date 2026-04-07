@@ -5,6 +5,7 @@ import { PollTable } from "@/components/forecast/PollTable";
 import { TypesBreakdown } from "@/components/forecast/TypesBreakdown";
 import { HistoricalContextCard } from "@/components/forecast/HistoricalContextCard";
 import type { HistoricalContext } from "@/components/forecast/HistoricalContextCard";
+import { FundamentalsCard } from "@/components/forecast/FundamentalsCard";
 import { PollConfidenceBadge } from "@/components/forecast/PollConfidenceBadge";
 import type { PollConfidence } from "@/components/forecast/PollConfidenceBadge";
 import { marginToRating } from "@/lib/config/palette";
@@ -495,6 +496,9 @@ export default async function RaceDetailPage({ params }: PageProps) {
           stateAbbr={data.state_abbr}
         />
       )}
+
+      {/* National Environment — structural fundamentals signal common to all races */}
+      <FundamentalsCard />
 
       {/* Model notes */}
       <section
