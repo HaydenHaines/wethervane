@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import re
 import string
+from pathlib import Path
 
 import pandas as pd
 import pytest
@@ -335,6 +336,13 @@ class TestTrendSentence:
 
 # ── Integration tests against real data ──────────────────────────────────────
 
+_TYPE_PROFILES_PATH = Path(__file__).parents[1] / "data" / "communities" / "type_profiles.parquet"
+
+
+@pytest.mark.skipif(
+    not _TYPE_PROFILES_PATH.exists(),
+    reason="type_profiles.parquet not available (CI environment)",
+)
 class TestGenerateAllNarratives:
     @pytest.fixture(scope="class")
     def narratives(self):
