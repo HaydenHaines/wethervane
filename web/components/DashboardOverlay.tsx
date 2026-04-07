@@ -17,7 +17,7 @@ function buildChoropleth(rows: ForecastRow[], stateFilter?: string): Map<string,
   const typeSum = new Map<number, number>();
   const typeCount = new Map<number, number>();
   filtered.forEach((r) => {
-    const typeId = (r as any).dominant_type;
+    const typeId = (r as ForecastRow & { dominant_type?: number }).dominant_type;
     if (typeId != null && r.pred_dem_share != null) {
       typeSum.set(typeId, (typeSum.get(typeId) ?? 0) + r.pred_dem_share);
       typeCount.set(typeId, (typeCount.get(typeId) ?? 0) + 1);
