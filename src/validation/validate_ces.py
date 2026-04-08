@@ -181,6 +181,52 @@ def filter_validated_presidential_voters(df: pd.DataFrame) -> pd.DataFrame:
     return validated
 
 
+def filter_validated_downballot_voters(
+    df: pd.DataFrame,
+    race: str = "governor",
+) -> pd.DataFrame:
+    """
+    Filter CES to validated voters for governor or Senate races.
+
+    Same validation logic as presidential, but uses voted_gov_party or
+    voted_sen_party. Governor/Senate races are available in both presidential
+    and off-cycle years, but off-cycle years have far more data (25K-31K
+    respondents vs 3K-6K in presidential years).
+
+    Args:
+        df: Full CES DataFrame.
+        race: "governor" or "senate".
+
+    Returns:
+        Filtered DataFrame with two-party downballot voters.
+    """
+    col_map = {
+        "governor": COL_VOTED_GOV_PARTY,
+        "senate": COL_VOTED_SEN_PARTY,
+    }
+    if race not in col_map:
+        raise ValueError(f"race must be 'governor' or 'senate', got '{race}'")
+
+    vote_col = col_map[race]
+
+    validated = df[
+        (df[COL_VV_TURNOUT] == VV_VOTED)
+        & (df[vote_col].isin([PARTY_DEM, PARTY_REP]))
+        & (df[COL_COUNTY_FIPS].notna())
+    ].copy()
+
+    # Rename vote column to a generic name for downstream pipeline reuse
+    validated = validated.rename(columns={vote_col: "voted_party"})
+
+    log.info(
+        "After filter: %d validated %s voters (from %d total)",
+        len(validated),
+        race,
+        len(df),
+    )
+    return validated
+
+
 # ---------------------------------------------------------------------------
 # County FIPS join
 # ---------------------------------------------------------------------------
@@ -310,6 +356,136 @@ def aggregate_by_type_year(merged: pd.DataFrame) -> pd.DataFrame:
 
     log.info("Aggregated to %d type-year cells", len(result))
     return result
+
+
+def aggregate_downballot_by_type_year(
+    merged: pd.DataFrame,
+) -> pd.DataFrame:
+    """
+    Compute CES-observed D-share per (type, year) for downballot races.
+
+    Same logic as aggregate_by_type_year but uses the generic "voted_party"
+    column (renamed from voted_gov_party or voted_sen_party by the filter).
+
+    Returns:
+        DataFrame with columns: type_id, year, ces_dem_share, n_respondents,
+        n_weighted.
+    """
+    merged = merged.copy()
+
+    # Two-party vote: 1 = Democratic, 0 = Republican
+    merged["is_dem"] = (merged["voted_party"] == PARTY_DEM).astype(float)
+
+    # Ensure weights are non-null and positive
+    merged[COL_WEIGHT] = pd.to_numeric(merged[COL_WEIGHT], errors="coerce").fillna(1.0)
+    merged[COL_WEIGHT] = merged[COL_WEIGHT].clip(lower=0.0)
+
+    def weighted_dem_share(group: pd.DataFrame) -> pd.Series:
+        w = group[COL_WEIGHT]
+        dem = group["is_dem"]
+        total_weight = w.sum()
+        if total_weight == 0:
+            return pd.Series({"ces_dem_share": np.nan, "n_respondents": len(group), "n_weighted": 0.0})
+        weighted_share = (dem * w).sum() / total_weight
+        return pd.Series(
+            {
+                "ces_dem_share": weighted_share,
+                "n_respondents": len(group),
+                "n_weighted": total_weight,
+            }
+        )
+
+    result = (
+        merged.groupby(["dominant_type", COL_YEAR])
+        .apply(weighted_dem_share, include_groups=False)
+        .reset_index()
+        .rename(columns={"dominant_type": "type_id", COL_YEAR: "year"})
+    )
+
+    log.info("Aggregated downballot to %d type-year cells", len(result))
+    return result
+
+
+def compute_empirical_delta(
+    pres_type_year: pd.DataFrame,
+    gov_type_year: pd.DataFrame,
+    min_respondents: int = MIN_N_PER_TYPE,
+) -> pd.DataFrame:
+    """
+    Compute empirical δ (governor D-share minus presidential D-share) per type.
+
+    δ is the core parameter of the behavior layer: how each type's vote choice
+    shifts between presidential and off-cycle (governor/Senate) races. A positive
+    δ means the type votes more Democratic in governor races than presidential.
+
+    Because presidential and governor races rarely happen in the same year,
+    we compare type means across years: the all-year presidential D-share for
+    each type vs the all-year governor D-share.
+
+    Args:
+        pres_type_year: Presidential per-type-year data from aggregate_by_type_year.
+        gov_type_year: Governor per-type-year data from aggregate_downballot_by_type_year.
+        min_respondents: Minimum total respondents (across all years) to include a type.
+
+    Returns:
+        DataFrame with type_id, pres_dem_share, gov_dem_share, delta,
+        pres_n, gov_n columns.
+    """
+    # Compute weighted means across years for each type
+    def type_weighted_mean(df: pd.DataFrame) -> pd.DataFrame:
+        result = (
+            df.groupby("type_id")
+            .apply(
+                lambda g: pd.Series(
+                    {
+                        "dem_share": np.average(
+                            g["ces_dem_share"].dropna(),
+                            weights=g.loc[g["ces_dem_share"].notna(), "n_weighted"],
+                        )
+                        if g["ces_dem_share"].notna().any()
+                        else np.nan,
+                        "total_n": g["n_respondents"].sum(),
+                    }
+                ),
+                include_groups=False,
+            )
+            .reset_index()
+        )
+        return result
+
+    pres_means = type_weighted_mean(pres_type_year)
+    gov_means = type_weighted_mean(gov_type_year)
+
+    # Filter by min respondents
+    pres_means = pres_means[pres_means["total_n"] >= min_respondents]
+    gov_means = gov_means[gov_means["total_n"] >= min_respondents]
+
+    # Merge
+    merged = pres_means.merge(
+        gov_means, on="type_id", suffixes=("_pres", "_gov")
+    )
+
+    merged = merged.rename(
+        columns={
+            "dem_share_pres": "pres_dem_share",
+            "dem_share_gov": "gov_dem_share",
+            "total_n_pres": "pres_n",
+            "total_n_gov": "gov_n",
+        }
+    )
+
+    # δ = governor D-share - presidential D-share
+    # Positive δ → type votes more D in governor than presidential
+    merged["delta"] = merged["gov_dem_share"] - merged["pres_dem_share"]
+
+    log.info(
+        "Computed empirical δ for %d types. Mean δ: %+.4f, Std δ: %.4f",
+        len(merged),
+        merged["delta"].mean(),
+        merged["delta"].std(),
+    )
+
+    return merged.sort_values("type_id").reset_index(drop=True)
 
 
 def compute_type_means(type_year: pd.DataFrame) -> pd.DataFrame:
@@ -679,6 +855,113 @@ def run_validation(
     return results, comparison
 
 
+def run_downballot_validation(
+    ces_path: Path = CES_FILE,
+    county_type_path: Path = COUNTY_TYPE_FILE,
+    race: str = "governor",
+) -> pd.DataFrame:
+    """
+    Run CES downballot (governor or Senate) validation and compute empirical δ.
+
+    δ is the core behavioral parameter: how each type's vote choice shifts
+    between presidential and off-cycle races. This provides the first
+    independent measurement of δ from survey data.
+
+    Args:
+        ces_path: Path to CES feather file.
+        county_type_path: Path to county type assignments.
+        race: "governor" or "senate".
+
+    Returns:
+        DataFrame with per-type δ values and supporting statistics.
+    """
+    download_ces(dest=ces_path)
+    ces = load_ces(ces_path)
+
+    # Presidential baseline
+    pres_validated = filter_validated_presidential_voters(ces)
+    pres_merged, _ = join_county_types(pres_validated, county_type_path)
+    pres_type_year = aggregate_by_type_year(pres_merged)
+
+    # Downballot
+    db_validated = filter_validated_downballot_voters(ces, race=race)
+    db_merged, db_match = join_county_types(db_validated, county_type_path)
+    db_type_year = aggregate_downballot_by_type_year(db_merged)
+
+    # Compute δ
+    delta_df = compute_empirical_delta(pres_type_year, db_type_year)
+
+    # Save outputs
+    VALIDATION_DIR.mkdir(parents=True, exist_ok=True)
+    delta_path = VALIDATION_DIR / f"ces_{race}_delta.csv"
+    delta_df.to_csv(delta_path, index=False)
+
+    # Summary JSON
+    delta_summary = {
+        "race": race,
+        "n_types": len(delta_df),
+        "mean_delta": round(float(delta_df["delta"].mean()), 4),
+        "std_delta": round(float(delta_df["delta"].std()), 4),
+        "median_delta": round(float(delta_df["delta"].median()), 4),
+        "pres_respondents": int(delta_df["pres_n"].sum()),
+        "downballot_respondents": int(delta_df["gov_n"].sum()),
+        "pres_gov_correlation": round(
+            float(np.corrcoef(delta_df["pres_dem_share"], delta_df["gov_dem_share"])[0, 1]),
+            4,
+        ),
+    }
+    delta_json_path = VALIDATION_DIR / f"ces_{race}_delta_summary.json"
+    with open(delta_json_path, "w") as f:
+        json.dump(delta_summary, f, indent=2)
+
+    # Print report
+    print(f"\n{'=' * 70}")
+    print(f"CES {race.title()} δ Analysis (choice shift from presidential)")
+    print("=" * 70)
+    print(f"\n  Types with data:       {len(delta_df)}")
+    print(f"  Pres respondents:      {int(delta_df['pres_n'].sum()):,}")
+    print(f"  {race.title()} respondents:  {int(delta_df['gov_n'].sum()):,}")
+    print(f"  Pres-{race[:3]} correlation: {delta_summary['pres_gov_correlation']:+.4f}")
+    print(f"\n  Mean δ:                {delta_summary['mean_delta']:+.4f}  ({delta_summary['mean_delta'] * 100:+.2f}pp)")
+    print(f"  Std δ:                 {delta_summary['std_delta']:.4f}  ({delta_summary['std_delta'] * 100:.2f}pp)")
+    print(f"  Median δ:              {delta_summary['median_delta']:+.4f}  ({delta_summary['median_delta'] * 100:+.2f}pp)")
+
+    # Show types with largest |δ|
+    print(f"\n── Top 5 Types by |δ| (largest pres→{race[:3]} shift) ─────────────────────")
+    print(f"  {'Type':<8}  {'Pres D%':>8}  {race.title()[:3]+' D%':>8}  {'δ':>8}  {'Pres N':>8}  {race.title()[:3]+' N':>8}")
+    print("  " + "-" * 56)
+    top = delta_df.nlargest(5, "delta", keep="first")[
+        ["type_id", "pres_dem_share", "gov_dem_share", "delta", "pres_n", "gov_n"]
+    ]
+    for _, row in top.iterrows():
+        print(
+            f"  {int(row['type_id']):<8}  "
+            f"{row['pres_dem_share'] * 100:>7.1f}%  "
+            f"{row['gov_dem_share'] * 100:>7.1f}%  "
+            f"{row['delta'] * 100:>+7.1f}pp  "
+            f"{int(row['pres_n']):>8,}  "
+            f"{int(row['gov_n']):>8,}"
+        )
+
+    print(f"\n── Bottom 5 Types by δ (shift toward R in {race}) ──────────────────────")
+    bottom = delta_df.nsmallest(5, "delta", keep="first")[
+        ["type_id", "pres_dem_share", "gov_dem_share", "delta", "pres_n", "gov_n"]
+    ]
+    for _, row in bottom.iterrows():
+        print(
+            f"  {int(row['type_id']):<8}  "
+            f"{row['pres_dem_share'] * 100:>7.1f}%  "
+            f"{row['gov_dem_share'] * 100:>7.1f}%  "
+            f"{row['delta'] * 100:>+7.1f}pp  "
+            f"{int(row['pres_n']):>8,}  "
+            f"{int(row['gov_n']):>8,}"
+        )
+
+    print()
+    log.info("Saved δ data to %s and %s", delta_path, delta_json_path)
+    return delta_df
+
+
 # ---------------------------------------------------------------------------
 # Entry point
 # ---------------------------------------------------------------------------
@@ -691,6 +974,10 @@ def main() -> None:
         datefmt="%H:%M:%S",
     )
     run_validation()
+
+    # Run downballot δ analysis
+    run_downballot_validation(race="governor")
+    run_downballot_validation(race="senate")
 
 
 if __name__ == "__main__":

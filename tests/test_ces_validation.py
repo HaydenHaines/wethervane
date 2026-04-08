@@ -18,9 +18,12 @@ import pytest
 
 from src.validation.validate_ces import (
     aggregate_by_type_year,
+    aggregate_downballot_by_type_year,
     compare_ces_to_model,
+    compute_empirical_delta,
     compute_type_means,
     compute_validation_stats,
+    filter_validated_downballot_voters,
     filter_validated_presidential_voters,
     join_county_types,
     normalize_fips,
@@ -613,6 +616,159 @@ def test_validate_per_year_bias_varies_by_year() -> None:
     r_2020 = next(r for r in results if r.comparison_year == 2020)
     assert r_2016.bias == pytest.approx(0.0, abs=1e-4)
     assert r_2020.bias == pytest.approx(0.05, abs=1e-4)
+
+
+# ---------------------------------------------------------------------------
+# filter_validated_downballot_voters tests
+# ---------------------------------------------------------------------------
+
+
+def test_filter_downballot_governor() -> None:
+    """Filter should select validated governor voters only."""
+    df = pd.DataFrame(
+        {
+            "year": [2022, 2022, 2022],
+            "county_fips": ["01001"] * 3,
+            "vv_turnout_gvm": ["Voted", "Voted", "No Record of Voting"],
+            "voted_pres_party": [None, None, None],
+            "voted_gov_party": ["Democratic", "Republican", "Democratic"],
+            "voted_sen_party": [None, None, None],
+            "weight_cumulative": [1.0, 1.0, 1.0],
+        }
+    )
+    result = filter_validated_downballot_voters(df, race="governor")
+    assert len(result) == 2
+    assert "voted_party" in result.columns
+    assert set(result["voted_party"]) == {"Democratic", "Republican"}
+
+
+def test_filter_downballot_senate() -> None:
+    """Filter should select validated Senate voters only."""
+    df = pd.DataFrame(
+        {
+            "year": [2022, 2022],
+            "county_fips": ["01001", "01001"],
+            "vv_turnout_gvm": ["Voted", "Voted"],
+            "voted_pres_party": [None, None],
+            "voted_gov_party": [None, None],
+            "voted_sen_party": ["Democratic", "Republican"],
+            "weight_cumulative": [1.0, 1.0],
+        }
+    )
+    result = filter_validated_downballot_voters(df, race="senate")
+    assert len(result) == 2
+
+
+def test_filter_downballot_invalid_race() -> None:
+    """Invalid race name should raise ValueError."""
+    df = pd.DataFrame({"year": [2022]})
+    with pytest.raises(ValueError, match="must be 'governor' or 'senate'"):
+        filter_validated_downballot_voters(df, race="house")
+
+
+# ---------------------------------------------------------------------------
+# aggregate_downballot_by_type_year tests
+# ---------------------------------------------------------------------------
+
+
+def test_aggregate_downballot_basic() -> None:
+    """Downballot aggregation should compute D-share from voted_party column."""
+    merged = pd.DataFrame(
+        {
+            "dominant_type": [0, 0, 0, 1, 1],
+            "year": [2022] * 5,
+            "county_fips": ["01001"] * 3 + ["02001"] * 2,
+            "voted_party": ["Democratic", "Democratic", "Republican", "Republican", "Republican"],
+            "weight_cumulative": [1.0] * 5,
+        }
+    )
+    agg = aggregate_downballot_by_type_year(merged)
+    t0 = agg.loc[agg["type_id"] == 0, "ces_dem_share"].iloc[0]
+    t1 = agg.loc[agg["type_id"] == 1, "ces_dem_share"].iloc[0]
+    assert t0 == pytest.approx(2 / 3, abs=1e-6)
+    assert t1 == pytest.approx(0.0, abs=1e-6)
+
+
+# ---------------------------------------------------------------------------
+# compute_empirical_delta tests
+# ---------------------------------------------------------------------------
+
+
+def test_empirical_delta_zero_when_identical() -> None:
+    """When pres and gov D-share are identical, δ should be zero."""
+    vals = np.linspace(0.3, 0.7, 10)
+    pres = pd.DataFrame(
+        {
+            "type_id": list(range(10)),
+            "year": [2020] * 10,
+            "ces_dem_share": vals,
+            "n_respondents": [100] * 10,
+            "n_weighted": [100.0] * 10,
+        }
+    )
+    gov = pd.DataFrame(
+        {
+            "type_id": list(range(10)),
+            "year": [2022] * 10,
+            "ces_dem_share": vals,
+            "n_respondents": [100] * 10,
+            "n_weighted": [100.0] * 10,
+        }
+    )
+    delta = compute_empirical_delta(pres, gov, min_respondents=1)
+    assert len(delta) == 10
+    assert delta["delta"].abs().max() == pytest.approx(0.0, abs=1e-6)
+
+
+def test_empirical_delta_positive_means_more_d_in_gov() -> None:
+    """Positive δ should indicate the type votes more D in governor races."""
+    pres = pd.DataFrame(
+        {
+            "type_id": list(range(10)),
+            "year": [2020] * 10,
+            "ces_dem_share": np.linspace(0.3, 0.7, 10),
+            "n_respondents": [100] * 10,
+            "n_weighted": [100.0] * 10,
+        }
+    )
+    # Governor D-share is uniformly +0.05 higher
+    gov = pd.DataFrame(
+        {
+            "type_id": list(range(10)),
+            "year": [2022] * 10,
+            "ces_dem_share": np.linspace(0.35, 0.75, 10),
+            "n_respondents": [100] * 10,
+            "n_weighted": [100.0] * 10,
+        }
+    )
+    delta = compute_empirical_delta(pres, gov, min_respondents=1)
+    assert (delta["delta"] > 0).all()
+    assert delta["delta"].mean() == pytest.approx(0.05, abs=1e-4)
+
+
+def test_empirical_delta_respects_min_respondents() -> None:
+    """Types below threshold in either race should be excluded from δ."""
+    pres = pd.DataFrame(
+        {
+            "type_id": [0, 1],
+            "year": [2020, 2020],
+            "ces_dem_share": [0.5, 0.5],
+            "n_respondents": [100, 5],  # type 1 below threshold
+            "n_weighted": [100.0, 5.0],
+        }
+    )
+    gov = pd.DataFrame(
+        {
+            "type_id": [0, 1],
+            "year": [2022, 2022],
+            "ces_dem_share": [0.5, 0.5],
+            "n_respondents": [100, 100],
+            "n_weighted": [100.0, 100.0],
+        }
+    )
+    delta = compute_empirical_delta(pres, gov, min_respondents=10)
+    assert len(delta) == 1
+    assert delta.iloc[0]["type_id"] == 0
 
 
 # ---------------------------------------------------------------------------
