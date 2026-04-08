@@ -104,7 +104,7 @@ These are research tasks — web search and evaluation, not code. Output should 
 
 - [ ] **P6.1: County-level presidential returns pre-2000** — Need to extend to 1948+ for parity with Economist. Sources: ICPSR, Dave Leip, OpenElections, Wikipedia. Don't pay for data.
 
-- [ ] **P6.2: CES/CCES survey data** — Individual-level validated vote + county geography. ~60K respondents/wave. Harvard Dataverse. For type validation (do self-reported party ID match type assignments?).
+- [x] **P6.2: CES/CCES survey data** — DONE S498-S499. Research complete, implementation dispatched. Cumulative 2006-2024 feather (141MB, 701K respondents). County FIPS join to types. Validation pipeline at `src/validation/validate_ces.py`.
 
 - [ ] **P6.3: VEST 2012/2014 precinct data quality** — Check VEST GitHub for FL/GA/AL coverage. Needed for future tract-level model.
 
