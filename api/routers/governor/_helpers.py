@@ -70,6 +70,13 @@ GOVERNOR_2026_OPEN_SEATS = {
     "WY",  # Gordon — term-limited
 }
 
+# Incumbency advantage heuristic (interim until voter behavior layer τ/δ).
+# Historical average: sitting governors running for re-election outperform
+# their party's presidential baseline by ~4pp. Applied to non-open seats only.
+# Positive = D-favorable, negative = R-favorable.
+# See docs/research/governor-forecast-audit-S491.md for justification.
+_INCUMBENCY_BONUS = 0.04
+
 # Default margin used when no model prediction is available.
 # Sign: positive = safe D, negative = safe R.
 _DEFAULT_SAFE_MARGIN = 0.25
@@ -96,6 +103,14 @@ def classify_governor_race(
     if pred_by_race and race in pred_by_race:
         _, state_pred = pred_by_race[race]
         margin = state_pred - 0.5
+        # Interim incumbency heuristic: sitting governors running for
+        # re-election outperform their party's presidential baseline by
+        # ~4pp historically. Without this, the model (trained on 2024
+        # presidential priors) systematically underestimates incumbents.
+        # Removed once the voter behavior layer (τ/δ) is implemented.
+        if st not in GOVERNOR_2026_OPEN_SEATS:
+            bonus = _INCUMBENCY_BONUS if incumbent_party == "D" else -_INCUMBENCY_BONUS
+            margin += bonus
         rating = margin_to_rating(margin)
     else:
         # No model prediction — treat as safe hold for the incumbent party

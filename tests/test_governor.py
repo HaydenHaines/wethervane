@@ -247,6 +247,29 @@ def test_classify_governor_race_with_prediction():
     assert info["rating"] in ("tossup", "lean_d")
 
 
+def test_incumbency_heuristic_shifts_non_open_seats():
+    """Non-open seats get 4pp incumbency bonus toward incumbent party."""
+    # IL: D incumbent, not open seat. Model prediction of 0.43 (R+7pp)
+    # should be shifted by +4pp to 0.47 (R+3pp).
+    pred = {"2026 IL Governor": ("IL", 0.43)}
+    info = classify_governor_race("IL", pred)
+    assert info["margin"] == pytest.approx(-0.03, abs=0.001)  # -7 + 4 = -3pp
+    assert not info["is_open_seat"]
+
+    # OH: R incumbent, open seat. Prediction should NOT be shifted.
+    pred = {"2026 OH Governor": ("OH", 0.55)}
+    info = classify_governor_race("OH", pred)
+    assert info["margin"] == pytest.approx(0.05, abs=0.001)  # unchanged
+    assert info["is_open_seat"]
+
+    # TX: R incumbent, not open seat. Model prediction of 0.525 (D+2.5pp)
+    # should be shifted by -4pp to 0.485 (R+1.5pp).
+    pred = {"2026 TX Governor": ("TX", 0.525)}
+    info = classify_governor_race("TX", pred)
+    assert info["margin"] == pytest.approx(-0.015, abs=0.001)  # 2.5 - 4 = -1.5pp
+    assert not info["is_open_seat"]
+
+
 def test_rating_sort_key_order():
     """Rating sort: safe_d → likely_d → lean_d → tossup → lean_r → likely_r → safe_r.
 
