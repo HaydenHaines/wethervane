@@ -35,7 +35,7 @@ from src.prediction.county_priors import (
     load_county_priors_with_ridge,
     load_county_priors_with_ridge_governor,
 )
-from src.prediction.forecast_engine import compute_theta_prior, run_forecast
+from src.prediction.forecast_engine import run_forecast
 from src.prediction.fundamentals import (
     compute_fundamentals_shift,
     load_fundamentals_snapshot,
