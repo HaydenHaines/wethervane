@@ -536,9 +536,18 @@ def run() -> None:
         )
         all_results.update(pres_results)
 
-    # Off-cycle races: apply race-specific CES δ, then run forecast.
-    # Governor and senate races get different δ from CES external validation
-    # (r=0.39 correlation between governor and senate δ — they're genuinely different).
+    # Off-cycle races: apply τ-only behavior adjustment (δ DISABLED).
+    #
+    # δ is DISABLED based on CES temporal stability analysis (S501):
+    #   - Governor δ has mean cross-year r=0.091 (cycle noise, not type property)
+    #   - CES δ backtest: r drops from 0.839 to 0.777 when applied
+    #   - Model δ backtest: r drops from 0.839 to 0.793
+    # τ IS stable (r=0.599) and captures genuine turnout engagement differences.
+    # Race-specific δ infrastructure retained for future use if pooling improves.
+    #
+    # Zero out δ while keeping τ reweighting active:
+    zero_deltas = {k: np.zeros_like(v) for k, v in deltas.items()}
+
     gov_race_ids = [
         rid for rid in all_race_ids
         if race_type_lookup.get(rid) == "governor"
@@ -552,7 +561,7 @@ def run() -> None:
         if not race_ids:
             continue
         adjusted_priors = adjust_priors_for_race_type(
-            tract_priors, type_scores, tau, deltas, race_type=race_type,
+            tract_priors, type_scores, tau, zero_deltas, race_type=race_type,
         )
         adjusted_priors = adjusted_priors + gb_shift
         results = run_forecast(
