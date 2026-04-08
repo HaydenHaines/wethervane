@@ -46,6 +46,9 @@ A political modeling platform that discovers electoral communities directly from
 - County Ridge LOO RMSE: 0.084 (S197)
 - County Ridge+Demo LOO RMSE: 0.059 (S197)
 - Tract holdout r: 0.632 (J=100, 35 dims, S192)
+- Governor Ridge holdout r: 0.696 (train ≤2018, predict 2022, N=32 states, S494)
+- Governor Ridge holdout bias: +2.2pp (vs presidential +4.6pp)
+- Governor Ridge holdout direction accuracy: 87.5%
 
 **Data sources on disk (gitignored, do NOT re-download):**
 - `data/raw/fivethirtyeight/` — 538 data (887MB), pollster ratings, polls
