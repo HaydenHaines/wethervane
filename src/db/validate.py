@@ -115,13 +115,166 @@ def report_summary(con: duckdb.DuckDBPyConnection, db_path: Path) -> None:
         print(f"  {str(vid):<45}  {str(role):<20}  {str(k):>4}  {str(st):<10}  {str(hr)}")
 
 
+def validate_predictions(con: duckdb.DuckDBPyConnection) -> list[str]:
+    """Tier 1 model sanity checks — blocks the build if predictions are broken.
+
+    These checks catch systematic model bugs like the type-compression issue
+    (#139) where unpolled races collapsed to type means ~0.49. They run after
+    predictions are ingested into DuckDB but before the database is finalized.
+
+    Returns a list of error strings. Empty list = all checks passed.
+    """
+    errors: list[str] = []
+
+    # Check if predictions table exists and has data
+    try:
+        n_preds = con.execute(
+            "SELECT COUNT(*) FROM predictions WHERE version_id LIKE '%types%'"
+        ).fetchone()[0]
+    except Exception:
+        # predictions table may not exist yet — skip validation
+        log.warning("predictions table not found — skipping prediction validation")
+        return errors
+
+    if n_preds == 0:
+        log.warning("No type-based predictions found — skipping prediction validation")
+        return errors
+
+    # ── Compute vote-weighted state predictions for Senate races ──────────
+    state_preds = con.execute("""
+        SELECT
+            p.race,
+            c.state_abbr AS state,
+            SUM(p.pred_dem_share * c.total_votes_2024) / SUM(c.total_votes_2024) AS pred_dem_share,
+            COUNT(*) AS n_counties
+        FROM predictions p
+        JOIN counties c ON p.county_fips = c.county_fips
+        WHERE p.version_id LIKE '%types%'
+          AND p.race LIKE 'Senate%'
+          AND p.forecast_mode = 'local'
+          AND c.state_abbr = SPLIT_PART(p.race, ' ', 2)
+        GROUP BY p.race, c.state_abbr
+    """).fetchdf()
+
+    if state_preds.empty:
+        log.warning("No Senate predictions found — skipping prediction validation")
+        return errors
+
+    import numpy as np
+
+    # ── Check 1: Prediction spread (detects type-compression) ─────────────
+    pred_std = state_preds["pred_dem_share"].std()
+    if pred_std < 0.05:
+        errors.append(
+            f"PREDICTION SPREAD: std={pred_std:.4f} < 0.05. "
+            f"Range: {state_preds['pred_dem_share'].min():.3f} to "
+            f"{state_preds['pred_dem_share'].max():.3f}. "
+            f"Likely type-compression bug."
+        )
+
+    # ── Check 2: Safe D states above floor ────────────────────────────────
+    safe_d = {"MA": 0.53, "IL": 0.53, "RI": 0.53, "DE": 0.53}
+    for state, floor in safe_d.items():
+        row = state_preds[state_preds["state"] == state]
+        if not row.empty:
+            pred = float(row.iloc[0]["pred_dem_share"])
+            if pred < floor:
+                errors.append(
+                    f"SAFE D STATE: {state} predicted {pred:.3f} "
+                    f"(D+{(pred-0.5)*200:.1f}pp), expected > {floor:.2f}"
+                )
+
+    # ── Check 3: Safe R states below ceiling ──────────────────────────────
+    safe_r = {"WY": 0.35, "WV": 0.40, "OK": 0.40, "ID": 0.40}
+    for state, ceiling in safe_r.items():
+        row = state_preds[state_preds["state"] == state]
+        if not row.empty:
+            pred = float(row.iloc[0]["pred_dem_share"])
+            if pred > ceiling:
+                errors.append(
+                    f"SAFE R STATE: {state} predicted {pred:.3f} "
+                    f"(R+{(0.5-pred)*200:.1f}pp), expected < {ceiling:.2f}"
+                )
+
+    # ── Check 4: Both D and R predictions exist ──────────────────────────
+    has_d = (state_preds["pred_dem_share"] > 0.55).any()
+    has_r = (state_preds["pred_dem_share"] < 0.45).any()
+    if not (has_d and has_r):
+        errors.append(
+            f"ONE-SIDED PREDICTIONS: D-leaning(>0.55)={has_d}, "
+            f"R-leaning(<0.45)={has_r}. Model should predict both."
+        )
+
+    # ── Check 5: NJ canary ────────────────────────────────────────────────
+    nj = state_preds[state_preds["state"] == "NJ"]
+    if not nj.empty:
+        nj_pred = float(nj.iloc[0]["pred_dem_share"])
+        if nj_pred < 0.50:
+            errors.append(
+                f"NJ CANARY: NJ predicted {nj_pred:.3f} "
+                f"(R+{(0.5-nj_pred)*200:.1f}pp). NJ is D+16 — structural bug."
+            )
+
+    # ── Check 6: Cross-state correlation with 2024 presidential ──────────
+    # Approximate 2024 presidential Dem share by state
+    pres_2024 = {
+        "MA": 0.63, "RI": 0.60, "DE": 0.58, "IL": 0.57, "OR": 0.56,
+        "NJ": 0.57, "CO": 0.56, "VA": 0.54, "NM": 0.54, "MN": 0.53,
+        "NH": 0.52, "ME": 0.53, "MI": 0.49, "GA": 0.49, "NC": 0.48,
+        "TX": 0.46, "IA": 0.44, "SC": 0.44, "AK": 0.43, "KS": 0.42,
+        "MT": 0.40, "MS": 0.40, "LA": 0.40, "KY": 0.37, "AL": 0.37,
+        "AR": 0.36, "TN": 0.36, "SD": 0.36, "NE": 0.40, "OK": 0.34,
+        "ID": 0.33, "WV": 0.30, "WY": 0.27,
+    }
+    pres_vals, pred_vals = [], []
+    for _, row in state_preds.iterrows():
+        if row["state"] in pres_2024:
+            pres_vals.append(pres_2024[row["state"]])
+            pred_vals.append(row["pred_dem_share"])
+
+    if len(pres_vals) >= 10:
+        r = float(np.corrcoef(pres_vals, pred_vals)[0, 1])
+        if r < 0.70:
+            errors.append(
+                f"CROSS-STATE CORRELATION: r={r:.3f} < 0.70 with 2024 presidential. "
+                f"Model predictions don't track known partisan lean."
+            )
+
+    # ── Check 7: Minimum county count per race ───────────────────────────
+    thin_races = state_preds[state_preds["n_counties"] < 3]
+    if not thin_races.empty:
+        races = thin_races["race"].tolist()
+        errors.append(
+            f"THIN RACES: {len(races)} race(s) with <3 counties: {races[:5]}. "
+            f"Data pipeline may have failed."
+        )
+
+    if errors:
+        log.error("Prediction validation FAILED (%d issues):", len(errors))
+        for e in errors:
+            log.error("  %s", e)
+    else:
+        log.info(
+            "Prediction validation PASSED — %d states, std=%.4f, "
+            "range=[%.3f, %.3f]",
+            len(state_preds),
+            pred_std,
+            state_preds["pred_dem_share"].min(),
+            state_preds["pred_dem_share"].max(),
+        )
+
+    return errors
+
+
 def validate_integrity(con: duckdb.DuckDBPyConnection) -> None:
-    """Run contract validation and exit with status 1 on any violation."""
+    """Run contract + prediction validation and exit with status 1 on any violation."""
     errors = validate_contract(con)
+    pred_errors = validate_predictions(con)
+    errors.extend(pred_errors)
     if errors:
         for e in errors:
-            log.error("CONTRACT VIOLATION: %s", e)
+            log.error("VALIDATION FAILURE: %s", e)
         del con
         gc.collect()
         sys.exit(1)
-    log.info("Contract validation passed")
+    log.info("All validation passed (contract + predictions)")
