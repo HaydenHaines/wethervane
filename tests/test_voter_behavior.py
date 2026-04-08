@@ -368,3 +368,110 @@ def test_train_and_save_filters_irrelevant_races(t1_format_elections, t3_format_
     # Results must be identical — CONG/AG rows should have zero impact.
     assert abs(summary_full["tau_mean"] - summary_filtered["tau_mean"]) < 1e-10
     assert abs(summary_full["delta_mean"] - summary_filtered["delta_mean"]) < 1e-10
+
+
+# ---------------------------------------------------------------------------
+# τ-reweighted δ tests
+# ---------------------------------------------------------------------------
+
+def test_tau_reweighted_delta_differs_from_flat_for_mixed_tracts():
+    """τ-reweighted δ must differ from the flat (off - pres) residual when a MIXED
+    tract has types with differential τ AND differential presidential Dem share.
+
+    The key: τ matters only for mixed-membership tracts. For a pure-type tract, the
+    τ-adjusted composition still lands at θ_j. But for a mixed tract (e.g., 50/50),
+    the low-τ Democratic type shrinks relative to the high-τ Republican type, shifting
+    the expected off-cycle baseline toward the Republican side.
+
+    Setup:
+      T1 (pure type 0, Dem): pres=0.70, off=0.70, τ≈0.5 → residual = 0.0
+      T2 (pure type 1, Rep): pres=0.30, off=0.30, τ≈1.0 → residual = 0.0
+      T3 (50/50 mix): pres=0.50, off=0.50, but expected_off≠0.50 because τ is unequal
+        → expected_off = τ_norm weighted toward type 1 → shifts Republican
+        → flat residual = 0.00, reweighted residual ≠ 0
+
+    This test verifies that the τ-adjusted expected baseline produces a different
+    δ than the flat approach would for the same data.
+    """
+    tract_votes = pd.DataFrame({
+        "tract_geoid": ["T1", "T2", "T3",
+                        "T1", "T2", "T3"],
+        "year": [2020] * 3 + [2022] * 3,
+        "race": ["president"] * 3 + ["governor"] * 3,
+        "votes_total": [1000, 1000, 1000,
+                        500, 1000, 750],  # T1 τ≈0.5, T2 τ≈1.0, T3 τ≈0.75
+        "dem_share": [0.70, 0.30, 0.50,   # presidential
+                      0.70, 0.30, 0.50],  # off-cycle = same as presidential
+    })
+    type_scores = pd.DataFrame({
+        "type_0_score": [1.0, 0.0, 0.5],
+        "type_1_score": [0.0, 1.0, 0.5],
+    }, index=pd.Index(["T1", "T2", "T3"], name="GEOID"))
+
+    tau = compute_turnout_ratios(tract_votes, type_scores, n_types=2)
+    delta_reweighted = compute_choice_shifts(tract_votes, type_scores, tau, n_types=2)
+
+    # For pure-type tracts T1 and T2: off-share == pres-share → flat residual = 0.
+    # For mixed tract T3: off-share == 0.50 = pres-share → flat residual = 0 too.
+    # Flat δ would be 0 for both types.
+    # But the τ-reweighted expected for T3 is NOT 0.50 — it's biased toward type 1
+    # because τ_1 > τ_0. So the reweighted residual for T3 is non-zero, and this
+    # propagates differently into δ_0 and δ_1 via the membership weights.
+    # Specifically: expected_off_T3 = (0.5*τ_0*θ_0 + 0.5*τ_1*θ_1) / (0.5*τ_0 + 0.5*τ_1)
+    # With τ_0≈0.5, τ_1≈1.0, θ_0=0.70, θ_1=0.30:
+    # expected_off_T3 ≈ (0.5*0.5*0.70 + 0.5*1.0*0.30)/(0.5*0.5 + 0.5*1.0) = 0.325/0.75 ≈ 0.433
+    # T3 actual off = 0.50 → reweighted residual ≈ 0.50 - 0.433 = +0.067
+    # So reweighted δ will differ from the flat δ of 0.
+
+    # The τ reweighted δ should produce a non-zero result for the mixed type (T3 input).
+    # Since T3 has 50/50 membership, this pushes both types' δ positive.
+    # Verify the δ values are non-trivially non-zero (demonstrating the reweighting worked).
+    tau_min, tau_max = tau.min(), tau.max()
+    if tau_min < tau_max - 0.05:
+        # Only meaningful to check if τ values are actually differentiated.
+        # The reweighted δ should be non-zero because the mixed tract creates a non-trivial
+        # expected baseline — the flat comparison would have given 0.
+        reweighted_sum = abs(delta_reweighted[0]) + abs(delta_reweighted[1])
+        assert reweighted_sum > 0.01, (
+            f"Expected non-zero reweighted δ from mixed-tract composition effect, "
+            f"got δ={delta_reweighted}"
+        )
+
+
+def test_tau_uniform_delta_equals_flat_delta():
+    """When all types have the same τ, the τ-reweighted δ must equal the flat
+    (off_dem_share - pres_dem_share) δ.
+
+    With uniform τ, the expected off-cycle composition is the same as the presidential
+    composition — no type-specific reweighting occurs — so the expected baseline
+    collapses to the presidential mean and the residual is the raw difference.
+    """
+    # Construct data where tau is uniform (all ~0.75 after clipping).
+    tract_votes = pd.DataFrame({
+        "tract_geoid": ["T1", "T2", "T3", "T4",
+                        "T1", "T2", "T3", "T4"],
+        "year": [2020] * 4 + [2022] * 4,
+        "race": ["president"] * 4 + ["governor"] * 4,
+        "votes_total": [1000, 1000, 1000, 1000,
+                        750, 750, 750, 750],    # all τ = 0.75 → uniform
+        "dem_share": [0.45, 0.55, 0.45, 0.55,  # presidential
+                      0.50, 0.60, 0.50, 0.60],  # off-cycle: +0.05 across the board
+    })
+    type_scores = pd.DataFrame({
+        "type_0_score": [0.9, 0.9, 0.1, 0.1],
+        "type_1_score": [0.1, 0.1, 0.9, 0.9],
+    }, index=pd.Index(["T1", "T2", "T3", "T4"], name="GEOID"))
+
+    tau = compute_turnout_ratios(tract_votes, type_scores, n_types=2)
+
+    # Verify τ is approximately uniform (both types same within tolerance).
+    assert abs(tau[0] - tau[1]) < 0.01, (
+        f"Test requires near-uniform τ, got τ={tau}. Adjust the data."
+    )
+
+    delta = compute_choice_shifts(tract_votes, type_scores, tau, n_types=2)
+
+    # With uniform τ and uniform +0.05 shift across all tracts, both types should
+    # have δ ≈ +0.05 (matching the flat computation).
+    assert abs(delta[0] - 0.05) < 0.01, f"Expected δ[0] ≈ 0.05, got {delta[0]:.4f}"
+    assert abs(delta[1] - 0.05) < 0.01, f"Expected δ[1] ≈ 0.05, got {delta[1]:.4f}"

@@ -139,30 +139,36 @@ def compute_delta(
     assignments_df: pd.DataFrame,
     tau: np.ndarray,
 ) -> np.ndarray:
-    """Compute per-type residual choice shift δ from tract election and assignment data.
+    """Compute per-type residual choice shift δ using τ-reweighted presidential baseline.
 
-    δ_j = membership-weighted mean of (off_cycle_dem_share - nearest_presidential_dem_share)
-    across all tract × off-cycle election observations.
+    δ_j captures genuine preference differences in off-cycle elections BEYOND what
+    turnout composition change alone would explain.
 
-    For each off-cycle election in each tract, the "nearest presidential" election is the
-    presidential race closest in time to that off-cycle year (e.g., 2016 or 2020 for a
-    2018 governor race).  This pairing removes secular trend artifacts that would arise
-    from always using the same presidential baseline.
+    The naive approach (off_dem_share - pres_dem_share) conflates two effects:
+      1. Composition change: low-τ types drop off in midterms, shifting the effective
+         electorate toward high-turnout types (and their Dem share).
+      2. Genuine preference shift: the same voters actually vote differently.
+
+    This implementation separates them using the τ-reweighted expected off-cycle
+    dem share as the baseline. For each tract, the expected off-cycle dem share is
+    computed as: sum_j(τ_j * W_ij * θ_j) / sum_j(τ_j * W_ij), where θ_j is the
+    type-level presidential Dem share. The residual after subtracting this expected
+    value is the pure preference signal δ.
+
+    For temporal precision, each off-cycle observation is matched to its nearest
+    presidential year before computing the residuals. This removes secular trend
+    artifacts that would arise from always comparing against the same presidential cycle.
 
     Args:
         elections_df: Same T.1 format as compute_tau.
         assignments_df: Same T.3 format as compute_tau.
-        tau: Turnout ratios from compute_tau — shape (J,).
-             Currently used for API consistency; reserved for a future version that
-             reweights the presidential baseline by τ-predicted composition shift.
+        tau: Turnout ratios from compute_tau — shape (J,). Used to reweight the
+             presidential baseline by off-cycle type composition.
 
     Returns:
-        np.ndarray of shape (J,). Positive = type votes more Dem in off-cycle years.
+        np.ndarray of shape (J,). Positive = type votes more Dem in off-cycle years
+        beyond what τ-driven composition change predicts.
     """
-    # τ accepted but not used in this v1 implementation.  A future version will
-    # reweight the presidential baseline to account for which voter types drop off.
-    _ = tau  # explicit no-op to suppress lint warnings
-
     tract_votes = _map_race_type_to_race(elections_df)
     assignments = _load_and_prepare_assignments_if_needed(assignments_df)
 
@@ -200,24 +206,60 @@ def compute_delta(
 
     merged = off_rows.merge(pres_lookup, on=["tract_geoid", "pres_year"], how="inner")
 
-    # Residual = actual off-cycle Dem share minus presidential Dem share baseline.
-    merged["residual"] = merged["dem_share"] - merged["pres_dem_share"]
+    # Average per-tract pres and off-cycle dem shares across all paired elections.
+    tract_pres_share = merged.groupby("tract_geoid")["pres_dem_share"].mean()
+    tract_off_share = merged.groupby("tract_geoid")["dem_share"].mean()
 
-    # Average residual per tract (across all off-cycle elections for that tract).
-    tract_residuals = merged.groupby("tract_geoid")["residual"].mean()
-
-    common = tract_residuals.index.intersection(assignments.index)
-    residual_vals = tract_residuals.loc[common].values
+    # Restrict to tracts present in both elections and assignments.
+    common = (
+        tract_pres_share.index
+        .intersection(tract_off_share.index)
+        .intersection(assignments.index)
+    )
+    pres_vals = tract_pres_share.loc[common].values
+    off_vals = tract_off_share.loc[common].values
 
     n_types = sum(1 for c in assignments.columns if c.endswith("_score"))
-    W = _extract_score_matrix(assignments, n_types, common)
+    W = _extract_score_matrix(assignments, n_types, common)  # (n_tracts, J)
 
-    delta = np.empty(n_types)
+    # --- τ-reweighted baseline ---
+    #
+    # Step 1: type-level presidential Dem share θ_j = membership-weighted mean
+    # of pres_dem_share across tracts. Anchors what each type votes presidentially.
+    pres_valid = ~np.isnan(pres_vals)
+    theta = np.zeros(n_types)
+    overall_pres_mean = float(np.nanmean(pres_vals))
     for j in range(n_types):
-        weights = W[:, j]
+        weights = W[pres_valid, j]
         total_w = weights.sum()
         if total_w > 0:
-            delta[j] = np.average(residual_vals, weights=weights)
+            theta[j] = np.average(pres_vals[pres_valid], weights=weights)
+        else:
+            # Fall back to overall mean for types with no data coverage.
+            theta[j] = overall_pres_mean
+
+    # Step 2: expected off-cycle dem share per tract, assuming only turnout
+    # composition changes and not preferences. Types with low τ shrink in the
+    # effective off-cycle electorate; their presidential θ_j is down-weighted.
+    # expected_off_i = Σ_j(τ_j * W_ij * θ_j) / Σ_j(τ_j * W_ij)
+    tau_weighted = W * tau[np.newaxis, :]  # (n_tracts, J)
+    tau_row_sums = tau_weighted.sum(axis=1, keepdims=True)
+    tau_row_sums = np.where(tau_row_sums > 0, tau_row_sums, 1.0)
+    tau_norm = tau_weighted / tau_row_sums  # row-normalized, (n_tracts, J)
+
+    expected_off = tau_norm @ theta  # (n_tracts,): pure-composition expected share
+
+    # Step 3: residual = actual off-cycle minus τ-reweighted expected.
+    # This is the genuine preference signal stripped of composition effects.
+    tract_residuals = off_vals - expected_off
+
+    valid = ~np.isnan(tract_residuals)
+    delta = np.empty(n_types)
+    for j in range(n_types):
+        weights = W[valid, j]
+        total_w = weights.sum()
+        if total_w > 0:
+            delta[j] = np.average(tract_residuals[valid], weights=weights)
         else:
             delta[j] = 0.0
 

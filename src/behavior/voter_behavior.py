@@ -178,28 +178,31 @@ def compute_choice_shifts(
     tau: np.ndarray,
     n_types: int,
 ) -> np.ndarray:
-    """Compute per-type residual choice shift δ = off_dem_share - pres_dem_share.
+    """Compute per-type residual choice shift δ using τ-reweighted presidential baseline.
 
-    δ captures genuine preference differences in off-cycle elections beyond what
-    would be explained by which voters show up (τ). A positive δ means the type
-    votes more Democratic in off-cycle races; negative means more Republican.
+    δ captures genuine preference differences in off-cycle elections BEYOND what turnout
+    composition change alone would produce. The key insight: when low-τ types (e.g.,
+    sporadic young voters) drop off in midterms, the electorate composition shifts.
+    If those dropping types are more Democratic, the result looks Republican even with
+    zero preference change — the old flat δ conflated this composition effect with genuine
+    preference shift. This version separates them:
 
-    In practice |δ| is small (< 0.05 for most types) because turnout composition
-    already accounts for most of the observed swing. Large δ indicates systematic
-    candidate-quality or issue-salience effects.
-
-    Note: τ is accepted as a parameter to keep the API consistent with potential
-    future versions that use turnout-reweighted Dem share as the baseline.
-    Currently the simple mean difference is used.
+      1. Compute type-level presidential θ_j = weighted mean of pres_dem_share across
+         tracts, using type membership as weights.
+      2. For each tract, compute the expected off-cycle dem share under τ-adjusted
+         composition: sum_j(τ_j * W_ij * θ_j) / sum_j(τ_j * W_ij).
+         This answers "what would the dem share be if only turnout changed?"
+      3. δ_j = weighted mean of (actual_off - expected_off) per tract, using W_ij.
+         This is the RESIDUAL preference shift after composition change is removed.
 
     Args:
         tract_votes: DataFrame with columns tract_geoid, race, dem_share, year.
         type_scores: DataFrame indexed by GEOID with type_j_score columns.
-        tau: Turnout ratios per type (J,) — reserved for future turnout-reweighted version.
+        tau: Turnout ratios per type (J,) — used to reweight the presidential baseline.
         n_types: Number of types (J).
 
     Returns:
-        np.ndarray of shape (J,) with per-type δ values.
+        np.ndarray of shape (J,) with per-type τ-adjusted residual δ values.
     """
     pres = tract_votes[tract_votes["race"].isin(PRESIDENTIAL_RACES)]
     off = tract_votes[tract_votes["race"].isin(OFFCYCLE_RACES)]
@@ -211,11 +214,39 @@ def compute_choice_shifts(
     pres_vals = pres_share.loc[common].values
     off_vals = off_share.loc[common].values
 
-    # Per-tract residual: positive = more Dem in off-cycle, negative = more Rep.
-    tract_residuals = off_vals - pres_vals
-
     score_cols = [f"type_{j}_score" for j in range(n_types)]
-    W = type_scores.loc[common, score_cols].values
+    W = type_scores.loc[common, score_cols].values  # (n_tracts, J)
+
+    # Step 1: Type-level presidential Dem share θ_j = membership-weighted mean of
+    # pres_dem_share across all tracts. This is the presidential baseline each type
+    # carries into the expected off-cycle calculation.
+    pres_valid = ~np.isnan(pres_vals)
+    theta = np.zeros(n_types)
+    for j in range(n_types):
+        weights = W[pres_valid, j]
+        total_w = weights.sum()
+        if total_w > 0:
+            theta[j] = np.average(pres_vals[pres_valid], weights=weights)
+        else:
+            # No coverage for this type — fall back to the overall mean.
+            theta[j] = float(np.nanmean(pres_vals))
+
+    # Step 2: For each tract, compute the expected off-cycle dem share assuming only
+    # turnout composition changes (no preference shift). Types with low τ shrink in
+    # effective representation; their presidential share θ_j is down-weighted accordingly.
+    # expected_off_i = sum_j(τ_j * W_ij * θ_j) / sum_j(τ_j * W_ij)
+    tau_weighted = W * tau[np.newaxis, :]  # (n_tracts, J) — each row weighted by τ
+    tau_row_sums = tau_weighted.sum(axis=1, keepdims=True)
+    # Avoid division by zero for tracts with all-zero scores (shouldn't happen but defensive).
+    tau_row_sums = np.where(tau_row_sums > 0, tau_row_sums, 1.0)
+    tau_norm = tau_weighted / tau_row_sums  # normalized, (n_tracts, J)
+
+    # Expected off-cycle dem share from composition change alone: shape (n_tracts,)
+    expected_off = tau_norm @ theta
+
+    # Step 3: Residual = actual off-cycle minus expected off-cycle (from composition only).
+    # Positive residual = type genuinely shifted more Democratic beyond what τ predicts.
+    tract_residuals = off_vals - expected_off
 
     valid = ~np.isnan(tract_residuals)
     delta = np.zeros(n_types)
