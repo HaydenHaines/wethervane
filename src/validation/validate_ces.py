@@ -794,7 +794,8 @@ def print_report(
             )
         r_values = [yr.pearson_r for yr in per_year_results]
         r_std = float(np.std(r_values))
-        print(f"\n  r std across years: {r_std:.4f}  ({'stable' if r_std < 0.05 else 'moderate variation' if r_std < 0.10 else 'high variation'})")
+        label = 'stable' if r_std < 0.05 else 'moderate variation' if r_std < 0.10 else 'high variation'
+        print(f"\n  r std across years: {r_std:.4f}  ({label})")
 
     print()
 
@@ -922,13 +923,17 @@ def run_downballot_validation(
     print(f"  Pres respondents:      {int(delta_df['pres_n'].sum()):,}")
     print(f"  {race.title()} respondents:  {int(delta_df['gov_n'].sum()):,}")
     print(f"  Pres-{race[:3]} correlation: {delta_summary['pres_gov_correlation']:+.4f}")
-    print(f"\n  Mean δ:                {delta_summary['mean_delta']:+.4f}  ({delta_summary['mean_delta'] * 100:+.2f}pp)")
-    print(f"  Std δ:                 {delta_summary['std_delta']:.4f}  ({delta_summary['std_delta'] * 100:.2f}pp)")
-    print(f"  Median δ:              {delta_summary['median_delta']:+.4f}  ({delta_summary['median_delta'] * 100:+.2f}pp)")
+    mean_d = delta_summary['mean_delta']
+    std_d = delta_summary['std_delta']
+    med_d = delta_summary['median_delta']
+    print(f"\n  Mean δ:                {mean_d:+.4f}  ({mean_d * 100:+.2f}pp)")
+    print(f"  Std δ:                 {std_d:.4f}  ({std_d * 100:.2f}pp)")
+    print(f"  Median δ:              {med_d:+.4f}  ({med_d * 100:+.2f}pp)")
 
     # Show types with largest |δ|
     print(f"\n── Top 5 Types by |δ| (largest pres→{race[:3]} shift) ─────────────────────")
-    print(f"  {'Type':<8}  {'Pres D%':>8}  {race.title()[:3]+' D%':>8}  {'δ':>8}  {'Pres N':>8}  {race.title()[:3]+' N':>8}")
+    rc = race.title()[:3]
+    print(f"  {'Type':<8}  {'Pres D%':>8}  {rc+' D%':>8}  {'δ':>8}  {'Pres N':>8}  {rc+' N':>8}")
     print("  " + "-" * 56)
     top = delta_df.nlargest(5, "delta", keep="first")[
         ["type_id", "pres_dem_share", "gov_dem_share", "delta", "pres_n", "gov_n"]
