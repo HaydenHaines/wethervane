@@ -293,21 +293,22 @@ class TestLoadCountyPriorsWithRidgeGovernor:
         # Presidential Ridge priors should be used since governor file missing
         np.testing.assert_allclose(result, [0.55, 0.45, 0.60])
 
-    def test_governor_priors_override_presidential(self, tmp_path):
-        """Counties in the governor model should use governor priors, not presidential."""
+    def test_governor_priors_blend_with_presidential(self, tmp_path):
+        """Counties in the governor model get a blended prior (w=0.7 gov + 0.3 pres)."""
         fips = ["10001", "10002", "10003"]
 
         pres_path = tmp_path / "ridge_county_priors.parquet"
+        pres_vals = [0.55, 0.45, 0.60]
         pd.DataFrame({
             "county_fips": fips,
-            "ridge_pred_dem_share": [0.55, 0.45, 0.60],
+            "ridge_pred_dem_share": pres_vals,
         }).to_parquet(pres_path, index=False)
 
         gov_path = tmp_path / "ridge_county_priors_governor.parquet"
-        # Governor model covers all three counties with different values
+        gov_vals = [0.48, 0.52, 0.44]
         pd.DataFrame({
             "county_fips": fips,
-            "ridge_pred_dem_share": [0.48, 0.52, 0.44],
+            "ridge_pred_dem_share": gov_vals,
         }).to_parquet(gov_path, index=False)
 
         with patch(
@@ -320,7 +321,9 @@ class TestLoadCountyPriorsWithRidgeGovernor:
                 presidential_priors_path=pres_path,
             )
 
-        np.testing.assert_allclose(result, [0.48, 0.52, 0.44])
+        w = 0.7
+        expected = [w * g + (1 - w) * p for g, p in zip(gov_vals, pres_vals)]
+        np.testing.assert_allclose(result, expected, atol=1e-6)
 
     def test_partial_coverage_falls_back_per_county(self, tmp_path):
         """Counties missing from the governor model fall back to presidential."""
@@ -349,9 +352,11 @@ class TestLoadCountyPriorsWithRidgeGovernor:
                 presidential_priors_path=pres_path,
             )
 
-        # 10001 and 10002 from governor, 10003 from presidential
-        np.testing.assert_allclose(result[0], 0.48)
-        np.testing.assert_allclose(result[1], 0.52)
+        # 10001 and 10002 are blended (w=0.7 governor + 0.3 presidential)
+        # 10003 missing from governor → pure presidential
+        w = 0.7
+        np.testing.assert_allclose(result[0], w * 0.48 + (1 - w) * 0.55, atol=1e-6)
+        np.testing.assert_allclose(result[1], w * 0.52 + (1 - w) * 0.45, atol=1e-6)
         np.testing.assert_allclose(result[2], 0.60)
 
 
@@ -400,11 +405,17 @@ class TestGovernorVsPresidentialPriorsDiffer:
                 presidential_priors_path=pres_path,
             )
 
-        # Governor priors should match the governor parquet (0.50/0.40/0.55)
-        np.testing.assert_allclose(gov_priors, [0.50, 0.40, 0.55])
+        # Governor priors should be blended (w=0.7 governor + 0.3 presidential)
+        w = 0.7
+        expected_blended = np.array([
+            w * 0.50 + (1 - w) * 0.55,
+            w * 0.40 + (1 - w) * 0.45,
+            w * 0.55 + (1 - w) * 0.60,
+        ])
+        np.testing.assert_allclose(gov_priors, expected_blended, atol=1e-6)
         # Presidential priors should match the presidential parquet (0.55/0.45/0.60)
         np.testing.assert_allclose(pres_priors, [0.55, 0.45, 0.60])
-        # The two sets should differ
+        # The two sets should still differ
         assert not np.allclose(pres_priors, gov_priors)
 
 

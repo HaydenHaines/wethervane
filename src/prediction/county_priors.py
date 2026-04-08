@@ -111,24 +111,37 @@ def compute_county_priors_from_data(
     return np.array([dem_share_map.get(f, fallback) for f in county_fips])
 
 
+_GOVERNOR_BLEND_WEIGHT = 0.7
+"""Fraction of governor Ridge prior in the blended governor/presidential prior.
+
+Validated via temporal holdout (train ≤2018, predict 2022, 32 states):
+  - Pure presidential (w=0.0): r=0.800, bias=+4.6pp
+  - Blend at w=0.7: r=0.816, bias=+3.0pp  (best composite)
+  - Pure governor (w=1.0): r=0.696, bias=+2.2pp
+
+The 70/30 blend captures most of the governor-specific bias reduction while
+retaining most of the presidential model's higher correlation.
+
+See data/experiments/blended_governor_priors.json for the full sweep.
+"""
+
+
 def load_county_priors_with_ridge_governor(
     county_fips: list[str],
     governor_priors_path: Path | None = None,
     presidential_priors_path: Path | None = None,
     assembled_dir: Path | None = None,
+    governor_weight: float = _GOVERNOR_BLEND_WEIGHT,
 ) -> np.ndarray:
-    """Load governor-specific county priors, falling back to presidential priors.
+    """Load blended governor/presidential county priors.
 
-    Loads from the governor Ridge model first.  For counties not covered by
-    the governor model (states that never had a governor race in the training
-    data, or counties missing from the feature matrix), falls back to the
-    presidential Ridge priors.  Finally falls back to historical presidential
-    results for any county still uncovered.
+    For counties covered by the governor Ridge model, returns a weighted blend
+    of governor and presidential priors.  For counties not covered by the
+    governor model (states that never had a governor race in the training data),
+    returns pure presidential priors.
 
-    The two-level fallback is important: governor data is sparse (only states
-    with a governor election that year contribute training data), so some
-    counties will genuinely have no governor-specific prediction.  The
-    presidential prior is a reasonable structural substitute there.
+    The blend is: prior = w * governor + (1 - w) * presidential, where w
+    defaults to 0.7 (validated via temporal holdout, see _GOVERNOR_BLEND_WEIGHT).
 
     Parameters
     ----------
@@ -138,16 +151,18 @@ def load_county_priors_with_ridge_governor(
         Path to the governor Ridge county priors parquet.
         Defaults to data/models/ridge_model_governor/ridge_county_priors_governor.parquet.
     presidential_priors_path : Path or None
-        Path to the presidential Ridge county priors parquet, used as first
-        fallback when a county has no governor prior.
+        Path to the presidential Ridge county priors parquet.
         Defaults to data/models/ridge_model/ridge_county_priors.parquet.
     assembled_dir : Path or None
         Directory containing MEDSL county parquet files (for final fallback).
+    governor_weight : float
+        Weight of governor prior in the blend (0 = pure presidential, 1 = pure governor).
+        Default: 0.7.
 
     Returns
     -------
     ndarray of shape (N,)
-        Prior Dem share per county, governor-trained where available.
+        Prior Dem share per county.
     """
     if governor_priors_path is None:
         governor_priors_path = (
@@ -162,9 +177,8 @@ def load_county_priors_with_ridge_governor(
             PROJECT_ROOT / "data" / "models" / "ridge_model" / "ridge_county_priors.parquet"
         )
 
-    # Start with presidential priors (historical or Ridge) as the baseline.
-    # This ensures every county has a value before we overlay governor priors.
-    county_prior_values = load_county_priors_with_ridge(
+    # Presidential priors are the baseline — every county has a value.
+    pres_priors = load_county_priors_with_ridge(
         county_fips,
         ridge_priors_path=presidential_priors_path,
         assembled_dir=assembled_dir,
@@ -175,31 +189,36 @@ def load_county_priors_with_ridge_governor(
             "Governor Ridge model not found at %s — using presidential priors for all counties",
             governor_priors_path,
         )
-        return county_prior_values
+        return pres_priors
 
     log.info("Loading governor Ridge county priors from %s", governor_priors_path)
     gov_df = pd.read_parquet(governor_priors_path)
     gov_df["county_fips"] = gov_df["county_fips"].astype(str).str.zfill(5)
     gov_map = dict(zip(gov_df["county_fips"], gov_df["ridge_pred_dem_share"]))
 
-    n_matched = 0
+    # Blend governor and presidential priors where governor data exists.
+    # Counties without governor data keep pure presidential priors.
+    blended = pres_priors.copy()
+    n_blended = 0
     for i, fips in enumerate(county_fips):
         if fips in gov_map:
-            county_prior_values[i] = gov_map[fips]
-            n_matched += 1
-    n_fallback = len(county_fips) - n_matched
+            blended[i] = governor_weight * gov_map[fips] + (1 - governor_weight) * pres_priors[i]
+            n_blended += 1
+    n_fallback = len(county_fips) - n_blended
 
     log.info(
-        "Governor priors: %d/%d counties matched; %d using presidential fallback",
-        n_matched,
+        "Blended governor priors (w=%.1f): %d/%d counties blended; %d pure presidential",
+        governor_weight,
+        n_blended,
         len(county_fips),
         n_fallback,
     )
     print(
-        f"Using governor Ridge priors for {n_matched}/{len(county_fips)} counties "
-        f"({n_fallback} fallback to presidential priors)"
+        f"Using blended governor priors (w={governor_weight:.1f}) for "
+        f"{n_blended}/{len(county_fips)} counties "
+        f"({n_fallback} pure presidential fallback)"
     )
-    return county_prior_values
+    return blended
 
 
 def load_county_priors_with_ridge(
