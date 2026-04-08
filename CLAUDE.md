@@ -270,6 +270,12 @@ python src/assembly/fetch_algara_amlani.py                  # Algara/Amlani gove
 python src/assembly/build_county_shifts_multiyear.py        # 54-dim county shift vectors → data/shifts/county_shifts_multiyear.parquet
 python -m src.validation.validate_county_holdout_multiyear  # Compare multi-year vs 3-cycle baseline
 
+# Backtest harness
+uv run python -m src.backtest run --year 2024 --race-types senate presidential   # Run 2024 backtest
+uv run python -m src.backtest run --all                                            # Run all configured cycles
+uv run python -m src.backtest report --cutoff 2024-10-31                          # Single-cycle report
+uv run python -m src.backtest report --all --output docs/backtest/report_all.md   # Cross-cycle report
+
 # Quality
 ruff check src/ api/                               # Lint Python
 ruff format src/ api/                              # Format Python
