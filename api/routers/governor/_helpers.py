@@ -34,11 +34,11 @@ _GOVERNOR_INCUMBENT: dict[str, str] = {
     "MD": "D",  # Wes Moore (D)
     "ME": "D",  # Janet Mills (D) — term-limited, open seat
     "MI": "D",  # Gretchen Whitmer (D)
-    "MN": "D",  # Tim Walz (D) — vacated for VP run; currently Peggy Flanagan (D)
+    "MN": "D",  # Tim Walz (D) — ran as VP candidate 2024, lost; remains governor
     "NE": "R",  # Jim Pillen (R)
     "NH": "R",  # Kelly Ayotte (R)
     "NM": "D",  # Michelle Lujan Grisham (D)
-    "NV": "D",  # Joe Lombardo (R) — NOTE: actually R; corrected below
+    "NV": "R",  # Joe Lombardo (R)
     "NY": "D",  # Kathy Hochul (D)
     "OH": "R",  # Mike DeWine (R) — term-limited, open seat
     "OK": "R",  # Kevin Stitt (R) — term-limited, open seat
@@ -46,16 +46,13 @@ _GOVERNOR_INCUMBENT: dict[str, str] = {
     "PA": "D",  # Josh Shapiro (D)
     "RI": "D",  # Dan McKee → current: Dan McKee (D)
     "SC": "R",  # Henry McMaster (R)
-    "SD": "R",  # Kristi Noem (R) — now DHS Secretary; Dennis Daugaard acting
+    "SD": "R",  # Kristi Noem (R) — confirmed DHS Secretary Jan 2025; Lt. Gov. Brock McEachin acting
     "TN": "R",  # Bill Lee (R) — term-limited, open seat
     "TX": "R",  # Greg Abbott (R)
     "VT": "R",  # Phil Scott (R)
     "WI": "D",  # Tony Evers (D)
     "WY": "R",  # Mark Gordon (R) — term-limited, open seat
 }
-
-# NV is held by Republican Joe Lombardo — correct the dict entry above.
-_GOVERNOR_INCUMBENT["NV"] = "R"
 
 # Default margin used when no model prediction is available.
 # Sign: positive = safe D, negative = safe R.

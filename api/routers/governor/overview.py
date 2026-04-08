@@ -140,7 +140,7 @@ def get_governor_overview(
         race_info["n_polls"] = poll_counts.get(race_info["race"], 0)
         races.append(race_info)
 
-    # Sort: tossups and lean races first (most competitive), safe seats last.
+    # Sort: safe D first → tossup → safe R last (D-to-R spectrum).
     # Break ties alphabetically by state.
     races.sort(key=lambda r: (rating_sort_key(r["rating"]), r["state"]))
 
