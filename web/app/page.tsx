@@ -6,7 +6,7 @@ import { useModelVersion } from "@/lib/hooks/use-model-version";
 import { HeroSection } from "@/components/landing/HeroSection";
 import { FreshnessStamp } from "@/components/shared/FreshnessStamp";
 import { ErrorAlert } from "@/components/shared/ErrorAlert";
-import { BalanceBar } from "@/components/forecast/BalanceBar";
+import { TippingPointBar } from "@/components/forecast/TippingPointBar";
 import { MiniMap } from "@/components/landing/MiniMap";
 import { ScrollyNarrative } from "@/components/home/ScrollyNarrative";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -36,11 +36,7 @@ export default function LandingPage() {
 
         {data && (
           <div className="w-full px-4">
-            <BalanceBar
-              races={data.races}
-              demSeats={data.dem_projected}
-              gopSeats={data.gop_projected}
-            />
+            <TippingPointBar races={data.races} />
           </div>
         )}
 
