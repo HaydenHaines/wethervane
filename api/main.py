@@ -77,7 +77,7 @@ def _load_mu_prior(db: duckdb.DuckDBPyConnection, version_id: str, K: int) -> np
 def _load_tract_type_data(
     project_root: Path,
 ) -> tuple[np.ndarray, list[str], np.ndarray, np.ndarray]:
-    """Load tract-level type data directly from parquet/npy files.
+    """Load tract-level type data from the current J=100 model.
 
     Returns (type_scores, tract_fips, type_covariance, type_priors).
     type_scores: (N_tracts, J) numpy array of soft membership scores.
@@ -85,20 +85,27 @@ def _load_tract_type_data(
     type_covariance: (J, J) Ledoit-Wolf regularized covariance.
     type_priors: (J,) mean Dem share per type.
     """
-    tracts_dir = project_root / "data" / "tracts"
+    communities_dir = project_root / "data" / "communities"
+    covariance_dir = project_root / "data" / "covariance"
 
-    # Assignments: deduplicated tract GEOIDs with J=130 soft membership scores
-    assignments = pd.read_parquet(tracts_dir / "national_tract_assignments.parquet")
-    assignments = assignments.drop_duplicates(subset="GEOID")
+    # Assignments: deduplicated tract GEOIDs with J=100 type scores.
+    # Source: data/communities/tract_type_assignments.parquet (T.3 migration output).
+    # NOTE: data/tracts/national_tract_assignments.parquet is STALE (J=130, pre-migration).
+    assignments = pd.read_parquet(communities_dir / "tract_type_assignments.parquet")
+    assignments = assignments.drop_duplicates(subset="tract_geoid")
     score_cols = sorted(
-        [c for c in assignments.columns if c.startswith("type_") and c.endswith("_score")]
+        [c for c in assignments.columns if c.startswith("type_") and c.endswith("_score")],
+        key=lambda x: int(x.split("_")[1]),
     )
     type_scores = assignments[score_cols].values.astype(float)  # (N, J)
-    tract_fips = assignments["GEOID"].tolist()
+    tract_fips = assignments["tract_geoid"].astype(str).str.zfill(11).tolist()
 
-    # Covariance and priors from npy (faster than parquet pivot)
-    type_covariance = np.load(tracts_dir / "tract_type_covariance.npy")
-    type_priors = np.load(tracts_dir / "tract_type_priors.npy")
+    # Covariance: (J, J) Ledoit-Wolf regularized, from parquet.
+    type_covariance = pd.read_parquet(covariance_dir / "type_covariance.parquet").values.astype(float)
+
+    # Priors: per-type mean Dem share.
+    priors_df = pd.read_parquet(communities_dir / "type_priors.parquet")
+    type_priors = priors_df.sort_values("type_id")["prior_dem_share"].values.astype(float)
 
     return type_scores, tract_fips, type_covariance, type_priors
 

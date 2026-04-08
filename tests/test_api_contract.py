@@ -233,21 +233,27 @@ def test_app_state_reconstruction_shapes(tmp_path):
     J = 4
     N = 3
 
-    tracts_dir = tmp_path / "data" / "tracts"
-    tracts_dir.mkdir(parents=True)
+    communities_dir = tmp_path / "data" / "communities"
+    communities_dir.mkdir(parents=True)
+    covariance_dir = tmp_path / "data" / "covariance"
+    covariance_dir.mkdir(parents=True)
 
     # Build a minimal assignments parquet with duplicates to test dedup
     rows = []
     for geoid in ["01001000100", "01001000200", "01001000300", "01001000100"]:
-        row = {"GEOID": geoid, "dominant_type": 0, "super_type": 0}
+        row = {"tract_geoid": geoid, "dominant_type": 0, "super_type": 0}
         for j in range(J):
             row[f"type_{j}_score"] = 1.0 / J
         rows.append(row)
-    pd.DataFrame(rows).to_parquet(tracts_dir / "national_tract_assignments.parquet")
+    pd.DataFrame(rows).to_parquet(communities_dir / "tract_type_assignments.parquet")
 
-    # Covariance and priors as npy
-    np.save(tracts_dir / "tract_type_covariance.npy", np.eye(J) * 0.01)
-    np.save(tracts_dir / "tract_type_priors.npy", np.full(J, 0.45))
+    # Covariance as parquet (J x J)
+    pd.DataFrame(np.eye(J) * 0.01).to_parquet(covariance_dir / "type_covariance.parquet")
+
+    # Priors as parquet with type_id and prior_dem_share columns
+    pd.DataFrame({"type_id": range(J), "prior_dem_share": [0.45] * J}).to_parquet(
+        communities_dir / "type_priors.parquet"
+    )
 
     scores, fips_list, covariance, priors = _load_tract_type_data(tmp_path)
     assert scores.shape == (N, J)  # deduplicated: 4 rows → 3
