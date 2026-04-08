@@ -272,6 +272,8 @@ export interface GovernorRaceData {
   /** Which party currently holds the governorship ("D" or "R"). */
   incumbent_party: string;
   n_polls: number;
+  /** Whether this is an open seat (no incumbent running). */
+  is_open_seat: boolean;
 }
 
 export interface GovernorOverviewData {
