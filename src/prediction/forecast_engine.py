@@ -366,6 +366,10 @@ def run_forecast(
     # When provided, Tier 2 crosstab observations are post-stratification corrected
     # so that oversampled demographic groups don't get artificially low sigma.
     # Precompute with src.prediction.population_vectors.build_state_population_vectors.
+    poll_blend_scale: float = 5.0,
+    # ^^ The k parameter in alpha = 1/(1 + n_polls/k).  Controls how quickly
+    # the model transitions from trusting county priors (few polls) to trusting
+    # type-projected predictions (many polls).  k=5: at 5 polls, 50/50 blend.
 ) -> dict[str, ForecastResult]:
     """Run the full hierarchical forecast for all races.
 
@@ -478,8 +482,8 @@ def run_forecast(
         #
         # alpha = 1 / (1 + n_polls / k), where k controls the transition.
         # k=5: at 5 polls, weight is 50/50.  At 15 polls, 75% type model.
-        _POLL_BLEND_SCALE = 5.0
-        alpha = 1.0 / (1.0 + n_polls / _POLL_BLEND_SCALE)
+        # poll_blend_scale is passed as a parameter to run_forecast() for tuning.
+        alpha = 1.0 / (1.0 + n_polls / poll_blend_scale)
         type_proj_national = type_scores @ theta_national
         type_proj_local = type_scores @ (theta_national + delta)
         county_preds_national = alpha * adjusted_priors + (1 - alpha) * type_proj_national
