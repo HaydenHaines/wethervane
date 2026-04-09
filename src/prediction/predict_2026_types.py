@@ -65,6 +65,7 @@ _forecast_params: dict = _all_params["forecast"]
 _LAM: float = _forecast_params["lam"]
 _MU: float = _forecast_params["mu"]
 _W_VECTOR_MODE: str = _forecast_params["w_vector_mode"]
+_POLL_BLEND_SCALE: float = float(_forecast_params.get("poll_blend_scale", 5.0))
 
 # Poll weighting hyperparameters.  These live in prediction_params.json so they
 # can be swept via scripts/experiments/sweep_poll_half_life.py without touching
@@ -389,6 +390,7 @@ def run() -> None:
         accuracy_path=_ACCURACY_PATH,
         methodology_weights=_METHODOLOGY_WEIGHTS,
         state_population_vectors=state_population_vectors,
+        poll_blend_scale=_POLL_BLEND_SCALE,
     )
 
     forecast_results: dict = {}
