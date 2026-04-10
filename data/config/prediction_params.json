@@ -8,8 +8,8 @@
     "lam": 3.0,
     "mu": 1.0,
     "w_vector_mode": "core",
-    "poll_blend_scale": 10.0,
-    "_poll_blend_scale_notes": "k in alpha = 1/(1 + n_polls/k). Controls blend between county priors (few polls) and type-projected predictions (many polls). k=10 optimal via 11-election backtest sweep (S531). At k=10, 10 polls → 50/50 blend (vs k=5 at 5 polls). Higher k trusts county priors longer, reducing type-compression artifacts."
+    "poll_blend_scale": 15.0,
+    "_poll_blend_scale_notes": "k in alpha = 1/(1 + n_polls/k). Controls blend between county priors (few polls) and type-projected predictions (many polls). k=15 optimal via full 7056-row backtest sweep (S532). pbs=15 dominates pbs=10 across ALL lam/adaptive combinations (+0.5-1% r). At k=15, 15 polls → 50/50 blend. Higher k trusts county priors longer, reducing type-compression artifacts."
   },
   "poll_weighting": {
     "_half_life_notes": "Exponential decay half-life in days. At 30 days a poll loses half its effective weight. Shorter values prioritize recency; longer values retain more historical polling signal. Calibrate via scripts/experiments/sweep_poll_half_life.py.",
