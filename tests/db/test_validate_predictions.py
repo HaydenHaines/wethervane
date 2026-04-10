@@ -149,6 +149,19 @@ class TestValidatePredictionsCatchBugs:
         errors = validate_predictions(fresh_con)
         assert any("ONE-SIDED" in e for e in errors)
 
+    def test_catches_extreme_margins(self, fresh_con):
+        """Predictions outside [0.05, 0.95] should be caught."""
+        from src.db.validate import validate_predictions
+
+        preds = {
+            "MA": 0.97,  # Extreme — no statewide race hits 97%
+            "NJ": 0.55, "IL": 0.57, "GA": 0.49,
+            "TX": 0.43, "WY": 0.27, "WV": 0.30, "OK": 0.34, "ID": 0.32,
+        }
+        _setup_db_with_predictions(fresh_con, preds)
+        errors = validate_predictions(fresh_con)
+        assert any("EXTREME MARGINS" in e for e in errors)
+
 
 class TestValidatePredictionsEdgeCases:
     """Edge cases that should not crash."""

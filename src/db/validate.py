@@ -249,6 +249,68 @@ def validate_predictions(con: duckdb.DuckDBPyConnection) -> list[str]:
             f"Data pipeline may have failed."
         )
 
+    # ── Check 8: Extreme margins (no prediction > 0.95 or < 0.05) ──────
+    # A county-level prediction outside [0.05, 0.95] is almost certainly a
+    # numerical artifact — even the most partisan counties rarely exceed
+    # ~90% for one party in statewide races.
+    extreme = state_preds[
+        (state_preds["pred_dem_share"] > 0.95) | (state_preds["pred_dem_share"] < 0.05)
+    ]
+    if not extreme.empty:
+        examples = extreme[["state", "pred_dem_share"]].head(5).to_dict("records")
+        errors.append(
+            f"EXTREME MARGINS: {len(extreme)} state(s) with predictions "
+            f"outside [0.05, 0.95]: {examples}. "
+            f"Likely numerical overflow or prior miscalibration."
+        )
+
+    # ── Tier 2: Soft checks (warnings only, do not block build) ─────────
+    warnings: list[str] = []
+
+    # ── Warning 1: Large partisan lean deviation without poll evidence ───
+    # If a state's prediction deviates > 15pp from the 2024 presidential
+    # result, and there's no poll data for that race, flag it.  Large shifts
+    # from structural baseline without polling evidence suggest model drift.
+    polled_states: set[str] = set()
+    try:
+        polled_rows = con.execute("""
+            SELECT DISTINCT geography FROM polls
+            WHERE geo_level = 'state' AND race LIKE 'Senate%'
+        """).fetchdf()
+        polled_states = set(polled_rows["geography"].tolist())
+    except Exception:
+        pass  # polls table may not exist — skip this check
+
+    for _, row in state_preds.iterrows():
+        st = row["state"]
+        if st in pres_2024 and st not in polled_states:
+            deviation = abs(row["pred_dem_share"] - pres_2024[st])
+            if deviation > 0.15:
+                warnings.append(
+                    f"LEAN DEVIATION: {st} prediction {row['pred_dem_share']:.3f} "
+                    f"deviates {deviation*100:.1f}pp from 2024 pres ({pres_2024[st]:.2f}) "
+                    f"with no poll evidence."
+                )
+
+    # ── Warning 2: Unpolled races clustering ─────────────────────────────
+    # If 10+ unpolled states have predictions within a 2pp band, it suggests
+    # the model is defaulting to type means rather than capturing state-level
+    # variation.  This is the "uniform collapse" signature from #139.
+    unpolled = state_preds[~state_preds["state"].isin(polled_states)]
+    if len(unpolled) >= 10:
+        pred_range = unpolled["pred_dem_share"].max() - unpolled["pred_dem_share"].min()
+        if pred_range < 0.02:
+            warnings.append(
+                f"UNPOLLED CLUSTERING: {len(unpolled)} unpolled states cluster "
+                f"within {pred_range*100:.1f}pp range "
+                f"[{unpolled['pred_dem_share'].min():.3f}, "
+                f"{unpolled['pred_dem_share'].max():.3f}]. "
+                f"Model may be collapsing to type means."
+            )
+
+    for w in warnings:
+        log.warning("Prediction check WARNING: %s", w)
+
     if errors:
         log.error("Prediction validation FAILED (%d issues):", len(errors))
         for e in errors:
@@ -262,6 +324,8 @@ def validate_predictions(con: duckdb.DuckDBPyConnection) -> list[str]:
             state_preds["pred_dem_share"].min(),
             state_preds["pred_dem_share"].max(),
         )
+    if warnings:
+        log.info("Prediction validation produced %d warning(s)", len(warnings))
 
     return errors
 

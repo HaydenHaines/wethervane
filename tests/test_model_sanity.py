@@ -12,11 +12,11 @@ Run after: predict_2026_types.py + build_database.py
 """
 from __future__ import annotations
 
+from pathlib import Path
+
 import numpy as np
 import pandas as pd
 import pytest
-
-from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 PREDICTIONS_PATH = PROJECT_ROOT / "data" / "predictions" / "county_predictions_2026_types.parquet"
@@ -177,6 +177,68 @@ class TestNJRegression:
 # Tier 3: Cross-state correlation with partisan lean.
 # The model should correlate with PVI/historical results.
 # ──────────────────────────────────────────────────────────────────────
+
+
+class TestExtremeMargins:
+    """No state-level prediction should be outside [0.05, 0.95]."""
+
+    def test_no_extreme_dem_predictions(self, state_preds):
+        """No state should predict > 0.95 Dem share."""
+        extreme = state_preds[state_preds["pred_dem_share"] > 0.95]
+        assert extreme.empty, (
+            f"{len(extreme)} state(s) predicted > 0.95 Dem share: "
+            f"{extreme[['state', 'pred_dem_share']].to_dict('records')}. "
+            f"Likely numerical overflow."
+        )
+
+    def test_no_extreme_rep_predictions(self, state_preds):
+        """No state should predict < 0.05 Dem share."""
+        extreme = state_preds[state_preds["pred_dem_share"] < 0.05]
+        assert extreme.empty, (
+            f"{len(extreme)} state(s) predicted < 0.05 Dem share: "
+            f"{extreme[['state', 'pred_dem_share']].to_dict('records')}. "
+            f"Likely numerical overflow."
+        )
+
+
+class TestPolledRaceAccuracy:
+    """Polled races should be anchored near poll averages."""
+
+    def _load_poll_average(self, state: str) -> float | None:
+        """Load the simple poll average for a Senate race from DuckDB."""
+        import duckdb
+
+        if not DB_PATH.exists():
+            return None
+        con = duckdb.connect(str(DB_PATH), read_only=True)
+        try:
+            result = con.execute(
+                """
+                SELECT AVG(dem_share) AS avg_dem_share
+                FROM polls
+                WHERE race LIKE ? AND geo_level = 'state'
+                """,
+                [f"Senate {state}%"],
+            ).fetchone()
+            return float(result[0]) if result and result[0] is not None else None
+        except Exception:
+            return None
+        finally:
+            con.close()
+
+    @pytest.mark.parametrize("state", ["GA", "NC", "MI", "NH"])
+    def test_polled_race_within_5pp_of_average(self, state_preds, state):
+        """Polled race predictions should be within 5pp of simple poll average."""
+        poll_avg = self._load_poll_average(state)
+        if poll_avg is None:
+            pytest.skip(f"No polls found for {state} Senate")
+
+        pred = _get_pred(state_preds, state)
+        deviation = abs(pred - poll_avg)
+        assert deviation < 0.05, (
+            f"{state} prediction {pred:.3f} deviates {deviation*100:.1f}pp "
+            f"from poll average {poll_avg:.3f}. Expected < 5pp."
+        )
 
 
 class TestCrossStateCorrelation:
