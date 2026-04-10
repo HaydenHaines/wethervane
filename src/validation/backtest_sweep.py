@@ -629,7 +629,10 @@ def _print_sweep_summary(df: pd.DataFrame, param_names: list[str]) -> None:
     print("-" * len(header))
 
     for _, row in grouped.head(20).iterrows():
-        parts = [f"{row[name]:>12.3f}" if isinstance(row[name], float) else f"{row[name]!s:>12}" for name in param_names]
+        parts = [
+            f"{row[name]:>12.3f}" if isinstance(row[name], float) else f"{row[name]!s:>12}"
+            for name in param_names
+        ]
         print(
             "  ".join(parts)
             + f"  {row['mean_r']:>8.3f}  {row['mean_rmse']:>10.4f}  "
