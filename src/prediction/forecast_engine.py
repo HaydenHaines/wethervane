@@ -353,7 +353,7 @@ def run_forecast(
     races: list[str],  # all race IDs to forecast
     lam: float = 1.0,  # θ_national regularization
     mu: float = 1.0,  # δ_race regularization
-    generic_ballot_shift: float = 0.0,
+    generic_ballot_shift: float | np.ndarray = 0.0,
     w_vector_mode: str = "core",
     reference_date: str | None = None,
     type_profiles: pd.DataFrame | None = None,

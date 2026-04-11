@@ -94,6 +94,10 @@ class ForecastParams:
     fundamentals_enabled: bool = False
     fundamentals_weight: float = 0.3
 
+    # State-level economic adjustment (QCEW-based)
+    state_econ_enabled: bool = False
+    state_econ_sensitivity: float = 0.5
+
 
 def load_forecast_params(
     params_path: Path | None = None,
@@ -138,6 +142,8 @@ def load_forecast_params(
         else dict(_DEFAULT_METHODOLOGY_WEIGHTS)
     )
 
+    state_econ_section: dict = all_params.get("state_economics", {})
+
     return ForecastParams(
         lam=float(forecast_section["lam"]),
         mu=float(forecast_section["mu"]),
@@ -149,6 +155,8 @@ def load_forecast_params(
         methodology_weights=methodology_weights,
         fundamentals_enabled=bool(fund_section.get("enabled", False)),
         fundamentals_weight=float(fund_section.get("fundamentals_weight", 0.3)),
+        state_econ_enabled=bool(state_econ_section.get("enabled", False)),
+        state_econ_sensitivity=float(state_econ_section.get("sensitivity", 0.5)),
     )
 
 
@@ -464,6 +472,27 @@ def run_forecast_pipeline(
             gb_shift = combined_shift
         except (FileNotFoundError, ValueError) as exc:
             log.warning("Fundamentals model unavailable, using GB only: %s", exc)
+
+    # Apply state-level economic adjustment from QCEW data.
+    # This modulates the national fundamentals shift by each state's relative
+    # employment growth: states with faster job growth get a smaller in-party
+    # penalty.  The result is a per-county shift array instead of a scalar.
+    if params.state_econ_enabled:
+        try:
+            from src.prediction.state_economics import compute_state_econ_adjustment
+
+            gb_shift = compute_state_econ_adjustment(
+                county_fips=county_fips,
+                states=states,
+                national_shift=float(gb_shift) if isinstance(gb_shift, (int, float)) else float(gb_shift.mean()),
+                econ_sensitivity=params.state_econ_sensitivity,
+            )
+            log.info(
+                "State econ adjustment applied: mean=%.4f, std=%.4f, range=[%.4f, %.4f]",
+                gb_shift.mean(), gb_shift.std(), gb_shift.min(), gb_shift.max(),
+            )
+        except (FileNotFoundError, ImportError, ValueError) as exc:
+            log.warning("State econ adjustment unavailable, using national shift: %s", exc)
 
     # Iterate over ALL registered races using the hierarchical forecast engine.
     # Produces dual-mode output: "national" (θ_national only) and

@@ -235,6 +235,105 @@ export function FundamentalsCard() {
           {" "}(LOO RMSE from {data.n_training} midterm cycles)
         </p>
       </div>
+
+      {/* State-level economic adjustment section */}
+      {data.state_econ_enabled && data.state_econ.length > 0 && (
+        <StateEconSection entries={data.state_econ} />
+      )}
     </section>
+  );
+}
+
+
+// ── State Economics sub-section ──────────────────────────────────────────
+
+/**
+ * Collapsible section showing per-state economic adjustments.
+ *
+ * Displays the top 5 and bottom 5 states by shift adjustment, derived
+ * from BLS QCEW county employment data.  This gives users insight into
+ * how regional economic conditions are modulating the national forecast.
+ */
+function StateEconSection({
+  entries,
+}: {
+  entries: Array<{
+    state_abbr: string | null;
+    emp_growth_rel_pp: number;
+    shift_adjustment_pp: number;
+  }>;
+}) {
+  // Sort by shift adjustment (most positive = D-favorable economy)
+  const sorted = [...entries]
+    .filter((e) => e.state_abbr)
+    .sort((a, b) => b.shift_adjustment_pp - a.shift_adjustment_pp);
+
+  // Show top 3 and bottom 3 to keep the card compact
+  const top = sorted.slice(0, 3);
+  const bottom = sorted.slice(-3).reverse();
+
+  return (
+    <div
+      className="pt-3 mt-3 border-t"
+      style={{ borderColor: "var(--color-border)" }}
+    >
+      <p
+        className="font-semibold text-xs mb-2"
+        style={{ color: "var(--color-text-muted)" }}
+      >
+        State Economic Conditions (QCEW)
+      </p>
+      <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-xs">
+        <div>
+          <p className="mb-1" style={{ color: "var(--color-text-muted)" }}>
+            Fastest job growth
+          </p>
+          {top.map((e) => (
+            <StateEconRow key={e.state_abbr} entry={e} />
+          ))}
+        </div>
+        <div>
+          <p className="mb-1" style={{ color: "var(--color-text-muted)" }}>
+            Slowest job growth
+          </p>
+          {bottom.map((e) => (
+            <StateEconRow key={e.state_abbr} entry={e} />
+          ))}
+        </div>
+      </div>
+      <p
+        className="mt-2 text-xs"
+        style={{ color: "var(--color-text-muted)" }}
+      >
+        Source: BLS QCEW 2021-2023 employment growth vs national average
+      </p>
+    </div>
+  );
+}
+
+
+/** Single row in the state economics section. */
+function StateEconRow({
+  entry,
+}: {
+  entry: {
+    state_abbr: string | null;
+    emp_growth_rel_pp: number;
+    shift_adjustment_pp: number;
+  };
+}) {
+  const { text: adjText, color: adjColor } = formatContribution(
+    entry.shift_adjustment_pp,
+  );
+
+  return (
+    <div className="flex items-center justify-between gap-2">
+      <span style={{ color: "var(--color-text)" }}>
+        {entry.state_abbr ?? "??"}
+      </span>
+      <span className="font-mono" style={{ color: adjColor }}>
+        {adjText}
+      </span>
+    </div>
   );
 }

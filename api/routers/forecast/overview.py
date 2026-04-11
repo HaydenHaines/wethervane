@@ -6,7 +6,7 @@ import pandas as pd
 from fastapi import APIRouter, Depends, Query, Request
 
 from api.db import get_db
-from api.models import ForecastRow, FundamentalsResponse, GenericBallotInfo
+from api.models import ForecastRow, FundamentalsResponse, GenericBallotInfo, StateEconEntry
 
 from ._helpers import _BASELINE_YEAR, _format_baseline_label, race_to_slug
 
@@ -203,6 +203,33 @@ def get_fundamentals() -> FundamentalsResponse:
 
     combined_pp = weight * fund_info.shift * 100 + (1 - weight) * gb_info.shift * 100
 
+    # Build state-level economic entries if state economics is enabled.
+    state_econ_params = params.get("state_economics", {})
+    state_econ_enabled = bool(state_econ_params.get("enabled", False))
+    state_econ_sensitivity = float(state_econ_params.get("sensitivity", 0.5))
+    state_econ_entries: list[StateEconEntry] = []
+
+    if state_econ_enabled:
+        try:
+            from src.core import config as _cfg
+            from src.prediction.state_economics import build_state_econ_features
+
+            econ_df = build_state_econ_features()
+            for _, row in econ_df.iterrows():
+                sfips = row["state_fips"]
+                state_econ_entries.append(StateEconEntry(
+                    state_fips=sfips,
+                    state_abbr=_cfg.STATE_ABBR.get(sfips),
+                    emp_growth_rel_pp=round(row["qcew_emp_growth_rel"] * 100, 2),
+                    wage_growth_rel_pp=round(row["qcew_wage_growth_rel"] * 100, 2),
+                    mfg_emp_share_pct=round(row["qcew_mfg_emp_share"] * 100, 1),
+                    shift_adjustment_pp=round(
+                        state_econ_sensitivity * row["qcew_emp_growth_rel"] * 100, 2,
+                    ),
+                ))
+        except (FileNotFoundError, ImportError, ValueError):
+            state_econ_entries = []
+
     return FundamentalsResponse(
         shift=fund_info.shift,
         shift_pp=round(fund_info.shift * 100, 2),
@@ -223,4 +250,7 @@ def get_fundamentals() -> FundamentalsResponse:
             "cpi_yoy_oct": snapshot.cpi_yoy_oct,
             "consumer_sentiment": snapshot.consumer_sentiment,
         },
+        state_econ_enabled=state_econ_enabled,
+        state_econ_sensitivity=state_econ_sensitivity,
+        state_econ=state_econ_entries,
     )

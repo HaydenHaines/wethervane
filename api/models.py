@@ -230,12 +230,35 @@ class GenericBallotInfo(BaseModel):
     """
 
 
+class StateEconEntry(BaseModel):
+    """Economic signal for a single state from QCEW data."""
+
+    state_fips: str
+    """2-digit state FIPS code."""
+
+    state_abbr: str | None = None
+    """State abbreviation (e.g. 'CA'), resolved from FIPS."""
+
+    emp_growth_rel_pp: float
+    """Employment growth relative to national (percentage points)."""
+
+    wage_growth_rel_pp: float
+    """Average wage growth relative to national (percentage points)."""
+
+    mfg_emp_share_pct: float
+    """Manufacturing employment share (percent)."""
+
+    shift_adjustment_pp: float
+    """Resulting shift adjustment from state econ (percentage points)."""
+
+
 class FundamentalsResponse(BaseModel):
     """Structural fundamentals model output.
 
     The fundamentals model predicts a national Dem share shift based on
     presidential approval, GDP growth, unemployment, and CPI inflation.
     It is blended with the generic ballot shift at a configurable weight.
+    Optionally includes state-level economic adjustments from QCEW data.
     """
 
     shift: float
@@ -270,6 +293,15 @@ class FundamentalsResponse(BaseModel):
 
     snapshot: dict
     """Current-cycle input values used to compute the shift."""
+
+    state_econ_enabled: bool = False
+    """Whether state-level economic adjustment is active."""
+
+    state_econ_sensitivity: float = 0.0
+    """Sensitivity parameter for state economic modulation."""
+
+    state_econ: list[StateEconEntry] = []
+    """Per-state economic signals and adjustments (empty if disabled)."""
 
 
 class MultiPollInput(BaseModel):

@@ -32,5 +32,11 @@
     "_weight_notes": "fundamentals_weight controls the blend: 0.0 = use only generic ballot (current behavior), 1.0 = use only fundamentals, 0.3 = 30% fundamentals + 70% generic ballot. Start conservative (0.3) because the fundamentals model has only 13 training points and LOO RMSE ~3.9pp.",
     "enabled": true,
     "fundamentals_weight": 0.3
+  },
+  "state_economics": {
+    "_notes": "State-level economic adjustment from QCEW (BLS Quarterly Census of Employment and Wages). Modulates the national fundamentals shift by each state's relative employment growth: states with faster-than-national job growth get a smaller in-party penalty. Data source: data/raw/qcew_county.parquet (2020-2023, 3,192 counties).",
+    "_sensitivity_notes": "sensitivity controls how much state economic conditions modulate the national shift. At 0.5, a state with +3% relative employment growth gets +1.5pp shift adjustment. Higher values amplify state variation. Start conservative at 0.5.",
+    "enabled": true,
+    "sensitivity": 0.5
   }
 }
