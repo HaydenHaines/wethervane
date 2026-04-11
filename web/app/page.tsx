@@ -6,7 +6,6 @@ import { useModelVersion } from "@/lib/hooks/use-model-version";
 import { HeroSection } from "@/components/landing/HeroSection";
 import { FreshnessStamp } from "@/components/shared/FreshnessStamp";
 import { ErrorAlert } from "@/components/shared/ErrorAlert";
-import { BalanceBar } from "@/components/forecast/BalanceBar";
 import { MiniMap } from "@/components/landing/MiniMap";
 import { ScrollyNarrative } from "@/components/home/ScrollyNarrative";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -34,15 +33,6 @@ export default function LandingPage() {
       <div className="mx-auto max-w-5xl">
         <HeroSection data={data} isLoading={isLoading} communityCount={communityCount} />
 
-        {data && (
-          <div className="w-full px-4">
-            <BalanceBar
-              races={data.races}
-              demSeats={data.dem_projected}
-              gopSeats={data.gop_projected}
-            />
-          </div>
-        )}
 
         {data?.state_colors && (
           <div className="flex flex-col items-center px-4 mb-6">
