@@ -35,6 +35,8 @@ A political modeling platform that discovers electoral communities directly from
 - **Hardcoded model parameters in frontend/data artifacts are a recurring source of bugs.** When J changes, super-type count changes, or column naming changes, stale artifacts break silently. Schedule periodic audits using the hardcoded-values skill. (Source: S245, also S243 column naming mismatch.)
 - **DRA tract assignments have duplicate GEOIDs.** The clustering pipeline may produce 112K rows for 81K unique tracts. Always `drop_duplicates(subset="GEOID")` before using as an index. (Source: S245.)
 - **`data/tracts/_deprecated_j130/` contains stale J=130 artifacts.** After the tract-primary migration (T.1-T.7), the current model uses J=100 data from `data/communities/` (type assignments, priors) and `data/covariance/` (type covariance). Stale J=130 files were moved to `_deprecated_j130/` in S508 to prevent accidental loading. The API was silently using these stale files for live poll propagation until S504. Always verify J consistency when loading type data. (Source: S504, S508.)
+- **Super-type names in DuckDB must match GeoJSON.** The `build_national_tract_geojson.py` script generates its own super-type names based on demographic composition (e.g., "Black Urban Neighborhood"). These names are embedded in the tract GeoJSON. DuckDB `super_types.display_name` must be updated to match after rebuilding GeoJSON, or the API and map will show different names. After rebuilding tracts: also run `build_state_geojson.py` and update DuckDB names. (Source: 2026-04-10, Black Belt types labeled "white".)
+- **Type volatility data must be regenerated after retraining.** `web/public/type-volatility.json` contains per-type average |shift| across presidential pairs. After any retrain that changes type assignments, regenerate with the script block in the commit that added it (computes from `county_shifts_multiyear.parquet` + `type_assignments.parquet`). Stale volatility data causes wrong gold borders on the map. (Source: 2026-04-10.)
 
 **BASELINE METRICS (beat these or don't merge):**
 - County holdout r: 0.698 (J=100, StandardScaler+pw=8, national 3,154 counties)
@@ -48,6 +50,7 @@ A political modeling platform that discovers electoral communities directly from
 - County Ridge+Demo LOO RMSE: 0.059 (S197)
 - Tract holdout r: 0.632 (J=100, 35 dims, S192)
 - Governor Ridge holdout r: 0.696 (train ≤2018, predict 2022, N=32 states, S494)
+- Governor Ridge holdout r (with state econ): 0.754 (QCEW employment/wage, sensitivity=0.5, 2026-04-10)
 - Governor Ridge holdout bias: +2.2pp (vs presidential +4.6pp)
 - Governor Ridge holdout direction accuracy: 87.5%
 
@@ -317,8 +320,8 @@ The API is the contract boundary between model pipeline and frontend. The fronte
 - One data quality finding: early governor pairs (1994→1998, 1998→2002) have ~10x the variance of presidential pairs, suggesting noisy/uncontested races. Worth filtering.
 - Full report: `docs/research/covariance-cross-race-audit.md`
 
-### Fundamentals — State-Level Signal Investigation Needed
-**DEBT:** Fundamentals modeling is currently conceived as a national signal ("it's the economy, stupid"). However, regional economic conditions likely vary in how they hit different types — a manufacturing downturn hits Rust Belt working-class types differently than coastal knowledge-worker types. Worth investigating whether BLS, BEA regional Fed, or BEA state-level data can support state- or type-level fundamentals signals rather than a single national scalar.
+### Fundamentals — State-Level Signal
+**RESOLVED (2026-04-10, #88):** State-level economic signal added via QCEW employment/wage data (`src/prediction/state_economics.py`). Per-county fundamentals adjustment based on state relative employment growth, wage growth, and manufacturing share. Governor backtest: +0.010 r (0.745→0.754). FundamentalsCard shows top/bottom states by job growth. Sensitivity parameter in `prediction_params.json`.
 
 ## Constraints
 
