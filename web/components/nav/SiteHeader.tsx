@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback, useEffect } from "react";
+import { useState, useRef, useCallback } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Menu, X } from "lucide-react";
@@ -43,27 +43,11 @@ function formatMargin(margin: number): string {
  */
 function SegmentTooltip({
   race,
-  segmentRef,
-  barRef,
+  leftPx,
 }: {
   race: SenateRaceData;
-  segmentRef: HTMLDivElement;
-  barRef: HTMLDivElement;
+  leftPx: number;
 }) {
-  const [pos, setPos] = useState<{ left: number; bottom: number } | null>(null);
-
-  useEffect(() => {
-    const segRect = segmentRef.getBoundingClientRect();
-    const barRect = barRef.getBoundingClientRect();
-    // Center tooltip horizontally on the segment, relative to the bar container
-    const left = segRect.left - barRect.left + segRect.width / 2;
-    // Position above the bar
-    const bottom = barRect.height + 6;
-    setPos({ left, bottom });
-  }, [segmentRef, barRef]);
-
-  if (!pos) return null;
-
   const label =
     RATING_LABELS[race.rating as Rating] ?? race.rating;
   const color =
@@ -73,8 +57,8 @@ function SegmentTooltip({
     <div
       className="absolute pointer-events-none"
       style={{
-        left: pos.left,
-        bottom: pos.bottom,
+        left: leftPx,
+        bottom: BAR_HEIGHT + 6,
         transform: "translateX(-50%)",
         zIndex: 60,
       }}
@@ -138,6 +122,7 @@ function HeaderTippingPointBar({ races }: { races: SenateRaceData[] }) {
   const barRef = useRef<HTMLDivElement>(null);
   const segmentRefs = useRef<Map<string, HTMLDivElement>>(new Map());
   const [hoveredSlug, setHoveredSlug] = useState<string | null>(null);
+  const [tooltipPos, setTooltipPos] = useState<{ left: number; width: number } | null>(null);
 
   const handleClick = useCallback(
     (slug: string) => {
@@ -146,11 +131,22 @@ function HeaderTippingPointBar({ races }: { races: SenateRaceData[] }) {
     [router],
   );
 
+  const handleHover = useCallback((slug: string) => {
+    setHoveredSlug(slug);
+    const seg = segmentRefs.current.get(slug);
+    const bar = barRef.current;
+    if (seg && bar) {
+      const segRect = seg.getBoundingClientRect();
+      const barRect = bar.getBoundingClientRect();
+      setTooltipPos({
+        left: segRect.left - barRect.left + segRect.width / 2,
+        width: segRect.width,
+      });
+    }
+  }, []);
+
   const hoveredRace = hoveredSlug
     ? sorted.find((r) => r.slug === hoveredSlug) ?? null
-    : null;
-  const hoveredSegment = hoveredSlug
-    ? segmentRefs.current.get(hoveredSlug) ?? null
     : null;
 
   return (
@@ -199,7 +195,7 @@ function HeaderTippingPointBar({ races }: { races: SenateRaceData[] }) {
                     ? { borderRight: "3px solid #111111", zIndex: 1 }
                     : {}),
                 }}
-                onMouseEnter={() => setHoveredSlug(race.slug)}
+                onMouseEnter={() => handleHover(race.slug)}
                 onClick={() => handleClick(race.slug)}
                 role="button"
                 tabIndex={0}
@@ -251,11 +247,10 @@ function HeaderTippingPointBar({ races }: { races: SenateRaceData[] }) {
         </div>
 
         {/* Tooltip — rendered outside the bar's overflow-hidden container */}
-        {hoveredRace && hoveredSegment && barRef.current && (
+        {hoveredRace && tooltipPos && (
           <SegmentTooltip
             race={hoveredRace}
-            segmentRef={hoveredSegment}
-            barRef={barRef.current}
+            leftPx={tooltipPos.left}
           />
         )}
       </div>
