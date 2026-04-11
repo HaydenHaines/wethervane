@@ -466,10 +466,20 @@ export default function MapShell({ defaultOverlayMode = "types" }: MapShellProps
               const black = formatPct(props.pct_black as number | null);
               const hispanic = formatPct(props.pct_hispanic as number | null);
 
+              // Look up predicted vote share for this type
+              const typeInfo = typeDataMap.get(tid as number);
+              const demShare = typeInfo?.mean_pred_dem_share;
+              const voteLabel = demShare != null
+                ? demShare >= 0.5
+                  ? `D+${((demShare - 0.5) * 200).toFixed(1)}`
+                  : `R+${((0.5 - demShare) * 200).toFixed(1)}`
+                : null;
+
               const lines: string[] = [
                 `${stName}  ·  Type ${tid}`,
-                `${n} tracts · ${Math.round(area)} km²`,
               ];
+              if (voteLabel) lines.push(`Predicted: ${voteLabel} (${(demShare! * 100).toFixed(1)}% Dem)`);
+              lines.push(`${n} tracts · ${Math.round(area)} km²`);
               const stats: string[] = [];
               if (income) stats.push(`Income: ${income}`);
               if (college) stats.push(`College+: ${college}`);
