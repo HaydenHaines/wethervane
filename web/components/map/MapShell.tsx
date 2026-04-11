@@ -42,7 +42,7 @@ import {
   TRANSITION_MS,
 } from "./map-utils";
 import { getColorForSuperType, dustyInkChoropleth } from "./map-palette";
-import { isSwingShare, SWING_BORDER_COLOR } from "@/lib/config/palette";
+import { SWING_BORDER_COLOR } from "@/lib/config/palette";
 import { fetchHistoricalElection } from "@/lib/api";
 
 // ---------------------------------------------------------------------------
@@ -110,6 +110,11 @@ export default function MapShell({ defaultOverlayMode = "types" }: MapShellProps
   const [superTypeMap, setSuperTypeMap] = useState<Map<number, SuperTypeInfo>>(new Map());
   const [typeDataMap, setTypeDataMap] = useState<Map<number, TypeSummary>>(new Map());
 
+  // Type volatility: average |shift| across presidential pairs. High-volatility
+  // types are "swingy" — communities that have moved a lot between elections.
+  const [typeVolatility, setTypeVolatility] = useState<Map<number, number>>(new Map());
+  const [volatilityThreshold, setVolatilityThreshold] = useState<number>(0.20);
+
   // Hover tooltip
   const [tooltip, setTooltip] = useState<{ x: number; y: number; text: string } | null>(null);
 
@@ -150,6 +155,19 @@ export default function MapShell({ defaultOverlayMode = "types" }: MapShellProps
         setStateRatings(colors);
       })
       .catch(() => { /* senate colors are non-critical */ });
+
+    // Load type volatility data (avg |shift| per type across presidential pairs)
+    fetch("/type-volatility.json")
+      .then((r) => r.json())
+      .then((data: { type_volatility: Record<string, number>; p75_threshold: number }) => {
+        const vMap = new Map<number, number>();
+        for (const [tid, vol] of Object.entries(data.type_volatility)) {
+          vMap.set(Number(tid), vol);
+        }
+        setTypeVolatility(vMap);
+        setVolatilityThreshold(data.p75_threshold);
+      })
+      .catch(() => { /* volatility is non-critical */ });
 
     Promise.all([
       fetchSuperTypes().catch(() => []),
@@ -457,12 +475,13 @@ export default function MapShell({ defaultOverlayMode = "types" }: MapShellProps
             return [...base, 180];
           }) as never,
           getLineColor: ((f: { properties?: Record<string, unknown> }) => {
-            // Gold border on competitive/swing tracts (within 8pp of 50/50)
+            // Gold border on high-volatility tracts — communities that have
+            // moved a lot between elections (top quartile of avg |shift|).
             if (defaultOverlayMode === "forecast") {
               const typeId = f.properties?.type_id as number | undefined;
               if (typeId != null) {
-                const typeData = typeDataMap.get(typeId);
-                if (typeData?.mean_pred_dem_share != null && isSwingShare(typeData.mean_pred_dem_share)) {
+                const vol = typeVolatility.get(typeId);
+                if (vol != null && vol >= volatilityThreshold) {
                   return SWING_BORDER_COLOR;
                 }
               }
@@ -474,8 +493,8 @@ export default function MapShell({ defaultOverlayMode = "types" }: MapShellProps
             if (defaultOverlayMode === "forecast") {
               const typeId = f.properties?.type_id as number | undefined;
               if (typeId != null) {
-                const typeData = typeDataMap.get(typeId);
-                if (typeData?.mean_pred_dem_share != null && isSwingShare(typeData.mean_pred_dem_share)) {
+                const vol = typeVolatility.get(typeId);
+                if (vol != null && vol >= volatilityThreshold) {
                   return 2;
                 }
               }
@@ -497,7 +516,7 @@ export default function MapShell({ defaultOverlayMode = "types" }: MapShellProps
               const black = formatPct(props.pct_black as number | null);
               const hispanic = formatPct(props.pct_hispanic as number | null);
 
-              // Look up predicted vote share for this type
+              // Look up predicted vote share and volatility for this type
               const typeInfo = typeDataMap.get(tid as number);
               const demShare = typeInfo?.mean_pred_dem_share;
               const voteLabel = demShare != null
@@ -505,11 +524,17 @@ export default function MapShell({ defaultOverlayMode = "types" }: MapShellProps
                   ? `D+${((demShare - 0.5) * 200).toFixed(1)}`
                   : `R+${((0.5 - demShare) * 200).toFixed(1)}`
                 : null;
+              const vol = typeVolatility.get(tid as number);
+              const isHighSwing = vol != null && vol >= volatilityThreshold;
 
               const lines: string[] = [
                 `${stName}  ·  Type ${tid}`,
               ];
               if (voteLabel) lines.push(`Predicted: ${voteLabel} (${(demShare! * 100).toFixed(1)}% Dem)`);
+              if (vol != null) {
+                const swingPp = (vol * 100).toFixed(1);
+                lines.push(`Avg swing: ${swingPp}pp/cycle${isHighSwing ? " ⚡ HIGH VOLATILITY" : ""}`);
+              }
               lines.push(`${n} tracts · ${Math.round(area)} km²`);
               const stats: string[] = [];
               if (income) stats.push(`Income: ${income}`);
@@ -568,8 +593,8 @@ export default function MapShell({ defaultOverlayMode = "types" }: MapShellProps
           },
           updateTriggers: {
             getFillColor: [forecastChoropleth, defaultOverlayMode, typeDataMap],
-            getLineColor: [defaultOverlayMode, typeDataMap],
-            getLineWidth: [defaultOverlayMode, typeDataMap],
+            getLineColor: [defaultOverlayMode, typeVolatility, volatilityThreshold],
+            getLineWidth: [defaultOverlayMode, typeVolatility, volatilityThreshold],
           },
         })
       );
@@ -579,7 +604,7 @@ export default function MapShell({ defaultOverlayMode = "types" }: MapShellProps
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     stateGeo, stateTracts, zoomedState, stateRatings,
-    forecastChoropleth, defaultOverlayMode, typeDataMap, superTypeMap,
+    forecastChoropleth, defaultOverlayMode, typeDataMap, superTypeMap, typeVolatility, volatilityThreshold,
     handleStateClick, getSuperTypeName,
     historicalYear, countyGeo, historicalData,
     // tractPopup is intentionally omitted: including it would cause layer recreation on

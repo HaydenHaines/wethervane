@@ -182,15 +182,7 @@ export function dustyInkChoropleth(demShare: number): [number, number, number, n
   return [45, 74, 111, 230];
 }
 
-/**
- * Whether a dem share falls in the competitive "swing" band (within 8pp of 50/50).
- * These are tracts where small shifts could flip the outcome.
- */
-export function isSwingShare(demShare: number): boolean {
-  return Math.abs(demShare - 0.5) < 0.08;
-}
-
-/** Gold border color for swing tracts: [R, G, B, A]. */
+/** Gold border color for high-volatility tracts: [R, G, B, A]. */
 export const SWING_BORDER_COLOR: [number, number, number, number] = [212, 160, 23, 255];
 
 /**
