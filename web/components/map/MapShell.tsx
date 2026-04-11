@@ -396,17 +396,23 @@ export default function MapShell({ defaultOverlayMode = "types" }: MapShellProps
             return [180, 175, 168, 120];
           }) as never,
           lineWidthMinPixels: 1,
-          pickable: !zoomedState,
+          pickable: true,
           onClick: (info: { object?: { properties?: Record<string, string> } }) => {
             const abbr = info.object?.properties?.state_abbr;
-            if (abbr) handleStateClick(abbr);
+            if (!abbr) return;
+            // When zoomed, clicking the current state does nothing (tracts handle it).
+            // Clicking a neighboring state zooms to it instead.
+            if (zoomedState && abbr === zoomedState) return;
+            handleStateClick(abbr);
           },
           onHover: ({ object, x, y }: { object?: { properties?: Record<string, string> }; x: number; y: number }) => {
-            if (!zoomedState && object) {
+            if (object) {
               const abbr = object.properties?.state_abbr;
+              // When zoomed, only show tooltip for neighboring states (not the current one)
+              if (zoomedState && abbr === zoomedState) return;
               const name = object.properties?.state_name;
               setTooltip({ x, y, text: name ?? abbr ?? "" });
-            } else if (!zoomedState) {
+            } else {
               setTooltip(null);
             }
           },
