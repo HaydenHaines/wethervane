@@ -40,9 +40,9 @@ export default async function AboutPage() {
     { label: "Counties", value: "3,154" },
     { label: "Fine types", value: typeCount > 0 ? String(typeCount) : "—" },
     { label: "Super-types", value: superTypeCount > 0 ? String(superTypeCount) : "—" },
-    { label: "Ensemble LOO r", value: "0.711" },
+    { label: "Ensemble LOO r", value: "0.731" },
     { label: "County RMSE", value: "7.3 pp" },
-    { label: "Covariance val r", value: "0.915" },
+    { label: "Covariance val r", value: "0.936" },
   ];
 
   return (
