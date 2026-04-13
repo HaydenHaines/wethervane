@@ -102,12 +102,10 @@ test.describe("Forecast flow", () => {
       // Scroll to the poll section so table is in viewport
       await pollHeading.scrollIntoViewIfNeeded();
 
-      // GA Senate has polls, so table should be present
+      // Wait for either poll table or no-polls message to appear (SWR async load)
       const table = page.locator('table[aria-label="Race polls"]');
-      const noPolls = page.getByText(/no polls/i);
-      const hasTable = await table.isVisible().catch(() => false);
-      const hasNoPolls = await noPolls.isVisible().catch(() => false);
-      expect(hasTable || hasNoPolls).toBe(true);
+      const noPolls = page.getByText("No polls available yet for this race.");
+      await expect(table.or(noPolls)).toBeVisible({ timeout: 15_000 });
     });
 
     test("race detail page has a back link to forecast", async ({ page }) => {
