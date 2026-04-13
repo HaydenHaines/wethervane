@@ -468,7 +468,20 @@ def ingest_all(
 
     # Counties, races, versions, shifts, assignments
     if shifts is not None:
-        counties_df = build_counties(shifts, crosswalk_path=paths["crosswalk"])
+        # Collect FIPS from type_assignments so the counties table covers all
+        # FIPS referenced by downstream tables (type_scores, ridge_county_priors).
+        # Without this, Alaska borough FIPS (02050, 02185, etc.) and SD's Oglala
+        # Lakota (46102) fail the model cross-compliance check because the shift
+        # data uses different FIPS conventions for Alaska (house districts).
+        ta_path = project_root / "data" / "communities" / "type_assignments.parquet"
+        extra_fips: set[str] | None = None
+        if ta_path.exists():
+            ta_fips = pd.read_parquet(ta_path, columns=["county_fips"])
+            extra_fips = set(ta_fips["county_fips"].astype(str).str.zfill(5).unique())
+            log.info("Adding %d extra FIPS from type_assignments to counties", len(extra_fips))
+        counties_df = build_counties(
+            shifts, crosswalk_path=paths["crosswalk"], extra_fips=extra_fips,
+        )
         con.execute("DELETE FROM counties")
         insert_via_parquet(con, "counties", counties_df)
         log.info("Ingested %d counties", len(counties_df))

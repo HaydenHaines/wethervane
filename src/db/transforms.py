@@ -45,6 +45,7 @@ def build_counties(
     shifts: pd.DataFrame,
     crosswalk_path: Path | None = _DEFAULT_CROSSWALK,  # type: ignore[assignment]
     pres_2024_path: Path | None = None,
+    extra_fips: set[str] | None = None,
 ) -> pd.DataFrame:
     """Derive the counties table from shift FIPS column, optionally joining county names
     and 2024 presidential vote totals (used for population-weighted state aggregation).
@@ -57,6 +58,9 @@ def build_counties(
         pres_2024_path: Path to medsl_county_presidential_2024.parquet.  When
             provided (and the file exists), ``total_votes_2024`` is populated
             from ``pres_total_2024``.  Falls back to NULL when not available.
+        extra_fips: Additional FIPS codes to include (e.g. from type_assignments).
+            Ensures the counties table covers all FIPS referenced by downstream
+            tables like type_scores, preventing cross-compliance failures.
     """
     # Lazy import to resolve module-level path constants. These are only needed
     # when callers omit crosswalk_path / pres_2024_path (the build pipeline
@@ -65,8 +69,11 @@ def build_counties(
         from src.db.build_database import CROSSWALK_PATH
         crosswalk_path = CROSSWALK_PATH
 
-    fips = shifts["county_fips"].unique()
-    df = pd.DataFrame({"county_fips": sorted(fips)})
+    fips = set(shifts["county_fips"].unique())
+    if extra_fips:
+        fips |= extra_fips
+    fips = sorted(fips)
+    df = pd.DataFrame({"county_fips": fips})
     df["state_fips"] = df["county_fips"].str[:2]
     df["state_abbr"] = df["state_fips"].map(_STATE_FIPS_TO_ABBR).fillna("??")
 
