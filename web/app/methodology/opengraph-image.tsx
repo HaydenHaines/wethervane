@@ -95,7 +95,7 @@ export default function Image() {
               gap: 16,
             }}
           >
-            {["100 fine types", "5 super-types", "3,154 counties", "LOO r = 0.711"].map(
+            {["100 fine types", "5 super-types", "3,154 counties", "LOO r = 0.731"].map(
               (label) => (
                 <div
                   key={label}

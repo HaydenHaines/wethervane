@@ -20,12 +20,12 @@ const TOC_SECTIONS = [
 type SectionId = (typeof TOC_SECTIONS)[number]["id"];
 
 const MODEL_METRICS = [
-  { label: "LOO r (Ensemble)", value: "0.711", note: "Ridge + HGB, 160 features" },
+  { label: "LOO r (Ensemble)", value: "0.731", note: "Ridge + HGB, 43 pruned features" },
   { label: "LOO r (Ridge)", value: "0.533", note: "Type scores + county mean" },
   { label: "Holdout r", value: "0.698", note: "Standard hold-out validation" },
   { label: "Coherence", value: "0.783", note: "Within-type political agreement" },
   { label: "RMSE", value: "0.073", note: "Root mean squared error" },
-  { label: "Covariance Val r", value: "0.915", note: "Ledoit-Wolf regularized" },
+  { label: "Covariance Val r", value: "0.936", note: "Ledoit-Wolf regularized" },
   { label: "Counties", value: "3,154", note: "All 50 states + DC" },
   { label: "Types", value: "100", note: "KMeans discovered" },
 ];
@@ -697,7 +697,7 @@ export function MethodologyContent() {
                 Types that share electoral behavior tend to co-move. The model
                 estimates a 100×100 covariance matrix capturing how much each
                 pair of types correlates, using observed electoral correlation
-                with Ledoit-Wolf regularization (validation r = <strong>0.915</strong>).
+                with Ledoit-Wolf regularization (validation r = <strong>0.936</strong>).
               </p>
               <p>
                 This covariance structure encodes which types are behaviorally
@@ -716,9 +716,9 @@ export function MethodologyContent() {
               </p>
               <p>
                 The final ensemble uses{" "}
-                <strong>Ridge + Histogram Gradient Boosting</strong> with 160
-                features from 8 independent data sources, achieving a
-                leave-one-out r of <strong>0.711</strong>.
+                <strong>Ridge + Histogram Gradient Boosting</strong> with 43
+                pruned features from 8 independent data sources, achieving a
+                leave-one-out r of <strong>0.731</strong>.
               </p>
             </Step>
           </ScrollSection>
@@ -739,7 +739,7 @@ export function MethodologyContent() {
             <MetricGrid metrics={MODEL_METRICS} />
             <p className="text-sm mt-3" style={{ color: "var(--color-text-muted)" }}>
               The standard holdout r (0.698) is inflated by ~0.22 because
-              counties help predict their own type means. LOO r (0.711) is the
+              counties help predict their own type means. LOO r (0.731) is the
               correct metric for evaluating generalization. Both are reported
               for transparency.
             </p>
@@ -837,6 +837,24 @@ export function MethodologyContent() {
               (r = 0.68) predicts these same races with errors up to ±17pp —
               showing that the presidential-prior enrichment is doing substantial
               work beyond just knowing which communities lean which way.
+            </p>
+
+            <h3
+              className="font-serif text-lg font-semibold mt-6 mb-2"
+              style={{ fontFamily: "var(--font-serif)", color: "var(--color-text)" }}
+            >
+              Extended multi-election backtest
+            </h3>
+            <p>
+              Beyond the 2022 holdout, the model has been validated across{" "}
+              <strong>11 elections</strong> spanning presidential (2008–2020),
+              Senate (2014–2022), and governor (2018, 2022) cycles using
+              year-adaptive Ridge priors. The combined backtest achieves{" "}
+              <strong>r = 0.939</strong> with direction accuracy of 88–100%
+              across all elections. The model shows an expected temporal
+              gradient — stronger on recent elections where the political
+              geography more closely matches the training era — but maintains
+              predictive power even for elections 16 years in the past.
             </p>
           </ScrollSection>
 

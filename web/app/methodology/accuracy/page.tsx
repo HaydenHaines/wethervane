@@ -6,11 +6,11 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Model Accuracy | WetherVane",
   description:
-    "Backtesting results for the WetherVane electoral model: leave-one-out cross-validation across four presidential cycles, method progression from baseline to ensemble, and what r=0.711 means in practice.",
+    "Backtesting results for the WetherVane electoral model: leave-one-out cross-validation across four presidential cycles, method progression from baseline to ensemble, and what r=0.731 means in practice.",
   openGraph: {
     title: "Model Accuracy | WetherVane",
     description:
-      "Backtesting results for the WetherVane electoral model: LOO r=0.711 across 3,154 counties, validated across four presidential cycles.",
+      "Backtesting results for the WetherVane electoral model: LOO r=0.731 across 3,154 counties, validated across four presidential cycles.",
     type: "article",
     siteName: "WetherVane",
     images: [
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
         url: "/methodology/accuracy/opengraph-image",
         width: 1200,
         height: 630,
-        alt: "WetherVane Model Accuracy — LOO r=0.711 across 3,154 counties",
+        alt: "WetherVane Model Accuracy — LOO r=0.731 across 3,154 counties",
       },
     ],
   },
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Model Accuracy | WetherVane",
     description:
-      "LOO r=0.711 across 3,154 counties. Four-cycle cross-election validation. See how the WetherVane model performs out-of-sample.",
+      "LOO r=0.731 across 3,154 counties. Four-cycle cross-election validation. See how the WetherVane model performs out-of-sample.",
   },
 };
 
@@ -278,8 +278,8 @@ export default function AccuracyPage() {
   const methodComparison = [
     { method: "Type-mean baseline", loo_r: 0.448 },
     { method: "Ridge regression (type scores only)", loo_r: 0.533 },
-    { method: "Ridge regression (all 160 features)", loo_r: 0.671 },
-    { method: "Ridge + HGB ensemble (production)", loo_r: 0.711 },
+    { method: "Ridge regression (all features)", loo_r: 0.671 },
+    { method: "Ridge + HGB ensemble (production)", loo_r: 0.731 },
   ];
 
   return (
@@ -353,7 +353,7 @@ export default function AccuracyPage() {
       <Section title="Overall Performance" id="overall">
         <p>
           The headline metric is{" "}
-          <strong>leave-one-out (LOO) r = 0.711</strong>. This is the
+          <strong>leave-one-out (LOO) r = 0.731</strong>. This is the
           correlation between predicted and actual county-level Democratic
           vote share shifts, measured on held-out counties that were
           excluded from their own type average before prediction.
@@ -373,10 +373,10 @@ export default function AccuracyPage() {
             marginBottom: "8px",
           }}
         >
-          <MetricCard label="LOO r (ensemble)" value="0.711" note="Ridge + HGB, N=3,106" />
+          <MetricCard label="LOO r (ensemble)" value="0.731" note="Ridge + HGB, 43 pruned features" />
           <MetricCard label="Standard holdout r" value="0.698" note="Inflated ~0.013 by self-prediction" />
           <MetricCard label="RMSE" value="7.3 pp" note="Percentage-point error" />
-          <MetricCard label="Covariance val r" value="0.915" note="Observed Ledoit-Wolf" />
+          <MetricCard label="Covariance val r" value="0.936" note="Observed Ledoit-Wolf" />
           <MetricCard label="Type coherence" value="0.783" note="Within-type consistency" />
           <MetricCard label="Counties covered" value="3,154" note="All 50 states + DC" />
         </div>
@@ -504,15 +504,15 @@ export default function AccuracyPage() {
       {/* What This Means */}
       <Section title="What This Means" id="interpretation">
         <p>
-          An LOO r of 0.711 means the model explains roughly{" "}
-          <strong>50% of the variance</strong> in county-level partisan
-          shifts (r² ≈ 0.505). That sounds modest, but consider what
+          An LOO r of 0.731 means the model explains roughly{" "}
+          <strong>53% of the variance</strong> in county-level partisan
+          shifts (r² ≈ 0.534). That sounds modest, but consider what
           is being predicted: the direction and magnitude of how each of
           3,154 counties shifts relative to the prior election, using
           only information available <em>before</em> the election.
         </p>
         <p>
-          The other 50% of variance is genuinely unpredictable from
+          The other 47% of variance is genuinely unpredictable from
           structural features — candidate effects, late-breaking news,
           local mobilization, and pure noise. No structural model can
           capture these, and one that claimed to would be overfitting.
@@ -529,10 +529,10 @@ export default function AccuracyPage() {
           2024). These limitations are documented, not hidden.
         </p>
         <p style={{ color: "var(--color-text-muted)", fontSize: "14px" }}>
-          The LOO ensemble (0.711) outperforms the standard holdout (0.698)
-          because it uses 160 additional features beyond type scores. The basic
+          The LOO ensemble (0.731) outperforms the standard holdout (0.698)
+          because it uses 43 pruned features beyond type scores. The basic
           LOO type-mean baseline (0.448) is the honest structural-model-only
-          metric — the ensemble improvement from 0.448 to 0.711 comes from
+          metric — the ensemble improvement from 0.448 to 0.731 comes from
           demographic, economic, and social features. Both LOO and standard
           holdout are reported for full transparency.
         </p>

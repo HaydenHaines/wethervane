@@ -96,7 +96,7 @@ export default function Image() {
             }}
           >
             {[
-              "LOO r = 0.711",
+              "LOO r = 0.731",
               "3,154 counties",
               "4 election cycles",
               "50% variance explained",
