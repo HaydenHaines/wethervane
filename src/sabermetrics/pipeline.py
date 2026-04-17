@@ -24,8 +24,6 @@ import json
 import logging
 from pathlib import Path
 
-import pandas as pd
-
 log = logging.getLogger(__name__)
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]

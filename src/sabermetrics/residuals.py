@@ -122,7 +122,6 @@ def _run_county_level_backtest(year: int, race_type: str) -> dict:
 
     actuals_df = load_historic_actuals(year, race_type)
 
-    fips_to_pred = dict(zip(county_fips, range(len(county_fips))))
     county_preds_by_race: dict[str, np.ndarray] = {
         race_id: fr.county_preds_national for race_id, fr in forecast_results.items()
     }
