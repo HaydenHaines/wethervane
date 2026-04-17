@@ -549,6 +549,10 @@ export async function fetchHistoricalElection(year: number): Promise<Map<string,
 export interface CandidateBadge {
   name: string;
   score: number;
+  provisional?: boolean;
+  kind?: "catalog" | "signature";
+  type_id?: number | null;
+  fallback_reason?: string | null;
 }
 
 export interface RaceCandidateSummary {
@@ -557,6 +561,7 @@ export interface RaceCandidateSummary {
   party: string;
   badges: CandidateBadge[];
   cec: number;
+  badge_scores: Record<string, number>;
 }
 
 export interface RaceCandidatesResponse {
