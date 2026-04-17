@@ -728,6 +728,23 @@ class CandidateBadge(BaseModel):
     """'small_pool' if the party pool was too small for within-party thresholding."""
 
 
+class RaceResult(BaseModel):
+    """A single race entry from the candidate registry.
+
+    Each entry corresponds to one election cycle the candidate ran in.
+    ``actual_dem_share_2party`` is the two-party Democratic vote share (0–1).
+    ``result`` is 'win' or 'loss' from the candidate's perspective.
+    """
+
+    year: int
+    state: str
+    office: str
+    special: bool = False
+    party: str
+    result: str
+    actual_dem_share_2party: float | None = None
+
+
 class CandidateBadgesResponse(BaseModel):
     """Full badge profile for a single candidate (by bioguide ID)."""
 
@@ -740,6 +757,8 @@ class CandidateBadgesResponse(BaseModel):
     """All badge dimension scores (not just earned badges)."""
     cec: float
     """Candidate Effect Consistency — how stable the candidate's effect is across races (0–1)."""
+    races: list[RaceResult] = []
+    """All race entries from the candidate registry, sorted by year descending."""
 
 
 class CTOVEntry(BaseModel):
@@ -780,3 +799,46 @@ class RaceCandidatesResponse(BaseModel):
 
     race_key: str
     candidates: list[RaceCandidateSummary]
+
+
+class CandidateListItem(BaseModel):
+    """Summary row for the candidates directory listing.
+
+    Includes enough info to render a candidate card with name, party,
+    office/state context, badge count, and CEC.  Full badge data is
+    only fetched when the user navigates to the profile page.
+    """
+
+    bioguide_id: str
+    name: str
+    party: str
+    n_races: int
+    cec: float
+    badges: list[str]
+    """Badge names only — no scores — for compact card display."""
+    states: list[str]
+    """Unique states the candidate has run in, derived from registry races."""
+    offices: list[str]
+    """Unique office types ('Senate', 'Governor'), derived from registry races."""
+    years: list[int]
+    """Election years the candidate has appeared in, ascending order."""
+
+
+class CandidateListResponse(BaseModel):
+    """Paginated list of candidates matching query parameters."""
+
+    candidates: list[CandidateListItem]
+    total: int
+    """Total matching count before pagination."""
+
+
+class PredecessorInfo(BaseModel):
+    """The most recent predecessor in the same state/office/party slot.
+
+    Used for single-race candidates who lack a cross-cycle consistency signal.
+    This is a low-trust comparison — labeled clearly in the UI.
+    """
+
+    bioguide_id: str
+    name: str
+    year: int

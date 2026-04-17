@@ -19,10 +19,14 @@ from api.db import get_db
 from api.models import (
     CandidateBadge,
     CandidateBadgesResponse,
+    CandidateListItem,
+    CandidateListResponse,
     CTOVEntry,
     CTOVResponse,
+    PredecessorInfo,
     RaceCandidatesResponse,
     RaceCandidateSummary,
+    RaceResult,
 )
 
 log = logging.getLogger(__name__)
@@ -148,7 +152,141 @@ def _build_badges(badge_data: dict) -> list[CandidateBadge]:
     return result
 
 
+# ── Predecessor lookup ───────────────────────────────────────────────────────
+
+
+def _find_predecessor(
+    bioguide_id: str,
+    state: str,
+    office: str,
+    party: str,
+    before_year: int,
+) -> dict | None:
+    """Find the most recent prior candidate in the same state/office/party.
+
+    Searches ``_REGISTRY`` for a different person who ran in the same state and
+    office for the same party in a year strictly earlier than ``before_year``.
+    Returns the registry entry dict for the closest predecessor, or None.
+
+    Single-race candidates use this to show a weak second data point — the CTOV
+    shift between the current candidate and their predecessor.  Low-trust signal
+    only; the caller must label it clearly in the UI.
+    """
+    best_year: int = -1
+    best_entry: dict | None = None
+    best_id: str | None = None
+
+    for pid, pdata in _REGISTRY.items():
+        if pid == bioguide_id:
+            continue
+        for race in pdata.get("races", []):
+            if (
+                race.get("state") == state
+                and race.get("office") == office
+                and race.get("party") == party
+                and race.get("year", 0) < before_year
+                and race.get("year", 0) > best_year
+            ):
+                best_year = race["year"]
+                best_entry = pdata
+                best_id = pid
+
+    if best_id is None or best_entry is None:
+        return None
+
+    return {
+        "bioguide_id": best_id,
+        "name": best_entry.get("name", ""),
+        "year": best_year,
+    }
+
+
 # ── Endpoints ────────────────────────────────────────────────────────────────
+
+
+@router.get(
+    "/candidates",
+    response_model=CandidateListResponse,
+    summary="List candidates with optional filtering",
+)
+def list_candidates(
+    q: str | None = None,
+    party: str | None = None,
+    office: str | None = None,
+    year: int | None = None,
+    state: str | None = None,
+    limit: int = 200,
+    offset: int = 0,
+) -> CandidateListResponse:
+    """Return a filtered, paginated list of candidates from the badge registry.
+
+    All query parameters are optional and additive (AND logic):
+    - ``q``: case-insensitive substring match on candidate name
+    - ``party``: exact match on party code ('D', 'R', 'I', etc.)
+    - ``office``: exact match on office type ('Senate', 'Governor')
+    - ``year``: candidate must have run in this election year
+    - ``state``: candidate must have run in this state (2-letter code)
+
+    Only candidates present in candidate_badges.json are included; pure registry
+    entries without badge data are excluded since the profile page requires badges.
+    """
+    items: list[CandidateListItem] = []
+
+    for bioguide_id, badge_data in _BADGES.items():
+        name = badge_data.get("name", "")
+        cand_party = badge_data.get("party", "")
+
+        # Party filter — exact match
+        if party and cand_party != party:
+            continue
+
+        # Name search — case-insensitive substring
+        if q and q.lower() not in name.lower():
+            continue
+
+        # Registry data for office/year/state filtering
+        reg = _REGISTRY.get(bioguide_id, {})
+        races = reg.get("races", [])
+
+        # Office filter — candidate must have run for this office at least once
+        if office and not any(r.get("office") == office for r in races):
+            continue
+
+        # Year filter — candidate must have run in this year
+        if year and not any(r.get("year") == year for r in races):
+            continue
+
+        # State filter — candidate must have run in this state
+        if state and not any(r.get("state") == state for r in races):
+            continue
+
+        # Build summary fields from registry races
+        states = sorted({r["state"] for r in races if "state" in r})
+        offices = sorted({r["office"] for r in races if "office" in r})
+        years = sorted({r["year"] for r in races if "year" in r})
+        badge_names = [b.get("name", "") for b in badge_data.get("badge_details", [])] or \
+                      badge_data.get("badges", [])
+
+        items.append(
+            CandidateListItem(
+                bioguide_id=bioguide_id,
+                name=name,
+                party=cand_party,
+                n_races=badge_data.get("n_races", 0),
+                cec=badge_data.get("cec", 0.0),
+                badges=badge_names,
+                states=states,
+                offices=offices,
+                years=years,
+            )
+        )
+
+    # Sort alphabetically by last name (last space-separated token), then first name
+    items.sort(key=lambda c: (c.name.split()[-1].lower(), c.name.lower()))
+
+    total = len(items)
+    page = items[offset : offset + limit]
+    return CandidateListResponse(candidates=page, total=total)
 
 
 @router.get(
@@ -156,12 +294,29 @@ def _build_badges(badge_data: dict) -> list[CandidateBadge]:
     response_model=CandidateBadgesResponse,
     summary="Full candidate sabermetrics profile",
 )
-def get_candidate(bioguide_id: str):
-    """Return badges, badge scores, and CEC for a candidate by bioguide ID."""
+def get_candidate(bioguide_id: str) -> CandidateBadgesResponse:
+    """Return badges, badge scores, CEC, and race history for a candidate by bioguide ID."""
     if bioguide_id not in _BADGES:
         raise HTTPException(status_code=404, detail=f"Candidate {bioguide_id} not found")
 
     data = _BADGES[bioguide_id]
+
+    # Pull race history from the registry (richer than badge data alone)
+    reg = _REGISTRY.get(bioguide_id, {})
+    raw_races = reg.get("races", [])
+    races = [
+        RaceResult(
+            year=r["year"],
+            state=r["state"],
+            office=r["office"],
+            special=r.get("special", False),
+            party=r.get("party", data.get("party", "")),
+            result=r.get("result", "unknown"),
+            actual_dem_share_2party=r.get("actual_dem_share_2party"),
+        )
+        for r in sorted(raw_races, key=lambda x: x.get("year", 0), reverse=True)
+    ]
+
     return CandidateBadgesResponse(
         bioguide_id=bioguide_id,
         name=data["name"],
@@ -170,6 +325,53 @@ def get_candidate(bioguide_id: str):
         badges=_build_badges(data),
         badge_scores=data.get("badge_scores", {}),
         cec=data.get("cec", 0.0),
+        races=races,
+    )
+
+
+@router.get(
+    "/candidates/{bioguide_id}/predecessor",
+    response_model=PredecessorInfo | None,
+    summary="Find the predecessor candidate in the same state/office/party slot",
+)
+def get_candidate_predecessor(bioguide_id: str) -> PredecessorInfo | None:
+    """Return the most recent predecessor for single-race candidates.
+
+    A predecessor is the last person of the same party who ran in the same
+    state and office before the current candidate's first race.  Used to give
+    single-race candidates a weak cross-cycle comparison signal.
+
+    Returns 404 if the candidate is not found.
+    Returns null (HTTP 200 with null body) if no predecessor exists or the
+    candidate has more than one race (predecessor comparison not needed).
+    """
+    if bioguide_id not in _REGISTRY:
+        raise HTTPException(status_code=404, detail=f"Candidate {bioguide_id} not found")
+
+    reg = _REGISTRY[bioguide_id]
+    races = reg.get("races", [])
+
+    # Only return predecessor for single-race candidates — multi-race candidates
+    # already have their own cross-cycle consistency data.
+    if len(races) != 1:
+        return None
+
+    race = races[0]
+    predecessor = _find_predecessor(
+        bioguide_id=bioguide_id,
+        state=race["state"],
+        office=race["office"],
+        party=race.get("party", reg.get("party", "")),
+        before_year=race["year"],
+    )
+
+    if predecessor is None:
+        return None
+
+    return PredecessorInfo(
+        bioguide_id=predecessor["bioguide_id"],
+        name=predecessor["name"],
+        year=predecessor["year"],
     )
 
 
