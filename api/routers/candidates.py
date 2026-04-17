@@ -119,10 +119,14 @@ def _build_badges(badge_data: dict) -> list[CandidateBadge]:
     """Convert raw badge data into a list of CandidateBadge models."""
     badge_names = badge_data.get("badges", [])
     scores = badge_data.get("badge_scores", {})
-    return [
-        CandidateBadge(name=name, score=scores.get(name, 0.0))
-        for name in badge_names
-    ]
+    result = []
+    for name in badge_names:
+        # "Low X" badges store their score under the base name "X"
+        score = scores.get(name, None)
+        if score is None and name.startswith("Low "):
+            score = scores.get(name[4:], 0.0)
+        result.append(CandidateBadge(name=name, score=score or 0.0))
+    return result
 
 
 # ── Endpoints ────────────────────────────────────────────────────────────────
