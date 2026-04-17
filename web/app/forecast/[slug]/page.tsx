@@ -45,6 +45,15 @@ const PollTrendChart = dynamic(
   },
 );
 
+// Candidate sabermetric badges — SWR + tooltips, client-only
+const CandidateBadges = dynamic(
+  () =>
+    import("@/components/forecast/CandidateBadges").then(
+      (m) => m.CandidateBadges,
+    ),
+  { ssr: false },
+);
+
 // Revalidate every 5 minutes — polls and forecast data update periodically
 export const revalidate = 300;
 
@@ -417,6 +426,9 @@ export default async function RaceDetailPage({ params }: PageProps) {
       {data.candidate_info && (
         <CandidateSection info={data.candidate_info} />
       )}
+
+      {/* Sabermetric badge pills — client component, fetches via SWR */}
+      <CandidateBadges raceKey={`${data.year} ${data.state_abbr} ${data.race_type}`} />
 
       {/*
         RaceBlendControls is a client component that owns:

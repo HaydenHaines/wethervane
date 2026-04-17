@@ -543,3 +543,29 @@ export async function fetchHistoricalElection(year: number): Promise<Map<string,
   }
   return map;
 }
+
+// ── Sabermetrics: candidate badges & CTOV ─���───────────────────────────────
+
+export interface CandidateBadge {
+  name: string;
+  score: number;
+}
+
+export interface RaceCandidateSummary {
+  bioguide_id: string;
+  name: string;
+  party: string;
+  badges: CandidateBadge[];
+  cec: number;
+}
+
+export interface RaceCandidatesResponse {
+  race_key: string;
+  candidates: RaceCandidateSummary[];
+}
+
+export async function fetchRaceCandidates(raceKey: string): Promise<RaceCandidatesResponse> {
+  const res = await fetch(`${API_BASE}/races/${encodeURIComponent(raceKey)}/candidates`);
+  if (!res.ok) throw new Error(`/races/${raceKey}/candidates failed: ${res.status}`);
+  return res.json();
+}
