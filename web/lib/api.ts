@@ -659,4 +659,3 @@ export async function fetchCandidatePredecessor(bioguideId: string): Promise<Pre
   }
   return res.json();
 }
-}
