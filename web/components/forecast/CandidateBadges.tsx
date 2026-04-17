@@ -11,6 +11,7 @@
  * tooltip interactivity.
  */
 
+import Link from "next/link";
 import {
   Tooltip,
   TooltipContent,
@@ -206,7 +207,20 @@ function CandidateRow({ candidate }: { candidate: RaceCandidateSummary }) {
             className="text-sm font-semibold"
             style={{ color: partyColor }}
           >
-            {candidate.name}
+            {candidate.bioguide_id ? (
+              <Link
+                href={`/candidates/${candidate.bioguide_id}`}
+                style={{
+                  color: "inherit",
+                  textDecoration: "none",
+                }}
+                className="hover:underline"
+              >
+                {candidate.name}
+              </Link>
+            ) : (
+              candidate.name
+            )}
             <span
               className="ml-1 text-xs font-normal"
               style={{ color: "var(--color-text-muted)" }}

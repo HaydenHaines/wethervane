@@ -574,3 +574,89 @@ export async function fetchRaceCandidates(raceKey: string): Promise<RaceCandidat
   if (!res.ok) throw new Error(`/races/${raceKey}/candidates failed: ${res.status}`);
   return res.json();
 }
+
+// ── Candidate directory & profile ────────────────────────────────────────────
+
+export interface RaceResult {
+  year: number;
+  state: string;
+  office: string;
+  special: boolean;
+  party: string;
+  result: string;
+  actual_dem_share_2party: number | null;
+}
+
+export interface CandidateBadgesResponse {
+  bioguide_id: string;
+  name: string;
+  party: string;
+  n_races: number;
+  badges: CandidateBadge[];
+  badge_scores: Record<string, number>;
+  cec: number;
+  races: RaceResult[];
+}
+
+export interface CandidateListItem {
+  bioguide_id: string;
+  name: string;
+  party: string;
+  n_races: number;
+  cec: number;
+  badges: string[];
+  states: string[];
+  offices: string[];
+  years: number[];
+}
+
+export interface CandidateListResponse {
+  candidates: CandidateListItem[];
+  total: number;
+}
+
+export interface PredecessorInfo {
+  bioguide_id: string;
+  name: string;
+  year: number;
+}
+
+export interface CandidateListParams {
+  q?: string;
+  party?: string;
+  office?: string;
+  year?: number;
+  state?: string;
+  limit?: number;
+  offset?: number;
+}
+
+export async function fetchCandidateList(params: CandidateListParams = {}): Promise<CandidateListResponse> {
+  const p = new URLSearchParams();
+  if (params.q) p.set("q", params.q);
+  if (params.party) p.set("party", params.party);
+  if (params.office) p.set("office", params.office);
+  if (params.year) p.set("year", String(params.year));
+  if (params.state) p.set("state", params.state);
+  if (params.limit) p.set("limit", String(params.limit));
+  if (params.offset) p.set("offset", String(params.offset));
+  const res = await fetch(`${API_BASE}/candidates?${p}`);
+  if (!res.ok) throw new Error(`/candidates failed: ${res.status}`);
+  return res.json();
+}
+
+export async function fetchCandidateProfile(bioguideId: string): Promise<CandidateBadgesResponse> {
+  const res = await fetch(`${API_BASE}/candidates/${bioguideId}`);
+  if (!res.ok) throw new Error(`/candidates/${bioguideId} failed: ${res.status}`);
+  return res.json();
+}
+
+export async function fetchCandidatePredecessor(bioguideId: string): Promise<PredecessorInfo | null> {
+  const res = await fetch(`${API_BASE}/candidates/${bioguideId}/predecessor`);
+  if (!res.ok) {
+    if (res.status === 404) return null;
+    throw new Error(`/candidates/${bioguideId}/predecessor failed: ${res.status}`);
+  }
+  return res.json();
+}
+}
