@@ -144,15 +144,90 @@ def download_les(output_dir: str = "data/raw/les") -> None:
 def download_fec_bulk(
     cycles: list[str],
     output_dir: str = "data/raw/fec",
-) -> None:
-    """Download FEC bulk files (candidates, committees, individual contributions, disbursements).
+    file_types: list[str] | None = None,
+) -> dict[str, Path]:
+    """Download FEC bulk summary files needed for campaign finance stats.
+
+    Downloads two files per cycle:
+    - weball{YY}.zip: all-candidates summary (receipts, disbursements, etc.)
+    - cm{YY}.zip: committee master (links committee ID to candidate ID)
+
+    These are the lightest FEC bulk files — a few MB each — compared to the
+    full individual-contribution files which are gigabytes. They contain
+    everything needed to compute SDR, FER, and burn rate.
 
     Parameters
     ----------
     cycles : list[str]
-        Election cycles to download, e.g. ["2020", "2022", "2024"].
+        Election cycles to download, e.g. ["2022", "2024"].
+    output_dir : str
+        Directory where zip files will be saved (created if absent).
+    file_types : list[str] | None
+        Which file types to download: "weball" and/or "cm".
+        Defaults to both.
+
+    Returns
+    -------
+    dict[str, Path]
+        Mapping of "{file_type}{YY}" -> Path for each downloaded file.
+        E.g. {"weball22": Path(".../weball22.zip"), "cm22": Path(..)}.
+
+    Notes
+    -----
+    FEC bulk download base URL:
+        https://www.fec.gov/files/bulk-downloads/{YYYY}/
+    All-candidates file description:
+        https://www.fec.gov/campaign-finance-data/all-candidates-file-description/
+    Committee master description:
+        https://www.fec.gov/campaign-finance-data/committee-master-file-description/
     """
-    raise NotImplementedError
+    if file_types is None:
+        file_types = ["weball", "cm"]
+
+    output_dir_path = Path(output_dir)
+    output_dir_path.mkdir(parents=True, exist_ok=True)
+
+    # FEC uses two-digit cycle suffixes: "2022" → "22"
+    _FEC_BASE_URL = "https://www.fec.gov/files/bulk-downloads"
+
+    downloaded: dict[str, Path] = {}
+
+    for cycle in cycles:
+        # Validate cycle is a 4-digit year string
+        if not (len(cycle) == 4 and cycle.isdigit()):
+            raise ValueError(f"Cycle must be a 4-digit year string, got {cycle!r}")
+        cycle_suffix = cycle[-2:]  # "2022" → "22"
+
+        for file_type in file_types:
+            filename = f"{file_type}{cycle_suffix}.zip"
+            url = f"{_FEC_BASE_URL}/{cycle}/{filename}"
+            dest = output_dir_path / filename
+
+            if dest.exists():
+                logger.info("FEC bulk file already exists, skipping: %s", dest)
+                downloaded[f"{file_type}{cycle_suffix}"] = dest
+                continue
+
+            logger.info("Downloading %s → %s", url, dest)
+            response = requests.get(url, timeout=120, stream=True)
+            try:
+                response.raise_for_status()
+            except requests.HTTPError as exc:
+                raise RuntimeError(
+                    f"Failed to download FEC bulk file {url}: HTTP {response.status_code}"
+                ) from exc
+
+            # Stream to disk to avoid loading multi-GB files into memory
+            total_bytes = 0
+            with open(dest, "wb") as fh:
+                for chunk in response.iter_content(chunk_size=65536):
+                    fh.write(chunk)
+                    total_bytes += len(chunk)
+
+            logger.info("  Saved %s (%.1f MB)", dest, total_bytes / 1_048_576)
+            downloaded[f"{file_type}{cycle_suffix}"] = dest
+
+    return downloaded
 
 
 def download_ces_cumulative(output_dir: str = "data/raw/ces") -> None:
