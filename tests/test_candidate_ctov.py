@@ -1,7 +1,6 @@
 """Tests for candidate CTOV prior adjustment module."""
 
 import json
-from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -11,7 +10,6 @@ from src.prediction.candidate_ctov import (
     apply_ctov_adjustment,
     load_ctov_adjustments,
 )
-
 
 # ---------------------------------------------------------------------------
 # Fixtures
@@ -253,7 +251,7 @@ def test_apply_ctov_preserves_original():
 
 def test_apply_ctov_mixed_membership():
     """Counties with mixed type membership get blended CTOV shifts."""
-    N, J = 2, 3
+    N = 2
     county_priors = np.full(N, 0.5)
     state_mask = np.array([True, True])
     # County 0: 60% type 0, 40% type 1
@@ -276,7 +274,7 @@ def test_apply_ctov_mixed_membership():
 
 def test_apply_ctov_scale_and_cap():
     """Scale factor and cap prevent extreme shifts."""
-    N, J = 2, 2
+    N = 2
     county_priors = np.full(N, 0.5)
     state_mask = np.array([True, True])
     # County 0: 100% type 0

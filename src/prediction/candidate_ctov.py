@@ -84,7 +84,6 @@ def load_ctov_adjustments(
 
     ctov_df = pd.read_parquet(ctov_p)
     ctov_cols = sorted([c for c in ctov_df.columns if c.startswith("ctov_type_")])
-    J = len(ctov_cols)
 
     # Load CEC data for quality gating
     cec_by_person: dict[str, float | None] = {}
