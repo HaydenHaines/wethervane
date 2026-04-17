@@ -12,7 +12,6 @@
  * - Fundraising placeholder (Phase 5)
  */
 
-import { use } from "react";
 import Link from "next/link";
 import {
   useCandidateProfile,
@@ -390,11 +389,11 @@ function PredecessorSection({
 // ── Page ──────────────────────────────────────────────────────────────────────
 
 interface PageProps {
-  params: Promise<{ bioguide_id: string }>;
+  params: { bioguide_id: string };
 }
 
 export default function CandidateProfilePage({ params }: PageProps) {
-  const { bioguide_id } = use(params);
+  const { bioguide_id } = params;
   const { data, isLoading, error } = useCandidateProfile(bioguide_id);
 
   if (error) {
