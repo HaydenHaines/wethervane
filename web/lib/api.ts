@@ -550,9 +550,15 @@ export interface CandidateBadge {
   name: string;
   score: number;
   provisional?: boolean;
-  kind?: "catalog" | "signature";
+  kind?: "catalog" | "signature" | "discovered";
   type_id?: number | null;
   fallback_reason?: string | null;
+  /** Set for discovered badges — the zero-based PCA component index. */
+  pc_index?: number | null;
+  /** Set for discovered badges — (demographic_column, correlation) pairs. */
+  top_demographics?: [string, number][] | null;
+  /** Set for discovered badges — fraction of total CTOV variance this axis explains. */
+  explained_variance_ratio?: number | null;
 }
 
 export interface RaceCandidateSummary {

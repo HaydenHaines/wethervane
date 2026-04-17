@@ -80,6 +80,19 @@ const DEFAULT_BADGE_COLOR = {
 };
 
 /**
+ * Color for PCA-discovered badges.
+ *
+ * Distinct teal/cyan hue to visually separate data-driven discoveries from
+ * curated catalog badges.  Uses dashed border to indicate these are
+ * algorithmically derived rather than hand-curated.
+ */
+const DISCOVERED_BADGE_COLOR = {
+  bg: "rgba(6, 182, 212, 0.08)",
+  text: "rgb(8, 145, 178)",
+  border: "rgba(6, 182, 212, 0.30)",
+};
+
+/**
  * Resolve the color for a badge name, handling "Low" prefix variants.
  *
  * "Low" badges (e.g. "Low Rural Populist") use the same hue as their
@@ -130,21 +143,43 @@ const PARTY_LABEL_COLORS: Record<string, string> = {
 
 function BadgePill({ badge }: { badge: CandidateBadge }) {
   const isSignature = badge.kind === "signature";
+  const isDiscovered = badge.kind === "discovered";
   const isLow = badge.name.startsWith("Low ");
-  const color = isSignature ? DEFAULT_BADGE_COLOR : getBadgeColor(badge.name);
 
-  const displayName = isSignature
-    ? badge.name  // already contains "Signature: ..." or "Low Signature: ..."
+  // Color selection: discovered badges use teal, signature uses muted gray,
+  // catalog badges use the curated color map.
+  const color = isDiscovered
+    ? DISCOVERED_BADGE_COLOR
+    : isSignature
+    ? DEFAULT_BADGE_COLOR
+    : getBadgeColor(badge.name);
+
+  // Strip the "PCA: " prefix for display to keep pills compact.
+  const displayName = isDiscovered
+    ? badge.name.replace(/^PCA:\s+/, "")
     : badge.name;
 
-  // Signature scores are z-scores; catalog scores are dot-product values.
-  const scoreFormatted = isSignature
-    ? `${badge.score >= 0 ? "+" : ""}${badge.score.toFixed(2)}σ vs party peers`
+  // Score formatting: discovered badges show PCA score as σ units;
+  // signature badges show z-scores; catalog shows percentage points.
+  const scoreFormatted = isDiscovered || isSignature
+    ? `${badge.score >= 0 ? "+" : ""}${badge.score.toFixed(3)} vs party peers`
     : badge.score > 0
     ? `+${(badge.score * 100).toFixed(1)}pp vs expected`
     : `${(badge.score * 100).toFixed(1)}pp vs expected`;
 
   const tooltipSuffix = badge.provisional ? " (1 race — provisional)" : "";
+
+  // Build a richer tooltip for discovered badges that shows their demographic basis.
+  const discoveredDemoSuffix =
+    isDiscovered && badge.top_demographics && badge.top_demographics.length > 0
+      ? ` | Key dims: ${badge.top_demographics
+          .slice(0, 2)
+          .map(([col, corr]) => `${col} (r=${corr >= 0 ? "+" : ""}${corr.toFixed(2)})`)
+          .join(", ")}`
+      : "";
+
+  // Discovered badges always get a dashed border to signal algorithmic origin.
+  const borderStyle = isDiscovered || badge.provisional ? "1px dashed" : "1px solid";
 
   return (
     <TooltipProvider>
@@ -165,18 +200,24 @@ function BadgePill({ badge }: { badge: CandidateBadge }) {
                 userSelect: "none",
                 background: color.bg,
                 color: color.text,
-                border: `${badge.provisional ? "1px dashed" : "1px solid"} ${color.border}`,
+                border: `${borderStyle} ${color.border}`,
                 opacity: isLow ? 0.8 : 1,
               }}
             >
-              {isLow && !isSignature && <span aria-hidden="true" style={{ fontSize: "0.55rem" }}>&#9661;</span>}
+              {isLow && !isSignature && !isDiscovered && (
+                <span aria-hidden="true" style={{ fontSize: "0.55rem" }}>&#9661;</span>
+              )}
+              {isDiscovered && (
+                <span aria-hidden="true" style={{ fontSize: "0.55rem", marginRight: "2px" }}>&#9670;</span>
+              )}
               {displayName}
             </span>
           }
         />
         <TooltipContent side="top">
           <span style={{ fontSize: "0.75rem" }}>
-            {badge.name}: {scoreFormatted}{tooltipSuffix}
+            {badge.name}: {scoreFormatted}{tooltipSuffix}{discoveredDemoSuffix}
+            {isDiscovered && " [data-driven]"}
           </span>
         </TooltipContent>
       </Tooltip>

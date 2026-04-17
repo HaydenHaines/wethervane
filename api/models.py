@@ -719,13 +719,27 @@ class CandidateBadge(BaseModel):
     """True when the candidate ran in only 1 race — consistency could not be measured."""
 
     kind: str = "catalog"
-    """'catalog' for preset demographic badges, 'signature' for auto-discovered type fingerprints."""
+    """Badge source:
+    - 'catalog': preset demographic badge from the hardcoded BADGE_CATALOG
+    - 'signature': auto-discovered community-type fingerprint (specific type ID)
+    - 'discovered': PCA-derived axis from data-driven badge discovery
+    """
 
     type_id: int | None = None
     """Set for signature badges — the community type ID driving the signal."""
 
     fallback_reason: str | None = None
     """'small_pool' if the party pool was too small for within-party thresholding."""
+
+    pc_index: int | None = None
+    """Set for discovered badges — the zero-based PCA component index."""
+
+    top_demographics: list[tuple[str, float]] | None = None
+    """Set for discovered badges — (demographic_column, correlation) pairs
+    that drove the axis name.  Ordered by absolute correlation, descending."""
+
+    explained_variance_ratio: float | None = None
+    """Set for discovered badges — fraction of total CTOV variance this axis explains."""
 
 
 class RaceResult(BaseModel):

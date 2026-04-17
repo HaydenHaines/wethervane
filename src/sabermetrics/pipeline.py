@@ -161,19 +161,46 @@ def run_sabermetrics_pipeline(
     n_sig_total = sum(len(v["signature_badges"]) for v in sig_badges.values())
     log.info("  Signature badges: %d total across %d candidates", n_sig_total, len(sig_badges))
 
-    # Merge signature badges into the main badge output and attach CEC scores
+    # --- Step 5c: Derive PCA-discovered badges ---
+    log.info("Deriving PCA-discovered badges from residual CTOV...")
+    from src.sabermetrics.badge_discovery import (
+        derive_discovered_badges,
+        discover_badge_axes,
+    )
+
+    pca, axes = discover_badge_axes(ctov_df=ctov_df)
+    discovered_badges = derive_discovered_badges(ctov_df, pca=pca, axes=axes)
+    n_discovered_total = sum(
+        len(v["discovered_badge_details"]) for v in discovered_badges.values()
+    )
+    log.info(
+        "  Discovered badges: %d total across %d candidates",
+        n_discovered_total,
+        len(discovered_badges),
+    )
+
+    # Merge all badge sources into the main badge output and attach CEC scores.
+    # Merge order: catalog → signature → discovered.  The "badges" list is kept
+    # in sync for backward compat; discovered badges carry kind="discovered" in
+    # badge_details so the API can style them differently.
     cec_by_person = dict(zip(cec_df["person_id"], cec_df["cec"]))
     n_races_by_person = dict(zip(cec_df["person_id"], cec_df["n_races"]))
     for person_id, badge_entry in badges.items():
         badge_entry["cec"] = cec_by_person.get(person_id, None)
         badge_entry["n_races"] = n_races_by_person.get(person_id, badge_entry.get("n_races", 1))
-        # Append signature badge details into badge_details list
+
+        # Signature badges (community-type fingerprints).
         sig_entry = sig_badges.get(person_id, {})
         sig_list = sig_entry.get("signature_badges", [])
         badge_entry.setdefault("badge_details", [])
         badge_entry["badge_details"].extend(sig_list)
-        # Keep "badges" list in sync for backward compat
         badge_entry["badges"].extend(d["name"] for d in sig_list)
+
+        # PCA-discovered badges (data-driven demographic axes).
+        disc_entry = discovered_badges.get(person_id, {})
+        disc_list = disc_entry.get("discovered_badge_details", [])
+        badge_entry["badge_details"].extend(disc_list)
+        badge_entry["badges"].extend(d["name"] for d in disc_list)
 
     with open(badges_path, "w") as f:
         json.dump(badges, f, indent=2)
@@ -187,6 +214,7 @@ def run_sabermetrics_pipeline(
         "cec_mean": cec_mean,
         "cec_std": cec_std,
         "n_badges_total": n_badges_total,
+        "n_discovered_badges": n_discovered_total,
     }
 
     log.info("Pipeline complete: %s", summary)

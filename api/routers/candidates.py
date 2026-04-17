@@ -137,6 +137,9 @@ def _build_badges(badge_data: dict) -> list[CandidateBadge]:
                 kind=d.get("kind", "catalog"),
                 type_id=d.get("type_id"),
                 fallback_reason=d.get("fallback_reason"),
+                pc_index=d.get("pc_index"),
+                top_demographics=d.get("top_demographics"),
+                explained_variance_ratio=d.get("explained_variance_ratio"),
             )
             for d in details
         ]

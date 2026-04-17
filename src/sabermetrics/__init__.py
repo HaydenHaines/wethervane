@@ -20,4 +20,5 @@ Submodules:
     constituent  -- Constituent relationship stats (CAR, IAR, RI from CES)
     speech       -- Floor speech influence (NLP on congressional record)
     composites   -- Career summaries, fit scores, talent pipeline
+    badge_discovery -- Data-driven PCA badge axis discovery (Phase 5)
 """
