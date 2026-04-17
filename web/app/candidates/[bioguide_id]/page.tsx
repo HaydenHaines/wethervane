@@ -19,6 +19,7 @@ import {
   useCandidatePredecessor,
 } from "@/lib/hooks/use-candidate-profile";
 import { CTOVRadarChart } from "@/components/forecast/CTOVRadarChart";
+import { CandidateStatsCard } from "@/components/forecast/CandidateStatsCard";
 import type { RaceResult, CandidateBadge } from "@/lib/api";
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
@@ -563,19 +564,12 @@ export default function CandidateProfilePage({ params }: PageProps) {
         </Section>
       )}
 
-      {/* Fundraising placeholder */}
-      <Section title="Fundraising & FEC Data">
-        <p
-          style={{
-            fontSize: "0.82rem",
-            color: "var(--color-text-muted)",
-            fontStyle: "italic",
-          }}
-        >
-          Coming soon (Phase 5) — FEC fundraising data, cash-on-hand trends,
-          and donor geography analysis.
-        </p>
-      </Section>
+      {/* Campaign Finance + Legislative Profile (Phase 5) */}
+      <CandidateStatsCard
+        campaignStats={data.campaign_stats}
+        legislativeStats={data.legislative_stats}
+        party={data.party}
+      />
     </div>
   );
 }

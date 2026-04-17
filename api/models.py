@@ -759,6 +759,56 @@ class RaceResult(BaseModel):
     actual_dem_share_2party: float | None = None
 
 
+class CampaignStats(BaseModel):
+    """FEC-derived campaign finance statistics for the most recent available cycle.
+
+    SDR (Small-Dollar Ratio): fraction of individual contributions under $200.
+    FER (Fundraising Efficiency Ratio): total_receipts / total_disbursements; >1 means
+      more was raised than spent, <1 means the campaign ran a deficit.
+    burn_rate: total_disbursements / total_receipts — the complement of FER.
+      >1 means spending outpaced fundraising.
+    """
+
+    sdr: float | None
+    """Small-Dollar Ratio: % of individual donations under $200 (0–1 fraction)."""
+
+    fer: float | None
+    """Fundraising Efficiency Ratio: receipts / disbursements."""
+
+    burn_rate: float | None
+    """Burn rate: disbursements / receipts (the campaign spending tempo)."""
+
+    cycle: int | None
+    """Election cycle year this data is drawn from (e.g. 2022 or 2024)."""
+
+    has_fec_record: bool
+    """False when the candidate has no FEC filing data in the pipeline."""
+
+
+class LegislativeStats(BaseModel):
+    """DW-NOMINATE ideology scores and Legislative Effectiveness scores.
+
+    DW-NOMINATE dim1 runs from −1 (most liberal) to +1 (most conservative).
+    LES is the Volden-Wiseman Legislative Effectiveness Score (unnormalized,
+    median ≈ 1.0 for the full Congress).
+    """
+
+    nominate_dim1: float | None
+    """Career-average DW-NOMINATE first dimension (ideology, −1 to +1)."""
+
+    les_score: float | None
+    """Career-average Legislative Effectiveness Score."""
+
+    les2_score: float | None
+    """Career-average LES2 (benchmark-adjusted effectiveness, Volden–Wiseman)."""
+
+    congresses_served: int | None
+    """Number of Congresses the member has served in total."""
+
+    has_legislative_record: bool
+    """False when the candidate has no VOTEVIEW or LES data in the pipeline."""
+
+
 class CandidateBadgesResponse(BaseModel):
     """Full badge profile for a single candidate (by bioguide ID)."""
 
@@ -773,6 +823,10 @@ class CandidateBadgesResponse(BaseModel):
     """Candidate Effect Consistency — how stable the candidate's effect is across races (0–1)."""
     races: list[RaceResult] = []
     """All race entries from the candidate registry, sorted by year descending."""
+    campaign_stats: CampaignStats | None = None
+    """FEC campaign finance stats for the most recent cycle. None if data not loaded."""
+    legislative_stats: LegislativeStats | None = None
+    """DW-NOMINATE and LES legislative profile. None if data not loaded."""
 
 
 class CTOVEntry(BaseModel):

@@ -17,12 +17,14 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 
 from api.db import get_db
 from api.models import (
+    CampaignStats,
     CandidateBadge,
     CandidateBadgesResponse,
     CandidateListItem,
     CandidateListResponse,
     CTOVEntry,
     CTOVResponse,
+    LegislativeStats,
     PredecessorInfo,
     RaceCandidatesResponse,
     RaceCandidateSummary,
@@ -62,6 +64,39 @@ if _REGISTRY_PATH.exists():
         raw = json.load(f)
     _REGISTRY = raw.get("persons", raw) if isinstance(raw, dict) else {}
     log.info("Loaded candidate registry: %d persons", len(_REGISTRY))
+
+# Campaign finance stats: keyed by person_id (bioguide ID), most-recent cycle per candidate
+# Columns: person_id, name, party, cycle, sdr, fer, burn_rate, has_fec_record
+_CAMPAIGN_STATS: pd.DataFrame = pd.DataFrame()
+_CAMPAIGN_STATS_PATH = _SABERMETRICS_DIR / "campaign_stats.parquet"
+if _CAMPAIGN_STATS_PATH.exists():
+    _raw_campaign = pd.read_parquet(_CAMPAIGN_STATS_PATH)
+    # Keep only cycles where the candidate actually ran; then take their most recent cycle.
+    # This ensures we show the most relevant data (when they were on the ballot).
+    _ran = _raw_campaign[_raw_campaign["ran_in_cycle"].astype(bool)]
+    if not _ran.empty:
+        _CAMPAIGN_STATS = _ran.sort_values("cycle", ascending=False).drop_duplicates("person_id")
+    else:
+        # Fallback: any cycle (e.g., non-running cycles still have finance data)
+        _CAMPAIGN_STATS = _raw_campaign.sort_values("cycle", ascending=False).drop_duplicates("person_id")
+    _CAMPAIGN_STATS = _CAMPAIGN_STATS.set_index("person_id")
+    log.info("Loaded campaign stats: %d candidates", len(_CAMPAIGN_STATS))
+
+# Legislative stats: keyed by bioguide_id, career-average ideology/effectiveness
+# Columns: bioguide_id, career_nominate_dim1, career_nokken_poole_dim1,
+#          career_les, career_les2, congresses_served_vv, congresses_served_les,
+#          has_legislative_record
+_LEGISLATIVE_STATS: pd.DataFrame = pd.DataFrame()
+_LEGISLATIVE_STATS_PATH = _SABERMETRICS_DIR / "legislative_stats.parquet"
+if _LEGISLATIVE_STATS_PATH.exists():
+    _LEGISLATIVE_STATS = pd.read_parquet(_LEGISLATIVE_STATS_PATH)
+    # The parquet has the index named person_id but the column is bioguide_id —
+    # reset to allow .loc lookup by bioguide_id string.
+    if _LEGISLATIVE_STATS.index.name == "person_id":
+        _LEGISLATIVE_STATS = _LEGISLATIVE_STATS.reset_index().set_index("bioguide_id")
+    elif "bioguide_id" in _LEGISLATIVE_STATS.columns:
+        _LEGISLATIVE_STATS = _LEGISLATIVE_STATS.set_index("bioguide_id")
+    log.info("Loaded legislative stats: %d candidates", len(_LEGISLATIVE_STATS))
 
 # Candidates 2026: race-level candidate data for linking to sabermetrics
 _CANDIDATES_2026: dict[str, dict] = {}
@@ -153,6 +188,98 @@ def _build_badges(badge_data: dict) -> list[CandidateBadge]:
             score = scores.get(name[4:], 0.0)
         result.append(CandidateBadge(name=name, score=score or 0.0))
     return result
+
+
+# ── Campaign / legislative stat builders ────────────────────────────────────
+
+
+def _build_campaign_stats(bioguide_id: str) -> CampaignStats | None:
+    """Return CampaignStats for the most recent cycle a candidate ran in.
+
+    Returns None if the parquet file was not loaded at startup.
+    Returns a CampaignStats with ``has_fec_record=False`` when the candidate
+    has no FEC data (rather than raising or returning None), so the frontend
+    can render a "no data" state without null-checking the whole object.
+    """
+    if _CAMPAIGN_STATS.empty:
+        return None
+
+    if bioguide_id not in _CAMPAIGN_STATS.index:
+        return CampaignStats(
+            sdr=None,
+            fer=None,
+            burn_rate=None,
+            cycle=None,
+            has_fec_record=False,
+        )
+
+    row = _CAMPAIGN_STATS.loc[bioguide_id]
+
+    def _float_or_none(val) -> float | None:
+        """Convert NaN/None/inf to None; otherwise return float."""
+        try:
+            v = float(val)
+            return None if (pd.isna(v) or not pd.api.types.is_float(v) or abs(v) == float("inf")) else v
+        except (TypeError, ValueError):
+            return None
+
+    return CampaignStats(
+        sdr=_float_or_none(row.get("sdr")),
+        fer=_float_or_none(row.get("fer")),
+        burn_rate=_float_or_none(row.get("burn_rate")),
+        cycle=int(row["cycle"]) if pd.notna(row.get("cycle")) else None,
+        has_fec_record=bool(row.get("has_fec_record", False)),
+    )
+
+
+def _build_legislative_stats(bioguide_id: str) -> LegislativeStats | None:
+    """Return LegislativeStats for a candidate from career-average NOMINATE/LES data.
+
+    Returns None if the parquet file was not loaded at startup.
+    Returns a LegislativeStats with ``has_legislative_record=False`` when the
+    candidate has no VOTEVIEW/LES data (no congressional service captured).
+    """
+    if _LEGISLATIVE_STATS.empty:
+        return None
+
+    if bioguide_id not in _LEGISLATIVE_STATS.index:
+        return LegislativeStats(
+            nominate_dim1=None,
+            les_score=None,
+            les2_score=None,
+            congresses_served=None,
+            has_legislative_record=False,
+        )
+
+    row = _LEGISLATIVE_STATS.loc[bioguide_id]
+
+    def _float_or_none(val) -> float | None:
+        try:
+            v = float(val)
+            return None if pd.isna(v) else v
+        except (TypeError, ValueError):
+            return None
+
+    def _int_or_none(val) -> int | None:
+        try:
+            v = float(val)
+            return None if pd.isna(v) else int(v)
+        except (TypeError, ValueError):
+            return None
+
+    # Prefer congresses_served_les (LES data coverage) when available;
+    # fall back to congresses_served_vv (VOTEVIEW coverage).
+    served = _int_or_none(row.get("congresses_served_les")) or _int_or_none(
+        row.get("congresses_served_vv")
+    )
+
+    return LegislativeStats(
+        nominate_dim1=_float_or_none(row.get("career_nominate_dim1")),
+        les_score=_float_or_none(row.get("career_les")),
+        les2_score=_float_or_none(row.get("career_les2")),
+        congresses_served=served,
+        has_legislative_record=bool(row.get("has_legislative_record", False)),
+    )
 
 
 # ── Predecessor lookup ───────────────────────────────────────────────────────
@@ -329,6 +456,8 @@ def get_candidate(bioguide_id: str) -> CandidateBadgesResponse:
         badge_scores=data.get("badge_scores", {}),
         cec=data.get("cec", 0.0),
         races=races,
+        campaign_stats=_build_campaign_stats(bioguide_id),
+        legislative_stats=_build_legislative_stats(bioguide_id),
     )
 
 

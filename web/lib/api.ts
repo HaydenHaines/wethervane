@@ -593,6 +593,34 @@ export interface RaceResult {
   actual_dem_share_2party: number | null;
 }
 
+/** FEC-derived campaign finance stats for the most recent cycle a candidate ran in. */
+export interface CampaignStats {
+  /** Small-Dollar Ratio: % of individual donations under $200 (0–1 fraction). */
+  sdr: number | null;
+  /** Fundraising Efficiency Ratio: receipts / disbursements. */
+  fer: number | null;
+  /** Burn rate: disbursements / receipts. */
+  burn_rate: number | null;
+  /** Election cycle year (e.g. 2022, 2024). */
+  cycle: number | null;
+  /** False when the candidate has no FEC filing data. */
+  has_fec_record: boolean;
+}
+
+/** DW-NOMINATE ideology and Legislative Effectiveness scores. */
+export interface LegislativeStats {
+  /** Career-average DW-NOMINATE first dimension (−1 = most liberal, +1 = most conservative). */
+  nominate_dim1: number | null;
+  /** Career-average Legislative Effectiveness Score (unnormalized, median ≈ 1.0). */
+  les_score: number | null;
+  /** Career-average LES2 (benchmark-adjusted effectiveness). */
+  les2_score: number | null;
+  /** Number of Congresses served. */
+  congresses_served: number | null;
+  /** False when the candidate has no congressional service data. */
+  has_legislative_record: boolean;
+}
+
 export interface CandidateBadgesResponse {
   bioguide_id: string;
   name: string;
@@ -602,6 +630,10 @@ export interface CandidateBadgesResponse {
   badge_scores: Record<string, number>;
   cec: number;
   races: RaceResult[];
+  /** Campaign finance stats for the most recent cycle. Null if data not loaded. */
+  campaign_stats: CampaignStats | null;
+  /** Legislative ideology and effectiveness. Null if data not loaded. */
+  legislative_stats: LegislativeStats | null;
 }
 
 export interface CandidateListItem {
