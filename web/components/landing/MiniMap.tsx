@@ -48,7 +48,7 @@ export function MiniMap({ stateColors }: MiniMapProps) {
   return (
     <div
       className="w-full mx-auto"
-      style={{ aspectRatio: "1.6/1", position: "relative" }}
+      style={{ aspectRatio: "1.6/1", position: "relative", overflow: "hidden" }}
     >
       <MiniMapInner stateColors={stateColors} />
     </div>
