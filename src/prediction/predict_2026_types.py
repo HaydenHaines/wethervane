@@ -555,6 +555,16 @@ def run_forecast_pipeline(
         len(non_governor_race_ids),
     )
 
+    # Load candidate CTOV adjustments (type-level prior shifts from sabermetrics).
+    # These apply historical candidate overperformance patterns as type-level
+    # adjustments — e.g., Graham's evangelical overperformance shifts rural
+    # evangelical counties more than urban ones.
+    from src.prediction.candidate_ctov import load_ctov_adjustments
+
+    ctov_adjustments = load_ctov_adjustments()
+    if ctov_adjustments:
+        log.info("CTOV adjustments loaded for %d races", len(ctov_adjustments))
+
     # Build the shared kwargs to avoid repetition.
     shared_forecast_kwargs = dict(
         type_scores=type_scores,
@@ -574,6 +584,7 @@ def run_forecast_pipeline(
         state_population_vectors=state_population_vectors,
         poll_blend_scale=params.poll_blend_scale,
         race_adjustments=params.race_adjustments,
+        ctov_adjustments=ctov_adjustments,
     )
 
     forecast_results: dict = {}

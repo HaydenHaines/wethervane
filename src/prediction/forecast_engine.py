@@ -375,6 +375,12 @@ def run_forecast(
     # When set, the state-mean of county priors is shifted to the target value
     # before the Bayesian update.  Used for structural factors the model can't
     # capture (RCV dynamics, unusual candidate effects).
+    ctov_adjustments: dict[str, np.ndarray] | None = None,
+    # ^^ Per-race type-level CTOV adjustments from candidate sabermetrics.
+    # Maps race_id -> ndarray of shape (J,).  Applied as:
+    #   adjusted_prior[c] += type_scores[c] @ ctov  for c in state
+    # Unlike race_adjustments (uniform shift), CTOV shifts counties differently
+    # based on their type composition.  Loaded by candidate_ctov.load_ctov_adjustments().
 ) -> dict[str, ForecastResult]:
     """Run the full hierarchical forecast for all races.
 
@@ -490,6 +496,33 @@ def run_forecast(
                         # Apply uniform shift to this state's counties only
                         race_priors = adjusted_priors.copy()
                         race_priors[state_mask] += shift
+
+        # Apply type-level CTOV adjustment from candidate sabermetrics.
+        # Unlike race_adjustments (uniform shift), CTOV shifts each county
+        # differently based on its type composition — Graham's evangelical
+        # overperformance shifts rural evangelical counties more than urban ones.
+        # Scale factor (0.3) and cap (±5pp) prevent extreme values from
+        # dominating — a county with 93% in one type shouldn't shift 23pp.
+        if ctov_adjustments:
+            ctov_vec = ctov_adjustments.get(race_id)
+            if ctov_vec is not None:
+                race_parts = race_id.split()
+                state_abbr = race_parts[1] if len(race_parts) >= 3 else None
+                if state_abbr:
+                    state_mask_ctov = np.array([s == state_abbr for s in states])
+                    if state_mask_ctov.any():
+                        from src.prediction.candidate_ctov import (
+                            CTOV_MAX_SHIFT,
+                            CTOV_SCALE,
+                        )
+
+                        if race_priors is adjusted_priors:
+                            race_priors = adjusted_priors.copy()
+                        raw_shift = type_scores[state_mask_ctov] @ ctov_vec
+                        capped_shift = np.clip(
+                            raw_shift * CTOV_SCALE, -CTOV_MAX_SHIFT, CTOV_MAX_SHIFT,
+                        )
+                        race_priors[state_mask_ctov] += capped_shift
 
         if n_polls > 0:
             race_W, race_y, race_sigma, _ = _build_poll_arrays(
