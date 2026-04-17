@@ -5,16 +5,27 @@ reflects a demographic dimension: does this candidate systematically
 over/underperform in communities dominated by a particular demographic trait?
 
 Badge math:
-    score = dot(effective_ctov, demographic_feature_per_type)
+    residual = career_ctov - party_mean_ctov
+    effective = party_adjust(residual)  # negate for R
+    score = dot(effective, demographic_feature_per_type)
 
-where effective_ctov is the party-adjusted CTOV (flipped for R candidates so
-that positive scores always mean overperformance in that demographic context).
+Party-mean subtraction ensures badges capture what makes a candidate UNIQUE
+within their party, not what makes them a generic D or R.  Without it, all
+D candidates score similarly on education/income badges (because those are
+party coalition patterns, not individual fingerprints).
+
+The effective CTOV is then party-adjusted (flipped for R candidates so that
+positive scores always mean overperformance in that demographic context).
 
 A badge is awarded when |score| > 1 standard deviation above the
 cross-candidate mean, ensuring badges are relative (not absolute) measures.
 
 For multi-race candidates, badges use the average CTOV across their career,
 not any single race — this is the career signal, not a one-year snapshot.
+
+NOTE: Only badges use residual (party-relative) CTOV.  Phase 4 CTOV
+prediction integration uses absolute CTOV — we want the full candidate
+signal including party component for prediction priors.
 """
 
 from __future__ import annotations
@@ -339,6 +350,18 @@ def derive_badges(ctov_df: pd.DataFrame, mvd_df: pd.DataFrame) -> dict:
         # Use the smaller dimension to avoid index errors
         J = min(J, len(type_profiles))
 
+    # --- Step 0: Compute party-mean CTOV for residual badge scoring ---
+    # Badges capture what makes a candidate UNIQUE within their party, not
+    # what makes them a generic D or R.  Subtracting the party mean removes
+    # the shared coalition signal so badge scores reflect individual deviation.
+    # NOTE: This is ONLY for badges — Phase 4 CTOV prediction uses absolute CTOV.
+    party_mean_ctov: dict[str, np.ndarray] = {}
+    for party_code in ["D", "R", "I"]:
+        party_rows = ctov_df[ctov_df["party"] == party_code]
+        if len(party_rows) > 0:
+            ctov_matrix = party_rows[ctov_cols].values
+            party_mean_ctov[party_code] = ctov_matrix.mean(axis=0)[:J]
+
     # --- Step 1: Compute career CTOV and raw badge scores for all candidates ---
     person_ids = ctov_df["person_id"].unique()
     raw_scores: dict[str, dict[str, float]] = {}
@@ -352,7 +375,11 @@ def derive_badges(ctov_df: pd.DataFrame, mvd_df: pd.DataFrame) -> dict:
         person_rows = ctov_df[ctov_df["person_id"] == person_id]
         party = person_rows["party"].iloc[0]
         career_vec = _career_ctov(person_id, ctov_df)[:J]
-        effective = _effective_ctov(career_vec, party)
+        # Subtract party mean to get the RESIDUAL — what makes this candidate
+        # different from an average member of their party
+        party_mean = party_mean_ctov.get(party, np.zeros(J))
+        residual_ctov = career_vec - party_mean
+        effective = _effective_ctov(residual_ctov, party)
 
         scores: dict[str, float] = {}
         for badge_def in _BADGE_CATALOG:

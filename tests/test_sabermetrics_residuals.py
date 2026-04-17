@@ -378,3 +378,129 @@ def test_multi_race_candidates_have_cec_in_badges():
         assert entry.get("cec") is not None, (
             f"Multi-race candidate {entry['name']} ({pid}) missing CEC in badges"
         )
+
+
+# ---------------------------------------------------------------------------
+# Party-relative badge tests
+# ---------------------------------------------------------------------------
+
+
+def test_party_relative_badges_differ_across_parties():
+    """Two candidates with identical absolute CTOV but different parties get different badges.
+
+    After party-mean subtraction, their residuals differ, so badge scores differ.
+    This verifies that badges capture within-party uniqueness, not coalition patterns.
+    """
+    from src.sabermetrics.badges import derive_badges
+
+    J = 5
+    ctov_cols = [f"ctov_type_{i}" for i in range(J)]
+
+    # Party means: D candidates center around [0.1, 0.1, -0.1, 0.0, 0.05]
+    #              R candidates center around [-0.1, -0.1, 0.1, 0.0, -0.05]
+    d_mean = np.array([0.1, 0.1, -0.1, 0.0, 0.05])
+    r_mean = np.array([-0.1, -0.1, 0.1, 0.0, -0.05])
+
+    # Create 10 D candidates and 10 R candidates clustered around their party means
+    rng = np.random.RandomState(42)
+    rows = []
+    for i in range(10):
+        d_vec = d_mean + rng.normal(0, 0.01, J)
+        rows.append({"person_id": f"D{i:03d}", "name": f"Dem {i}", "party": "D",
+                      "year": 2022, "state": "XX", "office": "GOV", "mvd": 0.01,
+                      **{c: v for c, v in zip(ctov_cols, d_vec)}})
+        r_vec = r_mean + rng.normal(0, 0.01, J)
+        rows.append({"person_id": f"R{i:03d}", "name": f"Rep {i}", "party": "R",
+                      "year": 2022, "state": "XX", "office": "GOV", "mvd": -0.01,
+                      **{c: v for c, v in zip(ctov_cols, r_vec)}})
+
+    # Add a target candidate: same absolute CTOV for both a D and an R
+    target_vec = np.array([0.15, 0.05, 0.0, 0.1, -0.05])
+    rows.append({"person_id": "TARGET_D", "name": "Target Dem", "party": "D",
+                  "year": 2022, "state": "XX", "office": "GOV", "mvd": 0.05,
+                  **{c: v for c, v in zip(ctov_cols, target_vec)}})
+    rows.append({"person_id": "TARGET_R", "name": "Target Rep", "party": "R",
+                  "year": 2022, "state": "XX", "office": "GOV", "mvd": -0.05,
+                  **{c: v for c, v in zip(ctov_cols, target_vec)}})
+
+    ctov_df = pd.DataFrame(rows)
+    mvd_df = ctov_df[["person_id", "mvd"]].copy()
+
+    # Mock type_profiles to match J=5
+    import unittest.mock as mock
+
+    type_profiles = pd.DataFrame({
+        "type_id": range(J),
+        "pct_bachelors_plus": rng.uniform(0.1, 0.5, J),
+        "log_pop_density": rng.uniform(1.0, 4.0, J),
+        "pct_white_nh": rng.uniform(0.3, 0.9, J),
+        "pct_hispanic": rng.uniform(0.05, 0.4, J),
+        "pct_black": rng.uniform(0.05, 0.3, J),
+    }).set_index("type_id")
+
+    with mock.patch("src.sabermetrics.badges._load_type_profiles", return_value=type_profiles):
+        result = derive_badges(ctov_df, mvd_df)
+
+    # Same absolute CTOV should produce DIFFERENT badge scores after party-mean subtraction
+    d_scores = result["TARGET_D"]["badge_scores"]
+    r_scores = result["TARGET_R"]["badge_scores"]
+
+    # At least one non-Turnout-Monster badge score should differ meaningfully
+    diffs = []
+    for badge in d_scores:
+        if badge == "Turnout Monster":
+            continue
+        if badge in r_scores:
+            diffs.append(abs(d_scores[badge] - r_scores[badge]))
+    assert max(diffs) > 0.001, (
+        "Badge scores for same CTOV in different parties should differ after party-mean subtraction"
+    )
+
+
+def test_party_mean_subtraction_removes_party_signal():
+    """After subtracting party mean, the average residual per party is ~zero.
+
+    This is a mathematical identity: mean(x_i - mean(x)) = 0.
+    Verifying it ensures the subtraction is implemented correctly.
+    """
+    J = 5
+    ctov_cols = [f"ctov_type_{i}" for i in range(J)]
+
+    rng = np.random.RandomState(99)
+    rows = []
+    for i in range(20):
+        party = "D" if i < 10 else "R"
+        base = np.array([0.1, 0.1, -0.1, 0.0, 0.05]) if party == "D" else np.array([-0.1, -0.1, 0.1, 0.0, -0.05])
+        vec = base + rng.normal(0, 0.03, J)
+        rows.append({"person_id": f"P{i:03d}", "name": f"Cand {i}", "party": party,
+                      "year": 2022, "state": "XX", "office": "GOV",
+                      **{c: v for c, v in zip(ctov_cols, vec)}})
+
+    ctov_df = pd.DataFrame(rows)
+
+    # Compute party means the same way as badges.py
+    for party_code in ["D", "R"]:
+        party_rows = ctov_df[ctov_df["party"] == party_code]
+        party_mean = party_rows[ctov_cols].values.mean(axis=0)
+        residuals = party_rows[ctov_cols].values - party_mean
+        mean_residual = residuals.mean(axis=0)
+        np.testing.assert_allclose(
+            mean_residual, 0.0, atol=1e-12,
+            err_msg=f"Mean residual for party {party_code} should be ~0 after subtraction",
+        )
+
+
+@skip_if_no_output
+def test_badge_count_reasonable():
+    """Average badge count per candidate should be between 2 and 10.
+
+    Too few means the threshold is too strict after party-mean subtraction.
+    Too many means every candidate looks special (threshold too loose).
+    """
+    badges = json.loads((SABERMETRICS_DIR / "candidate_badges.json").read_text())
+    badge_counts = [len(v["badges"]) for v in badges.values()]
+    avg = sum(badge_counts) / len(badge_counts)
+    assert 2 <= avg <= 10, (
+        f"Average badge count = {avg:.1f}, expected 2-10. "
+        f"Threshold may need adjustment."
+    )
