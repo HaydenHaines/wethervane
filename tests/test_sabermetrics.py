@@ -242,27 +242,30 @@ def test_compute_national_environment_is_not_implemented():
         compute_national_environment(generic_ballot=2.5)
 
 
-def test_compute_mvd_is_not_implemented():
-    """compute_mvd raises NotImplementedError until implemented."""
+def test_compute_mvd_is_importable():
+    """compute_mvd is implemented in Phase 2 — verify it's importable and callable."""
     from src.sabermetrics.residuals import compute_mvd
-    with pytest.raises(NotImplementedError):
-        compute_mvd(pd.DataFrame(), pd.DataFrame(), 0.0)
+    # Phase 2 implementation accepts (registry, backtest_cache=None).
+    # We don't call it here (that would require the full backtest harness);
+    # instead, the full integration test lives in test_sabermetrics_residuals.py.
+    assert callable(compute_mvd)
 
 
-def test_compute_ctov_is_not_implemented():
-    """compute_ctov raises NotImplementedError until implemented."""
+def test_compute_ctov_is_importable():
+    """compute_ctov is implemented in Phase 2 — verify it's importable and callable."""
     from src.sabermetrics.residuals import compute_ctov
-    with pytest.raises(NotImplementedError):
-        compute_ctov(pd.DataFrame(), np.eye(K), np.ones(K), pd.DataFrame())
+    assert callable(compute_ctov)
 
 
-def test_compute_cec_is_not_implemented():
-    """compute_cec raises NotImplementedError until implemented."""
+def test_compute_cec_is_implemented():
+    """compute_cec is implemented in Phase 2 — verify it returns a float."""
     from src.sabermetrics.residuals import compute_cec
     ctov_a = np.zeros(K)
     ctov_b = np.ones(K)
-    with pytest.raises(NotImplementedError):
-        compute_cec([ctov_a, ctov_b])
+    # Should not raise NotImplementedError anymore
+    result = compute_cec([ctov_a, ctov_b])
+    # Both vectors have zero std: treated as 0 correlation
+    assert result == 0.0
 
 
 def test_compute_fit_score_is_not_implemented():
