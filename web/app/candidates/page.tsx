@@ -13,7 +13,9 @@ import Link from "next/link";
 import { useCandidatesList } from "@/lib/hooks/use-candidates-list";
 import type { CandidateListItem } from "@/lib/api";
 
-// ── Filter state ─────────────────────────────────────────────────────────────
+// ── Filter + sort state ───────────────────────────────────────────────────────
+
+type SortKey = "name" | "cec" | "n_races";
 
 interface Filters {
   q: string;
@@ -21,6 +23,7 @@ interface Filters {
   office: string;
   year: string;
   state: string;
+  sort: SortKey;
 }
 
 const INITIAL_FILTERS: Filters = {
@@ -29,6 +32,7 @@ const INITIAL_FILTERS: Filters = {
   office: "",
   year: "",
   state: "",
+  sort: "cec",
 };
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
@@ -261,6 +265,18 @@ function FilterBar({ filters, onChange, allYears, allStates }: FilterBarProps) {
         ))}
       </select>
 
+      {/* Sort */}
+      <select
+        value={filters.sort}
+        onChange={(e) => onChange({ sort: e.target.value as SortKey })}
+        style={{ ...inputStyle, minWidth: "120px" }}
+        aria-label="Sort candidates"
+      >
+        <option value="cec">Sort: CEC ↓</option>
+        <option value="n_races">Sort: Most races</option>
+        <option value="name">Sort: Name A–Z</option>
+      </select>
+
       {/* Reset */}
       {(filters.q || filters.party || filters.office || filters.year || filters.state) && (
         <button
@@ -301,10 +317,10 @@ export default function CandidatesPage() {
     };
   }, [data]);
 
-  // Apply client-side filters on top of the full list.
+  // Apply client-side filters + sort on top of the full list.
   const filtered = useMemo(() => {
     if (!data) return [];
-    return data.candidates.filter((c) => {
+    const results = data.candidates.filter((c) => {
       if (filters.q && !c.name.toLowerCase().includes(filters.q.toLowerCase())) return false;
       if (filters.party && c.party !== filters.party) return false;
       if (filters.office && !c.offices.includes(filters.office)) return false;
@@ -312,6 +328,10 @@ export default function CandidatesPage() {
       if (filters.state && !c.states.includes(filters.state)) return false;
       return true;
     });
+    if (filters.sort === "cec") results.sort((a, b) => b.cec - a.cec);
+    else if (filters.sort === "n_races") results.sort((a, b) => b.n_races - a.n_races);
+    else results.sort((a, b) => a.name.localeCompare(b.name));
+    return results;
   }, [data, filters]);
 
   function handleFilterChange(next: Partial<Filters>) {
