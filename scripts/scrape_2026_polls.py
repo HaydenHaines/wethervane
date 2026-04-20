@@ -1443,6 +1443,21 @@ def main():
         print(df.to_csv(index=False))
     else:
         OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
+        # Merge with existing polls so historical data survives RCP 403s and
+        # scraper gaps. Keep "last" on duplicates — freshly scraped wins.
+        if OUTPUT_PATH.exists():
+            existing = pd.read_csv(OUTPUT_PATH)
+            merged = pd.concat([existing, df], ignore_index=True).drop_duplicates(
+                subset=["race", "date", "pollster"], keep="last"
+            )
+            merged = merged.sort_values(["race", "date"]).reset_index(drop=True)
+            n_new = len(merged) - len(existing)
+            logger.info(
+                "Merged %d new polls into %d existing → %d total",
+                max(n_new, 0), len(existing), len(merged),
+            )
+            df = merged
+        OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
         df.to_csv(OUTPUT_PATH, index=False)
         logger.info("Written %d polls to %s", len(df), OUTPUT_PATH)
 
