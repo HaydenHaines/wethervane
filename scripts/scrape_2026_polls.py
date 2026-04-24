@@ -34,7 +34,7 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 OUTPUT_PATH = PROJECT_ROOT / "data" / "polls" / "polls_2026.csv"
 
 RCP_BASE_URL = "https://www.realclearpolling.com"
-USER_AGENT = "WetherVane-PollScraper/1.0 (political research)"
+USER_AGENT = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
 REQUEST_DELAY = 2  # seconds between HTTP requests
 
 # ---------------------------------------------------------------------------
@@ -558,7 +558,12 @@ def two_party_share(dem_pct: float, rep_pct: float) -> float | None:
 def fetch_html(url: str) -> str | None:
     """Fetch URL content with User-Agent header. Returns HTML string or None."""
     try:
-        resp = requests.get(url, headers={"User-Agent": USER_AGENT}, timeout=30)
+        headers = {
+            "User-Agent": USER_AGENT,
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "Accept-Language": "en-US,en;q=0.5",
+        }
+        resp = requests.get(url, headers=headers, timeout=30)
         resp.raise_for_status()
         return resp.text
     except requests.RequestException as e:
