@@ -295,8 +295,8 @@ def test_senate_shift_output_columns(early_sen, late_sen):
     assert set(result.columns) == expected_cols
 
 
-def test_senate_shift_inner_join(early_sen, late_sen):
-    """Counties present in only one year are excluded (inner join)."""
+def test_senate_shift_missing_year_keeps_row_with_nan_turnout_and_partisan_shift(early_sen, late_sen):
+    """Counties missing one cycle stay present with NaN shifts for later zero-fill."""
     # Add an extra county to early only
     extra = pd.DataFrame({
         "county_fips": ["12099"],
@@ -305,8 +305,10 @@ def test_senate_shift_inner_join(early_sen, late_sen):
     })
     early_extra = pd.concat([early_sen, extra], ignore_index=True)
     result = compute_senate_shift(early_extra, late_sen, "02", "08")
-    assert "12099" not in result["county_fips"].values
-    assert len(result) == 3
+    row = result[result["county_fips"] == "12099"].iloc[0]
+    assert np.isnan(row["sen_d_shift_02_08"])
+    assert np.isnan(row["sen_r_shift_02_08"])
+    assert np.isnan(row["sen_turnout_shift_02_08"])
 
 
 # ---------------------------------------------------------------------------

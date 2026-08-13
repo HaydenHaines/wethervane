@@ -17,7 +17,8 @@ Holdout (3 dims — never used during clustering):
 Note: All AL governor cycles are fully contested. No structural zeros needed
 (AL 2018 governor: Kay Ivey vs Walter Maddox, Ivey won ~60/40 — real data).
 
-Senate counties that are uncontested or missing are zero-filled (logged).
+Senate counties that are uncontested or missing keep turnout-only signal when
+both cycle totals exist; partisan shifts remain zero-filled.
 
 Output:
   data/shifts/county_shifts_multiyear.parquet
@@ -151,8 +152,9 @@ def compute_senate_shift(
     (e.g. 2002→2008 is the same Class II seat in each state).
 
     D and R shifts are log-odds (logit scale). Turnout shift is raw proportional.
-    Only counties present in both years survive (inner join); counties missing
-    from either cycle are zero-filled by build_multiyear_shifts.
+    Counties with totals in both years keep turnout shift even if one side lacks
+    a valid two-party share (for example an uncontested race). Counties missing
+    from either cycle remain zero-filled by build_multiyear_shifts.
     """
     early_dem = _dem_share_col(early)
     early_tot = _total_col(early)
@@ -160,10 +162,15 @@ def compute_senate_shift(
     late_tot = _total_col(late)
 
     merged = early[["county_fips", early_dem, early_tot]].merge(
-        late[["county_fips", late_dem, late_tot]], on="county_fips", how="inner"
+        late[["county_fips", late_dem, late_tot]], on="county_fips", how="outer"
     )
-    d_shift = _logodds_shift(merged[late_dem], merged[early_dem])
-    r_shift = -(d_shift)
+    d_shift = pd.Series(np.nan, index=merged.index, dtype=float)
+    contested_mask = merged[early_dem].notna() & merged[late_dem].notna()
+    d_shift.loc[contested_mask] = _logodds_shift(
+        merged.loc[contested_mask, late_dem],
+        merged.loc[contested_mask, early_dem],
+    )
+    r_shift = -d_shift
     early_total = merged[early_tot].replace(0, float("nan"))
     t_shift = (merged[late_tot] - merged[early_tot]) / early_total
 

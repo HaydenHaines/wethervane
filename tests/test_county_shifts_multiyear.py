@@ -6,6 +6,7 @@ import pytest
 from src.assembly.build_county_shifts_multiyear import (
     compute_pres_shift,
     compute_gov_shift,
+    compute_senate_shift,
     build_multiyear_shifts,
     _logodds_shift,
     TRAINING_SHIFT_COLS,
@@ -123,3 +124,59 @@ def test_build_multiyear_spine(early_pres, late_pres, early_gov, late_gov, tmp_p
     all_shift_cols = TRAINING_SHIFT_COLS + HOLDOUT_SHIFT_COLS
     for col in all_shift_cols:
         assert col in result.columns, f"Missing column: {col}"
+
+
+def test_senate_turnout_survives_missing_vote_share_pair():
+    early = pd.DataFrame({
+        "county_fips": ["12001", "12003"],
+        "senate_dem_share_2002": [0.45, np.nan],
+        "senate_total_2002": [80000, 50000],
+    })
+    late = pd.DataFrame({
+        "county_fips": ["12001", "12003"],
+        "senate_dem_share_2008": [0.50, np.nan],
+        "senate_total_2008": [90000, 65000],
+    })
+
+    result = compute_senate_shift(early, late, "02", "08").set_index("county_fips")
+
+    contested = result.loc["12001"]
+    assert contested["sen_d_shift_02_08"] == pytest.approx(_logit(0.50) - _logit(0.45))
+    assert contested["sen_turnout_shift_02_08"] == pytest.approx((90000 - 80000) / 80000)
+
+    uncontested = result.loc["12003"]
+    assert np.isnan(uncontested["sen_d_shift_02_08"])
+    assert np.isnan(uncontested["sen_r_shift_02_08"])
+    assert uncontested["sen_turnout_shift_02_08"] == pytest.approx((65000 - 50000) / 50000)
+
+
+def test_build_multiyear_zero_fills_partisan_senate_shift_but_keeps_turnout():
+    spine = pd.DataFrame({"county_fips": ["12001", "12003", "12005"]})
+    early = pd.DataFrame({
+        "county_fips": ["12001", "12003"],
+        "senate_dem_share_2002": [0.45, np.nan],
+        "senate_total_2002": [80000, 50000],
+    })
+    late = pd.DataFrame({
+        "county_fips": ["12001", "12003"],
+        "senate_dem_share_2008": [0.50, np.nan],
+        "senate_total_2008": [90000, 65000],
+    })
+
+    result = build_multiyear_shifts(
+        spine,
+        pres_pairs=[],
+        gov_pairs=[],
+        senate_pairs=[("02", "08", early, late)],
+    ).set_index("county_fips")
+
+    assert result.loc["12001", "sen_d_shift_02_08"] == pytest.approx(_logit(0.50) - _logit(0.45))
+    assert result.loc["12001", "sen_turnout_shift_02_08"] == pytest.approx((90000 - 80000) / 80000)
+
+    assert result.loc["12003", "sen_d_shift_02_08"] == 0.0
+    assert result.loc["12003", "sen_r_shift_02_08"] == 0.0
+    assert result.loc["12003", "sen_turnout_shift_02_08"] == pytest.approx((65000 - 50000) / 50000)
+
+    assert result.loc["12005", "sen_d_shift_02_08"] == 0.0
+    assert result.loc["12005", "sen_r_shift_02_08"] == 0.0
+    assert result.loc["12005", "sen_turnout_shift_02_08"] == 0.0
