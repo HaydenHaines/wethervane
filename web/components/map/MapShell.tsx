@@ -25,6 +25,7 @@ import { CommunityPanel } from "@/components/CommunityPanel";
 import { TypePanel } from "@/components/TypePanel";
 import { TractPopup, type TractPopupData } from "@/components/TractPopup";
 import { DashboardOverlay } from "@/components/DashboardOverlay";
+import { MapOverlayToggle, type MapOverlay } from "@/components/explore/MapOverlayToggle";
 
 import { MapTooltip } from "./MapTooltip";
 import { MapLegend, type LegendEntry } from "./MapLegend";
@@ -87,6 +88,7 @@ export default function MapShell({ defaultOverlayMode = "types" }: MapShellProps
     zoomedState, setZoomedState,
     layoutMode,
   } = useMapContext();
+  const [overlayMode, setOverlayMode] = useState<MapOverlay>(defaultOverlayMode);
 
   const containerRef = useRef<HTMLDivElement>(null);
   // Cache tract GeoJSON by state abbreviation so repeated clicks don't re-fetch.
@@ -355,6 +357,7 @@ export default function MapShell({ defaultOverlayMode = "types" }: MapShellProps
   // This prevents deck.gl from re-processing unchanged layers on every render.
   const layers = useMemo(() => {
     const result: unknown[] = [];
+    const showForecastOverlay = overlayMode === "forecast";
 
     // Layer 0: Historical presidential election overlay (county polygons).
     // Rendered beneath all other layers at reduced opacity so the stained-glass
@@ -447,7 +450,7 @@ export default function MapShell({ defaultOverlayMode = "types" }: MapShellProps
           filled: true,
           stroked: true,
           getFillColor: ((f: { properties?: Record<string, unknown> }) => {
-            if (forecastChoropleth) {
+            if (showForecastOverlay && forecastChoropleth) {
               const typeId = String(f.properties?.type_id ?? "");
               const share = forecastChoropleth.get(typeId);
               if (share !== undefined) return choroplethColor(share);
@@ -455,7 +458,7 @@ export default function MapShell({ defaultOverlayMode = "types" }: MapShellProps
             }
             // On forecast pages, color tracts by their type's partisan lean
             // using the type metadata already loaded from the API.
-            if (defaultOverlayMode === "forecast") {
+            if (showForecastOverlay) {
               const typeId = f.properties?.type_id as number | undefined;
               if (typeId != null) {
                 const typeData = typeDataMap.get(typeId);
@@ -472,7 +475,7 @@ export default function MapShell({ defaultOverlayMode = "types" }: MapShellProps
           getLineColor: ((f: { properties?: Record<string, unknown> }) => {
             // Gold border on high-volatility tracts — communities that have
             // moved a lot between elections (top quartile of avg |shift|).
-            if (defaultOverlayMode === "forecast") {
+            if (showForecastOverlay) {
               const typeId = f.properties?.type_id as number | undefined;
               if (typeId != null) {
                 const vol = typeVolatility.get(typeId);
@@ -485,7 +488,7 @@ export default function MapShell({ defaultOverlayMode = "types" }: MapShellProps
           }) as never,
           lineWidthMinPixels: 0.5,
           getLineWidth: ((f: { properties?: Record<string, unknown> }) => {
-            if (defaultOverlayMode === "forecast") {
+            if (showForecastOverlay) {
               const typeId = f.properties?.type_id as number | undefined;
               if (typeId != null) {
                 const vol = typeVolatility.get(typeId);
@@ -587,9 +590,9 @@ export default function MapShell({ defaultOverlayMode = "types" }: MapShellProps
             }
           },
           updateTriggers: {
-            getFillColor: [forecastChoropleth, defaultOverlayMode, typeDataMap],
-            getLineColor: [defaultOverlayMode, typeVolatility, volatilityThreshold],
-            getLineWidth: [defaultOverlayMode, typeVolatility, volatilityThreshold],
+            getFillColor: [forecastChoropleth, overlayMode, typeDataMap],
+            getLineColor: [overlayMode, typeVolatility, volatilityThreshold],
+            getLineWidth: [overlayMode, typeVolatility, volatilityThreshold],
           },
         })
       );
@@ -599,7 +602,7 @@ export default function MapShell({ defaultOverlayMode = "types" }: MapShellProps
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     stateGeo, stateTracts, zoomedState, stateRatings,
-    forecastChoropleth, defaultOverlayMode, typeDataMap, superTypeMap, typeVolatility, volatilityThreshold,
+    forecastChoropleth, overlayMode, typeDataMap, superTypeMap, typeVolatility, volatilityThreshold,
     handleStateClick, getSuperTypeName,
     historicalYear, countyGeo, historicalData,
     // tractPopup is intentionally omitted: including it would cause layer recreation on
@@ -648,6 +651,39 @@ export default function MapShell({ defaultOverlayMode = "types" }: MapShellProps
         style={{ background: "#e8ecf0" }}
       />
 
+      {defaultOverlayMode === "forecast" && (
+        <div
+          style={{
+            position: "absolute",
+            top: 12,
+            right: 12,
+            zIndex: 20,
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            padding: "6px 8px",
+            borderRadius: 8,
+            border: "1px solid var(--color-border, #e0ddd8)",
+            background: "rgba(250, 250, 248, 0.94)",
+            boxShadow: "0 4px 16px rgba(27, 31, 35, 0.08)",
+          }}
+        >
+          <span
+            style={{
+              fontSize: 11,
+              fontWeight: 600,
+              color: "var(--color-text-muted, #6e6860)",
+              fontFamily: "var(--font-sans)",
+              letterSpacing: "0.02em",
+              textTransform: "uppercase",
+            }}
+          >
+            Overlay
+          </span>
+          <MapOverlayToggle value={overlayMode} onChange={setOverlayMode} />
+        </div>
+      )}
+
       <MapControls
         onZoomIn={handleZoomIn}
         onZoomOut={handleZoomOut}
@@ -674,11 +710,11 @@ export default function MapShell({ defaultOverlayMode = "types" }: MapShellProps
       {tooltip && <MapTooltip x={tooltip.x} y={tooltip.y} text={tooltip.text} />}
 
       <MapLegend
-        forecastChoropleth={forecastChoropleth}
+        forecastChoropleth={overlayMode === "forecast" ? forecastChoropleth : null}
         zoomedState={zoomedState}
         entries={legendEntries}
         hasStateRatings={stateRatings.size > 0}
-        overlayMode={defaultOverlayMode}
+        overlayMode={overlayMode}
         historicalYear={historicalYear}
       />
 
