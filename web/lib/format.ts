@@ -12,6 +12,8 @@
 import { getFieldConfig } from "./config/display";
 import type { FormatType } from "./config/display";
 
+export const PARTISAN_MARGIN_EVEN_THRESHOLD = 0.005;
+
 // ---------------------------------------------------------------------------
 // Core formatters
 // ---------------------------------------------------------------------------
@@ -82,17 +84,25 @@ export function formatRaw(value: number): string {
  * CRITICAL: The threshold is 0.005 (0.5 percentage points), NOT 0.5.
  * A margin of 0.004 (D+0.4) should display as EVEN.
  */
+export function formatPartisanMargin(
+  margin: number | null | undefined,
+  decimals = 1,
+  nullText = "\u2014",
+): string {
+  if (margin === null || margin === undefined) return nullText;
+  const abs = Math.abs(margin);
+  if (abs < PARTISAN_MARGIN_EVEN_THRESHOLD) return "EVEN";
+  const pct = (abs * 100).toFixed(decimals);
+  return margin > 0 ? `D+${pct}` : `R+${pct}`;
+}
+
 export function formatMargin(
   demShare: number | null,
   decimals = 1,
   nullText = "\u2014",
 ): string {
   if (demShare === null || demShare === undefined) return nullText;
-  const margin = demShare - 0.5;
-  const abs = Math.abs(margin);
-  if (abs < 0.005) return "EVEN";
-  const pct = (abs * 100).toFixed(decimals);
-  return margin > 0 ? `D+${pct}` : `R+${pct}`;
+  return formatPartisanMargin(demShare - 0.5, decimals, nullText);
 }
 
 /**
@@ -109,7 +119,7 @@ export function parseMargin(
   }
   const margin = demShare - 0.5;
   const abs = Math.abs(margin);
-  if (abs < 0.005) return { text: "EVEN", party: "even" };
+  if (abs < PARTISAN_MARGIN_EVEN_THRESHOLD) return { text: "EVEN", party: "even" };
   const pct = (abs * 100).toFixed(1);
   if (margin > 0) return { text: `D+${pct}`, party: "dem" };
   return { text: `R+${pct}`, party: "gop" };
