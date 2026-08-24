@@ -99,7 +99,10 @@ const COVERAGE_REPORT = {
 
 test.describe("Pollsters page coverage diagnostics", () => {
   test("renders populated diagnostics alongside the accuracy table", async ({ page }) => {
+    let sawCoverageRequest = false;
+
     await page.route("**/api/v1/pollsters/coverage", async (route) => {
+      sawCoverageRequest = true;
       await route.fulfill({
         status: 200,
         contentType: "application/json",
@@ -125,10 +128,14 @@ test.describe("Pollsters page coverage diagnostics", () => {
     await expect(page.getByText("South Texas Hispanic Belt (4)")).toBeVisible();
     await expect(page.getByText("Desert Research • AZ-SEN")).toBeVisible();
     await expect(page.getByText("Poll share 17.0% vs electorate 29.0%")).toBeVisible();
+    expect(sawCoverageRequest).toBeTruthy();
   });
 
   test("renders an explicit unavailable state for a 503 report", async ({ page }) => {
+    let sawCoverageRequest = false;
+
     await page.route("**/api/v1/pollsters/coverage", async (route) => {
+      sawCoverageRequest = true;
       await route.fulfill({
         status: 503,
         contentType: "application/json",
@@ -154,5 +161,9 @@ test.describe("Pollsters page coverage diagnostics", () => {
         "Poll coverage diagnostics report not yet generated. Run: uv run python scripts/analyze_poll_coverage.py",
       ),
     ).toBeVisible();
+    await expect(
+      page.getByText("Could not load pollster accuracy data. Please try again later."),
+    ).toHaveCount(0);
+    expect(sawCoverageRequest).toBeTruthy();
   });
 });

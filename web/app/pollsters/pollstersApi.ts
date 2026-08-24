@@ -90,6 +90,7 @@ export type PollCoverageFetchResult =
   | { status: "error"; message: string };
 
 const SERVER_API_BASE = process.env.API_URL || "http://localhost:8002";
+export const POLLSTER_COVERAGE_ENDPOINT = "/api/v1/pollsters/coverage";
 
 async function readErrorMessage(res: Response): Promise<string> {
   try {
@@ -104,26 +105,9 @@ async function readErrorMessage(res: Response): Promise<string> {
   return `Request failed with status ${res.status}.`;
 }
 
-export async function fetchPollsterAccuracy(): Promise<PollsterAccuracyResponse | null> {
+async function readCoverageResponse(input: string, init?: RequestInit): Promise<PollCoverageFetchResult> {
   try {
-    const res = await fetch(`${SERVER_API_BASE}/api/v1/pollsters/accuracy`, {
-      next: { revalidate: 86400 },
-    });
-    if (!res.ok) return null;
-    return res.json();
-  } catch {
-    return null;
-  }
-}
-
-export async function fetchPollsterCoverage(
-  input: string,
-): Promise<PollCoverageFetchResult> {
-  try {
-    const res = await fetch(input, {
-      headers: { Accept: "application/json" },
-      cache: "no-store",
-    });
+    const res = await fetch(input, init);
 
     if (res.ok) {
       return {
@@ -144,4 +128,32 @@ export async function fetchPollsterCoverage(
       message: "Could not load poll coverage diagnostics.",
     };
   }
+}
+
+export async function fetchPollsterAccuracy(): Promise<PollsterAccuracyResponse | null> {
+  try {
+    const res = await fetch(`${SERVER_API_BASE}/api/v1/pollsters/accuracy`, {
+      next: { revalidate: 86400 },
+    });
+    if (!res.ok) return null;
+    return res.json();
+  } catch {
+    return null;
+  }
+}
+
+export async function fetchPollsterCoverage(): Promise<PollCoverageFetchResult> {
+  return readCoverageResponse(`${SERVER_API_BASE}${POLLSTER_COVERAGE_ENDPOINT}`, {
+    headers: { Accept: "application/json" },
+    next: { revalidate: 86400 },
+  });
+}
+
+export async function fetchPollsterCoverageClient(
+  input = POLLSTER_COVERAGE_ENDPOINT,
+): Promise<PollCoverageFetchResult> {
+  return readCoverageResponse(input, {
+    headers: { Accept: "application/json" },
+    cache: "no-store",
+  });
 }

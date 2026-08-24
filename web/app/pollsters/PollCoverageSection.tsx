@@ -3,13 +3,12 @@
 import { useEffect, useState } from "react";
 
 import {
-  fetchPollsterCoverage,
+  fetchPollsterCoverageClient,
+  POLLSTER_COVERAGE_ENDPOINT,
   type PollCoverageFetchResult,
   type PollCoverageGap,
   type PollCoveragePollResult,
 } from "./pollstersApi";
-
-const COVERAGE_ENDPOINT = "/api/v1/pollsters/coverage";
 
 function formatPercent(value: number): string {
   return `${(value * 100).toFixed(1)}%`;
@@ -71,16 +70,20 @@ function selectFeaturedPolls(polls: PollCoveragePollResult[]): PollCoveragePollR
   return polls.slice(0, 1);
 }
 
-export function PollCoverageSection() {
-  const [result, setResult] = useState<PollCoverageFetchResult | { status: "loading" }>({
-    status: "loading",
-  });
+interface PollCoverageSectionProps {
+  initialResult?: PollCoverageFetchResult;
+}
+
+export function PollCoverageSection({ initialResult }: PollCoverageSectionProps) {
+  const [result, setResult] = useState<PollCoverageFetchResult | { status: "loading" }>(
+    initialResult ?? { status: "loading" },
+  );
 
   useEffect(() => {
     let cancelled = false;
 
     async function load() {
-      const next = await fetchPollsterCoverage(COVERAGE_ENDPOINT);
+      const next = await fetchPollsterCoverageClient(POLLSTER_COVERAGE_ENDPOINT);
       if (!cancelled) {
         setResult(next);
       }
