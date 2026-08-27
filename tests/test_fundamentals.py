@@ -475,6 +475,28 @@ class TestComputeFundamentalsShift:
                 interaction=FundamentalsInteractionConfig(enabled=True, strength=0.2),
             )
 
+    def test_interaction_rejects_misaligned_county_inputs(self, tmp_path):
+        rows = _minimal_rows(8)
+        path = _write_history_csv(rows, tmp_path / "h.csv")
+        records = load_historical_data(path)
+        model = FundamentalsModel().fit(records)
+        snap = _make_snapshot()
+
+        with pytest.raises(
+            ValueError,
+            match=(
+                r"county_fips and type_scores must align: "
+                r"got 2 county_fips entries but type_scores has 3 rows"
+            ),
+        ):
+            compute_fundamentals_shift(
+                snap,
+                interaction=FundamentalsInteractionConfig(enabled=True, strength=0.2),
+                county_fips=["01001", "06037"],
+                type_scores=np.eye(3),
+                _model=model,
+            )
+
     def test_interaction_returns_vector_shift(self, tmp_path):
         rows = _minimal_rows(8)
         path = _write_history_csv(rows, tmp_path / "h.csv")

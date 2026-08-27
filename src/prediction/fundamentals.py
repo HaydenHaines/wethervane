@@ -653,6 +653,25 @@ def _normalized_type_weights(type_scores: np.ndarray) -> np.ndarray:
     return weights / row_sums
 
 
+def _validate_interaction_county_inputs(
+    county_fips: list[str],
+    type_scores: np.ndarray,
+) -> np.ndarray:
+    """Validate county/type alignment for interaction sensitivity helpers."""
+    scores = np.asarray(type_scores, dtype=float)
+    if scores.ndim != 2:
+        raise ValueError(
+            "county_fips and type_scores must align: "
+            f"type_scores must be a 2D county x type matrix, got shape {scores.shape}"
+        )
+    if len(county_fips) != scores.shape[0]:
+        raise ValueError(
+            "county_fips and type_scores must align: "
+            f"got {len(county_fips)} county_fips entries but type_scores has {scores.shape[0]} rows"
+        )
+    return scores
+
+
 def _load_county_actuals_for_interaction(year: int, race_type: str) -> pd.DataFrame:
     """Load county actuals for cycle-level interaction validation."""
     assembled_dir = PROJECT_ROOT / "data" / "assembled"
@@ -772,6 +791,7 @@ def load_type_and_county_economic_sensitivity(
     county_qcew_features_path: Path | str | None = None,
 ) -> tuple[np.ndarray, np.ndarray]:
     """Return the aligned type-level and county-level sensitivity vectors."""
+    type_scores = _validate_interaction_county_inputs(county_fips, type_scores)
     if type_profiles_path is None:
         type_profiles_path = _DEFAULT_TYPE_PROFILES_PATH
     profiles = pd.read_parquet(type_profiles_path)
@@ -1036,6 +1056,7 @@ def compute_fundamentals_shift(
                 raise ValueError(
                     "county_fips and type_scores are required when fundamentals interaction is enabled"
                 )
+            type_scores = _validate_interaction_county_inputs(county_fips, type_scores)
             county_sensitivity = build_county_economic_sensitivity(
                 county_fips,
                 type_scores,
