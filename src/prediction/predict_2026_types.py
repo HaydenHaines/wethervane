@@ -55,6 +55,8 @@ from src.prediction.early_results import (
 )
 from src.prediction.forecast_engine import run_forecast
 from src.prediction.fundamentals import (
+    FundamentalsInteractionConfig,
+    calibrate_interaction_strength_from_default_data,
     compute_fundamentals_shift,
     load_fundamentals_snapshot,
 )
@@ -98,6 +100,7 @@ class ForecastParams:
     # Fundamentals blending
     fundamentals_enabled: bool = False
     fundamentals_weight: float = 0.3
+    fundamentals_interaction: FundamentalsInteractionConfig | None = None
 
     # State-level economic adjustment (QCEW-based)
     state_econ_enabled: bool = False
@@ -131,6 +134,7 @@ def load_forecast_params(
     forecast_section: dict = all_params["forecast"]
     poll_section: dict = all_params.get("poll_weighting", {})
     fund_section: dict = all_params.get("fundamentals", {})
+    interaction_section = fund_section.get("interaction")
 
     use_rmse = bool(poll_section.get("use_pollster_rmse_weights", True))
     accuracy_path: Path | None = (
@@ -170,6 +174,17 @@ def load_forecast_params(
         methodology_weights=methodology_weights,
         fundamentals_enabled=bool(fund_section.get("enabled", False)),
         fundamentals_weight=float(fund_section.get("fundamentals_weight", 0.3)),
+        fundamentals_interaction=(
+            FundamentalsInteractionConfig(
+                enabled=bool(interaction_section.get("enabled", False)),
+                strength=float(interaction_section.get("strength", 0.0)),
+                shrinkage_alpha=float(
+                    interaction_section.get("shrinkage_alpha", 100.0)
+                ),
+            )
+            if isinstance(interaction_section, dict)
+            else None
+        ),
         state_econ_enabled=bool(state_econ_section.get("enabled", False)),
         state_econ_sensitivity=float(state_econ_section.get("sensitivity", 0.5)),
         race_adjustments=race_adjustments,
@@ -253,6 +268,17 @@ def load_county_votes(county_fips: list[str]) -> np.ndarray:
             ))
             county_votes = np.array([vmap.get(f, 1.0) for f in county_fips])
     return county_votes
+
+
+def _national_fundamentals_shift(info) -> float:
+    """Return the scalar fundamentals path before any county interaction."""
+    return float(
+        info.approval_contribution
+        + info.gdp_contribution
+        + info.unemployment_contribution
+        + info.cpi_contribution
+        + info.intercept_contribution
+    )
 
 
 def load_polls(
@@ -486,6 +512,7 @@ def run_forecast_pipeline(
     # to the CSV or duplicating the file-reading logic.
     gb_info = compute_gb_shift(extra_gb_polls=gb_early_polls if gb_early_polls else None)
     gb_shift = gb_info.shift
+    gb_only_shift = gb_shift
     log.info(
         "Generic ballot shift: %+.1f pp (%d polls, source=%s)",
         gb_shift * 100, gb_info.n_polls, gb_info.source,
@@ -495,21 +522,53 @@ def run_forecast_pipeline(
     # unemployment, CPI).  The combined shift is:
     #   shift = w * fundamentals + (1 - w) * generic_ballot
     # where w = fundamentals_weight from prediction_params.json.
+    interaction_shift: float | np.ndarray = 0.0
     if params.fundamentals_enabled:
         try:
             snapshot = load_fundamentals_snapshot()
-            fund_info = compute_fundamentals_shift(snapshot)
+            interaction_cfg = params.fundamentals_interaction
+            if interaction_cfg is not None and interaction_cfg.enabled and interaction_cfg.strength == 0.0:
+                calibrated = calibrate_interaction_strength_from_default_data(
+                    county_fips=county_fips,
+                    type_scores=type_scores,
+                    shrinkage_alpha=interaction_cfg.shrinkage_alpha,
+                )
+                interaction_cfg = FundamentalsInteractionConfig(
+                    enabled=True,
+                    strength=calibrated.strength,
+                    shrinkage_alpha=interaction_cfg.shrinkage_alpha,
+                )
+                log.info(
+                    "Fundamentals interaction calibrated via cycle-LOO: strength=%+.6f, rmse=%.4f, cycles=%d",
+                    calibrated.strength,
+                    calibrated.loo_rmse,
+                    calibrated.n_cycles,
+                )
+            fund_info = compute_fundamentals_shift(
+                snapshot,
+                interaction=interaction_cfg,
+                county_fips=county_fips,
+                type_scores=type_scores,
+            )
             w = params.fundamentals_weight
-            combined_shift = w * fund_info.shift + (1 - w) * gb_shift
+            national_fund_shift = _national_fundamentals_shift(fund_info)
+            combined_shift = w * national_fund_shift + (1 - w) * gb_shift
+            if isinstance(fund_info.interaction_contribution, np.ndarray):
+                interaction_shift = w * fund_info.interaction_contribution
+                gb_shift = combined_shift + interaction_shift
+            else:
+                gb_shift = combined_shift
             log.info(
                 "Fundamentals shift: %+.1f pp (LOO RMSE=%.1f pp, weight=%.0f%%)",
-                fund_info.shift * 100, fund_info.loo_rmse * 100, w * 100,
+                (float(np.mean(fund_info.shift)) if isinstance(fund_info.shift, np.ndarray) else fund_info.shift) * 100,
+                fund_info.loo_rmse * 100,
+                w * 100,
             )
             log.info(
                 "Combined environment shift: %+.1f pp (was %+.1f pp GB-only)",
-                combined_shift * 100, gb_shift * 100,
+                (float(np.mean(gb_shift)) if isinstance(gb_shift, np.ndarray) else gb_shift) * 100,
+                gb_only_shift * 100,
             )
-            gb_shift = combined_shift
         except (FileNotFoundError, ValueError) as exc:
             log.warning("Fundamentals model unavailable, using GB only: %s", exc)
 
@@ -527,6 +586,8 @@ def run_forecast_pipeline(
                 national_shift=float(gb_shift) if isinstance(gb_shift, (int, float)) else float(gb_shift.mean()),
                 econ_sensitivity=params.state_econ_sensitivity,
             )
+            if isinstance(interaction_shift, np.ndarray):
+                gb_shift = gb_shift + interaction_shift
             log.info(
                 "State econ adjustment applied: mean=%.4f, std=%.4f, range=[%.4f, %.4f]",
                 gb_shift.mean(), gb_shift.std(), gb_shift.min(), gb_shift.max(),

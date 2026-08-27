@@ -51,6 +51,7 @@ from pathlib import Path
 from typing import Optional
 
 import numpy as np
+import pandas as pd
 
 log = logging.getLogger(__name__)
 
@@ -59,6 +60,8 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 # Default paths — can be overridden in tests.
 _DEFAULT_HISTORY_PATH = PROJECT_ROOT / "data" / "raw" / "fundamentals" / "midterm_history.csv"
 _DEFAULT_SNAPSHOT_PATH = PROJECT_ROOT / "data" / "fundamentals" / "snapshot_2026.json"
+_DEFAULT_TYPE_PROFILES_PATH = PROJECT_ROOT / "data" / "communities" / "type_profiles.parquet"
+_DEFAULT_COUNTY_QCEW_FEATURES_PATH = PROJECT_ROOT / "data" / "assembled" / "county_qcew_features.parquet"
 
 # Clamp shifted priors to this range to keep values in valid probability range.
 _PRIOR_MIN: float = 0.01
@@ -67,6 +70,7 @@ _PRIOR_MAX: float = 0.99
 # Ridge regularization strength.  Deliberately high given N~13.
 # At alpha=10 the model is meaningfully regularized but still tracks the data.
 _DEFAULT_RIDGE_ALPHA: float = 10.0
+_DEFAULT_INTERACTION_SHRINKAGE_ALPHA: float = 100.0
 
 # Minimum historical cycles needed to fit the four-predictor Ridge model.
 _MIN_TRAINING_RECORDS: int = 4
@@ -74,6 +78,16 @@ _MIN_TRAINING_RECORDS: int = 4
 # Convert Ridge output (percentage points) to Dem-share fraction for use in
 # the county prior pipeline (same units as generic ballot shift).
 _PP_TO_FRACTION: float = 0.01
+
+_DEFAULT_INTERACTION_VALIDATION_CYCLES: tuple[tuple[int, str], ...] = (
+    (2002, "senate"),
+    (2006, "senate"),
+    (2010, "senate"),
+    (2014, "senate"),
+    (2018, "senate"),
+    (2022, "senate"),
+    (2024, "president"),
+)
 
 
 # ---------------------------------------------------------------------------
@@ -124,6 +138,19 @@ class FundamentalsSnapshot:
 
 
 @dataclass(frozen=True)
+class FundamentalsInteractionConfig:
+    """Optional type-by-fundamentals interaction settings.
+
+    The interaction strength multiplies only the economic path
+    (GDP + unemployment + CPI contributions). Approval is excluded by design.
+    """
+
+    enabled: bool = False
+    strength: float = 0.0
+    shrinkage_alpha: float = _DEFAULT_INTERACTION_SHRINKAGE_ALPHA
+
+
+@dataclass(frozen=True)
 class FundamentalsInfo:
     """Result of a fundamentals model computation.
 
@@ -153,9 +180,16 @@ class FundamentalsInfo:
         Number of historical cycles used to fit the model.
     source:
         Human-readable description ("fitted_ridge" or "fallback").
+    interaction_strength:
+        Scalar multiplier applied to the GDP/unemployment/CPI interaction path.
+    interaction_contribution:
+        Added interaction shift in Dem-share units. Scalar when disabled,
+        per-county vector when enabled.
+    interaction_source:
+        Human-readable description of the interaction path state.
     """
 
-    shift: float
+    shift: float | np.ndarray
     approval_contribution: float
     gdp_contribution: float
     unemployment_contribution: float
@@ -164,6 +198,29 @@ class FundamentalsInfo:
     loo_rmse: float
     n_training: int
     source: str
+    interaction_strength: float = 0.0
+    interaction_contribution: float | np.ndarray = 0.0
+    interaction_source: str = "disabled"
+
+
+@dataclass(frozen=True)
+class _InteractionValidationObservation:
+    """One cycle's type-level interaction target for calibration."""
+
+    cycle_label: str
+    economic_path_pp: float
+    actual_type_deviation: np.ndarray
+
+
+@dataclass(frozen=True)
+class InteractionCalibrationResult:
+    """Outcome of leave-one-cycle-out interaction calibration."""
+
+    strength: float
+    loo_rmse: float
+    n_cycles: int
+    cycle_labels: tuple[str, ...]
+    fold_strengths: tuple[float, ...]
 
 
 # ---------------------------------------------------------------------------
@@ -575,17 +632,315 @@ def load_fundamentals_snapshot(
 
 
 # ---------------------------------------------------------------------------
+# Type-by-fundamentals interaction
+# ---------------------------------------------------------------------------
+
+
+def _zscore(values: np.ndarray) -> np.ndarray:
+    """Return mean-zero, unit-variance values with ddof=0 semantics."""
+    arr = np.asarray(values, dtype=float)
+    std = float(arr.std(ddof=0))
+    if std < 1e-12:
+        return np.zeros_like(arr, dtype=float)
+    return (arr - float(arr.mean())) / std
+
+
+def _normalized_type_weights(type_scores: np.ndarray) -> np.ndarray:
+    """Convert signed/mixed scores into non-negative row-normalized weights."""
+    weights = np.abs(np.asarray(type_scores, dtype=float))
+    row_sums = weights.sum(axis=1, keepdims=True)
+    row_sums = np.where(row_sums <= 0.0, 1.0, row_sums)
+    return weights / row_sums
+
+
+def _load_county_actuals_for_interaction(year: int, race_type: str) -> pd.DataFrame:
+    """Load county actuals for cycle-level interaction validation."""
+    assembled_dir = PROJECT_ROOT / "data" / "assembled"
+    if race_type == "president":
+        path = assembled_dir / f"medsl_county_presidential_{year}.parquet"
+        share_col = f"pres_dem_share_{year}"
+    elif race_type == "senate":
+        path = assembled_dir / f"medsl_county_senate_{year}.parquet"
+        share_col = f"senate_dem_share_{year}"
+    else:
+        raise ValueError(f"Unsupported race_type for interaction validation: {race_type!r}")
+
+    if not path.exists():
+        raise FileNotFoundError(f"Interaction validation actuals not found: {path}")
+
+    df = pd.read_parquet(path)
+    df["county_fips"] = df["county_fips"].astype(str).str.zfill(5)
+    result = df[["county_fips", share_col]].rename(columns={share_col: "actual_dem_share"}).copy()
+    result = result[result["county_fips"] != "00000"].dropna(subset=["actual_dem_share"])
+    return result.reset_index(drop=True)
+
+
+def compute_economic_interaction_path_pp(
+    snapshot: FundamentalsSnapshot,
+    model: FundamentalsModel,
+) -> float:
+    """Return the pre-specified GDP/unemployment/CPI path in percentage points."""
+    _, _, gdp_pp, unemp_pp, cpi_pp = model.predict(
+        approval_net=snapshot.approval_net_oct,
+        gdp_q2_growth=snapshot.gdp_q2_growth_pct,
+        unemployment=snapshot.unemployment_oct,
+        cpi_yoy=snapshot.cpi_yoy_oct,
+    )
+    return float(gdp_pp + unemp_pp + cpi_pp)
+
+
+def build_type_economic_sensitivity(
+    *,
+    type_profiles: pd.DataFrame,
+    county_fips: list[str] | None = None,
+    type_scores: np.ndarray | None = None,
+    county_qcew_features: pd.DataFrame | None = None,
+) -> np.ndarray:
+    """Build a fixed type-level economic sensitivity index.
+
+    The intended design uses wage/investment/education exposure plus optional
+    manufacturing mix. The checked-in data does not always carry every BEA
+    column, so this helper uses the richest available structural subset while
+    preserving the same directionality: lower education, lower income, and
+    higher manufacturing exposure imply greater economic sensitivity.
+    """
+    profiles = type_profiles.sort_values("type_id").reset_index(drop=True).copy()
+    components: list[np.ndarray] = []
+
+    if "earnings_share" in profiles.columns:
+        components.append(_zscore(profiles["earnings_share"].to_numpy(dtype=float)))
+    if "investment_share" in profiles.columns:
+        components.append(-_zscore(profiles["investment_share"].to_numpy(dtype=float)))
+    elif "log_median_hh_income" in profiles.columns:
+        components.append(-_zscore(profiles["log_median_hh_income"].to_numpy(dtype=float)))
+    elif "median_hh_income" in profiles.columns:
+        components.append(-_zscore(np.log1p(profiles["median_hh_income"].to_numpy(dtype=float))))
+
+    if "pct_bachelors_plus" in profiles.columns:
+        components.append(_zscore(1.0 - profiles["pct_bachelors_plus"].to_numpy(dtype=float)))
+
+    if county_fips is not None and type_scores is not None and county_qcew_features is not None:
+        weights = _normalized_type_weights(type_scores)
+        qcew_df = county_qcew_features.copy()
+        qcew_df["county_fips"] = qcew_df["county_fips"].astype(str).str.zfill(5)
+        latest_year = int(qcew_df["year"].max())
+        qcew_df = qcew_df[qcew_df["year"] == latest_year]
+        mfg_map = dict(zip(qcew_df["county_fips"], qcew_df["manufacturing_share"]))
+        county_mfg = np.array([mfg_map.get(fips) for fips in county_fips], dtype=float)
+        if np.isnan(county_mfg).all():
+            county_mfg = np.zeros(len(county_fips), dtype=float)
+        else:
+            county_mfg = np.where(
+                np.isnan(county_mfg),
+                float(np.nanmedian(county_mfg)),
+                county_mfg,
+            )
+        type_weight_sums = weights.sum(axis=0)
+        type_weight_sums = np.where(type_weight_sums <= 0.0, 1.0, type_weight_sums)
+        type_mfg = (weights.T @ county_mfg) / type_weight_sums
+        components.append(_zscore(type_mfg))
+
+    if not components:
+        raise ValueError("Unable to build economic sensitivity index: no supported structural columns found.")
+
+    sensitivity = np.mean(np.column_stack(components), axis=1)
+    return _zscore(sensitivity)
+
+
+def build_county_economic_sensitivity(
+    county_fips: list[str],
+    type_scores: np.ndarray,
+    *,
+    type_profiles_path: Path | str | None = None,
+    county_qcew_features_path: Path | str | None = None,
+) -> np.ndarray:
+    """Project the type sensitivity index onto counties via type scores."""
+    _, county_sensitivity = load_type_and_county_economic_sensitivity(
+        county_fips,
+        type_scores,
+        type_profiles_path=type_profiles_path,
+        county_qcew_features_path=county_qcew_features_path,
+    )
+    return county_sensitivity
+
+
+def load_type_and_county_economic_sensitivity(
+    county_fips: list[str],
+    type_scores: np.ndarray,
+    *,
+    type_profiles_path: Path | str | None = None,
+    county_qcew_features_path: Path | str | None = None,
+) -> tuple[np.ndarray, np.ndarray]:
+    """Return the aligned type-level and county-level sensitivity vectors."""
+    if type_profiles_path is None:
+        type_profiles_path = _DEFAULT_TYPE_PROFILES_PATH
+    profiles = pd.read_parquet(type_profiles_path)
+
+    county_qcew_df: pd.DataFrame | None = None
+    if county_qcew_features_path is None:
+        county_qcew_features_path = _DEFAULT_COUNTY_QCEW_FEATURES_PATH
+    county_qcew_path = Path(county_qcew_features_path)
+    if county_qcew_path.exists():
+        county_qcew_df = pd.read_parquet(county_qcew_path)
+
+    type_sensitivity = build_type_economic_sensitivity(
+        type_profiles=profiles,
+        county_fips=county_fips,
+        type_scores=type_scores,
+        county_qcew_features=county_qcew_df,
+    )
+    county_weights = _normalized_type_weights(type_scores)
+    county_sensitivity = county_weights @ type_sensitivity
+    return type_sensitivity, _zscore(county_sensitivity)
+
+
+def _build_interaction_validation_observations(
+    *,
+    model: FundamentalsModel,
+    county_fips: list[str],
+    type_scores: np.ndarray,
+    validation_cycles: tuple[tuple[int, str], ...] = _DEFAULT_INTERACTION_VALIDATION_CYCLES,
+) -> list[_InteractionValidationObservation]:
+    """Build type-level cycle observations for interaction calibration."""
+    weights = _normalized_type_weights(type_scores)
+    county_index = {fips: idx for idx, fips in enumerate(county_fips)}
+    observations: list[_InteractionValidationObservation] = []
+
+    for year, race_type in validation_cycles:
+        actuals = _load_county_actuals_for_interaction(year, race_type)
+        valid_rows = [
+            (county_index[row.county_fips], float(row.actual_dem_share))
+            for row in actuals.itertuples(index=False)
+            if row.county_fips in county_index
+        ]
+        if not valid_rows:
+            continue
+        idx = np.array([i for i, _ in valid_rows], dtype=int)
+        shares = np.array([share for _, share in valid_rows], dtype=float)
+        cycle_weights = weights[idx]
+        type_weight_sums = cycle_weights.sum(axis=0)
+        type_weight_sums = np.where(type_weight_sums <= 0.0, 1.0, type_weight_sums)
+        type_means = (cycle_weights.T @ shares) / type_weight_sums
+        actual_type_deviation = type_means - float(shares.mean())
+        snapshot = load_fundamentals_snapshot(PROJECT_ROOT / "data" / "fundamentals" / f"snapshot_{year}.json")
+        observations.append(
+            _InteractionValidationObservation(
+                cycle_label=f"{year}-{race_type}",
+                economic_path_pp=compute_economic_interaction_path_pp(snapshot, model),
+                actual_type_deviation=actual_type_deviation,
+            )
+        )
+
+    return observations
+
+
+def fit_interaction_strength(
+    type_sensitivity: np.ndarray,
+    observations: list[_InteractionValidationObservation],
+    *,
+    shrinkage_alpha: float = _DEFAULT_INTERACTION_SHRINKAGE_ALPHA,
+) -> float:
+    """Fit the single interaction strength with strong L2 shrinkage."""
+    if not observations:
+        return 0.0
+
+    x_parts: list[np.ndarray] = []
+    y_parts: list[np.ndarray] = []
+    for obs in observations:
+        x_parts.append(type_sensitivity * obs.economic_path_pp)
+        y_parts.append(obs.actual_type_deviation)
+
+    x = np.concatenate(x_parts)
+    y = np.concatenate(y_parts)
+    denom = float(x @ x + shrinkage_alpha)
+    if denom <= 0.0:
+        return 0.0
+    return float((x @ y) / denom)
+
+
+def calibrate_interaction_strength_via_cycle_loo(
+    type_sensitivity: np.ndarray,
+    observations: list[_InteractionValidationObservation],
+    *,
+    shrinkage_alpha: float = _DEFAULT_INTERACTION_SHRINKAGE_ALPHA,
+) -> InteractionCalibrationResult:
+    """Choose the shipped interaction strength from leave-one-cycle-out folds."""
+    if not observations:
+        return InteractionCalibrationResult(
+            strength=0.0,
+            loo_rmse=0.0,
+            n_cycles=0,
+            cycle_labels=(),
+            fold_strengths=(),
+        )
+
+    fold_strengths: list[float] = []
+    fold_rmses: list[float] = []
+    cycle_labels: list[str] = []
+
+    for held_out in observations:
+        training = [obs for obs in observations if obs.cycle_label != held_out.cycle_label]
+        gamma = fit_interaction_strength(
+            type_sensitivity,
+            training,
+            shrinkage_alpha=shrinkage_alpha,
+        )
+        prediction = gamma * type_sensitivity * held_out.economic_path_pp
+        rmse = float(np.sqrt(np.mean((held_out.actual_type_deviation - prediction) ** 2)))
+        fold_strengths.append(gamma)
+        fold_rmses.append(rmse)
+        cycle_labels.append(held_out.cycle_label)
+
+    mean_strength = float(np.mean(fold_strengths)) if fold_strengths else 0.0
+    loo_rmse = float(np.mean(fold_rmses)) if fold_rmses else 0.0
+    return InteractionCalibrationResult(
+        strength=mean_strength,
+        loo_rmse=loo_rmse,
+        n_cycles=len(cycle_labels),
+        cycle_labels=tuple(cycle_labels),
+        fold_strengths=tuple(fold_strengths),
+    )
+
+
+def calibrate_interaction_strength_from_default_data(
+    *,
+    history_path: Path | str | None = None,
+    alpha: float = _DEFAULT_RIDGE_ALPHA,
+    county_fips: list[str],
+    type_scores: np.ndarray,
+    shrinkage_alpha: float = _DEFAULT_INTERACTION_SHRINKAGE_ALPHA,
+) -> InteractionCalibrationResult:
+    """Calibrate the shipped strength using default historical files."""
+    model = FundamentalsModel.from_default_data(history_path, alpha=alpha)
+    type_sensitivity, _ = load_type_and_county_economic_sensitivity(county_fips, type_scores)
+    observations = _build_interaction_validation_observations(
+        model=model,
+        county_fips=county_fips,
+        type_scores=type_scores,
+    )
+    return calibrate_interaction_strength_via_cycle_loo(
+        type_sensitivity,
+        observations,
+        shrinkage_alpha=shrinkage_alpha,
+    )
+
+
+# ---------------------------------------------------------------------------
 # Main compute function
 # ---------------------------------------------------------------------------
 
 
 def _build_fundamentals_info(
     model: FundamentalsModel,
-    total_pp: float,
+    total_shift: float | np.ndarray,
     approval_pp: float,
     gdp_pp: float,
     unemp_pp: float,
     cpi_pp: float,
+    *,
+    interaction_strength: float = 0.0,
+    interaction_contribution: float | np.ndarray = 0.0,
+    interaction_source: str = "disabled",
 ) -> FundamentalsInfo:
     """Convert per-component pp outputs from the Ridge model into a FundamentalsInfo.
 
@@ -594,7 +949,9 @@ def _build_fundamentals_info(
     with the county prior pipeline and generic ballot shift machinery.
     """
     return FundamentalsInfo(
-        shift=total_pp * _PP_TO_FRACTION,
+        shift=np.asarray(total_shift, dtype=float) * _PP_TO_FRACTION
+        if isinstance(total_shift, np.ndarray)
+        else float(total_shift) * _PP_TO_FRACTION,
         approval_contribution=approval_pp * _PP_TO_FRACTION,
         gdp_contribution=gdp_pp * _PP_TO_FRACTION,
         unemployment_contribution=unemp_pp * _PP_TO_FRACTION,
@@ -603,6 +960,13 @@ def _build_fundamentals_info(
         loo_rmse=model.loo_rmse_ * _PP_TO_FRACTION,
         n_training=model.n_training_,
         source="fitted_ridge",
+        interaction_strength=interaction_strength,
+        interaction_contribution=(
+            np.asarray(interaction_contribution, dtype=float) * _PP_TO_FRACTION
+            if isinstance(interaction_contribution, np.ndarray)
+            else float(interaction_contribution) * _PP_TO_FRACTION
+        ),
+        interaction_source=interaction_source,
     )
 
 
@@ -610,6 +974,10 @@ def compute_fundamentals_shift(
     snapshot: FundamentalsSnapshot,
     history_path: Path | str | None = None,
     alpha: float = _DEFAULT_RIDGE_ALPHA,
+    interaction: FundamentalsInteractionConfig | None = None,
+    county_fips: list[str] | None = None,
+    type_scores: np.ndarray | None = None,
+    county_sensitivity: np.ndarray | None = None,
     _model: Optional[FundamentalsModel] = None,
 ) -> FundamentalsInfo:
     """Compute the national fundamentals shift for the current cycle.
@@ -633,6 +1001,14 @@ def compute_fundamentals_shift(
         Path to historical CSV.  Defaults to project default.
     alpha:
         Ridge regularization strength.  Override for sensitivity analysis.
+    interaction:
+        Optional type-by-fundamentals interaction configuration.
+    county_fips:
+        County FIPS aligned to ``type_scores`` when ``interaction.enabled``.
+    type_scores:
+        County × type score matrix used to build county sensitivity.
+    county_sensitivity:
+        Precomputed county sensitivity vector for tests or cached callers.
     _model:
         Pre-fitted model.  If provided, skips fitting (used in tests for speed).
 
@@ -650,13 +1026,46 @@ def compute_fundamentals_shift(
         unemployment=snapshot.unemployment_oct,
         cpi_yoy=snapshot.cpi_yoy_oct,
     )
-    info = _build_fundamentals_info(_model, total_pp, approval_pp, gdp_pp, unemp_pp, cpi_pp)
+    total_shift_pp: float | np.ndarray = total_pp
+    interaction_pp: float | np.ndarray = 0.0
+    interaction_source = "disabled"
+
+    if interaction is not None and interaction.enabled:
+        if county_sensitivity is None:
+            if county_fips is None or type_scores is None:
+                raise ValueError(
+                    "county_fips and type_scores are required when fundamentals interaction is enabled"
+                )
+            county_sensitivity = build_county_economic_sensitivity(
+                county_fips,
+                type_scores,
+            )
+        economic_path_pp = compute_economic_interaction_path_pp(snapshot, _model)
+        interaction_pp = np.asarray(county_sensitivity, dtype=float) * (
+            interaction.strength * economic_path_pp
+        )
+        total_shift_pp = total_pp + interaction_pp
+        interaction_source = "type_economic_path"
+
+    info = _build_fundamentals_info(
+        _model,
+        total_shift_pp,
+        approval_pp,
+        gdp_pp,
+        unemp_pp,
+        cpi_pp,
+        interaction_strength=0.0 if interaction is None else interaction.strength,
+        interaction_contribution=interaction_pp,
+        interaction_source=interaction_source,
+    )
 
     log.info(
-        "Fundamentals shift: %.4f (%.2f pp) | approval=%.4f gdp=%.4f unemp=%.4f cpi=%.4f | LOO RMSE=%.4f",
-        info.shift, total_pp,
+        "Fundamentals shift: %.4f (%.2f pp) | approval=%.4f gdp=%.4f unemp=%.4f cpi=%.4f | interaction=%s | LOO RMSE=%.4f",
+        float(np.mean(info.shift)) if isinstance(info.shift, np.ndarray) else info.shift,
+        total_pp,
         info.approval_contribution, info.gdp_contribution,
         info.unemployment_contribution, info.cpi_contribution,
+        interaction_source,
         info.loo_rmse,
     )
     return info

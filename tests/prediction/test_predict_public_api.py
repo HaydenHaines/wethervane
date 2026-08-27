@@ -48,6 +48,7 @@ class TestForecastParams:
         assert p.methodology_weights == {}
         assert p.fundamentals_enabled is False
         assert p.fundamentals_weight == 0.3
+        assert p.fundamentals_interaction is None
 
     def test_custom_values(self):
         """ForecastParams should accept custom values."""
@@ -60,6 +61,7 @@ class TestForecastParams:
             pre_primary_discount=0.3,
             fundamentals_enabled=True,
             fundamentals_weight=0.5,
+            fundamentals_interaction=None,
         )
         assert p.lam == 10.0
         assert p.mu == 2.0
@@ -123,6 +125,16 @@ class TestLoadForecastParams:
         # The current config has methodology_weights with at least "phone".
         assert len(p.methodology_weights) > 0
         assert "phone" in p.methodology_weights
+
+    def test_fundamentals_interaction_loaded(self):
+        params_path = PROJECT_ROOT / "data" / "config" / "prediction_params.json"
+        if not params_path.exists():
+            pytest.skip("prediction_params.json not present on disk")
+
+        p = load_forecast_params()
+        assert p.fundamentals_interaction is not None
+        assert p.fundamentals_interaction.enabled is False
+        assert p.fundamentals_interaction.strength == 0.0
 
 
 # ---------------------------------------------------------------------------
