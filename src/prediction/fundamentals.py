@@ -1060,7 +1060,10 @@ def compute_fundamentals_shift(
     )
 
     log.info(
-        "Fundamentals shift: %.4f (%.2f pp) | approval=%.4f gdp=%.4f unemp=%.4f cpi=%.4f | interaction=%s | LOO RMSE=%.4f",
+        (
+            "Fundamentals shift: %.4f (%.2f pp) | approval=%.4f gdp=%.4f "
+            "unemp=%.4f cpi=%.4f | interaction=%s | LOO RMSE=%.4f"
+        ),
         float(np.mean(info.shift)) if isinstance(info.shift, np.ndarray) else info.shift,
         total_pp,
         info.approval_contribution, info.gdp_contribution,
