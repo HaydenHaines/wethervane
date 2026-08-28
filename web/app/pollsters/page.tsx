@@ -3,7 +3,7 @@ import Link from "next/link";
 
 import { PollCoverageSection } from "./PollCoverageSection";
 import { PollsterTable } from "./PollsterTable";
-import { fetchPollsterAccuracy, fetchPollsterCoverage } from "./pollstersApi";
+import { fetchPollsterAccuracy } from "./pollstersApi";
 
 export const metadata: Metadata = {
   title: "Pollster Accuracy | WetherVane",
@@ -41,10 +41,7 @@ const JSON_LD = {
 };
 
 export default async function PollstersPage() {
-  const [data, coverage] = await Promise.all([
-    fetchPollsterAccuracy(),
-    fetchPollsterCoverage(),
-  ]);
+  const data = await fetchPollsterAccuracy();
 
   return (
     <>
@@ -133,7 +130,7 @@ export default async function PollstersPage() {
           </div>
         )}
 
-        <PollCoverageSection initialResult={coverage} />
+        <PollCoverageSection />
       </div>
     </>
   );

@@ -90,6 +90,7 @@ export type PollCoverageFetchResult =
   | { status: "error"; message: string };
 
 const SERVER_API_BASE = process.env.API_URL || "http://localhost:8002";
+export const POLLSTER_ACCURACY_ENDPOINT = "/api/v1/pollsters/accuracy";
 export const POLLSTER_COVERAGE_ENDPOINT = "/api/v1/pollsters/coverage";
 
 async function readErrorMessage(res: Response): Promise<string> {
@@ -132,7 +133,7 @@ async function readCoverageResponse(input: string, init?: RequestInit): Promise<
 
 export async function fetchPollsterAccuracy(): Promise<PollsterAccuracyResponse | null> {
   try {
-    const res = await fetch(`${SERVER_API_BASE}/api/v1/pollsters/accuracy`, {
+    const res = await fetch(`${SERVER_API_BASE}${POLLSTER_ACCURACY_ENDPOINT}`, {
       next: { revalidate: 86400 },
     });
     if (!res.ok) return null;

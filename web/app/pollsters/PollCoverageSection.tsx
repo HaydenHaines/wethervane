@@ -244,7 +244,9 @@ export function PollCoverageSection({ initialResult }: PollCoverageSectionProps)
           Active XT Columns
         </p>
         <p className="mt-2 text-sm leading-relaxed" style={{ color: "var(--color-text-muted)" }}>
-          {metadata.active_xt_columns.join(", ")}
+          {metadata.active_xt_columns.length
+            ? metadata.active_xt_columns.join(", ")
+            : "No active XT columns were included in the generated report."}
         </p>
       </div>
 
