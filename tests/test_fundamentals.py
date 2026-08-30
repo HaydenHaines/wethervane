@@ -13,13 +13,19 @@ from pathlib import Path
 import numpy as np
 import pytest
 
+import src.prediction.fundamentals as fundamentals_mod
 from src.prediction.fundamentals import (
     FundamentalsInfo,
+    FundamentalsInteractionConfig,
     FundamentalsModel,
     FundamentalsSnapshot,
+    InteractionCalibrationResult,
     _HistoricalRecord,
     apply_fundamentals_shift,
+    calibrate_interaction_strength_via_cycle_loo,
     compute_fundamentals_shift,
+    compute_economic_interaction_path_pp,
+    fit_interaction_strength,
     load_fundamentals_snapshot,
     load_historical_data,
 )
@@ -460,6 +466,129 @@ class TestComputeFundamentalsShift:
         info_pos = compute_fundamentals_shift(snap_pos)
         info_neg = compute_fundamentals_shift(snap_neg)
         assert info_pos.shift > info_neg.shift
+
+    def test_interaction_requires_county_context(self):
+        snap = _make_snapshot()
+        with pytest.raises(ValueError, match="county_fips and type_scores"):
+            compute_fundamentals_shift(
+                snap,
+                interaction=FundamentalsInteractionConfig(enabled=True, strength=0.2),
+            )
+
+    def test_interaction_rejects_misaligned_county_inputs(self, tmp_path):
+        rows = _minimal_rows(8)
+        path = _write_history_csv(rows, tmp_path / "h.csv")
+        records = load_historical_data(path)
+        model = FundamentalsModel().fit(records)
+        snap = _make_snapshot()
+
+        with pytest.raises(
+            ValueError,
+            match=(
+                r"county_fips and type_scores must align: "
+                r"got 2 county_fips entries but type_scores has 3 rows"
+            ),
+        ):
+            compute_fundamentals_shift(
+                snap,
+                interaction=FundamentalsInteractionConfig(enabled=True, strength=0.2),
+                county_fips=["01001", "06037"],
+                type_scores=np.eye(3),
+                _model=model,
+            )
+
+    def test_interaction_returns_vector_shift(self, tmp_path):
+        rows = _minimal_rows(8)
+        path = _write_history_csv(rows, tmp_path / "h.csv")
+        records = load_historical_data(path)
+        model = FundamentalsModel().fit(records)
+        snap = _make_snapshot()
+        county_sensitivity = np.array([-1.0, 0.0, 1.0])
+
+        info = compute_fundamentals_shift(
+            snap,
+            interaction=FundamentalsInteractionConfig(enabled=True, strength=0.5),
+            county_sensitivity=county_sensitivity,
+            _model=model,
+        )
+
+        assert isinstance(info.shift, np.ndarray)
+        assert info.shift.shape == (3,)
+        assert isinstance(info.interaction_contribution, np.ndarray)
+        econ_path = compute_economic_interaction_path_pp(snap, model) * 0.01
+        assert info.interaction_contribution == pytest.approx(county_sensitivity * 0.5 * econ_path)
+        baseline = compute_fundamentals_shift(snap, _model=model)
+        assert np.mean(info.shift) == pytest.approx(baseline.shift)
+
+    def test_interaction_path_excludes_approval(self, tmp_path):
+        rows = _minimal_rows(8)
+        path = _write_history_csv(rows, tmp_path / "h.csv")
+        records = load_historical_data(path)
+        model = FundamentalsModel().fit(records)
+
+        low_approval = _make_snapshot(approval_net_oct=-30.0)
+        high_approval = _make_snapshot(approval_net_oct=30.0)
+
+        assert compute_economic_interaction_path_pp(low_approval, model) == pytest.approx(
+            compute_economic_interaction_path_pp(high_approval, model)
+        )
+
+
+class TestInteractionCalibration:
+    def test_fit_interaction_strength_shrinks_toward_zero(self):
+        type_sensitivity = np.array([-1.0, 0.0, 1.0])
+        obs = [
+            fundamentals_mod._InteractionValidationObservation(
+                cycle_label="2002-senate",
+                economic_path_pp=2.0,
+                actual_type_deviation=np.array([-0.10, 0.0, 0.10]),
+            ),
+            fundamentals_mod._InteractionValidationObservation(
+                cycle_label="2006-senate",
+                economic_path_pp=1.0,
+                actual_type_deviation=np.array([-0.05, 0.0, 0.05]),
+            ),
+        ]
+
+        fitted = fit_interaction_strength(type_sensitivity, obs, shrinkage_alpha=10.0)
+        unshrunk = fit_interaction_strength(type_sensitivity, obs, shrinkage_alpha=0.0)
+
+        assert abs(fitted) < abs(unshrunk)
+        assert fitted > 0
+
+    def test_cycle_loo_reports_fold_strengths(self):
+        type_sensitivity = np.array([-1.0, 0.0, 1.0])
+        true_gamma = 0.4
+        obs = [
+            fundamentals_mod._InteractionValidationObservation(
+                cycle_label="2002-senate",
+                economic_path_pp=1.0,
+                actual_type_deviation=true_gamma * type_sensitivity * 1.0,
+            ),
+            fundamentals_mod._InteractionValidationObservation(
+                cycle_label="2006-senate",
+                economic_path_pp=2.0,
+                actual_type_deviation=true_gamma * type_sensitivity * 2.0,
+            ),
+            fundamentals_mod._InteractionValidationObservation(
+                cycle_label="2010-senate",
+                economic_path_pp=-1.5,
+                actual_type_deviation=true_gamma * type_sensitivity * -1.5,
+            ),
+        ]
+
+        result = calibrate_interaction_strength_via_cycle_loo(
+            type_sensitivity,
+            obs,
+            shrinkage_alpha=0.0,
+        )
+
+        assert isinstance(result, InteractionCalibrationResult)
+        assert result.n_cycles == 3
+        assert result.cycle_labels == ("2002-senate", "2006-senate", "2010-senate")
+        assert all(fold == pytest.approx(true_gamma) for fold in result.fold_strengths)
+        assert result.strength == pytest.approx(true_gamma)
+        assert result.loo_rmse == pytest.approx(0.0)
 
 
 # ---------------------------------------------------------------------------

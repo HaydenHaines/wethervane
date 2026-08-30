@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { MAIN_NAV } from "@/lib/config/navigation";
+import { formatPartisanMargin } from "@/lib/format";
 import { ThemeToggle } from "@/components/shared/ThemeToggle";
 import { useSenateOverview } from "@/lib/hooks/use-senate-overview";
 import { RATING_COLORS, RATING_LABELS } from "@/lib/config/palette";
@@ -27,13 +28,6 @@ const DEM_WINS_NEEDED = 51 - DEM_HOLDOVER_SEATS;
 
 /** Height of each segment in the compact header bar (px). */
 const BAR_HEIGHT = 24;
-
-/** Format a margin number as a human-readable string like "D+5.2" or "R+3.1". */
-function formatMargin(margin: number): string {
-  const pct = Math.abs(margin * 100).toFixed(1);
-  if (Math.abs(margin) < 0.001) return "Even";
-  return margin >= 0 ? `D+${pct}` : `R+${pct}`;
-}
 
 /**
  * Tooltip for a tipping point bar segment.
@@ -90,7 +84,7 @@ function SegmentTooltip({
           />
           <span style={{ fontWeight: 600 }}>{label}</span>
           <span style={{ color: "var(--color-text-muted)" }}>
-            {formatMargin(race.margin)}
+            {formatPartisanMargin(race.margin)}
           </span>
         </div>
         {race.n_polls > 0 && (
@@ -205,7 +199,7 @@ function HeaderTippingPointBar({ races }: { races: SenateRaceData[] }) {
                     handleClick(race.slug);
                   }
                 }}
-                aria-label={`${race.race}: ${RATING_LABELS[race.rating as Rating] ?? race.rating}, ${formatMargin(race.margin)}. Click to view forecast.`}
+                aria-label={`${race.race}: ${RATING_LABELS[race.rating as Rating] ?? race.rating}, ${formatPartisanMargin(race.margin)}. Click to view forecast.`}
               >
                 {/* State abbreviation — hidden on narrow viewports */}
                 <span

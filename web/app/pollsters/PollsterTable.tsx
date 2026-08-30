@@ -2,16 +2,7 @@
 
 import { useState, useMemo } from "react";
 
-// ── Types ──────────────────────────────────────────────────────────────────
-
-export interface PollsterEntry {
-  pollster: string;
-  rank: number;
-  n_polls: number;
-  n_races: number;
-  rmse_pp: number;
-  mean_error_pp: number;
-}
+import type { PollsterEntry } from "./pollstersApi";
 
 interface PollsterTableProps {
   pollsters: PollsterEntry[];
@@ -137,6 +128,7 @@ export function PollsterTable({ pollsters, description }: PollsterTableProps) {
         }}
       >
         <table
+          data-testid="pollster-accuracy-table"
           style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}
         >
           <thead>

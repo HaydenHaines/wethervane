@@ -30,8 +30,14 @@
   "fundamentals": {
     "_notes": "Fundamentals model configuration. The fundamentals shift is a structural prior based on presidential approval, GDP, unemployment, and CPI. It is blended with the generic ballot shift to produce the combined national environment adjustment.",
     "_weight_notes": "fundamentals_weight controls the blend: 0.0 = use only generic ballot (current behavior), 1.0 = use only fundamentals, 0.3 = 30% fundamentals + 70% generic ballot. Start conservative (0.3) because the fundamentals model has only 13 training points and LOO RMSE ~3.9pp.",
+    "_interaction_notes": "Optional type-by-fundamentals path. It only modulates the GDP/unemployment/CPI contribution path; approval is intentionally excluded. The shipped strength should come from cycle-level leave-one-out validation, not in-sample fit. Current default stays disabled because strong shrinkage selects a near-zero effect on the checked-in validation panel.",
     "enabled": true,
-    "fundamentals_weight": 0.3
+    "fundamentals_weight": 0.3,
+    "interaction": {
+      "enabled": false,
+      "strength": 0.0,
+      "shrinkage_alpha": 100.0
+    }
   },
   "early_results": {
     "_notes": "Early-cycle election results injected as high-confidence poll-like observations. Special elections and off-year races provide real outcome data before the main cycle, with their impact fading over time via the standard poll time-decay machinery.",

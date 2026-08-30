@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { PollsterTable } from "./PollsterTable";
 
-// ── Metadata ───────────────────────────────────────────────────────────────
+import { PollCoverageSection } from "./PollCoverageSection";
+import { PollsterTable } from "./PollsterTable";
+import { fetchPollsterAccuracy } from "./pollstersApi";
 
 export const metadata: Metadata = {
   title: "Pollster Accuracy | WetherVane",
   description:
-    "Ranked accuracy metrics for political pollsters based on 2022 election backtesting — RMSE and mean bias in percentage points.",
+    "Ranked accuracy metrics for political pollsters plus demographic poll coverage diagnostics from WetherVane.",
   openGraph: {
     title: "Pollster Accuracy | WetherVane",
     description:
@@ -30,7 +31,7 @@ const JSON_LD = {
   "@type": "WebPage",
   name: "Pollster Accuracy — WetherVane 2022 Backtest Rankings",
   description:
-    "Ranked accuracy metrics for political pollsters based on 2022 general election backtesting. RMSE and mean signed error in percentage points of two-party vote share.",
+    "Ranked accuracy metrics for political pollsters based on 2022 general election backtesting, plus demographic coverage diagnostics for published poll crosstabs.",
   url: "https://wethervane.hhaines.duckdns.org/pollsters",
   isPartOf: {
     "@type": "WebSite",
@@ -38,39 +39,6 @@ const JSON_LD = {
     url: "https://wethervane.hhaines.duckdns.org",
   },
 };
-
-// ── Data fetch ─────────────────────────────────────────────────────────────
-
-const API_BASE = process.env.API_URL || "http://localhost:8002";
-
-interface PollsterEntry {
-  pollster: string;
-  rank: number;
-  n_polls: number;
-  n_races: number;
-  rmse_pp: number;
-  mean_error_pp: number;
-}
-
-interface PollsterAccuracyResponse {
-  description: string;
-  n_pollsters: number;
-  pollsters: PollsterEntry[];
-}
-
-async function fetchPollsterAccuracy(): Promise<PollsterAccuracyResponse | null> {
-  try {
-    const res = await fetch(`${API_BASE}/api/v1/pollsters/accuracy`, {
-      next: { revalidate: 86400 }, // refresh once per day — data only changes when regenerated
-    });
-    if (!res.ok) return null;
-    return res.json();
-  } catch {
-    return null;
-  }
-}
-
-// ── Page ───────────────────────────────────────────────────────────────────
 
 export default async function PollstersPage() {
   const data = await fetchPollsterAccuracy();
@@ -118,8 +86,10 @@ export default async function PollstersPage() {
             Ranked accuracy for political pollsters based on 2022 general
             election backtesting. Each pollster is measured against actual
             results using root mean squared error (RMSE) and mean signed
-            error — both in percentage points of two-party vote share.
-            Rank&nbsp;1 is the most accurate.
+            error — both in percentage points of two-party vote share. The
+            diagnostics section below shows where published crosstabs still
+            underrepresent key demographic groups. Rank&nbsp;1 is the most
+            accurate.
             {data?.n_pollsters && (
               <span> {data.n_pollsters} pollsters evaluated.</span>
             )}
@@ -146,10 +116,7 @@ export default async function PollstersPage() {
 
         {/* Table */}
         {data ? (
-          <PollsterTable
-            pollsters={data.pollsters}
-            description={data.description}
-          />
+          <PollsterTable pollsters={data.pollsters} description={data.description} />
         ) : (
           <div
             className="text-center py-16 rounded-md"
@@ -162,6 +129,8 @@ export default async function PollstersPage() {
             <p>Could not load pollster accuracy data. Please try again later.</p>
           </div>
         )}
+
+        <PollCoverageSection />
       </div>
     </>
   );

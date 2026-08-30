@@ -1,3 +1,5 @@
+import { formatMargin as formatSharedMargin } from "./format";
+
 // Shared display constants for type demographics — used by TypePanel and TypeCompareTable.
 
 export const DEMO_DISPLAY: Record<string, { label: string; fmt: "pct" | "dollar" | "num" }> = {
@@ -73,12 +75,7 @@ export function formatMargin(
   decimals = 1,
   nullText = "—",
 ): string {
-  if (demShare === null) return nullText;
-  const margin = Math.abs(demShare - 0.5) * 100;
-  if (margin < 0.05) return "EVEN";
-  return demShare > 0.5
-    ? `D+${margin.toFixed(decimals)}`
-    : `R+${margin.toFixed(decimals)}`;
+  return formatSharedMargin(demShare, decimals, nullText);
 }
 
 /**

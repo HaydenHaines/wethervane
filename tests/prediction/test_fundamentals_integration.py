@@ -10,8 +10,10 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from types import SimpleNamespace
 from unittest.mock import patch
 
+import numpy as np
 import pytest
 
 
@@ -119,6 +121,10 @@ class TestFundamentalsConfig:
         fund = config["fundamentals"]
         assert "enabled" in fund
         assert "fundamentals_weight" in fund
+        assert "interaction" in fund
+        assert "enabled" in fund["interaction"]
+        assert "strength" in fund["interaction"]
+        assert "shrinkage_alpha" in fund["interaction"]
 
     def test_weight_in_valid_range(self, config):
         w = config["fundamentals"]["fundamentals_weight"]
@@ -126,6 +132,9 @@ class TestFundamentalsConfig:
 
     def test_enabled_is_bool(self, config):
         assert isinstance(config["fundamentals"]["enabled"], bool)
+
+    def test_interaction_enabled_is_bool(self, config):
+        assert isinstance(config["fundamentals"]["interaction"]["enabled"], bool)
 
 
 # ---------------------------------------------------------------------------
@@ -168,3 +177,87 @@ class TestFundamentalsCompute:
             + info.intercept_contribution
         )
         assert abs(info.shift - component_sum) < 1e-8
+
+
+class TestPredictionPathInteraction:
+    def test_state_econ_keeps_weighted_interaction_vector(self, tmp_path):
+        from src.prediction.fundamentals import FundamentalsInfo, FundamentalsInteractionConfig
+        from src.prediction.predict_2026_types import ForecastParams, run_forecast_pipeline
+
+        county_fips = ["01001", "06037", "48201"]
+        type_scores = np.eye(3)
+        captured: dict[str, np.ndarray | float] = {}
+
+        fund_info = FundamentalsInfo(
+            shift=np.array([0.03, 0.04, 0.05]),
+            approval_contribution=0.01,
+            gdp_contribution=0.01,
+            unemployment_contribution=0.01,
+            cpi_contribution=0.01,
+            intercept_contribution=0.0,
+            loo_rmse=0.02,
+            n_training=7,
+            source="fitted_ridge",
+            interaction_strength=0.8,
+            interaction_contribution=np.array([-0.01, 0.0, 0.01]),
+            interaction_source="type_economic_path",
+        )
+
+        params = ForecastParams(
+            fundamentals_enabled=True,
+            fundamentals_weight=0.25,
+            fundamentals_interaction=FundamentalsInteractionConfig(
+                enabled=True,
+                strength=0.8,
+            ),
+            state_econ_enabled=True,
+            state_econ_sensitivity=0.5,
+        )
+
+        def _fake_state_econ_adjustment(*, national_shift, **kwargs):
+            captured["national_shift"] = national_shift
+            return np.array([0.02, 0.025, 0.03])
+
+        def _fake_run_forecast(*, generic_ballot_shift, races, county_priors, **kwargs):
+            shift = np.asarray(generic_ballot_shift, dtype=float)
+            captured["generic_ballot_shift"] = shift
+            return {
+                races[0]: SimpleNamespace(
+                    county_preds_national=county_priors + shift,
+                    county_preds_local=county_priors + shift,
+                )
+            }
+
+        with (
+            patch("src.prediction.predict_2026_types.PROJECT_ROOT", tmp_path),
+            patch("src.prediction.predict_2026_types.load_type_data", return_value=(county_fips, type_scores, np.eye(3), np.full(3, 0.5))),
+            patch("src.prediction.predict_2026_types.load_county_priors_with_ridge", return_value=np.full(3, 0.45)),
+            patch("src.prediction.predict_2026_types.load_county_priors_with_ridge_governor", return_value=np.full(3, 0.40)),
+            patch("src.prediction.predict_2026_types.load_county_metadata", return_value=(["AL", "CA", "TX"], ["A", "B", "C"])),
+            patch("src.prediction.predict_2026_types.load_county_votes", return_value=np.ones(3)),
+            patch("src.prediction.predict_2026_types.load_polls", return_value=({}, {})),
+            patch("src.prediction.predict_2026_types.load_early_results", return_value={}),
+            patch("src.prediction.predict_2026_types.extract_gb_observations", return_value=[]),
+            patch("src.prediction.predict_2026_types.merge_early_results", side_effect=lambda polls, early: polls),
+            patch("src.prediction.predict_2026_types.compute_gb_shift", return_value=SimpleNamespace(shift=0.02, n_polls=3, source="mock")),
+            patch("src.prediction.predict_2026_types.load_fundamentals_snapshot", return_value=SimpleNamespace()),
+            patch("src.prediction.predict_2026_types.compute_fundamentals_shift", return_value=fund_info),
+            patch("src.prediction.predict_2026_types.run_forecast", side_effect=_fake_run_forecast),
+            patch("src.prediction.state_economics.compute_state_econ_adjustment", side_effect=_fake_state_econ_adjustment),
+            patch("src.assembly.define_races.load_races", return_value=[SimpleNamespace(race_id="2026 ZZ Senate", race_type="senate")]),
+            patch("src.prediction.candidate_ctov.load_ctov_adjustments", return_value={}),
+        ):
+            run_forecast_pipeline(
+                year=2026,
+                params=params,
+                output_path=Path("/dev/null"),
+                reference_date="2026-08-27",
+                include_baseline=False,
+            )
+
+        assert captured["national_shift"] == pytest.approx(0.025)
+        np.testing.assert_allclose(
+            captured["generic_ballot_shift"],
+            np.array([0.0175, 0.0250, 0.0325]),
+            atol=1e-10,
+        )

@@ -12,7 +12,7 @@
  * - New map visualization modes are added
  */
 
-import type { Rating } from "../types";
+import type { Rating } from "../types.ts";
 
 // ---------------------------------------------------------------------------
 // Dusty Ink v2 — partisan rating scale
@@ -52,13 +52,13 @@ export const PALETTE = {
   DEM_PRIMARY:   "#2166ac",
   GOP_PRIMARY:   "#c0392b",
   // Secondary partisan colors for scatter dots and softer elements
-  DEM_SECONDARY: "#4b6d90",   // = DUSTY_INK.likelyD
-  GOP_SECONDARY: "#9e5e4e",   // = DUSTY_INK.likelyR
+  DEM_SECONDARY: DUSTY_INK.likelyD,
+  GOP_SECONDARY: DUSTY_INK.likelyR,
   // Safe-seat shades for the balance bar
-  DEM_SAFE:      "#2d4a6f",   // = DUSTY_INK.safeD
-  GOP_SAFE:      "#6e3535",   // = DUSTY_INK.safeR
+  DEM_SAFE:      DUSTY_INK.safeD,
+  GOP_SAFE:      DUSTY_INK.safeR,
   // Neutral / tossup
-  TOSSUP:        "#8a6b8a",   // = DUSTY_INK.tossup
+  TOSSUP:        DUSTY_INK.tossup,
 } as const;
 
 /** Map from Rating enum to hex color. */
