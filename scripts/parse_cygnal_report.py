@@ -1,5 +1,10 @@
 """
-Parse Cygnal polling report PDFs/text into WetherVane poll crosstab columns.
+Canonical public entrypoint for parsing Cygnal polling report PDFs/text.
+
+Import ``parse_cygnal_report`` from this module, or run
+``scripts/parse_cygnal_report.py`` directly for CLI usage. The sibling
+``scripts/parse_cygnal_crosstab.py`` module remains on disk only as a legacy
+compatibility shim so PM/QA follow-ups can cite a single parser path.
 
 Cygnal public decks typically expose two useful structures:
 
@@ -321,7 +326,7 @@ def extract_text(path: str | Path) -> str:
 
 
 def parse_cygnal_report(path: str | Path) -> dict[str, object]:
-    """Parse a Cygnal report PDF/text file into polls_2026.csv-compatible fields."""
+    """Canonical public file-based Cygnal parser entrypoint."""
     return parse_cygnal_text(extract_text(path))
 
 

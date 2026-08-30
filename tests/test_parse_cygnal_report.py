@@ -1,4 +1,4 @@
-"""Tests for the Cygnal report crosstab parser."""
+"""Tests for the canonical Cygnal report parser entrypoint."""
 
 from pathlib import Path
 
@@ -86,7 +86,7 @@ class TestDemographicVoteShares:
 
 
 class TestFullParsing:
-    def test_parse_text_returns_poll_compatible_fields(self):
+    def test_canonical_text_parser_returns_poll_compatible_fields(self):
         result = parse_cygnal_text(FIXTURE.read_text())
         assert result["pollster"] == "Cygnal"
         assert result["n_sample"] == 1500
@@ -96,11 +96,11 @@ class TestFullParsing:
         assert result["xt_vote_race_white"] == pytest.approx(43 / (43 + 51))
         assert result["xt_vote_education_noncollege"] == pytest.approx(43 / (43 + 47))
 
-    def test_parse_text_file(self):
+    def test_canonical_file_parser(self):
         result = parse_cygnal_report(FIXTURE)
         assert result["xt_vote_race_black"] == pytest.approx(78 / (78 + 13))
 
-    def test_compatibility_entrypoint_matches_active_parser(self):
+    def test_legacy_crosstab_module_redirects_to_canonical_parser(self):
         assert parse_cygnal_crosstab.parse_cygnal_report(FIXTURE) == parse_cygnal_report(
             FIXTURE
         )
