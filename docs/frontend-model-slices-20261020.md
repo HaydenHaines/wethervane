@@ -24,8 +24,8 @@ This follows [USWDS checkbox guidance](https://designsystem.digital.gov/componen
 | environment | National environment | Required uncertainty selector, including settings for how races can move together |
 | measurement | Polls & surveys | Optional polling checkbox; historical polling-method dropdown |
 | participation | Turnout & participation | Disabled: no voter-count/turnout model connected |
-| choice | Candidate choice | Disabled: no independent full candidate-choice layer; saved results define their possible winners |
-| counts_rules | Vote counts & election rules | Disabled as an interchangeable layer; saved Senate results retain their fixed chamber, independent-senator and tie rules |
+| choice | Candidate choice | Built in: saved results define their possible winners; no independent full candidate-choice control |
+| counts_rules | Vote counts & election rules | Built in: saved Senate results retain their fixed chamber, independent-senator and tie rules; no independent vote-count control |
 
 `lib/model-slices.ts` adapts the existing saved-forecast request to row/control descriptors. `ModelSliceControls` renders those descriptors without knowing complete forecast names. This separates the full role structure from each backend contract's actual choices. It accepts multiple controls per role and only offers an inclusion checkbox when its descriptor declares an off value. Preset defaults and all result bytes are unchanged.
 
@@ -56,3 +56,5 @@ The subsequent scoped-study batch adds 10 desktop/mobile flows, seven export che
 ## Built-in responsibilities
 
 A follow-up Luna review found that fixed responsibilities should not look switched off. Rows with no independent control now distinguish missing components (disabled unchecked box) from responsibilities already built into a saved model (checkmark and “Built into this model”). House uncertainty, candidate context and supported race rules are fixed within each saved result. Senate candidate options, chamber accounting and tie rules are likewise fixed. This does not claim that either collection predicts vote counts or that the partial House results establish chamber control.
+
+Two further Luna reviews confirmed the inventory against the Senate and House handoffs and the interaction design against primary accessibility guidance. Live desktop and mobile inspection confirmed all eight Senate roles, the collapsed initial builder, readable unavailable explanations and no horizontal overflow. House population copy now explicitly says that district maps are unavailable; dated district rosters alone do not supply a displayable map. The proposed count-stack packet does not yet justify adding any further public controls.

@@ -9,7 +9,7 @@ import { houseModelDescription } from "./house-copy.ts";
  * component admission. Future House components need their own reviewed adapter.
  */
 const HOUSE_REASONS: Record<ModelSliceId, string> = {
-  population: "A House population model is not connected. These results use dated district rosters and maps, rather than modeling the people represented in each district.",
+  population: "A House population model is not connected. These results use dated district rosters, not a model of the population within each district. District maps are not available here.",
   community: "House community composition is not estimated in these district-level forecasts. No separate community component is available.",
   fundamentals: "No House fundamentals choices are available for this result.",
   environment: "Shared election-wide uncertainty is bundled into each saved House model. There is no separate national-environment or shared-error selector in this collection.",
