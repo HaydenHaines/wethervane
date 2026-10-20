@@ -25,6 +25,11 @@ jobs:
       - run: python -m pip install -r scripts/requirements-site.txt
       - run: npm run test:snapshot
       - run: npm run test:tipping
+      - run: npm run test:explorer-data
+      - run: npm run test:explorer-state
+      - run: npm run test:ribbon-layout
+      - run: npm run catalog:build
+      - run: npm run test:explorer-artifacts
       - run: npm run build
       - run: npm run typecheck
       - run: npx playwright install --with-deps chromium

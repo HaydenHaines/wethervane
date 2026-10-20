@@ -60,20 +60,21 @@ test("model and caucus controls preserve independent candidate identity and shar
   await expect(detail.locator('[aria-label="Dan Osborn: mean 46.6%, 90% interval 41.4% to 51.8%"]')).toBeVisible();
   await expect(detail.locator('[aria-label="Pete Ricketts: mean 53.4%, 90% interval 48.2% to 58.6%"]')).toBeVisible();
 
-  await page.getByLabel("Independent alignment").selectOption("independent_opposition_caucuses_D");
+  await page.getByLabel("Caucus context").selectOption("independent_opposition_caucuses_D");
   await expect(chamber.getByText("54.2%", { exact: true })).toBeVisible();
   await expect(chamber.getByText("0.0%", { exact: true })).toBeVisible();
   await expect(detail.getByText("Independent", { exact: true })).toBeVisible();
 
-  await page.getByRole("button", { name: "Fundamentals model", exact: true }).click();
+  await page.getByLabel("Polling component").selectOption("none");
+  await expect(page.locator(".stack-builder")).toHaveAttribute("aria-busy", "false");
   await expect(detail.getByRole("heading", { name: "Nebraska", exact: true })).toBeVisible();
   await expect(chamber.getByText("10.6%", { exact: true })).toBeVisible();
   await expect(detail.getByText("3.6%", { exact: true })).toBeVisible();
   await expect(detail.locator('[aria-label="Dan Osborn: mean 38.1%, 90% interval 28.2% to 48.7%"]')).toBeVisible();
   await expect(detail.locator('[aria-label="Pete Ricketts: mean 61.9%, 90% interval 51.3% to 71.8%"]')).toBeVisible();
-  await page.getByLabel("Independent alignment").selectOption("independent_opposition_caucuses_R");
+  await page.getByLabel("Caucus context").selectOption("independent_opposition_caucuses_R");
   await expect(chamber.getByText("90.6%", { exact: true })).toBeVisible();
-  await page.getByLabel("Independent alignment").selectOption("campaign_pledge_unaligned");
+  await page.getByLabel("Caucus context").selectOption("campaign_pledge_unaligned");
   await expect(chamber.getByText("1.3%", { exact: true })).toBeVisible();
   expect(errors).toEqual([]);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBeTruthy();
@@ -98,27 +99,6 @@ test("race search, special elections, and map keyboard selection work together",
   await page.keyboard.press("Enter");
   await expect(detail.getByRole("heading", { name: "Alaska", exact: true })).toBeVisible();
   await expect(alaska).toHaveAttribute("aria-pressed", "true");
-});
-
-test("two races in a state remain separately selectable", async ({ page }) => {
-  await page.route("**/data/forecast.json", async (route) => {
-    const response = await route.fetch();
-    const forecast = await response.json() as SiteForecastSnapshot;
-    for (const model of Object.values(forecast.models)) {
-      const special = model.races.find((race) => race.state === "OH")!;
-      model.races.push({ ...special, id: "2026:OH:senate:regular", seatId: "US-SEN-OH-CLASS-2" });
-    }
-    await route.fulfill({ response, json: forecast });
-  });
-  await page.goto("/");
-  await expect(page.getByText("The tipping-point snapshot is unavailable. Map and race summaries remain available below.", { exact: true })).toBeVisible();
-  await page.getByRole("button", { name: /^Ohio, 2 elections,/ }).click();
-  const seats = page.getByLabel("Choose election in Ohio");
-  await expect(seats.locator("option")).toHaveCount(2);
-  await seats.selectOption("2026:OH:senate:regular");
-  await expect(page.getByRole("button", { name: "Ohio Regular election", exact: true })).toHaveAttribute("aria-pressed", "true");
-  await page.getByRole("button", { name: "Ohio Special election", exact: true }).click();
-  await expect(seats).toHaveValue("2026:OH:senate:special");
 });
 
 test("the race list remains usable when map geography fails", async ({ page }) => {
@@ -199,7 +179,7 @@ test("ribbon displays all margin-ordered races, coincident markers, and scenario
   await expect(selectedFrequencies).toContainText("At the D control threshold in 12.8% of simulations.");
   await expect(selectedFrequencies).toContainText("At the R control threshold in 10.3% of simulations.");
 
-  await page.getByLabel("Independent alignment").selectOption("independent_opposition_caucuses_D");
+  await page.getByLabel("Caucus context").selectOption("independent_opposition_caucuses_D");
   await expect(selectedFrequencies).toContainText("At the D control threshold in 10.3% of simulations.");
   const nebraska = ribbon.locator('[data-race-id="2026:NE:senate:regular"]');
   await nebraska.focus();
@@ -208,14 +188,15 @@ test("ribbon displays all margin-ordered races, coincident markers, and scenario
   await expect(page.getByRole("complementary").getByText("Independent", { exact: true })).toBeVisible();
   await expect(selectedFrequencies).toContainText("At the D control threshold in 3.3% of simulations.");
   await expect(selectedFrequencies).toContainText("At the R control threshold in 3.3% of simulations.");
-  await page.getByLabel("Independent alignment").selectOption("independent_opposition_caucuses_R");
+  await page.getByLabel("Caucus context").selectOption("independent_opposition_caucuses_R");
   await expect(nebraska).toHaveAttribute("aria-label", /R caucus regardless of winner/);
   await expect(selectedFrequencies).toContainText("At the D control threshold in 0.0% of simulations.");
   await expect(selectedFrequencies).toContainText("At the R control threshold in 0.0% of simulations.");
   await expect(page.getByRole("complementary").getByText("Independent", { exact: true })).toBeVisible();
-  await expect(ribbon.locator(".ribbon-guarantee")).toContainText("4 independent–Republican contests");
+  await expect(ribbon.locator(".ribbon-guarantee")).toContainText("4 contests count toward the R caucus");
 
-  await page.getByRole("button", { name: "Fundamentals model", exact: true }).click();
+  await page.getByLabel("Polling component").selectOption("none");
+  await expect(page.locator(".stack-builder")).toHaveAttribute("aria-busy", "false");
   expect(await tiles.evaluateAll((elements) => elements.map((element) => (element as HTMLElement).dataset.raceId))).toEqual(tipping.models.fundamentals.raceOrder);
   await texas.click();
   await expect(selectedFrequencies).toContainText("At the D control threshold in 11.1% of simulations.");
@@ -227,26 +208,4 @@ test("ribbon displays all margin-ordered races, coincident markers, and scenario
   expect(await page.locator(".map-card").evaluate((element) => Boolean(element.compareDocumentPosition(document.querySelector(".control-card")!) & Node.DOCUMENT_POSITION_FOLLOWING))).toBeTruthy();
 });
 
-for (const failure of ["missing", "mismatched"] as const) {
-  test(`a ${failure} tipping artifact preserves usable map and race details`, async ({ page }) => {
-    const errors: string[] = [];
-    page.on("pageerror", (error) => errors.push(error.message));
-    await page.route("**/data/tipping-points.json", async (route) => {
-      if (failure === "missing") {
-        await route.fulfill({ status: 404, body: "Unavailable" });
-      } else {
-        const response = await route.fetch();
-        const tipping = await response.json() as TippingSnapshot;
-        tipping.sources.pollingForecastSha256 = "wrong-source";
-        await route.fulfill({ response, json: tipping });
-      }
-    });
-    await page.goto("/");
-    await expect(page.getByText("The tipping-point snapshot is unavailable. Map and race summaries remain available below.", { exact: true })).toBeVisible();
-    await expect(page.locator(".race-table tbody tr")).toHaveCount(35);
-    await expect(page.locator("svg [role=button]")).toHaveCount(35);
-    await page.getByRole("button", { name: /^Texas, 1 election,/ }).click();
-    await expect(page.getByRole("complementary").getByRole("heading", { name: "Texas", exact: true })).toBeVisible();
-    expect(errors).toEqual([]);
-  });
-}
+// Multi-contest historical states and atomic bundle failures are covered in explorer.spec.ts.

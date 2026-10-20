@@ -4,6 +4,11 @@ import { useEffect, useRef } from "react";
 import type { ModelTippingSummary } from "../lib/tipping-types";
 import type { RaceForecast } from "../lib/site-types";
 import {
+  deriveRibbonLayout,
+  ribbonMinimumWidth,
+  ribbonSeatLabel,
+} from "../lib/ribbon-layout";
+import {
   COLORS,
   STATE_NAMES,
   percent,
@@ -46,9 +51,14 @@ export default function TippingRibbon({
         container.offsetLeft -
         (container.clientWidth - tile.offsetWidth) / 2;
   }, [summary, scenario, selectedId]);
-  const caucuses =
+  const savedCaucuses =
     summary.scenarios[scenario as keyof typeof summary.scenarios];
-  if (!caucuses) return null;
+  if (!savedCaucuses) return null;
+  const layout = deriveRibbonLayout(races, savedCaucuses);
+  const caucuses = {
+    D: { ...savedCaucuses.D, ...layout.caucuses.D },
+    R: { ...savedCaucuses.R, ...layout.caucuses.R },
+  };
   const byId = new Map(races.map((race) => [race.id, race]));
   const selected = byId.get(selectedId);
   const guaranteedR = new Set(caucuses.R.guaranteedRaceIds);
@@ -79,10 +89,13 @@ export default function TippingRibbon({
         ref={scroller}
         className="tipping-scroll"
         role="region"
-        aria-label="Senate race ribbon, ordered by projected margin. Scroll horizontally for all 35 elections."
+        aria-label={`Senate race ribbon, ordered by projected margin. Scroll horizontally for all ${races.length} elections.`}
         tabIndex={0}
       >
-        <div className="tipping-track">
+        <div
+          className="tipping-track"
+          style={{ minWidth: ribbonMinimumWidth(races.length) }}
+        >
           <div className="retained-endcap" style={{ color: COLORS.D }}>
             <strong>{caucuses.D.retainedSeats}</strong>
             <span>
@@ -91,7 +104,7 @@ export default function TippingRibbon({
               retained
             </span>
           </div>
-          {summary.raceOrder.map((id) => {
+          {layout.raceOrder.map((id) => {
             const race = byId.get(id);
             if (!race) return null;
             const isD = caucuses.D.projectedTippingRaceId === id;
@@ -137,9 +150,7 @@ export default function TippingRibbon({
                   </span>
                 )}
                 <span className="tile-state">{race.state}</span>
-                <span className="tile-seat">
-                  {/special/.test(id) ? "SP" : "’26"}
-                </span>
+                <span className="tile-seat">{ribbonSeatLabel(race)}</span>
                 {guaranteed && (
                   <span className="tile-guaranteed" aria-hidden="true">
                     {guaranteed}*
@@ -183,17 +194,20 @@ export default function TippingRibbon({
                       {STATE_NAMES[race.state]}
                       {/special/.test(race.id) ? " special" : ""}
                     </button>
+                  ) : caucus.status === "already_reached" ? (
+                    "Threshold already reached"
                   ) : (
                     "Threshold unreachable"
                   )}
                 </strong>
+                {caucus.statusReason && <span>{caucus.statusReason}</span>}
                 <span>
                   {caucus.thresholdSeats} caucus seats for control
                   {race && caucus.projectedMarginPp !== null
                     ? ` · projected margin ${caucus.projectedMarginPp >= 0 ? "+" : "−"}${Math.abs(caucus.projectedMarginPp).toFixed(1)} pp`
                     : ""}
                 </span>
-                {mostFrequent && (
+                {caucus.status === "reachable" && mostFrequent && (
                   <span>
                     Most frequent in simulations:{" "}
                     <button onClick={() => onSelect(mostFrequent.id)}>
@@ -212,25 +226,47 @@ export default function TippingRibbon({
           <strong>
             {STATE_NAMES[selected.state]} · {projectedMargin(selected)}
           </strong>
-          <span>
-            At the D control threshold in{" "}
-            <b>{probability(caucuses.D.frequencyByRace[selectedId] || 0)}</b> of
-            simulations.
-          </span>
-          <span>
-            At the R control threshold in{" "}
-            <b>{probability(caucuses.R.frequencyByRace[selectedId] || 0)}</b> of
-            simulations.
-          </span>
+          {caucuses.D.status === "reachable" ? (
+            <span>
+              At the D control threshold in{" "}
+              <b>{probability(caucuses.D.frequencyByRace[selectedId] || 0)}</b>{" "}
+              of simulations.
+            </span>
+          ) : (
+            <span>
+              D:{" "}
+              {caucuses.D.status === "already_reached"
+                ? "control threshold already reached"
+                : "control threshold unreachable"}
+              .
+            </span>
+          )}
+          {caucuses.R.status === "reachable" ? (
+            <span>
+              At the R control threshold in{" "}
+              <b>{probability(caucuses.R.frequencyByRace[selectedId] || 0)}</b>{" "}
+              of simulations.
+            </span>
+          ) : (
+            <span>
+              R:{" "}
+              {caucuses.R.status === "already_reached"
+                ? "control threshold already reached"
+                : "control threshold unreachable"}
+              .
+            </span>
+          )}
         </div>
       )}
-      {guaranteedR.size > 0 && (
-        <p className="ribbon-guarantee">
-          <b>R*</b> {guaranteedR.size} independent–Republican contests count
-          toward the R caucus whichever contender wins in this scenario. These
-          remain separate from the {caucuses.R.retainedSeats} retained R caucus
-          seats.
-        </p>
+      {(["D", "R"] as const).map((party) =>
+        caucuses[party].guaranteedRaceIds.length > 0 ? (
+          <p className="ribbon-guarantee" key={party}>
+            <b>{party}*</b> {caucuses[party].guaranteedRaceIds.length} contests
+            count toward the {party} caucus whichever contender wins in this
+            scenario. These remain separate from the{" "}
+            {caucuses[party].retainedSeats} retained {party} caucus seats.
+          </p>
+        ) : null,
       )}
       <details className="ribbon-method">
         <summary>How to read the thresholds</summary>
@@ -243,8 +279,8 @@ export default function TippingRibbon({
         </p>
         <p>
           The D and R markers identify each caucus’s last needed eligible race
-          in projected order: {caucuses.D.requiredContestedWins} contested wins
-          for D and {caucuses.R.requiredContestedWins} for R, after retained and
+          in projected order: {Math.max(0, caucuses.D.requiredContestedWins)} contested wins
+          for D and {Math.max(0, caucuses.R.requiredContestedWins)} for R, after retained and
           guaranteed seats. D needs {caucuses.D.thresholdSeats} seats and R
           needs {caucuses.R.thresholdSeats}, reflecting the modeled tie rule. A
           marker’s margin is measured from that caucus contender’s perspective.

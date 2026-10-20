@@ -1,145 +1,260 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { geoAlbersUsa, geoPath } from "d3-geo";
-import type { FeatureCollection, Feature, Geometry } from "geojson";
-import {
-  STATE_NAMES,
-  COLORS,
-  partyName,
-  partyColor,
-  percent,
-  probability,
-  dateLabel,
-  candidateShortName,
-  raceRating,
-  raceColor,
-  raceTextColor,
-} from "../lib/presentation";
-
+import { useEffect, useRef, useState } from "react";
 import type {
-  ForecastSnapshot as Snapshot,
-  RaceForecast as Race,
-} from "../lib/site-types";
+  ExplorerBundle,
+  ExplorerRegistry,
+  ExplorerRun,
+  ExplorerRunEntry,
+} from "../lib/explorer-types";
+import type { RaceForecast } from "../lib/site-types";
+import {
+  availableRuns,
+  defaultRun,
+  parseSelection,
+  selectRunForComponents,
+  selectRunForYear,
+  serializeSelection,
+  validateExplorerBundle,
+  type ExplorerSelection,
+} from "../lib/explorer-state";
+import { COLORS, competitiveOrder, dateLabel } from "../lib/presentation";
+import SenateMap, { type SenateGeography } from "./SenateMap";
 import TippingRibbon from "./TippingRibbon";
-import type { TippingSnapshot } from "../lib/tipping-types";
+import StackControls from "./StackControls";
+import RaceDetail from "./RaceDetail";
+import RaceList from "./RaceList";
+import ChamberControl from "./ChamberControl";
+import PerformancePanel from "./PerformancePanel";
+import OutlookRibbon from "./OutlookRibbon";
+import { deriveRibbonLayout } from "../lib/ribbon-layout";
 
-type ModelKey = "polling" | "fundamentals";
-type Geo = FeatureCollection<
-  Geometry,
-  { state_abbr: string; state_name: string }
->;
-const SCENARIOS = [
-  { id: "campaign_pledge_unaligned", label: "Opposition unaligned" },
-  {
-    id: "independent_opposition_caucuses_D",
-    label: "Opposition independents → D",
-  },
-  {
-    id: "independent_opposition_caucuses_R",
-    label: "Opposition independents → R",
-  },
-];
-const closest = (a: Race, b: Race) =>
-  Math.abs(a.firstWinProbability - 0.5) - Math.abs(b.firstWinProbability - 0.5);
-function raceLabel(race: Race) {
-  return /special/i.test(race.id + race.seatId)
-    ? "Special election"
-    : "Regular election";
+const bundleCache = new Map<string, Promise<ExplorerBundle>>();
+async function loadBundle(entry: ExplorerRunEntry): Promise<ExplorerBundle> {
+  const key = entry.href + ":" + entry.sha256;
+  const cached = bundleCache.get(key);
+  if (cached) return cached;
+  const request = (async () => {
+    const response = await fetch(entry.href);
+    if (!response.ok) throw Error("The saved stack could not be loaded.");
+    const bytes = await response.arrayBuffer();
+    if (globalThis.crypto?.subtle && entry.sha256) {
+      const hash = Array.from(
+        new Uint8Array(await crypto.subtle.digest("SHA-256", bytes)),
+      )
+        .map((b) => b.toString(16).padStart(2, "0"))
+        .join("");
+      if (hash !== entry.sha256)
+        throw Error(
+          "The stack fingerprint does not match the catalog. Reload to get a consistent snapshot.",
+        );
+    }
+    const bundle = JSON.parse(
+      new TextDecoder().decode(bytes),
+    ) as ExplorerBundle;
+    if (!validateExplorerBundle(bundle, entry))
+      throw Error("This saved stack did not pass its consistency checks.");
+    return bundle;
+  })();
+  bundleCache.set(key, request);
+  request.catch(() => bundleCache.delete(key));
+  return request;
 }
 
-function tippingMatchesForecast(
-  tipping: TippingSnapshot,
-  forecast: Snapshot,
-): boolean {
-  try {
+/** Use the margin ribbon only when result data contains principal-pair shares and tipping statistics. */
+function principalPair(bundle: ExplorerBundle): RaceForecast[] | null {
+  if (!bundle.tipping) return null;
+  const result: RaceForecast[] = [];
+  for (const race of bundle.races) {
     if (
-      tipping.schemaVersion !== 1 ||
-      tipping.method !== "caucus_rank_threshold_v1" ||
-      tipping.sources.pollingForecastSha256 !==
-        forecast.sources.pollingSha256 ||
-      tipping.sources.fundamentalsForecastSha256 !==
-        forecast.sources.fundamentalsSha256
-    )
-      return false;
-    return (["polling", "fundamentals"] as const).every((key) => {
-      const summary = tipping.models[key];
-      const expected = [...forecast.models[key].races].sort(
-        (a, b) =>
-          b.firstShareMean - a.firstShareMean || a.id.localeCompare(b.id),
-      );
-      if (
-        summary.raceOrder.length !== expected.length ||
-        !summary.raceOrder.every((id, i) => id === expected[i].id)
+      race.outcomes.length !== 2 ||
+      race.outcomes.some(
+        (o) =>
+          o.kind !== "candidate" ||
+          !o.share ||
+          !["D", "R", "I"].includes(o.party),
       )
-        return false;
-      return SCENARIOS.every(({ id }) => {
-        const scenario =
-          summary.scenarios[id as keyof typeof summary.scenarios];
-        return [scenario.D, scenario.R].every(
-          (caucus) =>
-            expected.every(
-              (race) =>
-                Number.isFinite(caucus.frequencyByRace[race.id]) &&
-                caucus.frequencyByRace[race.id] >= 0 &&
-                caucus.frequencyByRace[race.id] <= 1,
-            ) &&
-            (caucus.projectedTippingRaceId === null ||
-              expected.some(
-                (race) => race.id === caucus.projectedTippingRaceId,
-              )),
-        );
-      });
+    )
+      return null;
+    const [first, second] = race.outcomes;
+    result.push({
+      id: race.id,
+      state: race.state,
+      seatId: race.seatId,
+      candidates: [first, second].map((o) => ({
+        id: o.id,
+        name: o.name,
+        party: o.party,
+        incumbent: o.members[0]?.incumbent || false,
+        sourceUrls: o.members[0]?.sourceUrls || [],
+      })) as RaceForecast["candidates"],
+      firstWinProbability: first.winProbability,
+      secondWinProbability: second.winProbability,
+      firstShareMean: first.share!.mean,
+      shareQuantiles: first.share!.quantiles,
+      pollCount: race.pollCount,
+      notes: race.notes,
     });
-  } catch {
-    return false;
   }
+  const ids = new Set(result.map((race) => race.id));
+  for (const metadata of Object.values(bundle.tipping.scenarios)) {
+    try {
+      deriveRibbonLayout(result, metadata);
+    } catch {
+      return null;
+    }
+    for (const caucus of [metadata.D, metadata.R]) {
+      if (caucus.guaranteedRaceIds.some((id) => !ids.has(id))) return null;
+      if (
+        Object.entries(caucus.eligibleCandidateByRace).some(
+          ([raceId, candidateId]) =>
+            !result
+              .find((race) => race.id === raceId)
+              ?.candidates.some((candidate) => candidate.id === candidateId),
+        )
+      )
+        return null;
+      if (
+        result.some(
+          (race) =>
+            !Number.isFinite(caucus.frequencyByRace[race.id]) ||
+            caucus.frequencyByRace[race.id] < 0 ||
+            caucus.frequencyByRace[race.id] > 1,
+        )
+      )
+        return null;
+    }
+  }
+  return result;
+}
+
+function normalize(
+  requested: ExplorerSelection,
+  bundle: ExplorerBundle,
+  previous?: ExplorerBundle,
+) {
+  const scenario =
+    bundle.scenarios.find((s) => s.id === requested.scenarioId) ||
+    bundle.scenarios.find((s) => s.id === bundle.defaultScenarioId)!;
+  const former = previous?.races.find((r) => r.id === requested.raceId);
+  const race =
+    bundle.races.find((r) => r.id === requested.raceId) ||
+    (former
+      ? bundle.races
+          .filter((r) => r.state === former.state)
+          .sort(competitiveOrder)[0]
+      : undefined) ||
+    [...bundle.races].sort(competitiveOrder)[0];
+  const notes = [];
+  if (requested.scenarioId && requested.scenarioId !== scenario.id)
+    notes.push(
+      "The requested caucus scenario is unavailable; showing the saved default.",
+    );
+  if (requested.raceId && requested.raceId !== race.id)
+    notes.push(
+      "The requested election is unavailable; showing an available race.",
+    );
+  return {
+    selection: {
+      ...requested,
+      runId: bundle.run.id,
+      scenarioId: scenario.id,
+      raceId: race.id,
+      mapView: bundle.run.historical ? requested.mapView : "forecast",
+    } as ExplorerSelection,
+    notice: notes.join(" "),
+  };
 }
 
 export default function SenateExplorer() {
-  const [snapshot, setSnapshot] = useState<Snapshot | null>(null);
-  const [tipping, setTipping] = useState<TippingSnapshot | null>(null);
-  const [tippingFailed, setTippingFailed] = useState(false);
-  const [geo, setGeo] = useState<Geo | null>(null);
-  const [error, setError] = useState("");
-  const [modelKey, setModelKey] = useState<ModelKey>("polling");
-  const [scenario, setScenario] = useState(SCENARIOS[0].id);
-  const [selectedId, setSelectedId] = useState("");
-  const [query, setQuery] = useState("");
-  const [sort, setSort] = useState("competitive");
+  const [registry, setRegistry] = useState<ExplorerRegistry | null>(null),
+    [bundle, setBundle] = useState<ExplorerBundle | null>(null),
+    [selection, setSelection] = useState<ExplorerSelection | null>(null),
+    [geo, setGeo] = useState<SenateGeography | null>(null);
+  const [busy, setBusy] = useState(true),
+    [error, setError] = useState(""),
+    [notice, setNotice] = useState<string | null>(null),
+    [baseline, setBaseline] = useState<ExplorerBundle | null>(null),
+    [comparisonError, setComparisonError] = useState(""),
+    [shareUrl, setShareUrl] = useState("");
+  const requestId = useRef(0),
+    bundleRef = useRef<ExplorerBundle | null>(null),
+    selectionRef = useRef<ExplorerSelection | null>(null);
+  function write(next: ExplorerSelection, mode: "push" | "replace" = "push") {
+    setSelection(next);
+    setShareUrl("");
+    selectionRef.current = next;
+    const url = serializeSelection(next);
+    if (location.search !== url) {
+      if (mode === "replace") history.replaceState(null, "", url);
+      else history.pushState(null, "", url);
+    }
+  }
+  async function open(
+    catalog: ExplorerRegistry,
+    requested: ExplorerSelection,
+    mode: "push" | "replace",
+    message: string | null = null,
+  ) {
+    const entry = catalog.runs.find((r) => r.id === requested.runId);
+    if (!entry) return;
+    const ticket = ++requestId.current;
+    setBusy(true);
+    setError("");
+    setNotice(message);
+    try {
+      const next = await loadBundle(entry);
+      if (ticket !== requestId.current) return;
+      const resolved = normalize(
+        requested,
+        next,
+        bundleRef.current || undefined,
+      );
+      bundleRef.current = next;
+      setBundle(next);
+      write(resolved.selection, mode);
+      setNotice([message, resolved.notice].filter(Boolean).join(" ") || null);
+    } catch (e) {
+      if (ticket === requestId.current) {
+        setError(
+          e instanceof Error ? e.message : "This stack could not be loaded.",
+        );
+        if (bundleRef.current && selectionRef.current)
+          history.replaceState(
+            null,
+            "",
+            serializeSelection(selectionRef.current),
+          );
+      }
+    } finally {
+      if (ticket === requestId.current) setBusy(false);
+    }
+  }
   useEffect(() => {
     let active = true;
-    fetch("/data/forecast.json")
+    fetch("/data/explorer/registry.json")
       .then((r) => {
         if (!r.ok)
-          throw Error("The saved forecast snapshot could not be loaded.");
+          throw Error("The saved forecast catalog could not be loaded.");
         return r.json();
       })
-      .then((data: Snapshot) => {
-        if (active) {
-          setSnapshot(data);
-          setSelectedId(
-            [...data.models.polling.races].sort(closest)[0]?.id || "",
-          );
-        }
+      .then((catalog: ExplorerRegistry) => {
+        if (!active) return;
+        if (catalog.schemaVersion !== 1 || !catalog.runs?.length)
+          throw Error("The forecast catalog is unavailable.");
+        setRegistry(catalog);
+        const parsed = parseSelection(location.search, catalog);
+        void open(catalog, parsed.selection, "replace", parsed.notice);
       })
       .catch((e) => {
-        if (active) setError(e.message);
-      });
-    fetch("/data/tipping-points.json")
-      .then((r) => {
-        if (!r.ok) throw Error("Tipping data unavailable");
-        return r.json();
-      })
-      .then((data: TippingSnapshot) => {
-        if (active) setTipping(data);
-      })
-      .catch(() => {
-        if (active) setTippingFailed(true);
+        if (active) {
+          setError(e.message);
+          setBusy(false);
+        }
       });
     fetch("/states-us.geojson")
       .then((r) => {
-        if (!r.ok) throw Error("Map geography unavailable");
+        if (!r.ok) throw Error("Map unavailable");
         return r.json();
       })
       .then((data) => {
@@ -148,36 +263,58 @@ export default function SenateExplorer() {
       .catch(() => {});
     return () => {
       active = false;
+      requestId.current++;
     };
   }, []);
-  const model = snapshot?.models[modelKey];
-  const races = model?.races;
-  const selected = races?.find((r) => r.id === selectedId) || races?.[0];
-  const control = model?.controls[scenario];
-  const tippingValid =
-    tipping && snapshot ? tippingMatchesForecast(tipping, snapshot) : false;
-  const shownRaces = useMemo(() => {
-    const text = query.toLowerCase().trim();
-    return [...(races || [])]
-      .filter(
-        (r) =>
-          !text ||
-          `${STATE_NAMES[r.state]} ${r.state} ${r.candidates.map((c) => c.name).join(" ")} ${raceLabel(r)}`
-            .toLowerCase()
-            .includes(text),
-      )
-      .sort(
-        sort === "state"
-          ? (a, b) =>
-              (STATE_NAMES[a.state] || a.state).localeCompare(
-                STATE_NAMES[b.state] || b.state,
-              ) || a.id.localeCompare(b.id)
-          : closest,
-      );
-  }, [races, query, sort]);
-  const selectRace = (id: string) => {
-    setSelectedId(id);
-    if (window.matchMedia("(max-width: 800px)").matches) {
+  useEffect(() => {
+    if (!registry) return;
+    const back = () => {
+      const parsed = parseSelection(location.search, registry);
+      void open(registry, parsed.selection, "replace", parsed.notice);
+    };
+    window.addEventListener("popstate", back);
+    return () => window.removeEventListener("popstate", back);
+  }, [registry]);
+  useEffect(() => {
+    let active = true;
+    setComparisonError("");
+    if (!registry || !bundle || !selection?.compare) {
+      setBaseline(null);
+      return;
+    }
+    setBaseline(null);
+    loadBundle(defaultRun(registry, bundle.run.year))
+      .then((value) => {
+        if (active) setBaseline(value);
+      })
+      .catch((e) => {
+        if (active) setComparisonError(e.message);
+      });
+    return () => {
+      active = false;
+    };
+  }, [registry, bundle, selection?.compare]);
+  const scenario = bundle?.scenarios.find(
+      (s) => s.id === selection?.scenarioId,
+    ),
+    selected = bundle?.races.find((r) => r.id === selection?.raceId);
+  const reference =
+      selection?.compare && baseline?.run.year === bundle?.run.year
+        ? baseline
+        : undefined,
+    referenceScenario = reference?.scenarios.find((s) => s.id === scenario?.id),
+    pair = bundle ? principalPair(bundle) : null;
+  function patch(values: Partial<ExplorerSelection>) {
+    if (busy) return;
+    if (selectionRef.current) {
+      write({ ...selectionRef.current, ...values });
+      setNotice(null);
+    }
+  }
+  function selectRace(id: string) {
+    if (busy) return;
+    patch({ raceId: id });
+    if (window.matchMedia("(max-width: 800px)").matches)
       requestAnimationFrame(() => {
         document
           .getElementById("race-detail-title")
@@ -190,15 +327,37 @@ export default function SenateExplorer() {
           block: "start",
         });
       });
+  }
+  function choose(run: ExplorerRunEntry, message: string | null) {
+    if (registry && selection)
+      void open(
+        registry,
+        {
+          ...selection,
+          runId: run.id,
+          mapView: run.historical ? selection.mapView : "forecast",
+        },
+        "push",
+        message,
+      );
+  }
+  function components(values: Partial<ExplorerRun["components"]>) {
+    if (registry && bundle) {
+      const choice = selectRunForComponents(registry, bundle.run, values);
+      choose(choice.run, choice.notice);
     }
-  };
-  const selectState = (state: string) => {
-    const matches = races?.filter((r) => r.state === state).sort(closest);
-    if (matches?.length) selectRace(matches[0].id);
-  };
-  const stateRaces = selected
-    ? races?.filter((r) => r.state === selected.state) || []
-    : [];
+  }
+  async function share() {
+    setShareUrl(location.href);
+    try {
+      await navigator.clipboard.writeText(location.href);
+      setNotice(
+        "Link copied, including your stack, scenario, race, comparison, and map view.",
+      );
+    } catch {
+      setNotice("Copy the shareable link below.");
+    }
+  }
   return (
     <div className="shell">
       <a className="skip-link" href="#races">
@@ -220,24 +379,27 @@ export default function SenateExplorer() {
           </span>
         </nav>
       </header>
-      {error ? (
-        <main className="load-page">
+      {!bundle || !selection || !registry || !scenario || !selected ? (
+        <main className="load-page" aria-busy={busy}>
           <div className="error-box">
-            <h1>Snapshot unavailable</h1>
-            <p>{error}</p>
-            <button onClick={() => location.reload()}>Try again</button>
+            {error ? (
+              <>
+                <h1>Snapshot unavailable</h1>
+                <p>{error}</p>
+                <button onClick={() => location.reload()}>Try again</button>
+              </>
+            ) : (
+              <p>Preparing the Senate perspective…</p>
+            )}
           </div>
-        </main>
-      ) : !snapshot || !model || !selected || !control ? (
-        <main className="load-page" aria-busy="true">
-          <p>Preparing the Senate perspective…</p>
         </main>
       ) : (
         <main>
           <section className="hero">
             <div>
               <div className="eyebrow">
-                2026 United States Senate · {races!.length} elections
+                {bundle.run.year} United States Senate · {bundle.races.length}{" "}
+                elections
               </div>
               <h1>
                 The Senate,
@@ -245,48 +407,110 @@ export default function SenateExplorer() {
                 in perspective.
               </h1>
               <p>
-                A closer look at the races that could shape the chamber.
-                <br className="desktop-break" /> Explore two research models,
-                their uncertainty, and the assumptions behind them.
+                Build a model stack. Explore the races and the chamber together.
+                <br className="desktop-break" />
+                {bundle.run.historical
+                  ? "A historical reconstruction, with observed results and visible limitations."
+                  : "A closer look at the races that could shape the chamber, with visible uncertainty."}
               </p>
             </div>
             <div className="edition">
-              THE RESEARCH EDITION
-              <strong>{dateLabel(snapshot.issuedAt)}</strong>Evidence through{" "}
-              {dateLabel(snapshot.cutoffAt)}.
+              {bundle.run.historical
+                ? "THE HISTORICAL EDITION"
+                : "THE RESEARCH EDITION"}
+              <strong>{dateLabel(bundle.run.forecastAt)}</strong>
+              {bundle.run.historical
+                ? String(bundle.run.horizonDays) + " days before the election"
+                : "Evidence through " + dateLabel(bundle.run.cutoffAt)}
             </div>
           </section>
+          <StackControls
+            registry={registry}
+            bundle={bundle}
+            busy={busy}
+            compare={selection.compare}
+            notice={notice}
+            onYear={(year) => {
+              const c = selectRunForYear(registry, bundle.run, year);
+              choose(c.run, c.notice);
+            }}
+            onDate={(id) => {
+              const choices = availableRuns(registry, bundle.run.year, id);
+              const run =
+                choices.find(
+                  (r) =>
+                    JSON.stringify(r.components) ===
+                    JSON.stringify(bundle.run.components),
+                ) || choices[0];
+              if (run)
+                choose(run, "Showing an available saved stack for this date.");
+            }}
+            onComponents={components}
+            onCompare={(compare) => patch({ compare })}
+            onShare={() => void share()}
+            onReset={() =>
+              choose(
+                defaultRun(registry, bundle.run.year),
+                "Showing this year’s default saved stack.",
+              )
+            }
+          />
+          {shareUrl && (
+            <div className="share-link">
+              <label htmlFor="share-url">Shareable view</label>
+              <input
+                id="share-url"
+                readOnly
+                value={shareUrl}
+                onFocus={(e) => e.target.select()}
+              />
+            </div>
+          )}
+          {error && (
+            <div className="compare-banner" role="alert">
+              <strong>Unable to change stacks</strong>
+              <span>{error} The previous stack remains visible.</span>
+            </div>
+          )}
+          {selection.compare && (
+            <div className="compare-banner" role="status">
+              <strong>Comparing with the {bundle.run.year} default</strong>
+              <span>
+                {comparisonError
+                  ? "Comparison unavailable: " + comparisonError
+                  : reference
+                    ? reference.run.label +
+                      ". Deltas use the same race, outcome, and caucus scenario."
+                    : "Loading the default comparison…"}
+              </span>
+              {reference && !referenceScenario && (
+                <span>
+                  No matching default caucus scenario; chamber and performance
+                  deltas are unavailable.
+                </span>
+              )}
+            </div>
+          )}
+          {bundle.historicalNote && (
+            <p className="historical-context">{bundle.historicalNote}</p>
+          )}
           <div className="ribbon-overview">
-            {" "}
             <div className="toolbar">
-              <div
-                className="segmented"
-                role="group"
-                aria-label="Research model"
-              >
-                <button
-                  aria-pressed={modelKey === "polling"}
-                  onClick={() => setModelKey("polling")}
-                >
-                  Polling model
-                </button>
-                <button
-                  aria-pressed={modelKey === "fundamentals"}
-                  onClick={() => setModelKey("fundamentals")}
-                >
-                  Fundamentals model
-                </button>
-              </div>
+              <span className="small">
+                {bundle.run.label} ·{" "}
+                {bundle.run.simulationCount.toLocaleString()} saved simulations
+              </span>
               <div className="scenario">
                 <label htmlFor="scenario" className="small">
-                  Independent alignment
+                  Caucus context
                 </label>
                 <select
                   id="scenario"
-                  value={scenario}
-                  onChange={(e) => setScenario(e.target.value)}
+                  value={scenario.id}
+                  disabled={busy || bundle.scenarios.length === 1}
+                  onChange={(e) => patch({ scenarioId: e.target.value })}
                 >
-                  {SCENARIOS.map((s) => (
+                  {bundle.scenarios.map((s) => (
                     <option key={s.id} value={s.id}>
                       {s.label}
                     </option>
@@ -294,25 +518,28 @@ export default function SenateExplorer() {
                 </select>
               </div>
             </div>
-            {tipping && tippingValid ? (
+            {pair && bundle.tipping ? (
               <TippingRibbon
-                summary={tipping.models[modelKey]}
-                scenario={scenario}
-                races={races!}
+                summary={bundle.tipping}
+                scenario={scenario.id}
+                races={pair}
                 selectedId={selected.id}
                 onSelect={selectRace}
               />
             ) : (
-              <section className="tipping-card">
-                <p className="small">
-                  {tippingFailed || (tipping && !tippingValid)
-                    ? "The tipping-point snapshot is unavailable. Map and race summaries remain available below."
-                    : "Loading the path to a majority…"}
-                </p>
-              </section>
+              <OutlookRibbon
+                races={bundle.races}
+                scenario={scenario}
+                selectedId={selected.id}
+                onSelect={selectRace}
+              />
             )}
           </div>
-          <section className="workspace" aria-label="Senate race explorer">
+          <section
+            className="workspace"
+            aria-label="Senate race explorer"
+            aria-busy={busy}
+          >
             <div className="workspace-main">
               <div className="map-card">
                 <div className="map-head">
@@ -322,14 +549,41 @@ export default function SenateExplorer() {
                       Select a state to explore its election.
                     </div>
                   </div>
-                  <span className="small">2026 Senate</span>
+                  {bundle.run.historical ? (
+                    <div
+                      className="segmented"
+                      role="group"
+                      aria-label="Map view"
+                    >
+                      <button
+                        aria-pressed={selection.mapView === "forecast"}
+                        onClick={() => patch({ mapView: "forecast" })}
+                      >
+                        Forecast
+                      </button>
+                      <button
+                        aria-pressed={selection.mapView === "actual"}
+                        onClick={() => patch({ mapView: "actual" })}
+                      >
+                        Actual winners
+                      </button>
+                    </div>
+                  ) : (
+                    <span className="small">{bundle.run.year} Senate</span>
+                  )}
                 </div>
                 {geo ? (
                   <SenateMap
                     geo={geo}
-                    races={races!}
+                    races={bundle.races}
                     selected={selected}
-                    onSelect={selectState}
+                    mapView={selection.mapView}
+                    onSelect={(state) => {
+                      const choices = bundle.races
+                        .filter((r) => r.state === state)
+                        .sort(competitiveOrder);
+                      if (choices.length) selectRace(choices[0].id);
+                    }}
                   />
                 ) : (
                   <div className="map-loading">
@@ -337,15 +591,29 @@ export default function SenateExplorer() {
                   </div>
                 )}
                 <div className="map-legend">
-                  {[
-                    { label: "Safe D", color: COLORS.D },
-                    { label: "Likely D", color: COLORS.likelyD },
-                    { label: "Safe R", color: COLORS.R },
-                    { label: "Likely R", color: COLORS.likelyR },
-                    { label: "Safe I", color: COLORS.I },
-                    { label: "Likely I", color: COLORS.likelyI },
-                    { label: "Tossup", color: COLORS.competitive },
-                  ].map((x) => (
+                  {(selection.mapView === "actual"
+                    ? [
+                        { label: "Democratic winner", color: COLORS.D },
+                        { label: "Republican winner", color: COLORS.R },
+                        { label: "Independent winner", color: COLORS.I },
+                        { label: "Other winner", color: COLORS.O },
+                      ]
+                    : [
+                        { label: "Safe D", color: COLORS.D },
+                        { label: "Likely D", color: COLORS.likelyD },
+                        { label: "Safe R", color: COLORS.R },
+                        { label: "Likely R", color: COLORS.likelyR },
+                        { label: "Safe I", color: COLORS.I },
+                        { label: "Likely I", color: COLORS.likelyI },
+                        ...(bundle.run.historical
+                          ? [
+                              { label: "Safe other", color: COLORS.O },
+                              { label: "Likely other", color: COLORS.likelyO },
+                            ]
+                          : []),
+                        { label: "Tossup", color: COLORS.competitive },
+                      ]
+                  ).map((x) => (
                     <span key={x.label}>
                       <i className="dot" style={{ color: x.color }} />
                       {x.label}
@@ -354,427 +622,91 @@ export default function SenateExplorer() {
                 </div>
                 <div className="map-foot">
                   <span>
-                    Safe ≥98% · Likely 65–&lt;98% · Tossup &lt;65% leader win
-                    chance.
+                    {selection.mapView === "actual"
+                      ? "Observed winner party. For multiple contests, the selected race takes priority."
+                      : "Safe ≥98% · Likely 65–<98% · Tossup <65% leading outcome win chance."}
                   </span>
-                  <span>Gray: no Senate election · Area ≠ votes</span>
+                  <span>Gray: no election · Area ≠ votes</span>
                 </div>
               </div>
-              <section className="control-card" aria-labelledby="control-title">
-                <div className="section-top">
-                  <div>
-                    <h2 id="control-title" className="section-title">
-                      Who could control the chamber?
-                    </h2>
-                    <div className="small">
-                      {modelKey === "polling" ? "Polling" : "Fundamentals"}{" "}
-                      model · chamber scenario
-                    </div>
-                  </div>
-                </div>
-                <div className="control-probs" aria-live="polite">
-                  {[
-                    {
-                      label: "Democratic control",
-                      p: control.democraticMajorityProbability,
-                      color: COLORS.D,
-                    },
-                    {
-                      label: "Republican control",
-                      p: control.republicanMajorityProbability,
-                      color: COLORS.R,
-                    },
-                    {
-                      label: "Unresolved alignment",
-                      p: control.unresolvedOrganizingProbability,
-                      color: COLORS.unresolved,
-                    },
-                  ].map((x) => (
-                    <div key={x.label} style={{ color: x.color }}>
-                      <span className="prob-label">
-                        <span className="dot" />
-                        {x.label}
-                      </span>
-                      <span className="prob-number">{probability(x.p)}</span>
-                    </div>
-                  ))}
-                </div>
-                <div className="prob-track" aria-hidden="true">
-                  <span
-                    style={{
-                      width: `${control.democraticMajorityProbability * 100}%`,
-                      background: COLORS.D,
-                    }}
-                  />
-                  <span
-                    style={{
-                      width: `${control.republicanMajorityProbability * 100}%`,
-                      background: COLORS.R,
-                    }}
-                  />
-                  <span
-                    style={{
-                      width: `${control.unresolvedOrganizingProbability * 100}%`,
-                      background: COLORS.unresolved,
-                    }}
-                  />
-                </div>
-                <p className="control-note">
-                  {control.description} Unresolved means control depends on
-                  organizing arrangements; it does not mean an undecided
-                  election.
-                </p>
-              </section>
-              <section
-                className="race-section"
-                id="races"
-                aria-labelledby="races-title"
-              >
-                <div className="section-top">
-                  <h2 className="section-title" id="races-title">
-                    The races
-                  </h2>
-                  <span className="small">
-                    {shownRaces.length} of {races!.length} elections
-                  </span>
-                </div>
-                <div className="race-tools">
-                  <div className="search-wrap">
-                    <span className="search-icon" aria-hidden="true">
-                      ⌕
-                    </span>
-                    <input
-                      aria-label="Search states or candidates"
-                      placeholder="Find a state or candidate"
-                      value={query}
-                      onChange={(e) => setQuery(e.target.value)}
-                    />
-                  </div>
-                  <select
-                    className="sort-select"
-                    aria-label="Sort races"
-                    value={sort}
-                    onChange={(e) => setSort(e.target.value)}
-                  >
-                    <option value="competitive">Most competitive</option>
-                    <option value="state">State A–Z</option>
-                  </select>
-                </div>
-                <table className="race-table">
-                  <thead>
-                    <tr>
-                      <th scope="col">State / election</th>
-                      <th scope="col">Leading contender</th>
-                      <th scope="col">Win probability</th>
-                      <th scope="col">Outlook</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {shownRaces.map((r) => {
-                      const first =
-                        r.firstWinProbability >= r.secondWinProbability;
-                      const leader = r.candidates[first ? 0 : 1];
-                      const p = first
-                        ? r.firstWinProbability
-                        : r.secondWinProbability;
-                      return (
-                        <tr
-                          key={r.id}
-                          className={selected.id === r.id ? "selected" : ""}
-                        >
-                          <td>
-                            <button
-                              className="race-name"
-                              aria-pressed={selected.id === r.id}
-                              onClick={() => selectRace(r.id)}
-                            >
-                              {STATE_NAMES[r.state] || r.state}
-                              <span className="race-sub">{raceLabel(r)}</span>
-                            </button>
-                          </td>
-                          <td>
-                            <span style={{ color: partyColor(leader.party) }}>
-                              {leader.name}
-                            </span>
-                            <span className="race-sub">
-                              {partyName(leader.party)}
-                            </span>
-                          </td>
-                          <td className="chance-cell">
-                            <span className="win-label">{probability(p)}</span>
-                            <div className="mini-prob" aria-hidden="true">
-                              <span
-                                style={{
-                                  width: `${r.firstWinProbability * 100}%`,
-                                  background: partyColor(r.candidates[0].party),
-                                }}
-                              />
-                              <span
-                                style={{
-                                  width: `${r.secondWinProbability * 100}%`,
-                                  background: partyColor(r.candidates[1].party),
-                                }}
-                              />
-                            </div>
-                          </td>
-                          <td>
-                            <span
-                              className="small"
-                              style={{ color: raceTextColor(r) }}
-                            >
-                              {raceRating(r)}
-                            </span>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-                {!shownRaces.length && (
-                  <p className="empty">
-                    No matching races. Try another state or candidate.
-                  </p>
-                )}
-              </section>
+              <ChamberControl
+                scenario={scenario}
+                baseline={referenceScenario}
+              />
+              <PerformancePanel
+                bundle={bundle}
+                scenario={scenario}
+                baseline={referenceScenario}
+              />
+              <RaceList
+                races={bundle.races}
+                selectedId={selected.id}
+                baseline={reference?.races}
+                onSelect={selectRace}
+              />
             </div>
-            <aside
-              id="race-detail"
-              className="detail"
-              aria-label="Selected race detail"
-              aria-live="polite"
-            >
-              <div className="detail-kicker">
-                <span className="eyebrow" style={{ margin: 0 }}>
-                  Race in focus
-                </span>
-                <span
-                  className="race-tag"
-                  style={{
-                    color: raceTextColor(selected),
-                    background: `${raceColor(selected)}22`,
-                  }}
-                >
-                  {raceRating(selected)}
-                </span>
-              </div>
-              <h2 id="race-detail-title" tabIndex={-1}>
-                {STATE_NAMES[selected.state] || selected.state}
-              </h2>
-              <div className="small">U.S. Senate · {raceLabel(selected)}</div>
-              {stateRaces.length > 1 && (
-                <>
-                  <label className="sr-only" htmlFor="seat-select">
-                    Choose election in {STATE_NAMES[selected.state]}
-                  </label>
-                  <select
-                    className="race-selector"
-                    id="seat-select"
-                    value={selected.id}
-                    onChange={(e) => selectRace(e.target.value)}
-                  >
-                    {stateRaces.map((r) => (
-                      <option key={r.id} value={r.id}>
-                        {raceLabel(r)} ·{" "}
-                        {r.candidates
-                          .map((c) => candidateShortName(c.name))
-                          .join(" / ")}
-                      </option>
-                    ))}
-                  </select>
-                </>
-              )}
-              <hr className="detail-divider" />
-              <h3 className="detail-label">Chance of winning</h3>
-              <div className="candidate-grid">
-                {selected.candidates.map((c, i) => {
-                  const p =
-                    i === 0
-                      ? selected.firstWinProbability
-                      : selected.secondWinProbability;
-                  const color = partyColor(c.party);
-                  return (
-                    <div className="candidate" key={c.id}>
-                      <div className="candidate-top">
-                        <div>
-                          <div className="candidate-name">{c.name}</div>
-                          <div className="party-label">
-                            {partyName(c.party)}
-                            {c.incumbent ? " · Incumbent" : ""}
-                          </div>
-                        </div>
-                        <strong className="candidate-prob" style={{ color }}>
-                          {probability(p)}
-                        </strong>
-                      </div>
-                      <div className="candidate-track">
-                        <span
-                          style={{ width: `${p * 100}%`, background: color }}
-                        />
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-              <hr className="detail-divider" />
-              <h3 className="detail-label">Principal contender vote share</h3>
-              <div className="intervals-grid">
-                {selected.candidates.map((c, i) => {
-                  const mean =
-                    i === 0
-                      ? selected.firstShareMean
-                      : 1 - selected.firstShareMean;
-                  const lo =
-                    i === 0
-                      ? selected.shareQuantiles.p05
-                      : 1 - selected.shareQuantiles.p95;
-                  const hi =
-                    i === 0
-                      ? selected.shareQuantiles.p95
-                      : 1 - selected.shareQuantiles.p05;
-                  const color = partyColor(c.party);
-                  return (
-                    <div className="interval-row" key={c.id}>
-                      <div className="interval-label">
-                        <span>{candidateShortName(c.name)}</span>
-                        <strong>{percent(mean)}</strong>
-                      </div>
-                      <div
-                        className="interval-line"
-                        aria-label={`${c.name}: mean ${percent(mean)}, 90% interval ${percent(lo)} to ${percent(hi)}`}
-                      >
-                        <span
-                          className="interval-range"
-                          style={{
-                            left: `${lo * 100}%`,
-                            width: `${(hi - lo) * 100}%`,
-                            background: color,
-                          }}
-                        />
-                        <span
-                          className="interval-mean"
-                          style={{ left: `${mean * 100}%`, background: color }}
-                        />
-                      </div>
-                      <p className="detail-note" style={{ margin: "7px 0 0" }}>
-                        90% interval: {percent(lo)}–{percent(hi)}
-                      </p>
-                    </div>
-                  );
-                })}
-              </div>
-              <p className="detail-note">
-                Win probabilities of 0% or 100% reflect this saved simulation,
-                not certainty. Share is conditional on votes for these two
-                contenders. The interval describes modeled vote share, not the
-                chance of winning.
-              </p>
-              <hr className="detail-divider" />
-              <div className="metrics">
-                <div className="metric">
-                  <span className="small">Evidence model</span>
-                  <strong style={{ fontSize: 19 }}>
-                    {modelKey === "polling" ? "Polling" : "Fundamentals"}
-                  </strong>
-                </div>
-                {selected.pollCount !== undefined && (
-                  <div className="metric">
-                    <span className="small">Admitted observations</span>
-                    <strong>{selected.pollCount}</strong>
-                  </div>
-                )}
-              </div>
-              {selected.notes.length > 0 && (
-                <details className="assumptions">
-                  <summary>Race assumptions</summary>
-                  {selected.notes.map((note, i) => (
-                    <p className="detail-note" key={i}>
-                      {note}
-                    </p>
-                  ))}
-                </details>
-              )}
-              <hr className="detail-divider" />
-              <h3 className="detail-label">Official candidate sources</h3>
-              <div className="official-links">
-                {selected.candidates.map((c) => (
-                  <span key={c.id}>
-                    {c.sourceUrls.length ? (
-                      <a
-                        href={c.sourceUrls[0]}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        {c.name} ↗
-                      </a>
-                    ) : (
-                      <span>{c.name}: source unavailable</span>
-                    )}
-                  </span>
-                ))}
-              </div>
-              <p className="source-date">
-                Evidence cutoff: {dateLabel(model.cutoffAt)}
-                <br />
-                Snapshot issued: {dateLabel(model.issuedAt)}. Research output;
-                not a live forecast.
-              </p>
-            </aside>
+            <RaceDetail
+              bundle={bundle}
+              race={selected}
+              baseline={reference?.races.find((r) => r.id === selected.id)}
+              onSelect={selectRace}
+            />
           </section>
           <section id="methodology" className="methodology">
             <div>
               <div className="eyebrow">A little context goes a long way</div>
               <h2>Read the uncertainty.</h2>
               <p className="small">
-                A transparent preview of saved model outputs.
+                One saved stack. A coherent view of races and chamber control.
               </p>
               <a
                 className="download"
-                href="/data/forecast.json"
-                download="ballotmancy-senate-snapshot.json"
+                href={registry.runs.find((r) => r.id === bundle.run.id)!.href}
+                download={bundle.run.id + ".json"}
               >
-                Download this snapshot ↓
+                Download this stack ↓
               </a>
             </div>
             <div className="method-content">
               <div>
-                <h3>Two ways of looking at a race</h3>
+                <h3>Build from saved evidence</h3>
                 <p>
-                  Switch between a polling model and a fundamentals model to
-                  compare their saved summaries. The controls do not run new
-                  inference. These aggregate state models are research previews;
-                  their probabilities have not been established as calibrated
-                  forecasts. Polling coverage is a limited audited subset, not
-                  an exhaustive census.
+                  Controls select compatible saved runs; they do not fit a new
+                  model. Base, polling, and uncertainty stay together as a
+                  complete stack. Only saved forecast dates are selectable.
+                  Sensitivity settings describe assumptions rather than new
+                  evidence.
                 </p>
               </div>
               <div>
-                <h3>A simpler contest than the real ballot</h3>
+                <h3>Different years, different laws</h3>
                 <p>
-                  Each race represents two named principal contenders. Share
-                  excludes other candidates, and the model assigns no
-                  probability to a third-party win. Election rules are
-                  approximate, including states with ranked-choice or runoff
-                  systems. There are no county forecasts here.
+                  The 2026 preview models two principal contenders and
+                  conditional shares, excluding third-party wins. Historical
+                  views use complete winner laws; some outcomes group multiple
+                  candidates of the same party. Group probabilities are not
+                  individual probabilities. Historical sources include
+                  retrospective proxies and do not establish strict as-of
+                  performance.
                 </p>
               </div>
               <div>
                 <h3>Party and control are different</h3>
                 <p>
-                  Independent contenders remain independent throughout. Chamber
-                  control also depends on caucus arrangements and organizing
-                  rules. Choose a scenario to see those assumptions. The default
-                  leaves opposition independents unaligned and preserves
-                  unresolved organizing outcomes.
+                  Colors retain party identity. Caucus context sets organizing
+                  assumptions, retained seats, and the year’s control
+                  thresholds. It updates chamber probabilities and performance
+                  together. Unresolved organizing outcomes remain explicit.
                 </p>
               </div>
               <div>
-                <h3>A snapshot with a cutoff</h3>
+                <h3>Compare like with like</h3>
                 <p>
-                  Issued {dateLabel(snapshot.issuedAt)}, using evidence
-                  available by {dateLabel(snapshot.cutoffAt)}. This page does
-                  not update live. Win probability, expected vote share, and
-                  share intervals answer different questions; a narrow race can
-                  remain deeply uncertain.
+                  Compare default uses the same year, matching outcomes, and the
+                  same caucus scenario. Changes in win and control probabilities
+                  are percentage points. Historical scores do not validate the
+                  current model. Missing shares, margins, and tipping statistics
+                  are never inferred.
                 </p>
               </div>
             </div>
@@ -784,104 +716,12 @@ export default function SenateExplorer() {
             <span>
               Independent research. Visible assumptions.
               <br />
-              2026 Senate research preview · {dateLabel(snapshot.issuedAt)}
+              {bundle.run.year} Senate research preview ·{" "}
+              {dateLabel(bundle.run.forecastAt)}
             </span>
           </footer>
         </main>
       )}
     </div>
-  );
-}
-
-function SenateMap({
-  geo,
-  races,
-  selected,
-  onSelect,
-}: {
-  geo: Geo;
-  races: Race[];
-  selected: Race;
-  onSelect: (state: string) => void;
-}) {
-  const projection = useMemo(
-    () =>
-      geoAlbersUsa().fitExtent(
-        [
-          [25, 20],
-          [935, 570],
-        ],
-        geo,
-      ),
-    [geo],
-  );
-  const path = geoPath(projection);
-  const byState = new Map<string, Race[]>();
-  for (const race of races)
-    byState.set(race.state, [...(byState.get(race.state) || []), race]);
-  return (
-    <svg
-      className="map-svg"
-      viewBox="0 0 960 600"
-      role="group"
-      aria-label="United States Senate races. Use Tab to select a state with an election."
-    >
-      <title>2026 Senate race map</title>
-      {geo.features.map((feature) => {
-        const state = feature.properties.state_abbr;
-        const matches = byState.get(state);
-        const race = matches ? [...matches].sort(closest)[0] : undefined;
-        const label = `${feature.properties.state_name}${race ? `, ${matches!.length} election${matches!.length > 1 ? "s" : ""}, ${raceRating(race)}` : ", no Senate election"}`;
-        return (
-          <path
-            key={state}
-            d={path(feature as Feature) || undefined}
-            fill={race ? raceColor(race) : COLORS.inactive}
-            className={`map-state${selected.state === state ? " selected" : ""}`}
-            role={race ? "button" : undefined}
-            tabIndex={race ? 0 : undefined}
-            aria-label={label}
-            aria-pressed={race ? selected.state === state : undefined}
-            onClick={race ? () => onSelect(state) : undefined}
-            onKeyDown={
-              race
-                ? (e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      e.preventDefault();
-                      onSelect(state);
-                    }
-                  }
-                : undefined
-            }
-          >
-            <title>{label}</title>
-          </path>
-        );
-      })}
-      {geo.features.map((feature) => {
-        const state = feature.properties.state_abbr;
-        const centroid = path.centroid(feature);
-        if (
-          !Number.isFinite(centroid[0]) ||
-          ["RI", "DE", "DC", "MD", "CT", "NJ", "MA"].includes(state)
-        )
-          return null;
-        return (
-          <text
-            key={state}
-            className={`map-label${!byState.has(state) ? " inactive" : raceRating([...byState.get(state)!].sort(closest)[0]) === "Likely" ? " likely" : ""}`}
-            x={centroid[0]}
-            y={centroid[1]}
-            textAnchor="middle"
-            dominantBaseline="middle"
-          >
-            {state}
-          </text>
-        );
-      })}
-      <text x="65" y="580" fill="#707975" fontSize="9">
-        Alaska and Hawaii shown in insets; scale varies.
-      </text>
-    </svg>
   );
 }

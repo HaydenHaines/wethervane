@@ -34,7 +34,7 @@ export interface ModelTippingSummary {
   simulationCount: number;
   /** All races, sorted by first-contender mean share descending, then race ID ascending. */
   raceOrder: string[];
-  scenarios: Record<CaucusScenarioId, TippingScenario>;
+  scenarios: Record<string, TippingScenario>;
 }
 
 export interface TippingSnapshot {

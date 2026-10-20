@@ -1,4 +1,5 @@
 import type { RaceForecast } from "./site-types";
+import type { ExplorerRace, ExplorerOutcome } from "./explorer-types";
 
 export const STATE_NAMES: Record<string, string> = {
   AL: "Alabama",
@@ -60,14 +61,30 @@ export const COLORS = {
   likelyD: "#92afc1",
   likelyR: "#d4a28c",
   likelyI: "#83b9ad",
+  O: "#726e66",
+  likelyO: "#beb9ad",
   competitive: "#7b658e",
   inactive: "#d8ddd4",
   unresolved: "#a3a998",
 };
 export const partyName = (party: string) =>
-  ({ D: "Democratic", R: "Republican", I: "Independent" })[party] || party;
+  (
+    ({
+      D: "Democratic",
+      R: "Republican",
+      I: "Independent",
+      IND: "Independent",
+      LIB: "Libertarian",
+      GRE: "Green",
+      W: "Write-in",
+      O: "Other / residual",
+      DFL: "DFL (Democratic)",
+      DNL: "Democratic–NPL",
+    }) as Record<string, string>
+  )[party] || party;
 export const partyColor = (party: string) =>
-  COLORS[party as "D" | "R" | "I"] || COLORS.I;
+  COLORS[party as "D" | "R" | "I" | "O"] ||
+  (party === "IND" ? COLORS.I : COLORS.O);
 export const percent = (value: number) => `${(value * 100).toFixed(1)}%`;
 export const dateLabel = (value: string) =>
   new Intl.DateTimeFormat("en-US", {
@@ -89,36 +106,58 @@ export const candidateShortName = (name: string) =>
     ? name.split(",")[0].trim()
     : name.trim().split(/\s+/).at(-1) || name;
 
-export function raceRating(race: RaceForecast): "Safe" | "Likely" | "Tossup" {
-  const leaderChance = Math.max(
-    race.firstWinProbability,
-    race.secondWinProbability,
-  );
-  return leaderChance >= 0.98
-    ? "Safe"
-    : leaderChance >= 0.65
-      ? "Likely"
-      : "Tossup";
+export function leadingOutcome(race: ExplorerRace): ExplorerOutcome {
+  return [...race.outcomes].sort(
+    (a, b) => b.winProbability - a.winProbability || a.id.localeCompare(b.id),
+  )[0];
 }
 
-export function raceColor(race: RaceForecast): string {
+type DisplayRace = RaceForecast | ExplorerRace;
+function leader(race: DisplayRace): { party: string; winProbability: number } {
+  if ("outcomes" in race) {
+    const outcome = leadingOutcome(race);
+    return {
+      party: visualParty(outcome),
+      winProbability: outcome.winProbability,
+    };
+  }
+  const first = race.firstWinProbability >= race.secondWinProbability;
+  return {
+    party: race.candidates[first ? 0 : 1].party,
+    winProbability: first
+      ? race.firstWinProbability
+      : race.secondWinProbability,
+  };
+}
+export function raceRating(race: DisplayRace): "Safe" | "Likely" | "Tossup" {
+  const chance = leader(race).winProbability;
+  return chance >= 0.98 ? "Safe" : chance >= 0.65 ? "Likely" : "Tossup";
+}
+export function raceColor(race: DisplayRace): string {
   const rating = raceRating(race);
   if (rating === "Tossup") return COLORS.competitive;
-  const party =
-    race.candidates[
-      race.firstWinProbability >= race.secondWinProbability ? 0 : 1
-    ].party;
+  const party = leader(race).party;
   return rating === "Safe"
     ? partyColor(party)
-    : COLORS[`likely${party}` as "likelyD" | "likelyR" | "likelyI"];
+    : COLORS[
+        `likely${party}` as "likelyD" | "likelyR" | "likelyI" | "likelyO"
+      ] || COLORS.likelyI;
 }
-
-export function raceTextColor(race: RaceForecast): string {
+export function raceTextColor(race: DisplayRace): string {
   return raceRating(race) === "Tossup"
     ? COLORS.competitive
-    : partyColor(
-        race.candidates[
-          race.firstWinProbability >= race.secondWinProbability ? 0 : 1
-        ].party,
-      );
+    : partyColor(leader(race).party);
 }
+export const competitiveOrder = (a: ExplorerRace, b: ExplorerRace) =>
+  leadingOutcome(a).winProbability - leadingOutcome(b).winProbability ||
+  a.id.localeCompare(b.id);
+export const ppChange = (value: number) =>
+  `${value >= 0 ? "+" : "−"}${Math.abs(value * 100).toFixed(1)} pp`;
+
+export function visualParty(outcome: ExplorerOutcome): "D" | "R" | "I" | "O" {
+  if (outcome.id === "D" || outcome.id === "R") return outcome.id;
+  if (outcome.party === "D" || outcome.party === "R") return outcome.party;
+  return outcome.party === "I" || outcome.party === "IND" ? "I" : "O";
+}
+export const outcomeColor = (outcome: ExplorerOutcome) =>
+  partyColor(visualParty(outcome));

@@ -11,7 +11,12 @@
     "typecheck": "tsc --noEmit",
     "test:e2e": "playwright test --config=playwright.site.config.ts",
     "test:snapshot": "python3 -m unittest discover -s tests -p site_snapshot_test.py",
-    "test:tipping": "python3 -m unittest discover -s tests -p site_tipping_test.py"
+    "test:tipping": "python3 -m unittest discover -s tests -p site_tipping_test.py",
+    "test:explorer-data": "python3 -m unittest discover -s tests -p 'site_*explorer_test.py' && python3 -m unittest discover -s tests -p site_history_test.py",
+    "test:explorer-state": "node --experimental-strip-types --test tests/explorer-state.test.mjs",
+    "test:ribbon-layout": "node --experimental-strip-types --test tests/ribbon-layout.test.mjs",
+    "test:explorer-artifacts": "node --experimental-strip-types --test tests/explorer-artifacts.test.mjs",
+    "catalog:build": "python3 scripts/build_explorer_catalog.py"
   },
   "dependencies": {
     "d3-geo": "3.1.1",
