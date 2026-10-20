@@ -2,6 +2,8 @@ import { useState } from "react";
 import type { HouseCatalog } from "../lib/house-catalog";
 import type { HouseResult } from "../lib/house-result";
 import { houseRunForYear } from "../lib/house-selection";
+import { houseModelSlices } from "../lib/house-model-slices";
+import ModelSliceControls from "./ModelSliceControls";
 
 export default function HouseControls({ result, catalog, busy, requestedId, error, onSelect, onRetry }: {
   result: HouseResult;
@@ -39,13 +41,6 @@ export default function HouseControls({ result, catalog, busy, requestedId, erro
                   }}>{year}</button>)}
                 </div>
               </div>
-              <div className="stack-field">
-                <label htmlFor="house-model">House model</label>
-                <select id="house-model" value={result.run.id} disabled={busy} onChange={(event) => onSelect(event.target.value)}>
-                  {choices.map((run) => <option key={run.id} value={run.id} disabled={!run.available}>{run.label}{run.available ? "" : " · Unavailable"}</option>)}
-                </select>
-                <p>Results for {result.races.length} of 435 districts. Each model is fitted on earlier elections; these historical reconstructions can include source information assembled later.</p>
-              </div>
             </div>
             {choices.some((run) => !run.available) && <details className="assumptions"><summary>Why some choices are unavailable</summary>{choices.filter((run) => !run.available).map((run) => <p key={run.id}><strong>{run.label}:</strong> {run.unavailableReason}</p>)}</details>}
             <p className="small">{catalog.selectionNote} The initial selection is a reference, not a model chosen for having the best historical score.</p>
@@ -56,6 +51,9 @@ export default function HouseControls({ result, catalog, busy, requestedId, erro
             </div>
           </>
         ) : <p>This saved combination is selected. Additional model choices will appear when reviewed results are published.</p>}
+        <ModelSliceControls slices={houseModelSlices(result, catalog)} busy={busy}
+          explain={(_slot, _value, fallback) => fallback} onChange={(id, value) => { if (id === "house-model") onSelect(value); }} />
+        <p className="small">Results for {result.races.length} of 435 districts. Shared uncertainty and candidate context remain bundled into the selected House model.</p>
         <dl>
           <dt>Displayed model</dt><dd>{result.run.label}</dd>
           <dt>Research status</dt><dd>{result.run.experimental ? "Experimental" : "Standard"}</dd>
