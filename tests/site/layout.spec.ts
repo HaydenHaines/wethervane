@@ -62,7 +62,7 @@ test("chamber heading and active tab track forecast control and retain neutral H
   await expect(heading).toHaveCSS("color", "rgb(123, 101, 142)");
   await expect(senate).toHaveCSS("color", "rgb(123, 101, 142)");
   await page.locator("details.stack-builder > summary").click();
-  await page.getByLabel("Polling component", { exact: true }).selectOption("none");
+  await page.getByRole("checkbox", { name: "Include polling evidence", exact: true }).uncheck();
   await expect(heading).toHaveAttribute("data-chamber-outlook", "R");
   await expect(heading).toHaveCSS("color", "rgb(163, 85, 63)");
   await expect(senate).toHaveCSS("color", "rgb(163, 85, 63)");

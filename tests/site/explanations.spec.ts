@@ -31,7 +31,7 @@ test("poll source explanation follows the selected model and historical evidence
   await expect(policy).toContainText("No polls are included.");
   await expect(policy.locator(".poll-records")).toHaveCount(0);
   await page.locator(".stack-builder > summary").click();
-  await page.getByLabel("Polling component", { exact: true }).selectOption("standard");
+  await page.getByRole("checkbox", { name: "Include polling evidence", exact: true }).check();
   await expect(policy).toContainText("49 poll records across 23 of 35 races");
   await page.getByRole("group", { name: "Election year", exact: true }).getByRole("button", { name: "2018", exact: true }).click();
   await expect(policy).toContainText("cutoff 14 days before the election");

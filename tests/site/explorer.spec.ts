@@ -56,7 +56,7 @@ test("2022 performance and comparisons follow the selected stack without changin
   await expandControls(page);
   const performance = page.getByRole("region", { name: "Against the actual result", exact: true });
   const chamber = page.getByRole("region", { name: "Who could control the chamber?", exact: true });
-  await expect(page.getByLabel("Polling component", { exact: true })).toHaveValue("none");
+  await expect(page.getByRole("checkbox", { name: "Include polling evidence", exact: true })).not.toBeChecked();
   await expect(performance.locator(".performance-metric").first()).toContainText("0.684");
   await expect(chamber).toContainText("D needs 50; R needs 51");
   await expect(performance).toContainText("Actual seats: D 51, R 49, unaligned 0.");
@@ -73,6 +73,8 @@ test("2022 performance and comparisons follow the selected stack without changin
   await expect(performance).toContainText("the dashed outline shows the comparison setup");
   await page.getByLabel("Who joins each party?", { exact: true }).selectOption("unresolved_other_D");
   await expect(performance).toContainText("Actual control: D caucus. Actual seats: D 51, R 49, unaligned 0.");
+  await page.getByRole("checkbox", { name: "Include polling evidence", exact: true }).check();
+  await expect(page).toHaveURL(/run=history-2022-FP-1/);
   await page.getByLabel("Polling component", { exact: true }).selectOption("persistent");
   await expect(page).toHaveURL(/run=history-2022-FP_persistent-1/);
   await expect(performance.locator(".performance-metric").first()).toContainText("0.721");
@@ -82,8 +84,8 @@ test("2022 performance and comparisons follow the selected stack without changin
   await expect(page.locator(".composition-state")).toContainText("Unsupported combination");
   await expect(page).toHaveURL(/run=history-2022-FP_persistent-1/);
   await expect(page.getByLabel("Polling component", { exact: true })).toHaveValue("persistent");
-  await page.getByLabel("Polling component", { exact: true }).selectOption("none");
-  await expect(page.getByLabel("Polling component", { exact: true })).toHaveValue("none");
+  await page.getByRole("checkbox", { name: "Include polling evidence", exact: true }).uncheck();
+  await expect(page.getByRole("checkbox", { name: "Include polling evidence", exact: true })).not.toBeChecked();
   await expect(page).toHaveURL(/run=history-2022-W-1/);
   await page.getByRole("checkbox", { name: "Compare default", exact: true }).uncheck();
   await expect(performance.locator("polyline")).toHaveCount(0);
@@ -125,12 +127,12 @@ test("current sensitivities remain distinct from historical performance and unsu
   await expect(page).toHaveURL(/run=current-polling/);
   await expect(page.getByRole("status").filter({ hasText: "unavailable" })).toBeVisible();
   await expect(page.getByRole("region", { name: "What has been tested?", exact: true })).toContainText("The 2026 election has not happened yet.");
-  await expect(page.getByLabel("Polling component", { exact: true }).locator('option[value="none"]')).toHaveCount(1);
-  await expect(page.getByLabel("Polling component", { exact: true }).locator('option[value="standard"]')).toHaveCount(1);
+  await expect(page.getByRole("checkbox", { name: "Include polling evidence", exact: true })).toBeChecked();
+  await expect(page.getByLabel("Polling component", { exact: true })).toHaveCount(0);
   await page.getByLabel("Uncertainty", { exact: true }).selectOption("error-high");
   await expect(page).toHaveURL(/run=current-error-high/);
   await expect(page.getByRole("region", { name: "The path to a majority", exact: true }).locator("button[data-race-id]")).toHaveCount(35);
-  await page.getByLabel("Polling component", { exact: true }).selectOption("none");
+  await page.getByRole("checkbox", { name: "Include polling evidence", exact: true }).uncheck();
   await expect(page.locator(".composition-state")).toContainText("Unsupported combination");
   await expect(page).toHaveURL(/run=current-error-high/);
   await expect(page.getByLabel("Uncertainty", { exact: true })).toHaveValue("error-high");
@@ -157,7 +159,8 @@ for (const failure of ["missing", "changed fingerprint"] as const) {
     });
     await page.goto("/");
     await expandControls(page);
-    await expect(page.getByLabel("Polling component", { exact: true })).toHaveValue("standard");
+    await expect(page.getByRole("checkbox", { name: "Include polling evidence", exact: true })).toBeChecked();
+    await expect(page.getByLabel("Polling component", { exact: true })).toHaveCount(0);
     await page.getByRole("group", { name: "Election year", exact: true }).getByRole("button", { name: "2022", exact: true }).click();
     const error = page.getByRole("alert").filter({ hasText: "Unable to change model setups" });
     await expect(error).toContainText("Unable to change model setups");

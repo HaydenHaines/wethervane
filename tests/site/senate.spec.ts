@@ -73,7 +73,7 @@ test("model and caucus controls preserve independent candidate identity and shar
   await expect(chamber.getByText("0.0%", { exact: true })).toBeVisible();
   await expect(detail.getByText("Independent", { exact: true })).toBeVisible();
 
-  await page.getByLabel("Polling component").selectOption("none");
+  await page.getByRole("checkbox", { name: "Include polling evidence", exact: true }).uncheck();
   await expect(page.locator(".stack-builder")).toHaveAttribute("aria-busy", "false");
   await expect(detail.getByRole("heading", { name: "Nebraska", exact: true })).toBeVisible();
   await expect(chamber.getByText("10.6%", { exact: true })).toBeVisible();
@@ -206,7 +206,7 @@ test("ribbon displays all margin-ordered races, coincident markers, and scenario
   await expect(page.getByRole("complementary").getByText("Independent", { exact: true })).toBeVisible();
   await expect(ribbon.locator(".ribbon-guarantee")).toContainText("4 contests count toward the R caucus");
 
-  await page.getByLabel("Polling component").selectOption("none");
+  await page.getByRole("checkbox", { name: "Include polling evidence", exact: true }).uncheck();
   await expect(page.locator(".stack-builder")).toHaveAttribute("aria-busy", "false");
   expect(await tiles.evaluateAll((elements) => elements.map((element) => (element as HTMLElement).dataset.raceId))).toEqual(tipping.models.fundamentals.raceOrder);
   await texas.click();

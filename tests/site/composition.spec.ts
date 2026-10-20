@@ -24,7 +24,7 @@ test("saved current research comparisons update the forecast and compare only ma
   await expect(page.locator(".compare-banner").filter({ hasText: "Comparing with" })).toContainText("different forecast definitions");
   await page.getByLabel("Comparison baseline", { exact: true }).selectOption("current-comparison-senate_relative_context_v1-f");
   await expect(page.locator(".compare-banner").filter({ hasText: "Comparing with" })).toContainText("Changes compare the same races");
-  await page.getByLabel("Polling component", { exact: true }).selectOption("none");
+  await page.getByRole("checkbox", { name: "Include polling evidence", exact: true }).uncheck();
   await expect(page).toHaveURL(/run=current-comparison-senate_relative_context_v1-f(?:&|$)/);
   await expect(page.getByRole("region", { name: "How this model did", exact: true })).toHaveCount(0);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();
@@ -41,7 +41,8 @@ test("the current saved forecast starts with component controls collapsed", asyn
   await expect(page.getByRole("region", { name: "The path to a majority", exact: true })).toBeVisible();
   await expect(page.getByRole("region", { name: "How this model did", exact: true })).toHaveCount(0);
   await expandControls(page);
-  await expect(page.getByLabel("Polling component", { exact: true })).toHaveValue("standard");
+  await expect(page.getByRole("checkbox", { name: "Include polling evidence", exact: true })).toBeChecked();
+  await expect(page.getByLabel("Polling component", { exact: true })).toHaveCount(0);
   await expect(page.locator(".composition-state")).toContainText("Ready");
   await controls.locator(":scope > summary").click();
   await expect(controls).not.toHaveAttribute("open", "");

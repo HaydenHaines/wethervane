@@ -1,4 +1,6 @@
 import { forecastLabel } from "../lib/forecast-copy";
+import ModelSliceControls from "./ModelSliceControls";
+import { savedForecastSlices } from "../lib/model-slices";
 import { useState } from "react";
 import type { ExplorerBundle, ExplorerRegistry } from "../lib/explorer-types";
 import type {
@@ -75,12 +77,6 @@ function explainChoice(slot: string, id: string, fallback: string) {
   return choiceExplanation[id] || fallback;
 }
 
-const fieldId = (slot: string) =>
-  ({
-    base: "base-model",
-    polling: "polling-component",
-    uncertainty: "uncertainty",
-  })[slot] || `component-${slot}`;
 const sameChoices = (a: Record<string, string>, b: Record<string, string>) =>
   Object.keys(a).length === Object.keys(b).length &&
   Object.entries(a).every(([key, value]) => b[key] === value);
@@ -121,6 +117,15 @@ export default function StackControls({
   onBaseline,
 }: Props) {
   const [viewName, setViewName] = useState("");
+  const [rememberedPolling, setRememberedPolling] = useState("standard");
+  function changeSlice(id: string, value: string) {
+    if (id === "polling") {
+      const current = request?.components.polling;
+      if (value === "none" && current && current !== "none") setRememberedPolling(current);
+      else if (value !== "none") setRememberedPolling(value);
+    }
+    onComponents({ [id]: value });
+  }
   const run = bundle.run,
     year = request?.year ?? run.year,
     dateId = request?.dateId ?? run.dateId;
@@ -292,90 +297,11 @@ export default function StackControls({
           </div>
         )}
 
-        {catalog && request ? (
-          <div className="stack-components">
-            {catalog.slots.map((slot) => {
-              const options = slot.options.filter((option) =>
-                option.years.includes(year),
-              );
-              const selected = slot.options.find(
-                (option) => option.id === request.components[slot.id],
-              );
-              return (
-                <div className="stack-field" key={slot.id}>
-                  <label htmlFor={fieldId(slot.id)}>{slot.label}</label>
-                  <select
-                    id={fieldId(slot.id)}
-                    value={request.components[slot.id] || ""}
-                    disabled={
-                      busy ||
-                      options.length === 0 ||
-                      (options.length === 1 &&
-                        options[0].availability === "saved")
-                    }
-                    onChange={(e) =>
-                      onComponents({ [slot.id]: e.target.value })
-                    }
-                  >
-                    {!options.some(
-                      (option) => option.id === request.components[slot.id],
-                    ) && (
-                      <option
-                        value={request.components[slot.id] || ""}
-                        disabled
-                      >
-                        {request.components[slot.id] || "Choose a component"} ·
-                        Unsupported for {year}
-                      </option>
-                    )}
-                    {options.map((option) => (
-                      <option
-                        key={option.id}
-                        value={option.id}
-                        disabled={option.availability === "unavailable"}
-                      >
-                        {forecastLabel(option.label)}
-                        {option.availability === "requires_computation"
-                          ? " · Needs a new calculation"
-                          : option.availability === "unavailable"
-                            ? " · Unavailable"
-                            : ""}
-                      </option>
-                    ))}
-                  </select>
-                  <p>
-                    {selected?.experimental && (
-                      <span className="component-flag">Experimental</span>
-                    )}
-                    {explainChoice(
-                      slot.id,
-                      selected?.id || "",
-                      selected?.description || slot.description,
-                    )}
-                  </p>
-                </div>
-              );
-            })}
-          </div>
-        ) : (
-          <p className="composition-catalog-note">
-            Component choices are unavailable. The saved forecast below remains
-            available.
-          </p>
-        )}
-
         <div
           className={`composition-state${!matchesDisplayed ? " unresolved" : ""}`}
           role="status"
         >
           <strong>{stateLabel}</strong>
-          {resolution && !matchesDisplayed && <p>{resolution.reason}</p>}
-          {resolution?.state === "requires_computation" && (
-            <p>
-              This combination needs a new model calculation. This site can
-              display saved results but cannot run that calculation.
-            </p>
-          )}
           <p>
             <span>{matchesDisplayed ? "Displaying" : "Still displaying"}:</span>{" "}
             <strong>{forecastLabel(run.label)}</strong>
@@ -384,8 +310,29 @@ export default function StackControls({
               : " · Research preview"}
             .
           </p>
+          {resolution && !matchesDisplayed && <details className="selection-explanation">
+            <summary>{resolution.state === "requires_computation" ? "Why this needs a new calculation" : resolution.state === "incompatible" ? "Why these choices cannot be combined" : "About the requested result"}</summary>
+            <p>{resolution.reason}</p>
+            {resolution.state === "requires_computation" && <p>This combination needs a new model calculation. This site displays saved results and cannot run that calculation. No job has been started.</p>}
+          </details>}
           {notice && <p>{notice}</p>}
         </div>
+
+
+        {catalog && request ? (
+          <ModelSliceControls
+            slices={savedForecastSlices(catalog, request, rememberedPolling)}
+            busy={busy}
+            explain={explainChoice}
+            onChange={changeSlice}
+          />
+        ) : (
+          <p className="composition-catalog-note">
+            Component choices are unavailable. The saved forecast below remains
+            available.
+          </p>
+        )}
+
 
         <div className="composition-secondary">
           <div className="stack-field comparison-field">

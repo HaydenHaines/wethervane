@@ -1,0 +1,836 @@
+{
+  "schemaVersion": 2,
+  "id": "senate-component-metadata-20261020-v2",
+  "activation": "metadata_only",
+  "execution": {
+    "available": false,
+    "schedulerAvailable": false,
+    "reason": "This catalog describes reviewed research components. It does not run, queue or activate new forecasts."
+  },
+  "sourceFingerprints": {
+    "interfaceReceipt": "85f38310f650fc7eb0b18739f36e36a3a7457602cb5e42f328a89f1b58bb1ece",
+    "readyReceipt": "367dae36f2f6f79c089a96524f369867971f1cec21537e7b542f59a70ed2f803",
+    "catalog": "33a007a87dc764570745531c0d5b25d79d2e336f6680ce8ab2953b9220382a83",
+    "resultIndex": "40e77d03568dcb9126b482f76ee4d0ddee44e450b29ee14c4706e3b3d03a6a53",
+    "schemas": {
+      "ComponentOffer": "a21d9fbc3193da0c2f5ca3348e9be2230dc5d6aeba1c4fa46bf1ca22b97ffe06",
+      "ComponentChoice": "fa7a47ff1a7fa5e7badb4f39e83d1c83aa2ba4eda89739f423efa13160ecdaae",
+      "CompositionRequest": "c78a55a1c96ee15b8583cf451c8c82156b054e9cd86672d54993225f8c046221",
+      "PreparedConfiguration": "c73335c8ed3307c2cf0539c412fcada5fce999ad046757e30c163abc110e0318",
+      "ResultRecord": "e7eb4cea37bcaebf942c61c065a05b7ca706b2eb4b85b1b2c08bb7d262585c0f",
+      "Resolution": "eca4b385737992f0d91349eabfbf4c2501a7943d1279b39ec17d2455c3e1aab8"
+    }
+  },
+  "defaultPresetId": "best_guess_polling_20261020_v2",
+  "roles": [
+    {
+      "role": "population",
+      "label": "Population and geography",
+      "description": "Who and which places the model describes.",
+      "availability": "unavailable",
+      "providers": []
+    },
+    {
+      "role": "community",
+      "label": "Community",
+      "description": "How measured groups and their composition are represented.",
+      "availability": "unavailable",
+      "providers": []
+    },
+    {
+      "role": "fundamentals",
+      "label": "Electoral starting estimates",
+      "description": "Electoral history, candidate adjustments and race-specific variation.",
+      "availability": "metadata_only",
+      "providers": [
+        {
+          "provider_id": "aggregate_structure_v1",
+          "version": "v1",
+          "default_instance_id": "structure",
+          "role": "fundamentals",
+          "label": "structure",
+          "availability": "available",
+          "options_schema": {
+            "additionalProperties": false,
+            "description": "Defaults apply only to this component. Cross-component compatibility is compiled.",
+            "properties": {
+              "state_slope": {
+                "default": "learned",
+                "enum": [
+                  "learned",
+                  "fixed_one"
+                ],
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "inputs": [],
+          "outputs": [
+            {
+              "basis": "named_race_order_with_common_chain_draw",
+              "contract_id": "empirical_linear_fundamentals_joint_v1",
+              "denominator": "D_plus_R",
+              "estimand": "Democratic two-party share and first-win indicator",
+              "port": "joint_predictions",
+              "unit": "share_and_boolean",
+              "universe": "ordinary_DR_contests"
+            }
+          ],
+          "target_ids": [
+            "senate_aggregate_logit_empirical_mixture_v1"
+          ],
+          "limitations": [
+            "Ordinary D/R aggregate share comparison, not all candidates, caucus control or counts",
+            "Historical roster/source vintages retain their pinned retrospective qualifications",
+            "Forecast MCSE is conditional on the retained historical joint bank and fixed poll covariance",
+            "Graph checks factor ownership; empty port bindings do not certify eight-layer compatibility"
+          ],
+          "siteAvailability": "metadata_only",
+          "sourceFingerprints": [
+            "583f4e204360fc71f980bd70a86aa3f27afaefaee13a27c5f1833b8b54ae5366"
+          ]
+        },
+        {
+          "provider_id": "aggregate_candidate_incumbency_v1",
+          "version": "v1",
+          "default_instance_id": "candidate",
+          "role": "fundamentals",
+          "label": "candidate",
+          "availability": "available",
+          "options_schema": {
+            "additionalProperties": false,
+            "description": "Defaults apply only to this component. Cross-component compatibility is compiled.",
+            "properties": {
+              "candidate": {
+                "default": "signed_incumbency",
+                "enum": [
+                  "signed_incumbency",
+                  "off"
+                ],
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "inputs": [],
+          "outputs": [
+            {
+              "basis": "named_race_order_with_common_chain_draw",
+              "contract_id": "empirical_linear_fundamentals_joint_v1",
+              "denominator": "D_plus_R",
+              "estimand": "Democratic two-party share and first-win indicator",
+              "port": "joint_predictions",
+              "unit": "share_and_boolean",
+              "universe": "ordinary_DR_contests"
+            }
+          ],
+          "target_ids": [
+            "senate_aggregate_logit_empirical_mixture_v1"
+          ],
+          "limitations": [
+            "Ordinary D/R aggregate share comparison, not all candidates, caucus control or counts",
+            "Historical roster/source vintages retain their pinned retrospective qualifications",
+            "Forecast MCSE is conditional on the retained historical joint bank and fixed poll covariance",
+            "Graph checks factor ownership; empty port bindings do not certify eight-layer compatibility"
+          ],
+          "siteAvailability": "metadata_only",
+          "sourceFingerprints": [
+            "583f4e204360fc71f980bd70a86aa3f27afaefaee13a27c5f1833b8b54ae5366"
+          ]
+        },
+        {
+          "provider_id": "aggregate_race_student_t5_v1",
+          "version": "v1",
+          "default_instance_id": "race",
+          "role": "fundamentals",
+          "label": "race",
+          "availability": "available",
+          "options_schema": {
+            "additionalProperties": false,
+            "description": "Defaults apply only to this component. Cross-component compatibility is compiled.",
+            "properties": {},
+            "type": "object"
+          },
+          "inputs": [],
+          "outputs": [
+            {
+              "basis": "named_race_order_with_common_chain_draw",
+              "contract_id": "empirical_linear_fundamentals_joint_v1",
+              "denominator": "D_plus_R",
+              "estimand": "Democratic two-party share and first-win indicator",
+              "port": "joint_predictions",
+              "unit": "share_and_boolean",
+              "universe": "ordinary_DR_contests"
+            }
+          ],
+          "target_ids": [
+            "senate_aggregate_logit_empirical_mixture_v1"
+          ],
+          "limitations": [
+            "Ordinary D/R aggregate share comparison, not all candidates, caucus control or counts",
+            "Historical roster/source vintages retain their pinned retrospective qualifications",
+            "Forecast MCSE is conditional on the retained historical joint bank and fixed poll covariance",
+            "Graph checks factor ownership; empty port bindings do not certify eight-layer compatibility"
+          ],
+          "siteAvailability": "metadata_only",
+          "sourceFingerprints": [
+            "583f4e204360fc71f980bd70a86aa3f27afaefaee13a27c5f1833b8b54ae5366"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "environment",
+      "label": "Shared political environment",
+      "description": "National patterns and uncertainty that connect races. Multiple providers can contribute together.",
+      "availability": "metadata_only",
+      "providers": [
+        {
+          "provider_id": "aggregate_national_carryover_v1",
+          "version": "v1",
+          "default_instance_id": "carryover",
+          "role": "environment",
+          "label": "carryover",
+          "availability": "available",
+          "options_schema": {
+            "additionalProperties": false,
+            "description": "Defaults apply only to this component. Cross-component compatibility is compiled.",
+            "properties": {
+              "carryover": {
+                "default": "learned",
+                "enum": [
+                  "learned",
+                  "off",
+                  "fixed_one",
+                  "reference_state_slope"
+                ],
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "inputs": [],
+          "outputs": [
+            {
+              "basis": "named_race_order_with_common_chain_draw",
+              "contract_id": "empirical_linear_fundamentals_joint_v1",
+              "denominator": "D_plus_R",
+              "estimand": "Democratic two-party share and first-win indicator",
+              "port": "joint_predictions",
+              "unit": "share_and_boolean",
+              "universe": "ordinary_DR_contests"
+            }
+          ],
+          "target_ids": [
+            "senate_aggregate_logit_empirical_mixture_v1"
+          ],
+          "limitations": [
+            "Ordinary D/R aggregate share comparison, not all candidates, caucus control or counts",
+            "Historical roster/source vintages retain their pinned retrospective qualifications",
+            "Forecast MCSE is conditional on the retained historical joint bank and fixed poll covariance",
+            "Graph checks factor ownership; empty port bindings do not certify eight-layer compatibility"
+          ],
+          "siteAvailability": "metadata_only",
+          "sourceFingerprints": [
+            "583f4e204360fc71f980bd70a86aa3f27afaefaee13a27c5f1833b8b54ae5366"
+          ]
+        },
+        {
+          "provider_id": "aggregate_presidential_context_v1",
+          "version": "v1",
+          "default_instance_id": "context",
+          "role": "environment",
+          "label": "context",
+          "availability": "available",
+          "options_schema": {
+            "additionalProperties": false,
+            "description": "Defaults apply only to this component. Cross-component compatibility is compiled.",
+            "properties": {
+              "context": {
+                "default": "party_midterm",
+                "enum": [
+                  "party_midterm",
+                  "off",
+                  "party"
+                ],
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "inputs": [],
+          "outputs": [
+            {
+              "basis": "named_race_order_with_common_chain_draw",
+              "contract_id": "empirical_linear_fundamentals_joint_v1",
+              "denominator": "D_plus_R",
+              "estimand": "Democratic two-party share and first-win indicator",
+              "port": "joint_predictions",
+              "unit": "share_and_boolean",
+              "universe": "ordinary_DR_contests"
+            }
+          ],
+          "target_ids": [
+            "senate_aggregate_logit_empirical_mixture_v1"
+          ],
+          "limitations": [
+            "Ordinary D/R aggregate share comparison, not all candidates, caucus control or counts",
+            "Historical roster/source vintages retain their pinned retrospective qualifications",
+            "Forecast MCSE is conditional on the retained historical joint bank and fixed poll covariance",
+            "Graph checks factor ownership; empty port bindings do not certify eight-layer compatibility"
+          ],
+          "siteAvailability": "metadata_only",
+          "sourceFingerprints": [
+            "583f4e204360fc71f980bd70a86aa3f27afaefaee13a27c5f1833b8b54ae5366"
+          ]
+        },
+        {
+          "provider_id": "aggregate_cycle_normal_v1",
+          "version": "v1",
+          "default_instance_id": "cycle",
+          "role": "environment",
+          "label": "cycle",
+          "availability": "available",
+          "options_schema": {
+            "additionalProperties": false,
+            "description": "Defaults apply only to this component. Cross-component compatibility is compiled.",
+            "properties": {},
+            "type": "object"
+          },
+          "inputs": [],
+          "outputs": [
+            {
+              "basis": "named_race_order_with_common_chain_draw",
+              "contract_id": "empirical_linear_fundamentals_joint_v1",
+              "denominator": "D_plus_R",
+              "estimand": "Democratic two-party share and first-win indicator",
+              "port": "joint_predictions",
+              "unit": "share_and_boolean",
+              "universe": "ordinary_DR_contests"
+            }
+          ],
+          "target_ids": [
+            "senate_aggregate_logit_empirical_mixture_v1"
+          ],
+          "limitations": [
+            "Ordinary D/R aggregate share comparison, not all candidates, caucus control or counts",
+            "Historical roster/source vintages retain their pinned retrospective qualifications",
+            "Forecast MCSE is conditional on the retained historical joint bank and fixed poll covariance",
+            "Graph checks factor ownership; empty port bindings do not certify eight-layer compatibility"
+          ],
+          "siteAvailability": "metadata_only",
+          "sourceFingerprints": [
+            "583f4e204360fc71f980bd70a86aa3f27afaefaee13a27c5f1833b8b54ae5366"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "measurement",
+      "label": "Measurements such as polls",
+      "description": "How observations inform the model, including their errors.",
+      "availability": "metadata_only",
+      "providers": [
+        {
+          "provider_id": "aggregate_poll_gaussian_v1",
+          "version": "v1",
+          "default_instance_id": "poll",
+          "role": "measurement",
+          "label": "poll",
+          "availability": "available",
+          "options_schema": {
+            "additionalProperties": false,
+            "description": "Defaults apply only to this component. Cross-component compatibility is compiled.",
+            "properties": {
+              "polling": {
+                "default": "identity",
+                "enum": [
+                  "identity",
+                  "fixed_gaussian"
+                ],
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "inputs": [],
+          "outputs": [
+            {
+              "basis": "named_race_order_with_common_chain_draw",
+              "contract_id": "empirical_linear_fundamentals_joint_v1",
+              "denominator": "D_plus_R",
+              "estimand": "Democratic two-party share and first-win indicator",
+              "port": "joint_predictions",
+              "unit": "share_and_boolean",
+              "universe": "ordinary_DR_contests"
+            }
+          ],
+          "target_ids": [
+            "senate_aggregate_logit_empirical_mixture_v1"
+          ],
+          "limitations": [
+            "Ordinary D/R aggregate share comparison, not all candidates, caucus control or counts",
+            "Historical roster/source vintages retain their pinned retrospective qualifications",
+            "Forecast MCSE is conditional on the retained historical joint bank and fixed poll covariance",
+            "Graph checks factor ownership; empty port bindings do not certify eight-layer compatibility"
+          ],
+          "siteAvailability": "metadata_only",
+          "sourceFingerprints": [
+            "583f4e204360fc71f980bd70a86aa3f27afaefaee13a27c5f1833b8b54ae5366"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "participation",
+      "label": "Participation",
+      "description": "Who participates in an election or survey.",
+      "availability": "unavailable",
+      "providers": []
+    },
+    {
+      "role": "choice",
+      "label": "Candidate choice",
+      "description": "The eligible choices and the conditions under which people choose.",
+      "availability": "unavailable",
+      "providers": []
+    },
+    {
+      "role": "counts_rules",
+      "label": "Vote counts and election rules",
+      "description": "How votes, winners and chamber outcomes are derived.",
+      "availability": "unavailable",
+      "providers": []
+    }
+  ],
+  "supportedContexts": [
+    {
+      "id": "ordinary-senate-2018-f",
+      "year": 2018,
+      "supportId": "ordinary-senate-target-2018",
+      "raceIds": [
+        "2018:AZ:senate:regular",
+        "2018:CT:senate:regular",
+        "2018:DE:senate:regular",
+        "2018:FL:senate:regular",
+        "2018:HI:senate:regular",
+        "2018:IN:senate:regular",
+        "2018:MA:senate:regular",
+        "2018:MD:senate:regular",
+        "2018:MI:senate:regular",
+        "2018:MN:senate:regular",
+        "2018:MO:senate:regular",
+        "2018:MS:senate:regular",
+        "2018:MT:senate:regular",
+        "2018:ND:senate:regular",
+        "2018:NE:senate:regular",
+        "2018:NJ:senate:regular",
+        "2018:NM:senate:regular",
+        "2018:NV:senate:regular",
+        "2018:NY:senate:regular",
+        "2018:OH:senate:regular",
+        "2018:PA:senate:regular",
+        "2018:RI:senate:regular",
+        "2018:TN:senate:regular",
+        "2018:TX:senate:regular",
+        "2018:UT:senate:regular",
+        "2018:VA:senate:regular",
+        "2018:WA:senate:regular",
+        "2018:WI:senate:regular",
+        "2018:WV:senate:regular",
+        "2018:WY:senate:regular"
+      ],
+      "raceCount": 30,
+      "targetId": "senate_aggregate_logit_empirical_mixture_v1",
+      "informationCutoff": "2018-10-23T00:00:00Z",
+      "outputContractId": "empirical_linear_fundamentals_joint_v1",
+      "dataBundleSha256": "4bf98861854790a595f6ff5c4c9a160bb3e3e8c9bc8f0775c60bf5b5ba5e87f0",
+      "scientificPlanSha256": "a5bfd3b8646c06fea11bf74019d58c5de25b00b3503af2d3c77b796c8ea5e4ac",
+      "qualification": "2018 ordinary D/R application integration demonstration; earlier-only fixed whole bank; poll availability is an explicit retrospective day proxy, publication/revision unverified",
+      "strictAsOf": false,
+      "outputs": {
+        "raceProbabilities": true,
+        "conditionalTwoPartyShares": true,
+        "chamberControl": false,
+        "tipping": false,
+        "counts": false
+      }
+    },
+    {
+      "id": "ordinary-senate-2018-fp",
+      "year": 2018,
+      "supportId": "ordinary-senate-target-2018",
+      "raceIds": [
+        "2018:AZ:senate:regular",
+        "2018:CT:senate:regular",
+        "2018:DE:senate:regular",
+        "2018:FL:senate:regular",
+        "2018:HI:senate:regular",
+        "2018:IN:senate:regular",
+        "2018:MA:senate:regular",
+        "2018:MD:senate:regular",
+        "2018:MI:senate:regular",
+        "2018:MN:senate:regular",
+        "2018:MO:senate:regular",
+        "2018:MS:senate:regular",
+        "2018:MT:senate:regular",
+        "2018:ND:senate:regular",
+        "2018:NE:senate:regular",
+        "2018:NJ:senate:regular",
+        "2018:NM:senate:regular",
+        "2018:NV:senate:regular",
+        "2018:NY:senate:regular",
+        "2018:OH:senate:regular",
+        "2018:PA:senate:regular",
+        "2018:RI:senate:regular",
+        "2018:TN:senate:regular",
+        "2018:TX:senate:regular",
+        "2018:UT:senate:regular",
+        "2018:VA:senate:regular",
+        "2018:WA:senate:regular",
+        "2018:WI:senate:regular",
+        "2018:WV:senate:regular",
+        "2018:WY:senate:regular"
+      ],
+      "raceCount": 30,
+      "targetId": "senate_aggregate_logit_empirical_mixture_v1",
+      "informationCutoff": "2018-10-23T00:00:00Z",
+      "outputContractId": "empirical_linear_fundamentals_joint_v1",
+      "dataBundleSha256": "4bf98861854790a595f6ff5c4c9a160bb3e3e8c9bc8f0775c60bf5b5ba5e87f0",
+      "scientificPlanSha256": "c2dd8cccef7fd9657fff6c68af3a3dfaf040bbb12f7d5b548434044d1929285d",
+      "qualification": "2018 ordinary D/R application integration demonstration; earlier-only fixed whole bank; poll availability is an explicit retrospective day proxy, publication/revision unverified",
+      "strictAsOf": false,
+      "outputs": {
+        "raceProbabilities": true,
+        "conditionalTwoPartyShares": true,
+        "chamberControl": false,
+        "tipping": false,
+        "counts": false
+      }
+    }
+  ],
+  "savedExamples": [
+    {
+      "id": "ordinary-2018-f",
+      "contextId": "ordinary-senate-2018-f",
+      "activation": "not_activated",
+      "experimental": true,
+      "sourceLifecycle": "ready",
+      "numericalStatus": "passed",
+      "evidenceStatus": "unassessed",
+      "requestTemplate": {
+        "target_id": "senate_aggregate_logit_empirical_mixture_v1",
+        "information_cutoff": "2018-10-23T00:00:00Z",
+        "output_contract_id": "empirical_linear_fundamentals_joint_v1",
+        "selections": [
+          {
+            "instance_id": "structure",
+            "options": {
+              "state_slope": "learned"
+            },
+            "provider_id": "aggregate_structure_v1",
+            "version": "v1"
+          },
+          {
+            "instance_id": "candidate",
+            "options": {},
+            "provider_id": "aggregate_candidate_incumbency_v1",
+            "version": "v1"
+          },
+          {
+            "instance_id": "carryover",
+            "options": {
+              "carryover": "learned"
+            },
+            "provider_id": "aggregate_national_carryover_v1",
+            "version": "v1"
+          },
+          {
+            "instance_id": "context",
+            "options": {
+              "context": "off"
+            },
+            "provider_id": "aggregate_presidential_context_v1",
+            "version": "v1"
+          },
+          {
+            "instance_id": "cycle",
+            "options": {},
+            "provider_id": "aggregate_cycle_normal_v1",
+            "version": "v1"
+          },
+          {
+            "instance_id": "race",
+            "options": {},
+            "provider_id": "aggregate_race_student_t5_v1",
+            "version": "v1"
+          },
+          {
+            "instance_id": "poll",
+            "options": {
+              "polling": "identity"
+            },
+            "provider_id": "aggregate_poll_gaussian_v1",
+            "version": "v1"
+          }
+        ]
+      },
+      "requestSha256": "fe31cdf49e305804a8415ac3648b4e9fde9d1c3b97bd0ab5f21e7da15ce09a9c",
+      "configurationSha256": "440f26f0690e2e1bb31bebe17ecd01a9eec20a20dd507e7967faca6742fbc826",
+      "artifactId": "9d02359f737536cc018608fb1440e6e80b7c0127fc3b4b549a6ec57309878110",
+      "readyFileSha256": "45c44a440cc4cb918608e3ab7cb02e57427404a153b46372632eabb9afbdddb0",
+      "summaryFileSha256": "d1529a2c41c9f201f1226194dbcd03426adfb516a9f3147cfdf5a1b4cc3c41e0",
+      "quantileLevels": [
+        0.025,
+        0.1,
+        0.5,
+        0.9,
+        0.975
+      ],
+      "shareQuantileShape": [
+        5,
+        30
+      ],
+      "limitations": [
+        "Ordinary D/R aggregate share comparison, not all candidates, caucus control or counts",
+        "Historical roster/source vintages retain their pinned retrospective qualifications",
+        "Forecast MCSE is conditional on the retained historical joint bank and fixed poll covariance",
+        "Graph checks factor ownership; empty port bindings do not certify eight-layer compatibility"
+      ]
+    },
+    {
+      "id": "ordinary-2018-fp",
+      "contextId": "ordinary-senate-2018-fp",
+      "activation": "not_activated",
+      "experimental": true,
+      "sourceLifecycle": "ready",
+      "numericalStatus": "passed",
+      "evidenceStatus": "unassessed",
+      "requestTemplate": {
+        "target_id": "senate_aggregate_logit_empirical_mixture_v1",
+        "information_cutoff": "2018-10-23T00:00:00Z",
+        "output_contract_id": "empirical_linear_fundamentals_joint_v1",
+        "selections": [
+          {
+            "instance_id": "structure",
+            "options": {
+              "state_slope": "learned"
+            },
+            "provider_id": "aggregate_structure_v1",
+            "version": "v1"
+          },
+          {
+            "instance_id": "candidate",
+            "options": {},
+            "provider_id": "aggregate_candidate_incumbency_v1",
+            "version": "v1"
+          },
+          {
+            "instance_id": "carryover",
+            "options": {
+              "carryover": "learned"
+            },
+            "provider_id": "aggregate_national_carryover_v1",
+            "version": "v1"
+          },
+          {
+            "instance_id": "context",
+            "options": {
+              "context": "off"
+            },
+            "provider_id": "aggregate_presidential_context_v1",
+            "version": "v1"
+          },
+          {
+            "instance_id": "cycle",
+            "options": {},
+            "provider_id": "aggregate_cycle_normal_v1",
+            "version": "v1"
+          },
+          {
+            "instance_id": "race",
+            "options": {},
+            "provider_id": "aggregate_race_student_t5_v1",
+            "version": "v1"
+          },
+          {
+            "instance_id": "poll",
+            "options": {
+              "polling": "fixed_gaussian"
+            },
+            "provider_id": "aggregate_poll_gaussian_v1",
+            "version": "v1"
+          }
+        ]
+      },
+      "requestSha256": "885ce6c368d07643639c175c7f9898749981f2b438718de26aa202edc432490b",
+      "configurationSha256": "fa1b4fc4d3000819b9eb46a76f62962da8ceefa3f370528ff92aa61bf71ae239",
+      "artifactId": "4d7b4b3e947fcef9fe184c83306024308b8cfb21984e05a6071ac23e4e73d2db",
+      "readyFileSha256": "b69c6bb73e5ec9a93dd138b3cff7b6fe5cd1de61cf60391f83ce84a1c8143900",
+      "summaryFileSha256": "fde3c6aecf6e13bfc688aa31d0ac7518024c415b964cb693d9e27ec211d73225",
+      "quantileLevels": [
+        0.025,
+        0.1,
+        0.5,
+        0.9,
+        0.975
+      ],
+      "shareQuantileShape": [
+        5,
+        30
+      ],
+      "limitations": [
+        "Ordinary D/R aggregate share comparison, not all candidates, caucus control or counts",
+        "Historical roster/source vintages retain their pinned retrospective qualifications",
+        "Forecast MCSE is conditional on the retained historical joint bank and fixed poll covariance",
+        "Graph checks factor ownership; empty port bindings do not certify eight-layer compatibility"
+      ]
+    }
+  ],
+  "lifecycleExamples": [
+    {
+      "id": "ordinary-2018-f-candidate-off",
+      "contextId": "ordinary-senate-2018-f",
+      "requestTemplate": {
+        "target_id": "senate_aggregate_logit_empirical_mixture_v1",
+        "information_cutoff": "2018-10-23T00:00:00Z",
+        "output_contract_id": "empirical_linear_fundamentals_joint_v1",
+        "selections": [
+          {
+            "instance_id": "structure",
+            "options": {
+              "state_slope": "learned"
+            },
+            "provider_id": "aggregate_structure_v1",
+            "version": "v1"
+          },
+          {
+            "instance_id": "candidate",
+            "options": {
+              "candidate": "off"
+            },
+            "provider_id": "aggregate_candidate_incumbency_v1",
+            "version": "v1"
+          },
+          {
+            "instance_id": "carryover",
+            "options": {
+              "carryover": "learned"
+            },
+            "provider_id": "aggregate_national_carryover_v1",
+            "version": "v1"
+          },
+          {
+            "instance_id": "context",
+            "options": {
+              "context": "off"
+            },
+            "provider_id": "aggregate_presidential_context_v1",
+            "version": "v1"
+          },
+          {
+            "instance_id": "cycle",
+            "options": {},
+            "provider_id": "aggregate_cycle_normal_v1",
+            "version": "v1"
+          },
+          {
+            "instance_id": "race",
+            "options": {},
+            "provider_id": "aggregate_race_student_t5_v1",
+            "version": "v1"
+          },
+          {
+            "instance_id": "poll",
+            "options": {
+              "polling": "identity"
+            },
+            "provider_id": "aggregate_poll_gaussian_v1",
+            "version": "v1"
+          }
+        ]
+      },
+      "sourceLifecycle": "requires_computation",
+      "displayedResultId": null,
+      "scheduled": false,
+      "reason": "Fit and qualify one complete joint parameter bank; then generate and diagnose joint predictions",
+      "sourceFingerprint": "5e4da0199d41a521dffd80926ff51a217b53a0e2d196eb79fbb1e6a80a0d95a6"
+    },
+    {
+      "id": "ordinary-2018-fp-candidate-off",
+      "contextId": "ordinary-senate-2018-fp",
+      "requestTemplate": {
+        "target_id": "senate_aggregate_logit_empirical_mixture_v1",
+        "information_cutoff": "2018-10-23T00:00:00Z",
+        "output_contract_id": "empirical_linear_fundamentals_joint_v1",
+        "selections": [
+          {
+            "instance_id": "structure",
+            "options": {
+              "state_slope": "learned"
+            },
+            "provider_id": "aggregate_structure_v1",
+            "version": "v1"
+          },
+          {
+            "instance_id": "candidate",
+            "options": {
+              "candidate": "off"
+            },
+            "provider_id": "aggregate_candidate_incumbency_v1",
+            "version": "v1"
+          },
+          {
+            "instance_id": "carryover",
+            "options": {
+              "carryover": "learned"
+            },
+            "provider_id": "aggregate_national_carryover_v1",
+            "version": "v1"
+          },
+          {
+            "instance_id": "context",
+            "options": {
+              "context": "off"
+            },
+            "provider_id": "aggregate_presidential_context_v1",
+            "version": "v1"
+          },
+          {
+            "instance_id": "cycle",
+            "options": {},
+            "provider_id": "aggregate_cycle_normal_v1",
+            "version": "v1"
+          },
+          {
+            "instance_id": "race",
+            "options": {},
+            "provider_id": "aggregate_race_student_t5_v1",
+            "version": "v1"
+          },
+          {
+            "instance_id": "poll",
+            "options": {
+              "polling": "fixed_gaussian"
+            },
+            "provider_id": "aggregate_poll_gaussian_v1",
+            "version": "v1"
+          }
+        ]
+      },
+      "sourceLifecycle": "requires_computation",
+      "displayedResultId": null,
+      "scheduled": false,
+      "reason": "Fit and qualify one complete joint parameter bank; then generate and diagnose joint predictions",
+      "sourceFingerprint": "9398321c150f35c0eeb547c4ff1895d04496c85116549ad0c4176ecd0484fbe8"
+    }
+  ],
+  "limitations": [
+    "Provider availability describes the bounded research backend, not execution availability on this site.",
+    "These examples cover 30 ordinary Democratic–Republican Senate contests in 2018, with qualified retrospective inputs; no arbitrary 2026 composition is admitted here.",
+    "Five roles have no providers in this catalog. Empty bindings do not establish a connected eight-layer scientific model.",
+    "Ready, numerical checks passed, and predictive evidence are separate. The two examples remain empirically unassessed.",
+    "Request templates omit server-owned source paths. A future trusted adapter must bind the exact data bundle and scientific plan before resolving a request."
+  ]
+}
