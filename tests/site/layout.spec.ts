@@ -33,6 +33,7 @@ test("race details scroll independently before the page bottom on desktop and fl
     await expect(detail.locator(".source-date")).toBeInViewport();
     return;
   }
+  await expect(page.locator(".map-svg [role=button]")).toHaveCount(35);
   await page.locator(".workspace").evaluate(node => window.scrollTo({ top: node.getBoundingClientRect().top + window.scrollY + 120, behavior: "instant" }));
   const dimensions = await detail.evaluate(node => ({ height: node.clientHeight, scrollHeight: node.scrollHeight, top: node.getBoundingClientRect().top }));
   expect(dimensions.height).toBeLessThanOrEqual(660);
@@ -41,8 +42,9 @@ test("race details scroll independently before the page bottom on desktop and fl
   const pageScroll = await page.evaluate(() => window.scrollY);
   expect(await page.evaluate(() => scrollY + innerHeight < document.documentElement.scrollHeight - 200)).toBeTruthy();
   await detail.hover();
-  await page.mouse.wheel(0, 350);
-  await expect.poll(() => detail.evaluate(node => node.scrollTop)).toBeGreaterThan(100);
+  // Stay inside the panel's range: scrolling past its bottom may naturally continue the page.
+  await page.mouse.wheel(0, Math.min(200, Math.floor((dimensions.scrollHeight - dimensions.height) / 2)));
+  await expect.poll(() => detail.evaluate(node => node.scrollTop)).toBeGreaterThan(0);
   expect(await page.evaluate(() => window.scrollY)).toBe(pageScroll);
   await detail.focus();
   await page.keyboard.press("End");
