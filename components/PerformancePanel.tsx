@@ -1,3 +1,4 @@
+import { explainResearchNote } from "../lib/forecast-copy";
 import type { ExplorerBundle, ExplorerScenario } from "../lib/explorer-types";
 import SeatDistribution from "./SeatDistribution";
 
@@ -19,28 +20,29 @@ export default function PerformancePanel({
       aria-labelledby="performance-title"
     >
       <h2 className="section-title" id="performance-title">
-        {p ? "Against the observed result" : "What has been tested?"}
+        {p ? "Against the actual result" : "What has been tested?"}
       </h2>
       {p ? (
         <>
           <p className="small">
-            Historical outcomes · {scenario.label} · Lower scores indicate
+            Historical results · {scenario.label} · Lower scores indicate
             better predictive performance.
           </p>
+          <p className="performance-note">Seat-count error (CRPS) scores all the possible seat totals and their probabilities against the actual total, in seat units. Chamber-control error (Brier) scores the probabilities of Democratic, Republican and unresolved control on a 0–2 scale. For both, 0 is perfect and lower is better.</p>
           <div className="performance-grid">
             {[
               {
-                label: "D seat CRPS",
+                label: "Democratic seat-count error (CRPS)",
                 value: p.dSeatCrps,
                 base: reference?.dSeatCrps,
               },
               {
-                label: "R seat CRPS",
+                label: "Republican seat-count error (CRPS)",
                 value: p.rSeatCrps,
                 base: reference?.rSeatCrps,
               },
               {
-                label: "Control Brier score",
+                label: "Chamber-control error (Brier)",
                 value: p.controlBrier,
                 base: reference?.controlBrier,
               },
@@ -70,20 +72,20 @@ export default function PerformancePanel({
           </div>
           <p className="performance-note">
             Bars show the probability of each seat total. The vertical line
-            marks the observed result
-            {baseline ? "; the dashed outline shows the comparison stack" : ""}.
+            marks the actual result
+            {baseline ? "; the dashed outline shows the comparison setup" : ""}.
           </p>
           <p className="performance-note">
-            Observed control:{" "}
+            Actual control:{" "}
             {p.observedControl === "U"
               ? "unresolved"
               : `${p.observedControl} caucus`}
-            . Observed seats: D {p.observedSeats.D}, R {p.observedSeats.R},
+            . Actual seats: D {p.observedSeats.D}, R {p.observedSeats.R},
             unaligned {p.observedSeats.U}.{" "}
             {p.intervals
               .map(
                 (i) =>
-                  `${i.party} ${(i.level * 100).toFixed(0)}% interval ${i.lower}–${i.upper}: ${i.covered ? "covered" : "missed"}`,
+                  `${i.party} ${(i.level * 100).toFixed(0)}% modeled range ${i.lower}–${i.upper}: ${i.covered ? "included the actual result" : "missed the actual result"}`,
               )
               .join(". ")}
             .
@@ -91,29 +93,21 @@ export default function PerformancePanel({
           <details className="assumptions">
             <summary>How these scores work</summary>
             <p className="detail-note">
-              CRPS measures the full predicted seat-count distribution against
-              the observed count. Control Brier compares probabilities for D, R,
-              and unresolved control against the observed category. This is a
-              descriptive comparison of saved runs, not evidence that a selected
-              stack is calibrated or superior in future elections.
+              CRPS stands for continuous ranked probability score. For seat totals, it sums the squared differences between the forecast’s chance of being at or below each total and whether the actual result was at or below it. Brier adds squared errors across the three possible control outcomes. Neither score by itself establishes that this setup will predict future elections well.
             </p>
           </details>
         </>
       ) : (
         <p className="performance-note">
-          The 2026 election has not been observed. Historical performance
-          belongs to the 2018 and 2022 winner laws; it is not a score for this
-          current principal-contender model.
+          The 2026 election has not happened yet. Select 2018 or 2022 to see how historical reconstructions compare with actual results. Those views use a different model of possible winners, so their scores do not measure the accuracy of this 2026 two-contender forecast.
         </p>
       )}
-      {bundle.historicalNote && (
-        <p className="performance-note">{bundle.historicalNote}</p>
-      )}
+
       <details className="assumptions">
         <summary>Scope and limitations</summary>
         {bundle.limitations.map((text, i) => (
           <p className="detail-note" key={i}>
-            {text}
+            {explainResearchNote(text)}
           </p>
         ))}
       </details>

@@ -65,10 +65,10 @@ test("model and caucus controls preserve independent candidate identity and shar
   await expect(detail.getByRole("heading", { name: "Nebraska", exact: true })).toBeVisible();
   await expect(detail.getByText("Independent", { exact: true })).toBeVisible();
   await expect(detail.getByText("14.2%", { exact: true })).toBeVisible();
-  await expect(detail.locator('[aria-label="Dan Osborn: mean 46.6%, 90% interval 41.4% to 51.8%"]')).toBeVisible();
-  await expect(detail.locator('[aria-label="Pete Ricketts: mean 53.4%, 90% interval 48.2% to 58.6%"]')).toBeVisible();
+  await expect(detail.locator('[aria-label="Dan Osborn: mean 46.6%, Modeled 90% range 41.4% to 51.8%"]')).toBeVisible();
+  await expect(detail.locator('[aria-label="Pete Ricketts: mean 53.4%, Modeled 90% range 48.2% to 58.6%"]')).toBeVisible();
 
-  await page.getByLabel("Caucus context").selectOption("independent_opposition_caucuses_D");
+  await page.getByLabel("Who joins each party?").selectOption("independent_opposition_caucuses_D");
   await expect(chamber.getByText("54.2%", { exact: true })).toBeVisible();
   await expect(chamber.getByText("0.0%", { exact: true })).toBeVisible();
   await expect(detail.getByText("Independent", { exact: true })).toBeVisible();
@@ -78,11 +78,11 @@ test("model and caucus controls preserve independent candidate identity and shar
   await expect(detail.getByRole("heading", { name: "Nebraska", exact: true })).toBeVisible();
   await expect(chamber.getByText("10.6%", { exact: true })).toBeVisible();
   await expect(detail.getByText("3.6%", { exact: true })).toBeVisible();
-  await expect(detail.locator('[aria-label="Dan Osborn: mean 38.1%, 90% interval 28.2% to 48.7%"]')).toBeVisible();
-  await expect(detail.locator('[aria-label="Pete Ricketts: mean 61.9%, 90% interval 51.3% to 71.8%"]')).toBeVisible();
-  await page.getByLabel("Caucus context").selectOption("independent_opposition_caucuses_R");
+  await expect(detail.locator('[aria-label="Dan Osborn: mean 38.1%, Modeled 90% range 28.2% to 48.7%"]')).toBeVisible();
+  await expect(detail.locator('[aria-label="Pete Ricketts: mean 61.9%, Modeled 90% range 51.3% to 71.8%"]')).toBeVisible();
+  await page.getByLabel("Who joins each party?").selectOption("independent_opposition_caucuses_R");
   await expect(chamber.getByText("90.6%", { exact: true })).toBeVisible();
-  await page.getByLabel("Caucus context").selectOption("campaign_pledge_unaligned");
+  await page.getByLabel("Who joins each party?").selectOption("campaign_pledge_unaligned");
   await expect(chamber.getByText("1.3%", { exact: true })).toBeVisible();
   expect(errors).toEqual([]);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBeTruthy();
@@ -190,7 +190,7 @@ test("ribbon displays all margin-ordered races, coincident markers, and scenario
   await expect(selectedFrequencies).toContainText("At the D control threshold in 12.8% of simulations.");
   await expect(selectedFrequencies).toContainText("At the R control threshold in 10.3% of simulations.");
 
-  await page.getByLabel("Caucus context").selectOption("independent_opposition_caucuses_D");
+  await page.getByLabel("Who joins each party?").selectOption("independent_opposition_caucuses_D");
   await expect(selectedFrequencies).toContainText("At the D control threshold in 10.3% of simulations.");
   const nebraska = ribbon.locator('[data-race-id="2026:NE:senate:regular"]');
   await nebraska.focus();
@@ -199,7 +199,7 @@ test("ribbon displays all margin-ordered races, coincident markers, and scenario
   await expect(page.getByRole("complementary").getByText("Independent", { exact: true })).toBeVisible();
   await expect(selectedFrequencies).toContainText("At the D control threshold in 3.3% of simulations.");
   await expect(selectedFrequencies).toContainText("At the R control threshold in 3.3% of simulations.");
-  await page.getByLabel("Caucus context").selectOption("independent_opposition_caucuses_R");
+  await page.getByLabel("Who joins each party?").selectOption("independent_opposition_caucuses_R");
   await expect(nebraska).toHaveAttribute("aria-label", /R caucus regardless of winner/);
   await expect(selectedFrequencies).toContainText("At the D control threshold in 0.0% of simulations.");
   await expect(selectedFrequencies).toContainText("At the R control threshold in 0.0% of simulations.");
@@ -213,7 +213,7 @@ test("ribbon displays all margin-ordered races, coincident markers, and scenario
   await expect(selectedFrequencies).toContainText("At the D control threshold in 11.1% of simulations.");
   await expect(selectedFrequencies).toContainText("At the R control threshold in 11.1% of simulations.");
   await ribbon.getByText("How to read the thresholds", { exact: true }).click();
-  await expect(ribbon.getByText(/Draws where the caucus falls short still count/)).toBeVisible();
+  await expect(ribbon.getByText(/Simulations where the party group falls short still count/)).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBeTruthy();
   expect(await ribbon.evaluate((element) => Boolean(element.compareDocumentPosition(document.querySelector(".map-card")!) & Node.DOCUMENT_POSITION_FOLLOWING))).toBeTruthy();
   expect(await page.locator(".map-card").evaluate((element) => Boolean(element.compareDocumentPosition(document.querySelector(".control-card")!) & Node.DOCUMENT_POSITION_FOLLOWING))).toBeTruthy();

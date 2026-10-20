@@ -1,4 +1,5 @@
 "use client";
+import { forecastLabel } from "../lib/forecast-copy";
 
 import { useEffect, useRef, useState } from "react";
 import type {
@@ -30,6 +31,7 @@ import { requestForRun } from "../lib/composition-resolver";
 import { createSavedView, parseSavedViews } from "../lib/saved-views";
 import { compareScoreboards } from "../lib/scoreboard";
 import OutlookRibbon from "./OutlookRibbon";
+import ForecastGuide from "./ForecastGuide";
 import { deriveRibbonLayout } from "../lib/ribbon-layout";
 
 const bundleCache = new Map<string, Promise<ExplorerBundle>>();
@@ -39,7 +41,7 @@ async function loadBundle(entry: ExplorerRunEntry): Promise<ExplorerBundle> {
   if (cached) return cached;
   const request = (async () => {
     const response = await fetch(entry.href);
-    if (!response.ok) throw Error("The saved stack could not be loaded.");
+    if (!response.ok) throw Error("The saved forecast could not be loaded.");
     const bytes = await response.arrayBuffer();
     if (globalThis.crypto?.subtle && entry.sha256) {
       const hash = Array.from(
@@ -49,14 +51,14 @@ async function loadBundle(entry: ExplorerRunEntry): Promise<ExplorerBundle> {
         .join("");
       if (hash !== entry.sha256)
         throw Error(
-          "The stack fingerprint does not match the catalog. Reload to get a consistent snapshot.",
+          "The saved file does not match its expected fingerprint (a check that the data has not changed). Reload to load matching files.",
         );
     }
     const bundle = JSON.parse(
       new TextDecoder().decode(bytes),
     ) as ExplorerBundle;
     if (!validateExplorerBundle(bundle, entry))
-      throw Error("This saved stack did not pass its consistency checks.");
+      throw Error("This saved forecast contains inconsistent data and cannot be displayed.");
     return bundle;
   })();
   bundleCache.set(key, request);
@@ -266,16 +268,16 @@ export default function SenateExplorer() {
         }
       });
     fetch("/api/configurations/catalog")
-      .then(r => { if (!r.ok) throw Error("Component catalog unavailable"); return r.json(); })
+      .then(r => { if (!r.ok) throw Error("Model-choice list unavailable"); return r.json(); })
       .then((catalog: CompositionCatalog) => {
         if (!active) return;
-        if (catalog.schemaVersion !== 1 || !catalog.saved?.length || !catalog.slots?.length) throw Error("Component catalog unavailable");
+        if (catalog.schemaVersion !== 1 || !catalog.saved?.length || !catalog.slots?.length) throw Error("Model-choice list unavailable");
         capabilityRef.current = catalog;
         setCapabilities(catalog);
         if (bundleRef.current) setDraft({catalogId:catalog.id,year:bundleRef.current.run.year,dateId:bundleRef.current.run.dateId,components:{...bundleRef.current.run.components}});
         try { setSavedViews(parseSavedViews(localStorage.getItem("ballotmancy.saved-views.v1"), catalog)); } catch { /* Browser storage can be disabled. */ }
       })
-      .catch(() => { if (active) setNotice("Component catalog unavailable. Reload to enable component selection and saved configurations."); });
+      .catch(() => { if (active) setNotice("Model-choice list unavailable. Reload to enable component selection and saved configurations."); });
     fetch("/states-us.geojson")
       .then((r) => {
         if (!r.ok) throw Error("Map unavailable");
@@ -466,10 +468,10 @@ export default function SenateExplorer() {
                 in perspective.
               </h1>
               <p>
-                Build a model stack. Explore the races and the chamber together.
+                Choose the model’s ingredients. Explore the races and chamber together.
                 <br className="desktop-break" />
                 {bundle.run.historical
-                  ? "A historical reconstruction, with observed results and visible limitations."
+                  ? "See reconstructed forecasts alongside the actual election results."
                   : "A closer look at the races that could shape the chamber, with visible uncertainty."}
               </p>
             </div>
@@ -480,7 +482,7 @@ export default function SenateExplorer() {
               <strong>{dateLabel(bundle.run.forecastAt)}</strong>
               {bundle.run.historical
                 ? String(bundle.run.horizonDays) + " days before the election"
-                : "Evidence through " + dateLabel(bundle.run.cutoffAt)}
+                : "Inputs dated through " + dateLabel(bundle.run.cutoffAt)}
             </div>
           </section>
           <StackControls
@@ -543,8 +545,8 @@ export default function SenateExplorer() {
           )}
           {error && (
             <div className="compare-banner" role="alert">
-              <strong>Unable to change stacks</strong>
-              <span>{error} The previous stack remains visible.</span>
+              <strong>Unable to change model setups</strong>
+              <span>{error} The previous forecast remains visible.</span>
             </div>
           )}
           {selection.compare && (
@@ -554,30 +556,27 @@ export default function SenateExplorer() {
                 {comparisonError
                   ? "Comparison unavailable: " + comparisonError
                   : reference
-                    ? reference.run.label +
-                      ". Deltas use the same race, outcome, and caucus scenario."
+                    ? forecastLabel(reference.run.label) +
+                      ". Changes compare the same races, possible winners and party-alliance assumptions. A percentage point (pp) is the difference between two percentages."
                     : "Loading the default comparison…"}
               </span>
               {reference && !referenceScenario && (
                 <span>
-                  No matching default caucus scenario; chamber and performance
-                  deltas are unavailable.
+                  The comparison has no matching assumptions about independent senators; chamber and score differences are unavailable.
                 </span>
               )}
             </div>
           )}
-          {bundle.historicalNote && (
-            <p className="historical-context">{bundle.historicalNote}</p>
-          )}
+
           <div className="ribbon-overview">
             <div className="toolbar">
               <span className="small">
-                {bundle.run.label} ·{" "}
+                {forecastLabel(bundle.run.label)} ·{" "}
                 {bundle.run.simulationCount.toLocaleString()} saved simulations
               </span>
               <div className="scenario">
                 <label htmlFor="scenario" className="small">
-                  Caucus context
+                  Who joins each party?
                 </label>
                 <select
                   id="scenario"
@@ -587,12 +586,13 @@ export default function SenateExplorer() {
                 >
                   {bundle.scenarios.map((s) => (
                     <option key={s.id} value={s.id}>
-                      {s.label}
+                      {forecastLabel(s.label)}
                     </option>
                   ))}
                 </select>
               </div>
             </div>
+            <p className="chart-explainer">Each simulation is one possible set of election results. A caucus is a party’s group in the Senate, including independents who work with it. Choose those alliances above; candidate party labels stay the same.</p>
             {pair && bundle.tipping ? (
               <TippingRibbon
                 summary={bundle.tipping}
@@ -699,9 +699,9 @@ export default function SenateExplorer() {
                   <span>
                     {selection.mapView === "actual"
                       ? "Observed winner party. For multiple contests, the selected race takes priority."
-                      : "Safe >90% · Likely >60–90% · Tossup ≤60% leading outcome win chance (40–60% in two-outcome races)."}
+                      : "Ratings use the favorite’s chance of winning: Safe above 90%; Likely above 60% through 90%; Tossup 60% or lower (40–60% each in a two-outcome race). Safe does not mean certain."}
                   </span>
-                  <span>Gray: no election · Area ≠ votes</span>
+                  <span>D = Democratic · R = Republican · I = Independent. Gray: no election. State area does not represent votes.</span>
                 </div>
               </div>
               <ChamberControl
@@ -727,66 +727,12 @@ export default function SenateExplorer() {
               onSelect={selectRace}
             />
           </section>
-          <section id="methodology" className="methodology">
-            <div>
-              <div className="eyebrow">A little context goes a long way</div>
-              <h2>Read the uncertainty.</h2>
-              <p className="small">
-                One saved stack. A coherent view of races and chamber control.
-              </p>
-              <a
-                className="download"
-                href={registry.runs.find((r) => r.id === bundle.run.id)!.href}
-                download={bundle.run.id + ".json"}
-              >
-                Download this stack ↓
-              </a>
-            </div>
-            <div className="method-content">
-              <div>
-                <h3>Build from saved evidence</h3>
-                <p>
-                  Components resolve to an exact saved result, a combination that
-                  needs computation, or an explanation of what is unsupported.
-                  Some changes require a joint refit. New fits cannot run on this
-                  website yet. Only saved forecast dates are selectable.
-                  Sensitivity settings describe assumptions rather than new
-                  evidence.
-                </p>
-              </div>
-              <div>
-                <h3>Different years, different laws</h3>
-                <p>
-                  The 2026 preview models two principal contenders and
-                  conditional shares, excluding third-party wins. Historical
-                  views use complete winner laws; some outcomes group multiple
-                  candidates of the same party. Group probabilities are not
-                  individual probabilities. Historical sources include
-                  retrospective proxies and do not establish strict as-of
-                  performance.
-                </p>
-              </div>
-              <div>
-                <h3>Party and control are different</h3>
-                <p>
-                  Colors retain party identity. Caucus context sets organizing
-                  assumptions, retained seats, and the year’s control
-                  thresholds. It updates chamber probabilities and performance
-                  together. Unresolved organizing outcomes remain explicit.
-                </p>
-              </div>
-              <div>
-                <h3>Compare like with like</h3>
-                <p>
-                  Configuration comparisons use the same year, matching outcomes, and the
-                  same caucus scenario. Changes in win and control probabilities
-                  are percentage points. Historical scores do not validate the
-                  current model. Missing shares, margins, and tipping statistics
-                  are never inferred.
-                </p>
-              </div>
-            </div>
-          </section>
+          <ForecastGuide
+            bundle={bundle}
+            selected={selected}
+            href={registry.runs.find((r) => r.id === bundle.run.id)!.href}
+            resultSha256={registry.runs.find((r) => r.id === bundle.run.id)!.sha256}
+          />
           <footer className="footer">
             <span className="footer-brand">ballotmancy</span>
             <span>

@@ -58,6 +58,7 @@ export default function RaceList({
           {visible.length} of {shown.length} {query.trim() ? "matching elections" : "elections"}
         </span>
       </div>
+      <p className="small">The favorite is the candidate or group with the highest modeled chance of winning. “Most competitive” puts the least certain favorites first.</p>
       <div className="race-tools">
         <div className="search-wrap">
           <span className="search-icon" aria-hidden="true">
@@ -84,8 +85,8 @@ export default function RaceList({
         <thead>
           <tr>
             <th scope="col">State / election</th>
-            <th scope="col">Leading outcome</th>
-            <th scope="col">Win probability</th>
+            <th scope="col">Favorite</th>
+            <th scope="col">Chance to win</th>
             <th scope="col">Outlook</th>
           </tr>
         </thead>

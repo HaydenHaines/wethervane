@@ -1,3 +1,4 @@
+import { forecastLabel } from "../lib/forecast-copy";
 import { useEffect, useRef } from "react";
 import { ribbonMinimumWidth, ribbonSeatLabel } from "../lib/ribbon-layout";
 import type { ExplorerRace, ExplorerScenario } from "../lib/explorer-types";
@@ -42,15 +43,13 @@ export default function OutlookRibbon({
             The election outlook
           </h2>
           <p className="small">
-            All {races.length} contests, ordered from least to most confident
-            leading outcome.
+            All {races.length} contests, from the most competitive race to the strongest favorite.
           </p>
         </div>
       </div>
       <p className="ribbon-fallback">
         Historical vote margins and tipping-point summaries are unavailable.
-        Tiles show outcome win probabilities, without inferred control-threshold
-        bars.
+        Tiles show chances of winning; a tipping-point marker needs vote-share estimates that this historical model does not provide.
       </p>
       <div
         className="tipping-scroll"
@@ -68,7 +67,7 @@ export default function OutlookRibbon({
             <span>
               D caucus
               <br />
-              retained
+              not up this year
             </span>
           </div>
           {[...races].sort(competitiveOrder).map((race) => {
@@ -93,17 +92,17 @@ export default function OutlookRibbon({
             <span>
               R caucus
               <br />
-              retained
+              not up this year
             </span>
           </div>
         </div>
       </div>
       <p className="small">
-        {scenario.label}.{" "}
+        {forecastLabel(scenario.label)}.{" "}
         {scenario.retainedSeats.U > 0
           ? `${scenario.retainedSeats.U} retained seats remain unaligned.`
           : ""}{" "}
-        Party colors preserve the identity of the leading candidate or group.
+        A caucus includes a party and independents who work with it. The end counts are seats not up for election. Tile colors show the favorite’s party.
       </p>
     </section>
   );

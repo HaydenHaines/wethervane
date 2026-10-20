@@ -102,8 +102,8 @@ export default function HouseExplorer({ onReturn }: { onReturn: () => void }) {
           </h1>
           <p>
             A district-by-district perspective is taking shape. The first
-            release will explore historical model performance; a current
-            forecast will follow when it is ready.
+            release will compare predictions for past elections with the actual
+            winners. A current forecast will follow when it is ready.
           </p>
         </div>
         <div className="edition">
@@ -120,8 +120,8 @@ export default function HouseExplorer({ onReturn }: { onReturn: () => void }) {
           <div className="eyebrow">Same page. A wider view.</div>
           <h2 id="house-preparation-title">Every district has a place.</h2>
           <p>
-            Switch chambers here to explore their races, assumptions, and
-            uncertainty together.
+            Switch between the House and Senate here. Each view shows the races,
+            the model assumptions, and how much the results could vary.
           </p>
           <button className="house-return" onClick={onReturn}>
             Explore the Senate <span aria-hidden="true">→</span>
@@ -163,17 +163,20 @@ export default function HouseExplorer({ onReturn }: { onReturn: () => void }) {
           <div>
             <h3>Historical results first</h3>
             <p>
-              The initial research covers eligible races in past elections.
-              These tests will be labeled separately from a current House
-              forecast.
+              The initial research covers races in past elections that meet the
+              study’s inclusion rules. Included and excluded districts will be
+              listed. These historical tests will be labeled separately from a
+              current House forecast.
             </p>
           </div>
           <div>
             <h3>Coverage stays visible</h3>
             <p>
-              A subset of districts can show race-level performance.
-              Chamber-control probabilities and a tipping point need a complete
-              forecast with shared uncertainty across districts.
+              Results for some districts can show how the model did in those
+              races. Estimating who wins the House needs a complete forecast
+              that allows districts to shift together—for example, in a national
+              political swing. A tipping point identifies a race at the seat
+              threshold for a majority.
             </p>
           </div>
         </div>
@@ -203,7 +206,9 @@ function HouseResults({
     ? result.chamberProof?.scenarios[0]
     : undefined;
   const outlook = chamberOutlook(scenario?.control);
-  useEffect(() => { detail.current?.scrollTo({ top: 0 }); }, [selected.id]);
+  useEffect(() => {
+    detail.current?.scrollTo({ top: 0 });
+  }, [selected.id]);
   useEffect(() => {
     const restore = () => {
       const params = new URLSearchParams(location.search);
@@ -262,7 +267,16 @@ function HouseResults({
             modeled districts
           </div>
           <h1>
-            The <span className="chamber-name" data-chamber-outlook={outlook.party} style={{ color: outlook.color }} title={outlook.label}>House</span>,
+            The{" "}
+            <span
+              className="chamber-name"
+              data-chamber-outlook={outlook.party}
+              style={{ color: outlook.color }}
+              title={outlook.label}
+            >
+              House
+            </span>
+            ,
             <br />
             in perspective.
           </h1>
@@ -280,7 +294,7 @@ function HouseResults({
           <strong>
             {result.metadata.full_chamber
               ? "Full chamber forecast"
-              : "Eligible-race subset"}
+              : "Included districts only"}
           </strong>
           {result.races.length} of 435 districts
         </div>
@@ -291,8 +305,10 @@ function HouseResults({
           <span className="small">{result.run.label}</span>
         </summary>
         <p>
-          This published House configuration is selected. Additional component
-          choices will appear as reviewed results become available.
+          This saved combination of model choices is selected. Additional
+          choices will appear when reviewed results are available.
+          “Experimental” describes the stage of research; it does not mean a
+          model has established forecasting accuracy.
         </p>
         <dl>
           <dt>Configuration</dt>
@@ -323,14 +339,17 @@ function HouseResults({
                 <button onClick={() => select(id)}>
                   {result.races.find((r) => r.id === id)!.district.districtKey}
                 </button>{" "}
-                appears most often ({probability(frequency)}) in the saved joint
-                simulations.
+                appears most often ({probability(frequency)}) in the saved
+                simulations, which model districts together rather than
+                independently.
               </p>
             );
           })}
           <p className="small">
-            Threshold-rank frequency describes a simulated ordering, not the
-            chance one district causes control.
+            This percentage counts simulations where the district occupies the
+            majority threshold in the ordered races, including simulations where
+            its party falls short. It is not the chance that changing this one
+            result would change who controls the House.
           </p>
         </div>
       )}
@@ -376,10 +395,17 @@ function HouseResults({
               />
             ) : (
               <div className="map-loading">
-                District map unavailable. Verified geography for this election
-                is required. Explore the races below.
+                District map unavailable. District boundaries must be checked
+                against this election’s map before results can be placed on it.
+                Explore the races below.
               </div>
             )}
+            <p className="small">
+              D means Democratic; R means Republican. Safe means the leading
+              candidate has more than a 90% chance to win; Likely means more
+              than 60% up to 90%; Tossup means neither candidate exceeds 60%.
+              These are model estimates, not guarantees.
+            </p>
             <div className="map-legend">
               {(mapView === "actual"
                 ? [
@@ -402,7 +428,7 @@ function HouseResults({
             </div>
           </section>
           {scenario ? (
-            <ChamberControl scenario={scenario} />
+            <ChamberControl scenario={scenario} chamber="house" />
           ) : (
             <section
               className="control-card house-control-unavailable"
@@ -410,9 +436,9 @@ function HouseResults({
             >
               <h2 className="section-title">Who could control the chamber?</h2>
               <p>
-                Not available for this result. A complete House forecast with
-                shared uncertainty across districts is needed to estimate
-                control.
+                Not available for this result. Estimating who wins the House
+                needs all 435 districts and simulations that allow them to shift
+                together, rather than treating every race as independent.
               </p>
               <span className="small">435 seats · 218 for a majority</span>
             </section>
@@ -427,7 +453,8 @@ function HouseResults({
                 The districts
               </h2>
               <span className="small">
-                {visible.length} of {shown.length} {query.trim() ? "matching races" : "modeled races"}
+                {visible.length} of {shown.length}{" "}
+                {query.trim() ? "matching races" : "modeled races"}
               </span>
             </div>
             <div className="race-tools">
@@ -435,7 +462,10 @@ function HouseResults({
                 aria-label="Search districts or candidates"
                 placeholder="Find a district, state, or candidate"
                 value={query}
-                onChange={(event) => { setQuery(event.target.value); setExpanded(false); }}
+                onChange={(event) => {
+                  setQuery(event.target.value);
+                  setExpanded(false);
+                }}
               />
             </div>
             <div className="house-race-list" id="house-race-list">
@@ -451,7 +481,12 @@ function HouseResults({
                 </button>
               ))}
             </div>
-            <RaceListToggle expanded={expanded} total={shown.length} controls="house-race-list" onToggle={() => setExpanded(!expanded)} />
+            <RaceListToggle
+              expanded={expanded}
+              total={shown.length}
+              controls="house-race-list"
+              onToggle={() => setExpanded(!expanded)}
+            />
             {!shown.length && (
               <p>
                 No matching districts. Try another district, state, or
@@ -504,8 +539,9 @@ function HouseResults({
               </div>
               {outcome.share && (
                 <p className="detail-note">
-                  Mean two-party vote share {probability(outcome.share.mean)} ·
-                  90% interval {probability(outcome.share.quantiles.p05)}–
+                  Average share of Democratic and Republican votes{" "}
+                  {probability(outcome.share.mean)} · Middle 90% of modeled
+                  shares {probability(outcome.share.quantiles.p05)}–
                   {probability(outcome.share.quantiles.p95)}
                 </p>
               )}
@@ -513,12 +549,14 @@ function HouseResults({
           ))}
           {selected.observed && (
             <p className="observed-result">
-              Observed winner: <strong>{selected.observed.winnerName}</strong>
+              Actual winner: <strong>{selected.observed.winnerName}</strong>
             </p>
           )}
           <p className="detail-note">
-            This result models the Democratic and Republican candidates’
-            two-party shares. Missing districts have no forecast.
+            Winning chances describe how often a candidate wins in the model;
+            they are not vote percentages. Any vote shares shown count
+            Democratic and Republican votes only, excluding other candidates.
+            Missing districts have no forecast.
           </p>
           {selected.notes.map((note, index) => (
             <p className="detail-note" key={index}>
@@ -537,8 +575,8 @@ function HouseResults({
             <h3>How to read this result</h3>
             <p>
               {result.run.informationMode === "strict_asof"
-                ? "This result uses evidence reconstructed for its stated forecast date."
-                : "Historical inputs include retrospective proxies. These results do not establish strict as-of forecasting performance."}
+                ? "This result uses evidence reconstructed for its stated forecast date, with later information excluded under its documented rules."
+                : "Some historical inputs were assembled later as substitutes for information about the past (retrospective proxies). This comparison does not establish how accurately the model could have forecast using only information available on that date."}
             </p>
             {result.limitations.map((note, index) => (
               <p key={index}>{note}</p>
@@ -567,6 +605,11 @@ function HouseResults({
             </details>
             <details>
               <summary>Publication fingerprints</summary>
+              <p>
+                These IDs identify the model choices and the exact saved result.
+                SHA256 fingerprints are long codes used to check that a file has
+                not changed; they do not measure forecast quality.
+              </p>
               <p className="house-digest">
                 Configuration: {result.run.configurationId}
                 <br />
@@ -622,7 +665,7 @@ function HouseScoreboard({ result }: { result: HouseResult }) {
             {result.run.year} historical reconstruction
           </div>
           <h2 className="section-title" id="house-scoreboard-title">
-            How this stack did
+            How this model did
           </h2>
           <p>
             {result.run.label} ·{" "}
@@ -640,7 +683,8 @@ function HouseScoreboard({ result }: { result: HouseResult }) {
             <span> / {decisive.length}</span>
           </div>
           <p>
-            Among races with observed winners and a unique favorite.{" "}
+            A favorite is the candidate with the higher modeled winning chance.
+            Counts only races with a known winner and one clear favorite.{" "}
             {observed.length - decisive.length} exact ties excluded.
           </p>
         </article>
@@ -650,8 +694,9 @@ function HouseScoreboard({ result }: { result: HouseResult }) {
             {brier === null ? "—" : brier.toFixed(3)}
           </div>
           <p>
-            Brier score, 0–2 scale. Lower is better; 0 is perfect. Uses{" "}
-            {observed.length} observed races.
+            Brier score, 0–2 scale. Lower is better; 0 is perfect. It compares
+            the assigned probabilities with what happened, penalizing confident
+            wrong predictions more. Uses {observed.length} races with actual results.
           </p>
         </article>
         <article className="scoreboard-card">
@@ -661,8 +706,9 @@ function HouseScoreboard({ result }: { result: HouseResult }) {
             <span> / 435</span>
           </div>
           <p>
-            Districts with forecasts and observed winners. This is race-level
-            evidence.
+            Districts with forecasts and known actual winners. These scores
+            describe the tested races; they do not establish accuracy for
+            districts left out of the study.
           </p>
         </article>
       </div>

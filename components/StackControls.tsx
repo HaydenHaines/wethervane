@@ -1,3 +1,4 @@
+import { forecastLabel } from "../lib/forecast-copy";
 import { useState } from "react";
 import type { ExplorerBundle, ExplorerRegistry } from "../lib/explorer-types";
 import type {
@@ -34,6 +35,43 @@ type Props = {
   baselineRunId: string | null;
   onBaseline: (id: string | null) => void;
 };
+
+// Explanations only: catalog IDs, availability and scientific records stay unchanged.
+const choiceExplanation: Record<string, string> = {
+  fundamentals:
+    "Starts from electoral history, combining information into a race-level estimate before adding any selected polls. This is the saved fundamentals model.",
+  winner:
+    "A reference model for past elections that assigns chances to winner outcomes rather than vote shares. It uses the historical winner rule preserved in these saved comparisons.",
+  senate_history_refreshed_v1:
+    "An experimental starting estimate using refreshed electoral history. Its parameters have been fitted to historical data, but no current forecast has been generated. Selecting it does not run a forecast.",
+  senate_presidential_slope_v1:
+    "An experimental starting estimate that learns how earlier presidential voting relates to Senate results. A slope describes the strength of that relationship. No current forecast has been generated.",
+  senate_relative_context_v1:
+    "An experimental starting estimate using a state's political lean relative to the nation, the president's party, and whether the election is a midterm. No current forecast has been generated.",
+  senate_relative_lean_v1:
+    "An experimental starting estimate using state voting relative to the national result and how national patterns carry into the next election. No current forecast has been generated.",
+  none: "Does not add polling evidence to the starting model. Only saved combinations can be displayed.",
+  standard: "Uses the saved standard setting for this part of the model.",
+  persistent:
+    "Tests a historical alternative in which polling errors can persist over time instead of quickly disappearing. This is a sensitivity test: a check of how results change under a different assumption. Available only for past elections.",
+  "error-low":
+    "Tests smaller assumed polling errors. Error scales describe how far polls may differ from the underlying race; this changes the uncertainty assumptions, not which candidate a poll reports ahead.",
+  "error-high":
+    "Tests larger assumed polling errors. Error scales describe how far polls may differ from the underlying race; this changes the uncertainty assumptions, not which candidate a poll reports ahead.",
+  "cycle-low":
+    "Tests a smaller election-wide polling error shared across races. SD means standard deviation: the scale of that error. Shared errors allow many races to shift together.",
+  "cycle-high":
+    "Tests a larger election-wide polling error shared across races. SD means standard deviation: the scale of that error. Shared errors allow many races to shift together.",
+};
+function explainChoice(slot: string, id: string, fallback: string) {
+  if (id === "standard")
+    return slot === "polling"
+      ? "Adds polls using a fixed bell-shaped (Gaussian) model for measurement error: polls are evidence with uncertainty, not exact election results. Only saved combinations can be displayed."
+      : "Uses the saved default assumptions about how much results can vary and how races can move together.";
+  if (id.startsWith("loading-"))
+    return "National loading controls how strongly a shared national shift moves races together. The multiplier changes that shared effect; ×0 removes this effect, not all uncertainty. These are saved tests for past elections, not current forecasts.";
+  return choiceExplanation[id] || fallback;
+}
 
 const fieldId = (slot: string) =>
   ({
@@ -141,7 +179,7 @@ export default function StackControls({
       <summary className="stack-builder-summary">
         <span className="stack-summary-main">
           <span id="stack-title">Build your perspective</span>
-          <span className="stack-summary-displayed">{run.label}</span>
+          <span className="stack-summary-displayed">{forecastLabel(run.label)}</span>
         </span>
         <span className="stack-summary-actions">
           {(!matchesDisplayed || busy) && (
@@ -159,7 +197,9 @@ export default function StackControls({
           <div>
             <div className="section-title">Customize this view</div>
             <div className="small">
-              Choose saved components or inspect experimental alternatives.
+              A stack is your combination of model choices. Select saved results
+              or inspect experimental alternatives; experimental choices may
+              need a new calculation before they can be shown.
             </div>
           </div>
           <div className="stack-actions">
@@ -227,7 +267,7 @@ export default function StackControls({
 
         {catalog && (
           <div className="composition-presets">
-            <span>Preserved presets</span>
+            <span>Preserved presets · ready-made combinations</span>
             <div role="group" aria-label="Preserved forecast presets">
               {catalog.presets.map((preset) => {
                 const entry = registry.runs.find((r) => r.id === preset.runId);
@@ -290,9 +330,9 @@ export default function StackControls({
                         value={option.id}
                         disabled={option.availability === "unavailable"}
                       >
-                        {option.label}
+                        {forecastLabel(option.label)}
                         {option.availability === "requires_computation"
-                          ? " · Needs computation"
+                          ? " · Needs a new calculation"
                           : option.availability === "unavailable"
                             ? " · Unavailable"
                             : ""}
@@ -303,7 +343,11 @@ export default function StackControls({
                     {selected?.experimental && (
                       <span className="component-flag">Experimental</span>
                     )}
-                    {selected?.description || slot.description}
+                    {explainChoice(
+                      slot.id,
+                      selected?.id || "",
+                      selected?.description || slot.description,
+                    )}
                   </p>
                 </div>
               );
@@ -324,13 +368,13 @@ export default function StackControls({
           {resolution && !matchesDisplayed && <p>{resolution.reason}</p>}
           {resolution?.state === "requires_computation" && (
             <p>
-              {catalog?.execution.reason ||
-                "This configuration needs a supported computation service."}
+              This combination needs a new model calculation. This site can
+              display saved results but cannot run that calculation.
             </p>
           )}
           <p>
             <span>{matchesDisplayed ? "Displaying" : "Still displaying"}:</span>{" "}
-            <strong>{run.label}</strong>
+            <strong>{forecastLabel(run.label)}</strong>
             {run.historical
               ? " · Historical reconstruction"
               : " · Research preview"}
@@ -360,13 +404,15 @@ export default function StackControls({
               )}
               {comparable.map((entry) => (
                 <option key={entry.id} value={entry.id}>
-                  {entry.label}
+                  {forecastLabel(entry.label)}
                 </option>
               ))}
             </select>
             <p>
-              Same year, date, target and outcome definition. Further data
-              checks apply. The historical scorecard always uses this reference; the checkbox adds comparison details below.
+              A baseline is the reference result you compare against. Choices
+              must predict the same election and type of outcome on the same
+              date. The historical scorecard uses this reference; the checkbox
+              adds comparison details below.
             </p>
           </div>
           <details className="composition-saved">
@@ -431,18 +477,25 @@ export default function StackControls({
 
         <details className="composition-details">
           <summary>Configuration, evidence & data dates</summary>
+          <p>
+            A configuration records the model choices; a result is the saved
+            output of those choices. Cutoffs are the latest dates allowed for
+            the stated source inputs. A historical reconstruction revisits a
+            past election and may use information assembled later; it is not
+            automatically a test of what was knowable at the time.
+          </p>
           <div className="configuration-display">
             <h3>Displayed forecast</h3>
-            <p>{run.label}</p>
+            <p>{forecastLabel(run.label)}</p>
             <dl>
-              <dt>Configuration identity</dt>
+              <dt>Configuration identity · exact model-choice record</dt>
               <dd>
                 <code>
                   {displayedConfiguration?.id ||
                     "Configuration metadata unavailable"}
                 </code>
               </dd>
-              <dt>Result identity</dt>
+              <dt>Result identity · exact saved output</dt>
               <dd>
                 <code>
                   {displayedConfiguration?.runId || run.id}
@@ -451,7 +504,7 @@ export default function StackControls({
                     : ""}
                 </code>
               </dd>
-              <dt>Target / outcome definition</dt>
+              <dt>Target / outcome definition · what is predicted</dt>
               <dd>
                 <code>
                   {run.targetId} / {run.lawId}
@@ -471,6 +524,10 @@ export default function StackControls({
                 </div>
               ))}
             </dl>
+            <p className="small">
+              Technical IDs identify the exact records. SHA256 is a file
+              fingerprint used to check that the saved result has not changed.
+            </p>
             {currentEvidence && <Evidence evidence={currentEvidence} />}
           </div>
           {!matchesDisplayed && resolution && (
@@ -510,7 +567,13 @@ export default function StackControls({
           )}
           {catalog?.unavailable.length ? (
             <div className="configuration-unavailable">
-              <h3>Capabilities outside the active editor</h3>
+              <h3>Choices this editor cannot run</h3>
+              <p>
+                Changing individual model weights needs a new fit (estimating
+                model settings from data). Blending forecasts means combining
+                their predictions while preserving how races move together; this
+                editor does not provide that service.
+              </p>
               {catalog.unavailable.map((capability) => (
                 <p key={capability.id}>
                   <strong>{capability.label}:</strong> {capability.reason}
@@ -528,19 +591,38 @@ function Evidence({ evidence }: { evidence: ConfigurationEvidence }) {
   return (
     <div className="configuration-evidence">
       <h4>Evidence · {evidence.status.replaceAll("_", " ")}</h4>
-      <dl>
-        {[
-          { label: "Implementation", value: evidence.implementation },
-          { label: "Numerical checks", value: evidence.numerical },
-          { label: "Predictive evidence", value: evidence.predictive },
-          { label: "Scope", value: evidence.scope },
-        ].map((item) => (
-          <div className="configuration-cutoff" key={item.label}>
-            <dt>{item.label}</dt>
-            <dd>{item.value}</dd>
-          </div>
-        ))}
-      </dl>
+      <p>
+        Implementation says what has been built. Numerical checks test whether
+        the calculations behave as intended. Predictive evidence tests
+        predictions against election outcomes; passing calculation checks alone
+        does not establish forecast accuracy.
+      </p>
+      <details>
+        <summary>Read the technical evidence record</summary>
+        <dl>
+          {[
+            { label: "Implementation", value: evidence.implementation },
+            { label: "Numerical checks", value: evidence.numerical },
+            { label: "Predictive evidence", value: evidence.predictive },
+            { label: "Scope", value: evidence.scope },
+          ].map((item) => (
+            <div className="configuration-cutoff" key={item.label}>
+              <dt>{item.label}</dt>
+              <dd>{item.value}</dd>
+            </div>
+          ))}
+        </dl>
+        <p className="small">
+          In this record, aggregate means race-level rather than voter-by-voter
+          modeling; a prior is a starting estimate before adding evidence; a fit
+          estimates model settings; a posterior is the estimate after evidence
+          is added. Joint output describes races simulated together.
+          Strict-as-of validation allows only information available at the
+          stated forecast date. A sealed prediction is a saved record, not by
+          itself proof of accuracy. An adapter connects one result format to
+          another. Support means the set of possible outcomes; categorical means one winner category rather than vote share. Bindings link a model to its verified inputs. A frozen resolver maps choices to existing saved results; it does not calculate a new forecast.
+        </p>
+      </details>
     </div>
   );
 }

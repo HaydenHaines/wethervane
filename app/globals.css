@@ -2875,3 +2875,21 @@ select:focus-visible {
 .shell:has(.chamber-name[data-chamber-outlook="R"]) .chamber-tabs [aria-selected="true"] { color: #a3553f; }
 .shell:has(.chamber-name[data-chamber-outlook="tossup"]) .chamber-tabs [aria-selected="true"] { color: #7b658e; }
 .shell:has(.chamber-name[data-chamber-outlook="U"]) .chamber-tabs [aria-selected="true"] { color: #726e66; }
+
+/* Short definitions stay beside the numbers; optional source detail stays compact. */
+.chart-explainer { color: var(--muted); font-size: 12px; line-height: 1.7; margin: 14px 0; max-width: 100ch; }
+.polling-policy { padding: 30px; border: 1px solid var(--line); border-radius: 8px; margin: 0 0 36px; scroll-margin-top: 24px; }
+.polling-policy > p, .polling-policy details p, .poll-rule-grid p { font-size: 13px; line-height: 1.75; color: var(--muted); }
+.poll-rule-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; margin: 24px 0; }
+.poll-rule-grid h3 { font-size: 15px; margin-bottom: 8px; }
+.polling-policy details { border-top: 1px solid var(--line); padding: 16px 0 0; margin-top: 16px; }
+.polling-policy summary { cursor: pointer; font-size: 14px; font-weight: 600; line-height: 1.6; }
+.poll-records label { display: block; font-size: 12px; margin: 16px 0 8px; }
+.poll-records select { width: min(100%, 300px); }
+.poll-record-list { list-style: none; padding: 0; margin: 20px 0 0; }
+.poll-record-list li { padding: 16px 0; border-top: 1px solid var(--line); font-size: 13px; overflow-wrap: anywhere; }
+.poll-record-list p { margin: 6px 0; }
+.poll-record-status { display: inline-block; margin-left: 8px; padding: 2px 7px; border: 1px solid var(--line); border-radius: 4px; font-size: 11px; }
+.poll-record-status.included { color: var(--ind); }
+.poll-record-list a, .detail-note a, .method-content a { text-decoration: underline; text-underline-offset: 3px; }
+@media (max-width: 800px) { .poll-rule-grid { grid-template-columns: 1fr; gap: 8px; } .polling-policy { padding: 22px 18px; } }

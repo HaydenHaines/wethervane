@@ -349,13 +349,14 @@ export default function DistrictMap({
         </details>
       )}
       <details className="district-map-provenance">
-        <summary>Geometry identity</summary>
+        <summary>District boundary source</summary>
+        <p>The election year and boundary version identify which district map is used. SHA256 is a file fingerprint that checks the map data has not changed.</p>
         <p>
-          Cycle: {geography.metadata.cycle} · Vintage:{" "}
+          Election year: {geography.metadata.cycle} · Boundary version:{" "}
           {geography.metadata.mapVintage}
         </p>
         <p>
-          Verified source SHA256: <code>{geography.metadata.sourceSha256}</code>
+          Verified map file fingerprint (SHA256): <code>{geography.metadata.sourceSha256}</code>
         </p>
       </details>
     </section>

@@ -71,8 +71,7 @@ export default function TippingRibbon({
             The path to a majority
           </h2>
           <p className="small">
-            {races.length} elections, ordered by projected principal-contender
-            margin.
+            {races.length} elections, ordered by the projected vote-share lead between the two modeled contenders.
           </p>
         </div>
         <span className="ribbon-key">
@@ -101,7 +100,7 @@ export default function TippingRibbon({
             <span>
               D caucus
               <br />
-              retained
+              not up this year
             </span>
           </div>
           {layout.raceOrder.map((id) => {
@@ -164,11 +163,12 @@ export default function TippingRibbon({
             <span>
               R caucus
               <br />
-              retained
+              not up this year
             </span>
           </div>
         </div>
       </div>
+      <p className="chart-explainer">Read inward from either party’s end. Its marker identifies the last race needed for control in this projected order, after seats not up for election and races guaranteed to join that party’s group. D = Democratic; R = Republican. “SP” marks a special election to fill an unfinished term.</p>
       <div className="tipping-summaries">
         {(["D", "R"] as const).map((party) => {
           const caucus = caucuses[party];
@@ -268,30 +268,30 @@ export default function TippingRibbon({
           </p>
         ) : null,
       )}
+      <p className="chart-explainer">A margin is the difference in vote shares: 52% versus 48% is a 4 percentage-point (pp) lead. The frequencies above count how often a race occupies the control-threshold rank across simulated elections, including simulations where that party falls short. They are not the chance that flipping that race alone would change control.</p>
       <details className="ribbon-method">
         <summary>How to read the thresholds</summary>
         <p>
           The ribbon follows mean projected margins, from the Democratic or
           independent contender’s advantage to the Republican contender’s
           advantage. Tile colors show the contender’s genuine party and Safe,
-          Likely, or Tossup category. The alignment selector above governs
-          caucus membership, not party identity.
+          Likely, or Tossup category. The party-alliance selector above sets which group independent senators work with (their caucus); their party labels stay the same.
         </p>
         <p>
           The D and R markers identify each caucus’s last needed eligible race
           in projected order: {Math.max(0, caucuses.D.requiredContestedWins)} contested wins
-          for D and {Math.max(0, caucuses.R.requiredContestedWins)} for R, after retained and
+          for D and {Math.max(0, caucuses.R.requiredContestedWins)} for R, after seats not up for election and
           guaranteed seats. D needs {caucuses.D.thresholdSeats} seats and R
-          needs {caucuses.R.thresholdSeats}, reflecting the modeled tie rule. A
+          needs {caucuses.R.thresholdSeats}, including the vice president’s tie-breaking vote. A
           marker’s margin is measured from that caucus contender’s perspective.
         </p>
         <p>
           Simulation frequencies come from{" "}
-          {summary.simulationCount.toLocaleString()} saved joint draws. In each
-          draw, eligible races are ranked by their caucus contender’s share, and
-          the race at the control threshold is recorded. Draws where the caucus
+          {summary.simulationCount.toLocaleString()} saved simulations of the elections together, allowing common shifts across races. In each
+          simulation, eligible races are ranked by their party group’s contender’s vote share, and
+          the race at the control threshold is recorded. Simulations where the party group
           falls short still count. D and R frequencies are separate
-          distributions; they do not add to one total. A frequency is not the
+          sets of percentages; they do not add to one total. A frequency is not the
           probability that changing one race alone would change chamber control.
         </p>
       </details>

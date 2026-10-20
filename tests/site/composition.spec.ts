@@ -17,7 +17,7 @@ test("the current saved forecast starts with component controls collapsed", asyn
   await expect(controls.locator(":scope > summary")).toContainText("Build your perspective");
   await expect(page.getByLabel("Base model", { exact: true })).not.toBeVisible();
   await expect(page.getByRole("region", { name: "The path to a majority", exact: true })).toBeVisible();
-  await expect(page.getByRole("region", { name: "How this stack did", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("region", { name: "How this model did", exact: true })).toHaveCount(0);
   await expandControls(page);
   await expect(page.getByLabel("Polling component", { exact: true })).toHaveValue("standard");
   await expect(page.locator(".composition-state")).toContainText("Ready");
@@ -28,7 +28,7 @@ test("the current saved forecast starts with component controls collapsed", asyn
 
 test("historical scorecard distinguishes outcome hits, probability error, and actual chamber control", async ({ page }) => {
   await page.goto("/?run=history-2018-FP-1");
-  const scoreboard = page.getByRole("region", { name: "How this stack did", exact: true });
+  const scoreboard = page.getByRole("region", { name: "How this model did", exact: true });
   const favorites = scoreboard.getByRole("article", { name: "Favorites that won", exact: true });
   await expect(favorites.locator(".scoreboard-value")).toHaveText(/31\s*\/\s*35/);
   await expect(favorites).toContainText("31.2");
@@ -37,7 +37,7 @@ test("historical scorecard distinguishes outcome hits, probability error, and ac
   await expect(page.getByRole("complementary").getByRole("heading", { name: "Maine", exact: true })).toBeVisible();
   const quality = scoreboard.getByRole("article", { name: "Probability quality", exact: true });
   await quality.getByText("Probability score details", { exact: true }).click();
-  await expect(quality).toContainText("Mean categorical Brier: 0.1352");
+  await expect(quality).toContainText("Average Brier score across races: 0.1352");
   await expect(quality).toContainText("0–2 scale");
   await expect(quality).toContainText("35 contests scored.");
   await expect(scoreboard.getByRole("img", { name: /^D caucus: forecast median .*actual 47\./ })).toBeVisible();
@@ -111,10 +111,10 @@ test("custom comparison identities survive URL reload and change probability com
   await expect(baseline).toHaveValue("history-2018-W-1");
   await expect(page.getByRole("checkbox", {name:"Compare configuration",exact:true})).not.toBeChecked();
   await expect(baseline.locator('option[value^="history-2022"]')).toHaveCount(0);
-  const quality = page.getByRole("region", { name: "How this stack did", exact: true }).getByRole("article", { name: "Probability quality", exact: true });
+  const quality = page.getByRole("region", { name: "How this model did", exact: true }).getByRole("article", { name: "Probability quality", exact: true });
   await expect(quality).toContainText("higher error");
   await quality.getByText("Probability score details", { exact: true }).click();
-  await expect(quality).toContainText("Mean categorical Brier: 0.2418; comparison 0.2272");
+  await expect(quality).toContainText("Average Brier score across races: 0.2418; comparison 0.2272");
   await baseline.selectOption("history-2018-F-1");
   await expect(page).toHaveURL(/against=history-2018-F-1/);
   await expect(quality).toContainText("Same error");

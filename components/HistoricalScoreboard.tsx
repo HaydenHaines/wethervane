@@ -1,3 +1,5 @@
+import { forecastLabel } from "../lib/forecast-copy";
+import { HISTORICAL_CONTEXT } from "../lib/forecast-copy";
 import type { ExplorerBundle, ExplorerScenario } from "../lib/explorer-types";
 import { deriveScoreboard, compareScoreboards } from "../lib/scoreboard";
 import {
@@ -82,18 +84,19 @@ export default function HistoricalScoreboard({
               : ` · ${bundle.run.horizonDays} days before the election`}
           </div>
           <h2 className="section-title" id="scoreboard-title">
-            How this stack did
+            How this model did
           </h2>
           <p>
-            {bundle.run.label} · {scenario.label}
-            {baselineBundle ? ` · Compared with ${baselineBundle.run.label}` : ""}
+            {forecastLabel(bundle.run.label)} · {forecastLabel(scenario.label)}
+            {baselineBundle ? ` · Compared with ${forecastLabel(baselineBundle.run.label)}` : ""}
           </p>
         </div>
-        <a href="#historical-performance">Detailed scores & distributions ↓</a>
+        <a href="#historical-performance">Detailed scores & seat probabilities ↓</a>
       </div>
+      <p className="historical-context">{HISTORICAL_CONTEXT}</p>
       {score.status === "unavailable" ? (
         <p className="scoreboard-unavailable">
-          {score.reason || "Observed results are unavailable for this stack."}
+          {score.reason || "Actual results are unavailable for this setup."}
         </p>
       ) : (
         <div className="scoreboard-cards">
@@ -109,11 +112,11 @@ export default function HistoricalScoreboard({
                   <span> / {favorites.decisive}</span>
                 </div>
                 <p className="scoreboard-caption">
-                  Unique favorites with observed results
+                  Races where the sole most likely candidate or group won
                 </p>
                 {favorites.decisive > 0 && (
                   <p className="scoreboard-context">
-                    Its odds implied about{" "}
+                    Its probabilities implied about{" "}
                     <strong>{favorites.expectedCorrect.toFixed(1)}</strong> of
                     these favorites winning.
                   </p>
@@ -155,8 +158,8 @@ export default function HistoricalScoreboard({
                 ) : (
                   <p className="scoreboard-context">
                     {favorites.decisive > 0
-                      ? "All unique favorites won."
-                      : "No unique favorites to evaluate; tied races still count in the probability score."}
+                      ? "All favorites without a tie in their win chances won."
+                      : "No sole favorites to evaluate; tied races still count in the probability score."}
                   </p>
                 )}
               </>
@@ -173,7 +176,7 @@ export default function HistoricalScoreboard({
           >
             <h3 id="seat-score-title">Predicted vs actual seats</h3>
             <div className="scoreboard-seat-head">
-              <span>Caucus</span>
+              <span>Party group</span>
               <span>Forecast median & 90% range</span>
               <span>Actual</span>
             </div>
@@ -218,6 +221,7 @@ export default function HistoricalScoreboard({
                 Actual seats
               </span>
             </div>
+            <p className="scoreboard-context">The median is the middle simulated seat total. The range spans the middle 90% of totals. Party groups include allied independents; U means unaligned.</p>
             {matched && reference && (
               <p className="scoreboard-comparison">
                 Expected-seat change vs comparison:{" "}
@@ -264,7 +268,7 @@ export default function HistoricalScoreboard({
                     >
                       <span>
                         <i style={{ background: option.color }} />
-                        {option.label}
+                        {forecastLabel(option.label)}
                         {option.id === control.observed ? " · Actual" : ""}
                       </span>
                       <strong>{probability(option.p)}</strong>
@@ -295,6 +299,9 @@ export default function HistoricalScoreboard({
             <h3 id="probability-score-title">Probability quality</h3>
             {score.brier ? (
               <>
+                <div className="scoreboard-value">{score.brier.mean.toFixed(3)}</div>
+                <p className="scoreboard-caption">Average probability error (Brier score). Lower is better; 0 is perfect on this 0–2 scale.</p>
+                <p className="scoreboard-context">Scores every outcome’s chance against what happened. Confident wrong predictions receive larger penalties. This is not the percentage of races called correctly.</p>
                 {difference !== null ? (
                   <>
                     <div
@@ -319,8 +326,7 @@ export default function HistoricalScoreboard({
                       {sameError ? "As" : "Than"} the matched {bundle.run.year} comparison
                     </p>
                     <p className="scoreboard-context">
-                      Compares the full outcome probabilities, including the
-                      confidence of each prediction.
+                      Compared with the same races and possible winners in the selected reference forecast.
                     </p>
                   </>
                 ) : (
@@ -337,7 +343,7 @@ export default function HistoricalScoreboard({
                 <details className="scoreboard-raw">
                   <summary>Probability score details</summary>
                   <p>
-                    Mean categorical Brier:{" "}
+                    Average Brier score across races:{" "}
                     <strong>{score.brier.mean.toFixed(4)}</strong>
                     {matched && reference?.brier
                       ? `; comparison ${reference.brier.mean.toFixed(4)}`
@@ -346,9 +352,7 @@ export default function HistoricalScoreboard({
                     error, not the percentage of races won.
                   </p>
                   <p>
-                    Each contest contributes the squared errors of its outcome
-                    probabilities. Candidates in a grouped outcome are scored
-                    together. {score.brier.count} contests scored.
+                    For each outcome, subtract 1 from its probability if it won, or 0 if it lost; square each difference and add them. Average those totals across races. Candidates in a grouped outcome are scored together. {score.brier.count} contests scored.
                   </p>
                 </details>
               </>

@@ -1,12 +1,16 @@
+import { forecastLabel } from "../lib/forecast-copy";
+import { explainResearchNote } from "../lib/forecast-copy";
 import type { ExplorerScenario } from "../lib/explorer-types";
 import { COLORS, ppChange, probability } from "../lib/presentation";
 
 export default function ChamberControl({
   scenario,
   baseline,
+  chamber = "senate",
 }: {
   scenario: ExplorerScenario;
   baseline?: ExplorerScenario;
+  chamber?: "senate" | "house";
 }) {
   const stats = [
     {
@@ -22,7 +26,7 @@ export default function ChamberControl({
       color: COLORS.R,
     },
     {
-      label: "Unresolved alignment",
+      label: "Control depends on alliances",
       p: scenario.control.unresolvedOrganizingProbability,
       base: baseline?.control.unresolvedOrganizingProbability,
       color: COLORS.unresolved,
@@ -36,7 +40,7 @@ export default function ChamberControl({
             Who could control the chamber?
           </h2>
           <div className="small">
-            {scenario.label} · D needs {scenario.thresholds.D}; R needs{" "}
+            {forecastLabel(scenario.label)} · D needs {scenario.thresholds.D}; R needs{" "}
             {scenario.thresholds.R}
           </div>
         </div>
@@ -66,9 +70,9 @@ export default function ChamberControl({
         ))}
       </div>
       <p className="control-note">
-        {scenario.description} Unresolved refers to organizing arrangements, not
-        an undecided election.
+        {explainResearchNote(scenario.description)} Unresolved control means the winners are known in a simulation, but the winning members’ party alliances have not determined who organizes the chamber.
       </p>
+      <p className="control-note">A caucus is the group working with a party to organize the chamber, including any allied independents. {chamber === "senate" ? "The party holding the vice presidency can control a 50–50 Senate through its tie-breaking vote." : "Control requires a majority of House seats; there is no vice-presidential tie-breaking vote in the House."}</p>
       <div className="chamber-seat-summary">
         {(["D", "R", "U"] as const).map((party) => (
           <span key={party}>
@@ -77,11 +81,12 @@ export default function ChamberControl({
             seats{" "}
             <span className="small">
               ({scenario.seats[party].seatQuantiles.p05}–
-              {scenario.seats[party].seatQuantiles.p95}, 90% interval)
+              {scenario.seats[party].seatQuantiles.p95}, modeled 90% range)
             </span>
           </span>
         ))}
       </div>
+      <p className="detail-note">Expected seats are the average across simulated elections, so they can include fractions. The 90% range spans the 5th to 95th percentiles; outcomes outside that range remain possible.</p>
     </section>
   );
 }

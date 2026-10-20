@@ -172,7 +172,7 @@ for (const eligibleCount of [16, 435]) {
     await expect(page.locator(".prob-number")).toHaveCount(0);
     await expect(ribbon).toContainText("Chamber tipping point unavailable");
     const scoreboard = page.getByRole("region", {
-      name: "How this stack did",
+      name: "How this model did",
       exact: true,
     });
     const races = publication.result.races;

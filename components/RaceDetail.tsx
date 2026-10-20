@@ -1,4 +1,6 @@
+import { forecastLabel } from "../lib/forecast-copy";
 import { useEffect, useRef } from "react";
+import { explainResearchNote } from "../lib/forecast-copy";
 import type { ExplorerBundle, ExplorerRace } from "../lib/explorer-types";
 import {
   STATE_NAMES,
@@ -83,12 +85,13 @@ export default function RaceDetail({
       )}
       {race.observed && (
         <p className="observed-result winner">
-          Observed winner: <strong>{race.observed.winnerName}</strong> ·{" "}
+          Actual winner: <strong>{race.observed.winnerName}</strong> ·{" "}
           {partyName(race.observed.winnerParty)}
         </p>
       )}
       <hr className="detail-divider" />
       <h3 className="detail-label">Chance of winning</h3>
+      <p className="detail-note">A 70% chance means winning about 70 out of 100 elections simulated by this model. It does not mean winning 70% of the votes.</p>
       <div className="candidate-grid">
         {race.outcomes.map((outcome) => {
           const reference = baseline?.outcomes.find((o) => o.id === outcome.id);
@@ -102,7 +105,7 @@ export default function RaceDetail({
                     {outcome.kind === "group"
                       ? " · Group outcome"
                       : outcome.members[0]?.incumbent
-                        ? " · Incumbent"
+                        ? " · Currently holds this seat"
                         : ""}
                   </div>
                 </div>
@@ -135,7 +138,7 @@ export default function RaceDetail({
                 </span>
               )}
               {race.observed?.outcomeId === outcome.id && (
-                <p className="observed-result">Contains the observed winner</p>
+                <p className="observed-result">Includes the actual winner</p>
               )}
             </div>
           );
@@ -144,7 +147,7 @@ export default function RaceDetail({
       {shareOutcomes.length > 0 ? (
         <>
           <hr className="detail-divider" />
-          <h3 className="detail-label">Principal contender vote share</h3>
+          <h3 className="detail-label">Vote share among these two contenders</h3>
           <div className="intervals-grid">
             {shareOutcomes.map((o) => {
               const share = o.share!;
@@ -156,7 +159,7 @@ export default function RaceDetail({
                   </div>
                   <div
                     className="interval-line"
-                    aria-label={`${o.name}: mean ${percent(share.mean)}, 90% interval ${percent(share.quantiles.p05)} to ${percent(share.quantiles.p95)}`}
+                    aria-label={`${o.name}: mean ${percent(share.mean)}, Modeled 90% range ${percent(share.quantiles.p05)} to ${percent(share.quantiles.p95)}`}
                   >
                     <span
                       className="interval-range"
@@ -175,7 +178,7 @@ export default function RaceDetail({
                     />
                   </div>
                   <p className="detail-note">
-                    90% interval: {percent(share.quantiles.p05)}–
+                    Modeled 90% range: {percent(share.quantiles.p05)}–
                     {percent(share.quantiles.p95)}
                     <br />
                     {share.denominator}
@@ -185,8 +188,7 @@ export default function RaceDetail({
             })}
           </div>
           <p className="detail-note">
-            Share intervals describe modeled vote share, not win probability.
-            These shares are conditional on the two principal contenders.
+            The shares divide votes between these two contenders only; votes for other candidates are excluded. The range runs from the 5th to the 95th percentile of simulated shares—the middle 90%. It is a model estimate, not a poll’s margin of error or a guarantee.
           </p>
         </>
       ) : (
@@ -204,22 +206,29 @@ export default function RaceDetail({
       <hr className="detail-divider" />
       <div className="metrics">
         <div className="metric">
-          <span className="small">Selected stack</span>
-          <strong style={{ fontSize: 16 }}>{bundle.run.label}</strong>
+          <span className="small">Selected model setup</span>
+          <strong style={{ fontSize: 16 }}>{forecastLabel(bundle.run.label)}</strong>
         </div>
         {race.pollCount !== undefined && (
           <div className="metric">
-            <span className="small">Admitted observations</span>
+            <span className="small">Poll records included</span>
             <strong>{race.pollCount}</strong>
           </div>
         )}
       </div>
+      {race.pollCount !== undefined && (
+        <p className="detail-note">
+          {race.pollCount === 0 ? "No poll records for this race were included in this saved forecast. " : "This counts poll records used for this race, not people interviewed or every poll available. "}
+          <a href="#poll-selection">Why some polls are included—and others are not ↓</a>
+        </p>
+      )}
+      {bundle.run.components.polling === "none" && <p className="detail-note">This setup uses electoral history without polls.</p>}
       {race.notes.length > 0 && (
         <details className="assumptions">
           <summary>Race assumptions</summary>
           {race.notes.map((note, i) => (
             <p className="detail-note" key={i}>
-              {note}
+              {explainResearchNote(note)}
             </p>
           ))}
         </details>
@@ -236,7 +245,7 @@ export default function RaceDetail({
                   {m.name} ↗
                 </a>
               ) : (
-                <span>{m.name}: source in saved artifact</span>
+                <span>{m.name}: source recorded in the saved data</span>
               )}
             </span>
           ))}
@@ -246,18 +255,18 @@ export default function RaceDetail({
             target="_blank"
             rel="noreferrer"
           >
-            Observed result ↗
+            Actual result ↗
           </a>
         )}
       </div>
       <p className="source-date">
         Forecast date: {dateLabel(bundle.run.forecastAt)}
         <br />
-        Evidence cutoff: {dateLabel(bundle.run.cutoffAt)}
+        Inputs dated through: {dateLabel(bundle.run.cutoffAt)}
         <br />
         {bundle.run.historical
-          ? "Historical research reconstruction; retrospective proxies apply."
-          : "Saved research output; not a live forecast."}
+          ? "Recreated after the election; some historical inputs were assembled later."
+          : "Saved research forecast; new polls are not added automatically."}
       </p>
     </aside>
   );

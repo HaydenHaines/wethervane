@@ -42,10 +42,10 @@ export default function SeatDistribution({
       <svg
         viewBox={`0 0 ${width} ${height}`}
         role="img"
-        aria-label={`${name} caucus seat probability distribution. Observed ${observed} seats. The selected model assigned ${percent(distribution.pmf[observed] || 0)} probability to that exact total. Shown range ${lower} to ${upper} seats.`}
+        aria-label={`${name} caucus seat probabilities for each possible total. Actual ${observed} seats. The selected model assigned ${percent(distribution.pmf[observed] || 0)} probability to that exact total. Shown range ${lower} to ${upper} seats.`}
       >
         <title>
-          {name} caucus: predicted seat totals and the observed result
+          {name} caucus: predicted seat totals and the actual result
         </title>
         <line
           x1={left}
@@ -119,22 +119,22 @@ export default function SeatDistribution({
           textAnchor="middle"
           className="distribution-observed"
         >
-          Observed {observed}
+          Actual {observed}
         </text>
       </svg>
       <div className="distribution-legend">
         <span>
           <i style={{ background: COLORS[party] }} />
-          Selected stack
+          Selected setup
         </span>
         <span>
           <i className="observed-line" />
-          Observed result
+          Actual result
         </span>
         {baseline && (
           <span>
             <i className="default-line" />
-            Default stack
+            Comparison setup
           </span>
         )}
       </div>

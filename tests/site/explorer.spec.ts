@@ -27,14 +27,14 @@ test("2018 archive preserves grouped candidates, all contests, and simultaneous 
   await expect(detail.locator(".candidate-prob")).toHaveText("100.0%");
   await expect(detail.getByText(/Group probability for Dianne Feinstein; Kevin De Leon/)).toBeVisible();
   await expect(detail.getByText(/probability is not allocated between individual members/)).toBeVisible();
-  await expect(detail.locator(".observed-result.winner")).toContainText("Observed winner: Dianne Feinstein");
+  await expect(detail.locator(".observed-result.winner")).toContainText("Actual winner: Dianne Feinstein");
   await expect(detail.getByText(/Candidate vote-share estimates are unavailable/)).toBeVisible();
   await expect(detail.locator(".interval-line")).toHaveCount(0);
-  const performance = page.getByRole("region", { name: "Against the observed result", exact: true });
-  await expect(performance).toContainText("Observed seats: D 47, R 53, unaligned 0.");
+  const performance = page.getByRole("region", { name: "Against the actual result", exact: true });
+  await expect(performance).toContainText("Actual seats: D 47, R 53, unaligned 0.");
   await expect(performance.locator(".performance-metric").first()).toContainText("0.829");
-  await expect(performance.getByRole("img", { name: /^Democratic caucus seat probability distribution\. Observed 47 seats\./ })).toBeVisible();
-  await expect(performance.getByRole("img", { name: /^Republican caucus seat probability distribution\. Observed 53 seats\./ })).toBeVisible();
+  await expect(performance.getByRole("img", { name: /^Democratic caucus seat probabilities for each possible total\. Actual 47 seats\./ })).toBeVisible();
+  await expect(performance.getByRole("img", { name: /^Republican caucus seat probabilities for each possible total\. Actual 53 seats\./ })).toBeVisible();
   await expect(performance.locator("polyline")).toHaveCount(0);
 
   const regular = ribbon.locator('[data-race-id="2018:MN:senate:regular"]');
@@ -54,14 +54,14 @@ test("2018 archive preserves grouped candidates, all contests, and simultaneous 
 test("2022 performance and comparisons follow the selected stack without changing observed truth", async ({ page }) => {
   await page.goto("/?run=history-2022-F-1&race=2022%3AAK%3Asenate%3Aregular");
   await expandControls(page);
-  const performance = page.getByRole("region", { name: "Against the observed result", exact: true });
+  const performance = page.getByRole("region", { name: "Against the actual result", exact: true });
   const chamber = page.getByRole("region", { name: "Who could control the chamber?", exact: true });
   await expect(page.getByLabel("Polling component", { exact: true })).toHaveValue("none");
   await expect(performance.locator(".performance-metric").first()).toContainText("0.684");
   await expect(chamber).toContainText("D needs 50; R needs 51");
-  await expect(performance).toContainText("Observed seats: D 51, R 49, unaligned 0.");
-  await expect(performance.getByRole("img", { name: /^Democratic caucus seat probability distribution\. Observed 51 seats\./ })).toBeVisible();
-  await expect(performance.getByRole("img", { name: /^Republican caucus seat probability distribution\. Observed 49 seats\./ })).toBeVisible();
+  await expect(performance).toContainText("Actual seats: D 51, R 49, unaligned 0.");
+  await expect(performance.getByRole("img", { name: /^Democratic caucus seat probabilities for each possible total\. Actual 51 seats\./ })).toBeVisible();
+  await expect(performance.getByRole("img", { name: /^Republican caucus seat probabilities for each possible total\. Actual 49 seats\./ })).toBeVisible();
   await expect(performance.locator("polyline")).toHaveCount(0);
   const detail = page.getByRole("complementary", { name: "Selected race detail" });
   await expect(detail.getByText(/Group probability for.*Murkowski/)).toBeVisible();
@@ -70,13 +70,13 @@ test("2022 performance and comparisons follow the selected stack without changin
   await expect(page.getByText("Comparing with the 2022 default", { exact: true })).toBeVisible();
   await expect(performance.locator(".performance-metric").first()).toContainText("+0.126 vs comparison");
   await expect(performance.locator("polyline")).toHaveCount(2);
-  await expect(performance).toContainText("the dashed outline shows the comparison stack");
-  await page.getByLabel("Caucus context", { exact: true }).selectOption("unresolved_other_D");
-  await expect(performance).toContainText("Observed control: D caucus. Observed seats: D 51, R 49, unaligned 0.");
+  await expect(performance).toContainText("the dashed outline shows the comparison setup");
+  await page.getByLabel("Who joins each party?", { exact: true }).selectOption("unresolved_other_D");
+  await expect(performance).toContainText("Actual control: D caucus. Actual seats: D 51, R 49, unaligned 0.");
   await page.getByLabel("Polling component", { exact: true }).selectOption("persistent");
   await expect(page).toHaveURL(/run=history-2022-FP_persistent-1/);
   await expect(performance.locator(".performance-metric").first()).toContainText("0.721");
-  await expect(performance).toContainText("Observed seats: D 51, R 49, unaligned 0.");
+  await expect(performance).toContainText("Actual seats: D 51, R 49, unaligned 0.");
   await page.getByLabel("Base model", { exact: true }).selectOption("winner");
   await expect(page.getByLabel("Base model", { exact: true })).toHaveValue("winner");
   await expect(page.locator(".composition-state")).toContainText("Unsupported combination");
@@ -97,7 +97,7 @@ test("deep links, share links, reload, Back, and reset preserve a coherent selec
   await expect(page.getByRole("checkbox", { name: "Compare default", exact: true })).toBeChecked();
   await page.getByLabel("Uncertainty", { exact: true }).selectOption("loading-2");
   await expect(page).toHaveURL(/run=history-2022-F-2/);
-  await page.getByLabel("Caucus context", { exact: true }).selectOption("unresolved_other_R");
+  await page.getByLabel("Who joins each party?", { exact: true }).selectOption("unresolved_other_R");
   await page.getByRole("button", { name: "Share view ↗", exact: true }).click();
   const shared = page.getByLabel("Shareable view", { exact: true });
   await expect(shared).toHaveValue(page.url());
@@ -105,7 +105,7 @@ test("deep links, share links, reload, Back, and reset preserve a coherent selec
   await page.reload();
   await expandControls(page);
   await expect(page.getByLabel("Uncertainty", { exact: true })).toHaveValue("loading-2");
-  await expect(page.getByLabel("Caucus context", { exact: true })).toHaveValue("unresolved_other_R");
+  await expect(page.getByLabel("Who joins each party?", { exact: true })).toHaveValue("unresolved_other_R");
   await expect(page.getByLabel("Choose election in Oklahoma", { exact: true })).toHaveValue("2022:OK:senate:special");
   await page.getByLabel("Uncertainty", { exact: true }).selectOption("loading-0");
   await expect(page).toHaveURL(/run=history-2022-F-0/);
@@ -124,7 +124,7 @@ test("current sensitivities remain distinct from historical performance and unsu
   await expandControls(page);
   await expect(page).toHaveURL(/run=current-polling/);
   await expect(page.getByRole("status").filter({ hasText: "unavailable" })).toBeVisible();
-  await expect(page.getByRole("region", { name: "What has been tested?", exact: true })).toContainText("The 2026 election has not been observed.");
+  await expect(page.getByRole("region", { name: "What has been tested?", exact: true })).toContainText("The 2026 election has not happened yet.");
   await expect(page.getByLabel("Polling component", { exact: true }).locator('option[value="none"]')).toHaveCount(1);
   await expect(page.getByLabel("Polling component", { exact: true }).locator('option[value="standard"]')).toHaveCount(1);
   await page.getByLabel("Uncertainty", { exact: true }).selectOption("error-high");
@@ -140,7 +140,7 @@ test("current sensitivities remain distinct from historical performance and unsu
   await expect(page.locator(".composition-state")).toContainText("Ready");
   await page.getByRole("group", { name: "Election year", exact: true }).getByRole("button", { name: "2018", exact: true }).click();
   await expect(page).toHaveURL(/run=history-2018-F-1/);
-  await expect(page.getByRole("region", { name: "Against the observed result", exact: true })).toBeVisible();
+  await expect(page.getByRole("region", { name: "Against the actual result", exact: true })).toBeVisible();
 });
 
 for (const failure of ["missing", "changed fingerprint"] as const) {
@@ -159,9 +159,9 @@ for (const failure of ["missing", "changed fingerprint"] as const) {
     await expandControls(page);
     await expect(page.getByLabel("Polling component", { exact: true })).toHaveValue("standard");
     await page.getByRole("group", { name: "Election year", exact: true }).getByRole("button", { name: "2022", exact: true }).click();
-    const error = page.getByRole("alert").filter({ hasText: "Unable to change stacks" });
-    await expect(error).toContainText("Unable to change stacks");
-    await expect(error).toContainText("The previous stack remains visible.");
+    const error = page.getByRole("alert").filter({ hasText: "Unable to change model setups" });
+    await expect(error).toContainText("Unable to change model setups");
+    await expect(error).toContainText("The previous forecast remains visible.");
     if (failure === "changed fingerprint") await expect(error).toContainText("fingerprint");
     await expect(page).toHaveURL(/run=current-polling/);
     await expect(page.getByRole("region", { name: "The path to a majority", exact: true })).toBeVisible();
@@ -171,7 +171,7 @@ for (const failure of ["missing", "changed fingerprint"] as const) {
     await page.unroute("**/data/explorer/history-2022-FP-1.json");
     await page.getByRole("group", { name: "Election year", exact: true }).getByRole("button", { name: "2022", exact: true }).click();
     await expect(page).toHaveURL(/run=history-2022-FP-1/);
-    await expect(page.getByRole("region", { name: "Against the observed result", exact: true })).toContainText("Observed seats: D 51, R 49, unaligned 0.");
+    await expect(page.getByRole("region", { name: "Against the actual result", exact: true })).toContainText("Actual seats: D 51, R 49, unaligned 0.");
     await expect(error).toHaveCount(0);
     expect(errors).toEqual([]);
   });
