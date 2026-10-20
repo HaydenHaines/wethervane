@@ -8,6 +8,8 @@ import {
 import { parseHousePublicationWithCatalog, type HousePublicationWithCatalog } from "../lib/house-catalog";
 import { houseSelectionForResult, houseSelectionUrl } from "../lib/house-selection";
 import HouseControls from "./HouseControls";
+import HouseSavedViews from "./HouseSavedViews";
+import { verifyHouseSavedView, type HouseSavedView } from "../lib/house-saved-views";
 import { validateChamberReadiness } from "../lib/chamber";
 import {
   COLORS,
@@ -41,7 +43,7 @@ export default function HouseExplorer({ onReturn }: { onReturn: () => void }) {
   const previous = useRef<HousePublicationWithCatalog | null>(null);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(true);
-  const [request, setRequest] = useState<{ id: string | null; navigation: "initial" | "history" | "push"; attempt: number } | null>(null);
+  const [request, setRequest] = useState<{ id: string | null; navigation: "initial" | "history" | "push"; attempt: number; savedView?: HouseSavedView } | null>(null);
   useEffect(() => {
     const restore = (navigation: "initial" | "history") => {
       const params = new URLSearchParams(location.search);
@@ -72,6 +74,11 @@ export default function HouseExplorer({ onReturn }: { onReturn: () => void }) {
         if (!response.ok) throw Error(response.status === 400 ? "This model selection is not available in the published collection." : "The House view is temporarily unavailable.");
         const value = parseHousePublicationWithCatalog(await response.json());
         if (!value) throw Error("The House publication could not be verified.");
+        if (request.savedView) {
+          if (value.status !== "available") throw Error("This saved House result is no longer available.");
+          const restored = verifyHouseSavedView(request.savedView, value);
+          if (restored.status !== "verified") throw Error(restored.reason || "The exact saved view is no longer available.");
+        }
         if (value.status === "available") {
           if (request.id && value.result.run.id !== request.id) throw Error("The returned result does not match the requested model.");
           if (!validateChamberReadiness(houseReadinessInput(value.result, value.geography)).canShowRaces) throw Error("The House results could not be verified.");
@@ -79,7 +86,9 @@ export default function HouseExplorer({ onReturn }: { onReturn: () => void }) {
         if (controller.signal.aborted) return;
         if (value.status === "available") {
           const prior = request.navigation === "push" && previous.current?.status === "available" ? previous.current.result : null;
-          const url = houseSelectionForResult(value.result, prior, location.search);
+          const url = request.savedView
+            ? houseSelectionUrl(value.result, request.savedView.raceId, request.savedView.mapView)
+            : houseSelectionForResult(value.result, prior, location.search);
           if (request.navigation === "push") history.pushState(null, "", url);
           else history.replaceState(null, "", url);
         }
@@ -92,8 +101,11 @@ export default function HouseExplorer({ onReturn }: { onReturn: () => void }) {
       });
     return () => controller.abort();
   }, [request]);
-  const retry = () => setRequest((current) => ({ id: current?.id ?? null, navigation: current?.navigation ?? "initial", attempt: (current?.attempt ?? 0) + 1 }));
+  const retry = () => setRequest((current) => current
+    ? { ...current, attempt: current.attempt + 1 }
+    : { id: null, navigation: "initial", attempt: Date.now() });
   const choose = (id: string) => setRequest({ id, navigation: "push", attempt: Date.now() });
+  const restoreSavedView = (view: HouseSavedView) => setRequest({ id: view.runId, navigation: "push", attempt: Date.now(), savedView: view });
   if (!publication)
     return (
       <main className="load-page" aria-busy={busy}>
@@ -109,7 +121,7 @@ export default function HouseExplorer({ onReturn }: { onReturn: () => void }) {
       </main>
     );
   if (publication.status === "available")
-    return <HouseResults publication={publication} busy={busy} requestedId={request?.id ?? null} error={error} onChoose={choose} onRetry={retry} />;
+    return <HouseResults publication={publication} busy={busy} requestedId={request?.id ?? null} error={error} onChoose={choose} onRetry={retry} onRestore={restoreSavedView} />;
   return (
     <main>
       <section className="hero house-preparation-hero">
@@ -206,13 +218,14 @@ export default function HouseExplorer({ onReturn }: { onReturn: () => void }) {
   );
 }
 
-function HouseResults({ publication, busy, requestedId, error, onChoose, onRetry }: {
+function HouseResults({ publication, busy, requestedId, error, onChoose, onRetry, onRestore }: {
   publication: Extract<HousePublicationWithCatalog, { status: "available" }>;
   busy: boolean;
   requestedId: string | null;
   error: string;
   onChoose: (id: string) => void;
   onRetry: () => void;
+  onRestore: (view: HouseSavedView) => void;
 }) {
   const { result, geography } = publication;
   const readiness = validateChamberReadiness(
@@ -321,7 +334,9 @@ function HouseResults({ publication, busy, requestedId, error, onChoose, onRetry
           {result.races.length} of 435 districts
         </div>
       </section>
-      <HouseControls result={result} catalog={publication.catalog} busy={busy} requestedId={requestedId} error={error} onSelect={onChoose} onRetry={onRetry} />
+      <HouseControls result={result} catalog={publication.catalog} busy={busy} requestedId={requestedId} error={error} onSelect={onChoose} onRetry={onRetry}>
+        <HouseSavedViews publication={publication} raceId={selected.id} mapView={mapView} busy={busy} selectionError={error} onRestore={onRestore} />
+      </HouseControls>
       {result.run.historical && <HouseScoreboard result={result} />}
       <HouseRibbon
         result={result}

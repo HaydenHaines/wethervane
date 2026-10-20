@@ -1,6 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 import { makeHousePublication, fixtureSha256 } from "../fixtures/house.mjs";
-import type { HouseCatalog } from "../../lib/house-catalog";
+import { parseHousePublicationWithCatalog, type HouseCatalog } from "../../lib/house-catalog";
+import { createHouseSavedView, serializeHouseSavedViews, HOUSE_SAVED_VIEWS_STORAGE_KEY } from "../../lib/house-saved-views";
 
 // Synthetic data only: exercise the confirmed multi-result publication contract.
 function collection() {
@@ -21,7 +22,11 @@ function collection() {
     capabilities: { historical_races: true, polling: false, district_geometry: false, full_chamber: false, chamber_control: false, chamber_tipping: false, current_2026: false },
     runs: publications.map((publication) => ({ ...publication.result.run, informationMode: "retrospective_proxy_strictly_earlier_fitted_labels", resultSha256: publication.resultSha256, raceCount: publication.result.races.length, available: true, unavailableReason: null })),
   };
-  return publications.map((publication) => ({ ...publication, catalog }));
+  return publications.map((publication) => {
+    const parsed = parseHousePublicationWithCatalog({ ...publication, catalog });
+    if (!parsed || parsed.status !== "available") throw Error("Invalid House selection fixture");
+    return { ...parsed, catalog };
+  });
 }
 
 async function controls(page: Page) {
@@ -30,6 +35,137 @@ async function controls(page: Page) {
   if (await panel.getAttribute("open") === null) await panel.locator(":scope > summary").click();
   return panel;
 }
+
+async function savedViews(page: Page) {
+  const panel = await controls(page);
+  const views = panel.locator("details.house-saved-views");
+  if (await views.getAttribute("open") === null) await views.locator(":scope > summary").click();
+  return views;
+}
+
+test("House views save exact results locally and restore district, map mode and history across years", async ({ page }) => {
+  const publications = collection();
+  await page.route("**/api/chambers/house*", route => route.fulfill({ json: publications.find(p => p.result.run.id === new URL(route.request().url()).searchParams.get("run")) || publications[0] }));
+  await page.goto("/?chamber=house&run=fixture-fixed-2022&race=2022%3ACA-02%3Ahouse%3Aregular&view=actual");
+  const views = await savedViews(page);
+  const before = page.url();
+  await views.getByLabel("Name this House view", { exact: true }).fill("California reference");
+  await views.getByRole("button", { name: "Save House view", exact: true }).click();
+  await expect(views.getByRole("button", { name: "Restore California reference", exact: true })).toBeEnabled();
+  expect(page.url()).toBe(before);
+  const stored = await page.evaluate(key => JSON.parse(localStorage.getItem(key) || "{}"), HOUSE_SAVED_VIEWS_STORAGE_KEY);
+  expect(stored.schemaVersion).toBe(1);
+  expect(stored.views).toHaveLength(1);
+  expect(stored.views[0]).toMatchObject({ runId: "fixture-fixed-2022", resultSha256: publications[0].resultSha256, configurationSha256: publications[0].result.run.configurationSha256,
+    year: 2022, mapVintage: "house_election_map_2022", raceId: "2022:CA-02:house:regular", mapView: "actual", label: "California reference" });
+  await page.getByLabel("House model", { exact: true }).selectOption("fixture-context-2022");
+  await (await controls(page)).getByRole("button", { name: "2018", exact: true }).click();
+  await expect(page).toHaveURL(/run=fixture-context-2018/);
+  await (await savedViews(page)).getByRole("button", { name: "Restore California reference", exact: true }).click();
+  await expect(page).toHaveURL(/run=fixture-fixed-2022&race=2022%3ACA-02%3Ahouse%3Aregular&view=actual/);
+  await expect(page.getByRole("complementary", { name: "Selected House race detail", exact: true })).toContainText("CA-02");
+  await expect(page.getByRole("group", { name: "Map view", exact: true }).getByRole("button", { name: "Actual winners", exact: true })).toHaveAttribute("aria-pressed", "true");
+  await page.goBack();
+  await expect(page).toHaveURL(/run=fixture-context-2018/);
+  await expect(page.getByLabel("House model", { exact: true })).toHaveValue("fixture-context-2018");
+  await page.goForward();
+  await expect(page.getByLabel("House model", { exact: true })).toHaveValue("fixture-fixed-2022");
+  await expect(page.getByRole("complementary", { name: "Selected House race detail", exact: true })).toContainText("CA-02");
+  await page.reload();
+  const restored = await savedViews(page);
+  await expect(restored.getByRole("button", { name: "Restore California reference", exact: true })).toBeEnabled();
+  await restored.getByRole("button", { name: "Delete California reference", exact: true }).click();
+  await expect(restored.getByRole("button", { name: "Restore California reference", exact: true })).toHaveCount(0);
+  expect(await page.evaluate(key => JSON.parse(localStorage.getItem(key) || "{}").views, HOUSE_SAVED_VIEWS_STORAGE_KEY)).toEqual([]);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();
+});
+
+test("a saved House restore rejects a changed result and retry retains the exact saved identity", async ({ page }) => {
+  const publications = collection();
+  const saved = createHouseSavedView("Original result", publications[1], { raceId: "2022:CA-02:house:regular", mapView: "actual" });
+  await page.addInitScript(({ key, raw }) => localStorage.setItem(key, raw), { key: HOUSE_SAVED_VIEWS_STORAGE_KEY, raw: serializeHouseSavedViews([saved]) });
+  let changed = true;
+  let release: (() => void) | undefined;
+  await page.route("**/api/chambers/house*", async route => {
+    const id = new URL(route.request().url()).searchParams.get("run");
+    if (id !== publications[1].result.run.id) return route.fulfill({ json: publications[0] });
+    if (!changed) return route.fulfill({ json: publications[1] });
+    await new Promise<void>(resolve => { release = resolve; });
+    const replacement = structuredClone(publications[1]);
+    replacement.result.limitations.push("Synthetic updated result, not the saved artifact.");
+    replacement.resultSha256 = fixtureSha256(replacement.result);
+    replacement.catalog!.runs.find(run => run.id === id)!.resultSha256 = replacement.resultSha256;
+    return route.fulfill({ json: replacement });
+  });
+  await page.goto("/?chamber=house&race=2022%3ACA-01%3Ahouse%3Aregular");
+  const views = await savedViews(page), before = page.url();
+  await views.getByLabel("Name this House view", { exact: true }).fill("Pending view");
+  await expect(views.getByRole("button", { name: "Save House view", exact: true })).toBeEnabled();
+  await views.getByRole("button", { name: "Restore Original result", exact: true }).click();
+  await expect(page.locator(".compare-banner[role=status]")).toContainText("Still displaying");
+  await expect(views.getByRole("button", { name: "Save House view", exact: true })).toBeDisabled();
+  expect(page.url()).toBe(before);
+  await expect.poll(() => typeof release).toBe("function");
+  release!();
+  await expect(page.locator(".compare-banner[role=alert]")).toContainText("previous forecast remains visible");
+  expect(page.url()).toBe(before);
+  await expect(page.getByLabel("House model", { exact: true })).toHaveValue("fixture-fixed-2022");
+  await expect(views.getByRole("button", { name: "Save House view", exact: true })).toBeDisabled();
+  changed = false;
+  await page.getByRole("button", { name: "Try selection again", exact: true }).click();
+  await expect(page).toHaveURL(/run=fixture-context-2022&race=2022%3ACA-02%3Ahouse%3Aregular&view=actual/);
+  await expect(page.getByRole("group", { name: "Map view", exact: true }).getByRole("button", { name: "Actual winners", exact: true })).toHaveAttribute("aria-pressed", "true");
+});
+
+test("withdrawn and changed House views remain listed, explained and deletable", async ({ page }) => {
+  const publications = collection();
+  const entries = [createHouseSavedView("Withdrawn model", publications[1], { raceId: "2022:CA-02:house:regular", mapView: "forecast" }),
+    createHouseSavedView("Changed result", publications[2], { raceId: "2018:CA-01:house:regular", mapView: "forecast" })];
+  publications[0].catalog!.runs[1] = { ...publications[0].catalog!.runs[1], available: false, resultSha256: null, unavailableReason: "Model withdrawn pending review." };
+  publications[0].catalog!.runs[2].resultSha256 = "a".repeat(64);
+  await page.addInitScript(({ key, raw }) => localStorage.setItem(key, raw), { key: HOUSE_SAVED_VIEWS_STORAGE_KEY, raw: serializeHouseSavedViews(entries) });
+  await page.route("**/api/chambers/house*", route => route.fulfill({ json: publications[0] }));
+  await page.goto("/?chamber=house");
+  const views = await savedViews(page);
+  await expect(views.getByRole("button", { name: "Restore Withdrawn model", exact: true })).toBeDisabled();
+  await expect(views).toContainText("Model withdrawn pending review.");
+  await expect(views.getByRole("button", { name: "Restore Changed result", exact: true })).toBeDisabled();
+  await expect(views).toContainText(/changed|differs/);
+  await views.getByRole("button", { name: "Delete Withdrawn model", exact: true }).click();
+  await expect(views.getByRole("button", { name: "Restore Withdrawn model", exact: true })).toHaveCount(0);
+  await expect(views.getByRole("button", { name: "Restore Changed result", exact: true })).toBeDisabled();
+});
+
+test("a browser storage failure does not claim a House view was saved", async ({ page }) => {
+  await page.addInitScript(() => { Storage.prototype.setItem = () => { throw new DOMException("Test storage limit", "QuotaExceededError"); }; });
+  const publications = collection();
+  await page.route("**/api/chambers/house*", route => route.fulfill({ json: publications[0] }));
+  await page.goto("/?chamber=house");
+  const views = await savedViews(page), before = page.url();
+  await views.getByLabel("Name this House view", { exact: true }).fill("Unsaved example");
+  await views.getByRole("button", { name: "Save House view", exact: true }).click();
+  await expect(views).toContainText(/Couldn.t save|could not be saved|Unable to save/i);
+  await expect(views.getByRole("button", { name: "Restore Unsaved example", exact: true })).toHaveCount(0);
+  expect(page.url()).toBe(before);
+});
+
+test("an actual-winner view can retain an unknown selected result without substituting a forecast", async ({ page }) => {
+  const publications = collection(), publication = publications[0];
+  delete publication.result.races.find(race => race.id === "2022:CA-02:house:regular")!.observed;
+  publication.resultSha256 = fixtureSha256(publication.result);
+  publication.catalog.runs[0].resultSha256 = publication.resultSha256;
+  await page.route("**/api/chambers/house*", route => route.fulfill({ json: publication }));
+  await page.goto("/?chamber=house&race=2022%3ACA-02%3Ahouse%3Aregular&view=actual");
+  const views = await savedViews(page);
+  await views.getByLabel("Name this House view", { exact: true }).fill("Unknown actual winner");
+  await views.getByRole("button", { name: "Save House view", exact: true }).click();
+  await expect(views.getByRole("button", { name: "Restore Unknown actual winner", exact: true })).toBeEnabled();
+  await page.getByRole("group", { name: "Map view", exact: true }).getByRole("button", { name: "Forecast", exact: true }).click();
+  await views.getByRole("button", { name: "Restore Unknown actual winner", exact: true }).click();
+  await expect(page).toHaveURL(/race=2022%3ACA-02%3Ahouse%3Aregular&view=actual/);
+  await expect(page.getByRole("group", { name: "Map view", exact: true }).getByRole("button", { name: "Actual winners", exact: true })).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByRole("complementary", { name: "Selected House race detail", exact: true }).locator(".observed-result")).toHaveCount(0);
+});
 
 test("House builder shows all eight roles with only its own saved fundamentals selector active", async ({ page }) => {
   const publications = collection();

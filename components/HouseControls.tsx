@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import type { HouseCatalog } from "../lib/house-catalog";
 import type { HouseResult } from "../lib/house-result";
 import { houseRunForYear } from "../lib/house-selection";
 import { houseModelSlices } from "../lib/house-model-slices";
 import ModelSliceControls from "./ModelSliceControls";
 
-export default function HouseControls({ result, catalog, busy, requestedId, error, onSelect, onRetry }: {
+export default function HouseControls({ result, catalog, busy, requestedId, error, onSelect, onRetry, children }: {
   result: HouseResult;
   catalog?: HouseCatalog;
   busy: boolean;
@@ -13,6 +13,7 @@ export default function HouseControls({ result, catalog, busy, requestedId, erro
   error: string;
   onSelect: (id: string) => void;
   onRetry: () => void;
+  children?: ReactNode;
 }) {
   const [shareUrl, setShareUrl] = useState("");
   const [notice, setNotice] = useState("");
@@ -60,6 +61,7 @@ export default function HouseControls({ result, catalog, busy, requestedId, erro
           <dt>Testing evidence</dt><dd>{result.run.evidenceLabel}</dd>
         </dl>
         <p className="small">“Experimental” describes the stage of research. A completed calculation does not by itself establish forecasting accuracy.</p>
+        {children}
         {notice && <p role="status" className="small">{notice}</p>}
         {shareUrl && <div className="share-link"><label htmlFor="house-share-url">Shareable House view</label><input id="house-share-url" readOnly value={shareUrl} onFocus={(event) => event.target.select()} /></div>}
       </details>
