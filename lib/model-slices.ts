@@ -9,7 +9,7 @@ export const MODEL_SLICES = [
   { id: "measurement", label: "Polls & surveys", purpose: "Adds polling evidence while allowing for survey error.", unavailable: "No polling choices are available for this result." },
   { id: "participation", label: "Turnout & participation", purpose: "Models who votes and how turnout varies.", unavailable: "A turnout model is not connected yet. These forecasts do not predict voter counts." },
   { id: "choice", label: "Candidate choice", purpose: "Models choices among candidates and ballot options.", unavailable: "A separate choice model is not connected yet. The saved forecasts define their own possible winners." },
-  { id: "counts_rules", label: "Vote counts & election rules", purpose: "Turns voting choices into counts, winners and chamber outcomes.", unavailable: "A separate vote-count model is not connected yet. Saved Senate results already include fixed chamber and tie rules." },
+  { id: "counts_rules", label: "Vote counts & election rules", purpose: "Turns voting choices into counts, winners and chamber outcomes.", unavailable: "A separate vote-count model is not connected yet." },
 ] as const;
 
 export type ModelSliceId = typeof MODEL_SLICES[number]["id"];
@@ -29,6 +29,9 @@ export interface ModelSliceView {
   purpose: string;
   controls: SliceControl[];
   unavailableReason: string | null;
+  /** This role is present in the saved model, but has no separate control. */
+  builtIn?: boolean;
+  builtInReason?: string | null;
 }
 
 /** Adapt the preserved three-slot contract without claiming finer independence. */
@@ -44,10 +47,18 @@ export function savedForecastSlices(catalog: CompositionCatalog, request: Compos
     const toggle = slot?.id === "polling" && options.some((option) => option.id === "none") && onValue
       ? { label: "Include polling evidence", offValue: "none", onValue }
       : undefined;
+    const builtIn = slice.id === "choice" || slice.id === "counts_rules";
     return {
       id: slice.id, label: slice.label, purpose: slice.purpose,
       controls: slot && options.length ? [{ id: slot.id, label: slot.label, description: slot.description, value, options, required: !toggle, ...(toggle ? { toggle } : {}) }] : [],
-      unavailableReason: slot && options.length ? null : slice.unavailable,
+      unavailableReason: slot && options.length || builtIn ? null : slice.unavailable,
+      ...(slice.id === "choice" ? {
+        builtIn: true,
+        builtInReason: "The candidate options are fixed in each saved forecast. There is no separate candidate-choice control.",
+      } : slice.id === "counts_rules" ? {
+        builtIn: true,
+        builtInReason: "Chamber calculations and tie rules are fixed in each saved Senate result. Total vote counts are not predicted, and there is no separate control to change these rules.",
+      } : {}),
     };
   });
 }

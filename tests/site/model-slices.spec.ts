@@ -28,8 +28,8 @@ test("all eight model responsibilities are visible with honest required and unav
     const slice = controls.locator(`.model-slice[data-slice="${id}"]`);
     await expect(slice.getByRole("heading", { name: label, exact: true })).toBeVisible();
   }
-  await expect(controls.locator(".model-slice.is-unavailable")).toHaveCount(5);
-  for (const id of ["population", "community", "participation", "choice", "counts_rules"]) {
+  await expect(controls.locator(".model-slice.is-unavailable")).toHaveCount(3);
+  for (const id of ["population", "community", "participation"]) {
     const slice = controls.locator(`.model-slice[data-slice="${id}"]`);
     const disabled = slice.getByRole("checkbox");
     const reason = slice.locator(".slice-unavailable-reason");
@@ -39,6 +39,13 @@ test("all eight model responsibilities are visible with honest required and unav
     await expect(reason).toBeVisible();
     expect((await reason.innerText()).trim().length).toBeGreaterThan(30);
     await expect(disabled).toHaveAttribute("aria-describedby", (await reason.getAttribute("id"))!);
+  }
+  await expect(controls.locator(".model-slice.is-fixed")).toHaveCount(2);
+  for (const id of ["choice", "counts_rules"]) {
+    const slice = controls.locator(`.model-slice[data-slice="${id}"]`);
+    await expect(slice.getByText("Built into this model", { exact: true })).toBeVisible();
+    await expect(slice.getByRole("checkbox")).toHaveCount(0);
+    await expect(slice.locator(".slice-fixed-reason")).toBeVisible();
   }
   for (const id of ["fundamentals", "environment"]) {
     const slice = controls.locator(`.model-slice[data-slice="${id}"]`);

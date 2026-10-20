@@ -4,6 +4,7 @@ import type { HouseResult } from "../lib/house-result";
 import { houseRunForYear } from "../lib/house-selection";
 import { houseModelSlices } from "../lib/house-model-slices";
 import ModelSliceControls from "./ModelSliceControls";
+import { houseEvidenceLabel, houseSelectionNote } from "../lib/house-copy";
 
 export default function HouseControls({ result, catalog, busy, requestedId, error, onSelect, onRetry, children }: {
   result: HouseResult;
@@ -44,7 +45,7 @@ export default function HouseControls({ result, catalog, busy, requestedId, erro
               </div>
             </div>
             {choices.some((run) => !run.available) && <details className="assumptions"><summary>Why some choices are unavailable</summary>{choices.filter((run) => !run.available).map((run) => <p key={run.id}><strong>{run.label}:</strong> {run.unavailableReason}</p>)}</details>}
-            <p className="small">{catalog.selectionNote} The initial selection is a reference, not a model chosen for having the best historical score.</p>
+            <p className="small">{houseSelectionNote(catalog.selectionNote)} The initial selection is a reference, not a model chosen for having the best historical score.</p>
             {catalog.capabilities?.polling === false && <p className="small">These published models use electoral history without polls. Polling integration is not available in this collection.</p>}
             <div className="stack-actions">
               <button disabled={busy || result.run.id === catalog.defaultRunId} onClick={() => onSelect(catalog.defaultRunId)}>Reset House view</button>
@@ -58,7 +59,7 @@ export default function HouseControls({ result, catalog, busy, requestedId, erro
         <dl>
           <dt>Displayed model</dt><dd>{result.run.label}</dd>
           <dt>Research status</dt><dd>{result.run.experimental ? "Experimental" : "Standard"}</dd>
-          <dt>Testing evidence</dt><dd>{result.run.evidenceLabel}</dd>
+          <dt>Testing evidence</dt><dd>{houseEvidenceLabel(result.run.evidenceLabel)}</dd>
         </dl>
         <p className="small">“Experimental” describes the stage of research. A completed calculation does not by itself establish forecasting accuracy.</p>
         {children}

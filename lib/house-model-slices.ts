@@ -1,6 +1,7 @@
 import type { HouseCatalog } from "./house-catalog";
 import type { HouseResult } from "./house-result";
 import { MODEL_SLICES, type ModelSliceId, type ModelSliceView } from "./model-slices.ts";
+import { houseModelDescription } from "./house-copy.ts";
 
 /**
  * House source-capability-policy-v1: historical aggregate fundamentals only.
@@ -15,7 +16,12 @@ const HOUSE_REASONS: Record<ModelSliceId, string> = {
   measurement: "Polling is not connected to this collection. There is no House polling evidence to switch on or off here.",
   participation: "A House turnout and participation model is not connected. These results predict conditional two-party shares, not voter counts.",
   choice: "Candidate context and the Democratic–Republican candidate pair are fixed within each saved House model. A separate candidate-choice component is not available.",
-  counts_rules: "The races covered by this study do not make up the full 435-seat House. Full-chamber coverage is missing, and a separate vote-count or election-rule selector is unavailable.",
+  counts_rules: "Supported two-candidate race handling is fixed in this saved result. This study does not model vote counts or cover all 435 districts, so it cannot produce a House seat total or chamber-control forecast.",
+};
+
+const HOUSE_BUILT_IN_REASONS: Partial<Record<ModelSliceId, string>> = {
+  environment: "Shared election-wide uncertainty is bundled into each saved House model; there is no separate control to change it.",
+  choice: "Candidate context and the Democratic–Republican candidate pair are fixed in each saved House model; there is no separate candidate-choice control.",
 };
 
 /** Exact saved configurations remain the unit of choice; no component refitting. */
@@ -24,7 +30,12 @@ export function houseModelSlices(result: HouseResult, catalog?: HouseCatalog): M
   const boundChoices = choices.some(run => run.id === result.run.id && run.available)
     ? choices
     : [{ ...result.run, available: true, unavailableReason: null }];
-  return MODEL_SLICES.map(slice => ({
+  return MODEL_SLICES.map(slice => {
+    const builtIn = slice.id === "environment" || slice.id === "choice" || slice.id === "counts_rules";
+    const builtInReason = slice.id === "counts_rules" && result.metadata.full_chamber
+      ? "Chamber calculations and supported race rules are fixed in this saved result. There is no separate House vote-count or election-rule control."
+      : HOUSE_BUILT_IN_REASONS[slice.id] ?? (slice.id === "counts_rules" ? HOUSE_REASONS.counts_rules : null);
+    return {
     id: slice.id,
     label: slice.label,
     purpose: slice.id === "fundamentals"
@@ -32,14 +43,14 @@ export function houseModelSlices(result: HouseResult, catalog?: HouseCatalog): M
       : slice.id === "environment"
         ? "Represents influences that can move House districts together."
         : slice.id === "counts_rules"
-          ? "Defines vote-count and election-rule accounting for the House."
+          ? "Race rules and any chamber calculations follow this saved result; they are not separate controls."
           : slice.purpose,
     unavailableReason: slice.id === "fundamentals" ? null
-      : slice.id === "measurement" && catalog?.capabilities?.polling
-        ? "No separately selectable House polling component is provided. A capability label alone does not supply a control for changing the saved model."
-        : slice.id === "counts_rules" && result.metadata.full_chamber
-          ? "Fixed chamber calculations are included in this result. A separate House vote-count or election-rule selector is not available."
+      : builtIn ? null
+        : slice.id === "measurement" && catalog?.capabilities?.polling
+          ? "No separately selectable House polling component is provided. A capability label alone does not supply a control for changing the saved model."
           : HOUSE_REASONS[slice.id],
+    ...(builtIn ? { builtIn: true, builtInReason } : {}),
     controls: slice.id === "fundamentals" ? [{
       id: "house-model",
       label: "House model",
@@ -50,12 +61,13 @@ export function houseModelSlices(result: HouseResult, catalog?: HouseCatalog): M
         id: run.id,
         label: run.label,
         description: run.available
-          ? "A saved House fundamentals result fitted on earlier elections. Its component effects cannot be independently removed from this output."
+          ? houseModelDescription(run.configurationId, run.year)
           : run.unavailableReason || "This House result is not available for publication.",
         years: [run.year],
         availability: run.available ? "saved" as const : "unavailable" as const,
         experimental: run.experimental,
       })),
     }] : [],
-  }));
+  };
+  });
 }

@@ -54,7 +54,7 @@ test("race details scroll independently before the page bottom on desktop and fl
   await expect.poll(() => detail.evaluate(node => node.scrollTop)).toBe(0);
 });
 
-test("chamber heading and active tab track forecast control and retain neutral House preparation", async ({ page }) => {
+test("chamber heading and active tab track forecast control and keep a House race subset neutral", async ({ page }) => {
   await page.goto("/");
   const heading = page.locator("h1 .chamber-name");
   const senate = page.getByRole("tab", { name: "Senate", exact: true });
@@ -71,7 +71,9 @@ test("chamber heading and active tab track forecast control and retain neutral H
   await expect(heading).toHaveCSS("color", "rgb(62, 102, 131)");
   await expect(senate).toHaveCSS("color", "rgb(62, 102, 131)");
   await page.getByRole("tab", { name: "House", exact: true }).click();
-  await expect(page.getByRole("heading", { name: /The House,.*in preparation/ })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /The House,.*in perspective/ })).toBeVisible();
+  await expect(heading).toHaveAttribute("data-chamber-outlook", "unavailable");
+  await expect(heading).toHaveCSS("color", "rgb(33, 57, 75)");
   await expect(page.getByRole("tab", { name: "House", exact: true })).toHaveCSS("color", "rgb(33, 57, 75)");
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();
 });

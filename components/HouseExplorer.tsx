@@ -10,6 +10,7 @@ import { houseSelectionForResult, houseSelectionUrl } from "../lib/house-selecti
 import HouseControls from "./HouseControls";
 import HouseSavedViews from "./HouseSavedViews";
 import { verifyHouseSavedView, type HouseSavedView } from "../lib/house-saved-views";
+import { HOUSE_HISTORICAL_CONTEXT, houseExclusionReason, houseResearchNote } from "../lib/house-copy";
 import { validateChamberReadiness } from "../lib/chamber";
 import {
   COLORS,
@@ -556,9 +557,14 @@ function HouseResults({ publication, busy, requestedId, error, onChoose, onRetry
                   }}
                 />
               </div>
+              {(outcome.winProbability === 0 || outcome.winProbability === 1) && (
+                <p className="detail-note">
+                  {outcome.winProbability === 0 ? "No wins" : "Won every time"} in the saved simulations; this is not a guarantee.
+                </p>
+              )}
               {outcome.share && (
                 <p className="detail-note">
-                  Average share of Democratic and Republican votes{" "}
+                  Average share of Democratic and Republican candidate votes{" "}
                   {probability(outcome.share.mean)} · Middle 90% of modeled
                   shares {probability(outcome.share.quantiles.p05)}–
                   {probability(outcome.share.quantiles.p95)}
@@ -572,14 +578,16 @@ function HouseResults({ publication, busy, requestedId, error, onChoose, onRetry
             </p>
           )}
           <p className="detail-note">
-            Winning chances describe how often a candidate wins in the model;
-            they are not vote percentages. Any vote shares shown count
-            Democratic and Republican votes only, excluding other candidates.
+            Winning chances describe how often a candidate wins in a finite set
+            of model simulations; they are not vote percentages. A displayed 0%
+            or 100% does not mean an outcome is impossible or certain. Any vote
+            shares shown count Democratic and Republican candidate votes only,
+            excluding other candidates.
             Missing districts have no forecast.
           </p>
           {selected.notes.map((note, index) => (
             <p className="detail-note" key={index}>
-              {note}
+              {houseResearchNote(note)}
             </p>
           ))}
         </aside>
@@ -595,10 +603,10 @@ function HouseResults({ publication, busy, requestedId, error, onChoose, onRetry
             <p>
               {result.run.informationMode === "strict_asof"
                 ? "This result uses evidence reconstructed for its stated forecast date, with later information excluded under its documented rules."
-                : "Some historical inputs were assembled later as substitutes for information about the past (retrospective proxies). This comparison does not establish how accurately the model could have forecast using only information available on that date."}
+                : HOUSE_HISTORICAL_CONTEXT}
             </p>
             {result.limitations.map((note, index) => (
-              <p key={index}>{note}</p>
+              <p key={index}>{houseResearchNote(note)}</p>
             ))}
           </div>
           <div>
@@ -617,7 +625,7 @@ function HouseResults({ publication, busy, requestedId, error, onChoose, onRetry
                   .filter((row) => !row.eligible)
                   .map((row) => (
                     <li key={row.raceId}>
-                      <b>{row.districtKey}</b>: {row.exclusionReason}
+                      <b>{row.districtKey}</b>: {houseExclusionReason(row.exclusionReason)}
                     </li>
                   ))}
               </ul>
@@ -636,6 +644,7 @@ function HouseResults({ publication, busy, requestedId, error, onChoose, onRetry
                 <br />
                 Result: {publication.resultSha256}
               </p>
+              <p><a href={`/api/chambers/house?${new URLSearchParams({ run: result.run.id })}`}>View the exact saved result (JSON)</a>, including the original exclusion codes and source notes. JSON is the structured data format used by this page.</p>
             </details>
           </div>
         </div>
@@ -690,10 +699,13 @@ function HouseScoreboard({ result }: { result: HouseResult }) {
             {result.run.label} ·{" "}
             {result.metadata.full_chamber
               ? "Full chamber"
-              : "Eligible races only"}
+              : "Included districts only"}
           </p>
         </div>
       </div>
+      <p className="scoreboard-context">{result.run.informationMode === "strict_asof"
+        ? "These scores compare the saved model probabilities with known election results for the included districts. They do not establish accuracy in future elections."
+        : HOUSE_HISTORICAL_CONTEXT}</p>
       <div className="scoreboard-cards house-scoreboard-cards">
         <article className="scoreboard-card">
           <h3>Favorites that won</h3>

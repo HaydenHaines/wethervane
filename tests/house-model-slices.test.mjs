@@ -24,6 +24,10 @@ test("all eight House responsibilities are present, with only the saved fundamen
   const enabled = slices.filter(slice => slice.controls.length);
   assert.equal(enabled.length, 1);
   assert.equal(enabled[0].id, "fundamentals");
+  const fixed = slices.filter(slice => slice.builtIn);
+  assert.deepEqual(fixed.map(slice => slice.id), ["environment", "choice", "counts_rules"]);
+  assert.ok(fixed.every(slice => slice.unavailableReason === null && slice.builtInReason.length > 30));
+  assert.equal(slices.filter(slice => !slice.controls.length && !slice.builtIn).length, 4);
   const control = enabled[0].controls[0];
   assert.equal(control.label, "House model");
   assert.equal(control.value, result.run.id);
@@ -31,13 +35,13 @@ test("all eight House responsibilities are present, with only the saved fundamen
   assert.equal(control.toggle, undefined);
   assert.equal(control.options.length, 2);
   assert.ok(control.options.every(option => option.years[0] === 2022 && option.availability === "saved"));
-  for (const slice of slices.filter(slice => !slice.controls.length)) {
+  for (const slice of slices.filter(slice => !slice.controls.length && !slice.builtIn)) {
     assert.ok(slice.unavailableReason.length > 30);
     assert.ok(!slice.unavailableReason.includes("Senate"));
   }
-  assert.match(slices.find(slice => slice.id === "environment").unavailableReason, /bundled into each saved House model/);
+  assert.match(slices.find(slice => slice.id === "environment").builtInReason, /bundled into each saved House model/);
   assert.match(slices.find(slice => slice.id === "measurement").unavailableReason, /Polling is not connected/);
-  assert.match(slices.find(slice => slice.id === "counts_rules").unavailableReason, /Full-chamber coverage is missing/);
+  assert.match(slices.find(slice => slice.id === "counts_rules").builtInReason, /does not model vote counts or cover all 435 districts/);
 });
 
 test("unavailable saved variants retain reasons and never become optional component toggles", () => {
@@ -56,14 +60,16 @@ test("future capability flags and Senate-like offers cannot activate new House r
   catalog.componentOffers = [{ role: "environment", availability: "available" }, { role: "measurement", availability: "available" }];
   const slices = houseModelSlices(result, catalog);
   assert.equal(slices.filter(slice => slice.controls.length).length, 1);
-  assert.equal(slices.filter(slice => !slice.controls.length).length, 7);
+  assert.equal(slices.filter(slice => !slice.controls.length && !slice.builtIn).length, 4);
+  assert.equal(slices.filter(slice => slice.builtIn).length, 3);
   assert.equal(slices.flatMap(slice => slice.controls).some(control => control.toggle), false);
   assert.match(slices.find(slice => slice.id === "measurement").unavailableReason, /No separately selectable House polling component/);
   result.metadata.full_chamber = true;
   result.metadata.scope = "full_chamber";
   const full = houseModelSlices(result, catalog);
-  assert.match(full.find(slice => slice.id === "counts_rules").unavailableReason, /Fixed chamber calculations are included/);
-  assert.doesNotMatch(full.find(slice => slice.id === "counts_rules").unavailableReason, /coverage is missing/);
+  assert.equal(full.find(slice => slice.id === "counts_rules").builtIn, true);
+  assert.match(full.find(slice => slice.id === "counts_rules").builtInReason, /Chamber calculations and supported race rules are fixed/);
+  assert.doesNotMatch(full.find(slice => slice.id === "counts_rules").builtInReason, /coverage is missing/);
 });
 
 test("a single legacy result has fixed fundamentals without inventing a catalog selector", () => {

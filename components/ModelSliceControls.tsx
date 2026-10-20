@@ -47,23 +47,24 @@ export default function ModelSliceControls({ slices, busy, explain, onChange }: 
     <div className="model-slice-list">
       {slices.map((slice) => {
         const unavailable = slice.controls.length === 0;
+        const fixed = unavailable && slice.builtIn === true;
         const off = !unavailable && slice.controls.every((control) => control.toggle && control.value === control.toggle.offValue);
         const alwaysIncluded = !unavailable && slice.controls.every((control) => control.required);
         const hintId = `slice-${slice.id}-availability`;
-        return <section key={slice.id} className={`model-slice${unavailable ? " is-unavailable" : off ? " is-off" : " is-included"}`} data-slice={slice.id} aria-labelledby={`slice-${slice.id}-title`}>
+        return <section key={slice.id} className={`model-slice${unavailable ? (fixed ? " is-fixed" : " is-unavailable") : off ? " is-off" : " is-included"}`} data-slice={slice.id} aria-labelledby={`slice-${slice.id}-title`}>
           <div className="model-slice-description">
             <div className="model-slice-heading">
-              {unavailable ? <input type="checkbox" checked={false} disabled readOnly aria-label={`Include ${slice.label.toLowerCase()}`} aria-describedby={hintId} /> : <span className="slice-state-mark" aria-hidden="true">{off ? "−" : "✓"}</span>}
+              {unavailable && !fixed ? <input type="checkbox" checked={false} disabled readOnly aria-label={`Include ${slice.label.toLowerCase()}`} aria-describedby={hintId} /> : <span className="slice-state-mark" aria-hidden="true">{off ? "−" : "✓"}</span>}
               <h4 id={`slice-${slice.id}-title`}>{slice.label}</h4>
-              <span className="slice-state">{unavailable ? "Not connected yet" : alwaysIncluded ? "Always included" : off ? "Off" : "Included"}</span>
+              <span className="slice-state">{fixed ? "Built into this model" : unavailable ? "Not connected yet" : alwaysIncluded ? "Always included" : off ? "Off" : "Included"}</span>
             </div>
             <p>{slice.purpose}</p>
           </div>
-          {unavailable ? <p id={hintId} className="slice-unavailable-reason">{slice.unavailableReason}</p>
+          {unavailable ? <p id={hintId} className={`slice-unavailable-reason${fixed ? " slice-fixed-reason" : ""}`}>{fixed ? slice.builtInReason : slice.unavailableReason}</p>
             : <div className="model-slice-options">{slice.controls.map(controlView)}</div>}
         </section>;
       })}
     </div>
-    <p className="model-slices-footnote">“Always included” means this part is required by these saved models. Unavailable controls do not change the forecast. These choices belong to one model with shared assumptions; they are not percentages to blend.</p>
+    <p className="model-slices-footnote">“Always included” means this part is required by these saved models. “Built into this model” means it is present but has no separate control. Disabled choices cannot change this result. These choices belong to one model with shared assumptions; they are not percentages to blend.</p>
   </section>;
 }

@@ -11,16 +11,16 @@ async function stubHouse(page: Page, publication = makeHousePublication()) {
   );
 }
 
-test("the real House endpoint stays preparing and the default remains the collapsed Senate view", async ({
+async function stubPreparingHouse(page: Page) {
+  await page.route("**/api/chambers/house*", (route) =>
+    route.fulfill({ json: { schemaVersion: 1, status: "preparing" } }),
+  );
+}
+
+test("a preparing House fixture keeps the collapsed Senate default and shows no invented results", async ({
   page,
-  request,
 }) => {
-  const response = await request.get("/api/chambers/house");
-  expect(response.status()).toBe(200);
-  expect(await response.json()).toEqual({
-    schemaVersion: 1,
-    status: "preparing",
-  });
+  await stubPreparingHouse(page);
   await page.goto("/");
   await expect(
     page.getByRole("tab", { name: "Senate", exact: true }),
@@ -51,6 +51,7 @@ test("House deep links and keyboard chamber tabs preserve their selected panel",
 }) => {
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
+  await stubPreparingHouse(page);
   await page.goto("/?chamber=house");
   const house = page.getByRole("tab", { name: "House", exact: true });
   const senate = page.getByRole("tab", { name: "Senate", exact: true });
@@ -84,6 +85,7 @@ test("House deep links and keyboard chamber tabs preserve their selected panel",
 test("switching chambers, Back and Forward restore the exact prior Senate selection", async ({
   page,
 }) => {
+  await stubPreparingHouse(page);
   await page.goto(
     "/?run=history-2022-F-1&scenario=unresolved_other_R&race=2022%3AOK%3Asenate%3Aspecial&compare=1&view=actual",
   );
@@ -151,11 +153,23 @@ for (const eligibleCount of [16, 435]) {
       eligibleCount,
     );
     await expect(page.locator(".house-race-list button")).toHaveCount(10);
-    await page.getByRole("button", { name: `See all ${eligibleCount} races`, exact: true }).click();
-    await expect(page.locator(".house-race-list button")).toHaveCount(eligibleCount);
-    await page.getByRole("button", { name: "Show fewer races", exact: true }).click();
+    await page
+      .getByRole("button", {
+        name: `See all ${eligibleCount} races`,
+        exact: true,
+      })
+      .click();
+    await expect(page.locator(".house-race-list button")).toHaveCount(
+      eligibleCount,
+    );
+    await page
+      .getByRole("button", { name: "Show fewer races", exact: true })
+      .click();
     await expect(page.locator(".house-race-list button")).toHaveCount(10);
-    await expect(page.locator(".chamber-name")).toHaveAttribute("data-chamber-outlook", "unavailable");
+    await expect(page.locator(".chamber-name")).toHaveAttribute(
+      "data-chamber-outlook",
+      "unavailable",
+    );
     await expect(
       page.locator(".house-ribbon-cell.majority-position"),
     ).toHaveCount(0);

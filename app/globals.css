@@ -2910,7 +2910,7 @@ select:focus-visible {
 .model-slice-list { margin: 20px 0 14px; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
 .model-slice { display: grid; grid-template-columns: minmax(220px, .9fr) minmax(0, 1.25fr); gap: 24px; padding: 22px; background: var(--paper); }
 .model-slice + .model-slice { border-top: 1px solid var(--line); }
-.model-slice.is-unavailable { background: #f1f1eb; }
+.model-slice.is-unavailable, .model-slice.is-fixed { background: #f1f1eb; }
 .model-slice-heading { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 .model-slice-heading h4 { margin: 0; font-size: 15px; font-weight: 600; }
 .model-slice-heading > input { width: 17px; height: 17px; margin: 0; flex: 0 0 auto; }

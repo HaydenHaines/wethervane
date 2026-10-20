@@ -177,7 +177,7 @@ test("House builder shows all eight roles with only its own saved fundamentals s
   await controls(page);
   await expect(panel.locator(".model-slice")).toHaveCount(8);
   await expect(panel.locator(".slice-control")).toHaveCount(1);
-  await expect(panel.locator(".model-slice.is-unavailable")).toHaveCount(7);
+  await expect(panel.locator(".model-slice.is-unavailable")).toHaveCount(4);
   for (const label of ["Population & geography", "Community composition", "Electoral history", "National environment", "Polls & surveys", "Turnout & participation", "Candidate choice", "Vote counts & election rules"]) {
     await expect(panel.getByRole("heading", { name: label, exact: true })).toBeVisible();
   }
@@ -189,12 +189,17 @@ test("House builder shows all eight roles with only its own saved fundamentals s
     await expect(reason).toBeVisible();
     await expect(checkbox).toHaveAttribute("aria-describedby", (await reason.getAttribute("id"))!);
   }
+  await expect(panel.locator(".model-slice.is-fixed")).toHaveCount(3);
+  for (const slice of await panel.locator(".model-slice.is-fixed").all()) {
+    await expect(slice.getByRole("checkbox")).toHaveCount(0);
+    await expect(slice).toContainText("Built into this model");
+  }
   const fundamentals = panel.locator('[data-slice="fundamentals"]');
   await expect(fundamentals.getByText("Always included", { exact: true })).toBeVisible();
   await expect(fundamentals.getByLabel("House model", { exact: true })).toHaveValue("fixture-fixed-2022");
   await expect(panel.locator('[data-slice="measurement"]')).toContainText("Polling is not connected");
   await expect(panel.locator('[data-slice="environment"]')).toContainText("bundled into each saved House model");
-  await expect(panel.locator('[data-slice="counts_rules"]')).toContainText("Full-chamber coverage is missing");
+  await expect(panel.locator('[data-slice="counts_rules"]')).toContainText("does not model vote counts or cover all 435 districts");
   await expect(panel).not.toContainText("Saved Senate results");
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();
 });
@@ -212,7 +217,7 @@ test("an unavailable House variant keeps its reason and future capability flags 
   await expect(page.getByLabel("House model", { exact: true }).locator('option[value="fixture-context-2022"]')).toBeDisabled();
   await panel.getByText("Why some choices are unavailable", { exact: true }).click();
   await expect(panel).toContainText("Synthetic diagnostic failure; result withheld.");
-  await expect(panel.locator(".model-slice.is-unavailable")).toHaveCount(7);
+  await expect(panel.locator(".model-slice.is-unavailable")).toHaveCount(4);
   await expect(panel.locator('[data-slice="measurement"]').getByRole("checkbox")).toBeDisabled();
   await expect(page.getByRole("region", { name: "House control availability", exact: true })).toContainText("Not available for this result");
 });
@@ -226,7 +231,7 @@ test("a fixed legacy House result shows its model without inventing a selector",
   await expect(panel.locator('[data-slice="fundamentals"] .slice-fixed-choice')).toHaveText(publication.result.run.label);
   await expect(panel.getByRole("combobox")).toHaveCount(0);
   await expect(panel.getByLabel("House model", { exact: true })).toHaveCount(0);
-  await expect(panel.locator(".model-slice.is-unavailable")).toHaveCount(7);
+  await expect(panel.locator(".model-slice.is-unavailable")).toHaveCount(4);
 });
 
 test("House model/year selections restore exact results, scope and history without carrying districts across maps", async ({ page }) => {
