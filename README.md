@@ -1,4 +1,9 @@
-# WetherVane
+# Ballotmancy
+
+**SiteGround release branch:** The deployable Senate forecast visualization is
+at the repository root. See [SITEGROUND.md](SITEGROUND.md) for setup, data scope,
+and validation. The historical application described below remains in `web/`
+and `api/`; SiteGround should build the root `package.json`.
 
 A political modeling platform that discovers electoral types directly from how counties shift across elections, estimates how those types covary using demographic profiles, and propagates polling signals through the covariance structure to produce county-level predictions. The key insight is that beneath the noise of individual elections lies a structural landscape of communities that move together politically -- communities that cross administrative boundaries, persist across decades, and can be discovered purely from spatially correlated electoral shifts.
 

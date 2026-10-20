@@ -1,0 +1,30 @@
+{
+  "name": "ballotmancy-site",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Ballotmancy Senate forecast visualization",
+  "engines": { "node": ">=22 <25" },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build --webpack",
+    "start": "next start -H 0.0.0.0",
+    "typecheck": "tsc --noEmit",
+    "test:e2e": "playwright test --config=playwright.site.config.ts",
+    "test:snapshot": "python3 -m unittest discover -s tests -p site_snapshot_test.py"
+  },
+  "dependencies": {
+    "d3-geo": "3.1.1",
+    "next": "16.4.2",
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.64.1",
+    "@types/d3-geo": "^3.1.0",
+    "@types/geojson": "^7946.0.16",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "typescript": "^5.9.0"
+  }
+}
