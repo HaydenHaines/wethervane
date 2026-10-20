@@ -1,5 +1,6 @@
 import { expect, test } from "@playwright/test";
 import type { SiteForecastSnapshot } from "../../lib/site-types";
+import type { TippingSnapshot } from "../../lib/tipping-types";
 
 test("public forecast preserves candidate parties and chamber-control assumptions", async ({ request }) => {
   const response = await request.get("/data/forecast.json");
@@ -110,6 +111,7 @@ test("two races in a state remain separately selectable", async ({ page }) => {
     await route.fulfill({ response, json: forecast });
   });
   await page.goto("/");
+  await expect(page.getByText("The tipping-point snapshot is unavailable. Map and race summaries remain available below.", { exact: true })).toBeVisible();
   await page.getByRole("button", { name: /^Ohio, 2 elections,/ }).click();
   const seats = page.getByLabel("Choose election in Ohio");
   await expect(seats.locator("option")).toHaveCount(2);
@@ -126,3 +128,125 @@ test("the race list remains usable when map geography fails", async ({ page }) =
   await page.getByRole("button", { name: "Texas Regular election", exact: true }).click();
   await expect(page.getByRole("complementary").getByRole("heading", { name: "Texas", exact: true })).toBeVisible();
 });
+
+test("joint-draw tipping frequencies retain the correct caucus thresholds and denominator", async ({ request }) => {
+  const response = await request.get("/data/tipping-points.json");
+  expect(response.ok()).toBeTruthy();
+  const tipping = await response.json() as TippingSnapshot;
+  const forecast = await (await request.get("/data/forecast.json")).json() as SiteForecastSnapshot;
+  expect(tipping.method).toBe("caucus_rank_threshold_v1");
+  expect(tipping.sources.pollingForecastSha256).toBe(forecast.sources.pollingSha256);
+  expect(tipping.sources.fundamentalsForecastSha256).toBe(forecast.sources.fundamentalsSha256);
+  const texas = "2026:TX:senate:regular";
+  const independentIds = ["ID", "MT", "NE", "SD"].map((state) => `2026:${state}:senate:regular`);
+  for (const modelKey of ["polling", "fundamentals"] as const) {
+    const model = tipping.models[modelKey];
+    expect(model.simulationCount).toBe(modelKey === "polling" ? 40000 : 100000);
+    const expectedOrder = [...forecast.models[modelKey].races]
+      .sort((a, b) => b.firstShareMean - a.firstShareMean || a.id.localeCompare(b.id))
+      .map((race) => race.id);
+    expect(model.raceOrder).toEqual(expectedOrder);
+    for (const scenario of Object.values(model.scenarios)) {
+      expect(scenario.D.thresholdSeats).toBe(51);
+      expect(scenario.R.thresholdSeats).toBe(50);
+      expect(scenario.D.retainedSeats).toBe(34);
+      expect(scenario.R.retainedSeats).toBe(31);
+      for (const caucus of [scenario.D, scenario.R]) {
+        expect(caucus.projectedTippingRaceId).toBe(texas);
+        expect(Object.keys(caucus.frequencyByRace).sort()).toEqual([...expectedOrder].sort());
+        expect(Object.values(caucus.frequencyByRace).reduce((sum, p) => sum + p, 0)).toBeCloseTo(1, 10);
+      }
+    }
+    const unaligned = model.scenarios.campaign_pledge_unaligned;
+    expect(unaligned.D.requiredContestedWins).toBe(17);
+    expect(unaligned.R.requiredContestedWins).toBe(19);
+    expect(unaligned.D.eligibleRaceIds).toHaveLength(31);
+    expect(unaligned.R.eligibleRaceIds).toHaveLength(35);
+    expect(unaligned.D.frequencyByRace).not.toEqual(unaligned.R.frequencyByRace);
+    for (const id of independentIds) expect(unaligned.D.frequencyByRace[id]).toBe(0);
+    const alignedD = model.scenarios.independent_opposition_caucuses_D;
+    expect(alignedD.D.frequencyByRace).toEqual(alignedD.R.frequencyByRace);
+    expect(alignedD.D.frequencyByRace).toEqual(unaligned.R.frequencyByRace);
+    const alignedR = model.scenarios.independent_opposition_caucuses_R;
+    expect(alignedR.R.guaranteedRaceIds.sort()).toEqual([...independentIds].sort());
+    expect(alignedR.R.requiredContestedWins).toBe(15);
+    expect(alignedR.D.frequencyByRace).toEqual(alignedR.R.frequencyByRace);
+    expect(alignedR.D.frequencyByRace).toEqual(unaligned.D.frequencyByRace);
+    for (const id of independentIds) expect(alignedR.R.frequencyByRace[id]).toBe(0);
+  }
+  // Independently computed directly from the immutable 40,000 / 100,000 saved draw rows.
+  expect(tipping.models.polling.scenarios.campaign_pledge_unaligned.D.frequencyByRace[texas]).toBe(0.128225);
+  expect(tipping.models.polling.scenarios.campaign_pledge_unaligned.R.frequencyByRace[texas]).toBe(0.102975);
+  expect(tipping.models.fundamentals.scenarios.campaign_pledge_unaligned.D.frequencyByRace[texas]).toBe(0.11148);
+  expect(tipping.models.fundamentals.scenarios.campaign_pledge_unaligned.R.frequencyByRace[texas]).toBe(0.09966);
+});
+
+test("ribbon displays all margin-ordered races, coincident markers, and scenario-specific tipping frequencies", async ({ page, request }) => {
+  const tipping = await (await request.get("/data/tipping-points.json")).json() as TippingSnapshot;
+  await page.goto("/");
+  const ribbon = page.getByRole("region", { name: "The path to a majority", exact: true });
+  const tiles = ribbon.locator("button[data-race-id]");
+  await expect(tiles).toHaveCount(35);
+  expect(await tiles.evaluateAll((elements) => elements.map((element) => (element as HTMLElement).dataset.raceId))).toEqual(tipping.models.polling.raceOrder);
+  await expect(ribbon.locator(".retained-endcap")).toHaveCount(2);
+  await expect(ribbon.locator(".retained-endcap").first()).toContainText("34");
+  await expect(ribbon.locator(".retained-endcap").last()).toContainText("31");
+  await expect(ribbon.getByText("D51 / R50 · TX", { exact: true })).toBeVisible();
+  const texas = ribbon.locator('[data-race-id="2026:TX:senate:regular"]');
+  await expect(texas).toHaveAttribute("aria-label", /projected D control threshold, projected R control threshold/);
+  await texas.click();
+  const selectedFrequencies = ribbon.locator(".selected-threshold");
+  await expect(selectedFrequencies).toContainText("At the D control threshold in 12.8% of simulations.");
+  await expect(selectedFrequencies).toContainText("At the R control threshold in 10.3% of simulations.");
+
+  await page.getByLabel("Independent alignment").selectOption("independent_opposition_caucuses_D");
+  await expect(selectedFrequencies).toContainText("At the D control threshold in 10.3% of simulations.");
+  const nebraska = ribbon.locator('[data-race-id="2026:NE:senate:regular"]');
+  await nebraska.focus();
+  await page.keyboard.press("Enter");
+  await expect(nebraska).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByRole("complementary").getByText("Independent", { exact: true })).toBeVisible();
+  await expect(selectedFrequencies).toContainText("At the D control threshold in 3.3% of simulations.");
+  await expect(selectedFrequencies).toContainText("At the R control threshold in 3.3% of simulations.");
+  await page.getByLabel("Independent alignment").selectOption("independent_opposition_caucuses_R");
+  await expect(nebraska).toHaveAttribute("aria-label", /R caucus regardless of winner/);
+  await expect(selectedFrequencies).toContainText("At the D control threshold in 0.0% of simulations.");
+  await expect(selectedFrequencies).toContainText("At the R control threshold in 0.0% of simulations.");
+  await expect(page.getByRole("complementary").getByText("Independent", { exact: true })).toBeVisible();
+  await expect(ribbon.locator(".ribbon-guarantee")).toContainText("4 independent–Republican contests");
+
+  await page.getByRole("button", { name: "Fundamentals model", exact: true }).click();
+  expect(await tiles.evaluateAll((elements) => elements.map((element) => (element as HTMLElement).dataset.raceId))).toEqual(tipping.models.fundamentals.raceOrder);
+  await texas.click();
+  await expect(selectedFrequencies).toContainText("At the D control threshold in 11.1% of simulations.");
+  await expect(selectedFrequencies).toContainText("At the R control threshold in 11.1% of simulations.");
+  await ribbon.getByText("How to read the thresholds", { exact: true }).click();
+  await expect(ribbon.getByText(/Draws where the caucus falls short still count/)).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBeTruthy();
+  expect(await ribbon.evaluate((element) => Boolean(element.compareDocumentPosition(document.querySelector(".map-card")!) & Node.DOCUMENT_POSITION_FOLLOWING))).toBeTruthy();
+  expect(await page.locator(".map-card").evaluate((element) => Boolean(element.compareDocumentPosition(document.querySelector(".control-card")!) & Node.DOCUMENT_POSITION_FOLLOWING))).toBeTruthy();
+});
+
+for (const failure of ["missing", "mismatched"] as const) {
+  test(`a ${failure} tipping artifact preserves usable map and race details`, async ({ page }) => {
+    const errors: string[] = [];
+    page.on("pageerror", (error) => errors.push(error.message));
+    await page.route("**/data/tipping-points.json", async (route) => {
+      if (failure === "missing") {
+        await route.fulfill({ status: 404, body: "Unavailable" });
+      } else {
+        const response = await route.fetch();
+        const tipping = await response.json() as TippingSnapshot;
+        tipping.sources.pollingForecastSha256 = "wrong-source";
+        await route.fulfill({ response, json: tipping });
+      }
+    });
+    await page.goto("/");
+    await expect(page.getByText("The tipping-point snapshot is unavailable. Map and race summaries remain available below.", { exact: true })).toBeVisible();
+    await expect(page.locator(".race-table tbody tr")).toHaveCount(35);
+    await expect(page.locator("svg [role=button]")).toHaveCount(35);
+    await page.getByRole("button", { name: /^Texas, 1 election,/ }).click();
+    await expect(page.getByRole("complementary").getByRole("heading", { name: "Texas", exact: true })).toBeVisible();
+    expect(errors).toEqual([]);
+  });
+}

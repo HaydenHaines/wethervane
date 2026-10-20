@@ -10,7 +10,8 @@
     "start": "next start -H 0.0.0.0",
     "typecheck": "tsc --noEmit",
     "test:e2e": "playwright test --config=playwright.site.config.ts",
-    "test:snapshot": "python3 -m unittest discover -s tests -p site_snapshot_test.py"
+    "test:snapshot": "python3 -m unittest discover -s tests -p site_snapshot_test.py",
+    "test:tipping": "python3 -m unittest discover -s tests -p site_tipping_test.py"
   },
   "dependencies": {
     "d3-geo": "3.1.1",

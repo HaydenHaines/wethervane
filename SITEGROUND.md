@@ -48,9 +48,13 @@ pushing, or pause auto-deployment when preparing a change.
 
 ## Local verification
 
+Use Node.js 22 and an activated Python virtual environment for the offline tests.
+
 ```sh
 npm ci
+python3 -m pip install -r scripts/requirements-site.txt
 npm run test:snapshot
+npm run test:tipping
 npm run build
 npm run typecheck
 npx playwright install chromium
@@ -78,6 +82,56 @@ The exporter is `scripts/export_site_snapshot.py`; use its `--help` for the
 source arguments. Export from the frozen model artifacts, review the changes
 and hashes, rerun the release checks, and commit both JSON data files together.
 Never replace research artifacts or rerun model fits as a website build step.
+
+## Tipping-point ribbon
+
+The ribbon orders all 35 contests by expected first-contender vote margin,
+from Democratic/independent advantage to Republican advantage. Colors show
+the leading candidate's party and win probability: **Safe** at 98% or above,
+**Likely** from 65% to below 98%, and **Tossup** below 65%. These categories do
+not determine the ribbon order.
+
+The endcaps show 65 retained seats: 34 in the Democratic caucus (including
+King and Sanders) and 31 in the Republican caucus. The saved forecast assigns
+the vice-presidential tie-break to Republicans, so the thresholds are 51
+Democratic caucus seats and 50 Republican caucus seats.
+
+For each caucus and alignment scenario, we first count retained seats and
+contests where either winner belongs to that caucus. We then rank the
+remaining eligible contests by that caucus's vote share. The contest that
+supplies the last seat needed for control is its tipping point. The ribbon
+marker uses expected shares. Simulation percentages repeat this ranking
+within each original joint draw, preserving the model's correlations.
+Equal margins at the threshold share credit equally.
+
+This is an unconditional ranking statistic: a contest can occupy the
+threshold even in a simulation where its caucus falls short. It is not the
+probability that changing that contest alone changes the actual chamber
+winner. Each caucus's tipping frequencies sum to 100%; the two caucuses'
+frequencies should not be added together.
+
+Unaligned independents can produce different Democratic and Republican
+thresholds. When opposition independents caucus with Republicans, all four
+independent-versus-Republican contests count toward Republican control
+regardless of their winner. Those contests remain visible in the ribbon,
+with their candidates' actual party labels, but cannot be tipping contests
+in that scenario.
+
+The separate `public/data/tipping-points.json` is derived offline from the
+same frozen forecasts and saved joint draws. Its provenance records the
+input hashes. The website never runs simulations or requires Python.
+
+To regenerate the summaries from an existing research checkout:
+
+```sh
+python3 scripts/export_tipping_points.py --source-root /path/to/frozen-research-worktree
+```
+
+Commit `tipping-points.json` and `tipping-points-provenance.json` together.
+When refreshing the forecast snapshot, regenerate both exporters from the
+same source artifacts. The page checks source hashes and race ordering before
+showing tipping data; a missing or mismatched tipping file leaves the map and
+race details available.
 
 The preserved state outlines come from the existing project's
 `web/public/states-us.geojson`. No county or tract forecast is implied by the

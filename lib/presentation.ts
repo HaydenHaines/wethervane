@@ -1,3 +1,5 @@
+import type { RaceForecast } from "./site-types";
+
 export const STATE_NAMES: Record<string, string> = {
   AL: "Alabama",
   AK: "Alaska",
@@ -53,9 +55,12 @@ export const STATE_NAMES: Record<string, string> = {
 };
 export const COLORS = {
   D: "#3e6683",
-  R: "#b46c54",
-  I: "#33877e",
-  competitive: "#857096",
+  R: "#a3553f",
+  I: "#28776f",
+  likelyD: "#92afc1",
+  likelyR: "#d4a28c",
+  likelyI: "#83b9ad",
+  competitive: "#7b658e",
   inactive: "#d8ddd4",
   unresolved: "#a3a998",
 };
@@ -83,3 +88,37 @@ export const candidateShortName = (name: string) =>
   name.includes(",")
     ? name.split(",")[0].trim()
     : name.trim().split(/\s+/).at(-1) || name;
+
+export function raceRating(race: RaceForecast): "Safe" | "Likely" | "Tossup" {
+  const leaderChance = Math.max(
+    race.firstWinProbability,
+    race.secondWinProbability,
+  );
+  return leaderChance >= 0.98
+    ? "Safe"
+    : leaderChance >= 0.65
+      ? "Likely"
+      : "Tossup";
+}
+
+export function raceColor(race: RaceForecast): string {
+  const rating = raceRating(race);
+  if (rating === "Tossup") return COLORS.competitive;
+  const party =
+    race.candidates[
+      race.firstWinProbability >= race.secondWinProbability ? 0 : 1
+    ].party;
+  return rating === "Safe"
+    ? partyColor(party)
+    : COLORS[`likely${party}` as "likelyD" | "likelyR" | "likelyI"];
+}
+
+export function raceTextColor(race: RaceForecast): string {
+  return raceRating(race) === "Tossup"
+    ? COLORS.competitive
+    : partyColor(
+        race.candidates[
+          race.firstWinProbability >= race.secondWinProbability ? 0 : 1
+        ].party,
+      );
+}
