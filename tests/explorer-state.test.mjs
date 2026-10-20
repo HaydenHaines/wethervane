@@ -42,10 +42,10 @@ test("unknown configurations get an explicit default notice and no future actual
   assert.match(result.notice, /unavailable/);
 });
 
-test("disabling polls drops a polling-only error sensitivity with a visible explanation", () => {
+test("disabling polls never silently changes an unsupported uncertainty selection", () => {
   const result = selectRunForComponents(registry, runs[2], { polling: "none" });
-  assert.equal(result.run.id, "current-fundamentals");
-  assert.match(result.notice, /uncertainty/);
+  assert.equal(result.run.id, "current-error-high");
+  assert.match(result.notice, /unchanged/);
 });
 
 test("unsupported combinations never borrow an unrelated forecast", () => {
@@ -54,14 +54,22 @@ test("unsupported combinations never borrow an unrelated forecast", () => {
   assert.match(result.notice, /unchanged/);
 });
 
-test("changing the historical base to winner-only explicitly removes the polling component", () => {
+test("changing the historical base never silently removes polling", () => {
   const result = selectRunForComponents(registry, runs[3], { base: "winner" });
-  assert.equal(result.run.id, "history-2022-W-1");
-  assert.match(result.notice, /polling/);
+  assert.equal(result.run.id, "history-2022-FP-1");
+  assert.match(result.notice, /unchanged/);
 });
 
 test("a year change resolves to that year's actual saved uncertainty law", () => {
   const result = selectRunForYear(registry, runs[2], 2022);
   assert.equal(result.run.id, "history-2022-FP-1");
   assert.match(result.notice, /standard uncertainty/);
+});
+
+
+test("chosen comparison survives shared URL and rejects a different year", () => {
+  const current = parseSelection("?run=history-2022-FP-1&compare=1&against=history-2022-W-1", registry).selection;
+  assert.equal(current.baselineRunId, "history-2022-W-1");
+  assert.equal(parseSelection(serializeSelection(current), registry).selection.baselineRunId, current.baselineRunId);
+  assert.equal(parseSelection("?run=history-2022-FP-1&against=current-polling", registry).selection.baselineRunId, null);
 });

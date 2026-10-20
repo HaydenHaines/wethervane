@@ -13,7 +13,11 @@ export default function PerformancePanel({
   const p = scenario.performance;
   const reference = baseline?.performance;
   return (
-    <section className="performance-card" aria-labelledby="performance-title">
+    <section
+      id="historical-performance"
+      className="performance-card"
+      aria-labelledby="performance-title"
+    >
       <h2 className="section-title" id="performance-title">
         {p ? "Against the observed result" : "What has been tested?"}
       </h2>
@@ -47,7 +51,7 @@ export default function PerformancePanel({
                 {x.base !== undefined && (
                   <span>
                     {x.value - x.base >= 0 ? "+" : ""}
-                    {(x.value - x.base).toFixed(3)} vs default
+                    {(x.value - x.base).toFixed(3)} vs comparison
                   </span>
                 )}
               </div>
@@ -67,7 +71,7 @@ export default function PerformancePanel({
           <p className="performance-note">
             Bars show the probability of each seat total. The vertical line
             marks the observed result
-            {baseline ? "; the dashed outline shows the default stack" : ""}.
+            {baseline ? "; the dashed outline shows the comparison stack" : ""}.
           </p>
           <p className="performance-note">
             Observed control:{" "}

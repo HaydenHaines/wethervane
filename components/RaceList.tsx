@@ -128,7 +128,7 @@ export default function RaceList({
                   {reference && (
                     <span className="comparison-delta">
                       {ppChange(lead.winProbability - reference.winProbability)}{" "}
-                      vs default
+                      vs comparison
                     </span>
                   )}
                 </td>

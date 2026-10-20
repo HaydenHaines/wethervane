@@ -51,7 +51,7 @@ export default function ChamberControl({
             <span className="prob-number">{probability(x.p)}</span>
             {x.base !== undefined && (
               <span className="comparison-delta">
-                {ppChange(x.p - x.base)} vs default
+                {ppChange(x.p - x.base)} vs comparison
               </span>
             )}
           </div>

@@ -1,6 +1,13 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 import type { SiteForecastSnapshot } from "../../lib/site-types";
 import type { TippingSnapshot } from "../../lib/tipping-types";
+
+async function expandControls(page: Page) {
+  const controls = page.locator("details.stack-builder");
+  await expect(controls).toBeVisible();
+  if (await controls.getAttribute("open") === null) await controls.locator(":scope > summary").click();
+  await expect(controls).toHaveAttribute("open", "");
+}
 
 test("public forecast preserves candidate parties and chamber-control assumptions", async ({ request }) => {
   const response = await request.get("/data/forecast.json");
@@ -47,6 +54,7 @@ test("model and caucus controls preserve independent candidate identity and shar
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
   await page.goto("/");
+  await expandControls(page);
   const chamber = page.getByRole("region", { name: "Who could control the chamber?" });
   const detail = page.getByRole("complementary", { name: "Selected race detail" });
   await expect(chamber.getByText("8.3%", { exact: true })).toBeVisible();
@@ -82,6 +90,7 @@ test("model and caucus controls preserve independent candidate identity and shar
 
 test("race search, special elections, and map keyboard selection work together", async ({ page }) => {
   await page.goto("/");
+  await expandControls(page);
   const detail = page.getByRole("complementary", { name: "Selected race detail" });
   const search = page.getByRole("textbox", { name: "Search states or candidates" });
   await search.fill("special");
@@ -104,6 +113,7 @@ test("race search, special elections, and map keyboard selection work together",
 test("the race list remains usable when map geography fails", async ({ page }) => {
   await page.route("**/states-us.geojson", (route) => route.abort());
   await page.goto("/");
+  await expandControls(page);
   await expect(page.getByText("Map unavailable. Explore every race in the list below.", { exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Texas Regular election", exact: true }).click();
   await expect(page.getByRole("complementary").getByRole("heading", { name: "Texas", exact: true })).toBeVisible();
@@ -164,6 +174,7 @@ test("joint-draw tipping frequencies retain the correct caucus thresholds and de
 test("ribbon displays all margin-ordered races, coincident markers, and scenario-specific tipping frequencies", async ({ page, request }) => {
   const tipping = await (await request.get("/data/tipping-points.json")).json() as TippingSnapshot;
   await page.goto("/");
+  await expandControls(page);
   const ribbon = page.getByRole("region", { name: "The path to a majority", exact: true });
   const tiles = ribbon.locator("button[data-race-id]");
   await expect(tiles).toHaveCount(35);

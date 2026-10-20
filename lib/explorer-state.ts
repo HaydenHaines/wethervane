@@ -10,6 +10,7 @@ export interface ExplorerSelection {
   scenarioId: string | null;
   raceId: string | null;
   compare: boolean;
+  baselineRunId?: string | null;
   mapView: "forecast" | "actual";
 }
 
@@ -55,6 +56,7 @@ export function parseSelection(
       scenarioId: params.get("scenario") || null,
       raceId: params.get("race") || null,
       compare: params.get("compare") === "1",
+      ...(params.get("against") ? { baselineRunId: registry.runs.find(r => r.id === params.get("against") && r.year === run.year && r.dateId === run.dateId && r.targetId === run.targetId && r.lawId === run.lawId)?.id || null } : {}),
       mapView: params.get("view") === "actual" && run.historical ? "actual" : "forecast",
     },
     notice: requested && requested !== run.id
@@ -68,6 +70,7 @@ export function serializeSelection(selection: ExplorerSelection): string {
   if (selection.scenarioId) params.set("scenario", selection.scenarioId);
   if (selection.raceId) params.set("race", selection.raceId);
   if (selection.compare) params.set("compare", "1");
+  if (selection.baselineRunId) params.set("against", selection.baselineRunId);
   if (selection.mapView === "actual") params.set("view", "actual");
   return `?${params.toString()}`;
 }
@@ -86,26 +89,11 @@ export function selectRunForComponents(
   );
   if (exact) return { run: exact, notice: null };
 
-  const matchingChanged = candidates.filter((run) =>
-    fields.every((field) => patch[field] === undefined || run.components[field] === patch[field]),
-  );
-  const distance = (run: ExplorerRunEntry) =>
-    fields.filter((field) => run.components[field] !== currentRun.components[field]).length;
-  const chosen = [...matchingChanged].sort(
-    (a, b) => distance(a) - distance(b) || a.id.localeCompare(b.id),
-  )[0];
-  if (!chosen) {
-    const retained = candidates.find((run) => run.id === currentRun.id);
-    if (!retained) throw new Error("The selected forecast is no longer in the catalog.");
-    return {
-      run: retained,
-      notice: "That combination has no saved forecast. Your current stack is unchanged.",
-    };
-  }
-  const changed = fields.filter((field) => chosen.components[field] !== desired[field]);
+  const retained = candidates.find((run) => run.id === currentRun.id);
+  if (!retained) throw new Error("The selected forecast is no longer in the catalog.");
   return {
-    run: chosen,
-    notice: `Adjusted ${changed.join(" and ")} to use the available “${chosen.label}” combination.`,
+    run: retained,
+    notice: "That exact combination has no saved forecast. Your displayed stack is unchanged.",
   };
 }
 

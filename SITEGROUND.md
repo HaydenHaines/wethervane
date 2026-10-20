@@ -30,7 +30,7 @@ checked-in JSON bundle. It does not call the old localhost API or run Python
 during deployment. No database, secrets, or model fit is required on SiteGround.
 
 Check the temporary URL first. The home page should show the dated research
-preview, the model-stack controls, a state map, 35 Senate contests, and
+preview, the collapsed model-stack controls, a state map, 35 Senate contests, and
 three caucus scenarios. The year controls switch between 2026, 2022, and 2018
 on the same page. `/api/health` returns a JSON health response with the snapshot date and
 race count. An unfamiliar temporary URL is not access control; use SiteGround
@@ -58,6 +58,8 @@ npm run test:snapshot
 npm run test:tipping
 npm run test:explorer-data
 npm run test:explorer-state
+npm run test:composition
+npm run test:scoreboard
 npm run test:ribbon-layout
 npm run catalog:build
 npm run test:explorer-artifacts
@@ -97,7 +99,7 @@ complete run; they never interpolate incompatible artifacts or fit a model
 in the browser. Changing a stack updates the ribbon, map, race details,
 chamber probabilities, and historical scores together. A failed selection
 leaves the previous stack visible. The URL records run, caucus scenario, race,
-comparison state, and forecast/observed map view, including Back/Forward support.
+comparison state and chosen reference, and forecast/observed map view, including Back/Forward support.
 
 All charts are shared components driven by numerical result data, not stored
 images or hand-authored graphs for each model. The margin ribbon derives its
@@ -157,8 +159,11 @@ Never rerun research fits or modify research artifacts as a website build step.
 
 The ribbon orders all 35 contests by expected first-contender vote margin,
 from Democratic/independent advantage to Republican advantage. Colors show
-the leading candidate's party and win probability: **Safe** at 98% or above,
-**Likely** from 65% to below 98%, and **Tossup** below 65%. These categories do
+the leading candidate's party and win probability: **Safe** above 90%,
+**Likely** above 60% through 90%, and **Tossup** at 60% or below.
+For two-outcome races this is the user-selected 40–60% Tossup band.
+These October 20 composition-UI cutoffs replace the earlier 65%/98% boundaries;
+raw probabilities are never rounded before classification. These categories do
 not determine the ribbon order.
 
 The endcaps show 65 retained seats: 34 in the Democratic caucus (including
@@ -213,3 +218,57 @@ SiteGround references:
 - [Node.js projects](https://www.siteground.com/kb/what-is-node-js-project)
 - [Project settings](https://www.siteground.com/kb/manage-node-js-project)
 - [Custom domain](https://www.siteground.com/kb/change-domain-node-js-project)
+
+
+## Component composition and historical scorecard (October 20, 2026)
+
+“Build your perspective” starts collapsed. The default is the preserved current
+best-guess forecast; direct URLs and locally restored views retain their saved
+selection. Opening the panel reveals catalog-driven component selectors and the
+preserved basic electoral-history and current best-guess shortcuts.
+
+`public/data/explorer/capabilities.json` pins 38 saved configurations to their
+exact result SHA256 and source catalog. `POST /api/configurations/resolve`
+accepts selection intent only and validates ready bundle bytes and scientific
+metadata on the Node server. The three response states are `ready`,
+`requires_computation`, and `incompatible`. Unsupported selections never silently
+change other components. While an unresolved choice is inspected, the previous
+forecast remains explicitly labeled as the displayed result.
+
+The four experimental aggregate bases expose metadata-only computation
+requirements, not runnable national forecasts. The source registry supports
+ordinary D/R aggregate specifications; authenticated bindings, sampled forecasts,
+and a custom chamber adapter are still missing for these selections. There is no
+fit executor, queue, or Python service on SiteGround. Fine component switches may
+require a joint refit. Whole-forecast blending remains a separate, unavailable
+feature requiring explicit weights and coherent joint uncertainty. Numerical fit
+evidence, predictive testing evidence, experimental status, and result
+availability are presented separately.
+
+Regenerate the capability manifest offline with
+`scripts/export_composition_capabilities.py --source-root /path/to/research-checkout`.
+It verifies frozen source evidence and preserved forecast fingerprints. Never run
+model fitting as a site build step. Current structural and polling cutoffs remain
+separately visible (15:21:23Z and 16:21:44Z on October 20, 2026).
+
+Named configurations are stored only in the visitor's browser (up to 30), pinned
+to configuration ID, run ID, and result hash. Invalid or stale stored identities
+are rejected rather than rebound. Share URLs include the displayed saved run and
+view settings; they do not promise that an unresolved research selection exists.
+
+Historical years put a four-part scorecard directly under the controls: unique
+favorites that won, expected versus observed seats with 90% marginal intervals,
+probability assigned to observed chamber control, and raw multiclass Brier error
+relative to a matched reference. Brier is summed across outcomes and averaged
+over races (0–2, lower is better). Exact ties, missing observations, grouped
+outcomes, and incomplete coverage remain explicit. Matched historical comparisons
+require the same cutoff, horizon, target, law, race/outcome membership, organizing
+scenario, and observed truth. A winning favorite count is not a calibration test.
+
+The scorecard design follows proper-scoring guidance from
+[Metaculus](https://www.metaculus.com/help/scores-faq/), uncertainty guidance from
+[ONS](https://service-manual.ons.gov.uk/data-visualisation/guidance/showing-uncertainty-in-charts),
+and the multi-metric verification approach described by
+[ECMWF](https://confluence.ecmwf.int/spaces/WLS/pages/394992254/Verification).
+Historical reconstruction scores are descriptive; they do not validate the new
+experimental bases or imply strict as-of testing.

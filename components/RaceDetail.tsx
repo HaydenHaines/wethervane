@@ -126,7 +126,7 @@ export default function RaceDetail({
               {reference && (
                 <span className="comparison-delta">
                   {ppChange(outcome.winProbability - reference.winProbability)}{" "}
-                  vs default
+                  vs comparison
                 </span>
               )}
               {race.observed?.outcomeId === outcome.id && (

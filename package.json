@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "description": "Ballotmancy Senate forecast visualization",
-  "engines": { "node": ">=22 <25" },
+  "engines": {
+    "node": ">=22 <25"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build --webpack",
@@ -16,7 +18,9 @@
     "test:explorer-state": "node --experimental-strip-types --test tests/explorer-state.test.mjs",
     "test:ribbon-layout": "node --experimental-strip-types --test tests/ribbon-layout.test.mjs",
     "test:explorer-artifacts": "node --experimental-strip-types --test tests/explorer-artifacts.test.mjs",
-    "catalog:build": "python3 scripts/build_explorer_catalog.py"
+    "catalog:build": "python3 scripts/build_explorer_catalog.py",
+    "test:composition": "python3 -m unittest discover -s tests -p site_composition_test.py && node --experimental-strip-types --test tests/composition-resolver.test.mjs tests/saved-views.test.mjs",
+    "test:scoreboard": "node --experimental-strip-types --test tests/scoreboard.test.mjs tests/presentation.test.mjs"
   },
   "dependencies": {
     "d3-geo": "3.1.1",

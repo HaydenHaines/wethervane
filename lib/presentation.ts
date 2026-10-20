@@ -131,7 +131,7 @@ function leader(race: DisplayRace): { party: string; winProbability: number } {
 }
 export function raceRating(race: DisplayRace): "Safe" | "Likely" | "Tossup" {
   const chance = leader(race).winProbability;
-  return chance >= 0.98 ? "Safe" : chance >= 0.65 ? "Likely" : "Tossup";
+  return chance > 0.9 ? "Safe" : chance > 0.6 ? "Likely" : "Tossup";
 }
 export function raceColor(race: DisplayRace): string {
   const rating = raceRating(race);

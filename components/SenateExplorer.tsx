@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import type {
   ExplorerBundle,
   ExplorerRegistry,
-  ExplorerRun,
   ExplorerRunEntry,
 } from "../lib/explorer-types";
 import type { RaceForecast } from "../lib/site-types";
@@ -12,7 +11,6 @@ import {
   availableRuns,
   defaultRun,
   parseSelection,
-  selectRunForComponents,
   selectRunForYear,
   serializeSelection,
   validateExplorerBundle,
@@ -26,6 +24,11 @@ import RaceDetail from "./RaceDetail";
 import RaceList from "./RaceList";
 import ChamberControl from "./ChamberControl";
 import PerformancePanel from "./PerformancePanel";
+import HistoricalScoreboard from "./HistoricalScoreboard";
+import type { CompositionCatalog, CompositionRequest, CompositionResolution, SavedView } from "../lib/composition-types";
+import { requestForRun } from "../lib/composition-resolver";
+import { createSavedView, parseSavedViews } from "../lib/saved-views";
+import { compareScoreboards } from "../lib/scoreboard";
 import OutlookRibbon from "./OutlookRibbon";
 import { deriveRibbonLayout } from "../lib/ribbon-layout";
 
@@ -177,6 +180,11 @@ export default function SenateExplorer() {
     [baseline, setBaseline] = useState<ExplorerBundle | null>(null),
     [comparisonError, setComparisonError] = useState(""),
     [shareUrl, setShareUrl] = useState("");
+  const [capabilities, setCapabilities] = useState<CompositionCatalog | null>(null);
+  const [draft, setDraft] = useState<CompositionRequest | null>(null);
+  const [resolution, setResolution] = useState<CompositionResolution | null>(null);
+  const [savedViews, setSavedViews] = useState<SavedView[]>([]);
+  const capabilityRef = useRef<CompositionCatalog | null>(null);
   const requestId = useRef(0),
     bundleRef = useRef<ExplorerBundle | null>(null),
     selectionRef = useRef<ExplorerSelection | null>(null);
@@ -210,8 +218,13 @@ export default function SenateExplorer() {
         next,
         bundleRef.current || undefined,
       );
+      const nextDraft = capabilityRef.current ? requestForRun(capabilityRef.current, entry) : null;
       bundleRef.current = next;
       setBundle(next);
+      setResolution(null);
+      if (nextDraft) setDraft(nextDraft);
+      const compared = catalog.runs.find(r => r.id === resolved.selection.baselineRunId);
+      if (compared && (compared.year !== next.run.year || compared.dateId !== next.run.dateId || compared.targetId !== next.run.targetId || compared.lawId !== next.run.lawId)) resolved.selection.baselineRunId = null;
       write(resolved.selection, mode);
       setNotice([message, resolved.notice].filter(Boolean).join(" ") || null);
     } catch (e) {
@@ -252,6 +265,17 @@ export default function SenateExplorer() {
           setBusy(false);
         }
       });
+    fetch("/data/explorer/capabilities.json")
+      .then(r => { if (!r.ok) throw Error("Component catalog unavailable"); return r.json(); })
+      .then((catalog: CompositionCatalog) => {
+        if (!active) return;
+        if (catalog.schemaVersion !== 1 || !catalog.saved?.length || !catalog.slots?.length) throw Error("Component catalog unavailable");
+        capabilityRef.current = catalog;
+        setCapabilities(catalog);
+        if (bundleRef.current) setDraft({catalogId:catalog.id,year:bundleRef.current.run.year,dateId:bundleRef.current.run.dateId,components:{...bundleRef.current.run.components}});
+        try { setSavedViews(parseSavedViews(localStorage.getItem("ballotmancy.saved-views.v1"), catalog)); } catch { /* Browser storage can be disabled. */ }
+      })
+      .catch(() => { if (active) setNotice("Component catalog unavailable. Reload to enable component selection and saved configurations."); });
     fetch("/states-us.geojson")
       .then((r) => {
         if (!r.ok) throw Error("Map unavailable");
@@ -278,12 +302,12 @@ export default function SenateExplorer() {
   useEffect(() => {
     let active = true;
     setComparisonError("");
-    if (!registry || !bundle || !selection?.compare) {
+    if (!registry || !bundle || (!selection?.compare && !bundle.run.historical)) {
       setBaseline(null);
       return;
     }
     setBaseline(null);
-    loadBundle(defaultRun(registry, bundle.run.year))
+    loadBundle(registry.runs.find(r => r.id === selection?.baselineRunId) || defaultRun(registry, bundle.run.year))
       .then((value) => {
         if (active) setBaseline(value);
       })
@@ -293,13 +317,16 @@ export default function SenateExplorer() {
     return () => {
       active = false;
     };
-  }, [registry, bundle, selection?.compare]);
+  }, [registry, bundle, selection?.compare, selection?.baselineRunId]);
   const scenario = bundle?.scenarios.find(
       (s) => s.id === selection?.scenarioId,
     ),
     selected = bundle?.races.find((r) => r.id === selection?.raceId);
+  const baselineScenario = baseline?.scenarios.find(s => s.id === scenario?.id);
+  const matchedBaseline = bundle && scenario && baseline && baselineScenario &&
+    (!bundle.run.historical || compareScoreboards(bundle, scenario, baseline, baselineScenario).status === "matched");
   const reference =
-      selection?.compare && baseline?.run.year === bundle?.run.year
+      selection?.compare && matchedBaseline && baseline?.run.year === bundle?.run.year
         ? baseline
         : undefined,
     referenceScenario = reference?.scenarios.find((s) => s.id === scenario?.id),
@@ -329,6 +356,8 @@ export default function SenateExplorer() {
       });
   }
   function choose(run: ExplorerRunEntry, message: string | null) {
+    setResolution(null);
+    if (capabilities) setDraft(requestForRun(capabilities, run));
     if (registry && selection)
       void open(
         registry,
@@ -341,11 +370,55 @@ export default function SenateExplorer() {
         message,
       );
   }
-  function components(values: Partial<ExplorerRun["components"]>) {
-    if (registry && bundle) {
-      const choice = selectRunForComponents(registry, bundle.run, values);
-      choose(choice.run, choice.notice);
+  async function resolveRequest(request: CompositionRequest) {
+    if (!registry || !selection) return;
+    const ticket = ++requestId.current;
+    setDraft(request); setResolution(null); setBusy(true); setError(""); setNotice(null);
+    try {
+      const response = await fetch("/api/configurations/resolve", {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(request)});
+      if (!response.ok) throw Error("The selected configuration could not be checked. Try again or reset the stack.");
+      const result = await response.json() as CompositionResolution;
+      if (ticket !== requestId.current) return;
+      setResolution(result); setDraft(result.request);
+      if (result.state === "ready" && result.run) {
+        await open(registry, {...selection,runId:result.run.id}, "push");
+      } else setBusy(false);
+    } catch (e) {
+      if (ticket === requestId.current) {
+        setError(e instanceof Error ? e.message : "Configuration check failed."); setBusy(false);
+      }
     }
+  }
+  function components(values: Record<string,string>) {
+    if (capabilities && draft) void resolveRequest({...draft,presetId:undefined,components:{...draft.components,...values}});
+  }
+  function preset(id: string) {
+    const entry = capabilities?.presets.find(p => p.id === id);
+    const run = registry?.runs.find(r => r.id === entry?.runId);
+    if (capabilities && run) void resolveRequest({...requestForRun(capabilities,run),presetId:id});
+  }
+  const displayedConfiguration = capabilities?.saved.find(c => c.runId === bundle?.run.id) || null;
+  function persistViews(views: SavedView[]) {
+    try {
+      localStorage.setItem("ballotmancy.saved-views.v1",JSON.stringify(views)); setSavedViews(views);
+      return true;
+    } catch { setNotice("Browser storage is unavailable. Use Share view to keep this configuration."); return false; }
+  }
+  function saveView(name: string) {
+    if (!displayedConfiguration || !selection || busy || error || !name.trim() || !draft ||
+      draft.year !== displayedConfiguration.year || draft.dateId !== displayedConfiguration.dateId ||
+      Object.entries(displayedConfiguration.components).some(([key,value]) => draft.components[key] !== value)) return;
+    if (persistViews([...savedViews.slice(-29), createSavedView(name,displayedConfiguration,selection)])) setNotice("Configuration saved in this browser, with its exact forecast result.");
+  }
+  function restoreView(id: string) {
+    const view = savedViews.find(v => v.id === id);
+    if (!view || !registry || !capabilities) return;
+    const config = capabilities.saved.find(c => c.id === view.configurationId && c.runId === view.runId && c.resultSha256 === view.resultSha256);
+    if (!config) {setNotice("This saved configuration no longer matches an available result.");return;}
+    setResolution(null);
+    const run = registry.runs.find(r => r.id === view.runId);
+    if (run) setDraft(requestForRun(capabilities, run));
+    void open(registry,{runId:view.runId,scenarioId:view.scenarioId,raceId:view.raceId,compare:view.compare,mapView:view.mapView,baselineRunId:view.baselineRunId},"push","Restored “"+view.name+"”.");
   }
   async function share() {
     setShareUrl(location.href);
@@ -428,6 +501,17 @@ export default function SenateExplorer() {
             registry={registry}
             bundle={bundle}
             busy={busy}
+            catalog={capabilities}
+            request={draft}
+            resolution={resolution}
+            displayedConfiguration={displayedConfiguration}
+            onPreset={preset}
+            savedViews={savedViews}
+            onSave={saveView}
+            onRestore={restoreView}
+            onDelete={(id) => {persistViews(savedViews.filter(v => v.id !== id));}}
+            baselineRunId={selection.baselineRunId || null}
+            onBaseline={(id) => patch({baselineRunId:id})}
             compare={selection.compare}
             notice={notice}
             onYear={(year) => {
@@ -455,6 +539,11 @@ export default function SenateExplorer() {
               )
             }
           />
+          {bundle.run.historical && (
+            <HistoricalScoreboard bundle={bundle} scenario={scenario}
+              baselineBundle={baseline || undefined} baselineScenario={baselineScenario}
+              onSelectRace={selectRace} />
+          )}
           {shareUrl && (
             <div className="share-link">
               <label htmlFor="share-url">Shareable view</label>
@@ -474,7 +563,7 @@ export default function SenateExplorer() {
           )}
           {selection.compare && (
             <div className="compare-banner" role="status">
-              <strong>Comparing with the {bundle.run.year} default</strong>
+              <strong>Comparing with {selection.baselineRunId ? "a saved configuration" : `the ${bundle.run.year} default`}</strong>
               <span>
                 {comparisonError
                   ? "Comparison unavailable: " + comparisonError
@@ -624,7 +713,7 @@ export default function SenateExplorer() {
                   <span>
                     {selection.mapView === "actual"
                       ? "Observed winner party. For multiple contests, the selected race takes priority."
-                      : "Safe ≥98% · Likely 65–<98% · Tossup <65% leading outcome win chance."}
+                      : "Safe >90% · Likely >60–90% · Tossup ≤60% leading outcome win chance (40–60% in two-outcome races)."}
                   </span>
                   <span>Gray: no election · Area ≠ votes</span>
                 </div>
@@ -671,9 +760,10 @@ export default function SenateExplorer() {
               <div>
                 <h3>Build from saved evidence</h3>
                 <p>
-                  Controls select compatible saved runs; they do not fit a new
-                  model. Base, polling, and uncertainty stay together as a
-                  complete stack. Only saved forecast dates are selectable.
+                  Components resolve to an exact saved result, a combination that
+                  needs computation, or an explanation of what is unsupported.
+                  Some changes require a joint refit. New fits cannot run on this
+                  website yet. Only saved forecast dates are selectable.
                   Sensitivity settings describe assumptions rather than new
                   evidence.
                 </p>
@@ -702,7 +792,7 @@ export default function SenateExplorer() {
               <div>
                 <h3>Compare like with like</h3>
                 <p>
-                  Compare default uses the same year, matching outcomes, and the
+                  Configuration comparisons use the same year, matching outcomes, and the
                   same caucus scenario. Changes in win and control probabilities
                   are percentage points. Historical scores do not validate the
                   current model. Missing shares, margins, and tipping statistics
