@@ -26,12 +26,14 @@ export default function SenateMap({
   selected,
   onSelect,
   mapView = "forecast",
+  absentLabel = "no Senate election",
 }: {
   geo: Geo;
   races: Race[];
   selected: Race;
   onSelect: (state: string) => void;
   mapView?: "forecast" | "actual";
+  absentLabel?: string;
 }) {
   const projection = useMemo(
     () =>
@@ -62,7 +64,7 @@ export default function SenateMap({
         const race =
           matches?.find((r) => r.id === selected.id) ||
           (matches ? [...matches].sort(competitiveOrder)[0] : undefined);
-        const label = `${feature.properties.state_name}${race ? `, ${matches!.length} election${matches!.length > 1 ? "s" : ""}, ${mapView === "actual" ? `observed winner ${race.observed?.winnerName || "unavailable"}` : raceRating(race)}` : ", no Senate election"}`;
+        const label = `${feature.properties.state_name}${race ? `, ${matches!.length} election${matches!.length > 1 ? "s" : ""}, ${mapView === "actual" ? `observed winner ${race.observed?.winnerName || "unavailable"}` : raceRating(race)}` : `, ${absentLabel}`}`;
         return (
           <path
             key={state}

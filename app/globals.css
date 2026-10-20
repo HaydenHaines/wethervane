@@ -2931,6 +2931,30 @@ select:focus-visible {
 .model-slices input:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
 .stack-builder-body > .composition-state { margin: 22px 0 0; }
 .stack-builder-body > .composition-state.unresolved { position: sticky; top: 8px; z-index: 4; box-shadow: 0 3px 9px #253e4b18; }
+
+.study-entry { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 18px; margin: 18px 0; border: 1px solid var(--line); border-radius: 5px; background: var(--paper); }
+.study-entry strong { font-size: 14px; }
+.study-entry p { margin: 7px 0 0; max-width: 65ch; line-height: 1.7; }
+.study-entry button { flex-shrink: 0; border: 1px solid var(--line); border-radius: 4px; padding: 10px 14px; background: var(--card); font-size: 12px; }
+.study-scope { padding: 18px 22px; border-left: 3px solid var(--muted); background: var(--card); margin: 22px 0; font-size: 13px; line-height: 1.8; }
+.study-scope p { margin: 7px 0 0; max-width: 100ch; }
+.study-scoreboard .scoreboard-cards { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.study-scoreboard .scoreboard-caption, .study-scoreboard .scoreboard-context, .study-scoreboard .scoreboard-comparison { font-size: 12px; }
+.study-scoreboard .scoreboard-card h3 { font-size: 13px; }
+.study-race-track { padding-inline: 4px; }
+.study-map-key { padding: 0 20px 18px; line-height: 1.8; }
+.study-methodology { display: block; max-width: 900px; font-size: 14px; line-height: 1.8; }
+.study-methodology h3 { margin-top: 25px; font-size: 16px; }
+.study-methodology details { margin-top: 22px; }
+.study-methodology summary { cursor: pointer; font-weight: 600; }
+.study-methodology dd { margin: 0 0 12px; overflow-wrap: anywhere; }
+.study-methodology dt { font-weight: 600; }
+@media (max-width: 800px) {
+  .study-entry { align-items: stretch; flex-direction: column; gap: 14px; }
+  .study-entry button { text-align: left; }
+  .study-scoreboard .scoreboard-cards { grid-template-columns: 1fr; }
+  .study-scope { padding: 15px; }
+}
 .selection-explanation { margin-top: 8px; }
 .selection-explanation summary { cursor: pointer; font-size: 12px; }
 .selection-explanation[open] { max-height: 220px; overflow-y: auto; }

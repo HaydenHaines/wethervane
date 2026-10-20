@@ -29,16 +29,26 @@ This follows [USWDS checkbox guidance](https://designsystem.digital.gov/componen
 
 `lib/model-slices.ts` adapts the existing saved-forecast request to row/control descriptors. `ModelSliceControls` renders those descriptors without knowing complete forecast names. This separates the full role structure from each backend contract's actual choices. It accepts multiple controls per role and only offers an inclusion checkbox when its descriptor declares an off value. Preset defaults and all result bytes are unchanged.
 
-## Next contract, prepared separately
+## Finer contract and scoped study
 
 `scripts/export_component_catalog.py` produces `data/model-components-v2.json` from the pinned reviewed Senate interface and ready-result receipts. It preserves scientific role/provider/version/instance IDs and declarative option schemas. The exported metadata contains eight roles, seven providers and two ordinary D/R historical examples, with separate numerical and evidence states. Source paths and probability arrays are excluded; no execution endpoint is implied.
 
-These finer providers currently apply to a 30-race 2018 study. They cannot be substituted into the 35-race current Senate forecast through UI labels alone. The current editor therefore continues using exact saved combinations until the scoped adapter connects the finer contract.
+These finer providers apply to a 30-race 2018 study. They cannot be substituted into the 35-race current Senate forecast through UI labels alone. The main editor continues using exact saved combinations. Its “Explore the 2018 component study” action opens the finer contract in the same page, with an explicit scope and a return to the prior full forecast. Both builders start collapsed.
 
-The subsequent adapter needs candidate/observed joins from the pinned target panel and separate labels, explicit retrospective roster/poll qualifications, and interval levels `[0.025, 0.1, 0.5, 0.9, 0.975]`. Do not silently label them as the existing 90% interval. Preserve provider-instance identity, source cutoff and each result's exact support. No chamber control or tipping can be derived from these race-only examples.
+`scripts/export_component_results.py` now joins candidates from the pinned target panel and observed D/R votes from separate labels. The exporter verifies all receipts, input identities, exact 30-race joins, probability sums and share quantiles. The UI displays the supplied 80% and 95% intervals; it never relabels them as the original forecasts' 90% interval. Candidates and polls retain their retrospective qualifications. D/R identifiers describe outcomes within each race, not persistent person IDs.
+
+The study shows all seven provider instances concurrently: structure/candidate/race under fundamentals; carryover/context/cycle under environment; polling under measurement. Five unconnected roles stay disabled. Metadata enum membership alone does not prove compatibility. Alternative values without reviewed bindings are disabled. Both exact F/FP examples are ready; their exact candidate-off counterparts require computation. F and FP bind different scientific plans on the server. Switching polling selects the entire corresponding context.
+
+`/api/component-studies` validates the pinned metadata and result index before advertising results. POST accepts only a known study ID and its seven provider-instance selections; source bindings cannot be supplied by the browser. It fills declared provider defaults for comparison, preserving explicit overrides such as presidential context `off`. Ready responses identify the original saved artifact. Exact pending selections have no result and no scheduled job. Other drafts explain that this deployment lacks a reviewed binding, without claiming scientific impossibility. GET result responses preserve the pinned JSON bytes so clients can verify the advertised fingerprint.
+
+The study has a race-only scorecard, dynamic probability ribbon, map, 10-race expandable list, and detail sidebar. `deriveRaceScoreboard` reuses the original categorical scoring rules independently of chamber estimates. The probability error is the 0–2 categorical Brier score; vote-share error is the mean absolute D/R share error. Comparison requires matching races, outcome identities, observed results, target, date and denominator. Saved study views bind the exact result fingerprint; unresolved choices cannot be saved as completed results. Share links describe the displayed result, never an uncomputed draft.
+
+No retained seats, chamber-control probabilities, tipping marker or count forecasts are synthesized. Map states outside the study are labeled “not included,” rather than “no election.” The original 48 full forecasts and preserved defaults are unchanged.
 
 The source owner’s current House successor is `panel-v6`, with a new 16-cell fit batch and an expected `frontend-results-v2` packet. Source qualification remains pending; keep House results unpublished until the explicit ready handoff.
 
 ## Verification
 
 Production build and typecheck pass. The full desktop/mobile suite passes all 82 checks; after final readability changes, all 28 affected configuration/layout checks pass again. Seven provider-metadata checks pass, including replay from the pinned source and rejection of changed identities/evidence. Desktop/mobile screenshots were inspected, including the sticky unresolved-selection message. All 48 existing forecast hashes, the registry and defaults remain unchanged.
+
+The subsequent scoped-study batch adds 10 desktop/mobile flows, seven export checks, and 12 API/presentation tests. All 92 browser cases pass, and the final 10 study flows pass again after the source-copy review. These cover actual source-bound results, unavailable computation, failure recovery, saved views, browser history, exact interval levels and absent-map coverage. The build, typecheck, original scoring tests and artifact checks pass.

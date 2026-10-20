@@ -14,6 +14,7 @@ import type {
 import { availableRuns } from "../lib/explorer-state";
 
 type Props = {
+  onStudy: () => void;
   registry: ExplorerRegistry;
   bundle: ExplorerBundle;
   busy: boolean;
@@ -93,6 +94,7 @@ const displayTime = (at: string) =>
   }).format(new Date(at));
 
 export default function StackControls({
+  onStudy,
   registry,
   bundle,
   busy,
@@ -272,6 +274,11 @@ export default function StackControls({
                 : ""}
             </p>
           </div>
+        </div>
+
+        <div className="study-entry">
+          <div><strong>Explore individual model components</strong><p className="small">A 2018 study separates more of the model’s ingredients. It covers 30 Democratic–Republican races and has its own race scorecard.</p></div>
+          <button onClick={onStudy} disabled={busy}>Explore the 2018 component study</button>
         </div>
 
         {catalog && (

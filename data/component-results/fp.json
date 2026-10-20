@@ -1,0 +1,2625 @@
+{
+  "schemaVersion": 1,
+  "id": "ordinary-2018-fp",
+  "contextId": "ordinary-senate-2018-fp",
+  "label": "2018 ordinary Senate races · with polls",
+  "year": 2018,
+  "scope": "ordinary_dr_race_subset",
+  "informationCutoff": "2018-10-23T00:00:00Z",
+  "targetId": "senate_aggregate_logit_empirical_mixture_v1",
+  "outputContractId": "empirical_linear_fundamentals_joint_v1",
+  "requestSha256": "885ce6c368d07643639c175c7f9898749981f2b438718de26aa202edc432490b",
+  "configurationSha256": "fa1b4fc4d3000819b9eb46a76f62962da8ceefa3f370528ff92aa61bf71ae239",
+  "artifactId": "4d7b4b3e947fcef9fe184c83306024308b8cfb21984e05a6071ac23e4e73d2db",
+  "selections": [
+    {
+      "instance_id": "structure",
+      "options": {
+        "state_slope": "learned"
+      },
+      "provider_id": "aggregate_structure_v1",
+      "version": "v1"
+    },
+    {
+      "instance_id": "candidate",
+      "options": {},
+      "provider_id": "aggregate_candidate_incumbency_v1",
+      "version": "v1"
+    },
+    {
+      "instance_id": "carryover",
+      "options": {
+        "carryover": "learned"
+      },
+      "provider_id": "aggregate_national_carryover_v1",
+      "version": "v1"
+    },
+    {
+      "instance_id": "context",
+      "options": {
+        "context": "off"
+      },
+      "provider_id": "aggregate_presidential_context_v1",
+      "version": "v1"
+    },
+    {
+      "instance_id": "cycle",
+      "options": {},
+      "provider_id": "aggregate_cycle_normal_v1",
+      "version": "v1"
+    },
+    {
+      "instance_id": "race",
+      "options": {},
+      "provider_id": "aggregate_race_student_t5_v1",
+      "version": "v1"
+    },
+    {
+      "instance_id": "poll",
+      "options": {
+        "polling": "fixed_gaussian"
+      },
+      "provider_id": "aggregate_poll_gaussian_v1",
+      "version": "v1"
+    }
+  ],
+  "status": {
+    "lifecycle": "ready",
+    "numerical": "passed",
+    "evidence": "unassessed",
+    "experimental": true
+  },
+  "qualification": "2018 ordinary D/R application integration demonstration; earlier-only fixed whole bank; poll availability is an explicit retrospective day proxy, publication/revision unverified",
+  "strictAsOf": false,
+  "capabilities": {
+    "raceProbabilities": true,
+    "conditionalTwoPartyShares": true,
+    "chamberControl": false,
+    "tipping": false,
+    "counts": false
+  },
+  "races": [
+    {
+      "id": "2018:AZ:senate:regular",
+      "state": "AZ",
+      "seatId": "AZ:senate:class_1",
+      "candidates": [
+        {
+          "id": "D",
+          "name": "Kyrsten Sinema",
+          "party": "D",
+          "incumbent": false,
+          "winProbability": 0.633575,
+          "share": {
+            "mean": 0.5093064727321479,
+            "denominator": "Democratic and Republican candidate votes only",
+            "quantiles": [
+              {
+                "level": 0.025,
+                "value": 0.4560321439698077
+              },
+              {
+                "level": 0.1,
+                "value": 0.47430579116326793
+              },
+              {
+                "level": 0.5,
+                "value": 0.5093145680408737
+              },
+              {
+                "level": 0.9,
+                "value": 0.5443787741549511
+              },
+              {
+                "level": 0.975,
+                "value": 0.5629089690350103
+              }
+            ]
+          }
+        },
+        {
+          "id": "R",
+          "name": "Martha McSally",
+          "party": "R",
+          "incumbent": false,
+          "winProbability": 0.366425,
+          "share": {
+            "mean": 0.4906935272678521,
+            "denominator": "Democratic and Republican candidate votes only",
+            "quantiles": [
+              {
+                "level": 0.025,
+                "value": 0.4370910309649897
+              },
+              {
+                "level": 0.1,
+                "value": 0.45562122584504894
+              },
+              {
+                "level": 0.5,
+                "value": 0.4906854319591263
+              },
+              {
+                "level": 0.9,
+                "value": 0.525694208836732
+              },
+              {
+                "level": 0.975,
+                "value": 0.5439678560301924
+              }
+            ]
+          }
+        }
+      ],
+      "observed": {
+        "democraticVotes": 1191100,
+        "republicanVotes": 1135200,
+        "twoPartyVotes": 2326300,
+        "democraticTwoPartyShare": 0.512014787430684
+      },
+      "notes": [
+        "Candidate names are final-result roster proxies, not a verified ballot snapshot available on the forecast date.",
+        "Candidate IDs D and R identify the two scoped model outcomes; they are not durable person identifiers."
+      ]
+    },
+    {
+      "id": "2018:CT:senate:regular",
+      "state": "CT",
+      "seatId": "CT:senate:class_1",
+      "candidates": [
+        {
+          "id": "D",
+          "name": "Christopher S Murphy",
+          "party": "D",
+          "incumbent": true,
+          "winProbability": 0.9982625,
+          "share": {
+            "mean": 0.5945611659698605,
+            "denominator": "Democratic and Republican candidate votes only",
+            "quantiles": [
+              {
+                "level": 0.025,
+                "value": 0.5323906123198249
+              },
+              {
+                "level": 0.1,
+                "value": 0.5546026914031743
+              },
+              {
+                "level": 0.5,
+                "value": 0.5950713885783239
+              },
+              {
+                "level": 0.9,
+                "value": 0.6338954215087436
+              },
+              {
+                "level": 0.975,
+                "value": 0.6534030227138516
+              }
+            ]
+          }
+        },
+        {
+          "id": "R",
+          "name": "Matthew Corey",
+          "party": "R",
+          "incumbent": false,
+          "winProbability": 0.0017374999999999474,
+          "share": {
+            "mean": 0.40543883403013947,
+            "denominator": "Democratic and Republican candidate votes only",
+            "quantiles": [
+              {
+                "level": 0.025,
+                "value": 0.34659697728614836
+              },
+              {
+                "level": 0.1,
+                "value": 0.36610457849125644
+              },
+              {
+                "level": 0.5,
+                "value": 0.40492861142167613
+              },
+              {
+                "level": 0.9,
+                "value": 0.4453973085968257
+              },
+              {
+                "level": 0.975,
+                "value": 0.4676093876801751
+              }
+            ]
+          }
+        }
+      ],
+      "observed": {
+        "democraticVotes": 825579,
+        "republicanVotes": 545717,
+        "twoPartyVotes": 1371296,
+        "democraticTwoPartyShare": 0.6020428849788813
+      },
+      "notes": [
+        "Candidate names are final-result roster proxies, not a verified ballot snapshot available on the forecast date.",
+        "Candidate IDs D and R identify the two scoped model outcomes; they are not durable person identifiers."
+      ]
+    },
+    {
+      "id": "2018:DE:senate:regular",
+      "state": "DE",
+      "seatId": "DE:senate:class_1",
+      "candidates": [
+        {
+          "id": "D",
+          "name": "Thomas R Carper",
+          "party": "D",
+          "incumbent": true,
+          "winProbability": 0.9999875,
+          "share": {
+            "mean": 0.6376942539846687,
+            "denominator": "Democratic and Republican candidate votes only",
+            "quantiles": [
+              {
+                "level": 0.025,
+                "value": 0.5719708144969984
+              },
+              {
+                "level": 0.1,
+                "value": 0.5957125074502664
+              },
+              {
+                "level": 0.5,
+                "value": 0.6382909109812507
+              },
+              {
+                "level": 0.9,
+                "value": 0.6791938854973645
+              },
+              {
+                "level": 0.975,
+                "value": 0.7000145621999219
+              }
+            ]
+          }
+        },
+        {
+          "id": "R",
+          "name": "Robert B Arlett",
+          "party": "R",
+          "incumbent": false,
+          "winProbability": 1.2499999999970868e-05,
+          "share": {
+            "mean": 0.3623057460153313,
+            "denominator": "Democratic and Republican candidate votes only",
+            "quantiles": [
+              {
+                "level": 0.025,
+                "value": 0.29998543780007814
+              },
+              {
+                "level": 0.1,
+                "value": 0.3208061145026355
+              },
+              {
+                "level": 0.5,
+                "value": 0.3617090890187493
+              },
+              {
+                "level": 0.9,
+                "value": 0.4042874925497336
+              },
+              {
+                "level": 0.975,
+                "value": 0.4280291855030016
+              }
+            ]
+          }
+        }
+      ],
+      "observed": {
+        "democraticVotes": 217385,
+        "republicanVotes": 137127,
+        "twoPartyVotes": 354512,
+        "democraticTwoPartyShare": 0.6131950399422305
+      },
+      "notes": [
+        "Candidate names are final-result roster proxies, not a verified ballot snapshot available on the forecast date.",
+        "Candidate IDs D and R identify the two scoped model outcomes; they are not durable person identifiers."
+      ]
+    },
+    {
+      "id": "2018:FL:senate:regular",
+      "state": "FL",
+      "seatId": "FL:senate:class_1",
+      "candidates": [
+        {
+          "id": "D",
+          "name": "Bill Nelson",
+          "party": "D",
+          "incumbent": true,
+          "winProbability": 0.7756125,
+          "share": {
+            "mean": 0.5201340502450823,
+            "denominator": "Democratic and Republican candidate votes only",
+            "quantiles": [
+              {
+                "level": 0.025,
+                "value": 0.46780878133582215
+              },
+              {
+                "level": 0.1,
+                "value": 0.4860087403299911
+              },
+              {
+                "level": 0.5,
+                "value": 0.520302618849255
+              },
+              {
+                "level": 0.9,
+                "value": 0.5542398896843896
+              },
+              {
+                "level": 0.975,
+                "value": 0.5717945305641109
+              }
+            ]
+          }
+        },
+        {
+          "id": "R",
+          "name": "Rick Scott",
+          "party": "R",
+          "incumbent": false,
+          "winProbability": 0.22438749999999996,
+          "share": {
+            "mean": 0.4798659497549177,
+            "denominator": "Democratic and Republican candidate votes only",
+            "quantiles": [
+              {
+                "level": 0.025,
+                "value": 0.4282054694358891
+              },
+              {
+                "level": 0.1,
+                "value": 0.44576011031561036
+              },
+              {
+                "level": 0.5,
+                "value": 0.479697381150745
+              },
+              {
+                "level": 0.9,
+                "value": 0.5139912596700089
+              },
+              {
+                "level": 0.975,
+                "value": 0.5321912186641778
+              }
+            ]
+          }
+        }
+      ],
+      "observed": {
+        "democraticVotes": 4089472,
+        "republicanVotes": 4099505,
+        "twoPartyVotes": 8188977,
+        "democraticTwoPartyShare": 0.49938740821961036
+      },
+      "notes": [
+        "Candidate names are final-result roster proxies, not a verified ballot snapshot available on the forecast date.",
+        "Candidate IDs D and R identify the two scoped model outcomes; they are not durable person identifiers."
+      ]
+    },
+    {
+      "id": "2018:HI:senate:regular",
+      "state": "HI",
+      "seatId": "HI:senate:class_1",
+      "candidates": [
+        {
+          "id": "D",
+          "name": "Mazie K. Hirono",
+          "party": "D",
+          "incumbent": true,
+          "winProbability": 0.9875375,
+          "share": {
+            "mean": 0.6977591094700704,
+            "denominator": "Democratic and Republican candidate votes only",
+            "quantiles": [
+              {
+                "level": 0.025,
+                "value": 0.5393120114200959
+              },
+              {
+                "level": 0.1,
+                "value": 0.6118403891768041
+              },
+              {
+                "level": 0.5,
+                "value": 0.7028438796966137
+              },
+              {
+                "level": 0.9,
+                "value": 0.7793264253755446
+              },
+              {
+                "level": 0.975,
+                "value": 0.8252825708971464
+              }
+            ]
+          }
+        },
+        {
+          "id": "R",
+          "name": "Ron Curtis",
+          "party": "R",
+          "incumbent": false,
+          "winProbability": 0.012462500000000043,
+          "share": {
+            "mean": 0.30224089052992964,
+            "denominator": "Democratic and Republican candidate votes only",
+            "quantiles": [
+              {
+                "level": 0.025,
+                "value": 0.1747174291028536
+              },
+              {
+                "level": 0.1,
+                "value": 0.22067357462445536
+              },
+              {
+                "level": 0.5,
+                "value": 0.29715612030338634
+              },
+              {
+                "level": 0.9,
+                "value": 0.38815961082319594
+              },
+              {
+                "level": 0.975,
+                "value": 0.4606879885799041
+              }
+            ]
+          }
+        }
+      ],
+      "observed": {
+        "democraticVotes": 276316,
+        "republicanVotes": 112035,
+        "twoPartyVotes": 388351,
+        "democraticTwoPartyShare": 0.7115109784705074
+      },
+      "notes": [
+        "Candidate names are final-result roster proxies, not a verified ballot snapshot available on the forecast date.",
+        "Candidate IDs D and R identify the two scoped model outcomes; they are not durable person identifiers."
+      ]
+    },
+    {
+      "id": "2018:IN:senate:regular",
+      "state": "IN",
+      "seatId": "IN:senate:class_1",
+      "candidates": [
+        {
+          "id": "D",
+          "name": "Joe Donnelly",
+          "party": "D",
+          "incumbent": true,
+          "winProbability": 0.72,
+          "share": {
+            "mean": 0.515988451048816,
+            "denominator": "Democratic and Republican candidate votes only",
+            "quantiles": [
+              {
+                "level": 0.025,
+                "value": 0.4621633129876504
+              },
+              {
+                "level": 0.1,
+                "value": 0.4807838153377962
+              },
+              {
+                "level": 0.5,
+                "value": 0.5161769846954547
+              },
+              {
+                "level": 0.9,
+                "value": 0.5508376088345311
+              },
+              {
+                "level": 0.975,
+                "value": 0.5694570530868845
+              }
+            ]
+          }
+        },
+        {
+          "id": "R",
+          "name": "Mike Braun",
+          "party": "R",
+          "incumbent": false,
+          "winProbability": 0.28,
+          "share": {
+            "mean": 0.48401154895118403,
+            "denominator": "Democratic and Republican candidate votes only",
+            "quantiles": [
+              {
+                "level": 0.025,
+                "value": 0.43054294691311545
+              },
+              {
+                "level": 0.1,
+                "value": 0.44916239116546886
+              },
+              {
+                "level": 0.5,
+                "value": 0.4838230153045453
+              },
+              {
+                "level": 0.9,
+                "value": 0.5192161846622039
+              },
+              {
+                "level": 0.975,
+                "value": 0.5378366870123497
+              }
+            ]
+          }
+        }
+      ],
+      "observed": {
+        "democraticVotes": 1023553,
+        "republicanVotes": 1158000,
+        "twoPartyVotes": 2181553,
+        "democraticTwoPartyShare": 0.46918548391902465
+      },
+      "notes": [
+        "Candidate names are final-result roster proxies, not a verified ballot snapshot available on the forecast date.",
+        "Candidate IDs D and R identify the two scoped model outcomes; they are not durable person identifiers."
+      ]
+    },
+    {
+      "id": "2018:MA:senate:regular",
+      "state": "MA",
+      "seatId": "MA:senate:class_1",
+      "candidates": [
+        {
+          "id": "D",
+          "name": "Elizabeth A. Warren",
+          "party": "D",
+          "incumbent": true,
+          "winProbability": 1.0,
+          "share": {
+            "mean": 0.665956508728437,
+            "denominator": "Democratic and Republican candidate votes only",
+            "quantiles": [
+              {
+                "level": 0.025,
+                "value": 0.6089190374661765
+              },
+              {
+                "level": 0.1,
+                "value": 0.6293458064635238
+              },
+              {
+                "level": 0.5,
+                "value": 0.6665062791293692
+              },
+              {
+                "level": 0.9,
+                "value": 0.7017589477701811
+              },
+              {
+                "level": 0.975,
+                "value": 0.7194843974200357
+              }
+            ]
+          }
+        },
+        {
+          "id": "R",
+          "name": "Geoff Diehl",
+          "party": "R",
+          "incumbent": false,
+          "winProbability": 0.0,
+          "share": {
+            "mean": 0.33404349127156296,
+            "denominator": "Democratic and Republican candidate votes only",
+            "quantiles": [
+              {
+                "level": 0.025,
+                "value": 0.28051560257996433
+              },
+              {
+                "level": 0.1,
+                "value": 0.2982410522298189
+              },
+              {
+                "level": 0.5,
+                "value": 0.3334937208706308
+              },
+              {
+                "level": 0.9,
+                "value": 0.3706541935364762
+              },
+              {
+                "level": 0.975,
+                "value": 0.3910809625338235
+              }
+            ]
+          }
+        }
+      ],
+      "observed": {
+        "democraticVotes": 1633371,
+        "republicanVotes": 979210,
+        "twoPartyVotes": 2612581,
+        "democraticTwoPartyShare": 0.625194395886673
+      },
+      "notes": [
+        "Candidate names are final-result roster proxies, not a verified ballot snapshot available on the forecast date.",
+        "Candidate IDs D and R identify the two scoped model outcomes; they are not durable person identifiers."
+      ]
+    },
+    {
+      "id": "2018:MD:senate:regular",
+      "state": "MD",
+      "seatId": "MD:senate:class_1",
+      "candidates": [
+        {
+          "id": "D",
+          "name": "Ben Cardin",
+          "party": "D",
+          "incumbent": true,
+          "winProbability": 1.0,
+          "share": {
+            "mean": 0.71922567122128,
+            "denominator": "Democratic and Republican candidate votes only",
+            "quantiles": [
+              {
+                "level": 0.025,
+                "value": 0.6634292162105472
+              },
+              {
+                "level": 0.1,
+                "value": 0.6833949095369537
+              },
+              {
+                "level": 0.5,
+                "value": 0.7198449111932809
+              },
+              {
+                "level": 0.9,
+                "value": 0.7543721632281047
+              },
+              {
+                "level": 0.975,
+                "value": 0.7720727573284437
+              }
+            ]
+          }
+        },
+        {
+          "id": "R",
+          "name": "Tony Campbell",
+          "party": "R",
+          "incumbent": false,
+          "winProbability": 0.0,
+          "share": {
+            "mean": 0.28077432877872,
+            "denominator": "Democratic and Republican candidate votes only",
+            "quantiles": [
+              {
+                "level": 0.025,
+                "value": 0.22792724267155628
+              },
+              {
+                "level": 0.1,
+                "value": 0.24562783677189526
+              },
+              {
+                "level": 0.5,
+                "value": 0.28015508880671913
+              },
+              {
+                "level": 0.9,
+                "value": 0.3166050904630463
+              },
+              {
+                "level": 0.975,
+                "value": 0.3365707837894528
+              }
+            ]
+          }
+        }
+      ],
+      "observed": {
+        "democraticVotes": 1491614,
+        "republicanVotes": 697017,
+        "twoPartyVotes": 2188631,
+        "democraticTwoPartyShare": 0.6815283161026231
+      },
+      "notes": [
+        "Candidate names are final-result roster proxies, not a verified ballot snapshot available on the forecast date.",
+        "Candidate IDs D and R identify the two scoped model outcomes; they are not durable person identifiers."
+      ]
+    },
+    {
+      "id": "2018:MI:senate:regular",
+      "state": "MI",
+      "seatId": "MI:senate:class_1",
+      "candidates": [
+        {
+          "id": "D",
+          "name": "Debbie Stabenow",
+          "party": "D",
+          "incumbent": true,
+          "winProbability": 0.999125,
+          "share": {
+            "mean": 0.5921908866478145,
+            "denominator": "Democratic and Republican candidate votes only",
+            "quantiles": [
+              {
+                "level": 0.025,
+                "value": 0.5348371354149958
+              },
+              {
+                "level": 0.1,
+                "value": 0.5552375197346443
+              },
+              {
+                "level": 0.5,
+                "value": 0.592503175167003
+              },
+              {
+                "level": 0.9,
+                "value": 0.6289187768830152
+              },
+              {
+                "level": 0.975,
+                "value": 0.648053436929103
+              }
+            ]
+          }
+        },
+        {
+          "id": "R",
+          "name": "John James",
+          "party": "R",
+          "incumbent": false,
+          "winProbability": 0.0008749999999999591,
+          "share": {
+            "mean": 0.4078091133521855,
+            "denominator": "Democratic and Republican candidate votes only",
+            "quantiles": [
+              {
+                "level": 0.025,
+                "value": 0.351946563070897
+              },
+              {
+                "level": 0.1,
+                "value": 0.37108122311698477
+              },
+              {
+                "level": 0.5,
+                "value": 0.407496824832997
+              },
+              {
+                "level": 0.9,
+                "value": 0.4447624802653557
+              },
+              {
+                "level": 0.975,
+                "value": 0.4651628645850042
+              }
+            ]
+          }
+        }
+      ],
+      "observed": {
+        "democraticVotes": 2214478,
+        "republicanVotes": 1938818,
+        "twoPartyVotes": 4153296,
+        "democraticTwoPartyShare": 0.5331856915567781
+      },
+      "notes": [
+        "Candidate names are final-result roster proxies, not a verified ballot snapshot available on the forecast date.",
+        "Candidate IDs D and R identify the two scoped model outcomes; they are not durable person identifiers."
+      ]
+    },
+    {
+      "id": "2018:MN:senate:regular",
+      "state": "MN",
+      "seatId": "MN:senate:class_1",
+      "candidates": [
+        {
+          "id": "D",
+          "name": "Amy Klobuchar",
+          "party": "D",
+          "incumbent": true,
+          "winProbability": 0.892875,
+          "share": {
+            "mean": 0.5927638836274954,
+            "denominator": "Democratic and Republican candidate votes only",
+            "quantiles": [
+              {
+                "level": 0.025,
+                "value": 0.42456053446296926
+              },
+              {
+                "level": 0.1,
+                "value": 0.49633777959218506
+              },
+              {
+                "level": 0.5,
+                "value": 0.5953387471064573
+              },
+              {
+                "level": 0.9,
+                "value": 0.6868818862823353
+              },
+              {
+                "level": 0.975,
+                "value": 0.7472413802954818
+              }
+            ]
+          }
+        },
+        {
+          "id": "R",
+          "name": "Jim Newberger",
+          "party": "R",
+          "incumbent": false,
+          "winProbability": 0.10712500000000003,
+          "share": {
+            "mean": 0.40723611637250456,
+            "denominator": "Democratic and Republican candidate votes only",
+            "quantiles": [
+              {
+                "level": 0.025,
+                "value": 0.2527586197045182
+              },
+              {
+                "level": 0.1,
+                "value": 0.31311811371766474
+              },
+              {
+                "level": 0.5,
+                "value": 0.4046612528935427
+              },
+              {
+                "level": 0.9,
+                "value": 0.5036622204078149
+              },
+              {
+                "level": 0.975,
+                "value": 0.5754394655370307
+              }
+            ]
+          }
+        }
+      ],
+      "observed": {
+        "democraticVotes": 1566174,
+        "republicanVotes": 940437,
+        "twoPartyVotes": 2506611,
+        "democraticTwoPartyShare": 0.6248173330444972
+      },
+      "notes": [
+        "Candidate names are final-result roster proxies, not a verified ballot snapshot available on the forecast date.",
+        "Candidate IDs D and R identify the two scoped model outcomes; they are not durable person identifiers."
+      ]
+    },
+    {
+      "id": "2018:MO:senate:regular",
+      "state": "MO",
+      "seatId": "MO:senate:class_1",
+      "candidates": [
+        {
+          "id": "D",
+          "name": "Claire McCaskill",
+          "party": "D",
+          "incumbent": true,
+          "winProbability": 0.4446375,
+          "share": {
+            "mean": 0.49604074504594625,
+            "denominator": "Democratic and Republican candidate votes only",
+            "quantiles": [
+              {
+                "level": 0.025,
+                "value": 0.441022284825419
+              },
+              {
+                "level": 0.1,
+                "value": 0.46028032022816234
+              },
+              {
+                "level": 0.5,
+                "value": 0.49617166483963426
+              },
+              {
+                "level": 0.9,
+                "value": 0.5318951940373922
+              },
+              {
+                "level": 0.975,
+                "value": 0.550170410437991
+              }
+            ]
+          }
+        },
+        {
+          "id": "R",
+          "name": "Josh Hawley",
+          "party": "R",
+          "incumbent": false,
+          "winProbability": 0.5553625,
+          "share": {
+            "mean": 0.5039592549540537,
+            "denominator": "Democratic and Republican candidate votes only",
+            "quantiles": [
+              {
+                "level": 0.025,
+                "value": 0.449829589562009
+              },
+              {
+                "level": 0.1,
+                "value": 0.46810480596260784
+              },
+              {
+                "level": 0.5,
+                "value": 0.5038283351603657
+              },
+              {
+                "level": 0.9,
+                "value": 0.5397196797718377
+              },
+              {
+                "level": 0.975,
+                "value": 0.558977715174581
+              }
+            ]
+          }
+        }
+      ],
+      "observed": {
+        "democraticVotes": 1112935,
+        "republicanVotes": 1254927,
+        "twoPartyVotes": 2367862,
+        "democraticTwoPartyShare": 0.4700168337512913
+      },
+      "notes": [
+        "Candidate names are final-result roster proxies, not a verified ballot snapshot available on the forecast date.",
+        "Candidate IDs D and R identify the two scoped model outcomes; they are not durable person identifiers."
+      ]
+    },
+    {
+      "id": "2018:MS:senate:regular",
+      "state": "MS",
+      "seatId": "MS:senate:class_1",
+      "candidates": [
+        {
+          "id": "D",
+          "name": "David Baria",
+          "party": "D",
+          "incumbent": false,
+          "winProbability": 0.041475,
+          "share": {
+            "mean": 0.36047929011430796,
+            "denominator": "Democratic and Republican candidate votes only",
+            "quantiles": [
+              {
+                "level": 0.025,
+                "value": 0.21623655451648194
+              },
+              {
+                "level": 0.1,
+                "value": 0.27073510998661304
+              },
+              {
+                "level": 0.5,
+                "value": 0.35662236603017616
+              },
+              {
+                "level": 0.9,
+                "value": 0.4531513348404401
+              },
+              {
+                "level": 0.975,
+                "value": 0.5281127839088982
+              }
+            ]
+          }
+        },
+        {
+          "id": "R",
+          "name": "Roger F. Wicker",
+          "party": "R",
+          "incumbent": true,
+          "winProbability": 0.958525,
+          "share": {
+            "mean": 0.6395207098856921,
+            "denominator": "Democratic and Republican candidate votes only",
+            "quantiles": [
+              {
+                "level": 0.025,
+                "value": 0.47188721609110185
+              },
+              {
+                "level": 0.1,
+                "value": 0.5468486651595599
+              },
+              {
+                "level": 0.5,
+                "value": 0.6433776339698238
+              },
+              {
+                "level": 0.9,
+                "value": 0.7292648900133869
+              },
+              {
+                "level": 0.975,
+                "value": 0.7837634454835181
+              }
+            ]
+          }
+        }
+      ],
+      "observed": {
+        "democraticVotes": 369567,
+        "republicanVotes": 547619,
+        "twoPartyVotes": 917186,
+        "democraticTwoPartyShare": 0.4029357186001531
+      },
+      "notes": [
+        "Candidate names are final-result roster proxies, not a verified ballot snapshot available on the forecast date.",
+        "Candidate IDs D and R identify the two scoped model outcomes; they are not durable person identifiers."
+      ]
+    },
+    {
+      "id": "2018:MT:senate:regular",
+      "state": "MT",
+      "seatId": "MT:senate:class_1",
+      "candidates": [
+        {
+          "id": "D",
+          "name": "Jon Tester",
+          "party": "D",
+          "incumbent": true,
+          "winProbability": 0.7832875,
+          "share": {
+            "mean": 0.5245428401662946,
+            "denominator": "Democratic and Republican candidate votes only",
+            "quantiles": [
+              {
+                "level": 0.025,
+                "value": 0.46329183370692895
+              },
+              {
+                "level": 0.1,
+                "value": 0.4844711572441695
+              },
+              {
+                "level": 0.5,
+                "value": 0.5243237194949688
+              },
+              {
+                "level": 0.9,
+                "value": 0.5648593831648514
+              },
+              {
+                "level": 0.975,
+                "value": 0.5860184350205303
+              }
+            ]
+          }
+        },
+        {
+          "id": "R",
+          "name": "Matt Rosendale",
+          "party": "R",
+          "incumbent": false,
+          "winProbability": 0.21671249999999997,
+          "share": {
+            "mean": 0.4754571598337054,
+            "denominator": "Democratic and Republican candidate votes only",
+            "quantiles": [
+              {
+                "level": 0.025,
+                "value": 0.4139815649794697
+              },
+              {
+                "level": 0.1,
+                "value": 0.4351406168351486
+              },
+              {
+                "level": 0.5,
+                "value": 0.4756762805050312
+              },
+              {
+                "level": 0.9,
+                "value": 0.5155288427558304
+              },
+              {
+                "level": 0.975,
+                "value": 0.536708166293071
+              }
+            ]
+          }
+        }
+      ],
+      "observed": {
+        "democraticVotes": 253876,
+        "republicanVotes": 235963,
+        "twoPartyVotes": 489839,
+        "democraticTwoPartyShare": 0.5182845792188862
+      },
+      "notes": [
+        "Candidate names are final-result roster proxies, not a verified ballot snapshot available on the forecast date.",
+        "Candidate IDs D and R identify the two scoped model outcomes; they are not durable person identifiers."
+      ]
+    },
+    {
+      "id": "2018:ND:senate:regular",
+      "state": "ND",
+      "seatId": "ND:senate:class_1",
+      "candidates": [
+        {
+          "id": "D",
+          "name": "Heidi Heitkamp",
+          "party": "D",
+          "incumbent": true,
+          "winProbability": 0.004325,
+          "share": {
+            "mean": 0.42244674319312026,
+            "denominator": "Democratic and Republican candidate votes only",
+            "quantiles": [
+              {
+                "level": 0.025,
+                "value": 0.3656119760107237
+              },
+              {
+                "level": 0.1,
+                "value": 0.3849316491198588
+              },
+              {
+                "level": 0.5,
+                "value": 0.4222229959743039
+              },
+              {
+                "level": 0.9,
+                "value": 0.46037143330153546
+              },
+              {
+                "level": 0.975,
+                "value": 0.48055549865728875
+              }
+            ]
+          }
+        },
+        {
+          "id": "R",
+          "name": "Kevin Cramer",
+          "party": "R",
+          "incumbent": false,
+          "winProbability": 0.995675,
+          "share": {
+            "mean": 0.5775532568068797,
+            "denominator": "Democratic and Republican candidate votes only",
+            "quantiles": [
+              {
+                "level": 0.025,
+                "value": 0.5194445013427113
+              },
+              {
+                "level": 0.1,
+                "value": 0.5396285666984646
+              },
+              {
+                "level": 0.5,
+                "value": 0.5777770040256961
+              },
+              {
+                "level": 0.9,
+                "value": 0.6150683508801412
+              },
+              {
+                "level": 0.975,
+                "value": 0.6343880239892763
+              }
+            ]
+          }
+        }
+      ],
+      "observed": {
+        "democraticVotes": 144376,
+        "republicanVotes": 179720,
+        "twoPartyVotes": 324096,
+        "democraticTwoPartyShare": 0.44547294628751977
+      },
+      "notes": [
+        "Candidate names are final-result roster proxies, not a verified ballot snapshot available on the forecast date.",
+        "Candidate IDs D and R identify the two scoped model outcomes; they are not durable person identifiers."
+      ]
+    },
+    {
+      "id": "2018:NE:senate:regular",
+      "state": "NE",
+      "seatId": "NE:senate:class_1",
+      "candidates": [
+        {
+          "id": "D",
+          "name": "Jane Raybould",
+          "party": "D",
+          "incumbent": false,
+          "winProbability": 0.02265,
+          "share": {
+            "mean": 0.3324705649723975,
+            "denominator": "Democratic and Republican candidate votes only",
+            "quantiles": [
+              {
+                "level": 0.025,
+                "value": 0.19591898752262515
+              },
+              {
+                "level": 0.1,
+                "value": 0.2464122627855236
+              },
+              {
+                "level": 0.5,
+                "value": 0.32824968761764317
+              },
+              {
+                "level": 0.9,
+                "value": 0.4223431398104282
+              },
+              {
+                "level": 0.975,
+                "value": 0.4943306627347719
+              }
+            ]
+          }
+        },
+        {
+          "id": "R",
+          "name": "Deb Fischer",
+          "party": "R",
+          "incumbent": true,
+          "winProbability": 0.97735,
+          "share": {
+            "mean": 0.6675294350276024,
+            "denominator": "Democratic and Republican candidate votes only",
+            "quantiles": [
+              {
+                "level": 0.025,
+                "value": 0.5056693372652281
+              },
+              {
+                "level": 0.1,
+                "value": 0.5776568601895717
+              },
+              {
+                "level": 0.5,
+                "value": 0.6717503123823568
+              },
+              {
+                "level": 0.9,
+                "value": 0.7535877372144764
+              },
+              {
+                "level": 0.975,
+                "value": 0.8040810124773748
+              }
+            ]
+          }
+        }
+      ],
+      "observed": {
+        "democraticVotes": 269917,
+        "republicanVotes": 403151,
+        "twoPartyVotes": 673068,
+        "democraticTwoPartyShare": 0.40102485930099185
+      },
+      "notes": [
+        "Candidate names are final-result roster proxies, not a verified ballot snapshot available on the forecast date.",
+        "Candidate IDs D and R identify the two scoped model outcomes; they are not durable person identifiers."
+      ]
+    },
+    {
+      "id": "2018:NJ:senate:regular",
+      "state": "NJ",
+      "seatId": "NJ:senate:class_1",
+      "candidates": [
+        {
+          "id": "D",
+          "name": "Robert Menendez",
+          "party": "D",
+          "incumbent": true,
+          "winProbability": 0.9606,
+          "share": {
+            "mean": 0.5507818829887972,
+            "denominator": "Democratic and Republican candidate votes only",
+            "quantiles": [
+              {
+                "level": 0.025,
+                "value": 0.49415603079642206
+              },
+              {
+                "level": 0.1,
+                "value": 0.5139999335952216
+              },
+              {
+                "level": 0.5,
+                "value": 0.551059423310976
+              },
+              {
+                "level": 0.9,
+                "value": 0.58732952875922
+              },
+              {
+                "level": 0.975,
+                "value": 0.6062679725807086
+              }
+            ]
+          }
+        },
+        {
+          "id": "R",
+          "name": "Bob Hugin",
+          "party": "R",
+          "incumbent": false,
+          "winProbability": 0.03939999999999999,
+          "share": {
+            "mean": 0.44921811701120284,
+            "denominator": "Democratic and Republican candidate votes only",
+            "quantiles": [
+              {
+                "level": 0.025,
+                "value": 0.39373202741929136
+              },
+              {
+                "level": 0.1,
+                "value": 0.41267047124078005
+              },
+              {
+                "level": 0.5,
+                "value": 0.448940576689024
+              },
+              {
+                "level": 0.9,
+                "value": 0.48600006640477844
+              },
+              {
+                "level": 0.975,
+                "value": 0.5058439692035779
+              }
+            ]
+          }
+        }
+      ],
+      "observed": {
+        "democraticVotes": 1711654,
+        "republicanVotes": 1357355,
+        "twoPartyVotes": 3069009,
+        "democraticTwoPartyShare": 0.5577220529493396
+      },
+      "notes": [
+        "Candidate names are final-result roster proxies, not a verified ballot snapshot available on the forecast date.",
+        "Candidate IDs D and R identify the two scoped model outcomes; they are not durable person identifiers."
+      ]
+    },
+    {
+      "id": "2018:NM:senate:regular",
+      "state": "NM",
+      "seatId": "NM:senate:class_1",
+      "candidates": [
+        {
+          "id": "D",
+          "name": "Martin T Heinrich",
+          "party": "D",
+          "incumbent": true,
+          "winProbability": 1.0,
+          "share": {
+            "mean": 0.7113238096446325,
+            "denominator": "Democratic and Republican candidate votes only",
+            "quantiles": [
+              {
+                "level": 0.025,
+                "value": 0.6545277975331222
+              },
+              {
+                "level": 0.1,
+                "value": 0.6747333226600896
+              },
+              {
+                "level": 0.5,
+                "value": 0.7119868980545352
+              },
+              {
+                "level": 0.9,
+                "value": 0.747216637110854
+              },
+              {
+                "level": 0.975,
+                "value": 0.7650896757458234
+              }
+            ]
+          }
+        },
+        {
+          "id": "R",
+          "name": "Mick Rich",
+          "party": "R",
+          "incumbent": false,
+          "winProbability": 0.0,
+          "share": {
+            "mean": 0.2886761903553675,
+            "denominator": "Democratic and Republican candidate votes only",
+            "quantiles": [
+              {
+                "level": 0.025,
+                "value": 0.23491032425417657
+              },
+              {
+                "level": 0.1,
+                "value": 0.25278336288914605
+              },
+              {
+                "level": 0.5,
+                "value": 0.2880131019454648
+              },
+              {
+                "level": 0.9,
+                "value": 0.32526667733991044
+              },
+              {
+                "level": 0.975,
+                "value": 0.3454722024668778
+              }
+            ]
+          }
+        }
+      ],
+      "observed": {
+        "democraticVotes": 376998,
+        "republicanVotes": 212813,
+        "twoPartyVotes": 589811,
+        "democraticTwoPartyShare": 0.6391844167029778
+      },
+      "notes": [
+        "Candidate names are final-result roster proxies, not a verified ballot snapshot available on the forecast date.",
+        "Candidate IDs D and R identify the two scoped model outcomes; they are not durable person identifiers."
+      ]
+    },
+    {
+      "id": "2018:NV:senate:regular",
+      "state": "NV",
+      "seatId": "NV:senate:class_1",
+      "candidates": [
+        {
+          "id": "D",
+          "name": "Jacky Rosen",
+          "party": "D",
+          "incumbent": false,
+          "winProbability": 0.2069625,
+          "share": {
+            "mean": 0.4769285768352954,
+            "denominator": "Democratic and Republican candidate votes only",
+            "quantiles": [
+              {
+                "level": 0.025,
+                "value": 0.42216318863240426
+              },
+              {
+                "level": 0.1,
+                "value": 0.44104372788814417
+              },
+              {
+                "level": 0.5,
+                "value": 0.47676432933317525
+              },
+              {
+                "level": 0.9,
+                "value": 0.5131140882901191
+              },
+              {
+                "level": 0.975,
+                "value": 0.5330240999551502
+              }
+            ]
+          }
+        },
+        {
+          "id": "R",
+          "name": "Dean Heller",
+          "party": "R",
+          "incumbent": true,
+          "winProbability": 0.7930375000000001,
+          "share": {
+            "mean": 0.5230714231647047,
+            "denominator": "Democratic and Republican candidate votes only",
+            "quantiles": [
+              {
+                "level": 0.025,
+                "value": 0.4669759000448498
+              },
+              {
+                "level": 0.1,
+                "value": 0.48688591170988094
+              },
+              {
+                "level": 0.5,
+                "value": 0.5232356706668247
+              },
+              {
+                "level": 0.9,
+                "value": 0.5589562721118558
+              },
+              {
+                "level": 0.975,
+                "value": 0.5778368113675958
+              }
+            ]
+          }
+        }
+      ],
+      "observed": {
+        "democraticVotes": 490071,
+        "republicanVotes": 441202,
+        "twoPartyVotes": 931273,
+        "democraticTwoPartyShare": 0.526237741242364
+      },
+      "notes": [
+        "Candidate names are final-result roster proxies, not a verified ballot snapshot available on the forecast date.",
+        "Candidate IDs D and R identify the two scoped model outcomes; they are not durable person identifiers."
+      ]
+    },
+    {
+      "id": "2018:NY:senate:regular",
+      "state": "NY",
+      "seatId": "NY:senate:class_1",
+      "candidates": [
+        {
+          "id": "D",
+          "name": "Kirsten E. Gillibrand",
+          "party": "D",
+          "incumbent": true,
+          "winProbability": 0.9999875,
+          "share": {
+            "mean": 0.644466460223031,
+            "denominator": "Democratic and Republican candidate votes only",
+            "quantiles": [
+              {
+                "level": 0.025,
+                "value": 0.5880625183788079
+              },
+              {
+                "level": 0.1,
+                "value": 0.6083909659075181
+              },
+              {
+                "level": 0.5,
+                "value": 0.6449307552333693
+              },
+              {
+                "level": 0.9,
+                "value": 0.6798925952091999
+              },
+              {
+                "level": 0.975,
+                "value": 0.6975980975220756
+              }
+            ]
+          }
+        },
+        {
+          "id": "R",
+          "name": "Chele Chiavacci Farley",
+          "party": "R",
+          "incumbent": false,
+          "winProbability": 1.2499999999970868e-05,
+          "share": {
+            "mean": 0.355533539776969,
+            "denominator": "Democratic and Republican candidate votes only",
+            "quantiles": [
+              {
+                "level": 0.025,
+                "value": 0.3024019024779244
+              },
+              {
+                "level": 0.1,
+                "value": 0.32010740479080013
+              },
+              {
+                "level": 0.5,
+                "value": 0.3550692447666307
+              },
+              {
+                "level": 0.9,
+                "value": 0.39160903409248193
+              },
+              {
+                "level": 0.975,
+                "value": 0.41193748162119215
+              }
+            ]
+          }
+        }
+      ],
+      "observed": {
+        "democraticVotes": 4056931,
+        "republicanVotes": 1998220,
+        "twoPartyVotes": 6055151,
+        "democraticTwoPartyShare": 0.6699966689517735
+      },
+      "notes": [
+        "Candidate names are final-result roster proxies, not a verified ballot snapshot available on the forecast date.",
+        "Candidate IDs D and R identify the two scoped model outcomes; they are not durable person identifiers."
+      ]
+    },
+    {
+      "id": "2018:OH:senate:regular",
+      "state": "OH",
+      "seatId": "OH:senate:class_1",
+      "candidates": [
+        {
+          "id": "D",
+          "name": "Sherrod Brown",
+          "party": "D",
+          "incumbent": true,
+          "winProbability": 0.995525,
+          "share": {
+            "mean": 0.5751996364519397,
+            "denominator": "Democratic and Republican candidate votes only",
+            "quantiles": [
+              {
+                "level": 0.025,
+                "value": 0.5186980981754094
+              },
+              {
+                "level": 0.1,
+                "value": 0.5386325510834239
+              },
+              {
+                "level": 0.5,
+                "value": 0.5753854122881319
+              },
+              {
+                "level": 0.9,
+                "value": 0.6113063767382323
+              },
+              {
+                "level": 0.975,
+                "value": 0.6300077619167184
+              }
+            ]
+          }
+        },
+        {
+          "id": "R",
+          "name": "Jim Renacci",
+          "party": "R",
+          "incumbent": false,
+          "winProbability": 0.004475000000000007,
+          "share": {
+            "mean": 0.4248003635480603,
+            "denominator": "Democratic and Republican candidate votes only",
+            "quantiles": [
+              {
+                "level": 0.025,
+                "value": 0.36999223808328163
+              },
+              {
+                "level": 0.1,
+                "value": 0.3886936232617677
+              },
+              {
+                "level": 0.5,
+                "value": 0.4246145877118681
+              },
+              {
+                "level": 0.9,
+                "value": 0.4613674489165761
+              },
+              {
+                "level": 0.975,
+                "value": 0.48130190182459065
+              }
+            ]
+          }
+        }
+      ],
+      "observed": {
+        "democraticVotes": 2358508,
+        "republicanVotes": 2057559,
+        "twoPartyVotes": 4416067,
+        "democraticTwoPartyShare": 0.534074324506399
+      },
+      "notes": [
+        "Candidate names are final-result roster proxies, not a verified ballot snapshot available on the forecast date.",
+        "Candidate IDs D and R identify the two scoped model outcomes; they are not durable person identifiers."
+      ]
+    },
+    {
+      "id": "2018:PA:senate:regular",
+      "state": "PA",
+      "seatId": "PA:senate:class_1",
+      "candidates": [
+        {
+          "id": "D",
+          "name": "Robert P Casey Jr",
+          "party": "D",
+          "incumbent": true,
+          "winProbability": 0.9967,
+          "share": {
+            "mean": 0.582381553737978,
+            "denominator": "Democratic and Republican candidate votes only",
+            "quantiles": [
+              {
+                "level": 0.025,
+                "value": 0.5230818659907727
+              },
+              {
+                "level": 0.1,
+                "value": 0.54409046997941
+              },
+              {
+                "level": 0.5,
+                "value": 0.5825904006617173
+              },
+              {
+                "level": 0.9,
+                "value": 0.6201558624017924
+              },
+              {
+                "level": 0.975,
+                "value": 0.6394535767591678
+              }
+            ]
+          }
+        },
+        {
+          "id": "R",
+          "name": "Louis J. Barletta",
+          "party": "R",
+          "incumbent": false,
+          "winProbability": 0.0032999999999999696,
+          "share": {
+            "mean": 0.41761844626202205,
+            "denominator": "Democratic and Republican candidate votes only",
+            "quantiles": [
+              {
+                "level": 0.025,
+                "value": 0.3605464232408322
+              },
+              {
+                "level": 0.1,
+                "value": 0.37984413759820757
+              },
+              {
+                "level": 0.5,
+                "value": 0.4174095993382827
+              },
+              {
+                "level": 0.9,
+                "value": 0.45590953002059
+              },
+              {
+                "level": 0.975,
+                "value": 0.47691813400922733
+              }
+            ]
+          }
+        }
+      ],
+      "observed": {
+        "democraticVotes": 2792437,
+        "republicanVotes": 2134848,
+        "twoPartyVotes": 4927285,
+        "democraticTwoPartyShare": 0.566729344862333
+      },
+      "notes": [
+        "Candidate names are final-result roster proxies, not a verified ballot snapshot available on the forecast date.",
+        "Candidate IDs D and R identify the two scoped model outcomes; they are not durable person identifiers."
+      ]
+    },
+    {
+      "id": "2018:RI:senate:regular",
+      "state": "RI",
+      "seatId": "RI:senate:class_1",
+      "candidates": [
+        {
+          "id": "D",
+          "name": "Sheldon Whitehouse",
+          "party": "D",
+          "incumbent": true,
+          "winProbability": 0.9999625,
+          "share": {
+            "mean": 0.6309642810523088,
+            "denominator": "Democratic and Republican candidate votes only",
+            "quantiles": [
+              {
+                "level": 0.025,
+                "value": 0.5721800263455273
+              },
+              {
+                "level": 0.1,
+                "value": 0.5935474071924945
+              },
+              {
+                "level": 0.5,
+                "value": 0.6313644347667784
+              },
+              {
+                "level": 0.9,
+                "value": 0.66782409116589
+              },
+              {
+                "level": 0.975,
+                "value": 0.686213983826429
+              }
+            ]
+          }
+        },
+        {
+          "id": "R",
+          "name": "Robert G. Flanders, Jr.",
+          "party": "R",
+          "incumbent": false,
+          "winProbability": 3.7500000000023626e-05,
+          "share": {
+            "mean": 0.36903571894769116,
+            "denominator": "Democratic and Republican candidate votes only",
+            "quantiles": [
+              {
+                "level": 0.025,
+                "value": 0.31378601617357105
+              },
+              {
+                "level": 0.1,
+                "value": 0.33217590883410997
+              },
+              {
+                "level": 0.5,
+                "value": 0.3686355652332216
+              },
+              {
+                "level": 0.9,
+                "value": 0.40645259280750545
+              },
+              {
+                "level": 0.975,
+                "value": 0.42781997365447266
+              }
+            ]
+          }
+        }
+      ],
+      "observed": {
+        "democraticVotes": 231477,
+        "republicanVotes": 144421,
+        "twoPartyVotes": 375898,
+        "democraticTwoPartyShare": 0.6157973705632911
+      },
+      "notes": [
+        "Candidate names are final-result roster proxies, not a verified ballot snapshot available on the forecast date.",
+        "Candidate IDs D and R identify the two scoped model outcomes; they are not durable person identifiers."
+      ]
+    },
+    {
+      "id": "2018:TN:senate:regular",
+      "state": "TN",
+      "seatId": "TN:senate:class_1",
+      "candidates": [
+        {
+          "id": "D",
+          "name": "Phil Bredesen",
+          "party": "D",
+          "incumbent": false,
+          "winProbability": 0.121825,
+          "share": {
+            "mean": 0.46682512708376345,
+            "denominator": "Democratic and Republican candidate votes only",
+            "quantiles": [
+              {
+                "level": 0.025,
+                "value": 0.41191508697251716
+              },
+              {
+                "level": 0.1,
+                "value": 0.43056540291968604
+              },
+              {
+                "level": 0.5,
+                "value": 0.46662174263497325
+              },
+              {
+                "level": 0.9,
+                "value": 0.5032951953619391
+              },
+              {
+                "level": 0.975,
+                "value": 0.5227955563040111
+              }
+            ]
+          }
+        },
+        {
+          "id": "R",
+          "name": "Marsha Blackburn",
+          "party": "R",
+          "incumbent": false,
+          "winProbability": 0.878175,
+          "share": {
+            "mean": 0.5331748729162366,
+            "denominator": "Democratic and Republican candidate votes only",
+            "quantiles": [
+              {
+                "level": 0.025,
+                "value": 0.4772044436959889
+              },
+              {
+                "level": 0.1,
+                "value": 0.4967048046380609
+              },
+              {
+                "level": 0.5,
+                "value": 0.5333782573650268
+              },
+              {
+                "level": 0.9,
+                "value": 0.569434597080314
+              },
+              {
+                "level": 0.975,
+                "value": 0.5880849130274828
+              }
+            ]
+          }
+        }
+      ],
+      "observed": {
+        "democraticVotes": 985450,
+        "republicanVotes": 1227483,
+        "twoPartyVotes": 2212933,
+        "democraticTwoPartyShare": 0.44531397923027943
+      },
+      "notes": [
+        "Candidate names are final-result roster proxies, not a verified ballot snapshot available on the forecast date.",
+        "Candidate IDs D and R identify the two scoped model outcomes; they are not durable person identifiers."
+      ]
+    },
+    {
+      "id": "2018:TX:senate:regular",
+      "state": "TX",
+      "seatId": "TX:senate:class_1",
+      "candidates": [
+        {
+          "id": "D",
+          "name": "Beto O'Rourke",
+          "party": "D",
+          "incumbent": false,
+          "winProbability": 0.0622,
+          "share": {
+            "mean": 0.456677274014002,
+            "denominator": "Democratic and Republican candidate votes only",
+            "quantiles": [
+              {
+                "level": 0.025,
+                "value": 0.40295304953829103
+              },
+              {
+                "level": 0.1,
+                "value": 0.4207239299802311
+              },
+              {
+                "level": 0.5,
+                "value": 0.4564368371256322
+              },
+              {
+                "level": 0.9,
+                "value": 0.4926155647107536
+              },
+              {
+                "level": 0.975,
+                "value": 0.5123238495383885
+              }
+            ]
+          }
+        },
+        {
+          "id": "R",
+          "name": "Ted Cruz",
+          "party": "R",
+          "incumbent": true,
+          "winProbability": 0.9378,
+          "share": {
+            "mean": 0.5433227259859981,
+            "denominator": "Democratic and Republican candidate votes only",
+            "quantiles": [
+              {
+                "level": 0.025,
+                "value": 0.4876761504616115
+              },
+              {
+                "level": 0.1,
+                "value": 0.5073844352892465
+              },
+              {
+                "level": 0.5,
+                "value": 0.5435631628743678
+              },
+              {
+                "level": 0.9,
+                "value": 0.5792760700197689
+              },
+              {
+                "level": 0.975,
+                "value": 0.597046950461709
+              }
+            ]
+          }
+        }
+      ],
+      "observed": {
+        "democraticVotes": 4045632,
+        "republicanVotes": 4260553,
+        "twoPartyVotes": 8306185,
+        "democraticTwoPartyShare": 0.4870625925138918
+      },
+      "notes": [
+        "Candidate names are final-result roster proxies, not a verified ballot snapshot available on the forecast date.",
+        "Candidate IDs D and R identify the two scoped model outcomes; they are not durable person identifiers."
+      ]
+    },
+    {
+      "id": "2018:UT:senate:regular",
+      "state": "UT",
+      "seatId": "UT:senate:class_1",
+      "candidates": [
+        {
+          "id": "D",
+          "name": "Jenny Wilson",
+          "party": "D",
+          "incumbent": false,
+          "winProbability": 0.0,
+          "share": {
+            "mean": 0.30666401426263984,
+            "denominator": "Democratic and Republican candidate votes only",
+            "quantiles": [
+              {
+                "level": 0.025,
+                "value": 0.249096800874989
+              },
+              {
+                "level": 0.1,
+                "value": 0.26814078108604683
+              },
+              {
+                "level": 0.5,
+                "value": 0.30601001448983856
+              },
+              {
+                "level": 0.9,
+                "value": 0.3459343409262399
+              },
+              {
+                "level": 0.975,
+                "value": 0.3672666525282321
+              }
+            ]
+          }
+        },
+        {
+          "id": "R",
+          "name": "Mitt Romney",
+          "party": "R",
+          "incumbent": false,
+          "winProbability": 1.0,
+          "share": {
+            "mean": 0.6933359857373602,
+            "denominator": "Democratic and Republican candidate votes only",
+            "quantiles": [
+              {
+                "level": 0.025,
+                "value": 0.6327333474717679
+              },
+              {
+                "level": 0.1,
+                "value": 0.6540656590737601
+              },
+              {
+                "level": 0.5,
+                "value": 0.6939899855101614
+              },
+              {
+                "level": 0.9,
+                "value": 0.7318592189139532
+              },
+              {
+                "level": 0.975,
+                "value": 0.750903199125011
+              }
+            ]
+          }
+        }
+      ],
+      "observed": {
+        "democraticVotes": 328541,
+        "republicanVotes": 665215,
+        "twoPartyVotes": 993756,
+        "democraticTwoPartyShare": 0.33060529949001566
+      },
+      "notes": [
+        "Candidate names are final-result roster proxies, not a verified ballot snapshot available on the forecast date.",
+        "Candidate IDs D and R identify the two scoped model outcomes; they are not durable person identifiers."
+      ]
+    },
+    {
+      "id": "2018:VA:senate:regular",
+      "state": "VA",
+      "seatId": "VA:senate:class_1",
+      "candidates": [
+        {
+          "id": "D",
+          "name": "Timothy M. Kaine",
+          "party": "D",
+          "incumbent": true,
+          "winProbability": 0.9949125,
+          "share": {
+            "mean": 0.5888418269170606,
+            "denominator": "Democratic and Republican candidate votes only",
+            "quantiles": [
+              {
+                "level": 0.025,
+                "value": 0.5217311776179242
+              },
+              {
+                "level": 0.1,
+                "value": 0.5459933190531944
+              },
+              {
+                "level": 0.5,
+                "value": 0.5893666643002811
+              },
+              {
+                "level": 0.9,
+                "value": 0.6309258265988024
+              },
+              {
+                "level": 0.975,
+                "value": 0.6527958762594832
+              }
+            ]
+          }
+        },
+        {
+          "id": "R",
+          "name": "Corey A. Stewart",
+          "party": "R",
+          "incumbent": false,
+          "winProbability": 0.0050875000000000226,
+          "share": {
+            "mean": 0.41115817308293945,
+            "denominator": "Democratic and Republican candidate votes only",
+            "quantiles": [
+              {
+                "level": 0.025,
+                "value": 0.3472041237405168
+              },
+              {
+                "level": 0.1,
+                "value": 0.36907417340119764
+              },
+              {
+                "level": 0.5,
+                "value": 0.41063333569971894
+              },
+              {
+                "level": 0.9,
+                "value": 0.45400668094680563
+              },
+              {
+                "level": 0.975,
+                "value": 0.4782688223820758
+              }
+            ]
+          }
+        }
+      ],
+      "observed": {
+        "democraticVotes": 1910370,
+        "republicanVotes": 1374313,
+        "twoPartyVotes": 3284683,
+        "democraticTwoPartyShare": 0.5815995029048465
+      },
+      "notes": [
+        "Candidate names are final-result roster proxies, not a verified ballot snapshot available on the forecast date.",
+        "Candidate IDs D and R identify the two scoped model outcomes; they are not durable person identifiers."
+      ]
+    },
+    {
+      "id": "2018:WA:senate:regular",
+      "state": "WA",
+      "seatId": "WA:senate:class_1",
+      "candidates": [
+        {
+          "id": "D",
+          "name": "Maria Cantwell",
+          "party": "D",
+          "incumbent": true,
+          "winProbability": 0.9935625,
+          "share": {
+            "mean": 0.5958709803498128,
+            "denominator": "Democratic and Republican candidate votes only",
+            "quantiles": [
+              {
+                "level": 0.025,
+                "value": 0.5213681351503194
+              },
+              {
+                "level": 0.1,
+                "value": 0.5483463729682542
+              },
+              {
+                "level": 0.5,
+                "value": 0.5968695302074412
+              },
+              {
+                "level": 0.9,
+                "value": 0.6422310135951649
+              },
+              {
+                "level": 0.975,
+                "value": 0.6648435593454577
+              }
+            ]
+          }
+        },
+        {
+          "id": "R",
+          "name": "Susan Hutchison",
+          "party": "R",
+          "incumbent": false,
+          "winProbability": 0.006437499999999985,
+          "share": {
+            "mean": 0.4041290196501872,
+            "denominator": "Democratic and Republican candidate votes only",
+            "quantiles": [
+              {
+                "level": 0.025,
+                "value": 0.3351564406545423
+              },
+              {
+                "level": 0.1,
+                "value": 0.3577689864048351
+              },
+              {
+                "level": 0.5,
+                "value": 0.40313046979255884
+              },
+              {
+                "level": 0.9,
+                "value": 0.45165362703174583
+              },
+              {
+                "level": 0.975,
+                "value": 0.47863186484968057
+              }
+            ]
+          }
+        }
+      ],
+      "observed": {
+        "democraticVotes": 1803364,
+        "republicanVotes": 1282804,
+        "twoPartyVotes": 3086168,
+        "democraticTwoPartyShare": 0.5843375992492955
+      },
+      "notes": [
+        "Candidate names are final-result roster proxies, not a verified ballot snapshot available on the forecast date.",
+        "Candidate IDs D and R identify the two scoped model outcomes; they are not durable person identifiers."
+      ]
+    },
+    {
+      "id": "2018:WI:senate:regular",
+      "state": "WI",
+      "seatId": "WI:senate:class_1",
+      "candidates": [
+        {
+          "id": "D",
+          "name": "Tammy Baldwin",
+          "party": "D",
+          "incumbent": true,
+          "winProbability": 0.9828375,
+          "share": {
+            "mean": 0.5636760404637444,
+            "denominator": "Democratic and Republican candidate votes only",
+            "quantiles": [
+              {
+                "level": 0.025,
+                "value": 0.5048146501095432
+              },
+              {
+                "level": 0.1,
+                "value": 0.5253978806355545
+              },
+              {
+                "level": 0.5,
+                "value": 0.5640266863967733
+              },
+              {
+                "level": 0.9,
+                "value": 0.6013688230450425
+              },
+              {
+                "level": 0.975,
+                "value": 0.6205798063943757
+              }
+            ]
+          }
+        },
+        {
+          "id": "R",
+          "name": "Leah Vukmir",
+          "party": "R",
+          "incumbent": false,
+          "winProbability": 0.01716249999999997,
+          "share": {
+            "mean": 0.4363239595362556,
+            "denominator": "Democratic and Republican candidate votes only",
+            "quantiles": [
+              {
+                "level": 0.025,
+                "value": 0.3794201936056243
+              },
+              {
+                "level": 0.1,
+                "value": 0.39863117695495753
+              },
+              {
+                "level": 0.5,
+                "value": 0.43597331360322666
+              },
+              {
+                "level": 0.9,
+                "value": 0.4746021193644455
+              },
+              {
+                "level": 0.975,
+                "value": 0.4951853498904568
+              }
+            ]
+          }
+        }
+      ],
+      "observed": {
+        "democraticVotes": 1472914,
+        "republicanVotes": 1184885,
+        "twoPartyVotes": 2657799,
+        "democraticTwoPartyShare": 0.5541856250228102
+      },
+      "notes": [
+        "Candidate names are final-result roster proxies, not a verified ballot snapshot available on the forecast date.",
+        "Candidate IDs D and R identify the two scoped model outcomes; they are not durable person identifiers."
+      ]
+    },
+    {
+      "id": "2018:WV:senate:regular",
+      "state": "WV",
+      "seatId": "WV:senate:class_1",
+      "candidates": [
+        {
+          "id": "D",
+          "name": "Joe Manchin",
+          "party": "D",
+          "incumbent": true,
+          "winProbability": 0.8712125,
+          "share": {
+            "mean": 0.5325663672875552,
+            "denominator": "Democratic and Republican candidate votes only",
+            "quantiles": [
+              {
+                "level": 0.025,
+                "value": 0.47616828352395324
+              },
+              {
+                "level": 0.1,
+                "value": 0.4956778110699083
+              },
+              {
+                "level": 0.5,
+                "value": 0.5326171832873361
+              },
+              {
+                "level": 0.9,
+                "value": 0.5694362870722872
+              },
+              {
+                "level": 0.975,
+                "value": 0.5884045748882472
+              }
+            ]
+          }
+        },
+        {
+          "id": "R",
+          "name": "Patrick Morrisey",
+          "party": "R",
+          "incumbent": false,
+          "winProbability": 0.12878750000000005,
+          "share": {
+            "mean": 0.46743363271244476,
+            "denominator": "Democratic and Republican candidate votes only",
+            "quantiles": [
+              {
+                "level": 0.025,
+                "value": 0.41159542511175284
+              },
+              {
+                "level": 0.1,
+                "value": 0.4305637129277128
+              },
+              {
+                "level": 0.5,
+                "value": 0.4673828167126639
+              },
+              {
+                "level": 0.9,
+                "value": 0.5043221889300917
+              },
+              {
+                "level": 0.975,
+                "value": 0.5238317164760468
+              }
+            ]
+          }
+        }
+      ],
+      "observed": {
+        "democraticVotes": 290510,
+        "republicanVotes": 271113,
+        "twoPartyVotes": 561623,
+        "democraticTwoPartyShare": 0.5172687016023204
+      },
+      "notes": [
+        "Candidate names are final-result roster proxies, not a verified ballot snapshot available on the forecast date.",
+        "Candidate IDs D and R identify the two scoped model outcomes; they are not durable person identifiers."
+      ]
+    },
+    {
+      "id": "2018:WY:senate:regular",
+      "state": "WY",
+      "seatId": "WY:senate:class_1",
+      "candidates": [
+        {
+          "id": "D",
+          "name": "Gary Trauner",
+          "party": "D",
+          "incumbent": false,
+          "winProbability": 0.004275,
+          "share": {
+            "mean": 0.2521775494023637,
+            "denominator": "Democratic and Republican candidate votes only",
+            "quantiles": [
+              {
+                "level": 0.025,
+                "value": 0.13934241535245354
+              },
+              {
+                "level": 0.1,
+                "value": 0.17901201234969968
+              },
+              {
+                "level": 0.5,
+                "value": 0.24724109104242664
+              },
+              {
+                "level": 0.9,
+                "value": 0.32927373022191786
+              },
+              {
+                "level": 0.975,
+                "value": 0.39461206386523756
+              }
+            ]
+          }
+        },
+        {
+          "id": "R",
+          "name": "John Barrasso",
+          "party": "R",
+          "incumbent": true,
+          "winProbability": 0.995725,
+          "share": {
+            "mean": 0.7478224505976363,
+            "denominator": "Democratic and Republican candidate votes only",
+            "quantiles": [
+              {
+                "level": 0.025,
+                "value": 0.6053879361347625
+              },
+              {
+                "level": 0.1,
+                "value": 0.6707262697780821
+              },
+              {
+                "level": 0.5,
+                "value": 0.7527589089575734
+              },
+              {
+                "level": 0.9,
+                "value": 0.8209879876503003
+              },
+              {
+                "level": 0.975,
+                "value": 0.8606575846475465
+              }
+            ]
+          }
+        }
+      ],
+      "observed": {
+        "democraticVotes": 61227,
+        "republicanVotes": 136210,
+        "twoPartyVotes": 197437,
+        "democraticTwoPartyShare": 0.3101090474429818
+      },
+      "notes": [
+        "Candidate names are final-result roster proxies, not a verified ballot snapshot available on the forecast date.",
+        "Candidate IDs D and R identify the two scoped model outcomes; they are not durable person identifiers."
+      ]
+    }
+  ],
+  "quantileLevels": [
+    0.025,
+    0.1,
+    0.5,
+    0.9,
+    0.975
+  ],
+  "sourceAttribution": [
+    {
+      "label": "Source-bound research panel",
+      "description": "Names and race membership come from the pinned 2018 ordinary D/R feature panel. Final-result names are retrospective proxies, not proof of historical ballot availability.",
+      "urls": []
+    },
+    {
+      "label": "Observed two-party outcomes",
+      "description": "D/R vote counts come from the separately pinned research outcome labels, including documented official/MEDSL revisions. These are two-party counts, not full-ballot totals.",
+      "urls": []
+    },
+    {
+      "label": "MEDSL historical source documentation",
+      "description": "Background documentation for the historical returns collection. These public references do not replace the exact source fingerprints for the derived research panel.",
+      "urls": [
+        "https://github.com/MEDSL/constituency-returns",
+        "https://github.com/MEDSL/constituency-returns/blob/master/codebook-us-senate-1976%E2%80%932018.md"
+      ]
+    }
+  ],
+  "sourceFingerprints": {
+    "interfaceReceipt": "85f38310f650fc7eb0b18739f36e36a3a7457602cb5e42f328a89f1b58bb1ece",
+    "readyReceipt": "367dae36f2f6f79c089a96524f369867971f1cec21537e7b542f59a70ed2f803",
+    "readyResult": "b69c6bb73e5ec9a93dd138b3cff7b6fe5cd1de61cf60391f83ce84a1c8143900",
+    "resultIndex": "40e77d03568dcb9126b482f76ee4d0ddee44e450b29ee14c4706e3b3d03a6a53",
+    "summary": "fde3c6aecf6e13bfc688aa31d0ac7518024c415b964cb693d9e27ec211d73225",
+    "dataBundle": "4bf98861854790a595f6ff5c4c9a160bb3e3e8c9bc8f0775c60bf5b5ba5e87f0",
+    "targetFeatures": "c90ac7e9290df0628a0ab4631ebba1bb1634f0770c859d4663985408a441ecc0",
+    "observedOutcomeLabels": "5f5cafa1afc53387331d4e75b3c65f92ed4cab3a91578dcb7cb0815357b029ad",
+    "panelReceipt": "3beff840bcf37aa348cd9bb8ba5b28535ba752d717d45d6a9a9f97503e9ca7f3",
+    "scientificPlan": "c2dd8cccef7fd9657fff6c68af3a3dfaf040bbb12f7d5b548434044d1929285d",
+    "trainingLaw": "5f9cf2ca38926bf4b523f08774e97e4a53db562f15777925dab8d1bf619f23ea",
+    "recipe": "ef5612c41e2bb6d4e91c1044a473ad1d9c441f621c415f59707efe8541781ff7"
+  },
+  "limitations": [
+    "Ordinary D/R aggregate share comparison, not all candidates, caucus control or counts",
+    "Historical roster/source vintages retain their pinned retrospective qualifications",
+    "Forecast MCSE is conditional on the retained historical joint bank and fixed poll covariance",
+    "Graph checks factor ownership; empty port bindings do not certify eight-layer compatibility",
+    "Observed outcomes are joined only to evaluate this saved prediction; they were not added to model fitting by this exporter.",
+    "This result covers 30 ordinary D/R races. It contains no chamber-control, count-model or tipping-point forecast.",
+    "Reported quantiles are the 2.5th, 10th, 50th, 90th and 97.5th percentiles. The available central ranges are 80% and 95%; no 90% interval is supplied.",
+    "Historical poll availability and roster inputs use qualified retrospective proxies; this is not strict-as-of validation.",
+    "Numerical checks passed, but predictive evidence for these integration examples remains unassessed."
+  ]
+}

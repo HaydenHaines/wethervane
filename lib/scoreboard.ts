@@ -162,17 +162,17 @@ function deriveChamber(scenario: ExplorerScenario): Pick<Scoreboard, "seats" | "
 }
 
 /** Score categorical forecast outcomes, including grouped outcomes, without splitting groups. */
-export function deriveScoreboard(bundle: ExplorerBundle, scenario: ExplorerScenario): Scoreboard {
+export function deriveRaceScoreboard(races: ExplorerRace[]): Scoreboard {
   const coverage: ScoreboardCoverage = {
-    total: bundle.races.length, observed: 0, scored: 0, missingRaceIds: [], invalidRaces: [],
+    total: races.length, observed: 0, scored: 0, missingRaceIds: [], invalidRaces: [],
   };
   const favorites: FavoriteScore = {
     correct: 0, decisive: 0, expectedCorrect: 0, tiedRaceIds: [], missRaceIds: [],
   };
   const counts = new Map<string, number>();
-  for (const race of bundle.races) counts.set(race.id, (counts.get(race.id) || 0) + 1);
+  for (const race of races) counts.set(race.id, (counts.get(race.id) || 0) + 1);
   let totalBrier = 0;
-  for (const race of bundle.races) {
+  for (const race of races) {
     if (!race.observed) {
       coverage.missingRaceIds.push(race.id);
       continue;
@@ -198,7 +198,6 @@ export function deriveScoreboard(bundle: ExplorerBundle, scenario: ExplorerScena
     if (leaders[0].id === race.observed.outcomeId) favorites.correct++;
     else favorites.missRaceIds.push(race.id);
   }
-  const chamber = deriveChamber(scenario);
   const available = coverage.scored > 0;
   return {
     status: available ? "available" : "unavailable",
@@ -208,8 +207,13 @@ export function deriveScoreboard(bundle: ExplorerBundle, scenario: ExplorerScena
     coverage,
     favorites: available ? favorites : null,
     brier: available ? { mean: totalBrier / coverage.scored, count: coverage.scored } : null,
-    ...chamber,
+    seats: [], control: null, issues: [],
   };
+}
+
+/** Chamber summaries require their own joint result, independently of race scores. */
+export function deriveScoreboard(bundle: ExplorerBundle, scenario: ExplorerScenario): Scoreboard {
+  return { ...deriveRaceScoreboard(bundle.races), ...deriveChamber(scenario) };
 }
 
 function outcomeSupport(outcome: ExplorerOutcome): unknown {

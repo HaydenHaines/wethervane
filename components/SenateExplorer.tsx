@@ -171,7 +171,7 @@ function normalize(
   };
 }
 
-export default function SenateExplorer() {
+export default function SenateExplorer({ onStudy }: { onStudy: () => void }) {
   const [registry, setRegistry] = useState<ExplorerRegistry | null>(null),
     [bundle, setBundle] = useState<ExplorerBundle | null>(null),
     [selection, setSelection] = useState<ExplorerSelection | null>(null),
@@ -494,6 +494,7 @@ export default function SenateExplorer() {
             </div>
           </section>
           <StackControls
+            onStudy={onStudy}
             registry={registry}
             bundle={bundle}
             busy={busy}

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { ChamberId } from "../lib/chamber";
-import SenateExplorer from "./SenateExplorer";
+import SenateWorkspace from "./SenateWorkspace";
 import HouseExplorer from "./HouseExplorer";
 
 const fromUrl = (): ChamberId =>
@@ -96,7 +96,7 @@ export default function ChamberExplorer() {
           tabIndex={0}
         >
           {chamber === "senate" ? (
-            <SenateExplorer />
+            <SenateWorkspace />
           ) : (
             <HouseExplorer onReturn={() => select("senate")} />
           )}
