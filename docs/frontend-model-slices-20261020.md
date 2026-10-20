@@ -45,7 +45,7 @@ The study has a race-only scorecard, dynamic probability ribbon, map, 10-race ex
 
 No retained seats, chamber-control probabilities, tipping marker or count forecasts are synthesized. Map states outside the study are labeled “not included,” rather than “no election.” The original 48 full forecasts and preserved defaults are unchanged.
 
-The source owner’s current House successor is `panel-v6`, with a new 16-cell fit batch and an expected `frontend-results-v2` packet. Source qualification remains pending; keep House results unpublished until the explicit ready handoff.
+The earlier House source-pending status has been superseded: the owner delivered the final `frontend-results-v2` packet and explicit `HANDOFF.md`; all sixteen reviewed historical results and their same-year comparisons are live at frontend commit `de6e80a`. House status at `2026-10-20T22:59:26Z` reports the goal complete with no running tool session. This activates only the reviewed historical race capabilities, not geometry, polling, current forecasts or chamber totals/control/tipping. See [current integration status](frontend-integration-goal.md) and [comparison evidence](frontend-house-comparison-audit-20261020.md).
 
 ## Verification
 

@@ -2,7 +2,9 @@
 
 ## Handoff acknowledgement
 
-The frontend has consumed the House owner's final `research/house-benchmark-20261020/HANDOFF.md` and published all sixteen reviewed historical results at frontend commit `65c8574`. Fixed 2024 remains the agreed reference, not a winner selected by historical scores. The source session's remaining blocked status concerns native notification delivery only; the final handoff is not awaiting frontend consumption. This acknowledgement is recorded here without modifying the source worktree or sending a notification.
+The frontend has consumed the House owner's final `research/house-benchmark-20261020/HANDOFF.md`. All sixteen reviewed historical results and the same-year comparison feature are **live at frontend commit `de6e80a`**; [CI run 39511922287 passed](https://github.com/HaydenHaines/wethervane/actions/runs/39511922287). Fixed 2024 remains the agreed reference, not a winner selected by historical scores. The source status updated `2026-10-20T22:59:26Z` reports the goal complete, sixteen qualified cells and no running tool session or remaining required work. The final handoff is not awaiting frontend consumption.
+
+An inbound House READY notification was delivered. Frontend outbound native acknowledgements still fail with a transport error in this cycle; this document records acknowledgement without claiming outbound delivery or changing the scientific worktree.
 
 The initial scientific review was read-only. The additive frontend implementation described below follows that review; it creates no new scientific results or qualification.
 
@@ -17,6 +19,8 @@ Optional comparison bindings extend the existing version1 local bookmark format 
 This is a descriptive comparison of separately simulated models. It does not pair draws, quantify uncertainty in a difference, or activate chamber totals, control, tipping, polling, current2026 or district geometry.
 
 Local validation: production build and TypeScript pass; all105 House assertions pass, including all48 ordered same-year pairs and regeneration from the pinned source packet. All16 new comparison browser cases and56 affected existing House/chamber/layout cases pass across desktop and Pixel7. Tests cover independently calculated scores, history/share links, same-primary saved restoration, atomic failed restores, mismatched/tampered results and stale/withdrawn secondary bindings. Final screenshots show readable comparison text, explicit model names, no signed-zero deltas, no page overflow and no JavaScript errors. All five frozen parser/importer hashes and all published scientific result bytes remain unchanged.
+
+Public verification after deployment passed on desktop and Pixel7 at `2026-10-20T23:00:44–49Z`: the builder starts collapsed; Fixed 2024 shows 365/375 favorites correct and 0.045 categorical Brier, compared with Context's 366/375 and 0.035. Both exact result/configuration bindings survive local save, model switch, restore, share and reload. Comparison text is readable at 12px, tiny candidate deltas avoid signed zero, and no JavaScript errors, horizontal overflow or unsupported geometry/control appeared. Richer source testing evidence is being audited separately; this release does not claim that adapter or feature is complete.
 
 ## What is supported
 

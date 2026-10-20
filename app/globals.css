@@ -3018,3 +3018,17 @@ select:focus-visible {
 .house-comparison-note p { margin: 8px 0 0; color: var(--muted); }
 .house-candidate-comparison { margin: 8px 0; font-size: 12px; line-height: 1.65; color: var(--muted); }
 .house-scoreboard-cards .scoreboard-comparison { font-size: 12px; line-height: 1.65; }
+
+.house-score-evidence { margin-top: 20px; padding-top: 8px; border-top: 1px solid var(--line); font-size: 13px; line-height: 1.65; }
+.house-score-evidence > summary { min-height: 44px; display: list-item; align-content: center; cursor: pointer; font-weight: 600; }
+.house-score-evidence > p { max-width: 100ch; }
+.house-evidence-metrics { margin: 16px 0; }
+.house-evidence-metrics > div { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 24px; padding: 18px 0; border-top: 1px solid var(--line); }
+.house-evidence-metrics dt { font-weight: 600; }
+.house-evidence-metrics dt p { font-weight: 400; margin: 6px 0 0; color: var(--muted); }
+.house-evidence-metrics dd { margin: 0; font-variant-numeric: tabular-nums; }
+.house-evidence-metrics dd strong { display: block; font-size: 15px; }
+.house-evidence-metrics dd span { display: block; margin-top: 6px; }
+@media (max-width: 700px) {
+  .house-evidence-metrics > div { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+}

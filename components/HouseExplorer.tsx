@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 import {
   houseReadinessInput,
-  type HouseResult,
 } from "../lib/house-result";
 import { parseHousePublicationWithCatalog, type HousePublicationWithCatalog } from "../lib/house-catalog";
 import { houseSelectionForResult, houseSelectionUrl } from "../lib/house-selection";
@@ -29,6 +28,7 @@ import DistrictMap from "./DistrictMap";
 import HouseRibbon from "./HouseRibbon";
 import ChamberControl from "./ChamberControl";
 import RaceListToggle from "./RaceListToggle";
+import HouseTestingEvidence from "./HouseTestingEvidence";
 
 function probabilityDifference(difference: number) {
   if (difference === 0) return "No difference";
@@ -365,7 +365,7 @@ function HouseResults({ publication, restoredComparison, busy, requestedId, erro
         <HouseSavedViews publication={publication} raceId={selected.id} mapView={mapView} busy={busy || comparison.busy} selectionError={error || comparison.error} comparison={comparison.ready?.reference} onRestore={onRestore} />
       </HouseControls>
       <HouseComparisonStatus comparison={comparison} label={result.run.label} configurationId={result.run.configurationId} year={result.run.year} />
-      {result.run.historical && <HouseScoreboard result={result} comparison={comparison.ready} />}
+      {result.run.historical && <HouseScoreboard publication={publication} comparison={comparison.ready} />}
       <HouseRibbon
         result={result}
         selectedId={selected.id}
@@ -690,7 +690,8 @@ function HouseResults({ publication, restoredComparison, busy, requestedId, erro
   );
 }
 
-function HouseScoreboard({ result, comparison }: { result: HouseResult; comparison: HouseComparisonState["ready"] }) {
+function HouseScoreboard({ publication, comparison }: { publication: AvailableHousePublication; comparison: HouseComparisonState["ready"] }) {
+  const { result } = publication;
   const { observed, decisive, correct, ties, brier } = summarizeHouseResult(result);
   const reference = comparison?.summary.reference;
   const difference = comparison?.summary.brierDifference;
@@ -761,6 +762,7 @@ function HouseScoreboard({ result, comparison }: { result: HouseResult; comparis
           {reference && <p className="scoreboard-comparison">Both models are scored on the same {observed} districts and actual winners.</p>}
         </article>
       </div>
+      <HouseTestingEvidence publication={publication} reference={comparison?.reference} />
     </section>
   );
 }
