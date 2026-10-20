@@ -8,6 +8,28 @@ async function expandControls(page: Page) {
   await expect(controls).toHaveAttribute("open", "");
 }
 
+test("saved current research comparisons update the forecast and compare only matching definitions", async ({ page }) => {
+  await page.goto("/?run=current-polling");
+  await expandControls(page);
+  await page.getByLabel("Base model", { exact: true }).selectOption("senate_relative_context_v1");
+  await expect(page).toHaveURL(/run=current-comparison-senate_relative_context_v1-fp/);
+  await expect(page.locator(".composition-state")).toContainText("Ready");
+  await expect(page.locator(".stack-builder")).not.toContainText("No current forecast has been generated");
+  await expect(page.getByRole("region", { name: "The path to a majority", exact: true })).toBeVisible();
+  await expect(page.getByRole("region", { name: "Who could control the chamber?", exact: true })).toBeVisible();
+  await page.getByText("Input and publication times", { exact: true }).click();
+  await expect(page.locator(".edition-inputs")).toContainText("15:21:23 GMT");
+  await expect(page.locator(".edition-inputs")).toContainText("16:21:44 GMT");
+  await page.getByRole("checkbox", { name: "Compare default", exact: true }).check();
+  await expect(page.locator(".compare-banner").filter({ hasText: "Comparing with" })).toContainText("different forecast definitions");
+  await page.getByLabel("Comparison baseline", { exact: true }).selectOption("current-comparison-senate_relative_context_v1-f");
+  await expect(page.locator(".compare-banner").filter({ hasText: "Comparing with" })).toContainText("Changes compare the same races");
+  await page.getByLabel("Polling component", { exact: true }).selectOption("none");
+  await expect(page).toHaveURL(/run=current-comparison-senate_relative_context_v1-f(?:&|$)/);
+  await expect(page.getByRole("region", { name: "How this model did", exact: true })).toHaveCount(0);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();
+});
+
 test("the current saved forecast starts with component controls collapsed", async ({ page }) => {
   await page.goto("/");
   await expect(page).toHaveURL(/run=current-polling/);
@@ -48,9 +70,22 @@ test("historical scorecard distinguishes outcome hits, probability error, and ac
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBeTruthy();
 });
 
-test("an experimental request stays separate from the saved result and cannot be saved as ready", async ({ page, request }) => {
+test("an explicitly uncomputed fixture stays separate from the saved result and cannot be saved as ready", async ({ page, request }) => {
   const catalog = await (await request.get("/api/configurations/catalog")).json() as CompositionCatalog;
   const experimental = catalog.computation.find((entry) => entry.years.includes(2026))!;
+  // All currently supported 2026 combinations are now saved. Exercise future
+  // pending-result behavior explicitly, without mislabeling a live configuration.
+  await page.route("**/api/configurations/resolve", async (route) => {
+    const selection = route.request().postDataJSON();
+    if (selection.components.base !== experimental.baseId) return route.continue();
+    await route.fulfill({ json: {
+      state: "requires_computation", request: selection, configurationId: null,
+      resultId: null, configuration: null, run: null,
+      reason: "Synthetic uncomputed configuration for browser lifecycle testing.",
+      requiredSteps: ["Fit the selected model jointly."], evidence: experimental.evidence,
+      outputs: ["race-probabilities"], executionAvailable: false,
+    } });
+  });
   await page.goto("/?run=current-polling&race=2026%3ANE%3Asenate%3Aregular");
   const chamber = page.getByRole("region", { name: "Who could control the chamber?", exact: true });
   await expect(chamber).toContainText("8.3%");
@@ -124,7 +159,7 @@ test("custom comparison identities survive URL reload and change probability com
   await expect(quality).toContainText("Same error");
 });
 
-test("composition API binds ready presets and reports pending or invalid requests without execution", async ({ request }) => {
+test("composition API binds ready presets and completed alternatives and rejects invalid requests without execution", async ({ request }) => {
   const response = await request.get("/api/configurations/catalog");
   expect(response.ok()).toBeTruthy();
   const catalog = await response.json() as CompositionCatalog;
@@ -139,9 +174,9 @@ test("composition API binds ready presets and reports pending or invalid request
   expect(ready.resultId).toBe(configuration.resultSha256);
   expect(ready.run.id).toBe(configuration.runId);
   const experimental = catalog.computation.find((entry) => entry.years.includes(configuration.year))!;
-  const pendingResponse = await request.post("/api/configurations/resolve", { data: { ...base, components: { ...base.components, base: experimental.baseId, polling: "standard", uncertainty: "standard" } } });
-  expect(pendingResponse.status()).toBe(200);
-  expect(await pendingResponse.json()).toMatchObject({ state: "requires_computation", resultId: null, configurationId: null, outputs: ["race-probabilities"], executionAvailable: false });
+  const comparisonResponse = await request.post("/api/configurations/resolve", { data: { ...base, components: { ...base.components, base: experimental.baseId, polling: "standard", uncertainty: "standard" } } });
+  expect(comparisonResponse.status()).toBe(200);
+  expect(await comparisonResponse.json()).toMatchObject({ state: "ready", run: { id: `current-comparison-${experimental.baseId}-fp` }, executionAvailable: false });
   const incompatible = await request.post("/api/configurations/resolve", { data: { ...base, components: { ...base.components, polling: "none", uncertainty: "error-high" } } });
   expect(incompatible.status()).toBe(200);
   expect((await incompatible.json()).state).toBe("incompatible");

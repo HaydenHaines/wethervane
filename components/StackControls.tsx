@@ -42,18 +42,20 @@ const choiceExplanation: Record<string, string> = {
     "Starts from electoral history, combining information into a race-level estimate before adding any selected polls. This is the saved fundamentals model.",
   winner:
     "A reference model for past elections that assigns chances to winner outcomes rather than vote shares. It uses the historical winner rule preserved in these saved comparisons.",
+  recent_calendar_history:
+    "An experimental reference using recent electoral history. Saved 2026 results are available with and without polls. Completing the calculation does not establish that it predicts better than the default.",
   senate_history_refreshed_v1:
-    "An experimental starting estimate using refreshed electoral history. Its parameters have been fitted to historical data, but no current forecast has been generated. Selecting it does not run a forecast.",
+    "An experimental starting estimate using refreshed electoral history. Saved 2026 results are available with and without polls; other combinations may need a new calculation or joint model fit.",
   senate_presidential_slope_v1:
-    "An experimental starting estimate that learns how earlier presidential voting relates to Senate results. A slope describes the strength of that relationship. No current forecast has been generated.",
+    "An experimental starting estimate that learns how earlier presidential voting relates to Senate results. A slope describes the strength of that relationship. Saved 2026 results are available with and without polls.",
   senate_relative_context_v1:
-    "An experimental starting estimate using a state's political lean relative to the nation, the president's party, and whether the election is a midterm. No current forecast has been generated.",
+    "An experimental starting estimate using a state's political lean relative to the nation, the president's party, and whether the election is a midterm. Saved 2026 results are available with and without polls.",
   senate_relative_lean_v1:
-    "An experimental starting estimate using state voting relative to the national result and how national patterns carry into the next election. No current forecast has been generated.",
+    "An experimental starting estimate using state voting relative to the national result and how national patterns carry into the next election. Saved 2026 results are available with and without polls.",
   none: "Does not add polling evidence to the starting model. Only saved combinations can be displayed.",
   standard: "Uses the saved standard setting for this part of the model.",
   persistent:
-    "Tests a historical alternative in which polling errors can persist over time instead of quickly disappearing. This is a sensitivity test: a check of how results change under a different assumption. Available only for past elections.",
+    "Tests an adjustment learned from recurring polling errors for the same pollster and state in earlier elections. It uses the same selected polls. Standard polling already allows errors to be shared within a race; this adds a separate learned adjustment. Available only for past elections.",
   "error-low":
     "Tests smaller assumed polling errors. Error scales describe how far polls may differ from the underlying race; this changes the uncertainty assumptions, not which candidate a poll reports ahead.",
   "error-high":
@@ -156,6 +158,8 @@ export default function StackControls({
     baselineRunId &&
     !comparable.some((entry) => entry.id === baselineRunId) &&
     baselineRunId !== registry.defaults[String(run.year)];
+  const defaultEntry = registry.runs.find((entry) => entry.id === registry.defaults[String(run.year)]);
+  const defaultComparable = defaultEntry?.dateId === run.dateId && defaultEntry?.targetId === run.targetId && defaultEntry?.lawId === run.lawId;
   const currentEvidence = displayedConfiguration?.evidence;
   const requestedEvidence = resolution?.evidence;
   const stateLabel = busy
@@ -396,7 +400,7 @@ export default function StackControls({
               disabled={busy}
               onChange={(e) => onBaseline(e.target.value || null)}
             >
-              <option value="">{run.year} default</option>
+              <option value="" disabled={!defaultComparable}>{run.year} default{defaultComparable ? "" : " · Different forecast definition"}</option>
               {unknownBaseline && (
                 <option value={baselineRunId!} disabled>
                   Unavailable comparison
@@ -414,6 +418,7 @@ export default function StackControls({
               date. The historical scorecard uses this reference; the checkbox
               adds comparison details below.
             </p>
+            {!defaultComparable && <p>The default uses a different forecast definition. Select one of the matching saved comparisons here to see changes between models.</p>}
           </div>
           <details className="composition-saved">
             <summary>

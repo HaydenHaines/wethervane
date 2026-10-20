@@ -3,10 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 import {
   houseReadinessInput,
-  parseHouseResult,
-  type HousePublication,
   type HouseResult,
 } from "../lib/house-result";
+import { parseHousePublicationWithCatalog, type HousePublicationWithCatalog } from "../lib/house-catalog";
+import { houseSelectionForResult, houseSelectionUrl } from "../lib/house-selection";
+import HouseControls from "./HouseControls";
 import { validateChamberReadiness } from "../lib/chamber";
 import {
   COLORS,
@@ -36,60 +37,79 @@ function HouseFooter() {
 }
 
 export default function HouseExplorer({ onReturn }: { onReturn: () => void }) {
-  const [publication, setPublication] = useState<HousePublication | null>(null);
+  const [publication, setPublication] = useState<HousePublicationWithCatalog | null>(null);
+  const previous = useRef<HousePublicationWithCatalog | null>(null);
   const [error, setError] = useState("");
-  const [attempt, setAttempt] = useState(0);
+  const [busy, setBusy] = useState(true);
+  const [request, setRequest] = useState<{ id: string | null; navigation: "initial" | "history" | "push"; attempt: number } | null>(null);
   useEffect(() => {
+    const restore = (navigation: "initial" | "history") => {
+      const params = new URLSearchParams(location.search);
+      if (params.get("chamber") !== "house") return;
+      const id = params.get("run");
+      if (navigation === "history" && previous.current?.status === "available" && id === previous.current.result.run.id) {
+        // Also cancel any pending selection if Back returns to the displayed run.
+        setRequest(null);
+        setError("");
+        setBusy(false);
+        return;
+      }
+      setRequest({ id, navigation, attempt: Date.now() });
+    };
+    restore("initial");
+    const onHistory = () => restore("history");
+    window.addEventListener("popstate", onHistory);
+    return () => window.removeEventListener("popstate", onHistory);
+  }, []);
+  useEffect(() => {
+    if (!request) return;
     const controller = new AbortController();
     setError("");
-    setPublication(null);
-    fetch("/api/chambers/house", { signal: controller.signal })
+    setBusy(true);
+    const query = request.id ? `?${new URLSearchParams({ run: request.id })}` : "";
+    fetch(`/api/chambers/house${query}`, { signal: controller.signal, cache: "no-store" })
       .then(async (response) => {
-        if (!response.ok)
-          throw Error("The House view is temporarily unavailable.");
-        const value = (await response.json()) as HousePublication;
-        if (
-          value?.schemaVersion !== 1 ||
-          !["preparing", "available"].includes(value.status)
-        )
-          throw Error("The House publication could not be verified.");
+        if (!response.ok) throw Error(response.status === 400 ? "This model selection is not available in the published collection." : "The House view is temporarily unavailable.");
+        const value = parseHousePublicationWithCatalog(await response.json());
+        if (!value) throw Error("The House publication could not be verified.");
         if (value.status === "available") {
-          const result = parseHouseResult(value.result);
-          if (
-            !result ||
-            !/^[a-f0-9]{64}$/.test(value.resultSha256) ||
-            !validateChamberReadiness(
-              houseReadinessInput(result, value.geography),
-            ).canShowRaces
-          )
-            throw Error("The House results could not be verified.");
+          if (request.id && value.result.run.id !== request.id) throw Error("The returned result does not match the requested model.");
+          if (!validateChamberReadiness(houseReadinessInput(value.result, value.geography)).canShowRaces) throw Error("The House results could not be verified.");
         }
-        if (!controller.signal.aborted) setPublication(value);
+        if (controller.signal.aborted) return;
+        if (value.status === "available") {
+          const prior = request.navigation === "push" && previous.current?.status === "available" ? previous.current.result : null;
+          const url = houseSelectionForResult(value.result, prior, location.search);
+          if (request.navigation === "push") history.pushState(null, "", url);
+          else history.replaceState(null, "", url);
+        }
+        previous.current = value;
+        setPublication(value);
+        setBusy(false);
       })
       .catch((reason) => {
-        if (!controller.signal.aborted) setError(reason.message);
+        if (!controller.signal.aborted) { setError(reason.message); setBusy(false); }
       });
     return () => controller.abort();
-  }, [attempt]);
+  }, [request]);
+  const retry = () => setRequest((current) => ({ id: current?.id ?? null, navigation: current?.navigation ?? "initial", attempt: (current?.attempt ?? 0) + 1 }));
+  const choose = (id: string) => setRequest({ id, navigation: "push", attempt: Date.now() });
   if (!publication)
     return (
-      <main className="load-page" aria-busy={!error}>
+      <main className="load-page" aria-busy={busy}>
         {error ? (
           <div className="error-box">
             <h1>House view unavailable</h1>
             <p>{error}</p>
-            <button onClick={() => setAttempt(attempt + 1)}>Try again</button>
+            <button onClick={retry}>Try again</button>
+            {request?.id && <button onClick={() => setRequest({ id: null, navigation: "initial", attempt: Date.now() })}>Load published default</button>}
             <button onClick={onReturn}>Explore the Senate</button>
           </div>
-        ) : (
-          <p role="status">Preparing the House perspective…</p>
-        )}
+        ) : <p role="status">Preparing the House perspective…</p>}
       </main>
     );
   if (publication.status === "available")
-    return (
-      <HouseResults key={publication.result.run.id} publication={publication} />
-    );
+    return <HouseResults publication={publication} busy={busy} requestedId={request?.id ?? null} error={error} onChoose={choose} onRetry={retry} />;
   return (
     <main>
       <section className="hero house-preparation-hero">
@@ -186,10 +206,13 @@ export default function HouseExplorer({ onReturn }: { onReturn: () => void }) {
   );
 }
 
-function HouseResults({
-  publication,
-}: {
-  publication: Extract<HousePublication, { status: "available" }>;
+function HouseResults({ publication, busy, requestedId, error, onChoose, onRetry }: {
+  publication: Extract<HousePublicationWithCatalog, { status: "available" }>;
+  busy: boolean;
+  requestedId: string | null;
+  error: string;
+  onChoose: (id: string) => void;
+  onRetry: () => void;
 }) {
   const { result, geography } = publication;
   const readiness = validateChamberReadiness(
@@ -228,9 +251,7 @@ function HouseResults({
     return () => window.removeEventListener("popstate", restore);
   }, [result, first.id]);
   function select(id: string, view = mapView, focusDetails = true) {
-    const params = new URLSearchParams({ chamber: "house", race: id });
-    if (view === "actual") params.set("view", "actual");
-    history.pushState(null, "", `/?${params}`);
+    history.pushState(null, "", houseSelectionUrl(result, id, view));
     setSelectedId(id);
     setMapView(view);
     if (focusDetails && window.matchMedia("(max-width: 800px)").matches)
@@ -254,6 +275,7 @@ function HouseResults({
         .includes(query.toLowerCase().trim()),
     )
     .sort(competitiveOrder);
+  useEffect(() => { setExpanded(false); setQuery(""); }, [result.run.id]);
   const visible = expanded ? shown : shown.slice(0, 10);
   const tipping = readiness.canShowTipping
     ? result.tippingProof?.scenarios.find((s) => s.id === scenario?.id)
@@ -299,26 +321,7 @@ function HouseResults({
           {result.races.length} of 435 districts
         </div>
       </section>
-      <details className="control-card house-configuration">
-        <summary>
-          Build your perspective{" "}
-          <span className="small">{result.run.label}</span>
-        </summary>
-        <p>
-          This saved combination of model choices is selected. Additional
-          choices will appear when reviewed results are available.
-          “Experimental” describes the stage of research; it does not mean a
-          model has established forecasting accuracy.
-        </p>
-        <dl>
-          <dt>Configuration</dt>
-          <dd>{result.run.label}</dd>
-          <dt>Experimental status</dt>
-          <dd>{result.run.experimental ? "Experimental" : "Standard"}</dd>
-          <dt>Testing evidence</dt>
-          <dd>{result.run.evidenceLabel}</dd>
-        </dl>
-      </details>
+      <HouseControls result={result} catalog={publication.catalog} busy={busy} requestedId={requestedId} error={error} onSelect={onChoose} onRetry={onRetry} />
       {result.run.historical && <HouseScoreboard result={result} />}
       <HouseRibbon
         result={result}
@@ -394,10 +397,11 @@ function HouseResults({
                 mapView={mapView}
               />
             ) : (
-              <div className="map-loading">
-                District map unavailable. District boundaries must be checked
+              <div className="district-map-unavailable">
+                <h3>District map unavailable</h3>
+                <p>District boundaries must be checked
                 against this election’s map before results can be placed on it.
-                Explore the races below.
+                Explore the races below.</p>
               </div>
             )}
             <p className="small">

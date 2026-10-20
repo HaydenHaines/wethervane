@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "composition-capabilities-2026-10-20-v1",
+  "id": "composition-capabilities-2026-10-20-v2",
   "sourceCatalog": {
     "id": "fundamentals-pilot-20261020-v1",
     "sha256": "e0a81118f83e69721d09c72b6a9b6717eb8f07b11f5fc7a45a959bb3e16fb5f3"
@@ -11,7 +11,9 @@
     "catalogUiHandoff": "36594f5e74d3a62dcc60cd49e838cb8f005f8769fb422117b99dede315dfe8df",
     "currentForecastPreparation": "50630bf29f9b288b2551d1ac3d782c6ca8cf182a6b0b8ada0c926f457f7a8988",
     "historicalFitBatch": "58084f4705a14f0444d6a576b9b1dc14a7be0740e8629d06afebdbb7482d2780",
-    "historicalPredictionJournal": "9b842d7cd96a85b3b8c4ae9659470f878739c2c167d071014fbb1dccecb5bd85"
+    "historicalPredictionJournal": "72d589747bb8a745a1960f20c5734ceef92b4dbaf82fdacdcab866b3de7fde94",
+    "currentComparisonIndex": "5509cb76888ca329728c299052d764370fd98551dc65e62e8ffda0723d96a357",
+    "compositionInterfaceReceipt": "85f38310f650fc7eb0b18739f36e36a3a7457602cb5e42f328a89f1b58bb1ece"
   },
   "defaultPresetId": "best_guess_polling_20261020_v2",
   "execution": {
@@ -64,46 +66,56 @@
           "experimental": false
         },
         {
-          "id": "senate_history_refreshed_v1",
-          "label": "Refreshed history",
-          "description": "Experimental refreshed-history aggregate prior; historical parameter fits exist, but no current forecast has been sampled.",
+          "id": "recent_calendar_history",
+          "label": "Recent calendar history",
+          "description": "Saved experimental comparison using recent calendar election cycles; available with or without polls.",
           "years": [
             2026
           ],
-          "availability": "requires_computation",
+          "availability": "saved",
+          "experimental": true
+        },
+        {
+          "id": "senate_history_refreshed_v1",
+          "label": "Refreshed history",
+          "description": "Saved experimental comparison using refreshed electoral history. Exact with-polls and without-polls results are available; new combinations may require calculation.",
+          "years": [
+            2026
+          ],
+          "availability": "saved",
           "experimental": true,
           "implementationId": "senate_history_refreshed_v1"
         },
         {
           "id": "senate_presidential_slope_v1",
           "label": "Learned presidential slope",
-          "description": "Experimental aggregate prior with a learned relationship to earlier presidential lean; no current forecast has been sampled.",
+          "description": "Saved experimental comparison learning the relationship to earlier presidential voting. Exact with-polls and without-polls results are available.",
           "years": [
             2026
           ],
-          "availability": "requires_computation",
+          "availability": "saved",
           "experimental": true,
           "implementationId": "senate_presidential_slope_v1"
         },
         {
           "id": "senate_relative_context_v1",
           "label": "Relative lean with presidential context",
-          "description": "Experimental aggregate prior adding presidential-party and midterm context; no current forecast has been sampled.",
+          "description": "Saved experimental comparison adding the president’s party and midterm context. Exact with-polls and without-polls results are available.",
           "years": [
             2026
           ],
-          "availability": "requires_computation",
+          "availability": "saved",
           "experimental": true,
           "implementationId": "senate_relative_context_v1"
         },
         {
           "id": "senate_relative_lean_v1",
           "label": "Relative state and national lean",
-          "description": "Experimental aggregate prior with learned state slope and national carryover; no current forecast has been sampled.",
+          "description": "Saved experimental comparison using relative state voting and national carryover. Exact with-polls and without-polls results are available.",
           "years": [
             2026
           ],
-          "availability": "requires_computation",
+          "availability": "saved",
           "experimental": true,
           "implementationId": "senate_relative_lean_v1"
         }
@@ -254,6 +266,346 @@
     }
   ],
   "saved": [
+    {
+      "id": "cfg-ae34b47859824dec9b6c9a34f36a29f696a49e47ceecc27089241a01d3e647e9",
+      "runId": "current-comparison-recent_calendar_history-f",
+      "resultSha256": "548551c43ed44eeeb0a48306614cc84fa0eb46663ea64a3d76167b594873d76b",
+      "year": 2026,
+      "dateId": "2026-10-20",
+      "components": {
+        "base": "recent_calendar_history",
+        "polling": "none",
+        "uncertainty": "standard"
+      },
+      "targetId": "senate2026_principal_pair_fundamentals_comparison_v1",
+      "lawId": "principal_pair_empirical_logit_shared_normal_student_t5_v1",
+      "outputs": [
+        "race-probabilities",
+        "joint-chamber-distributions",
+        "tipping-points"
+      ],
+      "cutoffs": [
+        {
+          "label": "Nonpoll inputs",
+          "at": "2026-10-20T15:21:23Z"
+        }
+      ],
+      "evidence": {
+        "status": "experimental",
+        "implementation": "Saved forecasts for 35 races, each modeling its two principal contenders, with simulations of chamber outcomes.",
+        "numerical": "Calculation checks passed. Race and chamber summaries match the saved simulations of races moving together.",
+        "predictive": "No 2026 outcomes are available. Reviewed historical comparisons did not justify replacing the preserved default.",
+        "scope": "These are saved research comparisons. The site does not yet calculate arbitrary new combinations for the full chamber."
+      }
+    },
+    {
+      "id": "cfg-8512234b3f0f570ca7da11acf612b39be5a695acb0956a90d60ed1be6927b44b",
+      "runId": "current-comparison-recent_calendar_history-fp",
+      "resultSha256": "c407a8cd7befc14e631a305d595ee63dda04272bc9b89b083c31002f70626628",
+      "year": 2026,
+      "dateId": "2026-10-20",
+      "components": {
+        "base": "recent_calendar_history",
+        "polling": "standard",
+        "uncertainty": "standard"
+      },
+      "targetId": "senate2026_principal_pair_fundamentals_comparison_v1",
+      "lawId": "principal_pair_empirical_logit_shared_normal_student_t5_v1",
+      "outputs": [
+        "race-probabilities",
+        "joint-chamber-distributions",
+        "tipping-points"
+      ],
+      "cutoffs": [
+        {
+          "label": "Nonpoll inputs",
+          "at": "2026-10-20T15:21:23Z"
+        },
+        {
+          "label": "Polling data",
+          "at": "2026-10-20T16:21:44Z"
+        }
+      ],
+      "evidence": {
+        "status": "experimental",
+        "implementation": "Saved forecasts for 35 races, each modeling its two principal contenders, with simulations of chamber outcomes.",
+        "numerical": "Calculation checks passed. Race and chamber summaries match the saved simulations of races moving together.",
+        "predictive": "No 2026 outcomes are available. Reviewed historical comparisons did not justify replacing the preserved default.",
+        "scope": "These are saved research comparisons. The site does not yet calculate arbitrary new combinations for the full chamber."
+      }
+    },
+    {
+      "id": "cfg-cf5f4803fe85e9ef1edf16d688e7a3e5e414bcd2bbe6cb60892d56f66b9b445a",
+      "runId": "current-comparison-senate_history_refreshed_v1-f",
+      "resultSha256": "951728669a488b54622804f241e3bdc5d650d20f539b51c5c8ac656485057cb9",
+      "year": 2026,
+      "dateId": "2026-10-20",
+      "components": {
+        "base": "senate_history_refreshed_v1",
+        "polling": "none",
+        "uncertainty": "standard"
+      },
+      "targetId": "senate2026_principal_pair_fundamentals_comparison_v1",
+      "lawId": "principal_pair_empirical_logit_shared_normal_student_t5_v1",
+      "outputs": [
+        "race-probabilities",
+        "joint-chamber-distributions",
+        "tipping-points"
+      ],
+      "cutoffs": [
+        {
+          "label": "Nonpoll inputs",
+          "at": "2026-10-20T15:21:23Z"
+        }
+      ],
+      "evidence": {
+        "status": "experimental",
+        "implementation": "Saved forecasts for 35 races, each modeling its two principal contenders, with simulations of chamber outcomes.",
+        "numerical": "Calculation checks passed. Race and chamber summaries match the saved simulations of races moving together.",
+        "predictive": "No 2026 outcomes are available. Reviewed historical comparisons did not justify replacing the preserved default.",
+        "scope": "These are saved research comparisons. The site does not yet calculate arbitrary new combinations for the full chamber."
+      }
+    },
+    {
+      "id": "cfg-4cf565537bc96cb341719c1c2c072c89f9ab0f9e1e27d6d8f886685e917ea7b2",
+      "runId": "current-comparison-senate_history_refreshed_v1-fp",
+      "resultSha256": "5724731e9202e942c5b6592ba00305f80e608afb81a378c0357a8af468d63dd4",
+      "year": 2026,
+      "dateId": "2026-10-20",
+      "components": {
+        "base": "senate_history_refreshed_v1",
+        "polling": "standard",
+        "uncertainty": "standard"
+      },
+      "targetId": "senate2026_principal_pair_fundamentals_comparison_v1",
+      "lawId": "principal_pair_empirical_logit_shared_normal_student_t5_v1",
+      "outputs": [
+        "race-probabilities",
+        "joint-chamber-distributions",
+        "tipping-points"
+      ],
+      "cutoffs": [
+        {
+          "label": "Nonpoll inputs",
+          "at": "2026-10-20T15:21:23Z"
+        },
+        {
+          "label": "Polling data",
+          "at": "2026-10-20T16:21:44Z"
+        }
+      ],
+      "evidence": {
+        "status": "experimental",
+        "implementation": "Saved forecasts for 35 races, each modeling its two principal contenders, with simulations of chamber outcomes.",
+        "numerical": "Calculation checks passed. Race and chamber summaries match the saved simulations of races moving together.",
+        "predictive": "No 2026 outcomes are available. Reviewed historical comparisons did not justify replacing the preserved default.",
+        "scope": "These are saved research comparisons. The site does not yet calculate arbitrary new combinations for the full chamber."
+      }
+    },
+    {
+      "id": "cfg-b5e690d3a8ca8fe0b00363085bb1a7b15882542f5127fb1e65ad6684bf72183d",
+      "runId": "current-comparison-senate_presidential_slope_v1-f",
+      "resultSha256": "258dd9587c730fc15a44f5e53996d870ab7de32ad9cba14cf6c2a20dfa7ae359",
+      "year": 2026,
+      "dateId": "2026-10-20",
+      "components": {
+        "base": "senate_presidential_slope_v1",
+        "polling": "none",
+        "uncertainty": "standard"
+      },
+      "targetId": "senate2026_principal_pair_fundamentals_comparison_v1",
+      "lawId": "principal_pair_empirical_logit_shared_normal_student_t5_v1",
+      "outputs": [
+        "race-probabilities",
+        "joint-chamber-distributions",
+        "tipping-points"
+      ],
+      "cutoffs": [
+        {
+          "label": "Nonpoll inputs",
+          "at": "2026-10-20T15:21:23Z"
+        }
+      ],
+      "evidence": {
+        "status": "experimental",
+        "implementation": "Saved forecasts for 35 races, each modeling its two principal contenders, with simulations of chamber outcomes.",
+        "numerical": "Calculation checks passed. Race and chamber summaries match the saved simulations of races moving together.",
+        "predictive": "No 2026 outcomes are available. Reviewed historical comparisons did not justify replacing the preserved default.",
+        "scope": "These are saved research comparisons. The site does not yet calculate arbitrary new combinations for the full chamber."
+      }
+    },
+    {
+      "id": "cfg-6621220d46e0e0fa238736ada2e8b82d80acfaac3c3502e7b54b87a8dadff57b",
+      "runId": "current-comparison-senate_presidential_slope_v1-fp",
+      "resultSha256": "5f3160a3ec00d81470a24d67ec56ef06ce4542cc0a05fc1839fffd40e64de5ba",
+      "year": 2026,
+      "dateId": "2026-10-20",
+      "components": {
+        "base": "senate_presidential_slope_v1",
+        "polling": "standard",
+        "uncertainty": "standard"
+      },
+      "targetId": "senate2026_principal_pair_fundamentals_comparison_v1",
+      "lawId": "principal_pair_empirical_logit_shared_normal_student_t5_v1",
+      "outputs": [
+        "race-probabilities",
+        "joint-chamber-distributions",
+        "tipping-points"
+      ],
+      "cutoffs": [
+        {
+          "label": "Nonpoll inputs",
+          "at": "2026-10-20T15:21:23Z"
+        },
+        {
+          "label": "Polling data",
+          "at": "2026-10-20T16:21:44Z"
+        }
+      ],
+      "evidence": {
+        "status": "experimental",
+        "implementation": "Saved forecasts for 35 races, each modeling its two principal contenders, with simulations of chamber outcomes.",
+        "numerical": "Calculation checks passed. Race and chamber summaries match the saved simulations of races moving together.",
+        "predictive": "No 2026 outcomes are available. Reviewed historical comparisons did not justify replacing the preserved default.",
+        "scope": "These are saved research comparisons. The site does not yet calculate arbitrary new combinations for the full chamber."
+      }
+    },
+    {
+      "id": "cfg-e5c0a0dccf1d3ffc0de4b4c3ddb2b51a25d61bd64ecbbb728b08c0dc4ed38e65",
+      "runId": "current-comparison-senate_relative_context_v1-f",
+      "resultSha256": "9645ebdcdf14e5b738b36cd17dad853867cb806e72a75d0ab595f5bef1d63bd9",
+      "year": 2026,
+      "dateId": "2026-10-20",
+      "components": {
+        "base": "senate_relative_context_v1",
+        "polling": "none",
+        "uncertainty": "standard"
+      },
+      "targetId": "senate2026_principal_pair_fundamentals_comparison_v1",
+      "lawId": "principal_pair_empirical_logit_shared_normal_student_t5_v1",
+      "outputs": [
+        "race-probabilities",
+        "joint-chamber-distributions",
+        "tipping-points"
+      ],
+      "cutoffs": [
+        {
+          "label": "Nonpoll inputs",
+          "at": "2026-10-20T15:21:23Z"
+        }
+      ],
+      "evidence": {
+        "status": "experimental",
+        "implementation": "Saved forecasts for 35 races, each modeling its two principal contenders, with simulations of chamber outcomes.",
+        "numerical": "Calculation checks passed. Race and chamber summaries match the saved simulations of races moving together.",
+        "predictive": "No 2026 outcomes are available. Reviewed historical comparisons did not justify replacing the preserved default.",
+        "scope": "These are saved research comparisons. The site does not yet calculate arbitrary new combinations for the full chamber."
+      }
+    },
+    {
+      "id": "cfg-75c1da6f36b6cc21a44bda23f845cfd4a5349bd2e0dd59189b4fd3c40d3ec245",
+      "runId": "current-comparison-senate_relative_context_v1-fp",
+      "resultSha256": "2806088ca7678508266162039662d776fef2adab9afc687a720aa7aac22ba529",
+      "year": 2026,
+      "dateId": "2026-10-20",
+      "components": {
+        "base": "senate_relative_context_v1",
+        "polling": "standard",
+        "uncertainty": "standard"
+      },
+      "targetId": "senate2026_principal_pair_fundamentals_comparison_v1",
+      "lawId": "principal_pair_empirical_logit_shared_normal_student_t5_v1",
+      "outputs": [
+        "race-probabilities",
+        "joint-chamber-distributions",
+        "tipping-points"
+      ],
+      "cutoffs": [
+        {
+          "label": "Nonpoll inputs",
+          "at": "2026-10-20T15:21:23Z"
+        },
+        {
+          "label": "Polling data",
+          "at": "2026-10-20T16:21:44Z"
+        }
+      ],
+      "evidence": {
+        "status": "experimental",
+        "implementation": "Saved forecasts for 35 races, each modeling its two principal contenders, with simulations of chamber outcomes.",
+        "numerical": "Calculation checks passed. Race and chamber summaries match the saved simulations of races moving together.",
+        "predictive": "No 2026 outcomes are available. Reviewed historical comparisons did not justify replacing the preserved default.",
+        "scope": "These are saved research comparisons. The site does not yet calculate arbitrary new combinations for the full chamber."
+      }
+    },
+    {
+      "id": "cfg-95c56745d61bdc16d66236fb8d1296a9c335768acb51c68aee7572bb38138292",
+      "runId": "current-comparison-senate_relative_lean_v1-f",
+      "resultSha256": "22dd49ab4b2386c52d6fda781f0ce5cba989a4fa914afd5b37d450c95428aa5f",
+      "year": 2026,
+      "dateId": "2026-10-20",
+      "components": {
+        "base": "senate_relative_lean_v1",
+        "polling": "none",
+        "uncertainty": "standard"
+      },
+      "targetId": "senate2026_principal_pair_fundamentals_comparison_v1",
+      "lawId": "principal_pair_empirical_logit_shared_normal_student_t5_v1",
+      "outputs": [
+        "race-probabilities",
+        "joint-chamber-distributions",
+        "tipping-points"
+      ],
+      "cutoffs": [
+        {
+          "label": "Nonpoll inputs",
+          "at": "2026-10-20T15:21:23Z"
+        }
+      ],
+      "evidence": {
+        "status": "experimental",
+        "implementation": "Saved forecasts for 35 races, each modeling its two principal contenders, with simulations of chamber outcomes.",
+        "numerical": "Calculation checks passed. Race and chamber summaries match the saved simulations of races moving together.",
+        "predictive": "No 2026 outcomes are available. Reviewed historical comparisons did not justify replacing the preserved default.",
+        "scope": "These are saved research comparisons. The site does not yet calculate arbitrary new combinations for the full chamber."
+      }
+    },
+    {
+      "id": "cfg-e33713d6f3bae63e8accabafdacf8dbe53d7da271b4745b5da8e46a3c34990c4",
+      "runId": "current-comparison-senate_relative_lean_v1-fp",
+      "resultSha256": "5b5f84e86dafa3b7fd4b3f99bc7082895d8dcb7bb5ef3a458e22a2c55ddd7c87",
+      "year": 2026,
+      "dateId": "2026-10-20",
+      "components": {
+        "base": "senate_relative_lean_v1",
+        "polling": "standard",
+        "uncertainty": "standard"
+      },
+      "targetId": "senate2026_principal_pair_fundamentals_comparison_v1",
+      "lawId": "principal_pair_empirical_logit_shared_normal_student_t5_v1",
+      "outputs": [
+        "race-probabilities",
+        "joint-chamber-distributions",
+        "tipping-points"
+      ],
+      "cutoffs": [
+        {
+          "label": "Nonpoll inputs",
+          "at": "2026-10-20T15:21:23Z"
+        },
+        {
+          "label": "Polling data",
+          "at": "2026-10-20T16:21:44Z"
+        }
+      ],
+      "evidence": {
+        "status": "experimental",
+        "implementation": "Saved forecasts for 35 races, each modeling its two principal contenders, with simulations of chamber outcomes.",
+        "numerical": "Calculation checks passed. Race and chamber summaries match the saved simulations of races moving together.",
+        "predictive": "No 2026 outcomes are available. Reviewed historical comparisons did not justify replacing the preserved default.",
+        "scope": "These are saved research comparisons. The site does not yet calculate arbitrary new combinations for the full chamber."
+      }
+    },
     {
       "id": "cfg-0316751b8a966fbe2547634c7289d89fea7f5136e279b5e1c9ad61b16f15fb96",
       "runId": "current-cycle-high",
@@ -1518,7 +1870,7 @@
         "status": "experimental",
         "implementation": "Experimental ordinary D/R aggregate implementation is cataloged; the component factory is not a frozen site resolver.",
         "numerical": "Historical-parameter fitting passed numerical diagnostics for the four experimental arms; this is not a current forecast.",
-        "predictive": "Some 2018 prediction cells are sealed, but the matched historical matrix is incomplete and no 2026 forecast has been sampled.",
+        "predictive": "Saved current comparisons are available separately. Custom requests still need their exact inputs, evidence and output qualification; a successful calculation does not establish forecast accuracy.",
         "scope": "Ordinary D/R aggregate race probabilities only. There is no custom full-chamber adapter or SiteGround execution service."
       }
     },
@@ -1548,7 +1900,7 @@
         "status": "experimental",
         "implementation": "Experimental ordinary D/R aggregate implementation is cataloged; the component factory is not a frozen site resolver.",
         "numerical": "Historical-parameter fitting passed numerical diagnostics for the four experimental arms; this is not a current forecast.",
-        "predictive": "Some 2018 prediction cells are sealed, but the matched historical matrix is incomplete and no 2026 forecast has been sampled.",
+        "predictive": "Saved current comparisons are available separately. Custom requests still need their exact inputs, evidence and output qualification; a successful calculation does not establish forecast accuracy.",
         "scope": "Ordinary D/R aggregate race probabilities only. There is no custom full-chamber adapter or SiteGround execution service."
       }
     },
@@ -1578,7 +1930,7 @@
         "status": "experimental",
         "implementation": "Experimental ordinary D/R aggregate implementation is cataloged; the component factory is not a frozen site resolver.",
         "numerical": "Historical-parameter fitting passed numerical diagnostics for the four experimental arms; this is not a current forecast.",
-        "predictive": "Some 2018 prediction cells are sealed, but the matched historical matrix is incomplete and no 2026 forecast has been sampled.",
+        "predictive": "Saved current comparisons are available separately. Custom requests still need their exact inputs, evidence and output qualification; a successful calculation does not establish forecast accuracy.",
         "scope": "Ordinary D/R aggregate race probabilities only. There is no custom full-chamber adapter or SiteGround execution service."
       }
     },
@@ -1608,7 +1960,7 @@
         "status": "experimental",
         "implementation": "Experimental ordinary D/R aggregate implementation is cataloged; the component factory is not a frozen site resolver.",
         "numerical": "Historical-parameter fitting passed numerical diagnostics for the four experimental arms; this is not a current forecast.",
-        "predictive": "Some 2018 prediction cells are sealed, but the matched historical matrix is incomplete and no 2026 forecast has been sampled.",
+        "predictive": "Saved current comparisons are available separately. Custom requests still need their exact inputs, evidence and output qualification; a successful calculation does not establish forecast accuracy.",
         "scope": "Ordinary D/R aggregate race probabilities only. There is no custom full-chamber adapter or SiteGround execution service."
       }
     }

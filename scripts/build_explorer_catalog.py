@@ -19,7 +19,9 @@ DEFAULTS = {
 
 def build_catalog(data_dir: Path) -> dict:
     entries: list[dict] = []
-    for index_name in ("current-index.json", "history-index.json"):
+    for index_name in ("current-index.json", "history-index.json", "current-comparisons-index.json"):
+        if index_name == "current-comparisons-index.json" and not (data_dir / index_name).exists():
+            continue
         rows = json.loads((data_dir / index_name).read_text())
         if not isinstance(rows, list):
             raise ValueError(f"{index_name} must contain a run-entry array")

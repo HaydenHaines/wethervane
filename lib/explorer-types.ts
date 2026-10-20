@@ -1,4 +1,8 @@
-import type { ControlScenario, SeatDistribution, ShareQuantiles } from "./site-types";
+import type {
+  ControlScenario,
+  SeatDistribution,
+  ShareQuantiles,
+} from "./site-types";
 import type { ModelTippingSummary } from "./tipping-types";
 
 /** Every selectable stack resolves to a saved, internally coherent run. */
@@ -15,7 +19,7 @@ export interface ExplorerRun {
   cutoffAt: string;
   horizonDays: number | null;
   components: {
-    base: "fundamentals" | "winner";
+    base: string;
     polling: "none" | "standard" | "persistent";
     uncertainty: string;
   };
@@ -26,6 +30,14 @@ export interface ExplorerRun {
   simulationCount: number;
   /** False for retrospective publication/roster proxies. */
   strictAsOf: boolean;
+  /** Preserve distinct source cutoffs; never collapse polling and structural dates. */
+  inputCutoffs?: { label: string; at: string }[];
+  researchEvidence?: {
+    status: "experimental";
+    numericalStatus: "passed";
+    forecastSkill: string;
+    qualification: string;
+  };
 }
 
 export interface ExplorerRunEntry extends ExplorerRun {

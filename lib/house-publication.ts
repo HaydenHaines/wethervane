@@ -4,8 +4,8 @@ import { createHash } from "node:crypto";
 import {
   parseHouseResult,
   houseReadinessInput,
-  type HousePublication,
 } from "./house-result.ts";
+import { houseRunMatches, parseHouseCatalog, validHouseRunId, type HouseCatalog, type HousePublicationWithCatalog } from "./house-catalog.ts";
 import { validateChamberReadiness } from "./chamber.ts";
 import {
   joinDistrictGeography,
@@ -39,30 +39,21 @@ async function readArtifact(
   return JSON.parse(bytes.toString("utf8"));
 }
 
-/** Only a committed manifest can admit reviewed, hash-pinned publication artifacts. */
-export async function loadHousePublication(
-  directory: string,
-): Promise<HousePublication> {
-  const manifest = JSON.parse(
-    (await readLocalFile(directory, "publication.json")).toString("utf8"),
-  );
-  if (manifest?.schemaVersion !== 1)
-    throw Error("Invalid House publication manifest.");
-  if (manifest.status === "preparing")
-    return { schemaVersion: 1, status: "preparing" };
-  if (manifest.status !== "available")
-    throw Error("Invalid House publication status.");
+export class HouseRunSelectionError extends Error {}
+
+async function loadResult(directory: string, manifest: Record<string, unknown>): Promise<Extract<HousePublicationWithCatalog, { status: "available" }>> {
   const result = parseHouseResult(
     await readArtifact(directory, manifest.result),
   );
   if (!result) throw Error("House result has not passed publication checks.");
   let geography: DistrictGeography | null = null;
   if (manifest.geography) {
+    const geographyReference = manifest.geography as { metadata: DistrictGeography["metadata"]; sha256: string };
     // The digest identifies the raw FeatureCollection bytes, avoiding a self-referential hash.
     geography = {
       metadata: {
-        ...manifest.geography.metadata,
-        sourceSha256: manifest.geography.sha256,
+        ...geographyReference.metadata,
+        sourceSha256: geographyReference.sha256,
       },
       geojson: (await readArtifact(
         directory,
@@ -95,7 +86,49 @@ export async function loadHousePublication(
     schemaVersion: 1,
     status: "available",
     result,
-    resultSha256: manifest.result.sha256,
+    resultSha256: (manifest.result as { sha256: string }).sha256,
     geography,
   };
+}
+
+/** Only an explicit manifest admits reviewed, hash-pinned publication artifacts. */
+export async function loadHousePublication(directory: string, runId?: string | null): Promise<HousePublicationWithCatalog> {
+  if (runId !== undefined && runId !== null && !validHouseRunId(runId)) throw new HouseRunSelectionError("Invalid House result selection.");
+  const manifest = JSON.parse((await readLocalFile(directory, "publication.json")).toString("utf8"));
+  if (manifest?.schemaVersion !== 1) throw Error("Invalid House publication manifest.");
+  if (manifest.status === "preparing") {
+    if (runId != null) throw new HouseRunSelectionError("This House result is not available.");
+    return { schemaVersion: 1, status: "preparing" };
+  }
+  if (manifest.status !== "available") throw Error("Invalid House publication status.");
+  if (!manifest.catalog) {
+    const publication = await loadResult(directory, manifest);
+    if (runId != null && runId !== publication.result.run.id) throw new HouseRunSelectionError("Unknown House result selection.");
+    return publication;
+  }
+  if (manifest.result || manifest.geography) throw Error("Ambiguous House publication manifest.");
+  const rawCatalog = await readArtifact(directory, manifest.catalog) as { runs?: Record<string, unknown>[] };
+  const catalog: HouseCatalog | null = parseHouseCatalog(rawCatalog);
+  if (!catalog) throw Error("Invalid House publication catalog.");
+  const selectedId = runId ?? catalog.defaultRunId;
+  const selected = catalog.runs.find(run => run.id === selectedId);
+  if (!selected?.available) throw new HouseRunSelectionError("This House result is unknown or unavailable.");
+  let publication: Extract<HousePublicationWithCatalog, { status: "available" }> | undefined;
+  for (const entry of catalog.runs) {
+    const reference = rawCatalog.runs!.find(run => run.id === entry.id)!;
+    if (!entry.available) {
+      if (reference.result !== undefined || reference.geography !== undefined) throw Error("Unavailable House results must not have publication references.");
+      continue;
+    }
+    const loaded = await loadResult(directory, reference);
+    if (!houseRunMatches(entryRun(entry), loaded.result.run) || loaded.resultSha256 !== entry.resultSha256 || loaded.result.races.length !== entry.raceCount)
+      throw Error("House catalog metadata does not match its result.");
+    if (entry.id === selectedId) publication = loaded;
+  }
+  return { ...publication!, catalog };
+}
+
+function entryRun(entry: HouseCatalog["runs"][number]) {
+  const { resultSha256: _digest, raceCount: _count, available: _available, unavailableReason: _reason, ...run } = entry;
+  return run;
 }

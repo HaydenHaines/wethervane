@@ -331,6 +331,8 @@ export default function SenateExplorer() {
   const baselineScenario = baseline?.scenarios.find(s => s.id === scenario?.id);
   const outlook = chamberOutlook(scenario?.control);
   const matchedBaseline = bundle && scenario && baseline && baselineScenario &&
+    bundle.run.year === baseline.run.year && bundle.run.dateId === baseline.run.dateId &&
+    bundle.run.targetId === baseline.run.targetId && bundle.run.lawId === baseline.run.lawId &&
     (!bundle.run.historical || compareScoreboards(bundle, scenario, baseline, baselineScenario).status === "matched");
   const reference =
       selection?.compare && matchedBaseline && baseline?.run.year === bundle?.run.year
@@ -474,6 +476,12 @@ export default function SenateExplorer() {
                   ? "See reconstructed forecasts alongside the actual election results."
                   : "A closer look at the races that could shape the chamber, with visible uncertainty."}
               </p>
+              {bundle.run.inputCutoffs && <details className="edition-inputs">
+                <summary>Input and publication times</summary>
+                {bundle.run.inputCutoffs.map((cutoff) => <p key={cutoff.label}>{cutoff.label === "Nonpoll inputs" ? "Inputs other than polls" : cutoff.label}: {new Date(cutoff.at).toUTCString()}</p>)}
+                <p>Result generated: {new Date(bundle.run.issuedAt).toUTCString()}</p>
+                <p>These saved comparisons can combine inputs with different collection deadlines.</p>
+              </details>}
             </div>
             <div className="edition">
               {bundle.run.historical
@@ -558,7 +566,9 @@ export default function SenateExplorer() {
                   : reference
                     ? forecastLabel(reference.run.label) +
                       ". Changes compare the same races, possible winners and party-alliance assumptions. A percentage point (pp) is the difference between two percentages."
-                    : "Loading the default comparison…"}
+                    : baseline
+                      ? "Comparison unavailable: these results use different forecast definitions or assumptions. Choose a matching saved comparison in Build your perspective."
+                      : "Loading the selected comparison…"}
               </span>
               {reference && !referenceScenario && (
                 <span>

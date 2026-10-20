@@ -60,6 +60,8 @@ def _relative_bundle_path(href: str) -> Path:
 
 
 def _cutoffs(run: dict[str, Any]) -> list[dict[str, str]]:
+    if run.get("inputCutoffs"):
+        return run["inputCutoffs"]
     year = run["year"]
     if year != 2026:
         return [{"label": f"Historical reconstruction cutoff ({run['dateLabel']})", "at": run["cutoffAt"]}]
@@ -72,6 +74,8 @@ def _cutoffs(run: dict[str, Any]) -> list[dict[str, str]]:
 
 
 def _evidence(run: dict[str, Any]) -> dict[str, str]:
+    if run.get("researchEvidence"):
+        return {"status": "experimental", "implementation": "Saved forecasts for 35 races, each modeling its two principal contenders, with simulations of chamber outcomes.", "numerical": "Calculation checks passed. Race and chamber summaries match the saved simulations of races moving together.", "predictive": "No 2026 outcomes are available. Reviewed historical comparisons did not justify replacing the preserved default.", "scope": "These are saved research comparisons. The site does not yet calculate arbitrary new combinations for the full chamber."}
     if run["year"] < 2026:
         return {
             "status": "historical_reconstruction",
@@ -143,15 +147,17 @@ def _options(registry: dict[str, Any], implementations: list[dict[str, Any]]) ->
         option("base", "winner", "Historical winner-rule baseline", "Retrospective categorical winner fallback used only in saved historical chamber comparisons."),
     ]
     labels = {
-        "senate_history_refreshed_v1": ("Refreshed history", "Experimental refreshed-history aggregate prior; historical parameter fits exist, but no current forecast has been sampled."),
-        "senate_presidential_slope_v1": ("Learned presidential slope", "Experimental aggregate prior with a learned relationship to earlier presidential lean; no current forecast has been sampled."),
-        "senate_relative_lean_v1": ("Relative state and national lean", "Experimental aggregate prior with learned state slope and national carryover; no current forecast has been sampled."),
-        "senate_relative_context_v1": ("Relative lean with presidential context", "Experimental aggregate prior adding presidential-party and midterm context; no current forecast has been sampled."),
+        "senate_history_refreshed_v1": ("Refreshed history", "Saved experimental comparison using refreshed electoral history. Exact with-polls and without-polls results are available; new combinations may require calculation."),
+        "senate_presidential_slope_v1": ("Learned presidential slope", "Saved experimental comparison learning the relationship to earlier presidential voting. Exact with-polls and without-polls results are available."),
+        "senate_relative_lean_v1": ("Relative state and national lean", "Saved experimental comparison using relative state voting and national carryover. Exact with-polls and without-polls results are available."),
+        "senate_relative_context_v1": ("Relative lean with presidential context", "Saved experimental comparison adding the president’s party and midterm context. Exact with-polls and without-polls results are available."),
     }
+    if by_slot["base"].get("recent_calendar_history"):
+        base_options.append(option("base", "recent_calendar_history", "Recent calendar history", "Saved experimental comparison using recent calendar election cycles; available with or without polls.", experimental=True))
     for implementation_id in sorted(EXPECTED_EXPERIMENTAL_BASES):
         label, description = labels[implementation_id]
         base_options.append(option("base", implementation_id, label, description, experimental=True,
-                                   availability="requires_computation", implementation_id=implementation_id,
+                                   availability="saved" if by_slot["base"].get(implementation_id) else "requires_computation", implementation_id=implementation_id,
                                    years=[2026]))
 
     poll_options = [
@@ -190,7 +196,7 @@ def _computation(implementations: list[dict[str, Any]]) -> list[dict[str, Any]]:
         "status": "experimental",
         "implementation": "Experimental ordinary D/R aggregate implementation is cataloged; the component factory is not a frozen site resolver.",
         "numerical": "Historical-parameter fitting passed numerical diagnostics for the four experimental arms; this is not a current forecast.",
-        "predictive": "Some 2018 prediction cells are sealed, but the matched historical matrix is incomplete and no 2026 forecast has been sampled.",
+        "predictive": "Saved current comparisons are available separately. Custom requests still need their exact inputs, evidence and output qualification; a successful calculation does not establish forecast accuracy.",
         "scope": "Ordinary D/R aggregate race probabilities only. There is no custom full-chamber adapter or SiteGround execution service.",
     }
     reason = (
@@ -225,8 +231,8 @@ def build_manifest(
     source_hashes: dict[str, str],
 ) -> dict[str, Any]:
     runs = registry.get("runs")
-    if not isinstance(runs, list) or len(runs) != 38:
-        raise ExportError("Expected all 38 frozen current and historical explorer runs")
+    if not isinstance(runs, list) or len(runs) < 38:
+        raise ExportError("Expected the complete frozen current and historical archive")
     ids = [run.get("id") for run in runs]
     if None in ids or len(set(ids)) != len(ids):
         raise ExportError("Duplicate or missing saved run ID")
@@ -301,7 +307,7 @@ def build_manifest(
     ]
     return {
         "schemaVersion": 1,
-        "id": "composition-capabilities-2026-10-20-v1",
+        "id": "composition-capabilities-2026-10-20-v2",
         "sourceCatalog": {"id": catalog["catalog_id"], "sha256": catalog_sha},
         "sources": source_hashes,
         "defaultPresetId": handoff["current_best_guess_preset_id"],
@@ -330,7 +336,7 @@ def export(source_root: Path, output: Path, registry_path: Path, bundle_root: Pa
     preparation = _load_json(preparation_path)
     fits = _load_json(fits_path)
     if preparation.get("empirical_predictions_sampled") is not False:
-        raise ExportError("Current forecast preparation status changed; review computation claims")
+        raise ExportError("Pinned historical preparation receipt changed")
     fit_results = fits.get("results", [])
     if (len(fit_results) != 21 or any(result.get("status") != "passed" for result in fit_results)
             or not EXPECTED_EXPERIMENTAL_BASES.issubset({r.get("implementation_id") for r in fit_results})):
@@ -361,6 +367,10 @@ def export(source_root: Path, output: Path, registry_path: Path, bundle_root: Pa
         "historicalFitBatch": _sha256(fits_path.read_bytes()),
         "historicalPredictionJournal": _sha256(benchmark_journal_path.read_bytes()),
     }
+    comparison_index = source_root / RESEARCH / "frontend-contract-root-v2/interface-v1/current-comparisons.json"
+    if any(run.get("researchEvidence") for run in registry["runs"]):
+        source_hashes["currentComparisonIndex"] = _sha256(comparison_index.read_bytes())
+        source_hashes["compositionInterfaceReceipt"] = _sha256((comparison_index.parent / "receipt.json").read_bytes())
     manifest = build_manifest(registry, bundles, catalog, handoff, source_hashes)
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")

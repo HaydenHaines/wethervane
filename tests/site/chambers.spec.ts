@@ -6,7 +6,7 @@ const houseReady = /The House,\s*in perspective\./;
 const districtId = (key: string) => `2022:${key}:house:regular`;
 
 async function stubHouse(page: Page, publication = makeHousePublication()) {
-  await page.route("**/api/chambers/house", (route) =>
+  await page.route("**/api/chambers/house*", (route) =>
     route.fulfill({ json: publication }),
   );
 }

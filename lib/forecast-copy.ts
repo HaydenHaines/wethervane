@@ -48,7 +48,7 @@ export function forecastLabel(label: string): string {
     .replace("Electoral-history aggregate", "Electoral-history starting estimate")
     .replace("Winner-only", "Winner reference model")
     .replace("Fundamentals", "Electoral history")
-    .replace("persistent polling errors", "polling errors that persist")
+    .replace("persistent polling errors", "recurring pollster/state error adjustment")
     .replace(/ · loading ([\d.]+)/, " · shared national shift ×$1")
     .replace("National loading", "Shared national shift")
     .replace("As-of alignment; others unaligned", "Pre-election alliances; others unaligned")

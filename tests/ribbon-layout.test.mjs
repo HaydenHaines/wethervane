@@ -28,14 +28,9 @@ const pair = (race) => ({
   secondWinProbability: race.outcomes[1].winProbability,
 });
 
-for (const id of [
-  "current-polling",
-  "current-fundamentals",
-  "current-error-low",
-  "current-error-high",
-  "current-cycle-low",
-  "current-cycle-high",
-]) {
+for (const id of read("registry")
+  .runs.filter((run) => !run.historical)
+  .map((run) => run.id)) {
   test(
     id +
       ": all saved scenario markers agree with independently derived layouts",

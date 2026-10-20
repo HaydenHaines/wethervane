@@ -111,6 +111,72 @@ def unselected_reason(row, selected_by_sample):
     return explanation
 
 
+def verify_comparison_polling_bindings(plan, expected):
+    """Require exact evidence identity, not merely a polling label or count."""
+    for key, digest in expected.items():
+        require(plan.get("inputs", {}).get(key, {}).get("sha256") == digest,
+                f"Comparison polling evidence differs: {key}")
+
+
+def extend_comparison_applicability(root, registry_runs, cutoff, counts, applicable, source_hashes):
+    packet = root / "research/fundamentals-iteration-20261020/frontend-contract-root-v2/interface-v1"
+    receipt_path = packet / "receipt.json"
+    require(sha(receipt_path) == "85f38310f650fc7eb0b18739f36e36a3a7457602cb5e42f328a89f1b58bb1ece", "Reviewed composition receipt changed")
+    def pinned(reference):
+        relative = Path(reference["path"])
+        require(not relative.is_absolute() and ".." not in relative.parts, "Unsafe comparison source reference")
+        path = root / relative
+        require(path.is_file() and sha(path) == reference["sha256"], "Comparison source fingerprint mismatch")
+        return path
+    receipt = read(receipt_path)
+    index_path = pinned(next(ref for ref in receipt["outputs"] if ref["path"].endswith("/current-comparisons.json")))
+    entries = [entry for entry in read(index_path) if entry["mode"] == "FP"]
+    require(len(entries) == 5, "Expected five reviewed polling comparisons")
+    baseline = root / RESEARCH / "forecast-v2"
+    expected = {
+        "observations": sha(baseline / "admitted-observations.json"),
+        "poll_likelihood": sha(baseline / "poll-likelihood.npz"),
+        "poll_specification": sha(baseline / "run-specification.json"),
+        "poll_input_receipt": sha(baseline / "input-receipt.json"),
+    }
+    source_hashes["comparisonInterfaceReceipt"] = sha(receipt_path)
+    source_hashes["comparisonIndex"] = sha(index_path)
+    for entry in entries:
+        run_id = f"current-comparison-{entry['configuration']}-fp"
+        run = registry_runs.get(run_id)
+        require(run is not None, f"Missing reviewed polling comparison: {run_id}")
+        bundle_path = DEPLOYMENT / "public" / run["href"].removeprefix("/")
+        require(sha(bundle_path) == run["sha256"], "Comparison public fingerprint mismatch")
+        bundle = read(bundle_path)
+        forecast_path = pinned(entry["files"]["forecast.json"])
+        execution_receipt_path = pinned(entry["receipt"])
+        plan_path = pinned(read(execution_receipt_path)["plan"])
+        plan = read(plan_path)
+        verify_comparison_polling_bindings(plan, expected)
+        for key in expected: pinned(plan["inputs"][key])
+        forecast = read(forecast_path)
+        require(entry["poll_batch_input_cutoff_utc"] == forecast["poll_batch_input_cutoff_utc"] == cutoff
+                and forecast["input_cutoff_utc"] == bundle["run"]["cutoffAt"] == run["cutoffAt"] == cutoff,
+                "Comparison polling cutoff mismatch")
+        require(forecast["mode"] == "FP" and forecast["admitted_poll_observations"] == 49,
+                "Comparison polling count/mode mismatch")
+        require(bundle["provenance"]["sources"]["forecastSha256"] == sha(forecast_path)
+                and bundle["provenance"]["sources"]["planSha256"] == sha(plan_path),
+                "Comparison public source binding mismatch")
+        require({row["race_id"]: row["admitted_poll_observations"] for row in forecast["races"]}
+                == {row["id"]: counts[row["id"]] for row in bundle["races"]},
+                "Comparison source race counts differ")
+        require({row["id"]: row["pollCount"] for row in bundle["races"]}
+                == {row["id"]: counts[row["id"]] for row in bundle["races"]},
+                "Comparison public race counts differ")
+        applicable[run_id] = run["sha256"]
+        prefix = run_id.replace("_", "-")
+        for label, path in (("plan", plan_path), ("receipt", execution_receipt_path), ("forecast", forecast_path)):
+            source_hashes[f"{prefix}:{label}"] = sha(path)
+        for key, digest in expected.items():
+            source_hashes[f"{prefix}:{key.replace('_', '-')}"] = digest
+
+
 def export(source_root, registry_path):
     root = source_root.resolve()
     research = root / RESEARCH
@@ -189,6 +255,7 @@ def export(source_root, registry_path):
         source_hashes[f"{run_id}:excludedObservations"] = sha(excluded_path)
         source_hashes[f"{run_id}:inputReceipt"] = sha(receipt_path)
         source_hashes[f"{run_id}:forecast"] = sha(folder_path / "forecast.json")
+    extend_comparison_applicability(root, registry_runs, cutoff, included_counts, applicable, source_hashes)
     evidence_hashes = set()
     for row in records:
         for evidence in row["source_files"]:

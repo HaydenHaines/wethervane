@@ -2893,3 +2893,13 @@ select:focus-visible {
 .poll-record-status.included { color: var(--ind); }
 .poll-record-list a, .detail-note a, .method-content a { text-decoration: underline; text-underline-offset: 3px; }
 @media (max-width: 800px) { .poll-rule-grid { grid-template-columns: 1fr; gap: 8px; } .polling-policy { padding: 22px 18px; } }
+
+.house-selection-fields { display: grid; grid-template-columns: minmax(200px, 1fr) minmax(240px, 2fr); gap: 24px; margin: 20px 0; }
+.control-field-label { display: block; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 10px; }
+.house-configuration .stack-actions { margin: 20px 0; }
+.house-selection-fields .year-control { flex-wrap: wrap; }
+.house-selection-fields select { width: 100%; }
+.edition-inputs { max-width: 480px; margin-top: 12px; text-align: left; font-size: 12px; color: var(--muted); }
+.edition-inputs summary { cursor: pointer; }
+.edition-inputs p { margin: 8px 0; font-size: 12px; line-height: 1.5; letter-spacing: normal; text-transform: none; }
+@media (max-width: 800px) { .house-selection-fields { grid-template-columns: minmax(0, 1fr); gap: 18px; } }
