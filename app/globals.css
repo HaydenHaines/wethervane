@@ -2385,3 +2385,466 @@ select:focus-visible {
     font-size: 10px;
   }
 }
+
+/* Both chambers share one page and one navigation. */
+.chamber-navigation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding-top: 26px;
+}
+.chamber-tabs {
+  display: inline-flex;
+  gap: 4px;
+  border: 1px solid var(--line);
+  padding: 4px;
+  border-radius: 7px;
+  background: #eeeee7;
+}
+.chamber-tabs button {
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  padding: 11px 30px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.chamber-tabs button[aria-selected="true"] {
+  background: var(--card);
+  color: var(--ink);
+  box-shadow: 0 1px 4px #21394b16;
+}
+[role="tabpanel"]:focus-visible {
+  outline: 2px solid var(--ind);
+  outline-offset: 5px;
+}
+.house-preparation {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 64px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 40px;
+  margin: 16px 0 56px;
+}
+.house-preparation h2 {
+  font:
+    32px/1.2 Georgia,
+    serif;
+  letter-spacing: -1px;
+  margin: 0 0 16px;
+}
+.house-preparation p {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.8;
+}
+.house-return {
+  background: var(--ink);
+  border: 1px solid var(--ink);
+  border-radius: 4px;
+  color: var(--paper);
+  margin-top: 18px;
+  padding: 13px 18px;
+}
+.house-return span {
+  margin-left: 30px;
+}
+.house-preparation-features {
+  display: grid;
+  gap: 24px;
+}
+.house-preparation-features article {
+  position: relative;
+  border-bottom: 1px solid var(--line);
+  padding: 0 0 22px 50px;
+}
+.house-preparation-features article:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+.house-preparation-features article > span {
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--ind);
+  font:
+    22px Georgia,
+    serif;
+}
+.house-preparation-features h3 {
+  margin: 0 0 7px;
+  font-size: 15px;
+  font-weight: 500;
+}
+.house-preparation-features p {
+  margin: 0;
+}
+.house-configuration summary {
+  cursor: pointer;
+  font:
+    22px Georgia,
+    serif;
+}
+.house-configuration summary span {
+  display: inline-block;
+  margin-left: 20px;
+  font-family: Arial, sans-serif;
+}
+.house-configuration dl {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 12px 24px;
+  font-size: 12px;
+}
+.house-configuration dd {
+  margin: 0;
+}
+.house-configuration p {
+  color: var(--muted);
+  line-height: 1.7;
+}
+.house-scoreboard-cards {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.house-ribbon {
+  margin: 24px 0;
+}
+.house-ribbon-ends {
+  display: flex;
+  justify-content: space-between;
+  color: var(--muted);
+  font-size: 11px;
+  margin: 18px 0 9px;
+}
+.house-ribbon-density {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--muted);
+  padding: 8px 0;
+  cursor: pointer;
+}
+.house-ribbon-focus {
+  font-size: 12px;
+  line-height: 1.6;
+  margin: 16px 0 6px;
+}
+.house-ribbon.is-compact .house-ribbon-grid {
+  gap: 3px;
+}
+.house-ribbon.is-compact .house-ribbon-cell {
+  min-height: 12px;
+  padding: 0;
+  border-radius: 2px;
+}
+.house-ribbon.is-compact .house-ribbon-cell span,
+.house-ribbon.is-compact .house-ribbon-cell small {
+  display: none;
+}
+.house-ribbon.is-compact .house-ribbon-cell.majority-position::after {
+  height: 22px;
+  top: -5px;
+}
+.house-ribbon-ends span:first-child {
+  color: var(--dem);
+}
+.house-ribbon-ends span:last-child {
+  color: var(--rep);
+}
+.house-ribbon-container {
+  width: 100%;
+}
+.house-ribbon-grid {
+  display: grid;
+  gap: 9px 4px;
+}
+.house-ribbon-cell {
+  position: relative;
+  min-width: 0;
+  min-height: 42px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  padding: 4px 1px;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 600;
+}
+.house-ribbon-cell span {
+  padding: 2px 1px;
+}
+.house-ribbon-cell small {
+  display: block;
+  font-size: 10px;
+  height: 10px;
+  line-height: 10px;
+}
+.house-ribbon-cell[aria-pressed="true"] {
+  outline: 3px solid var(--ink);
+  outline-offset: 1px;
+  z-index: 1;
+}
+.house-ribbon-cell:focus-visible {
+  outline: 3px solid var(--ind);
+  outline-offset: 2px;
+  z-index: 2;
+}
+.house-ribbon-cell.majority-position {
+  box-shadow: 0 0 0 2px var(--ink);
+}
+.house-ribbon-cell.majority-position::after {
+  content: "";
+  position: absolute;
+  top: -8px;
+  height: 58px;
+  left: -4px;
+  border-left: 2px solid var(--ink);
+  pointer-events: none;
+}
+.house-coverage-note {
+  font-size: 12px;
+  line-height: 1.7;
+  border-top: 1px solid var(--line);
+  padding-top: 14px;
+  margin-bottom: 0;
+}
+.house-results-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 335px;
+  gap: 28px;
+  align-items: start;
+}
+.house-results-layout > div {
+  min-width: 0;
+}
+.house-results-layout .detail {
+  position: sticky;
+  top: 18px;
+}
+.house-results-layout .map-head {
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.house-results-layout .control-card {
+  margin-top: 22px;
+}
+.house-control-unavailable p {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.7;
+}
+.house-race-list {
+  max-height: 540px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 5px;
+}
+.house-race-list > button {
+  display: grid;
+  grid-template-columns: 65px minmax(0, 1fr) 60px;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  text-align: left;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  background: transparent;
+  padding: 14px 8px;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.house-race-list > button[aria-pressed="true"] {
+  background: #e7ebe4;
+}
+.house-race-list > button > span {
+  overflow-wrap: anywhere;
+}
+.house-race-list > button > b {
+  font-size: 11px;
+  font-weight: 400;
+  text-align: right;
+}
+.house-results-layout .race-tools input {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--card);
+  padding: 12px;
+}
+.house-exclusions {
+  max-height: 260px;
+  overflow-y: auto;
+  padding-left: 22px;
+  line-height: 1.8;
+  font-size: 12px;
+}
+.house-digest {
+  overflow-wrap: anywhere;
+  font-size: 11px;
+}
+.house-tipping-summary {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  margin: -8px 0 24px;
+  padding: 12px 24px;
+  font-size: 12px;
+  line-height: 1.7;
+}
+.house-tipping-summary button {
+  border: 0;
+  border-bottom: 1px solid;
+  background: transparent;
+}
+.district-map-toolbar {
+  padding: 18px 24px 0;
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.district-map-toolbar h3 {
+  font-size: 13px;
+  font-weight: 500;
+  margin: 0;
+}
+.district-map-toolbar p {
+  font-size: 10px;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+.district-map-toolbar label {
+  display: block;
+  font-size: 11px;
+  margin-bottom: 6px;
+}
+.district-map-toolbar select {
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--card);
+  max-width: 100%;
+}
+.district-map-instructions,
+.district-map-coverage,
+.district-map-active,
+.district-map-diagnostics,
+.district-map-provenance {
+  margin: 12px 24px;
+  font-size: 11px;
+  line-height: 1.7;
+  color: var(--muted);
+}
+.district-map-active {
+  min-height: 36px;
+  color: var(--ink);
+}
+.district-map-diagnostics summary,
+.district-map-provenance summary {
+  cursor: pointer;
+}
+.district-map-diagnostics ul {
+  padding-left: 18px;
+}
+.district-map-diagnostics,
+.district-map-provenance {
+  overflow-wrap: anywhere;
+}
+.district-map-unavailable,
+.district-map-empty {
+  margin: 28px 24px;
+  line-height: 1.7;
+  color: var(--muted);
+  font-size: 12px;
+}
+.district-map-unavailable h3 {
+  color: var(--ink);
+  font-weight: 500;
+}
+@media (max-width: 1100px) {
+  .house-results-layout {
+    grid-template-columns: minmax(0, 1fr) 290px;
+    gap: 20px;
+  }
+}
+@media (max-width: 800px) {
+  .house-preparation {
+    gap: 32px;
+    padding: 28px;
+    grid-template-columns: 1fr;
+  }
+  .house-results-layout {
+    grid-template-columns: 1fr;
+  }
+  .house-results-layout .detail {
+    position: static;
+  }
+  .house-results-layout .detail {
+    grid-row: 1;
+  }
+  .house-scoreboard-cards {
+    grid-template-columns: 1fr;
+  }
+  .house-scoreboard-cards .scoreboard-card {
+    min-height: auto;
+  }
+  .chamber-navigation > .small {
+    font-size: 10px;
+    text-align: right;
+  }
+}
+@media (max-width: 480px) {
+  .chamber-navigation {
+    gap: 12px;
+    padding-top: 20px;
+  }
+  .chamber-tabs button {
+    padding: 10px 20px;
+  }
+  .chamber-navigation > .small {
+    max-width: 100px;
+    line-height: 1.7;
+  }
+  .house-preparation {
+    padding: 24px 20px;
+    margin-bottom: 36px;
+  }
+  .house-preparation h2 {
+    font-size: 28px;
+  }
+  .house-preparation-features article {
+    padding-left: 36px;
+  }
+  .house-configuration summary {
+    font-size: 20px;
+  }
+  .house-configuration summary span {
+    display: block;
+    margin: 8px 0 0;
+  }
+  .house-ribbon-grid {
+    gap: 8px 4px;
+  }
+  .house-ribbon-cell {
+    font-size: 9px;
+    min-height: 44px;
+  }
+  .house-race-list > button {
+    grid-template-columns: 50px minmax(0, 1fr) 45px;
+    gap: 8px;
+    font-size: 11px;
+  }
+  .district-map-toolbar {
+    padding: 14px 16px 0;
+  }
+  .district-map-instructions,
+  .district-map-coverage,
+  .district-map-active,
+  .district-map-diagnostics,
+  .district-map-provenance {
+    margin-left: 16px;
+    margin-right: 16px;
+  }
+}

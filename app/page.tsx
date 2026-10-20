@@ -1,5 +1,5 @@
-import SenateExplorer from "../components/SenateExplorer";
+import ChamberExplorer from "../components/ChamberExplorer";
 
 export default function Page() {
-  return <SenateExplorer />;
+  return <ChamberExplorer />;
 }

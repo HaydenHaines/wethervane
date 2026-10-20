@@ -1,0 +1,661 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import {
+  houseReadinessInput,
+  parseHouseResult,
+  type HousePublication,
+  type HouseResult,
+} from "../lib/house-result";
+import { validateChamberReadiness } from "../lib/chamber";
+import {
+  COLORS,
+  competitiveOrder,
+  outcomeColor,
+  probability,
+  raceRating,
+  STATE_NAMES,
+} from "../lib/presentation";
+import DistrictMap from "./DistrictMap";
+import HouseRibbon from "./HouseRibbon";
+import ChamberControl from "./ChamberControl";
+
+function HouseFooter() {
+  return (
+    <footer className="footer">
+      <span className="footer-brand">ballotmancy</span>
+      <span>
+        Independent research. Visible assumptions.
+        <br />
+        House research preview
+      </span>
+    </footer>
+  );
+}
+
+export default function HouseExplorer({ onReturn }: { onReturn: () => void }) {
+  const [publication, setPublication] = useState<HousePublication | null>(null);
+  const [error, setError] = useState("");
+  const [attempt, setAttempt] = useState(0);
+  useEffect(() => {
+    const controller = new AbortController();
+    setError("");
+    setPublication(null);
+    fetch("/api/chambers/house", { signal: controller.signal })
+      .then(async (response) => {
+        if (!response.ok)
+          throw Error("The House view is temporarily unavailable.");
+        const value = (await response.json()) as HousePublication;
+        if (
+          value?.schemaVersion !== 1 ||
+          !["preparing", "available"].includes(value.status)
+        )
+          throw Error("The House publication could not be verified.");
+        if (value.status === "available") {
+          const result = parseHouseResult(value.result);
+          if (
+            !result ||
+            !/^[a-f0-9]{64}$/.test(value.resultSha256) ||
+            !validateChamberReadiness(
+              houseReadinessInput(result, value.geography),
+            ).canShowRaces
+          )
+            throw Error("The House results could not be verified.");
+        }
+        if (!controller.signal.aborted) setPublication(value);
+      })
+      .catch((reason) => {
+        if (!controller.signal.aborted) setError(reason.message);
+      });
+    return () => controller.abort();
+  }, [attempt]);
+  if (!publication)
+    return (
+      <main className="load-page" aria-busy={!error}>
+        {error ? (
+          <div className="error-box">
+            <h1>House view unavailable</h1>
+            <p>{error}</p>
+            <button onClick={() => setAttempt(attempt + 1)}>Try again</button>
+            <button onClick={onReturn}>Explore the Senate</button>
+          </div>
+        ) : (
+          <p role="status">Preparing the House perspective…</p>
+        )}
+      </main>
+    );
+  if (publication.status === "available")
+    return (
+      <HouseResults key={publication.result.run.id} publication={publication} />
+    );
+  return (
+    <main>
+      <section className="hero house-preparation-hero">
+        <div>
+          <div className="eyebrow">United States House · In preparation</div>
+          <h1>
+            The House,
+            <br />
+            in preparation.
+          </h1>
+          <p>
+            A district-by-district perspective is taking shape. The first
+            release will explore historical model performance; a current
+            forecast will follow when it is ready.
+          </p>
+        </div>
+        <div className="edition">
+          THE NEXT PERSPECTIVE<strong>435 seats · 218 for a majority</strong>
+          Results have not been published yet.
+        </div>
+      </section>
+      <section
+        className="house-preparation"
+        id="races"
+        aria-labelledby="house-preparation-title"
+      >
+        <div className="house-preparation-intro">
+          <div className="eyebrow">Same page. A wider view.</div>
+          <h2 id="house-preparation-title">Every district has a place.</h2>
+          <p>
+            Switch chambers here to explore their races, assumptions, and
+            uncertainty together.
+          </p>
+          <button className="house-return" onClick={onReturn}>
+            Explore the Senate <span aria-hidden="true">→</span>
+          </button>
+        </div>
+        <div className="house-preparation-features">
+          <article>
+            <span aria-hidden="true">01</span>
+            <h3>A path to a majority</h3>
+            <p>
+              A ribbon of districts ordered from strongest Democratic to
+              strongest Republican chances, above the map.
+            </p>
+          </article>
+          <article>
+            <span aria-hidden="true">02</span>
+            <h3>Zoom in on your district</h3>
+            <p>
+              An election-specific district map, with state focus and race
+              details that follow your selection.
+            </p>
+          </article>
+          <article>
+            <span aria-hidden="true">03</span>
+            <h3>See how the model did</h3>
+            <p>
+              Historical results with an at-a-glance scorecard and clear
+              coverage of which races were tested.
+            </p>
+          </article>
+        </div>
+      </section>
+      <section className="methodology" id="methodology">
+        <div>
+          <div className="eyebrow">Before the first release</div>
+          <h2>Evidence comes first.</h2>
+        </div>
+        <div className="method-content">
+          <div>
+            <h3>Historical results first</h3>
+            <p>
+              The initial research covers eligible races in past elections.
+              These tests will be labeled separately from a current House
+              forecast.
+            </p>
+          </div>
+          <div>
+            <h3>Coverage stays visible</h3>
+            <p>
+              A subset of districts can show race-level performance.
+              Chamber-control probabilities and a tipping point need a complete
+              forecast with shared uncertainty across districts.
+            </p>
+          </div>
+        </div>
+      </section>
+      <HouseFooter />
+    </main>
+  );
+}
+
+function HouseResults({
+  publication,
+}: {
+  publication: Extract<HousePublication, { status: "available" }>;
+}) {
+  const { result, geography } = publication;
+  const readiness = validateChamberReadiness(
+    houseReadinessInput(result, geography),
+  );
+  const first = [...result.races].sort(competitiveOrder)[0];
+  const [selectedId, setSelectedId] = useState(first.id);
+  const [query, setQuery] = useState("");
+  const [mapView, setMapView] = useState<"forecast" | "actual">("forecast");
+  const selected = result.races.find((race) => race.id === selectedId) || first;
+  const scenario = readiness.canShowControl
+    ? result.chamberProof?.scenarios[0]
+    : undefined;
+  useEffect(() => {
+    const restore = () => {
+      const params = new URLSearchParams(location.search);
+      if (params.get("chamber") !== "house") return;
+      setSelectedId(
+        result.races.find((race) => race.id === params.get("race"))?.id ||
+          first.id,
+      );
+      setMapView(
+        result.run.historical && params.get("view") === "actual"
+          ? "actual"
+          : "forecast",
+      );
+    };
+    restore();
+    window.addEventListener("popstate", restore);
+    return () => window.removeEventListener("popstate", restore);
+  }, [result, first.id]);
+  function select(id: string, view = mapView, focusDetails = true) {
+    const params = new URLSearchParams({ chamber: "house", race: id });
+    if (view === "actual") params.set("view", "actual");
+    history.pushState(null, "", `/?${params}`);
+    setSelectedId(id);
+    setMapView(view);
+    if (focusDetails && window.matchMedia("(max-width: 800px)").matches)
+      requestAnimationFrame(() => {
+        document
+          .getElementById("house-detail-title")
+          ?.focus({ preventScroll: true });
+        document.getElementById("house-race-detail")?.scrollIntoView({
+          behavior: window.matchMedia("(prefers-reduced-motion: reduce)")
+            .matches
+            ? "instant"
+            : "smooth",
+          block: "start",
+        });
+      });
+  }
+  const shown = [...result.races]
+    .filter((race) =>
+      `${race.district.districtKey} ${STATE_NAMES[race.state]} ${race.outcomes.map((o) => o.name).join(" ")}`
+        .toLowerCase()
+        .includes(query.toLowerCase().trim()),
+    )
+    .sort(competitiveOrder);
+  const tipping = readiness.canShowTipping
+    ? result.tippingProof?.scenarios.find((s) => s.id === scenario?.id)
+    : undefined;
+  return (
+    <main>
+      <section className="hero">
+        <div>
+          <div className="eyebrow">
+            {result.run.year} United States House · {result.races.length}{" "}
+            modeled districts
+          </div>
+          <h1>
+            The House,
+            <br />
+            in perspective.
+          </h1>
+          <p>
+            {result.run.label}.{" "}
+            {result.run.historical
+              ? "Historical model performance, with the tested races and source limitations in view."
+              : "Explore the districts and the chamber together."}
+          </p>
+        </div>
+        <div className="edition">
+          {result.run.historical
+            ? "THE HISTORICAL EDITION"
+            : "THE RESEARCH EDITION"}
+          <strong>
+            {result.metadata.full_chamber
+              ? "Full chamber forecast"
+              : "Eligible-race subset"}
+          </strong>
+          {result.races.length} of 435 districts
+        </div>
+      </section>
+      <details className="control-card house-configuration">
+        <summary>
+          Build your perspective{" "}
+          <span className="small">{result.run.label}</span>
+        </summary>
+        <p>
+          This published House configuration is selected. Additional component
+          choices will appear as reviewed results become available.
+        </p>
+        <dl>
+          <dt>Configuration</dt>
+          <dd>{result.run.label}</dd>
+          <dt>Experimental status</dt>
+          <dd>{result.run.experimental ? "Experimental" : "Standard"}</dd>
+          <dt>Testing evidence</dt>
+          <dd>{result.run.evidenceLabel}</dd>
+        </dl>
+      </details>
+      {result.run.historical && <HouseScoreboard result={result} />}
+      <HouseRibbon
+        result={result}
+        selectedId={selected.id}
+        onSelect={select}
+        showMajorityPosition={readiness.canShowControl}
+      />
+      {tipping && (
+        <div className="house-tipping-summary">
+          {(["D", "R"] as const).map((party) => {
+            const [id, frequency] = Object.entries(
+              tipping.frequencies[party],
+            ).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))[0];
+            return (
+              <p key={party}>
+                {party === "D" ? "Democratic" : "Republican"} majority
+                threshold:{" "}
+                <button onClick={() => select(id)}>
+                  {result.races.find((r) => r.id === id)!.district.districtKey}
+                </button>{" "}
+                appears most often ({probability(frequency)}) in the saved joint
+                simulations.
+              </p>
+            );
+          })}
+          <p className="small">
+            Threshold-rank frequency describes a simulated ordering, not the
+            chance one district causes control.
+          </p>
+        </div>
+      )}
+      <div className="house-results-layout">
+        <div>
+          <section className="map-card" aria-label="House map">
+            <div className="map-head">
+              <div>
+                <h2>District by district</h2>
+                <p className="small">
+                  {result.races.length} modeled districts. Unmodeled districts
+                  remain gray.
+                </p>
+              </div>
+              {result.run.historical && (
+                <div className="segmented" role="group" aria-label="Map view">
+                  {(["forecast", "actual"] as const).map((view) => (
+                    <button
+                      key={view}
+                      aria-pressed={view === mapView}
+                      onClick={() => select(selected.id, view, false)}
+                    >
+                      {view === "forecast" ? "Forecast" : "Actual winners"}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+            {geography ? (
+              <DistrictMap
+                races={result.races.map((race) => ({
+                  race,
+                  districtKey: race.district.districtKey,
+                }))}
+                identity={{
+                  cycle: result.run.year,
+                  mapVintage: result.metadata.mapVintage,
+                }}
+                geography={geography}
+                selectedRaceId={selected.id}
+                onSelect={select}
+                mapView={mapView}
+              />
+            ) : (
+              <div className="map-loading">
+                District map unavailable. Verified geography for this election
+                is required. Explore the races below.
+              </div>
+            )}
+            <div className="map-legend">
+              {(mapView === "actual"
+                ? [
+                    { label: "Democratic winner", color: COLORS.D },
+                    { label: "Republican winner", color: COLORS.R },
+                  ]
+                : [
+                    { label: "Safe D", color: COLORS.D },
+                    { label: "Likely D", color: COLORS.likelyD },
+                    { label: "Tossup", color: COLORS.competitive },
+                    { label: "Likely R", color: COLORS.likelyR },
+                    { label: "Safe R", color: COLORS.R },
+                  ]
+              ).map((item) => (
+                <span key={item.label}>
+                  <i className="dot" style={{ color: item.color }} />
+                  {item.label}
+                </span>
+              ))}
+            </div>
+          </section>
+          {scenario ? (
+            <ChamberControl scenario={scenario} />
+          ) : (
+            <section
+              className="control-card house-control-unavailable"
+              aria-label="House control availability"
+            >
+              <h2 className="section-title">Who could control the chamber?</h2>
+              <p>
+                Not available for this result. A complete House forecast with
+                shared uncertainty across districts is needed to estimate
+                control.
+              </p>
+              <span className="small">435 seats · 218 for a majority</span>
+            </section>
+          )}
+          <section
+            id="races"
+            className="race-section"
+            aria-labelledby="house-races-title"
+          >
+            <div className="section-top">
+              <h2 id="house-races-title" className="section-title">
+                The districts
+              </h2>
+              <span className="small">
+                {shown.length} of {result.races.length} modeled races
+              </span>
+            </div>
+            <div className="race-tools">
+              <input
+                aria-label="Search districts or candidates"
+                placeholder="Find a district, state, or candidate"
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+              />
+            </div>
+            <div className="house-race-list">
+              {shown.map((race) => (
+                <button
+                  key={race.id}
+                  aria-pressed={race.id === selected.id}
+                  onClick={() => select(race.id)}
+                >
+                  <strong>{race.district.districtKey}</strong>
+                  <span>{race.outcomes.map((o) => o.name).join(" / ")}</span>
+                  <b>{raceRating(race)}</b>
+                </button>
+              ))}
+            </div>
+            {!shown.length && (
+              <p>
+                No matching districts. Try another district, state, or
+                candidate.
+              </p>
+            )}
+          </section>
+        </div>
+        <aside
+          id="house-race-detail"
+          className="detail"
+          aria-label="Selected House race detail"
+          aria-live="polite"
+        >
+          <div className="eyebrow">
+            District in focus · {raceRating(selected)}
+          </div>
+          <h2 id="house-detail-title" tabIndex={-1}>
+            {selected.district.districtKey}
+          </h2>
+          <p className="small">
+            {STATE_NAMES[selected.state]} · {selected.electionLabel}
+          </p>
+          <h3 className="detail-label">Chance of winning</h3>
+          {selected.outcomes.map((outcome) => (
+            <div className="candidate" key={outcome.id}>
+              <div className="candidate-top">
+                <div>
+                  <div className="candidate-name">{outcome.name}</div>
+                  <span className="party-label">
+                    {outcome.party === "D" ? "Democratic" : "Republican"}
+                  </span>
+                </div>
+                <strong
+                  className="candidate-prob"
+                  style={{ color: outcomeColor(outcome) }}
+                >
+                  {probability(outcome.winProbability)}
+                </strong>
+              </div>
+              <div className="candidate-track">
+                <span
+                  style={{
+                    width: `${outcome.winProbability * 100}%`,
+                    background: outcomeColor(outcome),
+                  }}
+                />
+              </div>
+              {outcome.share && (
+                <p className="detail-note">
+                  Mean two-party vote share {probability(outcome.share.mean)} ·
+                  90% interval {probability(outcome.share.quantiles.p05)}–
+                  {probability(outcome.share.quantiles.p95)}
+                </p>
+              )}
+            </div>
+          ))}
+          {selected.observed && (
+            <p className="observed-result">
+              Observed winner: <strong>{selected.observed.winnerName}</strong>
+            </p>
+          )}
+          <p className="detail-note">
+            This result models the Democratic and Republican candidates’
+            two-party shares. Missing districts have no forecast.
+          </p>
+          {selected.notes.map((note, index) => (
+            <p className="detail-note" key={index}>
+              {note}
+            </p>
+          ))}
+        </aside>
+      </div>
+      <section className="methodology" id="methodology">
+        <div>
+          <div className="eyebrow">Read the evidence</div>
+          <h2>Coverage and context.</h2>
+        </div>
+        <div className="method-content">
+          <div>
+            <h3>How to read this result</h3>
+            <p>
+              {result.run.informationMode === "strict_asof"
+                ? "This result uses evidence reconstructed for its stated forecast date."
+                : "Historical inputs include retrospective proxies. These results do not establish strict as-of forecasting performance."}
+            </p>
+            {result.limitations.map((note, index) => (
+              <p key={index}>{note}</p>
+            ))}
+          </div>
+          <div>
+            <h3>Which races are included?</h3>
+            <p>
+              {result.races.length} of 435 districts have results. Each excluded
+              district has an explicit reason.
+            </p>
+            <details>
+              <summary>
+                View excluded districts (
+                {result.coverage.filter((row) => !row.eligible).length})
+              </summary>
+              <ul className="house-exclusions">
+                {result.coverage
+                  .filter((row) => !row.eligible)
+                  .map((row) => (
+                    <li key={row.raceId}>
+                      <b>{row.districtKey}</b>: {row.exclusionReason}
+                    </li>
+                  ))}
+              </ul>
+            </details>
+            <details>
+              <summary>Publication fingerprints</summary>
+              <p className="house-digest">
+                Configuration: {result.run.configurationId}
+                <br />
+                {result.run.configurationSha256}
+                <br />
+                Result: {publication.resultSha256}
+              </p>
+            </details>
+          </div>
+        </div>
+      </section>
+      <HouseFooter />
+    </main>
+  );
+}
+
+function HouseScoreboard({ result }: { result: HouseResult }) {
+  const observed = result.races.filter((race) => race.observed);
+  const decisive = observed.filter(
+    (race) =>
+      Math.abs(
+        race.outcomes[0].winProbability - race.outcomes[1].winProbability,
+      ) > 1e-12,
+  );
+  const correct = decisive.filter(
+    (race) =>
+      [...race.outcomes].sort((a, b) => b.winProbability - a.winProbability)[0]
+        .id === race.observed!.outcomeId,
+  ).length;
+  const brier = observed.length
+    ? observed.reduce(
+        (sum, race) =>
+          sum +
+          race.outcomes.reduce(
+            (score, outcome) =>
+              score +
+              (outcome.winProbability -
+                Number(outcome.id === race.observed!.outcomeId)) **
+                2,
+            0,
+          ),
+        0,
+      ) / observed.length
+    : null;
+  return (
+    <section
+      className="historical-scoreboard"
+      aria-labelledby="house-scoreboard-title"
+    >
+      <div className="scoreboard-heading">
+        <div>
+          <div className="eyebrow">
+            {result.run.year} historical reconstruction
+          </div>
+          <h2 className="section-title" id="house-scoreboard-title">
+            How this stack did
+          </h2>
+          <p>
+            {result.run.label} ·{" "}
+            {result.metadata.full_chamber
+              ? "Full chamber"
+              : "Eligible races only"}
+          </p>
+        </div>
+      </div>
+      <div className="scoreboard-cards house-scoreboard-cards">
+        <article className="scoreboard-card">
+          <h3>Favorites that won</h3>
+          <div className="scoreboard-value">
+            {decisive.length ? correct : "—"}
+            <span> / {decisive.length}</span>
+          </div>
+          <p>
+            Among races with observed winners and a unique favorite.{" "}
+            {observed.length - decisive.length} exact ties excluded.
+          </p>
+        </article>
+        <article className="scoreboard-card">
+          <h3>Probability error</h3>
+          <div className="scoreboard-value">
+            {brier === null ? "—" : brier.toFixed(3)}
+          </div>
+          <p>
+            Brier score, 0–2 scale. Lower is better; 0 is perfect. Uses{" "}
+            {observed.length} observed races.
+          </p>
+        </article>
+        <article className="scoreboard-card">
+          <h3>Tested coverage</h3>
+          <div className="scoreboard-value">
+            {observed.length}
+            <span> / 435</span>
+          </div>
+          <p>
+            Districts with forecasts and observed winners. This is race-level
+            evidence.
+          </p>
+        </article>
+      </div>
+    </section>
+  );
+}

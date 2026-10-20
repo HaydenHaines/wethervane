@@ -212,7 +212,7 @@ export default function SenateExplorer() {
     setNotice(message);
     try {
       const next = await loadBundle(entry);
-      if (ticket !== requestId.current) return;
+      if (ticket !== requestId.current || new URLSearchParams(location.search).get("chamber") === "house") return;
       const resolved = normalize(
         requested,
         next,
@@ -293,6 +293,10 @@ export default function SenateExplorer() {
   useEffect(() => {
     if (!registry) return;
     const back = () => {
+      if (new URLSearchParams(location.search).get("chamber") === "house") {
+        requestId.current++;
+        return;
+      }
       const parsed = parseSelection(location.search, registry);
       void open(registry, parsed.selection, "replace", parsed.notice);
     };
@@ -432,26 +436,7 @@ export default function SenateExplorer() {
     }
   }
   return (
-    <div className="shell">
-      <a className="skip-link" href="#races">
-        Skip to the races
-      </a>
-      <header className="masthead">
-        <a className="wordmark" href="/" aria-label="Ballotmancy home">
-          <span className="brandmark" aria-hidden="true">
-            b.
-          </span>
-          ballotmancy
-        </a>
-        <nav className="mastnav" aria-label="Main navigation">
-          <a href="#races">The races</a>
-          <a href="#methodology">How to read this</a>
-          <span className="preview">
-            <i />
-            Research preview
-          </span>
-        </nav>
-      </header>
+    <>
       {!bundle || !selection || !registry || !scenario || !selected ? (
         <main className="load-page" aria-busy={busy}>
           <div className="error-box">
@@ -812,6 +797,6 @@ export default function SenateExplorer() {
           </footer>
         </main>
       )}
-    </div>
+    </>
   );
 }

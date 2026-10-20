@@ -1,0 +1,111 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import type { ChamberId } from "../lib/chamber";
+import SenateExplorer from "./SenateExplorer";
+import HouseExplorer from "./HouseExplorer";
+
+const fromUrl = (): ChamberId =>
+  new URLSearchParams(location.search).get("chamber") === "house"
+    ? "house"
+    : "senate";
+
+export default function ChamberExplorer() {
+  const [chamber, setChamber] = useState<ChamberId | null>(null);
+  const urls = useRef({ senate: "/", house: "/?chamber=house" });
+  const tabs = useRef<Partial<Record<ChamberId, HTMLButtonElement | null>>>({});
+  useEffect(() => {
+    const restore = () => {
+      const next = fromUrl();
+      urls.current[next] = location.pathname + location.search + location.hash;
+      setChamber(next);
+    };
+    restore();
+    window.addEventListener("popstate", restore);
+    return () => window.removeEventListener("popstate", restore);
+  }, []);
+
+  function select(next: ChamberId) {
+    if (next === chamber) return;
+    if (chamber)
+      urls.current[chamber] =
+        location.pathname + location.search + location.hash;
+    history.pushState(null, "", urls.current[next]);
+    setChamber(next);
+  }
+
+  return (
+    <div className="shell">
+      <a className="skip-link" href="#races">
+        Skip to the races
+      </a>
+      <header className="masthead">
+        <a className="wordmark" href="/" aria-label="Ballotmancy home">
+          <span className="brandmark" aria-hidden="true">
+            b.
+          </span>
+          ballotmancy
+        </a>
+        <nav className="mastnav" aria-label="Main navigation">
+          <a href="#races">The races</a>
+          <a href="#methodology">How to read this</a>
+          <span className="preview">
+            <i />
+            Research preview
+          </span>
+        </nav>
+      </header>
+      <div className="chamber-navigation">
+        <div role="tablist" aria-label="Chamber" className="chamber-tabs">
+          {(["senate", "house"] as const).map((id) => (
+            <button
+              key={id}
+              ref={(node) => {
+                tabs.current[id] = node;
+              }}
+              type="button"
+              role="tab"
+              id={`${id}-tab`}
+              aria-controls={`${id}-panel`}
+              aria-selected={chamber === id}
+              tabIndex={(chamber || "senate") === id ? 0 : -1}
+              onClick={() => select(id)}
+              onKeyDown={(event) => {
+                let next: ChamberId;
+                if (event.key === "Home") next = "senate";
+                else if (event.key === "End") next = "house";
+                else if (["ArrowLeft", "ArrowRight"].includes(event.key))
+                  next = id === "senate" ? "house" : "senate";
+                else return;
+                event.preventDefault();
+                select(next);
+                tabs.current[next]?.focus();
+              }}
+            >
+              {id === "senate" ? "Senate" : "House"}
+            </button>
+          ))}
+        </div>
+        <span className="small">Two chambers. Your perspective.</span>
+      </div>
+      {chamber ? (
+        <div
+          role="tabpanel"
+          id={`${chamber}-panel`}
+          aria-labelledby={`${chamber}-tab`}
+          tabIndex={0}
+        >
+          {chamber === "senate" ? (
+            <SenateExplorer />
+          ) : (
+            <HouseExplorer onReturn={() => select("senate")} />
+          )}
+        </div>
+      ) : (
+        <div className="load-page" role="status">
+          Preparing your perspective…
+        </div>
+      )}
+    </div>
+  );
+}

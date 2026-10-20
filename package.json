@@ -2,7 +2,7 @@
   "name": "ballotmancy-site",
   "version": "0.1.0",
   "private": true,
-  "description": "Ballotmancy Senate forecast visualization",
+  "description": "Ballotmancy congressional forecast visualization",
   "engines": {
     "node": ">=22 <25"
   },
@@ -20,7 +20,8 @@
     "test:explorer-artifacts": "node --experimental-strip-types --test tests/explorer-artifacts.test.mjs",
     "catalog:build": "python3 scripts/build_explorer_catalog.py",
     "test:composition": "python3 -m unittest discover -s tests -p site_composition_test.py && node --experimental-strip-types --test tests/composition-resolver.test.mjs tests/saved-views.test.mjs",
-    "test:scoreboard": "node --experimental-strip-types --test tests/scoreboard.test.mjs tests/presentation.test.mjs"
+    "test:scoreboard": "node --experimental-strip-types --test tests/scoreboard.test.mjs tests/presentation.test.mjs",
+    "test:house": "node --experimental-strip-types --test tests/chamber.test.mjs tests/district-geography.test.mjs tests/house-ribbon.test.mjs tests/house-publication.test.mjs"
   },
   "dependencies": {
     "d3-geo": "3.1.1",

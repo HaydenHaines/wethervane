@@ -324,3 +324,112 @@ raw categorical Brier (sum over outcomes, then mean over races) is twice that
 binary score on a 0–2 scale. Keep both definitions explicit and compare only
 matched coverage/support, dates and observed truth. Retrospective proxy sources
 remain labeled as such.
+
+### House frontend preparation (2026-10-20)
+
+The root page now owns a Senate/House tab selector. Senate remains the default,
+including existing `?run=...` links. House uses `?chamber=house`; switching chambers
+preserves each chamber's selection within the current page session, and browser
+Back/Forward restores the appropriate chamber. No second page or modeling service
+is introduced. The public House view is **in preparation**, with no numerical
+forecast, synthetic district map, or implied release date.
+
+The preparation is executable beyond that empty state:
+
+- `components/HouseExplorer.tsx` consumes a normalized publication response from
+  `GET /api/chambers/house`; the existing Senate artifact format stays unchanged.
+- `components/HouseRibbon.tsx` and `lib/house-ribbon.ts` derive a serpentine grid
+  from race IDs, district keys, and Democratic win probabilities. Width determines
+  the number of columns; fields above 60 races start in a compact overview, with
+  an option for larger labeled tiles. Tests exercise 1, 16, and 435 races. No per-configuration
+  graphics or inferred vote margins are used.
+- `components/DistrictMap.tsx` accepts injected GeoJSON and race results. Its join
+  requires exact election cycle, map vintage, and `STATE-XX` district key; at-large
+  is explicitly `00`. It supports state focus and keyboard selection. Unmodeled
+  districts remain gray; missing or mismatched geography never becomes a neutral
+  race forecast. Publication admission and a geometry source fingerprint are
+  separate from the publisher's map-vintage label.
+- `lib/chamber.ts` describes chamber size and majority separately from race count.
+  Its readiness checks distinguish race display, map display, control, and tipping.
+  A subset never enables control or tipping, even with 435 ledger rows or shared
+  joint draws. Full House control requires 435 distinct modeled seats, no retained
+  seats, a complete seat ledger, aligned configuration/cycle/joint-artifact identity,
+  and consistent 436-element D/R/U seat PMFs. Tipping additionally requires the
+  saved frequency vector bound to that same joint artifact. The UI currently
+  recognizes only `caucus_rank_threshold_v1`; unknown statistics remain unavailable.
+- A qualified full House result can show the 218th position in the probability
+  ordering. That position is labeled separately from simulated threshold-rank
+  frequencies and is not described as a causal pivot. House uses 218 for both
+  parties; Senate vice-presidential tie assumptions are not reused.
+- Historical House results show favorites correct, raw categorical Brier (0–2),
+  and tested coverage. Exact favorite ties are excluded from the favorites tally;
+  Brier uses every available observed race. Subset metrics are never chamber totals.
+  Experimental status, testing evidence, and publication availability are separate.
+
+#### Publication handoff; proposed adapter, not a research exporter claim
+
+The House research session's draft is
+`research/house-benchmark-20261020/frontend-contract-draft.json` in its separate
+benchmark worktree. It describes eligible regular D/R candidate contests,
+retrospective source proxies, and configuration-local joint draw IDs. It does not
+provide a current House forecast, reviewed full-chamber control, or admitted legal
+geometry. This frontend does not modify or run that research pipeline.
+
+The deployment-owned normalized contract is `HouseResult` in `lib/house-result.ts`.
+It is deliberately limited to ordinary D/R candidate outcomes and one selected
+published configuration. A future research adapter must explicitly convert the
+reviewed outputs to it; it must not cast the draft JSON into an available result.
+A multi-configuration House catalog and component resolver will be integrated when
+reviewed results and configuration capabilities exist. No dummy selectors are
+presented as executable model choices.
+
+To activate a real publication:
+
+1. Produce and review a frozen normalized result with `reviewStatus: "reviewed"`,
+   run/configuration IDs, a configuration SHA256, the election cycle/map vintage,
+   explicit scope, and a complete 435-row coverage ledger. Each excluded district
+   requires a reason; every eligible district requires a valid result. Metadata
+   configuration ID must equal the run ID's configuration. Candidate membership
+   and observed winner identity must agree. Optional two-party share distributions
+   use the exact `HOUSE_SHARE_DENOMINATOR` constant; paired means and quantiles
+   must complement each other. Retrospective inputs stay labeled as such.
+2. Place the result JSON in `data/house/` and calculate its SHA256 over exact bytes.
+   If geography is ready, independently admit a matching election-map GeoJSON
+   FeatureCollection with `properties.districtKey`, then hash those source bytes.
+   The map-vintage name itself does not certify boundary correctness.
+3. Update `data/house/publication.json` from `status: "preparing"` to an admitted
+   manifest. Its shape is:
+
+   ```json
+   {
+     "schemaVersion": 1,
+     "status": "available",
+     "result": {"file": "reviewed-result.json", "sha256": "<64 lowercase hex>"},
+     "geography": {
+       "file": "verified-districts.json",
+       "sha256": "<64 lowercase hex>",
+       "metadata": {
+         "cycle": 2022,
+         "mapVintage": "house_election_map_2022",
+         "admission": "verified"
+       }
+     }
+   }
+   ```
+
+   Geography may be omitted for a reviewed race-only publication; the map then
+   explicitly stays unavailable. A supplied map must pass all identity/coverage
+   checks. Each artifact must be a direct JSON file inside `data/house/`; traversal
+   and symlinks outside that directory are rejected. Full-chamber declarations
+   additionally must pass the complete control proof. These are structural and
+   byte-integrity checks, not scientific certification of the underlying model.
+4. Run `npm run test:house`, `npm run build`, `npm run typecheck`, and the browser
+   suite. Review actual geography, results, and their provenance before pushing
+   `deploy/siteground`. The Node route avoids SiteGround's static JSON filename
+   restrictions, as the component catalog already does.
+
+All fixture probabilities and rectangles live under `tests/fixtures/house.mjs`.
+They are software-test data only and are neither referenced by the public
+publication manifest nor served by a preview route. No House result is currently
+admitted. No new environment variables, hosting services, or user credentials are
+needed for this preparation.
