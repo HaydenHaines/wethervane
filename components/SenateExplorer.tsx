@@ -265,7 +265,7 @@ export default function SenateExplorer() {
           setBusy(false);
         }
       });
-    fetch("/data/explorer/capabilities.json")
+    fetch("/api/configurations/catalog")
       .then(r => { if (!r.ok) throw Error("Component catalog unavailable"); return r.json(); })
       .then((catalog: CompositionCatalog) => {
         if (!active) return;

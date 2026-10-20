@@ -228,7 +228,9 @@ selection. Opening the panel reveals catalog-driven component selectors and the
 preserved basic electoral-history and current best-guess shortcuts.
 
 `public/data/explorer/capabilities.json` pins 38 saved configurations to their
-exact result SHA256 and source catalog. `POST /api/configurations/resolve`
+exact result SHA256 and source catalog. `GET /api/configurations/catalog` serves
+that public metadata through Node because SiteGround blocks the static
+`capabilities.json` URL. `POST /api/configurations/resolve`
 accepts selection intent only and validates ready bundle bytes and scientific
 metadata on the Node server. The three response states are `ready`,
 `requires_computation`, and `incompatible`. Unsupported selections never silently

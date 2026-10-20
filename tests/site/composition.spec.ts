@@ -49,7 +49,7 @@ test("historical scorecard distinguishes outcome hits, probability error, and ac
 });
 
 test("an experimental request stays separate from the saved result and cannot be saved as ready", async ({ page, request }) => {
-  const catalog = await (await request.get("/data/explorer/capabilities.json")).json() as CompositionCatalog;
+  const catalog = await (await request.get("/api/configurations/catalog")).json() as CompositionCatalog;
   const experimental = catalog.computation.find((entry) => entry.years.includes(2026))!;
   await page.goto("/?run=current-polling&race=2026%3ANE%3Asenate%3Aregular");
   const chamber = page.getByRole("region", { name: "Who could control the chamber?", exact: true });
@@ -125,7 +125,7 @@ test("custom comparison identities survive URL reload and change probability com
 });
 
 test("composition API binds ready presets and reports pending or invalid requests without execution", async ({ request }) => {
-  const response = await request.get("/data/explorer/capabilities.json");
+  const response = await request.get("/api/configurations/catalog");
   expect(response.ok()).toBeTruthy();
   const catalog = await response.json() as CompositionCatalog;
   const preset = catalog.presets.find((entry) => entry.runId === "current-polling")!;
