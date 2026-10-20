@@ -1,5 +1,6 @@
 import type { HouseCatalog } from "./house-catalog.ts";
 import type { HouseResult } from "./house-result.ts";
+import { validHouseRunId } from "./house-catalog.ts";
 
 /** Model families carry across years; district identity does not carry across maps. */
 export function houseRunForYear(catalog: HouseCatalog, currentRunId: string, year: number): string | null {
@@ -11,15 +12,16 @@ export function houseRunForYear(catalog: HouseCatalog, currentRunId: string, yea
     ?? candidates[0]?.id ?? null;
 }
 
-export function houseSelectionUrl(result: HouseResult, raceId?: string | null, view?: string | null): string {
+export function houseSelectionUrl(result: HouseResult, raceId?: string | null, view?: string | null, comparisonId?: string | null): string {
   const params = new URLSearchParams({ chamber: "house", run: result.run.id });
   if (raceId && result.races.some((race) => race.id === raceId)) params.set("race", raceId);
   if (result.run.historical && view === "actual") params.set("view", "actual");
+  if (comparisonId && comparisonId !== result.run.id && validHouseRunId(comparisonId)) params.set("compare", comparisonId);
   return `/?${params}`;
 }
 
 export function houseSelectionForResult(result: HouseResult, previous: HouseResult | null, search: string): string {
   const params = new URLSearchParams(search);
   const sameMap = !previous || (previous.run.year === result.run.year && previous.metadata.mapVintage === result.metadata.mapVintage);
-  return houseSelectionUrl(result, sameMap ? params.get("race") : null, result.run.historical ? params.get("view") : null);
+  return houseSelectionUrl(result, sameMap ? params.get("race") : null, result.run.historical ? params.get("view") : null, sameMap ? params.get("compare") : null);
 }

@@ -9,7 +9,7 @@ import {
   houseSavedViewAvailability,
   verifyHouseSavedView,
 } from "../lib/house-saved-views.ts";
-import { makeHousePublication } from "./fixtures/house.mjs";
+import { fixtureSha256, makeHousePublication } from "./fixtures/house.mjs";
 
 function fixture(options = {}) {
   const publication = makeHousePublication(options);
@@ -41,6 +41,30 @@ function fixture(options = {}) {
 }
 const stored = (views) => JSON.stringify({ schemaVersion: 1, views });
 
+function comparisonFixture(mainPublication) {
+  const comparison = structuredClone(mainPublication);
+  comparison.result.run.id = "synthetic-house-comparison-2022-16";
+  comparison.result.run.configurationId = "synthetic-house-comparison-config";
+  comparison.result.run.configurationSha256 = fixtureSha256(
+    comparison.result.run.configurationId,
+  );
+  comparison.result.run.label = "Synthetic comparison model";
+  comparison.result.metadata.configurationId = comparison.result.run.configurationId;
+  comparison.resultSha256 = fixtureSha256(comparison.result);
+  return comparison;
+}
+
+function catalogRun(publication, overrides = {}) {
+  return {
+    ...publication.result.run,
+    resultSha256: publication.resultSha256,
+    raceCount: publication.result.races.length,
+    available: true,
+    unavailableReason: null,
+    ...overrides,
+  };
+}
+
 test("versioned local records round-trip exact result, map, configuration and selection bindings", () => {
   const { view, publication, selection, catalog } = fixture();
   assert.equal(
@@ -50,6 +74,8 @@ test("versioned local records round-trip exact result, map, configuration and se
   assert.deepEqual(parseHouseSavedViews(serializeHouseSavedViews([view])), [
     view,
   ]);
+  assert.equal(serializeHouseSavedViews([view]), stored([view]));
+  assert.equal("comparison" in view, false);
   assert.equal(
     view.configurationSha256,
     publication.result.run.configurationSha256,
@@ -68,6 +94,119 @@ test("versioned local records round-trip exact result, map, configuration and se
     verification: "exact_result",
     selection,
   });
+});
+
+test("same-year comparisons round-trip and restore only with the exact second result", () => {
+  const { publication, selection, view, catalog } = fixture();
+  const comparison = comparisonFixture(publication);
+  const compared = createHouseSavedView(
+    "My House comparison",
+    publication,
+    { ...selection, comparison },
+    { id: "local-house-comparison-1", savedAt: view.savedAt },
+  );
+  assert.deepEqual(compared.comparison, {
+    runId: comparison.result.run.id,
+    resultSha256: comparison.resultSha256,
+    configurationSha256: comparison.result.run.configurationSha256,
+    year: comparison.result.run.year,
+    mapVintage: comparison.result.metadata.mapVintage,
+    runLabel: comparison.result.run.label,
+  });
+  assert.deepEqual(parseHouseSavedViews(serializeHouseSavedViews([compared])), [
+    compared,
+  ]);
+  assert.equal(verifyHouseSavedView(compared, publication).status, "unavailable");
+  assert.equal(
+    verifyHouseSavedView(compared, publication, comparison).status,
+    "verified",
+  );
+  const bothCatalogRuns = {
+    ...catalog,
+    runs: [catalogRun(publication), catalogRun(comparison)],
+  };
+  assert.equal(
+    houseSavedViewAvailability(compared, bothCatalogRuns).status,
+    "catalog_compatible",
+  );
+});
+
+test("a saved comparison fails closed when its second loaded result is missing or changed", () => {
+  const { publication, selection, view } = fixture();
+  const comparison = comparisonFixture(publication);
+  const compared = createHouseSavedView(
+    "Pinned comparison",
+    publication,
+    { ...selection, comparison },
+    { id: "pinned-comparison", savedAt: view.savedAt },
+  );
+  assert.match(
+    verifyHouseSavedView(compared, publication).reason,
+    /exact second result to be loaded/,
+  );
+  const changedRunId = structuredClone(comparison);
+  changedRunId.result.run.id = "synthetic-house-replacement-2022-16";
+  const changedResultHash = {
+    ...comparison,
+    resultSha256: "a".repeat(64),
+  };
+  const changedConfiguration = structuredClone(comparison);
+  changedConfiguration.result.run.configurationSha256 = "b".repeat(64);
+  const otherYear = makeHousePublication({ year: 2018 });
+  const otherMap = structuredClone(comparison);
+  otherMap.result.metadata.mapVintage = "house_election_map_2018";
+  for (const race of otherMap.result.races)
+    race.district.mapVintage = "house_election_map_2018";
+  for (const changed of [
+    changedRunId,
+    changedResultHash,
+    changedConfiguration,
+    otherYear,
+    otherMap,
+  ]) {
+    assert.equal(verifyHouseSavedView(compared, publication, changed).status, "unavailable");
+  }
+});
+
+test("comparison catalog bindings detect a withdrawn or changed reference result", () => {
+  const { publication, selection, view, catalog } = fixture();
+  const comparison = comparisonFixture(publication);
+  const compared = createHouseSavedView(
+    "Catalog-bound comparison",
+    publication,
+    { ...selection, comparison },
+    { id: "catalog-comparison", savedAt: view.savedAt },
+  );
+  const main = catalogRun(publication);
+  for (const reference of [
+    null,
+    catalogRun(comparison, {
+      available: false,
+      resultSha256: null,
+      unavailableReason: "Comparison result withdrawn for review.",
+    }),
+    catalogRun(comparison, { resultSha256: "c".repeat(64) }),
+    catalogRun(comparison, { configurationSha256: "d".repeat(64) }),
+    catalogRun(comparison, { year: 2018 }),
+  ]) {
+    const status = houseSavedViewAvailability(compared, {
+      ...catalog,
+      runs: reference ? [main, reference] : [main],
+    });
+    assert.equal(status.status, "unavailable");
+    assert.ok(status.reason);
+  }
+  assert.match(
+    houseSavedViewAvailability(compared, {
+      ...catalog,
+      runs: [main, catalogRun(comparison, {
+        available: false,
+        resultSha256: null,
+        unavailableReason: "Comparison result withdrawn for review.",
+      })],
+    }).reason,
+    /withdrawn for review/,
+  );
 });
 
 test("missing and unavailable catalog runs remain stored with explicit preflight reasons", () => {
@@ -241,6 +380,27 @@ test("malformed persisted data is safe, bounded and cannot add unknown fields", 
     { label: "bad\nname" },
     { id: "" },
     { raceId: "2022:CA-1:house:regular" },
+    { comparison: null },
+    { comparison: { runId: "invalid" } },
+    { comparison: { runId: "second", resultSha256: "bad" } },
+    {
+      comparison: {
+        runId: "second",
+        resultSha256: "e".repeat(64),
+        configurationSha256: "f".repeat(64),
+        year: 2018,
+        mapVintage: view.mapVintage,
+      },
+    },
+    {
+      comparison: {
+        runId: "second",
+        resultSha256: "e".repeat(64),
+        configurationSha256: "f".repeat(64),
+        year: view.year,
+        mapVintage: "house_election_map_2018",
+      },
+    },
   ])
     assert.deepEqual(
       parseHouseSavedViews(stored([{ ...view, ...changes }])),
@@ -251,6 +411,10 @@ test("malformed persisted data is safe, bounded and cannot add unknown fields", 
   );
   assert.deepEqual(canonical, [view]);
   assert.equal("unknown" in canonical[0], false);
+  assert.deepEqual(
+    parseHouseSavedViews(stored([{ ...view, comparison: { runId: "bad" } }])),
+    [],
+  );
   assert.equal(
     parseHouseSavedViews(stored([view, { ...view, label: "collision" }]))
       .length,
@@ -307,6 +471,28 @@ test("create sanitizes display labels without changing scientific identity and r
         mapView: "other",
       }),
     TypeError,
+  );
+  const comparison = comparisonFixture(publication);
+  assert.throws(
+    () => createHouseSavedView("bad", publication, {
+      ...selection,
+      comparison: makeHousePublication({ year: 2018 }),
+    }),
+    /same election year and map edition/,
+  );
+  assert.throws(
+    () => createHouseSavedView("bad", publication, {
+      ...selection,
+      comparison: { ...comparison, resultSha256: "bad" },
+    }),
+    /comparison House result identity is invalid/,
+  );
+  assert.throws(
+    () => createHouseSavedView("bad", publication, {
+      ...selection,
+      comparison: publication,
+    }),
+    /different saved result/,
   );
   assert.throws(
     () =>

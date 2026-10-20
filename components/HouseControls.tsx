@@ -23,7 +23,7 @@ export default function HouseControls({ result, catalog, busy, requestedId, erro
   const requested = catalog?.runs.find((run) => run.id === requestedId);
   async function share() {
     setShareUrl(location.href);
-    try { await navigator.clipboard.writeText(location.href); setNotice("Link copied. It restores this model, election year and selected race."); }
+    try { await navigator.clipboard.writeText(location.href); setNotice("Link copied. It restores this model, election year, selected race and comparison."); }
     catch { setNotice("Copy the link below to share this view."); }
   }
   return (

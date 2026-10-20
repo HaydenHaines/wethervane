@@ -21,6 +21,17 @@ export interface HouseSavedView {
   mapVintage: string;
   raceId: string;
   mapView: "forecast" | "actual";
+  /** Optional exact second result for a saved, same-year comparison. */
+  comparison?: HouseSavedComparisonBinding;
+}
+export interface HouseSavedComparisonBinding {
+  runId: string;
+  resultSha256: string;
+  configurationSha256: string;
+  year: number;
+  mapVintage: string;
+  /** Display copy only; scientific identity is established by the fields above. */
+  runLabel?: string;
 }
 export interface HouseSavedResult {
   /** A publication already admitted by the caller's loader. */
@@ -86,6 +97,35 @@ function canonicalView(value: unknown): HouseSavedView | null {
     !["forecast", "actual"].includes(value.mapView as string)
   )
     return null;
+  let comparison: HouseSavedComparisonBinding | undefined;
+  if (value.comparison !== undefined) {
+    if (
+      !object(value.comparison) ||
+      !runId(value.comparison.runId) ||
+      !hash(value.comparison.resultSha256) ||
+      !hash(value.comparison.configurationSha256) ||
+      typeof value.comparison.year !== "number" ||
+      !Number.isSafeInteger(value.comparison.year) ||
+      value.comparison.year !== value.year ||
+      !text(value.comparison.mapVintage) ||
+      value.comparison.mapVintage !== value.mapVintage ||
+      (value.comparison.runLabel !== undefined &&
+        !text(value.comparison.runLabel, 1000)) ||
+      value.comparison.runId === value.runId ||
+      value.comparison.resultSha256 === value.resultSha256
+    )
+      return null;
+    comparison = {
+      runId: value.comparison.runId,
+      resultSha256: value.comparison.resultSha256,
+      configurationSha256: value.comparison.configurationSha256,
+      year: value.comparison.year,
+      mapVintage: value.comparison.mapVintage,
+      ...(value.comparison.runLabel === undefined
+        ? {}
+        : { runLabel: value.comparison.runLabel }),
+    };
+  }
   return {
     id: value.id,
     label: value.label,
@@ -98,6 +138,7 @@ function canonicalView(value: unknown): HouseSavedView | null {
     mapVintage: value.mapVintage,
     raceId: value.raceId,
     mapView: value.mapView as HouseSavedView["mapView"],
+    ...(comparison ? { comparison } : {}),
   };
 }
 
@@ -186,6 +227,37 @@ export function houseSavedViewAvailability(
     return unavailable(
       "Actual-winner view is unavailable for this saved model.",
     );
+  if (view.comparison) {
+    const binding = view.comparison;
+    const comparisonMatches = catalog.runs.filter(
+      (entry) => entry.id === binding.runId,
+    );
+    if (comparisonMatches.length !== 1)
+      return unavailable(
+        "The exact House model used for this comparison is no longer in the catalog. This comparison has not been replaced with another result.",
+      );
+    const comparison = comparisonMatches[0];
+    if (!comparison.available)
+      return unavailable(
+        comparison.unavailableReason ||
+          "The saved comparison House model is currently unavailable.",
+      );
+    if (comparison.resultSha256 !== binding.resultSha256)
+      return unavailable(
+        "The comparison result has changed since this view was saved. The original comparison result is needed to restore it.",
+      );
+    if (
+      comparison.configurationSha256 !== binding.configurationSha256 ||
+      comparison.year !== binding.year
+    )
+      return unavailable(
+        "The saved comparison configuration or election year differs from the catalog.",
+      );
+    if (binding.year !== view.year || binding.mapVintage !== view.mapVintage)
+      return unavailable(
+        "The saved comparison uses a different election year or map edition.",
+      );
+  }
   return {
     status: "catalog_compatible",
     reason: null,
@@ -201,6 +273,7 @@ export function houseSavedViewAvailability(
 export function verifyHouseSavedView(
   view: HouseSavedView,
   publication: HouseSavedResult,
+  comparison?: HouseSavedResult,
 ): HouseSavedViewVerification {
   const unavailable = (reason: string): HouseSavedViewVerification => ({
     status: "unavailable",
@@ -251,6 +324,37 @@ export function verifyHouseSavedView(
       return unavailable(
         "Actual-winner view is unavailable for a model of an election that has not happened yet.",
       );
+    if (view.comparison) {
+      if (!comparison)
+        return unavailable(
+          "This saved comparison needs its exact second result to be loaded before it can be restored.",
+        );
+      if (!hash(comparison.resultSha256))
+        return unavailable("The loaded comparison result identity is invalid.");
+      const comparisonResult = parseHouseResult(comparison.result);
+      if (!comparisonResult)
+        return unavailable("The loaded comparison result did not pass validation.");
+      const binding = view.comparison;
+      if (
+        binding.runId !== comparisonResult.run.id ||
+        binding.resultSha256 !== comparison.resultSha256 ||
+        binding.configurationSha256 !== comparisonResult.run.configurationSha256 ||
+        binding.year !== comparisonResult.run.year ||
+        binding.mapVintage !== comparisonResult.metadata.mapVintage ||
+        comparisonResult.run.id === result.run.id ||
+        comparison.resultSha256 === publication.resultSha256
+      )
+        return unavailable(
+          "The loaded comparison does not match the exact saved model, configuration, result, year and map edition.",
+        );
+      if (
+        comparisonResult.run.year !== result.run.year ||
+        comparisonResult.metadata.mapVintage !== result.metadata.mapVintage
+      )
+        return unavailable(
+          "The loaded comparison uses a different election year or map edition from the saved view.",
+        );
+    }
     return {
       status: "verified",
       reason: null,
@@ -266,7 +370,11 @@ export function verifyHouseSavedView(
 export function createHouseSavedView(
   label: string,
   publication: HouseSavedResult,
-  selection: { raceId: string; mapView: "forecast" | "actual" },
+  selection: {
+    raceId: string;
+    mapView: "forecast" | "actual";
+    comparison?: HouseSavedResult;
+  },
   identity?: { id?: string; savedAt?: string },
 ): HouseSavedView {
   if (typeof label !== "string")
@@ -281,7 +389,38 @@ export function createHouseSavedView(
     throw new TypeError(
       "A displayed House result and race selection are required.",
     );
-  const { result } = publication;
+  const result = parseHouseResult(publication.result);
+  if (!result || !hash(publication.resultSha256))
+    throw new TypeError("The displayed House result identity is invalid.");
+  let comparisonBinding: HouseSavedComparisonBinding | undefined;
+  if (selection.comparison !== undefined) {
+    const comparison = selection.comparison;
+    const comparisonResult = comparison?.result
+      ? parseHouseResult(comparison.result)
+      : null;
+    if (!comparisonResult || !hash(comparison.resultSha256))
+      throw new TypeError("The comparison House result identity is invalid.");
+    if (
+      comparisonResult.run.id === result.run.id ||
+      comparison.resultSha256 === publication.resultSha256
+    )
+      throw new TypeError("A House comparison must use a different saved result.");
+    if (
+      comparisonResult.run.year !== result.run.year ||
+      comparisonResult.metadata.mapVintage !== result.metadata.mapVintage
+    )
+      throw new TypeError(
+        "A House comparison must use the same election year and map edition.",
+      );
+    comparisonBinding = {
+      runId: comparisonResult.run.id,
+      resultSha256: comparison.resultSha256,
+      configurationSha256: comparisonResult.run.configurationSha256,
+      year: comparisonResult.run.year,
+      mapVintage: comparisonResult.metadata.mapVintage,
+      runLabel: comparisonResult.run.label,
+    };
+  }
   const value: HouseSavedView = {
     id: identity?.id ?? globalThis.crypto.randomUUID(),
     label: bounded,
@@ -294,13 +433,18 @@ export function createHouseSavedView(
     mapVintage: result.metadata.mapVintage,
     raceId: selection.raceId,
     mapView: selection.mapView,
+    ...(comparisonBinding ? { comparison: comparisonBinding } : {}),
   };
   const canonical = canonicalView(value);
   if (!canonical)
     throw new TypeError(
       "This House view has invalid identity or selection fields.",
     );
-  const verified = verifyHouseSavedView(canonical, publication);
+  const verified = verifyHouseSavedView(
+    canonical,
+    publication,
+    selection.comparison,
+  );
   if (verified.status !== "verified") throw new TypeError(verified.reason);
   return canonical;
 }

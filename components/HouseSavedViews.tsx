@@ -11,14 +11,16 @@ import {
   serializeHouseSavedViews,
   verifyHouseSavedView,
   type HouseSavedView,
+  type HouseSavedResult,
 } from "../lib/house-saved-views";
 
-export default function HouseSavedViews({ publication, raceId, mapView, busy, selectionError, onRestore }: {
+export default function HouseSavedViews({ publication, raceId, mapView, busy, selectionError, comparison, onRestore }: {
   publication: Extract<HousePublicationWithCatalog, { status: "available" }>;
   raceId: string;
   mapView: "forecast" | "actual";
   busy: boolean;
   selectionError: string;
+  comparison?: HouseSavedResult;
   onRestore: (view: HouseSavedView) => void;
 }) {
   const inputId = useId();
@@ -72,7 +74,7 @@ export default function HouseSavedViews({ publication, raceId, mapView, busy, se
   function save() {
     if (saveReason || !name.trim()) return;
     try {
-      const view = createHouseSavedView(name, { result, resultSha256 }, { raceId, mapView });
+      const view = createHouseSavedView(name, { result, resultSha256 }, { raceId, mapView, comparison });
       if (persist([...views, view], `Saved ${view.label} in this browser.`)) setName("");
     } catch {
       setNotice("This view could not be saved. Select a district in the displayed result and try again.");
@@ -80,13 +82,14 @@ export default function HouseSavedViews({ publication, raceId, mapView, busy, se
   }
   const entries = useMemo(() => views.map(view => {
     const sameResult = view.runId === result.run.id && view.resultSha256 === resultSha256;
-    const exact = sameResult ? verifyHouseSavedView(view, { result, resultSha256 }) : null;
+    const canVerify = sameResult && (!view.comparison || (comparison?.result.run.id === view.comparison.runId && comparison.resultSha256 === view.comparison.resultSha256));
+    const exact = canVerify ? verifyHouseSavedView(view, { result, resultSha256 }, comparison) : null;
     const preflight = houseSavedViewAvailability(view, catalog);
     return { view,
-      available: sameResult ? exact?.status === "verified" : preflight.status === "catalog_compatible",
-      unavailableReason: sameResult ? exact?.reason : preflight.reason,
+      available: canVerify ? exact?.status === "verified" : preflight.status === "catalog_compatible",
+      unavailableReason: canVerify ? exact?.reason : preflight.reason,
     };
-  }), [views, result, resultSha256, catalog]);
+  }), [views, result, resultSha256, catalog, comparison]);
 
   return <details className="composition-saved house-saved-views">
     <summary>Saved House views <span aria-hidden="true">({views.length})</span></summary>
@@ -108,10 +111,11 @@ export default function HouseSavedViews({ publication, raceId, mapView, busy, se
         return <li key={view.id} className={available ? "" : "house-saved-unavailable"}>
           <div className="house-saved-description">
             <button type="button" className="saved-view-restore" aria-label={`Restore ${view.label}`}
-              disabled={busy || !available} onClick={() => onRestore(Object.freeze({ ...view }))}>
+              disabled={busy || !available} onClick={() => onRestore(Object.freeze({ ...view, ...(view.comparison ? { comparison: Object.freeze({ ...view.comparison }) } : {}) }))}>
               {view.label}
             </button>
             <p className="small">{view.year} · {view.runLabel || "Saved House model"} · {district} · {view.mapView === "actual" ? "Actual winners" : "Forecast"}</p>
+            {view.comparison && <p className="small">Compared with {view.comparison.runLabel || "the exact saved comparison model"}</p>}
             {!available && <p className="small house-saved-reason"><strong>Unavailable:</strong> {unavailableReason || "This exact saved result cannot currently be restored."}</p>}
           </div>
           <button type="button" className="saved-view-delete" aria-label={`Delete ${view.label}`}

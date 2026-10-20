@@ -11,6 +11,10 @@ import HouseControls from "./HouseControls";
 import HouseSavedViews from "./HouseSavedViews";
 import { verifyHouseSavedView, type HouseSavedView } from "../lib/house-saved-views";
 import { HOUSE_HISTORICAL_CONTEXT, houseExclusionReason, houseResearchNote } from "../lib/house-copy";
+import { HOUSE_COMPARISONS } from "../lib/house-comparison-data";
+import { summarizeHouseResult, verifyHouseComparison } from "../lib/house-comparison";
+import useHouseComparison, { loadComparisonPublication, type AvailableHousePublication, type HouseComparisonState } from "./useHouseComparison";
+import HouseComparisonControls, { HouseComparisonStatus } from "./HouseComparisonControls";
 import { validateChamberReadiness } from "../lib/chamber";
 import {
   COLORS,
@@ -25,6 +29,15 @@ import DistrictMap from "./DistrictMap";
 import HouseRibbon from "./HouseRibbon";
 import ChamberControl from "./ChamberControl";
 import RaceListToggle from "./RaceListToggle";
+
+function probabilityDifference(difference: number) {
+  if (difference === 0) return "No difference";
+  const points = Math.abs(difference * 100);
+  const direction = difference > 0 ? "higher" : "lower";
+  return points < 0.05
+    ? `Less than 0.1 percentage point ${direction}`
+    : `${points.toFixed(1)} percentage points ${direction}`;
+}
 
 function HouseFooter() {
   return (
@@ -41,6 +54,7 @@ function HouseFooter() {
 
 export default function HouseExplorer({ onReturn }: { onReturn: () => void }) {
   const [publication, setPublication] = useState<HousePublicationWithCatalog | null>(null);
+  const [restoredComparison, setRestoredComparison] = useState<AvailableHousePublication | null>(null);
   const previous = useRef<HousePublicationWithCatalog | null>(null);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(true);
@@ -75,10 +89,17 @@ export default function HouseExplorer({ onReturn }: { onReturn: () => void }) {
         if (!response.ok) throw Error(response.status === 400 ? "This model selection is not available in the published collection." : "The House view is temporarily unavailable.");
         const value = parseHousePublicationWithCatalog(await response.json());
         if (!value) throw Error("The House publication could not be verified.");
+        let savedComparison: AvailableHousePublication | null = null;
         if (request.savedView) {
           if (value.status !== "available") throw Error("This saved House result is no longer available.");
-          const restored = verifyHouseSavedView(request.savedView, value);
+          if (request.savedView.comparison) savedComparison = await loadComparisonPublication(request.savedView.comparison.runId, controller.signal);
+          const restored = verifyHouseSavedView(request.savedView, value, savedComparison ?? undefined);
           if (restored.status !== "verified") throw Error(restored.reason || "The exact saved view is no longer available.");
+          if (savedComparison) {
+            if (!HOUSE_COMPARISONS) throw Error("The saved comparison definitions are unavailable.");
+            const verified = await verifyHouseComparison(HOUSE_COMPARISONS, value, savedComparison);
+            if (verified.status !== "comparable") throw Error(verified.reason || "The saved comparison cannot be verified.");
+          }
         }
         if (value.status === "available") {
           if (request.id && value.result.run.id !== request.id) throw Error("The returned result does not match the requested model.");
@@ -88,12 +109,13 @@ export default function HouseExplorer({ onReturn }: { onReturn: () => void }) {
         if (value.status === "available") {
           const prior = request.navigation === "push" && previous.current?.status === "available" ? previous.current.result : null;
           const url = request.savedView
-            ? houseSelectionUrl(value.result, request.savedView.raceId, request.savedView.mapView)
+            ? houseSelectionUrl(value.result, request.savedView.raceId, request.savedView.mapView, request.savedView.comparison?.runId)
             : houseSelectionForResult(value.result, prior, location.search);
           if (request.navigation === "push") history.pushState(null, "", url);
           else history.replaceState(null, "", url);
         }
         previous.current = value;
+        setRestoredComparison(savedComparison);
         setPublication(value);
         setBusy(false);
       })
@@ -122,7 +144,7 @@ export default function HouseExplorer({ onReturn }: { onReturn: () => void }) {
       </main>
     );
   if (publication.status === "available")
-    return <HouseResults publication={publication} busy={busy} requestedId={request?.id ?? null} error={error} onChoose={choose} onRetry={retry} onRestore={restoreSavedView} />;
+    return <HouseResults publication={publication} restoredComparison={restoredComparison} busy={busy} requestedId={request?.id ?? null} error={error} onChoose={choose} onRetry={retry} onRestore={restoreSavedView} />;
   return (
     <main>
       <section className="hero house-preparation-hero">
@@ -219,8 +241,9 @@ export default function HouseExplorer({ onReturn }: { onReturn: () => void }) {
   );
 }
 
-function HouseResults({ publication, busy, requestedId, error, onChoose, onRetry, onRestore }: {
+function HouseResults({ publication, restoredComparison, busy, requestedId, error, onChoose, onRetry, onRestore }: {
   publication: Extract<HousePublicationWithCatalog, { status: "available" }>;
+  restoredComparison: AvailableHousePublication | null;
   busy: boolean;
   requestedId: string | null;
   error: string;
@@ -229,6 +252,7 @@ function HouseResults({ publication, busy, requestedId, error, onChoose, onRetry
   onRestore: (view: HouseSavedView) => void;
 }) {
   const { result, geography } = publication;
+  const comparison = useHouseComparison(publication, restoredComparison);
   const readiness = validateChamberReadiness(
     houseReadinessInput(result, geography),
   );
@@ -239,6 +263,7 @@ function HouseResults({ publication, busy, requestedId, error, onChoose, onRetry
   const detail = useRef<HTMLElement>(null);
   const [mapView, setMapView] = useState<"forecast" | "actual">("forecast");
   const selected = result.races.find((race) => race.id === selectedId) || first;
+  const comparedRace = comparison.ready?.summary.races.find(race => race.raceId === selected.id);
   const scenario = readiness.canShowControl
     ? result.chamberProof?.scenarios[0]
     : undefined;
@@ -265,7 +290,7 @@ function HouseResults({ publication, busy, requestedId, error, onChoose, onRetry
     return () => window.removeEventListener("popstate", restore);
   }, [result, first.id]);
   function select(id: string, view = mapView, focusDetails = true) {
-    history.pushState(null, "", houseSelectionUrl(result, id, view));
+    history.pushState(null, "", houseSelectionUrl(result, id, view, comparison.requestedId));
     setSelectedId(id);
     setMapView(view);
     if (focusDetails && window.matchMedia("(max-width: 800px)").matches)
@@ -336,9 +361,11 @@ function HouseResults({ publication, busy, requestedId, error, onChoose, onRetry
         </div>
       </section>
       <HouseControls result={result} catalog={publication.catalog} busy={busy} requestedId={requestedId} error={error} onSelect={onChoose} onRetry={onRetry}>
-        <HouseSavedViews publication={publication} raceId={selected.id} mapView={mapView} busy={busy} selectionError={error} onRestore={onRestore} />
+        <HouseComparisonControls comparison={comparison} busy={busy} />
+        <HouseSavedViews publication={publication} raceId={selected.id} mapView={mapView} busy={busy || comparison.busy} selectionError={error || comparison.error} comparison={comparison.ready?.reference} onRestore={onRestore} />
       </HouseControls>
-      {result.run.historical && <HouseScoreboard result={result} />}
+      <HouseComparisonStatus comparison={comparison} label={result.run.label} configurationId={result.run.configurationId} year={result.run.year} />
+      {result.run.historical && <HouseScoreboard result={result} comparison={comparison.ready} />}
       <HouseRibbon
         result={result}
         selectedId={selected.id}
@@ -533,6 +560,9 @@ function HouseResults({ publication, busy, requestedId, error, onChoose, onRetry
             {STATE_NAMES[selected.state]} · {selected.electionLabel}
           </p>
           <h3 className="detail-label">Chance of winning</h3>
+          {comparison.ready && <p className="house-candidate-comparison">
+            Selected model: {result.run.label}. Compared model: {comparison.ready.reference.result.run.label}.
+          </p>}
           {selected.outcomes.map((outcome) => (
             <div className="candidate" key={outcome.id}>
               <div className="candidate-top">
@@ -549,6 +579,12 @@ function HouseResults({ publication, busy, requestedId, error, onChoose, onRetry
                   {probability(outcome.winProbability)}
                 </strong>
               </div>
+              {comparedRace && (() => {
+                const candidate = comparedRace.candidates.find(item => item.id === outcome.id);
+                return candidate ? <p className="house-candidate-comparison">
+                  Compared model: <strong>{probability(candidate.referenceProbability)}</strong> · Selected minus compared: {probabilityDifference(candidate.difference)}.
+                </p> : null;
+              })()}
               <div className="candidate-track">
                 <span
                   style={{
@@ -654,34 +690,13 @@ function HouseResults({ publication, busy, requestedId, error, onChoose, onRetry
   );
 }
 
-function HouseScoreboard({ result }: { result: HouseResult }) {
-  const observed = result.races.filter((race) => race.observed);
-  const decisive = observed.filter(
-    (race) =>
-      Math.abs(
-        race.outcomes[0].winProbability - race.outcomes[1].winProbability,
-      ) > 1e-12,
-  );
-  const correct = decisive.filter(
-    (race) =>
-      [...race.outcomes].sort((a, b) => b.winProbability - a.winProbability)[0]
-        .id === race.observed!.outcomeId,
-  ).length;
-  const brier = observed.length
-    ? observed.reduce(
-        (sum, race) =>
-          sum +
-          race.outcomes.reduce(
-            (score, outcome) =>
-              score +
-              (outcome.winProbability -
-                Number(outcome.id === race.observed!.outcomeId)) **
-                2,
-            0,
-          ),
-        0,
-      ) / observed.length
-    : null;
+function HouseScoreboard({ result, comparison }: { result: HouseResult; comparison: HouseComparisonState["ready"] }) {
+  const { observed, decisive, correct, ties, brier } = summarizeHouseResult(result);
+  const reference = comparison?.summary.reference;
+  const difference = comparison?.summary.brierDifference;
+  const differenceLabel = difference === undefined || difference === null ? null
+    : Math.abs(difference) < 1e-12 ? "The probability error is equal."
+      : `${Math.abs(difference) < 0.0005 ? "Less than 0.001" : Math.abs(difference).toFixed(3)} ${difference < 0 ? "lower" : "higher"} probability error. Lower is better.`;
   return (
     <section
       className="historical-scoreboard"
@@ -710,14 +725,15 @@ function HouseScoreboard({ result }: { result: HouseResult }) {
         <article className="scoreboard-card">
           <h3>Favorites that won</h3>
           <div className="scoreboard-value">
-            {decisive.length ? correct : "—"}
-            <span> / {decisive.length}</span>
+            {decisive ? correct : "—"}
+            <span> / {decisive}</span>
           </div>
           <p>
             A favorite is the candidate with the higher modeled winning chance.
             Counts only races with a known winner and one clear favorite.{" "}
-            {observed.length - decisive.length} exact ties excluded.
+            {ties} exact ties excluded.
           </p>
+          {reference && <p className="scoreboard-comparison">Compared model: <strong>{reference.correct} / {reference.decisive}</strong> favorites won; {reference.ties} exact ties excluded.</p>}
         </article>
         <article className="scoreboard-card">
           <h3>Probability error</h3>
@@ -727,13 +743,14 @@ function HouseScoreboard({ result }: { result: HouseResult }) {
           <p>
             Brier score, 0–2 scale. Lower is better; 0 is perfect. It compares
             the assigned probabilities with what happened, penalizing confident
-            wrong predictions more. Uses {observed.length} races with actual results.
+            wrong predictions more. Uses {observed} races with actual results.
           </p>
+          {reference && <p className="scoreboard-comparison">Compared model: <strong>{reference.brier === null ? "—" : reference.brier.toFixed(3)}</strong>. {differenceLabel}</p>}
         </article>
         <article className="scoreboard-card">
           <h3>Tested coverage</h3>
           <div className="scoreboard-value">
-            {observed.length}
+            {observed}
             <span> / 435</span>
           </div>
           <p>
@@ -741,6 +758,7 @@ function HouseScoreboard({ result }: { result: HouseResult }) {
             describe the tested races; they do not establish accuracy for
             districts left out of the study.
           </p>
+          {reference && <p className="scoreboard-comparison">Both models are scored on the same {observed} districts and actual winners.</p>}
         </article>
       </div>
     </section>
