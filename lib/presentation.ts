@@ -1,4 +1,4 @@
-import type { RaceForecast } from "./site-types";
+import type { ControlScenario, RaceForecast } from "./site-types";
 import type { ExplorerRace, ExplorerOutcome } from "./explorer-types";
 
 export const STATE_NAMES: Record<string, string> = {
@@ -67,6 +67,18 @@ export const COLORS = {
   inactive: "#d8ddd4",
   unresolved: "#a3a998",
 };
+
+/** Control probabilities retain unresolved alignment; never renormalize it away. */
+export function chamberOutlook(control?: ControlScenario): { party: "D" | "R" | "U" | "tossup" | "unavailable"; color?: string; label: string } {
+  if (!control) return { party: "unavailable", label: "Chamber forecast unavailable" };
+  const values = [control.democraticMajorityProbability, control.republicanMajorityProbability, control.unresolvedOrganizingProbability];
+  if (values.some(p => !Number.isFinite(p) || p < 0 || p > 1) || Math.abs(values.reduce((sum, p) => sum + p, 0) - 1) > 1e-8)
+    return { party: "unavailable", label: "Chamber forecast unavailable" };
+  if (values[0] > 0.6) return { party: "D", color: COLORS.D, label: "Democrats favored for chamber control" };
+  if (values[1] > 0.6) return { party: "R", color: COLORS.R, label: "Republicans favored for chamber control" };
+  if (values[2] > 0.6) return { party: "U", color: COLORS.O, label: "Unresolved alignment favored" };
+  return { party: "tossup", color: COLORS.competitive, label: "Chamber control: tossup" };
+}
 export const partyName = (party: string) =>
   (
     ({

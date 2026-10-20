@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   houseReadinessInput,
   parseHouseResult,
@@ -10,6 +10,7 @@ import {
 import { validateChamberReadiness } from "../lib/chamber";
 import {
   COLORS,
+  chamberOutlook,
   competitiveOrder,
   outcomeColor,
   probability,
@@ -19,6 +20,7 @@ import {
 import DistrictMap from "./DistrictMap";
 import HouseRibbon from "./HouseRibbon";
 import ChamberControl from "./ChamberControl";
+import RaceListToggle from "./RaceListToggle";
 
 function HouseFooter() {
   return (
@@ -193,11 +195,15 @@ function HouseResults({
   const first = [...result.races].sort(competitiveOrder)[0];
   const [selectedId, setSelectedId] = useState(first.id);
   const [query, setQuery] = useState("");
+  const [expanded, setExpanded] = useState(false);
+  const detail = useRef<HTMLElement>(null);
   const [mapView, setMapView] = useState<"forecast" | "actual">("forecast");
   const selected = result.races.find((race) => race.id === selectedId) || first;
   const scenario = readiness.canShowControl
     ? result.chamberProof?.scenarios[0]
     : undefined;
+  const outlook = chamberOutlook(scenario?.control);
+  useEffect(() => { detail.current?.scrollTo({ top: 0 }); }, [selected.id]);
   useEffect(() => {
     const restore = () => {
       const params = new URLSearchParams(location.search);
@@ -243,6 +249,7 @@ function HouseResults({
         .includes(query.toLowerCase().trim()),
     )
     .sort(competitiveOrder);
+  const visible = expanded ? shown : shown.slice(0, 10);
   const tipping = readiness.canShowTipping
     ? result.tippingProof?.scenarios.find((s) => s.id === scenario?.id)
     : undefined;
@@ -255,7 +262,7 @@ function HouseResults({
             modeled districts
           </div>
           <h1>
-            The House,
+            The <span className="chamber-name" data-chamber-outlook={outlook.party} style={{ color: outlook.color }} title={outlook.label}>House</span>,
             <br />
             in perspective.
           </h1>
@@ -420,7 +427,7 @@ function HouseResults({
                 The districts
               </h2>
               <span className="small">
-                {shown.length} of {result.races.length} modeled races
+                {visible.length} of {shown.length} {query.trim() ? "matching races" : "modeled races"}
               </span>
             </div>
             <div className="race-tools">
@@ -428,11 +435,11 @@ function HouseResults({
                 aria-label="Search districts or candidates"
                 placeholder="Find a district, state, or candidate"
                 value={query}
-                onChange={(event) => setQuery(event.target.value)}
+                onChange={(event) => { setQuery(event.target.value); setExpanded(false); }}
               />
             </div>
-            <div className="house-race-list">
-              {shown.map((race) => (
+            <div className="house-race-list" id="house-race-list">
+              {visible.map((race) => (
                 <button
                   key={race.id}
                   aria-pressed={race.id === selected.id}
@@ -444,6 +451,7 @@ function HouseResults({
                 </button>
               ))}
             </div>
+            <RaceListToggle expanded={expanded} total={shown.length} controls="house-race-list" onToggle={() => setExpanded(!expanded)} />
             {!shown.length && (
               <p>
                 No matching districts. Try another district, state, or
@@ -453,6 +461,8 @@ function HouseResults({
           </section>
         </div>
         <aside
+          ref={detail}
+          tabIndex={0}
           id="house-race-detail"
           className="detail"
           aria-label="Selected House race detail"

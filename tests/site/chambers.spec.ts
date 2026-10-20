@@ -150,9 +150,12 @@ for (const eligibleCount of [16, 435]) {
     await expect(ribbon.locator("button[data-race-id]")).toHaveCount(
       eligibleCount,
     );
-    await expect(page.locator(".house-race-list button")).toHaveCount(
-      eligibleCount,
-    );
+    await expect(page.locator(".house-race-list button")).toHaveCount(10);
+    await page.getByRole("button", { name: `See all ${eligibleCount} races`, exact: true }).click();
+    await expect(page.locator(".house-race-list button")).toHaveCount(eligibleCount);
+    await page.getByRole("button", { name: "Show fewer races", exact: true }).click();
+    await expect(page.locator(".house-race-list button")).toHaveCount(10);
+    await expect(page.locator(".chamber-name")).toHaveAttribute("data-chamber-outlook", "unavailable");
     await expect(
       page.locator(".house-ribbon-cell.majority-position"),
     ).toHaveCount(0);
@@ -395,7 +398,7 @@ test("a mismatched map vintage never colors districts and leaves race exploratio
     }),
   ).toBeVisible();
   await expect(page.locator(".district-map-svg")).toHaveCount(0);
-  await expect(page.locator(".house-race-list button")).toHaveCount(16);
+  await expect(page.locator(".house-race-list button")).toHaveCount(10);
   await page
     .getByLabel("Search districts or candidates", { exact: true })
     .fill("CA-02");

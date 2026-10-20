@@ -2637,9 +2637,6 @@ select:focus-visible {
   line-height: 1.7;
 }
 .house-race-list {
-  max-height: 540px;
-  overflow-y: auto;
-  overscroll-behavior: contain;
   padding: 5px;
 }
 .house-race-list > button {
@@ -2848,3 +2845,33 @@ select:focus-visible {
     margin-right: 16px;
   }
 }
+
+/* A tall sticky sidebar must keep its own contents reachable. */
+@media (min-width: 801px) {
+  .detail {
+    max-height: calc(100vh - 40px);
+    max-height: calc(100dvh - 40px);
+    overflow-y: auto;
+    scrollbar-gutter: stable;
+  }
+}
+.detail:focus-visible { outline: 3px solid var(--ind); outline-offset: 3px; }
+.race-list-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  padding: 13px 18px;
+  margin-top: 14px;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: var(--card);
+  font-size: 12px;
+}
+.race-list-toggle span { font-size: 18px; line-height: 1; }
+.race-list-toggle[aria-expanded="true"] span { transform: rotate(180deg); }
+.shell:has(.chamber-name[data-chamber-outlook="D"]) .chamber-tabs [aria-selected="true"] { color: var(--dem); }
+.shell:has(.chamber-name[data-chamber-outlook="R"]) .chamber-tabs [aria-selected="true"] { color: #a3553f; }
+.shell:has(.chamber-name[data-chamber-outlook="tossup"]) .chamber-tabs [aria-selected="true"] { color: #7b658e; }
+.shell:has(.chamber-name[data-chamber-outlook="U"]) .chamber-tabs [aria-selected="true"] { color: #726e66; }

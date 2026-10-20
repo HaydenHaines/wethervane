@@ -1,4 +1,5 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import RaceListToggle from "./RaceListToggle";
 import type { ExplorerRace } from "../lib/explorer-types";
 import {
   STATE_NAMES,
@@ -26,6 +27,8 @@ export default function RaceList({
 }) {
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState("competitive");
+  const [expanded, setExpanded] = useState(false);
+  useEffect(() => { setExpanded(false); }, [races]);
   const shown = useMemo(
     () =>
       [...races]
@@ -44,6 +47,7 @@ export default function RaceList({
         ),
     [races, query, sort],
   );
+  const visible = expanded ? shown : shown.slice(0, 10);
   return (
     <section className="race-section" id="races" aria-labelledby="races-title">
       <div className="section-top">
@@ -51,7 +55,7 @@ export default function RaceList({
           The races
         </h2>
         <span className="small">
-          {shown.length} of {races.length} elections
+          {visible.length} of {shown.length} {query.trim() ? "matching elections" : "elections"}
         </span>
       </div>
       <div className="race-tools">
@@ -63,20 +67,20 @@ export default function RaceList({
             aria-label="Search states or candidates"
             placeholder="Find a state or candidate"
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => { setQuery(e.target.value); setExpanded(false); }}
           />
         </div>
         <select
           className="sort-select"
           aria-label="Sort races"
           value={sort}
-          onChange={(e) => setSort(e.target.value)}
+          onChange={(e) => { setSort(e.target.value); setExpanded(false); }}
         >
           <option value="competitive">Most competitive</option>
           <option value="state">State A–Z</option>
         </select>
       </div>
-      <table className="race-table">
+      <table className="race-table" id="senate-race-list">
         <thead>
           <tr>
             <th scope="col">State / election</th>
@@ -86,7 +90,7 @@ export default function RaceList({
           </tr>
         </thead>
         <tbody>
-          {shown.map((r) => {
+          {visible.map((r) => {
             const lead = leadingOutcome(r);
             const reference = baseline
               ?.find((b) => b.id === r.id)
@@ -142,6 +146,7 @@ export default function RaceList({
           })}
         </tbody>
       </table>
+      <RaceListToggle expanded={expanded} total={shown.length} controls="senate-race-list" onToggle={() => setExpanded(!expanded)} />
       {shown.length === 0 && (
         <p className="empty">
           No matching races. Try another state or candidate.

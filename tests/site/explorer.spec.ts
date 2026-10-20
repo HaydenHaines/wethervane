@@ -17,7 +17,7 @@ test("2018 archive preserves grouped candidates, all contests, and simultaneous 
   await expect(page.getByLabel("Forecast date", { exact: true })).toHaveValue("h14");
   const ribbon = page.getByRole("region", { name: "Historical race ribbon, ordered by leading outcome win probability", exact: true });
   await expect(ribbon.locator("button[data-race-id]")).toHaveCount(35);
-  await expect(page.locator(".race-table tbody tr")).toHaveCount(35);
+  await expect(page.locator(".race-table tbody tr")).toHaveCount(10);
   await expect(page.locator("svg [role=button]")).toHaveCount(33);
   await expect(page.locator(".threshold-combined")).toHaveCount(0);
   const detail = page.getByRole("complementary", { name: "Selected race detail" });
@@ -165,7 +165,7 @@ for (const failure of ["missing", "changed fingerprint"] as const) {
     if (failure === "changed fingerprint") await expect(error).toContainText("fingerprint");
     await expect(page).toHaveURL(/run=current-polling/);
     await expect(page.getByRole("region", { name: "The path to a majority", exact: true })).toBeVisible();
-    await expect(page.locator(".race-table tbody tr")).toHaveCount(35);
+    await expect(page.locator(".race-table tbody tr")).toHaveCount(10);
     await page.getByRole("button", { name: /^Texas, 1 election,/ }).click();
     await expect(page.getByRole("complementary").getByRole("heading", { name: "Texas", exact: true })).toBeVisible();
     await page.unroute("**/data/explorer/history-2022-FP-1.json");

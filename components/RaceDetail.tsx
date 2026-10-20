@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import type { ExplorerBundle, ExplorerRace } from "../lib/explorer-types";
 import {
   STATE_NAMES,
@@ -25,10 +26,14 @@ export default function RaceDetail({
   baseline?: ExplorerRace;
   onSelect: (id: string) => void;
 }) {
+  const detail = useRef<HTMLElement>(null);
+  useEffect(() => { detail.current?.scrollTo({ top: 0 }); }, [race.id]);
   const siblings = bundle.races.filter((r) => r.state === race.state);
   const shareOutcomes = race.outcomes.filter((o) => o.share);
   return (
     <aside
+      ref={detail}
+      tabIndex={0}
       id="race-detail"
       className="detail"
       aria-label="Selected race detail"

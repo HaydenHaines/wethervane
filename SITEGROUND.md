@@ -433,3 +433,18 @@ They are software-test data only and are neither referenced by the public
 publication manifest nor served by a preview route. No House result is currently
 admitted. No new environment variables, hosting services, or user credentials are
 needed for this preparation.
+
+### Race navigation and chamber color refinements
+
+Desktop race-detail panels are capped to the viewport and scroll independently;
+selecting a different race returns the panel to its top. On mobile, details remain
+part of normal page scrolling. Senate and House race lists show the first ten
+sorted/filter-matched entries by default, with an accessible See all / Show fewer
+control. Search always considers the complete race set.
+
+The chamber heading and active tab use the selected result's unconditioned chamber
+control probabilities: Democratic blue or Republican red above 60%, purple when
+neither party nor unresolved alignment exceeds 60%, and gray for a favored
+unresolved alignment. Missing control data stays neutral, including House
+preparation and eligible-race subsets. Colors follow the displayed saved result
+and caucus scenario, never an uncomputed component request or observed winners.

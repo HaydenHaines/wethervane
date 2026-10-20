@@ -16,7 +16,7 @@ import {
   validateExplorerBundle,
   type ExplorerSelection,
 } from "../lib/explorer-state";
-import { COLORS, competitiveOrder, dateLabel } from "../lib/presentation";
+import { COLORS, chamberOutlook, competitiveOrder, dateLabel } from "../lib/presentation";
 import SenateMap, { type SenateGeography } from "./SenateMap";
 import TippingRibbon from "./TippingRibbon";
 import StackControls from "./StackControls";
@@ -327,6 +327,7 @@ export default function SenateExplorer() {
     ),
     selected = bundle?.races.find((r) => r.id === selection?.raceId);
   const baselineScenario = baseline?.scenarios.find(s => s.id === scenario?.id);
+  const outlook = chamberOutlook(scenario?.control);
   const matchedBaseline = bundle && scenario && baseline && baselineScenario &&
     (!bundle.run.historical || compareScoreboards(bundle, scenario, baseline, baselineScenario).status === "matched");
   const reference =
@@ -460,7 +461,7 @@ export default function SenateExplorer() {
                 elections
               </div>
               <h1>
-                The Senate,
+                The <span className="chamber-name" data-chamber-outlook={outlook.party} style={{ color: outlook.color }} title={outlook.label}>Senate</span>,
                 <br />
                 in perspective.
               </h1>

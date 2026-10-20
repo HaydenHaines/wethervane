@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { COLORS, raceRating, raceColor, raceTextColor, visualParty } from "../lib/presentation.ts";
+import { COLORS, chamberOutlook, raceRating, raceColor, raceTextColor, visualParty } from "../lib/presentation.ts";
 
 function categorical(chance, party = "D") {
   return {
@@ -82,4 +82,17 @@ test("party groups and independent candidates retain their identity through rati
   const independent = categorical(0.95, "IND");
   assert.equal(visualParty(independent.outcomes[0]), "I");
   assert.equal(raceColor(independent), COLORS.I);
+});
+
+test("chamber color follows unconditioned control probabilities and treats exactly 60% as tossup", () => {
+  const control = (d, r, u = 0) => ({ democraticMajorityProbability: d, republicanMajorityProbability: r, unresolvedOrganizingProbability: u });
+  assert.equal(chamberOutlook(control(0.6, 0.4)).color, COLORS.competitive);
+  assert.equal(chamberOutlook(control(0.4, 0.6)).color, COLORS.competitive);
+  assert.equal(chamberOutlook(control(0.6001, 0.3999)).color, COLORS.D);
+  assert.equal(chamberOutlook(control(0.3999, 0.6001)).color, COLORS.R);
+  assert.equal(chamberOutlook(control(0.55, 0.1, 0.35)).party, "tossup");
+  assert.equal(chamberOutlook(control(0.1, 0.1, 0.8)).party, "U");
+  assert.equal(chamberOutlook().color, undefined);
+  assert.equal(chamberOutlook(control(NaN, 0.5)).color, undefined);
+  assert.equal(chamberOutlook(control(0.9, 0.9)).color, undefined);
 });

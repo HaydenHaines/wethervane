@@ -58,7 +58,7 @@ test("model and caucus controls preserve independent candidate identity and shar
   const chamber = page.getByRole("region", { name: "Who could control the chamber?" });
   const detail = page.getByRole("complementary", { name: "Selected race detail" });
   await expect(chamber.getByText("8.3%", { exact: true })).toBeVisible();
-  await expect(page.locator(".race-table tbody tr")).toHaveCount(35);
+  await expect(page.locator(".race-table tbody tr")).toHaveCount(10);
   await expect(page.locator("svg [role=button]")).toHaveCount(35);
 
   await page.getByRole("button", { name: /^Nebraska, 1 election,/ }).click();
