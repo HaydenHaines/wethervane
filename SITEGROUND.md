@@ -274,3 +274,53 @@ and the multi-metric verification approach described by
 [ECMWF](https://confluence.ecmwf.int/spaces/WLS/pages/394992254/Verification).
 Historical reconstruction scores are descriptive; they do not validate the new
 experimental bases or imply strict as-of testing.
+
+## Cross-session coordination and the future House view
+
+The user has assigned complementary roles and authorized direct collaboration:
+
+| Responsibility | Local session | Worktree |
+| --- | --- | --- |
+| UI/UX, frontend adapters, validation and deployment | `01a15a54-c818-75b0-86f3-8797c3d1cfa2` | `/home/hayden/projects/ballotmancy-siteground` |
+| Senate modeling and shared standard methodology | `01a11695-7d58-7eb2-b2ce-e9c6c14fc007` | `/home/hayden/projects/wethervane-redesign-20261006/integration` |
+| House modeling framework and benchmarks | `01a15ae1-4e5d-7711-bec6-113673b68a1d` | `/home/hayden/projects/ballotmancy-house-benchmark` |
+
+Share interface changes, frozen outputs, validation evidence, blockers and
+concrete development requests directly. Keep edits within each worktree's owned
+scope; coordinate changes to shared scientific contracts before integration.
+The frontend can read both sessions and relay Senate handoffs if that session's
+outgoing messaging tool remains blocked by its approval configuration. House
+has acknowledged direct communication and is contacting Senate about methodology.
+
+User requirement recorded October 20, 2026: once the House forecast is live, add
+a chamber selector at the top of this same page. The proposed UI is two tabs,
+**Senate | House**. Each chamber gets its own map and a snake/tipping-point chart,
+with chamber-control and historical performance views driven by that chamber's
+results. Preserve the single-page design and the default-collapsed model controls.
+Charts must derive from race arrays and control metadata rather than requiring
+separate visual assets for every configuration. This is a future requirement,
+not an implemented House forecast or an instruction to expand the current
+benchmark scope.
+
+The House session's first output is an ordinary D/R historical race subset,
+with a 435-seat coverage ledger and explicit exclusions. Its proposed metadata
+includes `chamber=house`, `chamber_size=435`, `majority_threshold=218`,
+`scope=eligible_race_subset`, and `full_chamber=false`. Preserve map identity as
+election cycle, published map vintage and district key. Geometry must match the
+forecast's districts. A race subset and common cycle residual draws do not by
+themselves establish a complete House control distribution or tipping statistic.
+
+Before activating the House view, agree and freeze the result schema, coverage,
+map linkage, output availability, exact configuration/result identities, cutoffs,
+training/test cycles, observed outcomes and joint-draw interpretation. The UI will
+need chamber-aware validation in place of the current 100-seat assumption and a
+district geography adapter. Availability of share margins, true tipping
+frequencies and complete chamber forecasts must be stated explicitly; do not
+infer them from marginal win probabilities. UI/type/adapter development can
+begin from a reviewed schema/example while model execution continues.
+
+House initially scores binary Brier on a 0–1 scale. For two outcomes, the site's
+raw categorical Brier (sum over outcomes, then mean over races) is twice that
+binary score on a 0–2 scale. Keep both definitions explicit and compare only
+matched coverage/support, dates and observed truth. Retrospective proxy sources
+remain labeled as such.
