@@ -62,3 +62,39 @@ test("view snapshots evidence and strips undeclared candidate numerical claims",
   assert.equal(view.groups[0].members[0].label, "Dana Example"); assert.equal(view.prediction.probabilities[0].probability, .6); assert.equal(view.truth.winnerNames[0], "Example, Dana");
   assert.equal(view.groups[0].members[0].probability, undefined); assert.equal(view.control, undefined);
 });
+
+test("explicit eligible singleton resolves to exactly its validated group probability", async () => {
+  const { eligibleSingletonWinnerFixture, eligibleStructuralWinnerFixture } = await import("./fixtures/house-winner.mjs");
+  const view = houseWinnerView(eligibleSingletonWinnerFixture());
+  assert.deepEqual(view.groups[0].resolvedCandidate, { id: "example-d", label: "Dana Example", probability: .6, basis: "modeled_group_probability" });
+  assert.equal(view.groups[1].resolvedCandidate, undefined);
+  assert.equal(view.groups[2].resolvedCandidate, undefined);
+  assert.notEqual(view.groups[0].resolvedCandidate.label, view.truth.winnerNames[0]);
+  const structural = houseWinnerView(eligibleStructuralWinnerFixture());
+  assert.deepEqual(structural.groups[0].resolvedCandidate, { id: "example-d", label: "Dana Example", probability: 1, basis: "structural_group_support" });
+});
+test("eligibility alone or malformed prediction cannot resolve a candidate", async () => {
+  const { eligibleSingletonWinnerFixture, eligibleUnavailableWinnerFixture } = await import("./fixtures/house-winner.mjs");
+  const unavailable = houseWinnerView(eligibleUnavailableWinnerFixture());
+  assert.equal(unavailable.groups[0].namedSingletonResolutionEligible, true);
+  assert.equal(unavailable.groups[0].resolvedCandidate, undefined);
+  for (const malformed of [undefined, NaN, -1, 1.1, .5]) {
+    const fixture = eligibleSingletonWinnerFixture(); fixture.prediction.probabilities[0].probability = malformed;
+    const view = houseWinnerView(fixture);
+    assert.equal(view.prediction.status, "unavailable"); assert.equal(view.groups[0].resolvedCandidate, undefined);
+  }
+});
+test("absent or false singleton eligibility preserves group-only results despite named truth", () => {
+  const fixture = modeledWinnerFixture();
+  assert.equal(houseWinnerView(fixture).groups[0].resolvedCandidate, undefined);
+  fixture.groups[0].namedSingletonResolutionEligible = false;
+  assert.equal(houseWinnerView(fixture).groups[0].resolvedCandidate, undefined);
+});
+test("explicit eligibility rejects pooled categories, multiple members and malformed flags", () => {
+  for (const fixture of [residualWinnerFixture(), samePartyWinnerFixture()]) {
+    fixture.groups[fixture.groups.length - 1].namedSingletonResolutionEligible = true;
+    assert.throws(() => houseWinnerView(fixture), TypeError);
+  }
+  const malformed = modeledWinnerFixture(); malformed.groups[0].namedSingletonResolutionEligible = "true";
+  assert.throws(() => houseWinnerView(malformed), TypeError);
+});

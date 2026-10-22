@@ -6,7 +6,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import ts from "typescript";
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { modeledWinnerFixture, samePartyWinnerFixture, residualWinnerFixture, unadmittedWinnerFixture, rankedChoiceWinnerFixture, uncertifiedWinnerFixture } from "./fixtures/house-winner.mjs";
+import { modeledWinnerFixture, samePartyWinnerFixture, residualWinnerFixture, unadmittedWinnerFixture, rankedChoiceWinnerFixture, uncertifiedWinnerFixture, eligibleSingletonWinnerFixture, eligibleUnavailableWinnerFixture, eligibleStructuralWinnerFixture } from "./fixtures/house-winner.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const directory = mkdtempSync(join(root, "tests", ".house-winner-preview-"));
@@ -38,7 +38,7 @@ test("group chances render once per group with explicit whole-group and rule sco
   }
   if (process.env.BALLOTMANCY_WINNER_PREVIEW_OUTPUT) {
     const css = readFileSync(join(root, "app/globals.css"), "utf8");
-    const scenarios = [modeledWinnerFixture(), samePartyWinnerFixture(), residualWinnerFixture(), unadmittedWinnerFixture(), rankedChoiceWinnerFixture(), uncertifiedWinnerFixture()].map(render).join("\n");
+    const scenarios = [modeledWinnerFixture(), samePartyWinnerFixture(), residualWinnerFixture(), unadmittedWinnerFixture(), rankedChoiceWinnerFixture(), uncertifiedWinnerFixture(), eligibleSingletonWinnerFixture(), eligibleUnavailableWinnerFixture(), eligibleStructuralWinnerFixture()].map(render).join("\n");
     writeFileSync(process.env.BALLOTMANCY_WINNER_PREVIEW_OUTPUT, `<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Invented House group winner preview</title><style>${css}</style><body><main style="padding:20px">${scenarios}</main></body></html>`);
   }
 });
@@ -97,6 +97,32 @@ test("modeled endpoints and rounding near endpoints never claim structural certa
   assert.match(html, /&gt;99.9%/);
   assert.match(html, /&lt;0.1%/);
   assert.doesNotMatch(html, /class="count-value">100.0%/);
+});
+
+test("explicitly eligible named candidate displays the whole-group chance without duplicating it", () => {
+  const fixture = eligibleSingletonWinnerFixture();
+  const card = group(render(fixture), "D");
+  assert.match(card, /<h3>Dana Example<\/h3>/);
+  assert.match(card, /60.0%/);
+  assert.match(card, /displayed chance applies to that person/);
+  assert.equal((card.match(/class="count-value"/g) || []).length, 1);
+  assert.doesNotMatch(card, /Individual candidate chances are not supplied/);
+  const structural = group(render(eligibleStructuralWinnerFixture()), "D");
+  assert.match(structural, /<h3>Dana Example<\/h3>/);
+  assert.match(structural, /100% <span>among the listed candidates/);
+  assert.match(structural, /not a guarantee about the election/);
+});
+
+test("eligibility alone never changes a pending or malformed prediction into a candidate chance", () => {
+  const unavailable = eligibleUnavailableWinnerFixture();
+  const invalid = eligibleSingletonWinnerFixture();
+  invalid.prediction.probabilities[0].probability = NaN;
+  for (const fixture of [unavailable, invalid]) {
+    const card = group(render(fixture), "D");
+    assert.match(card, /<h3>Democratic group<\/h3>/);
+    assert.match(card, /a valid forecast is not available yet/);
+    assert.doesNotMatch(card, /class="count-value"|<h3>Dana Example<\/h3>|displayed chance applies/);
+  }
 });
 
 test("private group preview remains absent from production callers and fixture imports", () => {

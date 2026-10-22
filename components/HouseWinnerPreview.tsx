@@ -22,17 +22,19 @@ export default function HouseWinnerPreview({ fixture }: { fixture: HouseWinnerFi
     </div>
     <header>
       <h2>{view.district} · Chance each party or group wins</h2>
-      <p>Each percentage applies to a whole group. It does not give the chance for each person in that group.</p>
+      <p>Each percentage applies to a whole group. When the result explicitly identifies one named candidate as its only member, that is also the candidate’s chance.</p>
       <p>Election rule: <strong>{ruleLabel[view.ruleFamily]}</strong>. This model approximates the final group winner. It does not simulate ranked-choice transfers or a later runoff.</p>
     </header>
     {prediction.status === "unavailable" && <p className="count-warning"><strong>Winner forecast unavailable.</strong> {prediction.reason}</p>}
     <div className="count-grid">
       {view.groups.map(group => {
+        const candidate = group.resolvedCandidate;
         const chance = prediction.status === "modeled"
           ? prediction.probabilities.find(row => row.groupId === group.id)!.probability
           : prediction.status === "structural" ? 1 : null;
-        return <section className="count-quantity" data-group={group.id} key={group.id} aria-label={groupLabel(group.bloc)}>
-          <h3>{groupLabel(group.bloc)}</h3>
+        return <section className="count-quantity" data-group={group.id} key={group.id} aria-label={candidate?.label || groupLabel(group.bloc)}>
+          <h3>{candidate?.label || groupLabel(group.bloc)}</h3>
+          {candidate && <p>{groupLabel(group.bloc)} · One named candidate</p>}
           {prediction.status === "structural" ? <>
             <span className="count-kind">All listed candidates are in this group</span>
             <p className="count-value">100% <span>among the listed candidates</span></p>
@@ -48,7 +50,11 @@ export default function HouseWinnerPreview({ fixture }: { fixture: HouseWinnerFi
             {member.kind === "named_person" ? member.label : <><strong>Pooled report:</strong> {member.label}</>}
           </li>)}</ul>
           {group.members.some(member => member.kind === "pooled_or_residual") && <p>A pooled report combines entries without identifying each person. It is not one candidate.</p>}
-          <p>Individual candidate chances are not supplied by this group forecast.</p>
+          <p>{candidate
+            ? "This candidate is the only named member of this group; the displayed chance applies to that person."
+            : group.namedSingletonResolutionEligible
+              ? "This group identifies one named candidate, but a valid forecast is not available yet."
+              : "Individual candidate chances are not supplied by this group forecast."}</p>
         </section>;
       })}
     </div>

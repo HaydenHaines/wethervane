@@ -25,3 +25,13 @@ export const rankedChoiceWinnerFixture = () => {
   fixture.truth = { status: "observed", groupId: "R", sourceBasis: "Invented official final ranked-choice round", winnerNames: ["Example, Robin"] }; return fixture;
 };
 export const uncertifiedWinnerFixture = () => ({ ...modeledWinnerFixture(), truth: { status: "unavailable", reason: "Invented annulled election: no certified ultimate outcome." } });
+export const eligibleSingletonWinnerFixture = () => {
+  const fixture = modeledWinnerFixture(); fixture.groups[0].namedSingletonResolutionEligible = true; return fixture;
+};
+export const eligibleUnavailableWinnerFixture = () => {
+  const fixture = eligibleSingletonWinnerFixture(); fixture.prediction = { status: "unavailable", reason: "Invented winner calculation is not admitted." }; return fixture;
+};
+export const eligibleStructuralWinnerFixture = () => {
+  const fixture = eligibleSingletonWinnerFixture(); fixture.groups = [fixture.groups[0]];
+  fixture.prediction = { status: "structural", groupId: "D", reason: "Only this explicitly admitted named-person group remains in the invented support." }; return fixture;
+};
