@@ -1,10 +1,12 @@
+import { layoutSerpentine } from "./serpentine-layout.ts";
+import type { RibbonDirection } from "./serpentine-layout.ts";
+export type { RibbonDirection } from "./serpentine-layout.ts";
+
 export interface HouseRaceRibbonInput {
   id: string;
   districtKey: string;
   democraticWinProbability: number;
 }
-
-export type RibbonDirection = "left-to-right" | "right-to-left";
 
 export interface HouseRibbonRow extends HouseRaceRibbonInput {
   /** Zero-based position in the probability-sorted race list. */
@@ -70,25 +72,5 @@ export function layoutHouseRibbon(
       compareText(left.districtKey, right.districtKey) ||
       compareText(left.id, right.id),
   );
-  if (ordered.length === 0) return { rowCount: 0, columnCount: 0, rows: [] };
-
-  const rowCount = Math.ceil(ordered.length / columns);
-  const columnCount = Math.min(ordered.length, columns);
-  const rows = ordered.map((race, index): HouseRibbonRow => {
-    const rowIndex = Math.floor(index / columns);
-    const offset = index % columns;
-    const direction: RibbonDirection =
-      rowIndex % 2 === 0 ? "left-to-right" : "right-to-left";
-    const columnIndex =
-      direction === "left-to-right" ? offset : columns - 1 - offset;
-    return {
-      ...race,
-      index,
-      row: rowIndex,
-      column: columnIndex,
-      direction,
-      visualIndex: rowIndex * columns + columnIndex,
-    };
-  });
-  return { rowCount, columnCount, rows };
+  return layoutSerpentine(ordered, columns);
 }

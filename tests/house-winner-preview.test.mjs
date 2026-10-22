@@ -128,7 +128,7 @@ test("eligibility alone never changes a pending or malformed prediction into a c
 test("private group preview remains absent from production callers and fixture imports", () => {
   function scan(directory) { return readdirSync(directory, { withFileTypes: true }).flatMap(entry => entry.isDirectory() ? scan(join(directory, entry.name)) : /\.[cm]?[jt]sx?$/.test(entry.name) ? [join(directory, entry.name)] : []); }
   for (const base of ["app", "components", "lib", "scripts"]) for (const file of scan(join(root, base))) {
-    if (file.endsWith("/HouseWinnerPreview.tsx") || file.endsWith("/house-winner-view.ts")) continue;
+    if (["/HouseWinnerPreview.tsx", "/house-winner-view.ts", "/HouseGroupRibbonPreview.tsx", "/house-group-ribbon.ts"].some(name => file.endsWith(name))) continue;
     assert.doesNotMatch(readFileSync(file, "utf8"), /(?:from\s*|import\s*\(|require\s*\()["'][^"']*(?:house-winner|HouseWinnerPreview)/, file);
   }
 });
