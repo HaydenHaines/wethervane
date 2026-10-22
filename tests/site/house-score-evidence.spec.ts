@@ -47,7 +47,7 @@ test("reviewed vote-share evidence starts collapsed and displays actual Fixed202
   await expect(evidence).toContainText("Wider ranges can contain more results");
   await expect(evidence).toContainText("successful calculation checks do not establish future forecasting accuracy");
   await expect(evidence).toContainText("Districts in the same election can move together");
-  await expect(page.locator(".district-map-svg, .chamber-seat-summary, .house-tipping-summary")).toHaveCount(0);
+  await expect(page.locator(".chamber-seat-summary, .house-tipping-summary")).toHaveCount(0);
 });
 
 test("Context2024 compares exact matched vote-share tests without replacing selected-model evidence", async ({ page }) => {

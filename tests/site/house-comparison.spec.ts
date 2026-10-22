@@ -58,7 +58,7 @@ async function assertMain(page: Page, id = FIXED) {
   await expect(page.getByLabel("House model", { exact: true })).toHaveValue(id);
   expect(new URL(page.url()).searchParams.get("run")).toBe(id);
   await expect(page.getByRole("heading", { name: "CA-02", exact: true })).toBeVisible();
-  await expect(page.locator(".district-map-svg, .house-tipping-summary, .majority-position, .chamber-seat-summary")).toHaveCount(0);
+  await expect(page.locator(".house-tipping-summary, .majority-position, .chamber-seat-summary")).toHaveCount(0);
 }
 
 async function assertComparison(page: Page, main: Publication, reference: Publication) {

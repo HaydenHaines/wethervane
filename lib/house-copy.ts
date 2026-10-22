@@ -13,7 +13,9 @@ const notes: Record<string, string> = {
   "Historical fundamentals benchmark; source vintages are retrospective proxies.": "This historical model uses electoral history. Some source information was assembled after the election.",
 };
 
-export function houseResearchNote(note: string): string {
+export function houseResearchNote(note: string, hasVerifiedGeography = false): string {
+  if (hasVerifiedGeography && note === "District geometry is not admitted by this result. Map identities must be verified separately.")
+    return "District boundaries were checked separately against this election’s map. They locate the published races without changing the model’s predictions or adding forecasts for excluded districts.";
   const coverage = /^Eligible D\/R benchmark for (\d+) of 435 districts; excluded districts remain in the coverage ledger\.$/.exec(note);
   return coverage
     ? `This comparison includes ${coverage[1]} of 435 districts that met the study's Democratic–Republican race rules. Excluded districts and their reasons are listed below.`

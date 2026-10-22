@@ -29,7 +29,7 @@ async function openSavedViews(page: Page) {
   return saved;
 }
 
-test("the real published API offers sixteen exact historical race results without geometry or chamber control", async ({
+test("the real published API offers sixteen exact historical race results with election-specific maps and without chamber control", async ({
   request,
 }) => {
   const response = await request.get("/api/chambers/house");
@@ -44,7 +44,7 @@ test("the real published API offers sixteen exact historical race results withou
   expect(catalog.capabilities).toMatchObject({
     historical_races: true,
     polling: false,
-    district_geometry: false,
+    district_geometry: true,
     full_chamber: false,
     chamber_control: false,
     chamber_tipping: false,
@@ -87,7 +87,8 @@ test("the real published API offers sixteen exact historical race results withou
       majority_threshold: 218,
       mapVintage: `house_election_map_${entry.year}`,
     });
-    expect(selected.geography).toBeNull();
+    expect(selected.geography.metadata).toMatchObject({ cycle: entry.year, mapVintage: `house_election_map_${entry.year}`, admission: "verified" });
+    expect(selected.geography.geojson.features).toHaveLength(435);
     expect(result.chamberProof).toBeUndefined();
     expect(result.tippingProof).toBeUndefined();
     for (const race of result.races) {
@@ -115,7 +116,7 @@ test("the real published API offers sixteen exact historical race results withou
   ).toBe(400);
 });
 
-test("the actual default 2024 scorecard has independently audited scores and no invented map or chamber results", async ({
+test("the actual default 2024 scorecard has independently audited scores and a matching map without chamber results", async ({
   page,
 }) => {
   const errors: string[] = [];
@@ -136,10 +137,12 @@ test("the actual default 2024 scorecard has independently audited scores and no 
     exact: true,
   });
   await expect(ribbon.locator("button[data-race-id]")).toHaveCount(375);
-  await expect(page.locator(".district-map-svg")).toHaveCount(0);
+  await expect(page.locator(".district-map-svg")).toHaveCount(1);
+  await expect(page.locator(".district-map-svg [data-forecast=available]")).toHaveCount(375);
+  await expect(page.locator(".district-map-svg [data-forecast=unavailable]")).toHaveCount(60);
   await expect(
     page.getByRole("region", { name: "House map", exact: true }),
-  ).toContainText("District map unavailable");
+  ).toContainText("375 of 375 forecast districts match this election’s district map");
   await expect(
     page.getByRole("region", {
       name: "House control availability",

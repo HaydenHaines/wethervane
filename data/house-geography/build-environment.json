@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "python": "3.12.3",
+  "packages": {
+    "geopandas": "1.1.3",
+    "pyogrio": "0.12.1",
+    "shapely": "2.1.2",
+    "pyproj": "3.7.2"
+  },
+  "geos": "3.13.1",
+  "proj": "9.5.1",
+  "gdal": "3.11.4",
+  "command": ".venv/bin/python scripts/build_house_geography.py --years 2024 2018 2022 2020",
+  "notes": "Existing local virtual environment; no packages installed for this task. The Python builder requires geopandas, pyogrio and shapely. North Carolina shared-edge simplification requires shapely.coverage_simplify."
+}

@@ -80,7 +80,10 @@ export default function DistrictMap({
     [races, identity, geography],
   );
   const stateOptions = useMemo(
-    () => [...new Set(joined.matches.map((match) => match.race.state))].sort(),
+    () => [...new Set([
+      ...joined.matches.map((match) => match.race.state),
+      ...joined.unmatchedFeatures.map((feature) => parseDistrictKey(feature.properties.districtKey)!.state),
+    ])].sort(),
     [joined],
   );
   const visible = useMemo(
@@ -228,7 +231,8 @@ export default function DistrictMap({
       </div>
       <p className="district-map-instructions" id={`${uniqueId}-instructions`}>
         Tab to the map, use arrow keys to move between districts, and press
-        Enter to select. Focus on a state for more detail.
+        Enter to select. Focus on a state for more detail. Small districts are
+        easier to find in the searchable race list below.
       </p>
       {displayed.features.length > 0 ? (
         <svg
@@ -244,6 +248,8 @@ export default function DistrictMap({
           {unmatched.map((feature) => (
             <path
               key={feature.properties.districtKey}
+              data-district-key={feature.properties.districtKey}
+              data-forecast="unavailable"
               d={
                 path(projected.get(feature.properties.districtKey)!) ||
                 undefined
@@ -253,7 +259,7 @@ export default function DistrictMap({
               strokeWidth="1"
             >
               <title>
-                {districtLabel(feature.properties.districtKey)}: no race data
+                {districtLabel(feature.properties.districtKey)}: not included in this model
               </title>
             </path>
           ))}
@@ -270,6 +276,8 @@ export default function DistrictMap({
             return (
               <path
                 key={match.identityKey}
+                data-district-key={key}
+                data-forecast="available"
                 ref={(node) => {
                   if (node) pathElements.current.set(key, node);
                   else pathElements.current.delete(key);
@@ -330,8 +338,8 @@ export default function DistrictMap({
         )}
       </div>
       <p className="district-map-coverage">
-        {joined.matches.length} of {races.length} race entries matched to this
-        exact cycle and map vintage. Gray districts have no race data.
+        {joined.matches.length} of {races.length} forecast districts match this
+        election’s district map. Gray districts are not included in this model.
       </p>
       {joined.diagnostics.length > 0 && (
         <details className="district-map-diagnostics">
@@ -350,6 +358,12 @@ export default function DistrictMap({
       )}
       <details className="district-map-provenance">
         <summary>District boundary source</summary>
+        {geography.metadata.sourceName && <p>
+          {geography.metadata.sourceUrl?.startsWith("https://")
+            ? <a href={geography.metadata.sourceUrl} target="_blank" rel="noreferrer">{geography.metadata.sourceName}</a>
+            : geography.metadata.sourceName}
+          {geography.metadata.sourceNote && <> · {geography.metadata.sourceNote}</>}
+        </p>}
         <p>The election year and boundary version identify which district map is used. SHA256 is a file fingerprint that checks the map data has not changed.</p>
         <p>
           Election year: {geography.metadata.cycle} · Boundary version:{" "}

@@ -408,7 +408,7 @@ function HouseResults({ publication, restoredComparison, busy, requestedId, erro
                 <h2>District by district</h2>
                 <p className="small">
                   {result.races.length} modeled districts. Unmodeled districts
-                  remain gray.
+                  remain gray. {mapView === "actual" && "Actual winners are shown only for the included races."}
                 </p>
               </div>
               {result.run.historical && (
@@ -473,6 +473,7 @@ function HouseResults({ publication, restoredComparison, busy, requestedId, erro
                   {item.label}
                 </span>
               ))}
+              <span><i className="dot" style={{ color: COLORS.inactive }} />Not in this model</span>
             </div>
           </section>
           {scenario ? (
@@ -643,7 +644,7 @@ function HouseResults({ publication, restoredComparison, busy, requestedId, erro
                 : HOUSE_HISTORICAL_CONTEXT}
             </p>
             {result.limitations.map((note, index) => (
-              <p key={index}>{houseResearchNote(note)}</p>
+              <p key={index}>{houseResearchNote(note, !!geography)}</p>
             ))}
           </div>
           <div>

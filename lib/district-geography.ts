@@ -22,6 +22,9 @@ export interface DistrictGeographyMetadata extends DistrictGeographyIdentity {
   admission: "verified" | "unverified";
   /** Fingerprint of the geometry source bytes verified by the supplying adapter. */
   sourceSha256: string;
+  sourceName?: string;
+  sourceUrl?: string;
+  sourceNote?: string;
 }
 
 export interface DistrictFeatureProperties {

@@ -12,6 +12,7 @@ import {
   parseHouseComparisonManifest,
 } from "../lib/house-comparison.ts";
 import { parseHouseResult } from "../lib/house-result.ts";
+import { loadHousePublication } from "../lib/house-publication.ts";
 
 const RESEARCH = "research/house-benchmark-20261020";
 const hash = (bytes) => createHash("sha256").update(bytes).digest("hex");
@@ -33,6 +34,17 @@ async function pinned(root, reference) {
   require(hash(await readFile(file)) ===
     reference.sha256, "A reviewed source fingerprint changed.");
   return file;
+}
+
+/** A separately admitted map must not change any reviewed scientific binding. */
+export function assertGeometryOnlyCatalogExtension(current, baseline) {
+  const scientific = structuredClone(current);
+  require(scientific.runs.some(run => run.geography) && scientific.capabilities.district_geometry === true,
+    "Changed catalog is not a geography attachment.");
+  for (const run of scientific.runs) delete run.geography;
+  scientific.capabilities.district_geometry = baseline.capabilities.district_geometry;
+  require(houseComparisonCanonicalJson(scientific) === houseComparisonCanonicalJson(baseline),
+    "Published House scientific catalog changed.");
 }
 
 export async function buildHouseComparisonManifest({
@@ -82,8 +94,6 @@ export async function buildHouseComparisonManifest({
     path.join(publicationDirectory, "publication.json"),
   );
   require(publication.status === "available" &&
-    publication.catalog.sha256 ===
-      HOUSE_COMPARISON_SOURCE_PINS.publishedCatalog &&
     path.basename(publication.catalog.file) ===
       publication.catalog.file, "Published House catalog changed.");
   const catalogBytes = await readFile(
@@ -92,6 +102,14 @@ export async function buildHouseComparisonManifest({
   require(hash(catalogBytes) ===
     publication.catalog.sha256, "Published catalog fingerprint mismatch.");
   const catalog = JSON.parse(catalogBytes);
+  if (publication.catalog.sha256 !== HOUSE_COMPARISON_SOURCE_PINS.publishedCatalog) {
+    const baselineBytes = await readFile(path.join(publicationDirectory,
+      `catalog-${HOUSE_COMPARISON_SOURCE_PINS.publishedCatalog}.json`));
+    require(hash(baselineBytes) === HOUSE_COMPARISON_SOURCE_PINS.publishedCatalog, "Reviewed baseline catalog fingerprint mismatch.");
+    assertGeometryOnlyCatalogExtension(catalog, JSON.parse(baselineBytes));
+    // Check every new geometry reference/digest/join before permitting the presentation-only extension.
+    await loadHousePublication(publicationDirectory);
+  }
   require(catalog.runs.length === 16, "Published collection is incomplete.");
   const groups = new Map();
   for (const entry of sourceCatalog.configurations) {

@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "scope": "Independent display-boundary check for Arkansas in the 2022 election edition",
+  "officialSourceUrl": "https://gis.arkansas.gov/arcgis/rest/services/FEATURESERVICES/Boundaries/MapServer/6",
+  "officialSourceDescription": "Four congressional districts enacted by Arkansas Act 1116 on October 13, 2021.",
+  "downloadUrl": "https://gis.arkansas.gov/arcgis/rest/services/FEATURESERVICES/Boundaries/MapServer/6/query?where=1%3D1&outFields=%2A&outSR=4326&f=geojson",
+  "downloadSha256": "da125c211795c93064dc1a25707d700301e3e0559a480e62def7c30f0a833190",
+  "censusSourceSha256": "ff4ae821d47300a0c5345a8eab5e1c5da7566d7cc7ea9cd25eaf32a4f7569c0e",
+  "method": "Compare Census generalized display polygons with independent official Arkansas enacted-plan polygons in equal-area EPSG:5070; measure intersection over union for matching district numbers and area overlap with other numbered districts.",
+  "districts": [
+    {
+      "district": "AR-01",
+      "sameDistrictIntersectionOverUnion": 0.9777858384414535,
+      "overlapWithOtherOfficialDistricts": {
+        "2": 0.0011252697788198887,
+        "3": 0.0002565259141261328,
+        "4": 0.001098135127608157
+      }
+    },
+    {
+      "district": "AR-02",
+      "sameDistrictIntersectionOverUnion": 0.9850985472640996,
+      "overlapWithOtherOfficialDistricts": {
+        "1": 0.00250461401549258,
+        "3": 0.0,
+        "4": 0.0028084055777051167
+      }
+    },
+    {
+      "district": "AR-03",
+      "sameDistrictIntersectionOverUnion": 0.9888181492916925,
+      "overlapWithOtherOfficialDistricts": {
+        "2": 0.0,
+        "1": 1.3666857390103587e-05,
+        "4": 0.007093758539816633
+      }
+    },
+    {
+      "district": "AR-04",
+      "sameDistrictIntersectionOverUnion": 0.9936720236701861,
+      "overlapWithOtherOfficialDistricts": {
+        "2": 0.0012878799341886555,
+        "1": 0.0006517346733669509,
+        "3": 0.00040674748245810515
+      }
+    }
+  ],
+  "interpretation": "All four district numbers correspond to the enacted plan at display scale. Same-number area overlap is 97.8% to 99.4%; overlap with each other numbered district is below 0.8% of the Census district area.",
+  "limitations": "This compares actual polygons with the state plan rather than relying only on release dates. It does not certify exact split-block locations or legal boundaries, and generalized shorelines differ. The exact Arkansas correction is not separately localized by this display-scale check; use detailed state geometry for legal-boundary questions."
+}
