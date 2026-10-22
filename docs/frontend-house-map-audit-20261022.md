@@ -42,3 +42,5 @@ Release `f6401fce7b8c5522c9fb07cc0d68afa7391d4812` is live. Public verification 
 After the user reported that the House map seemed absent, a fresh public desktop and Pixel 7 check at 15:20–15:22 UTC loaded `/?chamber=house` successfully. Both rendered all 435 district shapes for the fixed-history 2024 default, with 375 modeled districts and no JavaScript errors. The House API returned the matching 435-feature geometry. Screenshots are saved at `/tmp/ballotmancy-house-map-status-desktop.png` and `/tmp/ballotmancy-house-map-status-mobile.png`.
 
 The model builder still contained stale text saying district maps were unavailable. This is corrected to distinguish the visible election-specific boundaries from the unconnected population/turnout model. The existing five House model-slice tests pass. This copy correction does not activate the separate all-435 group-winner integration, change the default, or alter any forecast/geography bytes.
+
+Correction `bbda87a` is live: a fresh browser load verified the new explanation inside the builder and all 435 map paths. Screenshot: `/tmp/ballotmancy-house-map-copy-live.png`.
