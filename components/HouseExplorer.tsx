@@ -20,6 +20,7 @@ import {
   chamberOutlook,
   competitiveOrder,
   outcomeColor,
+  partyName,
   probability,
   raceRating,
   STATE_NAMES,
@@ -569,7 +570,7 @@ function HouseResults({ publication, restoredComparison, busy, requestedId, erro
                 <div>
                   <div className="candidate-name">{outcome.name}</div>
                   <span className="party-label">
-                    {outcome.party === "D" ? "Democratic" : "Republican"}
+                    {partyName(outcome.party)}
                   </span>
                 </div>
                 <strong
