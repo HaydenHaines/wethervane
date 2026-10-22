@@ -22,7 +22,7 @@ export default function HouseWinnerPreview({ fixture }: { fixture: HouseWinnerFi
     </div>
     <header>
       <h2>{view.district} · Chance each party or group wins</h2>
-      <p>Each percentage applies to a whole group. When the result explicitly identifies one named candidate as its only member, that is also the candidate’s chance.</p>
+      <p>Each percentage applies to a whole group. The forecast may also identify a Democratic or Republican group’s probability as one verified candidate’s chance. Other remains a pooled group, without chances for individual names.</p>
       <p>Election rule: <strong>{ruleLabel[view.ruleFamily]}</strong>. This model approximates the final group winner. It does not simulate ranked-choice transfers or a later runoff.</p>
     </header>
     {prediction.status === "unavailable" && <p className="count-warning"><strong>Winner forecast unavailable.</strong> {prediction.reason}</p>}
@@ -47,9 +47,10 @@ export default function HouseWinnerPreview({ fixture }: { fixture: HouseWinnerFi
           </> : <p className="count-unavailable">Chance unavailable</p>}
           <h4>Candidates and categories represented</h4>
           <ul>{group.members.map(member => <li key={member.id}>
-            {member.kind === "named_person" ? member.label : <><strong>Pooled report:</strong> {member.label}</>}
+            {member.kind === "named_person" ? member.label : member.kind === "source_reported_name" ? <><strong>Source-reported name:</strong> {member.label}</> : <><strong>Pooled report:</strong> {member.label}</>}
           </li>)}</ul>
           {group.members.some(member => member.kind === "pooled_or_residual") && <p>A pooled report combines entries without identifying each person. It is not one candidate.</p>}
+          {group.members.some(member => member.kind === "source_reported_name") && <p>A name appearing in a source does not by itself identify a verified candidate.</p>}
           <p>{candidate
             ? "This candidate is the only named member of this group; the displayed chance applies to that person."
             : group.namedSingletonResolutionEligible

@@ -6,7 +6,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import ts from "typescript";
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { modeledWinnerFixture, samePartyWinnerFixture, residualWinnerFixture, unadmittedWinnerFixture, rankedChoiceWinnerFixture, uncertifiedWinnerFixture, eligibleSingletonWinnerFixture, eligibleUnavailableWinnerFixture, eligibleStructuralWinnerFixture } from "./fixtures/house-winner.mjs";
+import { modeledWinnerFixture, samePartyWinnerFixture, residualWinnerFixture, sourceReportedNameWinnerFixture, unadmittedWinnerFixture, rankedChoiceWinnerFixture, uncertifiedWinnerFixture, eligibleSingletonWinnerFixture, eligibleUnavailableWinnerFixture, eligibleStructuralWinnerFixture } from "./fixtures/house-winner.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const directory = mkdtempSync(join(root, "tests", ".house-winner-preview-"));
@@ -38,7 +38,7 @@ test("group chances render once per group with explicit whole-group and rule sco
   }
   if (process.env.BALLOTMANCY_WINNER_PREVIEW_OUTPUT) {
     const css = readFileSync(join(root, "app/globals.css"), "utf8");
-    const scenarios = [modeledWinnerFixture(), samePartyWinnerFixture(), residualWinnerFixture(), unadmittedWinnerFixture(), rankedChoiceWinnerFixture(), uncertifiedWinnerFixture(), eligibleSingletonWinnerFixture(), eligibleUnavailableWinnerFixture(), eligibleStructuralWinnerFixture()].map(render).join("\n");
+    const scenarios = [modeledWinnerFixture(), samePartyWinnerFixture(), residualWinnerFixture(), sourceReportedNameWinnerFixture(), unadmittedWinnerFixture(), rankedChoiceWinnerFixture(), uncertifiedWinnerFixture(), eligibleSingletonWinnerFixture(), eligibleUnavailableWinnerFixture(), eligibleStructuralWinnerFixture()].map(render).join("\n");
     writeFileSync(process.env.BALLOTMANCY_WINNER_PREVIEW_OUTPUT, `<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Invented House group winner preview</title><style>${css}</style><body><main style="padding:20px">${scenarios}</main></body></html>`);
   }
 });
@@ -63,6 +63,19 @@ test("a singleton pooled source report stays a category, with no candidate proba
   assert.match(card, /It is not one candidate/);
   assert.match(card, /Other candidates &amp; write-ins/);
   assert.doesNotMatch(card.split("<ul>")[1]?.split("</ul>")[0] || "", /%/);
+});
+
+test("source-reported names are explicitly not admitted individual candidates", () => {
+  const fixture = sourceReportedNameWinnerFixture();
+  fixture.groups[2].namedSingletonResolutionEligible = false;
+  const card = group(render(fixture), "O");
+  assert.match(card, /Source-reported name:<\/strong> Source-listed entry 7/);
+  assert.match(card, /does not by itself identify a verified candidate/);
+  assert.match(card, /Individual candidate chances are not supplied/);
+  assert.doesNotMatch(card, /Chance applies to that person|Source-listed entry 7<\/h3>/);
+  const invalid = sourceReportedNameWinnerFixture();
+  invalid.groups[2].namedSingletonResolutionEligible = true;
+  assert.throws(() => render(invalid), TypeError);
 });
 
 test("missing prediction does not turn sole roster support into certainty or hide recorded truth", () => {

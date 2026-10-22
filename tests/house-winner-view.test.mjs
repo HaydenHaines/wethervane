@@ -20,9 +20,16 @@ test("same-party structural certainty never resolves the individual winner", () 
   const invalid = modeledWinnerFixture(); invalid.prediction = { status: "structural", groupId: "D", reason: "Multiple admitted alternatives contradict structural certainty." };
   assert.equal(houseWinnerView(invalid).prediction.status, "unavailable");
 });
-test("singleton residual remains a category and sole unadmitted roster remains unavailable", () => {
+test("singleton residual remains a category and source-reported names remain distinct from admitted people", async () => {
   const view = houseWinnerView(residualWinnerFixture());
   assert.deepEqual(view.groups[2].members, [{ id: "residual", label: "Scattered", kind: "pooled_or_residual" }]);
+  const { sourceReportedNameWinnerFixture } = await import("./fixtures/house-winner.mjs");
+  const sourceReported = houseWinnerView(sourceReportedNameWinnerFixture());
+  assert.deepEqual(sourceReported.groups[2].members, [{ id: "reported-entry", label: "Source-listed entry 7", kind: "source_reported_name" }]);
+  assert.equal(sourceReported.groups[2].resolvedCandidate, undefined);
+  const sourceEligible = sourceReportedNameWinnerFixture();
+  sourceEligible.groups[2].namedSingletonResolutionEligible = true;
+  assert.throws(() => houseWinnerView(sourceEligible), TypeError);
   const unadmitted = houseWinnerView(unadmittedWinnerFixture());
   assert.equal(unadmitted.groups.length, 1); assert.equal(unadmitted.prediction.status, "unavailable");
   assert.equal(unadmitted.truth.status, "observed"); assert.equal(unadmitted.prediction.probability, undefined);
@@ -97,4 +104,17 @@ test("explicit eligibility rejects pooled categories, multiple members and malfo
   }
   const malformed = modeledWinnerFixture(); malformed.groups[0].namedSingletonResolutionEligible = "true";
   assert.throws(() => houseWinnerView(malformed), TypeError);
+});
+
+test("Other-group singletons never resolve to an individual candidate", () => {
+  for (const kind of ["named_person", "source_reported_name", "pooled_or_residual"]) {
+    const fixture = modeledWinnerFixture();
+    fixture.groups[2].members = [{ id: "other-singleton", label: "Other group entry", kind }];
+    fixture.groups[2].namedSingletonResolutionEligible = true;
+    assert.throws(() => houseWinnerView(fixture), TypeError);
+  }
+  const fixture = modeledWinnerFixture();
+  fixture.groups[2].members = [{ id: "other-singleton", label: "Source-listed entry 7", kind: "source_reported_name" }];
+  const view = houseWinnerView(fixture);
+  assert.equal(view.groups[2].resolvedCandidate, undefined);
 });

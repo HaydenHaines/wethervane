@@ -14,6 +14,9 @@ export const samePartyWinnerFixture = () => {
 export const residualWinnerFixture = () => {
   const fixture = modeledWinnerFixture(); fixture.groups[2].members = [member("residual", "Scattered", "pooled_or_residual")]; return fixture;
 };
+export const sourceReportedNameWinnerFixture = () => {
+  const fixture = modeledWinnerFixture(); fixture.groups[2].members = [member("reported-entry", "Source-listed entry 7", "source_reported_name")]; return fixture;
+};
 export const unadmittedWinnerFixture = () => {
   const fixture = modeledWinnerFixture(); fixture.groups = [fixture.groups[2]];
   fixture.prediction = { status: "unavailable", reason: "The reported candidate list has not been checked for this example. Listing one group does not establish its chance of winning." };

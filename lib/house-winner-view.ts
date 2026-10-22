@@ -3,7 +3,7 @@ export interface HouseWinnerGroup {
   id: string;
   bloc: "D" | "R" | "O";
   namedSingletonResolutionEligible?: boolean;
-  members: { id: string; label: string; kind: "named_person" | "pooled_or_residual" }[];
+  members: { id: string; label: string; kind: "named_person" | "source_reported_name" | "pooled_or_residual" }[];
 }
 export type HouseWinnerPrediction =
   | { status: "modeled"; probabilities: { groupId: string; probability: number }[] }
@@ -42,8 +42,8 @@ export function houseWinnerView(input: HouseWinnerFixture): HouseWinnerView {
     throw new TypeError("An explicitly invented ultimate party/group presentation fixture is required.");
   const groups = input.groups;
   const memberIds = new Set<string>();
-  if (!Array.isArray(groups) || groups.length === 0 || groups.some(g => !record(g) || !text(g.id) || !["D", "R", "O"].includes(g.bloc as string) || !Array.isArray(g.members) || !g.members.length || (g.namedSingletonResolutionEligible !== undefined && typeof g.namedSingletonResolutionEligible !== "boolean") || (g.namedSingletonResolutionEligible === true && (g.members.length !== 1 || g.members[0]?.kind !== "named_person")) || g.members.some(m => {
-    if (!record(m) || !text(m.id) || !text(m.label) || !["named_person", "pooled_or_residual"].includes(m.kind as string) || memberIds.has(m.id)) return true;
+  if (!Array.isArray(groups) || groups.length === 0 || groups.some(g => !record(g) || !text(g.id) || !["D", "R", "O"].includes(g.bloc as string) || !Array.isArray(g.members) || !g.members.length || (g.namedSingletonResolutionEligible !== undefined && typeof g.namedSingletonResolutionEligible !== "boolean") || (g.namedSingletonResolutionEligible === true && (g.bloc === "O" || g.members.length !== 1 || g.members[0]?.kind !== "named_person")) || g.members.some(m => {
+    if (!record(m) || !text(m.id) || !text(m.label) || !["named_person", "source_reported_name", "pooled_or_residual"].includes(m.kind as string) || memberIds.has(m.id)) return true;
     memberIds.add(m.id); return false;
   })) || new Set(groups.map(g => g.id)).size !== groups.length || new Set(groups.map(g => g.bloc)).size !== groups.length)
     throw new TypeError("Distinct groups with explicit, disjoint member identities and kinds are required.");
