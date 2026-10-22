@@ -44,3 +44,27 @@ Demographics, education, education interactions and community are descriptive ro
 Before a public count view or request is enabled, obtain the final exported catalog and option schemas; source-bound request/resolution/result contracts; immutable manifests and weighted summaries; a qualified real request/result example; actual event, contest, candidate and rule axes; source and legal qualification; complete parent-mass and same-event accounting evidence; actual execution/job behavior; and replay checks. Record the packet version and hashes. Unsupported election rules, missing parents and incomplete chamber accounting remain explicit limitations.
 
 Private preparation fixtures must cover partial Texas support, missing national support, failed parent mass, unsupported election rules, a tied candidate maximum, no valid votes, absent contests, a separate chamber organizing tie, unknown quantities, and a participation/exposure ratio above one. No fixture is imported by the production page or exposed through an API.
+
+## October 22: election stages and unresolved people
+
+The Senate owner's checkpoint v14 and mixed-count research clarify future presentation semantics without delivering a public count contract. The new private `ElectionOutcomePreview` and `election-outcome-view` keep the original plurality count prototype unchanged. They accept invented summaries for one election setting with a general event and at most one later runoff. This is a presentation model, not a proposed scientific request or raw-artifact parser.
+
+- The final election distribution includes named winners, unidentified-person leaders and explicit unresolved reasons. An unidentified leader is not an elected unnamed candidate: identity or eligibility remains unresolved, and no caucus is inferred. Pooled write-in totals cannot provide a person-level winner.
+- General-election victory, advancement to a runoff and winning the runoff use different labels. Advancement is unconditional, with two finalists per resolved runoff branch; its probabilities need not sum to one. Missing advancement summaries remain missing.
+- Later-event participation and outcomes explicitly condition on that identified event occurring. Zero activation requires null summaries, not zero turnout. Supplied final outcomes must reconcile with the general and conditional-event summaries; the interface does not construct a new forecast from marginal probabilities.
+- A ranked-count disclosure is one identified, supplied example row, not an average progression assembled from different simulations. Inactive ballots remain visible in the example's total. The frontend performs no rule tabulation, transfers, eligibility decision or tie breaking.
+- All summaries bind the same joint result, target, election setting, rule scenario and information cutoff. Missing parent mass, held sources/rules, failed qualification, mismatched conditioning or invalid probabilities suppress the numerical display. These fixture declarations do not authenticate actual scientific evidence.
+
+Five invented examples cover an active runoff, an inactive runoff, an unresolved ranked elimination, an unidentified-person leader with no-valid-vote mass, and a missing population parent. The count-preview suite now contains 42 passing checks including rendering, conservation/conditioning failures and production-import isolation. The final production build and TypeScript check pass. A standalone desktop/Pixel 7 review found no horizontal overflow or JavaScript errors. Evidence is under `/tmp/ballotmancy-election-outcome-*`; the HTML is `/tmp/ballotmancy-election-outcome-preview.html`. All production count controls remain disabled.
+
+The research inputs read for this preparation, relative to the Senate checkout, are:
+
+| Input | SHA256 |
+| --- | --- |
+| `research/senate-stack-integration-20261020/checkpoint-root-v14.json` | `101cf499a64f89ae25deb85cfb7b5ddc8829cd2502bbb5a9a33cafb421acacee` |
+| `research/senate-stack-integration-20261020/mixed-count-graph-astra-v1/README.md` | `01614b1123ff85b53142791c27b8e4540d62bf57bea348fe9a2bcf22b9d86919` |
+| `research/senate-stack-integration-20261020/joint-chamber-count-sol-v1/README.md` | `4a1ec800b97d07bfdbd02223e62b0d236f09fe29bd7a0bf6b685356a8f733342` |
+
+The checkpoint's running-pilot statement describes its issuance time; it is not proof that the process is currently running. This frontend work neither polls nor restarts that scientific process. Native session reads still fail at the local MCP transport, so the shared files provide coordination evidence.
+
+Before connecting this presentation to real results, the owner must supply an authenticated exported summary contract with explicit event conditioning and unresolved reasons, distinct-person provenance, exact named/unknown support, source/rule qualifications, and complete weighted-parent evidence. Multi-contest shared-event participation must come from one common event quantity, not independently repeated totals. A ranked example also needs a qualified saved-row identity and supplied tabulation. The prototype does not establish these production requirements, national coverage, control, nested runoff support or open-person ranked support.
