@@ -339,7 +339,10 @@ export default function DistrictMap({
       </div>
       <p className="district-map-coverage">
         {joined.matches.length} of {races.length} forecast districts match this
-        election’s district map. Gray districts are not included in this model.
+        election’s district map.{" "}
+        {mapView === "actual" && races.some(({ race }) => !race.observed)
+          ? "Gray districts have no recorded winner here or are not included in this model."
+          : joined.unmatchedFeatures.length > 0 ? "Gray districts are not included in this model." : "Every forecast district has matching boundaries."}
       </p>
       {joined.diagnostics.length > 0 && (
         <details className="district-map-diagnostics">

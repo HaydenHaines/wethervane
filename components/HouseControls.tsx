@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import type { HouseCatalog } from "../lib/house-catalog";
 import type { HouseResult } from "../lib/house-result";
 import { houseRunForYear } from "../lib/house-selection";
@@ -6,7 +6,10 @@ import { houseModelSlices } from "../lib/house-model-slices";
 import ModelSliceControls from "./ModelSliceControls";
 import { houseEvidenceLabel, houseSelectionNote } from "../lib/house-copy";
 
-export default function HouseControls({ result, catalog, busy, requestedId, error, onSelect, onRetry, children }: {
+export default function HouseControls({ selectionKey, expanded, onExpandedChange, result, catalog, busy, requestedId, error, onSelect, onRetry, onGroups, children }: {
+  selectionKey: string;
+  expanded: boolean;
+  onExpandedChange: (expanded: boolean) => void;
   result: HouseResult;
   catalog?: HouseCatalog;
   busy: boolean;
@@ -14,10 +17,12 @@ export default function HouseControls({ result, catalog, busy, requestedId, erro
   error: string;
   onSelect: (id: string) => void;
   onRetry: () => void;
+  onGroups?: () => void;
   children?: ReactNode;
 }) {
   const [shareUrl, setShareUrl] = useState("");
   const [notice, setNotice] = useState("");
+  useEffect(() => { setShareUrl(""); setNotice(""); }, [result.run.id, selectionKey]);
   const years = catalog ? [...new Set(catalog.runs.map((run) => run.year))].sort((a, b) => b - a) : [result.run.year];
   const choices = catalog?.runs.filter((run) => run.year === result.run.year) ?? [];
   const requested = catalog?.runs.find((run) => run.id === requestedId);
@@ -28,7 +33,7 @@ export default function HouseControls({ result, catalog, busy, requestedId, erro
   }
   return (
     <>
-      <details className="control-card house-configuration" aria-busy={busy}>
+      <details className="control-card house-configuration" open={expanded} onToggle={event => onExpandedChange(event.currentTarget.open)} aria-busy={busy}>
         <summary>Build your perspective <span className="small">{result.run.label}{busy ? " · Loading selection…" : ""}</span></summary>
         <p>Choose an election year and a saved model. Each choice loads its own reviewed results, race coverage and testing evidence. Changing the year does not assume that district boundaries stayed the same.</p>
         {catalog ? (
@@ -53,8 +58,8 @@ export default function HouseControls({ result, catalog, busy, requestedId, erro
             </div>
           </>
         ) : <p>This saved combination is selected. Additional model choices will appear when reviewed results are published.</p>}
-        <ModelSliceControls slices={houseModelSlices(result, catalog)} busy={busy}
-          explain={(_slot, _value, fallback) => fallback} onChange={(id, value) => { if (id === "house-model") onSelect(value); }} />
+        <ModelSliceControls slices={houseModelSlices(result, catalog, !!onGroups)} busy={busy}
+          explain={(_slot, _value, fallback) => fallback} onChange={(id, value) => { if (id === "house-model") onSelect(value); if (id === "house-winner-target" && value === "full435") onGroups?.(); }} />
         <p className="small">Results for {result.races.length} of 435 districts. Shared uncertainty and candidate context remain bundled into the selected House model.</p>
         <dl>
           <dt>Displayed model</dt><dd>{result.run.label}</dd>

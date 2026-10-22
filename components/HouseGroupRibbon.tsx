@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react"
 import type { HouseGroupBloc, HouseGroupRace } from "../lib/house-group-result.ts";
 import { layoutGroupRibbon, type GroupRibbonEntry } from "../lib/group-ribbon-layout.ts";
 import { COLORS, probability } from "../lib/presentation.ts";
+import HouseGroupLegend from "./HouseGroupLegend";
 
 const groupName: Record<HouseGroupBloc, string> = { D: "Democratic group", R: "Republican group", O: "Other group" };
 const chanceText = (row: GroupRibbonEntry) => `Democratic ${probability(row.probabilities.D)}, Republican ${probability(row.probabilities.R)}, Other ${probability(row.probabilities.O)}`;
@@ -99,5 +100,6 @@ export default function HouseGroupRibbon({ races, selectedRaceId, onSelect }: { 
       </section>}
     </div>
     <p className="small">Arrow keys follow the displayed sequence; Enter or Space selects a district. Colors indicate the leading group; purple indicates no group is above 60%. Direction arrows show each row’s reading direction.</p>
+    <HouseGroupLegend unavailableLabel={layout.unavailable.length ? "Prediction unavailable" : undefined} />
   </section>;
 }

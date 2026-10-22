@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { parseHousePublicationWithCatalog, validHouseRunId, type HousePublicationWithCatalog } from "../lib/house-catalog";
 import { houseComparisonAvailability, summarizeHouseComparison, verifyHouseComparison } from "../lib/house-comparison";
 import { HOUSE_COMPARISONS } from "../lib/house-comparison-data";
@@ -22,7 +22,10 @@ export async function loadComparisonPublication(id: string, signal: AbortSignal)
 
 export default function useHouseComparison(publication: AvailableHousePublication, seed?: AvailableHousePublication | null) {
   const [, refreshLocation] = useState(0);
-  const requestedId = typeof window === "undefined" ? null : new URLSearchParams(location.search).get("compare") || null;
+  const requestedSelection = useRef<{ runId: string; id: string | null }>({ runId: publication.result.run.id, id: null });
+  const locationParams = typeof window === "undefined" ? null : new URLSearchParams(location.search);
+  if (locationParams?.get("run") === publication.result.run.id) requestedSelection.current = { runId: publication.result.run.id, id: locationParams.get("compare") || null };
+  const requestedId = requestedSelection.current.runId === publication.result.run.id ? requestedSelection.current.id : null;
   const [attempt, setAttempt] = useState(0);
   const [loaded, setLoaded] = useState<Loaded | null>(null);
   const [failure, setFailure] = useState<{ primarySha: string; requestedId: string; message: string } | null>(null);

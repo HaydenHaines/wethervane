@@ -25,13 +25,13 @@ const HOUSE_BUILT_IN_REASONS: Partial<Record<ModelSliceId, string>> = {
 };
 
 /** Exact saved configurations remain the unit of choice; no component refitting. */
-export function houseModelSlices(result: HouseResult, catalog?: HouseCatalog): ModelSliceView[] {
+export function houseModelSlices(result: HouseResult, catalog?: HouseCatalog, groupForecastsAvailable = false): ModelSliceView[] {
   const choices = catalog?.runs.filter(run => run.year === result.run.year) ?? [];
   const boundChoices = choices.some(run => run.id === result.run.id && run.available)
     ? choices
     : [{ ...result.run, available: true, unavailableReason: null }];
   return MODEL_SLICES.map(slice => {
-    const builtIn = slice.id === "environment" || slice.id === "choice" || slice.id === "counts_rules";
+    const builtIn = slice.id === "environment" || (slice.id === "choice" && !groupForecastsAvailable) || slice.id === "counts_rules";
     const builtInReason = slice.id === "counts_rules" && result.metadata.full_chamber
       ? "Chamber calculations and supported race rules are fixed in this saved result. There is no separate House vote-count or election-rule control."
       : HOUSE_BUILT_IN_REASONS[slice.id] ?? (slice.id === "counts_rules" ? HOUSE_REASONS.counts_rules : null);
@@ -45,7 +45,7 @@ export function houseModelSlices(result: HouseResult, catalog?: HouseCatalog): M
         : slice.id === "counts_rules"
           ? "Race rules and any chamber calculations follow this saved result; they are not separate controls."
           : slice.purpose,
-    unavailableReason: slice.id === "fundamentals" ? null
+    unavailableReason: (slice.id === "fundamentals" || (slice.id === "choice" && groupForecastsAvailable)) ? null
       : builtIn ? null
         : slice.id === "measurement" && catalog?.capabilities?.polling
           ? "No separately selectable House polling component is provided. A capability label alone does not supply a control for changing the saved model."
@@ -67,6 +67,13 @@ export function houseModelSlices(result: HouseResult, catalog?: HouseCatalog): M
         availability: run.available ? "saved" as const : "unavailable" as const,
         experimental: run.experimental,
       })),
+    }] : slice.id === "choice" && groupForecastsAvailable ? [{
+      id: "house-winner-target", label: "Winner outcome set", required: true, value: "legacy",
+      description: "Choose the original candidate forecasts or the all-district forecasts of a winning party/candidate group.",
+      options: [
+        { id: "legacy", label: "Original D/R candidate forecasts", description: "Individual Democratic and Republican candidate forecasts for the study's included races.", years: [result.run.year], availability: "saved", experimental: result.run.experimental },
+        { id: "full435", label: "Full 435 D/R/O group forecasts", description: "Which Democratic, Republican, or Other candidate group wins each district. Candidates within a group do not necessarily have separate probabilities.", years: [result.run.year], availability: "saved", experimental: true },
+      ],
     }] : [],
   };
   });

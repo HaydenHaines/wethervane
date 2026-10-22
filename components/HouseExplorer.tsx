@@ -7,6 +7,16 @@ import {
 import { parseHousePublicationWithCatalog, type HousePublicationWithCatalog } from "../lib/house-catalog";
 import { houseSelectionForResult, houseSelectionUrl } from "../lib/house-selection";
 import HouseControls from "./HouseControls";
+import HouseGroupResults from "./HouseGroupResults";
+import { groupRunId, type HouseGroupPublication } from "../lib/house-group-catalog";
+import { loadHouseGroup } from "../lib/house-group-client";
+import { groupSelectionForResult, groupSelectionUrl } from "../lib/house-group-selection";
+import { verifyHouseGroupSavedView, type HouseGroupSavedView } from "../lib/house-group-saved-views";
+import { verifyHouseGroupComparison } from "../lib/house-group-comparison";
+
+type HousePublication = HousePublicationWithCatalog | HouseGroupPublication;
+const isGroup = (value: HousePublication): value is HouseGroupPublication => "family" in value && value.family === "house_groups";
+const publicationRun = (value: HousePublication | null) => value && (isGroup(value) ? value.result.id : value.status === "available" ? value.result.run.id : null);
 import HouseSavedViews from "./HouseSavedViews";
 import { verifyHouseSavedView, type HouseSavedView } from "../lib/house-saved-views";
 import { HOUSE_HISTORICAL_CONTEXT, houseExclusionReason, houseResearchNote } from "../lib/house-copy";
@@ -54,18 +64,20 @@ function HouseFooter() {
 }
 
 export default function HouseExplorer({ onReturn }: { onReturn: () => void }) {
-  const [publication, setPublication] = useState<HousePublicationWithCatalog | null>(null);
+  const [publication, setPublication] = useState<HousePublication | null>(null);
   const [restoredComparison, setRestoredComparison] = useState<AvailableHousePublication | null>(null);
-  const previous = useRef<HousePublicationWithCatalog | null>(null);
+  const [restoredGroupComparison, setRestoredGroupComparison] = useState<HouseGroupPublication | null>(null);
+  const previous = useRef<HousePublication | null>(null);
+  const [builderExpanded, setBuilderExpanded] = useState(false);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(true);
-  const [request, setRequest] = useState<{ id: string | null; navigation: "initial" | "history" | "push"; attempt: number; savedView?: HouseSavedView } | null>(null);
+  const [request, setRequest] = useState<{ id: string | null; navigation: "initial" | "history" | "push"; attempt: number; savedView?: HouseSavedView; groupSavedView?: HouseGroupSavedView } | null>(null);
   useEffect(() => {
     const restore = (navigation: "initial" | "history") => {
       const params = new URLSearchParams(location.search);
       if (params.get("chamber") !== "house") return;
       const id = params.get("run");
-      if (navigation === "history" && previous.current?.status === "available" && id === previous.current.result.run.id) {
+      if (navigation === "history" && previous.current?.status === "available" && id === publicationRun(previous.current)) {
         // Also cancel any pending selection if Back returns to the displayed run.
         setRequest(null);
         setError("");
@@ -84,17 +96,35 @@ export default function HouseExplorer({ onReturn }: { onReturn: () => void }) {
     const controller = new AbortController();
     setError("");
     setBusy(true);
-    const query = request.id ? `?${new URLSearchParams({ run: request.id })}` : "";
-    fetch(`/api/chambers/house${query}`, { signal: controller.signal, cache: "no-store" })
-      .then(async (response) => {
+    async function resolve() {
+      let value: HousePublication;
+      if (groupRunId(request!.id)) value = await loadHouseGroup(request!.id, controller.signal);
+      else {
+        const query = request!.id ? `?${new URLSearchParams({ run: request!.id })}` : "";
+        const response = await fetch(`/api/chambers/house${query}`, { signal: controller.signal, cache: "no-store" });
         if (!response.ok) throw Error(response.status === 400 ? "This model selection is not available in the published collection." : "The House view is temporarily unavailable.");
-        const value = parseHousePublicationWithCatalog(await response.json());
-        if (!value) throw Error("The House publication could not be verified.");
-        let savedComparison: AvailableHousePublication | null = null;
-        if (request.savedView) {
+        const parsed = parseHousePublicationWithCatalog(await response.json());
+        if (!parsed) throw Error("The House publication could not be verified.");
+        value = parsed;
+      }
+      let savedComparison: AvailableHousePublication | null = null;
+      let groupComparison: HouseGroupPublication | null = null;
+      if (isGroup(value)) {
+        if (request!.groupSavedView) {
+          const saved = request!.groupSavedView;
+          if (saved.comparison) groupComparison = await loadHouseGroup(saved.comparison.runId, controller.signal);
+          const restored = await verifyHouseGroupSavedView(saved, value, groupComparison ?? undefined);
+          if (restored.status !== "verified") throw Error(restored.reason || "The exact saved group view is no longer available.");
+          if (groupComparison) {
+            const verified = await verifyHouseGroupComparison(value, groupComparison);
+            if (verified.status !== "comparable") throw Error(verified.reason || "This group comparison cannot be verified.");
+          }
+        }
+      } else {
+        if (request!.savedView) {
           if (value.status !== "available") throw Error("This saved House result is no longer available.");
-          if (request.savedView.comparison) savedComparison = await loadComparisonPublication(request.savedView.comparison.runId, controller.signal);
-          const restored = verifyHouseSavedView(request.savedView, value, savedComparison ?? undefined);
+          if (request!.savedView.comparison) savedComparison = await loadComparisonPublication(request!.savedView.comparison.runId, controller.signal);
+          const restored = verifyHouseSavedView(request!.savedView, value, savedComparison ?? undefined);
           if (restored.status !== "verified") throw Error(restored.reason || "The exact saved view is no longer available.");
           if (savedComparison) {
             if (!HOUSE_COMPARISONS) throw Error("The saved comparison definitions are unavailable.");
@@ -102,24 +132,46 @@ export default function HouseExplorer({ onReturn }: { onReturn: () => void }) {
             if (verified.status !== "comparable") throw Error(verified.reason || "The saved comparison cannot be verified.");
           }
         }
-        if (value.status === "available") {
-          if (request.id && value.result.run.id !== request.id) throw Error("The returned result does not match the requested model.");
-          if (!validateChamberReadiness(houseReadinessInput(value.result, value.geography)).canShowRaces) throw Error("The House results could not be verified.");
+        if (value.status === "available" && !validateChamberReadiness(houseReadinessInput(value.result, value.geography)).canShowRaces)
+          throw Error("The House results could not be verified.");
+      }
+      if (value.status === "available" && request!.id && publicationRun(value) !== request!.id)
+        throw Error("The returned result does not match the requested model.");
+      // Returning to the original collection must match its published scientific bytes.
+      const priorGroup = previous.current && isGroup(previous.current) ? previous.current : null;
+      if (priorGroup && !isGroup(value) && value.status === "available" && value.result.run.id === priorGroup.entry.legacyRunId && value.resultSha256 !== priorGroup.entry.legacyResultSha256)
+        throw Error("The original forecast no longer matches this group result's reference.");
+      if (controller.signal.aborted) return;
+      if (value.status === "available") {
+        const prior = request!.navigation === "push" ? previous.current : null;
+        const search = new URLSearchParams(location.search);
+        if (prior && isGroup(prior) !== isGroup(value)) search.delete("compare");
+        let url: string;
+        if (isGroup(value)) {
+          const saved = request!.groupSavedView;
+          url = saved ? groupSelectionUrl(value.result, saved.raceId, saved.mapView, saved.comparison?.runId)
+            : groupSelectionForResult(value.result, prior && isGroup(prior) ? prior.result : null, search.toString());
+        } else {
+          const saved = request!.savedView;
+          url = saved ? houseSelectionUrl(value.result, saved.raceId, saved.mapView, saved.comparison?.runId)
+            : houseSelectionForResult(value.result, prior && !isGroup(prior) && prior.status === "available" ? prior.result : null, search.toString());
         }
-        if (controller.signal.aborted) return;
-        if (value.status === "available") {
-          const prior = request.navigation === "push" && previous.current?.status === "available" ? previous.current.result : null;
-          const url = request.savedView
-            ? houseSelectionUrl(value.result, request.savedView.raceId, request.savedView.mapView, request.savedView.comparison?.runId)
-            : houseSelectionForResult(value.result, prior, location.search);
-          if (request.navigation === "push") history.pushState(null, "", url);
-          else history.replaceState(null, "", url);
+        // Explain incompatible comparisons in incoming links rather than silently dropping them.
+        if (isGroup(value) && request!.navigation !== "push" && !request!.groupSavedView && search.get("compare") && search.get("compare") !== value.result.id) {
+          const incoming = new URL(url, location.origin);
+          incoming.searchParams.set("compare", search.get("compare")!);
+          url = incoming.pathname + incoming.search;
         }
-        previous.current = value;
-        setRestoredComparison(savedComparison);
-        setPublication(value);
-        setBusy(false);
-      })
+        if (request!.navigation === "push") history.pushState(null, "", url);
+        else history.replaceState(null, "", url);
+      }
+      previous.current = value;
+      setRestoredComparison(savedComparison);
+      setRestoredGroupComparison(groupComparison);
+      setPublication(value);
+      setBusy(false);
+    }
+    resolve()
       .catch((reason) => {
         if (!controller.signal.aborted) { setError(reason.message); setBusy(false); }
       });
@@ -144,8 +196,11 @@ export default function HouseExplorer({ onReturn }: { onReturn: () => void }) {
         ) : <p role="status">Preparing the House perspective…</p>}
       </main>
     );
+  if (isGroup(publication))
+    return <HouseGroupResults builderExpanded={builderExpanded} onBuilderExpandedChange={setBuilderExpanded} publication={publication} restoredComparison={restoredGroupComparison} busy={busy} error={error} onChoose={choose} onRetry={retry}
+      onRestore={view => setRequest({ id: view.runId, navigation: "push", attempt: Date.now(), groupSavedView: view })} />;
   if (publication.status === "available")
-    return <HouseResults publication={publication} restoredComparison={restoredComparison} busy={busy} requestedId={request?.id ?? null} error={error} onChoose={choose} onRetry={retry} onRestore={restoreSavedView} />;
+    return <HouseResults builderExpanded={builderExpanded} onBuilderExpandedChange={setBuilderExpanded} publication={publication} restoredComparison={restoredComparison} busy={busy} requestedId={request?.id ?? null} error={error} onChoose={choose} onRetry={retry} onRestore={restoreSavedView} />;
   return (
     <main>
       <section className="hero house-preparation-hero">
@@ -242,7 +297,9 @@ export default function HouseExplorer({ onReturn }: { onReturn: () => void }) {
   );
 }
 
-function HouseResults({ publication, restoredComparison, busy, requestedId, error, onChoose, onRetry, onRestore }: {
+function HouseResults({ builderExpanded, onBuilderExpandedChange, publication, restoredComparison, busy, requestedId, error, onChoose, onRetry, onRestore }: {
+  builderExpanded: boolean;
+  onBuilderExpandedChange: (expanded: boolean) => void;
   publication: Extract<HousePublicationWithCatalog, { status: "available" }>;
   restoredComparison: AvailableHousePublication | null;
   busy: boolean;
@@ -275,7 +332,7 @@ function HouseResults({ publication, restoredComparison, busy, requestedId, erro
   useEffect(() => {
     const restore = () => {
       const params = new URLSearchParams(location.search);
-      if (params.get("chamber") !== "house") return;
+      if (params.get("chamber") !== "house" || params.get("run") !== result.run.id) return;
       setSelectedId(
         result.races.find((race) => race.id === params.get("race"))?.id ||
           first.id,
@@ -361,7 +418,12 @@ function HouseResults({ publication, restoredComparison, busy, requestedId, erro
           {result.races.length} of 435 districts
         </div>
       </section>
-      <HouseControls result={result} catalog={publication.catalog} busy={busy} requestedId={requestedId} error={error} onSelect={onChoose} onRetry={onRetry}>
+      {groupRunId(`${result.run.id}-full435-v1`) && <section className="compare-banner" aria-label="All-district forecasts available">
+        <strong>Group forecasts now cover every district.</strong>
+        <span>Explore which Democratic, Republican or Other candidate group wins in all 435 districts for {result.run.year}.</span>
+        <button disabled={busy} onClick={() => onChoose(`${result.run.id}-full435-v1`)}>Explore all 435 districts</button>
+      </section>}
+      <HouseControls selectionKey={`${selected.id}:${mapView}:${comparison.requestedId}`} expanded={builderExpanded} onExpandedChange={onBuilderExpandedChange} result={result} catalog={publication.catalog} busy={busy} requestedId={requestedId} error={error} onSelect={onChoose} onRetry={onRetry} onGroups={groupRunId(`${result.run.id}-full435-v1`) ? () => onChoose(`${result.run.id}-full435-v1`) : undefined}>
         <HouseComparisonControls comparison={comparison} busy={busy} />
         <HouseSavedViews publication={publication} raceId={selected.id} mapView={mapView} busy={busy || comparison.busy} selectionError={error || comparison.error} comparison={comparison.ready?.reference} onRestore={onRestore} />
       </HouseControls>

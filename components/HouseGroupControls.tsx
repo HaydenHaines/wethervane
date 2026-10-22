@@ -1,12 +1,15 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import type { HouseGroupPublication } from "../lib/house-group-catalog.ts";
 import { groupFundamentalsId, houseFundamentalsLabel } from "../lib/house-group-presentation.ts";
 import { houseGroupModelSlices } from "../lib/house-group-model-slices.ts";
 import ModelSliceControls from "./ModelSliceControls";
 
-export default function HouseGroupControls({ publication, busy, error, onChoose, onRetry, onLegacy, children }: {
+export default function HouseGroupControls({ selectionKey, expanded, onExpandedChange, publication, busy, error, onChoose, onRetry, onLegacy, children }: {
+  selectionKey: string;
+  expanded: boolean;
+  onExpandedChange: (expanded: boolean) => void;
   publication: HouseGroupPublication;
   busy: boolean;
   error: string;
@@ -18,6 +21,7 @@ export default function HouseGroupControls({ publication, busy, error, onChoose,
   const [shareUrl, setShareUrl] = useState("");
   const [notice, setNotice] = useState("");
   const { result, entry, catalog } = publication;
+  useEffect(() => { setShareUrl(""); setNotice(""); }, [result.id, selectionKey]);
   const years = [...new Set(catalog.runs.map(run => run.cycle))].sort((a, b) => b - a);
   const fundamentals = groupFundamentalsId(result.configuration);
   const currentLabel = houseFundamentalsLabel(fundamentals);
@@ -37,7 +41,7 @@ export default function HouseGroupControls({ publication, busy, error, onChoose,
   }
 
   return <>
-    <details className="control-card house-configuration" aria-busy={busy}>
+    <details className="control-card house-configuration" open={expanded} onToggle={event => onExpandedChange(event.currentTarget.open)} aria-busy={busy}>
       <summary>Build your perspective <span className="small">{currentLabel} · Full 435 D/R/O group forecasts{busy ? " · Loading selection…" : ""}</span></summary>
       <p>Choose an election year and saved House model. This research result estimates which Democratic, Republican, or Other candidate group wins each district. It does not assign each candidate a separate win chance or predict House control.</p>
       <div className="house-selection-fields">
@@ -50,7 +54,7 @@ export default function HouseGroupControls({ publication, busy, error, onChoose,
       </div>
       <p className="small">Changing year keeps {currentLabel} when that model is available for the year.</p>
       <div className="stack-actions">
-        <button disabled={busy || entry.id === catalog.initialRunId} onClick={() => onChoose(catalog.initialRunId)}>Reset to publication default</button>
+        <button disabled={busy || entry.id === catalog.initialRunId} onClick={() => onChoose(catalog.initialRunId)}>Reset group view</button>
         <button disabled={busy} onClick={share}>Share House view ↗</button>
       </div>
       <ModelSliceControls slices={houseGroupModelSlices(publication)} busy={busy}
@@ -63,15 +67,15 @@ export default function HouseGroupControls({ publication, busy, error, onChoose,
         <dt>Research status</dt><dd>Experimental research</dd>
         <dt>Author review</dt><dd>Research review complete</dd>
         <dt>Forecast coverage</dt><dd>{result.races.length} of 435 districts</dd>
-        <dt>Source support</dt><dd>Retrospective final-roster proxy</dd>
+        <dt>Source support</dt><dd>Candidate lists assembled after the election</dd>
         <dt>Displayed model</dt><dd>{requestedLabel}</dd>
       </dl>
-      <p className="small">The completed review does not make this an established or prospective forecast. Some source information uses final candidate rosters assembled after each election.</p>
+      <p className="small">The author’s checks are complete; independent review has not yet been received. Some source information uses final candidate lists assembled after each election, so these are historical reconstructions rather than forecasts published before election day.</p>
       {children}
       {notice && <p role="status" className="small">{notice}</p>}
       {shareUrl && <div className="share-link"><label htmlFor="house-group-share-url">Shareable House view</label><input id="house-group-share-url" readOnly value={shareUrl} onFocus={event => event.target.select()} /></div>}
     </details>
-    {busy && <div className="compare-banner" role="status"><strong>Loading {requestedLabel}…</strong><span>Still displaying {currentLabel} for {result.cycle} until the selected result is verified.</span></div>}
+    {busy && <div className="compare-banner" role="status"><strong>Loading selected House forecast…</strong><span>Still displaying {currentLabel} for {result.cycle} until the selected result is verified.</span></div>}
     {error && <div className="compare-banner" role="alert"><strong>Unable to change House group forecasts</strong><span>{error} The previous result remains visible.</span><button onClick={onRetry}>Try selection again</button></div>}
   </>;
 }
