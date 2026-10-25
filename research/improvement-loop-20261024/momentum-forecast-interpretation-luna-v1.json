@@ -1,0 +1,66 @@
+{
+  "schema": "MomentumForecastInterpretationV1",
+  "date": "2026-10-25",
+  "scope": "bounded interpretation only; no new modeling, fitting, tuning, or raw outcome access",
+  "answer": {
+    "archive_descriptive_audit": "Among 12 Senate cases meeting the predeclared >=1 share-percentage-point rising threshold, 2 had actual conditional vote share exceeding the late-poll benchmark by more than 1 share point, 6 were within inclusive +/-1 share point, and 4 fell below the late-poll benchmark by more than 1 share point. By raw sign, 4 were above and 8 below. This is weakly unfavorable to the directional overperformance hypothesis in this small historical subset, not a stable frequency estimate.",
+    "forecast_score_experiment": "The primary paired comparison is FS6 (momentum) minus FS5 (no slope), with lower CRPS better. On the fixed common mask, the equal-cycle 2018/2022 group A is +0.0003688898 (worse with momentum); the equal-cycle 2020/2024 group B is -0.0002350616 (better). The sign changes across the two cycle pairs, so these results do not show a consistent forecast benefit.",
+    "interpretation": "The archive audit asks whether candidates with rising polls later outperform a poll benchmark. The forecast experiment asks whether adding the model's slope component improves conditional aggregate D/R share forecast scores. It is not a direct test of the candidate-level poll-residual hypothesis. Together, the results do not support claiming that rising candidates generally beat polls or that momentum reliably improves forecasts."
+  },
+  "bounded_decision": {
+    "choice": "retain_as_exploratory_research; defer_operational_use_and_directional_claim",
+    "rationale": "The descriptive archive result is 4 above versus 8 below by sign, with only 12 qualifying cases and shared late-poll noise that can couple the trend and residual. In the separate fixed forecast experiment, common-mask CRPS moves in opposite directions across the two cycle pairs. Neither result qualifies a general mechanism or a deployable benefit.",
+    "reconsideration_bar": "Require additional predeclared, cycle-held-out evidence that separates poll observations used to estimate the trend from those used as the comparison benchmark, uses official election results as truth, covers more cycles, controls for poll source and method, and shows improvement over the no-slope forecast that is stable across cycles and relevant masks."
+  },
+  "design_and_limits": {
+    "archive": [
+      "The corrected v2 descriptive study reports 12 >=1pp cases: 2 above +1pp, 6 within inclusive +/-1pp, 4 below -1pp; raw sign counts are 4 above and 8 below.",
+      "There are 31 eligible any-nonzero comparisons and four national cycles. The threshold-specific denominator is small and races are not independent national experiments.",
+      "A shared late-poll window contributes to both the rising trend and the outcome residual, so late-poll noise can mechanically associate the two. The audit is retrospective and its availability proxy is not verified original publication chronology."
+    ],
+    "forecast": [
+      "The scoring target is conditional aggregate D/R share; there is no full-chamber or full-count qualification.",
+      "All 12 selected forecasts and source/gate receipts were fixed before labels; the scoring v2 repair changed the trace-pin contract only, with no score math, model, tuning, mask, or selection change.",
+      "The primary common-mask CRPS comparison is mixed across the two equal-cycle groups. Secondary metrics and masks do not turn this into a direct test of rising-candidate poll residuals.",
+      "Reported Monte Carlo standard errors describe numerical integration/sampling conditional on the fixed inputs. They are not uncertainty intervals for generalizing across elections. Inherited bank and calibration-scale uncertainty are separate; deterministic quadrature error is separate too."
+    ],
+    "literature_context": "The supplied literature review supports noisy polls and evolving preferences, but does not establish a conditional late-rising-candidate overperformance effect or a universal lag. No new literature claims are introduced here."
+  },
+  "source_pins": [
+    {
+      "path": "research/improvement-loop-20261024/polling-momentum-research-luna.md",
+      "sha256": "23adfc0fba3dfedcbfd3aa13b53d620590e1205d3a8cce190da853ba775047f8"
+    },
+    {
+      "path": "research/improvement-loop-20261024/momentum-audit-v2/REPORT.md",
+      "sha256": "9930354ecb02a6d4dac9597fe5b98eb2a44c987381dfa368ed004d74b30a86ef"
+    },
+    {
+      "path": "research/improvement-loop-20261024/momentum-audit-review-sol-v2.md",
+      "sha256": "a76cf981bdd70a18bb095fdfe62d4d7fb82a21e7c78f41774f2dbc42cae7e6fc"
+    },
+    {
+      "path": "research/improvement-loop-20261024/momentum-forecast-scoring-sol-v2/REPORT.md",
+      "sha256": "1004a8aa42dad24c42b3753ea87d08ae1e09bdd7e8a36c5106244220afeaa656"
+    },
+    {
+      "path": "research/improvement-loop-20261024/momentum-forecast-scoring-sol-v2/actual-root-v1/terminal.json",
+      "sha256": "72f52aebb6806d61648c73d13dcc2a3212c2baf2eba31c36766e5e56fc2fe86d",
+      "authentication": "matches requested terminal pin; status complete_scores"
+    },
+    {
+      "path": "research/improvement-loop-20261024/momentum-forecast-scoring-sol-v2/actual-root-v1/receipt.json",
+      "sha256": "7e0b4ceae734aad265736bd2c7f13ffb0f83e52c565c9138567505c0cd89e076",
+      "authentication": "receipt binds scores.json to SHA-256 fe52e19377e4ad1ce4086c420d8fcfa859e5071af8003505f55b050343c33238"
+    },
+    {
+      "path": "research/improvement-loop-20261024/momentum-forecast-scoring-sol-v2/actual-root-v1/scores.json",
+      "sha256": "fe52e19377e4ad1ce4086c420d8fcfa859e5071af8003505f55b050343c33238",
+      "authentication": "verified against receipt before opening score values"
+    },
+    {
+      "path": "research/improvement-loop-20261024/momentum-forecast-scoring-sol-v2/actual-root-v1/launch.json",
+      "sha256": "681b98c893423b0c9f77279da3e509fb74476d74ac38c34bb883ad6c022812fb"
+    }
+  ]
+}
