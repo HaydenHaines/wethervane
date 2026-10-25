@@ -1,0 +1,43 @@
+{
+  "schema": "MomentumPreflightCoverageAuthorityIndexV1",
+  "root_selection_sha256": "5de976e5facbc84aa9db48e64fcc43864d1b8741fc5d1ddc134cc2e0fa05e5e9",
+  "first_pass_manifest": {
+    "path": "artifact-manifest.json",
+    "sha256": "99ba073742bd329cad8fe4713b2594c205dd1d115ed8cfe6c81c5b316594d574",
+    "status": "preserved_initial_no_fit_coverage_packet"
+  },
+  "authoritative_tables": {
+    "538_target_coverage_by_cycle_horizon_lag": "coverage-cells.csv",
+    "race_by_race_538_support_and_unavailable_cases": "race-horizon-support.csv",
+    "f0_target_race_id_intersection": "f0-race-support.csv",
+    "strictly_earlier_f0_training_race_intersection": "f0-training-race-support.csv",
+    "unchanged_historical_calibration_0_to_100_days": "historical-calibration-baseline.csv",
+    "corrected_historical_horizon_truncated_fixed_bin_sensitivities": "historical-fixed-bin-horizon-correction.csv",
+    "corrected_historical_horizon_selected_and_excluded_ids": "historical-fixed-bin-horizon-selection.csv",
+    "first_pass_vs_corrected_fixed_bin_selected_id_check": "historical-fixed-bin-selection-id-delta.csv",
+    "advertised_interval_overlaps": "field-interval-overlap-pairs.csv",
+    "long_activote_horizon_availability": "activote-rolling-intervals.csv"
+  },
+  "superseded_interpretation": {
+    "first_pass_files": [
+      "coverage-cells.csv historical rows with operator=tierney_historical_latest_per_14day_bin",
+      "operator-selection-rows.csv historical fixed-bin selected/excluded flag"
+    ],
+    "reason": "The first-pass sensitivity helper assigned a sample-specific key to the literal pollster label unknown rather than matching standard_runner.py's strip().casefold() key. The pinned panel contains no missing or literal unknown pollster values.",
+    "observed_effect": "none: all 48 corrected horizon-bin row counts and selected observation-ID sets equal the first pass. Keep initial files for traceability; use historical-fixed-bin-horizon-correction.csv and historical-fixed-bin-horizon-selection.csv as authoritative exact-rule references."
+  },
+  "admission_and_missingness": {
+    "roster_mismatch_label": "bank-only without exact v2 poll roster is an admission/join support gap; it does not assert that the archive has no polling for that state.",
+    "2022_identity_repairs": "v2 reviewed crosswalk and receipt remain pinned unchanged and do not alter poll question candidate-ID selection."
+  },
+  "limits": {
+    "strict_asof_qualified": false,
+    "fit": false,
+    "score": false,
+    "optimization": false,
+    "new_poll_acquisition": false,
+    "feature_cutoff": "Reviewed F0 target feature design is H14-bound. H30 poll coverage does not imply a matched H30 feature bank; H7 can retain the older H14 feature design only if Root selects that explicit estimand.",
+    "historical_availability": "Field-end proxy only; original publication/vintage not verified.",
+    "sample_independence": "Distinct sample IDs and nonoverlapping advertised periods do not prove respondent independence."
+  }
+}

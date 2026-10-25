@@ -1,0 +1,44 @@
+{
+  "schema": "historical_poll_author_source_receipt_v1",
+  "retrieval_date_utc": "2026-10-20",
+  "retrieval_method": "Connected GitHub fetch tool, immutable Git blob endpoints; reconstructed UTF-8 bytes independently match original Git blob SHA-1 and byte count",
+  "sources": [
+    {
+      "repository": "https://github.com/g-tierney/polling_errors_replication",
+      "commit": "4aba5bc539dde8157bb2eeae9f3330a01439c19d",
+      "commit_date": "2023-03-08T15:12:51Z",
+      "path": "data/polls_cnn_dataset.csv",
+      "blob": "2b397788b99435522a7f051a4040bcd913c693f6",
+      "fetch_url": "https://api.github.com/repos/g-tierney/polling_errors_replication/git/blobs/2b397788b99435522a7f051a4040bcd913c693f6",
+      "local_path": "raw/tierney-polls_cnn_dataset.csv",
+      "bytes": 688043,
+      "sha256": "61e1141f5ed84cfbbec487115742f59c6e20ebd04ba99a0a32f08d8fa2b20322",
+      "senate_cycles": "1992 through 2020, even years",
+      "exported_cycles": [2012, 2016, 2018, 2020],
+      "license": "No LICENSE file in the inspected repository tree; repository access and replication intent do not establish redistribution permission",
+      "upstream_lineage": "File is named CNN; author preparation script selects it for Senatorial analysis. Original pollster release provenance and reconstruction method remain unverified"
+    },
+    {
+      "repository": "https://github.com/stanford-policylab/polling-errors",
+      "commit": "02475af7ebe7951c2b94fd0714cf4e2cc15893b1",
+      "commit_date": "2018-02-07T08:43:56Z",
+      "path": "data/polls_auxiliary_dataset.tsv",
+      "blob": "8b30dc7ec6ce3291157fa84f625e52c32980049b",
+      "fetch_url": "https://api.github.com/repos/stanford-policylab/polling-errors/git/blobs/8b30dc7ec6ce3291157fa84f625e52c32980049b",
+      "local_path": "raw/stanford-polls_auxiliary_dataset.tsv",
+      "bytes": 1204069,
+      "sha256": "cdfa307ed7252ba66abb112cf9647e121b031f9bf89a61ae2e253ce462b2ea5a",
+      "senate_cycles": [2004, 2006, 2008, 2010, 2012],
+      "exported_cycles": [2012],
+      "license": "No LICENSE file in the inspected repository tree; redistribution permission not established",
+      "upstream_lineage": "Author README identifies Pollster.com and RealClearPolitics as auxiliary dataset sources; duplicated verbatim as a Tierney repository blob, so those copies are the SAME source"
+    }
+  ],
+  "restrictions": [
+    "Protected 2022 outcome tables, FEC2022 and 2024 outcome labels were not opened",
+    "CES respondent and political-label files were not opened",
+    "No 2026 forecast comparator values were opened",
+    "Author outcome columns were excluded from poll ingestion; only separately admitted local 2012/2016/2018/2020 outcomes were exported",
+    "No fitting, score calculation, model selection or hyperparameter tuning"
+  ]
+}

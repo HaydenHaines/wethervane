@@ -1,0 +1,240 @@
+{
+  "schema": "MomentumAnalyticSuppliedSyntheticPointsV1",
+  "synthetic": true,
+  "source_observations_used": false,
+  "components": [
+    "independent",
+    "cycle",
+    "race",
+    "house",
+    "movement",
+    "persistent_linear"
+  ],
+  "days_before_election": [
+    60.0,
+    30.0,
+    0.0,
+    30.0,
+    7.0,
+    10.0
+  ],
+  "observation_ids": [
+    "synthetic-0",
+    "synthetic-1",
+    "synthetic-2",
+    "synthetic-3",
+    "synthetic-4",
+    "synthetic-5"
+  ],
+  "race_ids": [
+    "a",
+    "a",
+    "a",
+    "b",
+    "b",
+    "a"
+  ],
+  "cycles": [
+    "2020",
+    "2020",
+    "2020",
+    "2020",
+    "2020",
+    "2022"
+  ],
+  "pollsters": [
+    "x",
+    "x",
+    "y",
+    "x",
+    "z",
+    "x"
+  ],
+  "supplied_residuals": [
+    0.14,
+    -0.07,
+    0.03,
+    0.11,
+    -0.1,
+    0.05
+  ],
+  "prior_medians": {
+    "independent": 0.1,
+    "cycle": 0.04,
+    "race": 0.04,
+    "house": 0.03,
+    "movement": 0.05,
+    "persistent_linear": 0.05
+  },
+  "prior_log_sd": 0.7,
+  "objective_measure": "log-SD coordinates; normalized Gaussian residual NLL plus quadratic penalty; fixed prior normalizer omitted exactly as incumbent; no natural-SD Jacobian",
+  "points": [
+    {
+      "log_scales": [
+        -2.3025850929940455,
+        -3.2188758248682006,
+        -3.2188758248682006,
+        -3.506557897319982,
+        -2.995732273553991,
+        -2.995732273553991
+      ],
+      "scales": {
+        "independent": 0.10000000000000002,
+        "cycle": 0.04000000000000001,
+        "race": 0.04000000000000001,
+        "house": 0.029999999999999995,
+        "movement": 0.05000000000000001,
+        "persistent_linear": 0.05000000000000001
+      },
+      "objective": -4.8601105781801595,
+      "gradient": [
+        0.7483330114748409,
+        0.36411971489472805,
+        0.41825157153521225,
+        0.15806799960768872,
+        0.20162132468135927,
+        0.31857422461154045
+      ],
+      "central_difference_step": 1e-06,
+      "gradient_max_absolute_error": 9.709711923377995e-10,
+      "geometry": {
+        "kernel_design_rank": 6,
+        "brownian_slope_frobenius_cosine": 0.9630089190874708,
+        "covariance_min_eigenvalue": 0.011057775566049914,
+        "covariance_condition": 3.5043219529354936,
+        "interpretation": "kernel geometry at supplied scales; not posterior parameter correlation"
+      }
+    },
+    {
+      "log_scales": [
+        -2.1025850929940453,
+        -3.3188758248682007,
+        -3.0688758248682007,
+        -3.756557897319982,
+        -2.695732273553991,
+        -3.195732273553991
+      ],
+      "scales": {
+        "independent": 0.12214027581601704,
+        "cycle": 0.03619349672143839,
+        "race": 0.04647336970913133,
+        "house": 0.023364023492142144,
+        "movement": 0.06749294037880016,
+        "persistent_linear": 0.04093653765389909
+      },
+      "objective": -4.26763278893374,
+      "gradient": [
+        2.3748426963516014,
+        0.039678875292471494,
+        0.7414316340210196,
+        -0.42150303635524633,
+        1.0314344700935358,
+        -0.209649736518173
+      ],
+      "central_difference_step": 1e-06,
+      "gradient_max_absolute_error": 1.1773333419284882e-09,
+      "geometry": {
+        "kernel_design_rank": 6,
+        "brownian_slope_frobenius_cosine": 0.9630089190874708,
+        "covariance_min_eigenvalue": 0.016476134420175946,
+        "covariance_condition": 2.699224851301707,
+        "interpretation": "kernel geometry at supplied scales; not posterior parameter correlation"
+      }
+    }
+  ],
+  "conditional_examples": [
+    {
+      "schema": "ClearlySyntheticGaussianConditionalExampleV1",
+      "synthetic": true,
+      "source_data_used": false,
+      "actual_fundamentals_bank_used": false,
+      "poll_logits": [
+        -0.3,
+        -0.15,
+        -0.04
+      ],
+      "days_before_election": [
+        60.0,
+        30.0,
+        7.0
+      ],
+      "theta_prior_sd": 0.35,
+      "slope_prior_sd": 0.05,
+      "slope_units": "logit per 30 days before election",
+      "posterior_mean_theta": -0.11264395960889559,
+      "posterior_mean_slope": -0.031118037630487226,
+      "mirrored_posterior_mean": [
+        0.11264395960889559,
+        0.031118037630487226
+      ],
+      "posterior_covariance": [
+        [
+          0.010306187330144934,
+          -0.001840241207627924
+        ],
+        [
+          -0.0018402412076279232,
+          0.0019730526906311468
+        ]
+      ],
+      "flat_data_posterior_mean": [
+        0.0,
+        0.0
+      ],
+      "interpretation": "negative slope means support rises toward election; mirrored data reverses all means"
+    },
+    {
+      "schema": "ClearlySyntheticGaussianConditionalExampleV1",
+      "synthetic": true,
+      "source_data_used": false,
+      "actual_fundamentals_bank_used": false,
+      "poll_logits": [
+        -0.3,
+        -0.15,
+        -0.04
+      ],
+      "days_before_election": [
+        60.0,
+        30.0,
+        7.0
+      ],
+      "theta_prior_sd": 0.35,
+      "slope_prior_sd": 0.005,
+      "slope_units": "logit per 30 days before election",
+      "posterior_mean_theta": -0.1413005905844676,
+      "posterior_mean_slope": -0.000393237742076061,
+      "mirrored_posterior_mean": [
+        0.1413005905844676,
+        0.000393237742076061
+      ],
+      "posterior_covariance": [
+        [
+          0.008611507420722628,
+          -2.3255074949004675e-05
+        ],
+        [
+          -2.3255074949004644e-05,
+          2.4933409820828084e-05
+        ]
+      ],
+      "flat_data_posterior_mean": [
+        0.0,
+        0.0
+      ],
+      "interpretation": "negative slope means support rises toward election; mirrored data reverses all means"
+    }
+  ],
+  "source_bindings_sha256": "c3a38476aee69845065657595e89a68f664751e94d5b1d1aafc548f22621e1d3",
+  "environment": {
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+    "numpy": "2.4.4",
+    "scipy": "1.17.1"
+  },
+  "optimized": false,
+  "sampled": false,
+  "outcome_scored": false,
+  "actual_forecast": false,
+  "interval_approximation": false,
+  "forecast_qualified": false,
+  "promotion_authorized": false
+}

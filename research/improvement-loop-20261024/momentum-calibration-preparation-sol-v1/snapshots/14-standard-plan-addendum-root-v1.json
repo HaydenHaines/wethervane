@@ -1,0 +1,12 @@
+{
+  "schema": "AggregatePollingPlanAddendumV1",
+  "frozen_utc": "2026-10-20T16:25:27Z",
+  "before_any_error_fit_or_current_forecast": true,
+  "reason": "Final intake identified three distinct Texas studies with overlapping YouGov fieldwork. Provider metadata permit conservative common ownership.",
+  "selection_override": "Latest observation per fieldwork provider and race, falling back to pollster identity. Provider owns the current house covariance. This supersedes current per-pollster thinning; historical provider identity is unavailable and stays explicitly approximate.",
+  "cycle_only_sensitivity_multipliers": [0.5, 2.0],
+  "reason_for_cycle_sensitivity": "Four historical national cycles weakly identify shared polling bias; varying all scales together does not test covariance composition.",
+  "current_catalog_sha256": "94c545c269d4d2ea05a5dd13c64d8494394abe77264ca59bceee008f7b781767",
+  "current_adapter_sha256": "9bf84d25d0f67121f42339fbb85a8433be78a5275839a5c3014a4e62a378368c",
+  "other_frozen_plan_decisions": "Unchanged"
+}

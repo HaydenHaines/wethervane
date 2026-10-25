@@ -1,0 +1,45 @@
+{
+  "schema": "MomentumHistoricalBaselineCompleteLedgerV2",
+  "original_packet_manifest_sha256": "99ba073742bd329cad8fe4713b2594c205dd1d115ed8cfe6c81c5b316594d574",
+  "original_summary_sha256": "6cfb65db621737cc0b77f94ea11495cb5003d09ae0f32fec507bd3a237bf64ce",
+  "historical_panel_sha256": "50422f2a1d6be2ef0ceafcacfc767963b9f689eb6de60cf0139e21d02809c31b",
+  "standard_runner_sha256": "4196f9af08f6a5db244e9540e74952b1d5de383bdbeff07c595e357ec4c69db2",
+  "bank_compatibility_sha256": "53337fcbd640c1ece9c31f4c2c44cf107bbdcd60bc5bee912716109a3806ba05",
+  "correction": "The first-pass detailed ID ledger iterated only the final training-cycle frame. This version includes every historical row from every strictly earlier cycle in each fold.",
+  "source_cycles_by_target": {
+    "2018": [
+      2012,
+      2016
+    ],
+    "2020": [
+      2012,
+      2016,
+      2018
+    ],
+    "2022": [
+      2012,
+      2016,
+      2018,
+      2020
+    ],
+    "2024": [
+      2012,
+      2016,
+      2018,
+      2020
+    ]
+  },
+  "ledger_rows": 6395,
+  "reconstructed_summary_rows": 17,
+  "every_existing_baseline_summary_field_rebuilt_from_complete_id_ledger": true,
+  "all_fold_cycle_sets_complete": true,
+  "duplicate_observation_ids_within_fold": 0,
+  "no_fit": true,
+  "no_score": true,
+  "no_optimization": true,
+  "outputs": [
+    "historical-calibration-baseline-id-ledger-v2.csv",
+    "historical-calibration-baseline-summary-recheck-v2.csv",
+    "historical-calibration-baseline-correction-v2.md"
+  ]
+}

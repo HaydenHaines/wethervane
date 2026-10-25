@@ -1,0 +1,63 @@
+{
+  "schema": "MomentumAnalyticPrototypeSelectionV1",
+  "recorded_utc": "2026-10-25T05:50:07.354354+00:00",
+  "scope": "Supplied-coordinate covariance and likelihood mathematics only; independent of pending actual coverage and prior-bank admission.",
+  "source_pins": [
+    {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/src/forecasting/poll_covariance_v1.py",
+      "sha256": "9ae130b3f314d75a5255c7c92fab502ec596a7cca2960090706fa203b133e05d"
+    },
+    {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/src/forecasting/polling_v1.py",
+      "sha256": "5876ab790f43c8bd6324590f2a3d007f2da853bce49d0e60cd19142046ab0bcb"
+    },
+    {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/src/forecasting/polling_basis_v1.py",
+      "sha256": "d0722a26b02f0e9e0d54bdc73036b1b08d7720a27dc6c36e7ff8ead548747142"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-challenger-plan-luna-v1.md",
+      "sha256": "3d73d9b4e0c7a2942e49efd30cf2a607ecb38edc39fdec45689f52221e7993d3"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-challenger-review-sol-v1.md",
+      "sha256": "0b6e855ce79551907938cbe2bb55009449dc5d7a5912bcc23f8497655d9be8a6"
+    }
+  ],
+  "output": "momentum-analytic-prototype-sol-v1/",
+  "law": {
+    "unchanged_terms": [
+      "independent",
+      "cycle",
+      "race",
+      "house",
+      "movement"
+    ],
+    "new_term": "persistent_linear",
+    "new_covariance": "tau_slope**2 * same_race_and_cycle * outer(days_before_election/30, days_before_election/30)",
+    "scale_target": "Exact same penalized Gaussian log-SD-coordinate objective as incumbent, extended to6 coordinates; no natural-scale Jacobian added.",
+    "zero_limit": "Zero slope variance recovers existing covariance/likelihood; finite log-SD regularization does not contain exact zero.",
+    "likelihood": "Supplied-mean Gaussian log-odds total-error law. No added nominal sample/MOE term, no posterior mixing or cut target change."
+  },
+  "work": [
+    "Implement strict validated versioned covariance and joint six-scale supplied-residual objective/gradient. Preserve all owner code.",
+    "Verify exact zero-slope agreement with pinned incumbent, observation permutation and cross-race/cycle structure, valid covariance/Cholesky, analytical gradient and latent-slope marginal Gaussian oracle.",
+    "Provide a small analytic conditional forecast example showing symmetric directions and shrinkage; label all examples synthetic.",
+    "Do not implement interval timing in this version. Interval averaging and unknown-date mixture stay separate proposed sensitivities.",
+    "Pin sources before import, include deterministic negative input tests and independent mathematical fixtures, report tests and scope."
+  ],
+  "forbidden": [
+    "No optimizer or sampler invocation",
+    "No target outcome scoring",
+    "No new poll admission or data selection",
+    "No live forecast or owner file changes",
+    "No source-backed forecast qualification"
+  ],
+  "pending_actual_experiment": [
+    "Source coverage preflight",
+    "Exact upstream-bank compatibility/admission",
+    "Independent review of this mathematical implementation",
+    "Concrete matched runner plan and numerical/recovery policy"
+  ],
+  "goal_status": "active"
+}

@@ -1,0 +1,19 @@
+{
+  "schema": "MomentumFieldIntervalSupportLunaV1",
+  "root_selection_sha256": "5de976e5facbc84aa9db48e64fcc43864d1b8741fc5d1ddc134cc2e0fa05e5e9",
+  "bank_compatibility_sha256": "53337fcbd640c1ece9c31f4c2c44cf107bbdcd60bc5bee912716109a3806ba05",
+  "operator_selection_rows_sha256": "51e1cbb1892c710c2f957144a0c3bb9dbc0d268fc4f84f932c2e25d3f9bfbb04",
+  "v2_selected_archive_rows_sha256": "d93aed879b29a7bab82c908d139991950b223ba78fba6ee98792819418b50262",
+  "strict_asof_qualified": false,
+  "interview_date_distribution_verified": false,
+  "respondent_overlap_or_independence_verified": false,
+  "outputs": [
+    "activote-rolling-intervals.csv",
+    "field-interval-overlap-groups.csv",
+    "field-interval-overlap-pairs.csv",
+    "field-interval-support-addendum.md",
+    "field-interval-support-receipt.json"
+  ],
+  "primary_rule": "Within each target cycle/horizon/extra-lag/race/pollster group, count pairs whose reported closed field-date ranges intersect.",
+  "note": "Raw selected-polls export is read only for pollster, IDs, dates and duration; candidate outcome/share columns are not imported."
+}

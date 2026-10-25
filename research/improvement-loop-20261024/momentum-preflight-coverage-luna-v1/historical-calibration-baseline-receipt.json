@@ -1,0 +1,19 @@
+{
+  "schema": "MomentumHistoricalCalibrationCoverageLunaV1",
+  "root_selection_sha256": "5de976e5facbc84aa9db48e64fcc43864d1b8741fc5d1ddc134cc2e0fa05e5e9",
+  "f0_support_manifest_sha256": "53337fcbd640c1ece9c31f4c2c44cf107bbdcd60bc5bee912716109a3806ba05",
+  "f0_prepared_plan_sha256": "cfe669f6cef8cec82702b03e9ced060edf022fd434df131483515a054d24aef9",
+  "historical_panel_sha256": "50422f2a1d6be2ef0ceafcacfc767963b9f689eb6de60cf0139e21d02809c31b",
+  "standard_runner_sha256": "4196f9af08f6a5db244e9540e74952b1d5de383bdbeff07c595e357ec4c69db2",
+  "cycles_by_f0_fold": "strictly earlier among 2012/2016/2018/2020",
+  "exact_existing_selection": "days_to_election in [0,100]; lead_bin=floor(days/14); sort end_date, observation_id; last per cycle/race/pollster/bin.",
+  "availability_proxy": "field-end date only; original publication time not present; strict_asof_qualified=false",
+  "no_fit": true,
+  "no_score": true,
+  "no_optimization": true,
+  "outputs": [
+    "historical-calibration-baseline.csv",
+    "historical-calibration-baseline-selection-rows.csv",
+    "historical-calibration-baseline-addendum.md"
+  ]
+}

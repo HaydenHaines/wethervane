@@ -1,0 +1,10 @@
+# Retained review note for momentum execution design v1
+
+The original `momentum-execution-design-luna-v1.md` is preserved unchanged (SHA-256 `604e9542ff6bbb847bd38b7834d548ae62f2a7065f702b33bd413cbcb5456fc3`). Root's review identified these concrete defects; v2 supersedes its proposed execution contract but does not erase this record:
+
+1. The 2024 training-cycle list incorrectly included 2022. Its exact calibration cycles are 2012, 2016, 2018, and 2020. The sealed preparation plan pins the same calibration input identity for 2022 and 2024; there are three distinct numerical calibrations across the four target folds.
+2. The `F0 + poll-M02` table row mislabeled a cell; the F0 prior, exact target poll vector, and six-component M02 kernel must be stated in the proper columns.
+3. The poll-only definition lacked an exact source universe and a fully specified, defensible prior. It incorrectly called a prior learned from historical outcomes “no fundamentals.” v2 replaces it with an explicitly broad, fixed Gaussian-logit reference comparator and states why it is only a reference.
+4. The v1 update description implied the likelihood was a direct Gaussian evaluation of beta per bank row and incorrectly prohibited row resampling. The existing `polling_basis_v1` sampler jointly updates empirical-row index, observed latent states, shared cycle state, and Student-t precision mixtures; row factors are conditional on those latent states. Posterior transitions can revisit/resample intact source rows, with their original identity retained. v2 specifies that qualified operator.
+5. v1 prematurely designated latest-per-pollster as primary and prescribed common-random-number behavior without Root selecting a target operator. v2 presents the target operators as separate candidates and records the choices Root must freeze.
+6. Several diagnostics were left as pseudo-thresholds. v2 separates named diagnostics from still-unset numeric gates and bars choosing those gates after seeing new scores.

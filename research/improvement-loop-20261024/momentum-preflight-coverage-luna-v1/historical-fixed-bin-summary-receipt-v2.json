@@ -1,0 +1,21 @@
+{
+  "schema": "MomentumFixedBinSummaryFromLedgerV2",
+  "initial_packet_manifest_sha256": "99ba073742bd329cad8fe4713b2594c205dd1d115ed8cfe6c81c5b316594d574",
+  "earlier_corrected_selection_ledger_sha256": "9d208e3218a9a49a44d86923c1090d526235e1d0294bd8581a09fd1720634ddd",
+  "earlier_corrected_horizon_summary_sha256": "710390ef7f37be402becf2e1f526dae9cb4abdfc0be497f058e966be05948c5f",
+  "bank_compatibility_sha256": "53337fcbd640c1ece9c31f4c2c44cf107bbdcd60bc5bee912716109a3806ba05",
+  "correction": "Every summary row is recomputed from its operator-specific observation-ID set. Repeated-group and span metrics for fixed-bin rows now use retained rows, not the larger full-series set.",
+  "all_96_operator_cells_reconstructed": true,
+  "all_96_repeat_metrics_reconstructed": true,
+  "all_cell_row_ids_from_complete_ledger": true,
+  "no_fit": true,
+  "no_score": true,
+  "no_optimization": true,
+  "authoritative_table": "historical-fixed-bin-horizon-correction-v2.csv",
+  "outputs": [
+    "historical-fixed-bin-horizon-correction-v2.csv",
+    "historical-fixed-bin-summary-correction-v2.md",
+    "historical-fixed-bin-summary-receipt-v2.json",
+    "historical-fixed-bin-summary-reconstruction-v2.csv"
+  ]
+}

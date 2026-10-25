@@ -1,0 +1,74 @@
+{
+  "schema": "TotalPollErrorScalesV1",
+  "standard_deviations": {
+    "independent": 0.08438043897858434,
+    "cycle": 0.06693935991701246,
+    "race": 0.06560912002656763,
+    "house": 0.07222665870699879,
+    "movement": 0.08071632721709084
+  },
+  "regularization": {
+    "log_scale_medians": {
+      "independent": 0.1,
+      "cycle": 0.06,
+      "race": 0.06,
+      "house": 0.03,
+      "movement": 0.05
+    },
+    "log_scale_sd": 0.7
+  },
+  "conditional_parameter_estimates": true,
+  "objective": -1157.3615769017354,
+  "gradient_max": 1.882629842364647e-05,
+  "attempts": [
+    {
+      "success": true,
+      "message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+      "objective": -1157.3615769017354,
+      "iterations": 21,
+      "gradient_max": 1.882629842364647e-05
+    },
+    {
+      "success": true,
+      "message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+      "objective": -1157.3615769017354,
+      "iterations": 16,
+      "gradient_max": 2.4436227888335882e-05
+    },
+    {
+      "success": true,
+      "message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+      "objective": -1157.3615769016737,
+      "iterations": 18,
+      "gradient_max": 0.00033411527162841015
+    }
+  ],
+  "training_cycles": [
+    "2012",
+    "2016",
+    "2018",
+    "2020"
+  ],
+  "training_observations": 1514,
+  "units": "principal-contender log odds; movement per sqrt(30 days)",
+  "qualification": "Regularized historical working-error fit; covariance uncertainty not integrated",
+  "plan_sha256": "7c570e3c4c8f03e2b378019ca4cf76803c8e4b9007c2f74debb6c41241ef6566",
+  "addendum_sha256": "079798b491d0081c0c3bfc75090f12543105982081788c0c608ddbd1985948ad",
+  "completed_utc": "2026-10-20T16:25:55.605975+00:00",
+  "selected_training_sha256": "2cfe745917c250bd128fd3664357abaefa3e74fadd54b12f24d4cb914ef70a79",
+  "per_cycle_rows": {
+    "2012": 467,
+    "2016": 463,
+    "2018": 288,
+    "2020": 296
+  },
+  "training_races": 106,
+  "training_pollsters": 220,
+  "historical_availability": "Field-end proxy. Future benchmark must include release-lag sensitivity; retrospective development only.",
+  "historical_source_limitations": [
+    "Original nominal/effective N and respondent universe unknown",
+    "Unknown repeated sample overlap; one row per house/race/14-day bin retained",
+    "Historical author candidate identities not independently verified",
+    "Four national cycles weakly identify common-error variance"
+  ]
+}

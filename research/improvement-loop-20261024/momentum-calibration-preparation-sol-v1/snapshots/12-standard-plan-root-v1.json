@@ -1,0 +1,56 @@
+{
+  "schema": "AggregatePollingExperimentPlanV1",
+  "frozen_utc": "2026-10-20T16:22:36Z",
+  "target_id": "national_senate_aggregate_poll_v1",
+  "purpose": "First standard aggregate polling update; community experiments are not a dependency",
+  "current_poll_cutoff_utc": "2026-10-20T16:21:44Z",
+  "historical_prior_sha256": "b42431a9af228e392646f4ccc00194a8b1e4ea1b8c68aed7be2044f3fb8261aa",
+  "allowed_error_training_cycles": [2012, 2016, 2018, 2020],
+  "protected_evaluation_labels": "No 2022 or 2024 labels; no CES political payload",
+  "covariance_model": {
+    "units": "Conditional principal-contender log odds",
+    "components": ["independent_total_poll_noise", "cycle_common_bias", "race_persistent_bias", "pollster_within_cycle_bias", "race_brownian_movement"],
+    "movement_time_units": "days to election / 30; covariance uses min(time_i,time_j)",
+    "mean_error": 0,
+    "regularizer": "Independent Gaussian on log standard deviations; penalized likelihood/MAP in these coordinates",
+    "regularizer_medians": {"independent": 0.10, "cycle": 0.06, "race": 0.06, "house": 0.03, "movement": 0.05},
+    "regularizer_log_sd": 0.7,
+    "optimizer_start_multipliers": [0.5, 1.0, 2.0],
+    "parameter_uncertainty": "Conditional fitted scales, not integrated. Report frozen all-scale sensitivity multipliers.",
+    "sensitivity_scale_multipliers": [0.6666666666666666, 1.5],
+    "sampling_variance": "Included in historical total noise; no separate binomial, MOE, effective-N or design-effect term",
+    "universe_bridge": "Zero expected difference from historical mixed-universe poll population; total error covers an exchangeability approximation, not a fitted RV/LV/adult conversion",
+    "house_transport": "Zero mean in a new cycle; no fitted directional historical house mean transferred",
+    "historical_dependence": "Fitted poll scales and saved fundamentals use common historical outcomes. Their parameter dependence is not integrated in this empirical-Bayes first pass."
+  },
+  "selection": {
+    "maximum_days_to_election": 100,
+    "historical_training": "One latest observation per cycle/race/pollster/fixed 14-day lead bin. Deterministic tie break by observation ID. Original fields retained. Unknown overlap remains a limitation.",
+    "current": "Only source-audited selected question, exact candidate-ID match, publication and field-end dates within cutoff. Latest sample per race/pollster. One question per underlying sample.",
+    "historical_candidate_join": "Unique eligible D/R state-cycle roster; not original candidate-name verified",
+    "historical_availability": "Field-end proxy. Future benchmark must include release-lag sensitivity; retrospective development only.",
+    "special_rules": "Preserve existing principal-contender proxies; AK explicit final RCV preferred; no first-round and final-round double counting",
+    "unpolled": "Unobserved race retains baseline residual law but shares the polling-updated cycle and historical parameter distribution"
+  },
+  "sampler": {"chains": 4, "warmup": 2000, "draws_per_chain": 10000, "seed": 202610202},
+  "numerical_reporting_gates": {
+    "max_rank_split_rhat": 1.01,
+    "min_bulk_ess_nonconstant": 1000,
+    "min_tail_ess_nonconstant": 1000,
+    "max_race_win_mcse": 0.005,
+    "max_control_mcse": 0.005,
+    "failed_gate_action": "Preserve attempt and extend or repair computation; no substantive tuning to forecast results"
+  },
+  "historical_benchmark_followup": {
+    "folds": [{"train": [2012, 2016], "test": 2018}, {"train": [2012, 2016, 2018], "test": 2020}],
+    "horizons_days": [90, 30, 14, 7],
+    "arms": ["fundamentals_only", "polls_only", "standard_combined", "research_informed_challenger"],
+    "status": "Must freeze runner details, scoring implementation and adoption tolerances before scoring these folds. Initial all-cycle 2026 nuisance fit is not a holdout result."
+  },
+  "claims": {
+    "initial_rerun": "A computational forecast comparison; no demonstrated forecast improvement",
+    "community_identification": "Not estimated in this baseline; no causal subgroup or composition attribution from toplines",
+    "current_scope": "Audited source subset with visible uncovered races, not an exhaustive polling census",
+    "public_comparators": "Descriptive only; no tuning to public win probabilities"
+  }
+}

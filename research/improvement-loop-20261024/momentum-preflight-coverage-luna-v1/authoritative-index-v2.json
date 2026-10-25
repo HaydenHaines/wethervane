@@ -1,0 +1,70 @@
+{
+  "schema": "MomentumPreflightCoverageAuthorityIndexV2",
+  "root_selection_sha256": "5de976e5facbc84aa9db48e64fcc43864d1b8741fc5d1ddc134cc2e0fa05e5e9",
+  "prior_authoritative_index": {
+    "path": "authoritative-index-v1.json",
+    "sha256": "3c221417c103c8016f812ac502889c129516749ab07e3265d642d9e615e1ab50",
+    "status": "preserved; superseded only where v2 entries below say so"
+  },
+  "initial_packet_manifest": {
+    "path": "artifact-manifest.json",
+    "sha256": "99ba073742bd329cad8fe4713b2594c205dd1d115ed8cfe6c81c5b316594d574",
+    "status": "preserved"
+  },
+  "prior_correction_manifest": {
+    "path": "artifact-correction-manifest.json",
+    "sha256": "b39a7f14b96ccdf96c501c952a85a6ae67e388d289aa7ac0da91257bd631e746",
+    "status": "preserved initial correction layer"
+  },
+  "authoritative_tables": {
+    "538_target_coverage_by_cycle_horizon_lag": "coverage-cells.csv",
+    "race_by_race_538_support_and_unavailable_cases": "race-horizon-support.csv",
+    "f0_target_race_id_intersection": "f0-race-support.csv",
+    "strictly_earlier_f0_training_race_intersection": "f0-training-race-support.csv",
+    "unchanged_historical_calibration_0_to_100_days": "historical-calibration-baseline.csv",
+    "complete_earlier_cycle_baseline_observation_id_ledger": "historical-calibration-baseline-id-ledger-v2.csv",
+    "baseline_summary_reconstructed_from_complete_ledger": "historical-calibration-baseline-summary-recheck-v2.csv",
+    "corrected_historical_horizon_truncated_fixed_bin_sensitivities": "historical-fixed-bin-horizon-correction-v2.csv",
+    "corrected_historical_horizon_selected_and_excluded_ids": "historical-fixed-bin-horizon-selection.csv",
+    "fixed_bin_summary_cell_reconstruction_checks": "historical-fixed-bin-summary-reconstruction-v2.csv",
+    "first_pass_vs_corrected_fixed_bin_selected_id_check": "historical-fixed-bin-selection-id-delta.csv",
+    "advertised_interval_overlaps": "field-interval-overlap-pairs.csv",
+    "long_activote_horizon_availability": "activote-rolling-intervals.csv"
+  },
+  "superseded_interpretations": [
+    {
+      "path": "historical-calibration-baseline-selection-rows.csv",
+      "reason": "First-pass detailed baseline ledger retained only the final source training cycle in each target fold. Use the v2 complete earlier-cycle ID ledger."
+    },
+    {
+      "path": "historical-fixed-bin-horizon-correction.csv",
+      "reason": "Fixed-bin row/race support was correct, but fixed-bin repeat-group and span summaries were copied from the larger full-series input. Use v2, reconstructed independently from each operator-specific selected ID set."
+    }
+  ],
+  "reconstruction_receipts": {
+    "baseline": "historical-calibration-baseline-correction-receipt-v2.json",
+    "fixed_bin": "historical-fixed-bin-summary-receipt-v2.json"
+  },
+  "scope_clarifications": [
+    {
+      "topic": "disjoint calibration rows",
+      "detail": "The separate selected-disjoint-training.csv has 1,483 rows: it is the 1,514-row selected-MAP ID set minus 31 rows from 2020:TX:senate:regular. It retains five 2012 TX rows and 18 2018 TX rows; the declared 2024 TX exclusion has no training rows. This is a distinct later-disjoint calibration target and is not substituted for the selected-MAP baseline.",
+      "source": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/tx-disjoint-calibration-sol-v1/attempt-v1/selected-disjoint-training.csv",
+      "source_sha256": "151a14846e850ff0b4537897a29faa772a5a5e0a81f8cd92f41fcdec202dcb61"
+    },
+    {
+      "topic": "population scope",
+      "detail": "The standard helper prioritizes LV then RV then A source classes; this profile can contain adult/A observations. It is not necessarily the same population universe as the separate LV/RV-only descriptive profile."
+    }
+  ],
+  "limits": {
+    "strict_asof_qualified": false,
+    "fit": false,
+    "score": false,
+    "optimization": false,
+    "new_poll_acquisition": false,
+    "feature_cutoff": "Reviewed F0 target feature design is H14-bound. H30 poll coverage does not imply a matched H30 feature bank; H7 may retain older H14 features only under an explicitly selected estimand.",
+    "historical_availability": "Field-end proxy only; original publication/vintage not verified.",
+    "sample_independence": "Distinct sample IDs and nonoverlapping advertised periods do not prove respondent independence."
+  }
+}

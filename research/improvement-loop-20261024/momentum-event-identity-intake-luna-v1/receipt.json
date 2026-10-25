@@ -1,0 +1,57 @@
+{
+  "schema": "MomentumEventIdentityIntakeReceiptV1",
+  "source_hashes": {
+    "senate_polls_historical.csv": "09ae303a94f76dd761532fce7a356fe3b5beb1e24d4e5ba343c424c372fdfabf",
+    "features-through-2024-LABEL-FREE.csv": "82f19e84d98f231523826355470b10482c2eb700d16e81ef0c804df7b9130111",
+    "compatibility.json": "53337fcbd640c1ece9c31f4c2c44cf107bbdcd60bc5bee912716109a3806ba05"
+  },
+  "f0_target_rows": 5,
+  "archive_event_ids": {
+    "2018:Minnesota": [
+      "107",
+      "129"
+    ],
+    "2018:Mississippi": [
+      "108",
+      "130",
+      "6209"
+    ],
+    "2022:California": [
+      "8921",
+      "9480"
+    ],
+    "2022:Oklahoma": [
+      "8943",
+      "9482"
+    ],
+    "2024:California": [
+      "9506",
+      "10013"
+    ]
+  },
+  "archive_candidate_rows_extracted": 310,
+  "crosswalk_rows": 5,
+  "supported_event_identity_matches": [
+    "2018:MN:senate:regular",
+    "2018:MS:senate:regular",
+    "2022:OK:senate:regular",
+    "2024:CA:senate:regular"
+  ],
+  "unresolved_event_identity": [
+    "2022:CA:senate:regular"
+  ],
+  "polls_added": 0,
+  "sample_weight_or_selection_change": false,
+  "fit": false,
+  "score": false,
+  "no_outcome_transferred_across_events": true,
+  "limitations": [
+    "No historical publication/vintage certification.",
+    "2022 CA 538 question-ID-to-publisher-item mapping unresolved despite primary evidence that both events were asked.",
+    "Crosswalk proposal does not admit or score polls."
+  ],
+  "source_inventory_sha256": "11548ddd5172ba33272974199d0f41178518c637cc5bf31020b3cf047100fa6f",
+  "f0_target_events_sha256": "768645373bad17b3198eb7beb8e33c470c5d8bd43ba5aaf0043c5a4dbfaa6f90",
+  "archive_extract_sha256": "9150500244ee53504c45868389d5debf2c02fbadf6204105884aa60d97a68514",
+  "crosswalk_sha256": "2e79e96d0a50bef90eb036987952aa22ebc069e5614339bf2e016712989a4c65"
+}
