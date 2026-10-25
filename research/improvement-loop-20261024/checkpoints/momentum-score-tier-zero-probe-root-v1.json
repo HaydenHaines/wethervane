@@ -1,0 +1,46 @@
+{
+  "actual_predictions_used": false,
+  "author_and_reviewer_notified": true,
+  "cause": "Tier summary changes deterministic status while the variance helper recognizes known zero only by the original deterministic status; explicit sampling_variance_zero is not consumed.",
+  "expected": "Certified deterministic PO5 tier sampling variance contributes exactly zero, so FS\u2212PO5 tier MCSE equals FS tier MCSE. Quadrature uncertainty remains separate.",
+  "inputs": {
+    "FS_each_cycle": {
+      "mcse": 0.0001,
+      "qualified": true,
+      "status": "qualified_conditional_numerical",
+      "uncertainty_scope": "conditional_fixed_bank_Gibbs_integration",
+      "value": 0.11
+    },
+    "PO5_each_cycle": {
+      "log_mcse": null,
+      "mcse": 0,
+      "qualified": true,
+      "status": "deterministic_analytic_no_MCMC",
+      "uncertainty_scope": "deterministic_gaussian_analytic",
+      "value": 0.1
+    },
+    "cycles": [
+      2018,
+      2022
+    ],
+    "metric": "crps"
+  },
+  "numeric_target_labels": false,
+  "observed": {
+    "FS_tier_mcse": 7.071067811865475e-05,
+    "PO5_tier_mcse": 0,
+    "PO5_tier_sampling_variance_zero": true,
+    "PO5_tier_status": "qualified_conditional_numerical",
+    "difference_deterministic_variance_composition": true,
+    "difference_mcse": null,
+    "difference_numerically_resolved": null,
+    "difference_value": 0.009999999999999995
+  },
+  "requested_repair": "Preserve or validate the explicit analytic zero through tier composition; never treat unresolved null or rounded-underflow0 as exact variance0. Include analytic/conditional and analytic/analytic tier regressions.",
+  "schema": "MomentumScoringRootSyntheticBoundaryProbeV1",
+  "scientific_gates_or_data_changed": false,
+  "source": "momentum-forecast-scoring-sol-v1/score_math.py",
+  "source_sha256": "8d2713492999118079f6efaaa0f33c76809c3e9c9d13adb57babcc4285c188d7",
+  "synthetic_only": true,
+  "utc": "2026-10-25T09:08:57.292891+00:00"
+}

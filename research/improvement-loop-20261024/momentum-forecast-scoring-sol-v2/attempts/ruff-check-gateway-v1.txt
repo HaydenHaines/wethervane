@@ -1,0 +1,74 @@
+E402 Module level import not at top of file
+  --> score.py:14:1
+   |
+12 | sys.path.insert(0, str(HERE / "snapshots"))
+13 | sys.path.insert(0, str(HERE))
+14 | import numpy as np
+   | ^^^^^^^^^^^^^^^^^^
+15 | from marginal import GaussianLogitMixture
+16 | from score_math import (
+   |
+
+E402 Module level import not at top of file
+  --> score.py:15:1
+   |
+13 | sys.path.insert(0, str(HERE))
+14 | import numpy as np
+15 | from marginal import GaussianLogitMixture
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+16 | from score_math import (
+17 |     METRICS,
+   |
+
+E402 Module level import not at top of file
+  --> score.py:16:1
+   |
+14 |   import numpy as np
+15 |   from marginal import GaussianLogitMixture
+16 | / from score_math import (
+17 | |     METRICS,
+18 | |     ScaledInfluence,
+19 | |     equal_cycle_summary,
+20 | |     paired_difference,
+21 | |     score_empirical_forecast,
+22 | |     score_gaussian_forecast,
+23 | |     winner_reference_scores,
+24 | | )
+   | |_^
+25 |   from score_reader import ARMS, read_labels_after_admission, require, verify_admission
+   |
+
+E402 Module level import not at top of file
+  --> score.py:25:1
+   |
+23 |     winner_reference_scores,
+24 | )
+25 | from score_reader import ARMS, read_labels_after_admission, require, verify_admission
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+
+E731 Do not assign a `lambda` expression, use a `def`
+   --> score.py:317:5
+    |
+315 |     )
+316 |     destination.mkdir(parents=True, exist_ok=False)
+317 |     now = lambda: datetime.datetime.now(datetime.timezone.utc).isoformat()
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+318 |     launch = dict(
+319 |         schema="MomentumScoringLaunchV1",
+    |
+help: Rewrite `now` as a `def`
+
+E501 Line too long (127 > 120)
+   --> score_math.py:290:121
+    |
+288 |         metrics={},
+289 |         influences={},
+290 |         uncertainty_scope="archived original source-row and predictive-replicate sampling; inherited bank dependence included",
+    |                                                                                                                         ^^^^^^^
+291 |     )
+292 |     result["metrics"]["crps"] = finite_score(crps)
+    |
+
+Found 16 errors (10 fixed, 6 remaining).
+No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).

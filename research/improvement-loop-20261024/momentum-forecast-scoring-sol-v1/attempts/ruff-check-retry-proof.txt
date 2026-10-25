@@ -1,0 +1,14 @@
+I001 [*] Import block is un-sorted or un-formatted
+   --> test_score_reader.py:319:5
+    |
+318 |   def test_source_bound_runner_retry_validator_eligible_trio_and_invalid_trigger(tmp_path):
+319 | /     from unittest.mock import patch
+320 | |     from synthetic_files import LAB
+    | |___________________________________^
+321 |
+322 |       manifest = pin(LAB / "momentum-forecast-execution-sol-v1/artifact-manifest.json")
+    |
+help: Organize imports
+
+Found 1 error.
+[*] 1 fixable with the `--fix` option.

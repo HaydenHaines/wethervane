@@ -1,0 +1,140 @@
+F821 Undefined name `js`
+   --> test_score_reader.py:104:12
+    |
+103 | def rebound_admission(external, admission):
+104 |     return js(external["path"], admission)
+    |            ^^
+    |
+
+F821 Undefined name `js`
+   --> test_score_reader.py:151:37
+    |
+149 |         masks = reader.json_pin(admission["mask_receipt"])
+150 |         masks["orientation"] = "R/(D+R)"
+151 |         admission["mask_receipt"] = js(admission["mask_receipt"]["path"], masks)
+    |                                     ^^
+152 |     if kind == "self_review":
+153 |         review = reader.json_pin(admission["independent_scoring_review"])
+    |
+
+F821 Undefined name `js`
+   --> test_score_reader.py:155:51
+    |
+153 |         review = reader.json_pin(admission["independent_scoring_review"])
+154 |         review["manifest_sha256"] = "0" * 64
+155 |         admission["independent_scoring_review"] = js(admission["independent_scoring_review"]["path"], review)
+    |                                                   ^^
+156 |     if kind == "self_code":
+157 |         manifest = reader.json_pin(admission["scoring_manifest"])
+    |
+
+F821 Undefined name `js`
+   --> test_score_reader.py:159:41
+    |
+157 |         manifest = reader.json_pin(admission["scoring_manifest"])
+158 |         manifest["files"][0]["sha256"] = "0" * 64
+159 |         admission["scoring_manifest"] = js(admission["scoring_manifest"]["path"], manifest)
+    |                                         ^^
+160 |     if kind == "runtime_drift":
+161 |         profile = reader.json_pin(admission["scoring_runtime"])
+    |
+
+F821 Undefined name `js`
+   --> test_score_reader.py:163:40
+    |
+161 |         profile = reader.json_pin(admission["scoring_runtime"])
+162 |         profile["packages"]["scipy"] = "invented-incompatible"
+163 |         admission["scoring_runtime"] = js(admission["scoring_runtime"]["path"], profile)
+    |                                        ^^
+164 |     external = rebound_admission(external, admission)
+165 |     read, opened = label_guard(fixture)
+    |
+
+F821 Undefined name `js`
+   --> test_score_reader.py:176:34
+    |
+174 |     summary = reader.json_pin(record["numerical_status"])
+175 |     modify(summary)
+176 |     record["numerical_status"] = js(record["numerical_status"]["path"], summary)
+    |                                  ^^
+177 |     terminal = fixture["terminals"]["FS6"]
+178 |     terminal["prelabel_summary"] = record["numerical_status"]
+    |
+
+F821 Undefined name `js`
+   --> test_score_reader.py:181:26
+    |
+179 |     terminal["artifacts"]["prelabel_summary"] = record["numerical_status"]
+180 |     terminal["numerical_core_bulk_passed"] = terminal_core
+181 |     record["terminal"] = js(record["terminal"]["path"], terminal)
+    |                          ^^
+182 |     return rebound_admission(external, admission)
+    |
+
+F821 Undefined name `js`
+   --> test_score_reader.py:222:66
+    |
+220 |     terminal["status"] = "failed_preserved_no_restart"
+221 |     terminal["exception"] = "invented failure before any prediction seal"
+222 |     admission["selected_folds"][0]["jobs"]["FS5"] = {"terminal": js(record["terminal"]["path"], terminal)}
+    |                                                                  ^^
+223 |     read, opened = label_guard(fixture)
+224 |     with patch.object(reader, "checked_bytes", side_effect=read):
+    |
+
+F821 Undefined name `nz`
+   --> test_score_reader.py:261:34
+    |
+259 |     original = reader.npz_record(original_receipt["arrays"])
+260 |     shortened = {k: v[:, :new].copy() if v.shape[:2] == (4, old) else v.copy() for k, v in original.items()}
+261 |     original_receipt["arrays"] = nz(original_receipt["arrays"]["file"]["path"], shortened)
+    |                                  ^^
+262 |     terminal["artifacts"]["original"] = js(terminal["artifacts"]["original"]["path"], original_receipt)
+263 |     components = reader.npz_record(terminal["artifacts"]["marginal_components"])
+    |
+
+F821 Undefined name `js`
+   --> test_score_reader.py:262:41
+    |
+260 |     shortened = {k: v[:, :new].copy() if v.shape[:2] == (4, old) else v.copy() for k, v in original.items()}
+261 |     original_receipt["arrays"] = nz(original_receipt["arrays"]["file"]["path"], shortened)
+262 |     terminal["artifacts"]["original"] = js(terminal["artifacts"]["original"]["path"], original_receipt)
+    |                                         ^^
+263 |     components = reader.npz_record(terminal["artifacts"]["marginal_components"])
+264 |     terminal["artifacts"]["marginal_components"] = nz(
+    |
+
+F821 Undefined name `nz`
+   --> test_score_reader.py:264:52
+    |
+262 |     terminal["artifacts"]["original"] = js(terminal["artifacts"]["original"]["path"], original_receipt)
+263 |     components = reader.npz_record(terminal["artifacts"]["marginal_components"])
+264 |     terminal["artifacts"]["marginal_components"] = nz(
+    |                                                    ^^
+265 |         terminal["artifacts"]["marginal_components"]["file"]["path"],
+266 |         {k: v[:, :new].copy() if v.shape[:2] == (4, old) else v.copy() for k, v in components.items()},
+    |
+
+F821 Undefined name `js`
+   --> test_score_reader.py:271:33
+    |
+269 |     seal["artifacts"]["original"] = terminal["artifacts"]["original"]
+270 |     seal["artifacts"]["trace"] = terminal["artifacts"]["trace"]
+271 |     record["prediction_seal"] = js(record["prediction_seal"]["path"], seal)
+    |                                 ^^
+272 |     record["terminal"] = js(record["terminal"]["path"], terminal)
+273 |     read, opened = label_guard(fixture)
+    |
+
+F821 Undefined name `js`
+   --> test_score_reader.py:272:26
+    |
+270 |     seal["artifacts"]["trace"] = terminal["artifacts"]["trace"]
+271 |     record["prediction_seal"] = js(record["prediction_seal"]["path"], seal)
+272 |     record["terminal"] = js(record["terminal"]["path"], terminal)
+    |                          ^^
+273 |     read, opened = label_guard(fixture)
+274 |     with patch.object(reader, "checked_bytes", side_effect=read):
+    |
+
+Found 14 errors (1 fixed, 13 remaining).

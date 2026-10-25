@@ -1,0 +1,684 @@
+...................FFFFFFFFFFFFF.                                        [100%]
+=================================== FAILURES ===================================
+_ test_coherent_admission_rebindings_fail_before_any_label_open[omitted_runtime] _
+
+packet = ({'path': '/tmp/pytest-of-hayden/pytest-348/test_coherent_admission_rebind0/synthetic/admission.json', 'sha256': 'f778...: 0, 'chains': 4, 'cycle': 2018, ...}, 'numeric_target_labels': False, 'numerical_core_bulk_passed': True, ...}}, ...})
+kind = 'omitted_runtime'
+
+    @pytest.mark.parametrize(
+        "kind",
+        [
+            "omitted_runtime",
+            "rebound_group",
+            "wrong_review",
+            "training_subset",
+            "training_foreign",
+            "orientation",
+            "self_review",
+            "self_code",
+            "runtime_drift",
+            "mixed_attempt",
+        ],
+    )
+    def test_coherent_admission_rebindings_fail_before_any_label_open(packet, kind):
+        external, admission, fixture = packet
+        if kind == "omitted_runtime":
+            admission["execution_identity"].pop("runtime_sha256")
+        if kind == "rebound_group":
+            admission["execution_identity"]["execution_group_id"] = "foreign-group"
+        if kind == "wrong_review":
+            admission["execution_identity"]["independent_execution_review"]["sha256"] = "0" * 64
+        if kind == "training_subset":
+            admission["selected_folds"][0]["training_race_ids"] = list(fixture["training"][:1])
+        if kind == "training_foreign":
+            admission["selected_folds"][0]["training_race_ids"] = [*fixture["training"], "2014:FOREIGN:senate:regular"]
+        if kind == "mixed_attempt":
+            admission["selected_folds"][0]["attempt"] = 1
+        if kind == "orientation":
+            masks = reader.json_pin(admission["mask_receipt"])
+            masks["orientation"] = "R/(D+R)"
+            admission["mask_receipt"] = js(admission["mask_receipt"]["path"], masks)
+        if kind == "self_review":
+            review = reader.json_pin(admission["independent_scoring_review"])
+            review["manifest_sha256"] = "0" * 64
+            admission["independent_scoring_review"] = js(admission["independent_scoring_review"]["path"], review)
+        if kind == "self_code":
+            manifest = reader.json_pin(admission["scoring_manifest"])
+            manifest["files"][0]["sha256"] = "0" * 64
+            admission["scoring_manifest"] = js(admission["scoring_manifest"]["path"], manifest)
+        if kind == "runtime_drift":
+            profile = reader.json_pin(admission["scoring_runtime"])
+            profile["packages"]["scipy"] = "invented-incompatible"
+            admission["scoring_runtime"] = js(admission["scoring_runtime"]["path"], profile)
+>       external = rebound_admission(external, admission)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+research/improvement-loop-20261024/momentum-forecast-scoring-sol-v1/test_score_reader.py:164: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+external = {'path': '/tmp/pytest-of-hayden/pytest-348/test_coherent_admission_rebind0/synthetic/admission.json', 'sha256': 'f778b4999fae2d0ea159e1a542d4e650dc8952b8c32508ff7ced37a6515e21e4'}
+admission = {'execution_identity': {'execution_group_id': 'SYNTHETIC-matched-file-test', 'execution_manifest_sha256': 'e74bc838eaa...etic/synthetic-scorer-review.json', 'sha256': '5479119548a92ed243abadbbc180bc0a08a097f0733a68eb3e6ed202d65f6a37'}, ...}
+
+    def rebound_admission(external, admission):
+>       return js(external["path"], admission)
+               ^^
+E       NameError: name 'js' is not defined
+
+research/improvement-loop-20261024/momentum-forecast-scoring-sol-v1/test_score_reader.py:104: NameError
+_ test_coherent_admission_rebindings_fail_before_any_label_open[rebound_group] _
+
+packet = ({'path': '/tmp/pytest-of-hayden/pytest-348/test_coherent_admission_rebind1/synthetic/admission.json', 'sha256': '69c5...: 0, 'chains': 4, 'cycle': 2018, ...}, 'numeric_target_labels': False, 'numerical_core_bulk_passed': True, ...}}, ...})
+kind = 'rebound_group'
+
+    @pytest.mark.parametrize(
+        "kind",
+        [
+            "omitted_runtime",
+            "rebound_group",
+            "wrong_review",
+            "training_subset",
+            "training_foreign",
+            "orientation",
+            "self_review",
+            "self_code",
+            "runtime_drift",
+            "mixed_attempt",
+        ],
+    )
+    def test_coherent_admission_rebindings_fail_before_any_label_open(packet, kind):
+        external, admission, fixture = packet
+        if kind == "omitted_runtime":
+            admission["execution_identity"].pop("runtime_sha256")
+        if kind == "rebound_group":
+            admission["execution_identity"]["execution_group_id"] = "foreign-group"
+        if kind == "wrong_review":
+            admission["execution_identity"]["independent_execution_review"]["sha256"] = "0" * 64
+        if kind == "training_subset":
+            admission["selected_folds"][0]["training_race_ids"] = list(fixture["training"][:1])
+        if kind == "training_foreign":
+            admission["selected_folds"][0]["training_race_ids"] = [*fixture["training"], "2014:FOREIGN:senate:regular"]
+        if kind == "mixed_attempt":
+            admission["selected_folds"][0]["attempt"] = 1
+        if kind == "orientation":
+            masks = reader.json_pin(admission["mask_receipt"])
+            masks["orientation"] = "R/(D+R)"
+            admission["mask_receipt"] = js(admission["mask_receipt"]["path"], masks)
+        if kind == "self_review":
+            review = reader.json_pin(admission["independent_scoring_review"])
+            review["manifest_sha256"] = "0" * 64
+            admission["independent_scoring_review"] = js(admission["independent_scoring_review"]["path"], review)
+        if kind == "self_code":
+            manifest = reader.json_pin(admission["scoring_manifest"])
+            manifest["files"][0]["sha256"] = "0" * 64
+            admission["scoring_manifest"] = js(admission["scoring_manifest"]["path"], manifest)
+        if kind == "runtime_drift":
+            profile = reader.json_pin(admission["scoring_runtime"])
+            profile["packages"]["scipy"] = "invented-incompatible"
+            admission["scoring_runtime"] = js(admission["scoring_runtime"]["path"], profile)
+>       external = rebound_admission(external, admission)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+research/improvement-loop-20261024/momentum-forecast-scoring-sol-v1/test_score_reader.py:164: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+external = {'path': '/tmp/pytest-of-hayden/pytest-348/test_coherent_admission_rebind1/synthetic/admission.json', 'sha256': '69c54c1568e5dfed68a92814dea68ba779d6aae5f9b01178aebdb6cd15a5e7ae'}
+admission = {'execution_identity': {'execution_group_id': 'foreign-group', 'execution_manifest_sha256': 'e74bc838eaa859a55d9ebe181...etic/synthetic-scorer-review.json', 'sha256': '5479119548a92ed243abadbbc180bc0a08a097f0733a68eb3e6ed202d65f6a37'}, ...}
+
+    def rebound_admission(external, admission):
+>       return js(external["path"], admission)
+               ^^
+E       NameError: name 'js' is not defined
+
+research/improvement-loop-20261024/momentum-forecast-scoring-sol-v1/test_score_reader.py:104: NameError
+_ test_coherent_admission_rebindings_fail_before_any_label_open[wrong_review] __
+
+packet = ({'path': '/tmp/pytest-of-hayden/pytest-348/test_coherent_admission_rebind2/synthetic/admission.json', 'sha256': '4aab...: 0, 'chains': 4, 'cycle': 2018, ...}, 'numeric_target_labels': False, 'numerical_core_bulk_passed': True, ...}}, ...})
+kind = 'wrong_review'
+
+    @pytest.mark.parametrize(
+        "kind",
+        [
+            "omitted_runtime",
+            "rebound_group",
+            "wrong_review",
+            "training_subset",
+            "training_foreign",
+            "orientation",
+            "self_review",
+            "self_code",
+            "runtime_drift",
+            "mixed_attempt",
+        ],
+    )
+    def test_coherent_admission_rebindings_fail_before_any_label_open(packet, kind):
+        external, admission, fixture = packet
+        if kind == "omitted_runtime":
+            admission["execution_identity"].pop("runtime_sha256")
+        if kind == "rebound_group":
+            admission["execution_identity"]["execution_group_id"] = "foreign-group"
+        if kind == "wrong_review":
+            admission["execution_identity"]["independent_execution_review"]["sha256"] = "0" * 64
+        if kind == "training_subset":
+            admission["selected_folds"][0]["training_race_ids"] = list(fixture["training"][:1])
+        if kind == "training_foreign":
+            admission["selected_folds"][0]["training_race_ids"] = [*fixture["training"], "2014:FOREIGN:senate:regular"]
+        if kind == "mixed_attempt":
+            admission["selected_folds"][0]["attempt"] = 1
+        if kind == "orientation":
+            masks = reader.json_pin(admission["mask_receipt"])
+            masks["orientation"] = "R/(D+R)"
+            admission["mask_receipt"] = js(admission["mask_receipt"]["path"], masks)
+        if kind == "self_review":
+            review = reader.json_pin(admission["independent_scoring_review"])
+            review["manifest_sha256"] = "0" * 64
+            admission["independent_scoring_review"] = js(admission["independent_scoring_review"]["path"], review)
+        if kind == "self_code":
+            manifest = reader.json_pin(admission["scoring_manifest"])
+            manifest["files"][0]["sha256"] = "0" * 64
+            admission["scoring_manifest"] = js(admission["scoring_manifest"]["path"], manifest)
+        if kind == "runtime_drift":
+            profile = reader.json_pin(admission["scoring_runtime"])
+            profile["packages"]["scipy"] = "invented-incompatible"
+            admission["scoring_runtime"] = js(admission["scoring_runtime"]["path"], profile)
+>       external = rebound_admission(external, admission)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+research/improvement-loop-20261024/momentum-forecast-scoring-sol-v1/test_score_reader.py:164: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+external = {'path': '/tmp/pytest-of-hayden/pytest-348/test_coherent_admission_rebind2/synthetic/admission.json', 'sha256': '4aabe10ff3580bbe2bb374876951eb9a3a83a28e78b2f23bb366eefe03f09f45'}
+admission = {'execution_identity': {'execution_group_id': 'SYNTHETIC-matched-file-test', 'execution_manifest_sha256': 'e74bc838eaa...etic/synthetic-scorer-review.json', 'sha256': '5479119548a92ed243abadbbc180bc0a08a097f0733a68eb3e6ed202d65f6a37'}, ...}
+
+    def rebound_admission(external, admission):
+>       return js(external["path"], admission)
+               ^^
+E       NameError: name 'js' is not defined
+
+research/improvement-loop-20261024/momentum-forecast-scoring-sol-v1/test_score_reader.py:104: NameError
+_ test_coherent_admission_rebindings_fail_before_any_label_open[training_subset] _
+
+packet = ({'path': '/tmp/pytest-of-hayden/pytest-348/test_coherent_admission_rebind3/synthetic/admission.json', 'sha256': '955c...: 0, 'chains': 4, 'cycle': 2018, ...}, 'numeric_target_labels': False, 'numerical_core_bulk_passed': True, ...}}, ...})
+kind = 'training_subset'
+
+    @pytest.mark.parametrize(
+        "kind",
+        [
+            "omitted_runtime",
+            "rebound_group",
+            "wrong_review",
+            "training_subset",
+            "training_foreign",
+            "orientation",
+            "self_review",
+            "self_code",
+            "runtime_drift",
+            "mixed_attempt",
+        ],
+    )
+    def test_coherent_admission_rebindings_fail_before_any_label_open(packet, kind):
+        external, admission, fixture = packet
+        if kind == "omitted_runtime":
+            admission["execution_identity"].pop("runtime_sha256")
+        if kind == "rebound_group":
+            admission["execution_identity"]["execution_group_id"] = "foreign-group"
+        if kind == "wrong_review":
+            admission["execution_identity"]["independent_execution_review"]["sha256"] = "0" * 64
+        if kind == "training_subset":
+            admission["selected_folds"][0]["training_race_ids"] = list(fixture["training"][:1])
+        if kind == "training_foreign":
+            admission["selected_folds"][0]["training_race_ids"] = [*fixture["training"], "2014:FOREIGN:senate:regular"]
+        if kind == "mixed_attempt":
+            admission["selected_folds"][0]["attempt"] = 1
+        if kind == "orientation":
+            masks = reader.json_pin(admission["mask_receipt"])
+            masks["orientation"] = "R/(D+R)"
+            admission["mask_receipt"] = js(admission["mask_receipt"]["path"], masks)
+        if kind == "self_review":
+            review = reader.json_pin(admission["independent_scoring_review"])
+            review["manifest_sha256"] = "0" * 64
+            admission["independent_scoring_review"] = js(admission["independent_scoring_review"]["path"], review)
+        if kind == "self_code":
+            manifest = reader.json_pin(admission["scoring_manifest"])
+            manifest["files"][0]["sha256"] = "0" * 64
+            admission["scoring_manifest"] = js(admission["scoring_manifest"]["path"], manifest)
+        if kind == "runtime_drift":
+            profile = reader.json_pin(admission["scoring_runtime"])
+            profile["packages"]["scipy"] = "invented-incompatible"
+            admission["scoring_runtime"] = js(admission["scoring_runtime"]["path"], profile)
+>       external = rebound_admission(external, admission)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+research/improvement-loop-20261024/momentum-forecast-scoring-sol-v1/test_score_reader.py:164: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+external = {'path': '/tmp/pytest-of-hayden/pytest-348/test_coherent_admission_rebind3/synthetic/admission.json', 'sha256': '955cc28b69fa072783ecb0a03a9a7832960cb9ff76805e6e4a7856e13816b31a'}
+admission = {'execution_identity': {'execution_group_id': 'SYNTHETIC-matched-file-test', 'execution_manifest_sha256': 'e74bc838eaa...etic/synthetic-scorer-review.json', 'sha256': '5479119548a92ed243abadbbc180bc0a08a097f0733a68eb3e6ed202d65f6a37'}, ...}
+
+    def rebound_admission(external, admission):
+>       return js(external["path"], admission)
+               ^^
+E       NameError: name 'js' is not defined
+
+research/improvement-loop-20261024/momentum-forecast-scoring-sol-v1/test_score_reader.py:104: NameError
+_ test_coherent_admission_rebindings_fail_before_any_label_open[training_foreign] _
+
+packet = ({'path': '/tmp/pytest-of-hayden/pytest-348/test_coherent_admission_rebind4/synthetic/admission.json', 'sha256': '1645...: 0, 'chains': 4, 'cycle': 2018, ...}, 'numeric_target_labels': False, 'numerical_core_bulk_passed': True, ...}}, ...})
+kind = 'training_foreign'
+
+    @pytest.mark.parametrize(
+        "kind",
+        [
+            "omitted_runtime",
+            "rebound_group",
+            "wrong_review",
+            "training_subset",
+            "training_foreign",
+            "orientation",
+            "self_review",
+            "self_code",
+            "runtime_drift",
+            "mixed_attempt",
+        ],
+    )
+    def test_coherent_admission_rebindings_fail_before_any_label_open(packet, kind):
+        external, admission, fixture = packet
+        if kind == "omitted_runtime":
+            admission["execution_identity"].pop("runtime_sha256")
+        if kind == "rebound_group":
+            admission["execution_identity"]["execution_group_id"] = "foreign-group"
+        if kind == "wrong_review":
+            admission["execution_identity"]["independent_execution_review"]["sha256"] = "0" * 64
+        if kind == "training_subset":
+            admission["selected_folds"][0]["training_race_ids"] = list(fixture["training"][:1])
+        if kind == "training_foreign":
+            admission["selected_folds"][0]["training_race_ids"] = [*fixture["training"], "2014:FOREIGN:senate:regular"]
+        if kind == "mixed_attempt":
+            admission["selected_folds"][0]["attempt"] = 1
+        if kind == "orientation":
+            masks = reader.json_pin(admission["mask_receipt"])
+            masks["orientation"] = "R/(D+R)"
+            admission["mask_receipt"] = js(admission["mask_receipt"]["path"], masks)
+        if kind == "self_review":
+            review = reader.json_pin(admission["independent_scoring_review"])
+            review["manifest_sha256"] = "0" * 64
+            admission["independent_scoring_review"] = js(admission["independent_scoring_review"]["path"], review)
+        if kind == "self_code":
+            manifest = reader.json_pin(admission["scoring_manifest"])
+            manifest["files"][0]["sha256"] = "0" * 64
+            admission["scoring_manifest"] = js(admission["scoring_manifest"]["path"], manifest)
+        if kind == "runtime_drift":
+            profile = reader.json_pin(admission["scoring_runtime"])
+            profile["packages"]["scipy"] = "invented-incompatible"
+            admission["scoring_runtime"] = js(admission["scoring_runtime"]["path"], profile)
+>       external = rebound_admission(external, admission)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+research/improvement-loop-20261024/momentum-forecast-scoring-sol-v1/test_score_reader.py:164: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+external = {'path': '/tmp/pytest-of-hayden/pytest-348/test_coherent_admission_rebind4/synthetic/admission.json', 'sha256': '1645c33a2e41abe115184d752d1dfb586a6b90fc0565efabfc7e5e370f4f46a8'}
+admission = {'execution_identity': {'execution_group_id': 'SYNTHETIC-matched-file-test', 'execution_manifest_sha256': 'e74bc838eaa...etic/synthetic-scorer-review.json', 'sha256': '5479119548a92ed243abadbbc180bc0a08a097f0733a68eb3e6ed202d65f6a37'}, ...}
+
+    def rebound_admission(external, admission):
+>       return js(external["path"], admission)
+               ^^
+E       NameError: name 'js' is not defined
+
+research/improvement-loop-20261024/momentum-forecast-scoring-sol-v1/test_score_reader.py:104: NameError
+__ test_coherent_admission_rebindings_fail_before_any_label_open[orientation] __
+
+packet = ({'path': '/tmp/pytest-of-hayden/pytest-348/test_coherent_admission_rebind5/synthetic/admission.json', 'sha256': '616e...: 0, 'chains': 4, 'cycle': 2018, ...}, 'numeric_target_labels': False, 'numerical_core_bulk_passed': True, ...}}, ...})
+kind = 'orientation'
+
+    @pytest.mark.parametrize(
+        "kind",
+        [
+            "omitted_runtime",
+            "rebound_group",
+            "wrong_review",
+            "training_subset",
+            "training_foreign",
+            "orientation",
+            "self_review",
+            "self_code",
+            "runtime_drift",
+            "mixed_attempt",
+        ],
+    )
+    def test_coherent_admission_rebindings_fail_before_any_label_open(packet, kind):
+        external, admission, fixture = packet
+        if kind == "omitted_runtime":
+            admission["execution_identity"].pop("runtime_sha256")
+        if kind == "rebound_group":
+            admission["execution_identity"]["execution_group_id"] = "foreign-group"
+        if kind == "wrong_review":
+            admission["execution_identity"]["independent_execution_review"]["sha256"] = "0" * 64
+        if kind == "training_subset":
+            admission["selected_folds"][0]["training_race_ids"] = list(fixture["training"][:1])
+        if kind == "training_foreign":
+            admission["selected_folds"][0]["training_race_ids"] = [*fixture["training"], "2014:FOREIGN:senate:regular"]
+        if kind == "mixed_attempt":
+            admission["selected_folds"][0]["attempt"] = 1
+        if kind == "orientation":
+            masks = reader.json_pin(admission["mask_receipt"])
+            masks["orientation"] = "R/(D+R)"
+>           admission["mask_receipt"] = js(admission["mask_receipt"]["path"], masks)
+                                        ^^
+E           NameError: name 'js' is not defined
+
+research/improvement-loop-20261024/momentum-forecast-scoring-sol-v1/test_score_reader.py:151: NameError
+__ test_coherent_admission_rebindings_fail_before_any_label_open[self_review] __
+
+packet = ({'path': '/tmp/pytest-of-hayden/pytest-348/test_coherent_admission_rebind6/synthetic/admission.json', 'sha256': 'c602...: 0, 'chains': 4, 'cycle': 2018, ...}, 'numeric_target_labels': False, 'numerical_core_bulk_passed': True, ...}}, ...})
+kind = 'self_review'
+
+    @pytest.mark.parametrize(
+        "kind",
+        [
+            "omitted_runtime",
+            "rebound_group",
+            "wrong_review",
+            "training_subset",
+            "training_foreign",
+            "orientation",
+            "self_review",
+            "self_code",
+            "runtime_drift",
+            "mixed_attempt",
+        ],
+    )
+    def test_coherent_admission_rebindings_fail_before_any_label_open(packet, kind):
+        external, admission, fixture = packet
+        if kind == "omitted_runtime":
+            admission["execution_identity"].pop("runtime_sha256")
+        if kind == "rebound_group":
+            admission["execution_identity"]["execution_group_id"] = "foreign-group"
+        if kind == "wrong_review":
+            admission["execution_identity"]["independent_execution_review"]["sha256"] = "0" * 64
+        if kind == "training_subset":
+            admission["selected_folds"][0]["training_race_ids"] = list(fixture["training"][:1])
+        if kind == "training_foreign":
+            admission["selected_folds"][0]["training_race_ids"] = [*fixture["training"], "2014:FOREIGN:senate:regular"]
+        if kind == "mixed_attempt":
+            admission["selected_folds"][0]["attempt"] = 1
+        if kind == "orientation":
+            masks = reader.json_pin(admission["mask_receipt"])
+            masks["orientation"] = "R/(D+R)"
+            admission["mask_receipt"] = js(admission["mask_receipt"]["path"], masks)
+        if kind == "self_review":
+            review = reader.json_pin(admission["independent_scoring_review"])
+            review["manifest_sha256"] = "0" * 64
+>           admission["independent_scoring_review"] = js(admission["independent_scoring_review"]["path"], review)
+                                                      ^^
+E           NameError: name 'js' is not defined
+
+research/improvement-loop-20261024/momentum-forecast-scoring-sol-v1/test_score_reader.py:155: NameError
+___ test_coherent_admission_rebindings_fail_before_any_label_open[self_code] ___
+
+packet = ({'path': '/tmp/pytest-of-hayden/pytest-348/test_coherent_admission_rebind7/synthetic/admission.json', 'sha256': 'cc38...: 0, 'chains': 4, 'cycle': 2018, ...}, 'numeric_target_labels': False, 'numerical_core_bulk_passed': True, ...}}, ...})
+kind = 'self_code'
+
+    @pytest.mark.parametrize(
+        "kind",
+        [
+            "omitted_runtime",
+            "rebound_group",
+            "wrong_review",
+            "training_subset",
+            "training_foreign",
+            "orientation",
+            "self_review",
+            "self_code",
+            "runtime_drift",
+            "mixed_attempt",
+        ],
+    )
+    def test_coherent_admission_rebindings_fail_before_any_label_open(packet, kind):
+        external, admission, fixture = packet
+        if kind == "omitted_runtime":
+            admission["execution_identity"].pop("runtime_sha256")
+        if kind == "rebound_group":
+            admission["execution_identity"]["execution_group_id"] = "foreign-group"
+        if kind == "wrong_review":
+            admission["execution_identity"]["independent_execution_review"]["sha256"] = "0" * 64
+        if kind == "training_subset":
+            admission["selected_folds"][0]["training_race_ids"] = list(fixture["training"][:1])
+        if kind == "training_foreign":
+            admission["selected_folds"][0]["training_race_ids"] = [*fixture["training"], "2014:FOREIGN:senate:regular"]
+        if kind == "mixed_attempt":
+            admission["selected_folds"][0]["attempt"] = 1
+        if kind == "orientation":
+            masks = reader.json_pin(admission["mask_receipt"])
+            masks["orientation"] = "R/(D+R)"
+            admission["mask_receipt"] = js(admission["mask_receipt"]["path"], masks)
+        if kind == "self_review":
+            review = reader.json_pin(admission["independent_scoring_review"])
+            review["manifest_sha256"] = "0" * 64
+            admission["independent_scoring_review"] = js(admission["independent_scoring_review"]["path"], review)
+        if kind == "self_code":
+            manifest = reader.json_pin(admission["scoring_manifest"])
+            manifest["files"][0]["sha256"] = "0" * 64
+>           admission["scoring_manifest"] = js(admission["scoring_manifest"]["path"], manifest)
+                                            ^^
+E           NameError: name 'js' is not defined
+
+research/improvement-loop-20261024/momentum-forecast-scoring-sol-v1/test_score_reader.py:159: NameError
+_ test_coherent_admission_rebindings_fail_before_any_label_open[runtime_drift] _
+
+packet = ({'path': '/tmp/pytest-of-hayden/pytest-348/test_coherent_admission_rebind8/synthetic/admission.json', 'sha256': '97dd...: 0, 'chains': 4, 'cycle': 2018, ...}, 'numeric_target_labels': False, 'numerical_core_bulk_passed': True, ...}}, ...})
+kind = 'runtime_drift'
+
+    @pytest.mark.parametrize(
+        "kind",
+        [
+            "omitted_runtime",
+            "rebound_group",
+            "wrong_review",
+            "training_subset",
+            "training_foreign",
+            "orientation",
+            "self_review",
+            "self_code",
+            "runtime_drift",
+            "mixed_attempt",
+        ],
+    )
+    def test_coherent_admission_rebindings_fail_before_any_label_open(packet, kind):
+        external, admission, fixture = packet
+        if kind == "omitted_runtime":
+            admission["execution_identity"].pop("runtime_sha256")
+        if kind == "rebound_group":
+            admission["execution_identity"]["execution_group_id"] = "foreign-group"
+        if kind == "wrong_review":
+            admission["execution_identity"]["independent_execution_review"]["sha256"] = "0" * 64
+        if kind == "training_subset":
+            admission["selected_folds"][0]["training_race_ids"] = list(fixture["training"][:1])
+        if kind == "training_foreign":
+            admission["selected_folds"][0]["training_race_ids"] = [*fixture["training"], "2014:FOREIGN:senate:regular"]
+        if kind == "mixed_attempt":
+            admission["selected_folds"][0]["attempt"] = 1
+        if kind == "orientation":
+            masks = reader.json_pin(admission["mask_receipt"])
+            masks["orientation"] = "R/(D+R)"
+            admission["mask_receipt"] = js(admission["mask_receipt"]["path"], masks)
+        if kind == "self_review":
+            review = reader.json_pin(admission["independent_scoring_review"])
+            review["manifest_sha256"] = "0" * 64
+            admission["independent_scoring_review"] = js(admission["independent_scoring_review"]["path"], review)
+        if kind == "self_code":
+            manifest = reader.json_pin(admission["scoring_manifest"])
+            manifest["files"][0]["sha256"] = "0" * 64
+            admission["scoring_manifest"] = js(admission["scoring_manifest"]["path"], manifest)
+        if kind == "runtime_drift":
+            profile = reader.json_pin(admission["scoring_runtime"])
+            profile["packages"]["scipy"] = "invented-incompatible"
+>           admission["scoring_runtime"] = js(admission["scoring_runtime"]["path"], profile)
+                                           ^^
+E           NameError: name 'js' is not defined
+
+research/improvement-loop-20261024/momentum-forecast-scoring-sol-v1/test_score_reader.py:163: NameError
+_ test_coherent_admission_rebindings_fail_before_any_label_open[mixed_attempt] _
+
+packet = ({'path': '/tmp/pytest-of-hayden/pytest-348/test_coherent_admission_rebind9/synthetic/admission.json', 'sha256': '90a2...: 0, 'chains': 4, 'cycle': 2018, ...}, 'numeric_target_labels': False, 'numerical_core_bulk_passed': True, ...}}, ...})
+kind = 'mixed_attempt'
+
+    @pytest.mark.parametrize(
+        "kind",
+        [
+            "omitted_runtime",
+            "rebound_group",
+            "wrong_review",
+            "training_subset",
+            "training_foreign",
+            "orientation",
+            "self_review",
+            "self_code",
+            "runtime_drift",
+            "mixed_attempt",
+        ],
+    )
+    def test_coherent_admission_rebindings_fail_before_any_label_open(packet, kind):
+        external, admission, fixture = packet
+        if kind == "omitted_runtime":
+            admission["execution_identity"].pop("runtime_sha256")
+        if kind == "rebound_group":
+            admission["execution_identity"]["execution_group_id"] = "foreign-group"
+        if kind == "wrong_review":
+            admission["execution_identity"]["independent_execution_review"]["sha256"] = "0" * 64
+        if kind == "training_subset":
+            admission["selected_folds"][0]["training_race_ids"] = list(fixture["training"][:1])
+        if kind == "training_foreign":
+            admission["selected_folds"][0]["training_race_ids"] = [*fixture["training"], "2014:FOREIGN:senate:regular"]
+        if kind == "mixed_attempt":
+            admission["selected_folds"][0]["attempt"] = 1
+        if kind == "orientation":
+            masks = reader.json_pin(admission["mask_receipt"])
+            masks["orientation"] = "R/(D+R)"
+            admission["mask_receipt"] = js(admission["mask_receipt"]["path"], masks)
+        if kind == "self_review":
+            review = reader.json_pin(admission["independent_scoring_review"])
+            review["manifest_sha256"] = "0" * 64
+            admission["independent_scoring_review"] = js(admission["independent_scoring_review"]["path"], review)
+        if kind == "self_code":
+            manifest = reader.json_pin(admission["scoring_manifest"])
+            manifest["files"][0]["sha256"] = "0" * 64
+            admission["scoring_manifest"] = js(admission["scoring_manifest"]["path"], manifest)
+        if kind == "runtime_drift":
+            profile = reader.json_pin(admission["scoring_runtime"])
+            profile["packages"]["scipy"] = "invented-incompatible"
+            admission["scoring_runtime"] = js(admission["scoring_runtime"]["path"], profile)
+>       external = rebound_admission(external, admission)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+research/improvement-loop-20261024/momentum-forecast-scoring-sol-v1/test_score_reader.py:164: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+external = {'path': '/tmp/pytest-of-hayden/pytest-348/test_coherent_admission_rebind9/synthetic/admission.json', 'sha256': '90a26d6b84ef848bb1ad74fc78dadae14a1fa133e223b4769ada0645ed562bdf'}
+admission = {'execution_identity': {'execution_group_id': 'SYNTHETIC-matched-file-test', 'execution_manifest_sha256': 'e74bc838eaa...etic/synthetic-scorer-review.json', 'sha256': '5479119548a92ed243abadbbc180bc0a08a097f0733a68eb3e6ed202d65f6a37'}, ...}
+
+    def rebound_admission(external, admission):
+>       return js(external["path"], admission)
+               ^^
+E       NameError: name 'js' is not defined
+
+research/improvement-loop-20261024/momentum-forecast-scoring-sol-v1/test_score_reader.py:104: NameError
+____ test_hidden_retry_trigger_and_triggered_initial_trio_cannot_be_success ____
+
+packet = ({'path': '/tmp/pytest-of-hayden/pytest-348/test_hidden_retry_trigger_and_0/synthetic/admission.json', 'sha256': 'b96b...: 0, 'chains': 4, 'cycle': 2018, ...}, 'numeric_target_labels': False, 'numerical_core_bulk_passed': True, ...}}, ...})
+
+    def test_hidden_retry_trigger_and_triggered_initial_trio_cannot_be_success(packet):
+        external, admission, fixture = packet
+    
+        def hidden(summary):
+            summary["gates"]["core_state"] = False
+    
+>       external = update_summary(external, admission, fixture, hidden, terminal_core=False)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+research/improvement-loop-20261024/momentum-forecast-scoring-sol-v1/test_score_reader.py:191: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+external = {'path': '/tmp/pytest-of-hayden/pytest-348/test_hidden_retry_trigger_and_0/synthetic/admission.json', 'sha256': 'b96bc2fa739625c761dc1bdee33a7d554bc57a8056a87ef3f385a9c71358b0f4'}
+admission = {'execution_identity': {'execution_group_id': 'SYNTHETIC-matched-file-test', 'execution_manifest_sha256': 'e74bc838eaa...etic/synthetic-scorer-review.json', 'sha256': '5479119548a92ed243abadbbc180bc0a08a097f0733a68eb3e6ed202d65f6a37'}, ...}
+fixture = {'label_path': PosixPath('/tmp/pytest-of-hayden/pytest-348/test_hidden_retry_trigger_and_0/synthetic/SYNTHETIC-outcome...': 0, 'chains': 4, 'cycle': 2018, ...}, 'numeric_target_labels': False, 'numerical_core_bulk_passed': True, ...}}, ...}
+modify = <function test_hidden_retry_trigger_and_triggered_initial_trio_cannot_be_success.<locals>.hidden at 0x7c6e463768e0>
+
+    def update_summary(external, admission, fixture, modify, *, terminal_core=True):
+        record = admission["selected_folds"][0]["jobs"]["FS6"]
+        summary = reader.json_pin(record["numerical_status"])
+        modify(summary)
+>       record["numerical_status"] = js(record["numerical_status"]["path"], summary)
+                                     ^^
+E       NameError: name 'js' is not defined
+
+research/improvement-loop-20261024/momentum-forecast-scoring-sol-v1/test_score_reader.py:176: NameError
+_ test_genuine_failed_terminal_without_prediction_or_status_is_numerical_unresolved _
+
+packet = ({'path': '/tmp/pytest-of-hayden/pytest-348/test_genuine_failed_terminal_w0/synthetic/admission.json', 'sha256': '7515...: 0, 'chains': 4, 'cycle': 2018, ...}, 'numeric_target_labels': False, 'numerical_core_bulk_passed': True, ...}}, ...})
+
+    def test_genuine_failed_terminal_without_prediction_or_status_is_numerical_unresolved(packet):
+        external, admission, fixture = packet
+        record = admission["selected_folds"][0]["jobs"]["FS5"]
+        terminal = fixture["terminals"]["FS5"]
+        terminal["status"] = "failed_preserved_no_restart"
+        terminal["exception"] = "invented failure before any prediction seal"
+>       admission["selected_folds"][0]["jobs"]["FS5"] = {"terminal": js(record["terminal"]["path"], terminal)}
+                                                                     ^^
+E       NameError: name 'js' is not defined
+
+research/improvement-loop-20261024/momentum-forecast-scoring-sol-v1/test_score_reader.py:222: NameError
+_ test_coherent_trace_original_components_truncation_rejected_by_declared_job __
+
+packet = ({'path': '/tmp/pytest-of-hayden/pytest-348/test_coherent_trace_original_c0/synthetic/admission.json', 'sha256': '0fe1...: 0, 'chains': 4, 'cycle': 2018, ...}, 'numeric_target_labels': False, 'numerical_core_bulk_passed': True, ...}}, ...})
+tmp_path = PosixPath('/tmp/pytest-of-hayden/pytest-348/test_coherent_trace_original_c0')
+
+    def test_coherent_trace_original_components_truncation_rejected_by_declared_job(packet, tmp_path):
+        from trace_diagnostics import save_trace
+    
+        external, admission, fixture = packet
+        record = admission["selected_folds"][0]["jobs"]["FS5"]
+        terminal = fixture["terminals"]["FS5"]
+        trace = fixture["trace"]
+        arrays = {k: v.copy() for k, v in trace["arrays"].items()}
+        metadata = (
+            reader.plain(trace["metadata"])
+            if hasattr(reader, "plain")
+            else json.loads(json.dumps(driver._plain(trace["metadata"])))
+        )
+        old, new = 1600, 1400
+        for key, value in list(arrays.items()):
+            if value.shape[:2] == (4, old):
+                arrays[key] = value[:, :new].copy()
+        arrays["bank_batch_weight_sums"] = arrays["bank_batch_weight_sums"][:, :14].copy()
+        arrays["bank_batch_counts"] = arrays["bank_batch_counts"][:, :14].copy()
+        arrays["bank_sampled_occupancy"] = np.stack(
+            [np.bincount(chain, minlength=12) for chain in arrays["sampled_row_index"]]
+        )
+        metadata["draws"] = new
+        saved = save_trace(dict(arrays=arrays, metadata=metadata), tmp_path / "coherent-short-trace")
+        terminal["artifacts"]["trace"] = dict(
+            path=str(tmp_path / "coherent-short-trace/receipt.json"), sha256=saved["receipt_sha256"]
+        )
+        original_receipt = reader.json_pin(terminal["artifacts"]["original"])
+        original = reader.npz_record(original_receipt["arrays"])
+        shortened = {k: v[:, :new].copy() if v.shape[:2] == (4, old) else v.copy() for k, v in original.items()}
+>       original_receipt["arrays"] = nz(original_receipt["arrays"]["file"]["path"], shortened)
+                                     ^^
+E       NameError: name 'nz' is not defined
+
+research/improvement-loop-20261024/momentum-forecast-scoring-sol-v1/test_score_reader.py:261: NameError
+=========================== short test summary info ============================
+FAILED research/improvement-loop-20261024/momentum-forecast-scoring-sol-v1/test_score_reader.py::test_coherent_admission_rebindings_fail_before_any_label_open[omitted_runtime]
+FAILED research/improvement-loop-20261024/momentum-forecast-scoring-sol-v1/test_score_reader.py::test_coherent_admission_rebindings_fail_before_any_label_open[rebound_group]
+FAILED research/improvement-loop-20261024/momentum-forecast-scoring-sol-v1/test_score_reader.py::test_coherent_admission_rebindings_fail_before_any_label_open[wrong_review]
+FAILED research/improvement-loop-20261024/momentum-forecast-scoring-sol-v1/test_score_reader.py::test_coherent_admission_rebindings_fail_before_any_label_open[training_subset]
+FAILED research/improvement-loop-20261024/momentum-forecast-scoring-sol-v1/test_score_reader.py::test_coherent_admission_rebindings_fail_before_any_label_open[training_foreign]
+FAILED research/improvement-loop-20261024/momentum-forecast-scoring-sol-v1/test_score_reader.py::test_coherent_admission_rebindings_fail_before_any_label_open[orientation]
+FAILED research/improvement-loop-20261024/momentum-forecast-scoring-sol-v1/test_score_reader.py::test_coherent_admission_rebindings_fail_before_any_label_open[self_review]
+FAILED research/improvement-loop-20261024/momentum-forecast-scoring-sol-v1/test_score_reader.py::test_coherent_admission_rebindings_fail_before_any_label_open[self_code]
+FAILED research/improvement-loop-20261024/momentum-forecast-scoring-sol-v1/test_score_reader.py::test_coherent_admission_rebindings_fail_before_any_label_open[runtime_drift]
+FAILED research/improvement-loop-20261024/momentum-forecast-scoring-sol-v1/test_score_reader.py::test_coherent_admission_rebindings_fail_before_any_label_open[mixed_attempt]
+FAILED research/improvement-loop-20261024/momentum-forecast-scoring-sol-v1/test_score_reader.py::test_hidden_retry_trigger_and_triggered_initial_trio_cannot_be_success
+FAILED research/improvement-loop-20261024/momentum-forecast-scoring-sol-v1/test_score_reader.py::test_genuine_failed_terminal_without_prediction_or_status_is_numerical_unresolved
+FAILED research/improvement-loop-20261024/momentum-forecast-scoring-sol-v1/test_score_reader.py::test_coherent_trace_original_components_truncation_rejected_by_declared_job
+13 failed, 20 passed in 22.44s

@@ -1,0 +1,659 @@
+diff --git a/components/CandidatePairComparisonPreview.tsx b/components/CandidatePairComparisonPreview.tsx
+new file mode 100644
+index 0000000..ec7d041
+--- /dev/null
++++ b/components/CandidatePairComparisonPreview.tsx
+@@ -0,0 +1,99 @@
++import {
++  candidatePairComparisonReadiness, pairComparisonArms, pairComparisonArmLabels,
++  type CandidatePairComparisonDraft, type PairArmView,
++} from "../lib/candidate-pair-comparison-view.ts";
++
++const percent = (value: number) => `${new Intl.NumberFormat("en-US", { maximumFractionDigits: 1 }).format(value * 100)}%`;
++const shareMass = (value: number) => value === 0 ? "0%" : value === 1 ? "100%"
++  : value < 0.001 ? "less than 0.1%" : value > 0.999 ? "more than 99.9%" : percent(value);
++const loss = (value: number) => new Intl.NumberFormat("en-US", { maximumFractionDigits: 2 }).format(value * 100);
++
++function Arm({ result, label }: { result: PairArmView; label: string }) {
++  const d = result.distribution, e = result.evaluation;
++  return <section className="count-quantity" aria-label={label}>
++    <h4>{label}</h4>
++    {d.status === "available" ? <>
++      <span className="count-kind">Invented pair-share summary</span>
++      <p className="count-value">{percent(d.summary.mean)} <span>average pair share (mean)</span></p>
++      <p>Middle predicted share (median): {percent(d.summary.median)}.</p>
++      <ul className="count-intervals">{d.summary.intervals.map(interval => <li key={interval.level}>
++        {percent(interval.level)} predictive range: {percent(interval.lower)}–{percent(interval.upper)}
++      </li>)}</ul>
++    </> : <p className="count-unavailable"><strong>Pair share unavailable.</strong> {d.reason}
++      {d.status === "undefined_share" ? <> The share cannot be calculated in {shareMass(d.undefinedMass)} of the predicted outcomes. Those outcomes stay in the comparison; the remaining outcomes do not get extra weight.</> : <> We do not know how often the share could be calculated. Missing does not mean a share of 0%.</>}
++    </p>}
++    <h5>Errors against the invented result</h5>
++    {e.status === "scored" ? <dl className="count-outcomes">
++      <div><dt>Full-distribution error (CRPS)</dt><dd style={{ whiteSpace: "nowrap" }}>{loss(e.score.crps)} points</dd></div>
++      <div><dt>Range error (weighted interval score)</dt><dd style={{ whiteSpace: "nowrap" }}>{loss(e.score.weightedIntervalScore)} points</dd></div>
++      <div><dt>Average-share miss</dt><dd style={{ whiteSpace: "nowrap" }}>{loss(e.score.absoluteMeanError)} points</dd></div>
++    </dl> : <p><strong>Scores unavailable.</strong> {e.reason} No perfect score is substituted for missing results.</p>}
++    <p className="small"><strong>Calculation precision unavailable.</strong> {result.precision.reason} A real simulation may give slightly different numbers when run again. Prediction ranges describe possible election outcomes, not that calculation error.</p>
++  </section>;
++}
++
++/** Private invented-fixture component. No route, API, live input or owner DTO. */
++export default function CandidatePairComparisonPreview({ view }: { view: CandidatePairComparisonDraft }) {
++  const readiness = candidatePairComparisonReadiness(view);
++  const banner = <div className="count-fixture-banner" role="note"><strong>Illustrative data only · Private comparison study</strong>
++    <p>People, values and source records are invented. This preview is not connected to a real model or public forecast.</p></div>;
++  if (!readiness.display) return <section className="count-preview" aria-label="Private candidate-pair comparison">
++    {banner}<div className="count-warning"><strong>Comparison unavailable.</strong>
++      <ul>{readiness.problems.map(problem => <li key={problem}>{problem}</li>)}</ul>
++      <p>No pair-share estimates or scores are displayed for an incompatible draft.</p></div>
++  </section>;
++  const draft = readiness.view, c = readiness.coverage;
++  const rows = new Map(draft.rows.map(row => [row.pairId, row]));
++  return <section className="count-preview" aria-label={draft.label} style={{ overflowWrap: "anywhere" }}>
++    {banner}
++    <header><div className="eyebrow">Private frontend preparation</div><h2>{draft.label}</h2><p>{draft.provenance.label}</p></header>
++    <div className="count-scope">
++      <dl>
++        <dt>Study status</dt><dd>Experimental: an interface example, not a tested real forecast</dd>
++        <dt>Model checks</dt><dd>Not established here. These examples do not show that a real model passed its scientific or numerical checks.</dd>
++        <dt>Ready for public use?</dt><dd>No. This study does not approve a forecast or change the public default.</dd>
++        <dt>Training and input data</dt><dd>Different across these models</dd>
++        <dt>Example input cutoff</dt><dd>{draft.binding.informationCutoff} · {draft.binding.horizonDays} days before the example election</dd>
++      </dl>
++      <p>{draft.qualification.explanation}</p>
++      <p>Differences in errors cannot tell us what polling alone changed, because the models also differ in their data and assumptions. This example does not show which model would predict future elections better.</p>
++    </div>
++    <section className="count-section" aria-label="Fixed comparison coverage">
++      <h3>Comparison coverage</h3>
++      <p><strong>{c.fullyScoredPairs} of {c.expectedPairs} expected pairs have scores for all three models.</strong> Results are supplied for {c.suppliedPairs} of {c.expectedPairs} pairs.</p>
++      <dl className="count-outcomes">{pairComparisonArms.map(arm => <div key={arm}><dt>{pairComparisonArmLabels[arm]}</dt><dd>{c.scoredByArm[arm]} of {c.expectedPairs} scored</dd></div>)}</dl>
++      {c.missingPairIds.length > 0 && <p>Missing pairs remain in the expected total. No overall average error is shown using only the pairs that happened to have results.</p>}
++      <p>This list does not cover all Senate contests. A candidate can lead this pair and still trail a third person. Pair shares do not establish who wins office or who controls the chamber.</p>
++    </section>
++    <section className="count-section" aria-label="How to read shares and errors">
++      <h3>How to read these numbers</h3>
++      <p>The mean is the average of possible pair shares, counting more likely outcomes more heavily. The median is the middle predicted share. Prediction ranges show how widely that share could vary.</p>
++      <p><strong>Full-distribution error (CRPS)</strong> compares all the possible shares and the probabilities assigned to them with the observed share. <strong>Range error (weighted interval score)</strong> rewards narrower prediction ranges and penalizes ranges that miss the observed share. <strong>Average-share miss</strong> is the distance between the mean prediction and the observed share.</p>
++      <p>All three errors are shown in percentage-point units. A mean prediction of 55% and an observed share of 52% differ by 3 percentage points. <strong>For all three, 0 is perfect and lower is better.</strong> The letters CRPS stand for continuous ranked probability score.</p>
++    </section>
++    {draft.requiredPairs.map(pair => {
++      const row = rows.get(pair.id);
++      return <article key={pair.id} className="count-contest" aria-label={`${pair.first.name} and ${pair.second.name}`}>
++        <h3>{pair.first.name} and {pair.second.name}</h3>
++        <p>Example election · {pair.electionDate}</p>
++        <p className="count-denominator"><strong>Votes included in the share: {pair.first.name} plus {pair.second.name}.</strong> Each percentage divides {pair.first.name}’s votes by those two candidates’ combined votes. Other candidates stay outside this denominator. This is neither all-candidate share nor a probability of winning.</p>
++        {!row ? <p className="count-unavailable"><strong>No result supplied for this expected pair.</strong> Its prediction and score are unavailable, not zero.</p> : <>
++          <p>{row.observedFirstPairShare === null ? "Observed pair share unavailable in this invented example." : `Invented observed pair share: ${percent(row.observedFirstPairShare)}.`}</p>
++          <div className="count-grid">{pairComparisonArms.map(arm => <Arm key={arm} result={row.arms[arm]} label={pairComparisonArmLabels[arm]} />)}</div>
++        </>}
++        <details className="count-checks"><summary>Candidate and election records · Invented</summary>
++          <dl><dt>Race</dt><dd>{pair.raceId}</dd><dt>Physical event</dt><dd>{pair.eventId}</dd><dt>Election date</dt><dd>{pair.electionDate}</dd><dt>Contest</dt><dd>{pair.contestId}</dd>
++            <dt>{pair.first.name}</dt><dd>Person {pair.first.personId}; source {pair.first.sourceCandidateId}; model {pair.first.modelCandidateId}; identity <code>{pair.first.identitySha256}</code></dd>
++            <dt>{pair.second.name}</dt><dd>Person {pair.second.personId}; source {pair.second.sourceCandidateId}; model {pair.second.modelCandidateId}; identity <code>{pair.second.identitySha256}</code></dd>
++          </dl>
++        </details>
++      </article>;
++    })}
++    <details className="count-checks"><summary>Technical source records · Invented declarations</summary>
++      <p>These matching records test whether the example values stay linked to the same people and election. They are not evidence that real research data or candidate identities have been checked. The example format is not an owner-approved format for real results.</p>
++      <dl><dt>Request</dt><dd><code>{draft.binding.requestSha256}</code></dd><dt>Comparison context</dt><dd><code>{draft.binding.comparisonContextSha256}</code></dd><dt>Pair specification</dt><dd><code>{draft.binding.pairSpecificationSha256}</code></dd>
++        {pairComparisonArms.map(arm => <div key={arm}><dt>{pairComparisonArmLabels[arm]}</dt><dd>{draft.binding.sources[arm].id} · <code>{draft.binding.sources[arm].artifactSha256}</code></dd></div>)}
++      </dl>
++    </details>
++  </section>;
++}
+diff --git a/lib/candidate-pair-comparison-view.ts b/lib/candidate-pair-comparison-view.ts
+new file mode 100644
+index 0000000..16edf0f
+--- /dev/null
++++ b/lib/candidate-pair-comparison-view.ts
+@@ -0,0 +1,215 @@
++/** Private presentation study, not an owner export schema, artifact parser or API.
++ * Every accepted draft is invented. These checks reconcile declarations; they do
++ * not authenticate a real source, posterior, endpoint crosswalk or forecast.
++ */
++export type PairComparisonArm = "count" | "F" | "FP";
++export const pairComparisonArms: readonly PairComparisonArm[] = ["count", "F", "FP"];
++export const pairComparisonArmLabels: Record<PairComparisonArm, string> = {
++  count: "Experimental vote-count model", F: "Earlier model without race polls (F)", FP: "Earlier model with race polls (FP)",
++};
++export interface PairEndpoint {
++  personId: string;
++  name: string;
++  sourceCandidateId: string;
++  modelCandidateId: string;
++  identitySha256: string;
++}
++export interface NamedPairIdentity {
++  id: string;
++  raceId: string;
++  contestId: string;
++  eventId: string;
++  electionDate: string;
++  first: PairEndpoint;
++  second: PairEndpoint;
++}
++export interface PairArmBinding {
++  comparisonContextSha256: string;
++  pairSpecificationSha256: string;
++  sourceId: string;
++  artifactSha256: string;
++  pairId: string;
++  raceId: string;
++  contestId: string;
++  eventId: string;
++  electionDate: string;
++  first: Omit<PairEndpoint, "name">;
++  second: Omit<PairEndpoint, "name">;
++  estimand: "candidate_marks";
++  denominator: { kind: "named_pair_counts"; firstPersonId: string; secondPersonId: string };
++}
++export interface PairDistributionSummary {
++  mean: number;
++  median: number;
++  intervals: { level: number; lower: number; upper: number }[];
++}
++export interface PairArmView {
++  binding: PairArmBinding;
++  distribution:
++    | { status: "available"; undefinedMass: 0; summary: PairDistributionSummary }
++    | { status: "undefined_share"; undefinedMass: number; summary: null; reason: string }
++    | { status: "unavailable"; undefinedMass: null; summary: null; reason: string };
++  evaluation:
++    | { status: "scored"; score: { crps: number; weightedIntervalScore: number; absoluteMeanError: number } }
++    | { status: "unavailable"; score: null; reason: string };
++  precision: { status: "unavailable"; reason: string };
++}
++export interface CandidatePairComparisonDraft {
++  kind: "candidate_pair_comparison_preparation";
++  provenance: { kind: "invented_fixture"; label: string };
++  label: string;
++  binding: {
++    requestSha256: string;
++    comparisonContextSha256: string;
++    pairSpecificationSha256: string;
++    cycle: number;
++    informationCutoff: string;
++    horizonDays: 14;
++    sources: Record<PairComparisonArm, { id: string; artifactSha256: string }>;
++  };
++  qualification: {
++    experimental: true;
++    posterior: "not_established";
++    adoption: "not_qualified";
++    informationSets: "different";
++    explanation: string;
++  };
++  /** Fixed expected roster, including pairs with no supplied results. */
++  requiredPairs: NamedPairIdentity[];
++  rows: {
++    pairId: string;
++    observedFirstPairShare: number | null;
++    arms: Record<PairComparisonArm, PairArmView>;
++  }[];
++}
++export type CandidatePairComparisonReadiness =
++  | { productionActivated: false; valid: false; display: false; problems: string[] }
++  | {
++      productionActivated: false; valid: true; display: true; problems: [];
++      view: CandidatePairComparisonDraft;
++      coverage: {
++        expectedPairs: number; suppliedPairs: number; fullyScoredPairs: number;
++        scoredByArm: Record<PairComparisonArm, number>; missingPairIds: string[];
++      };
++    };
++
++const record = (v: unknown): v is Record<string, unknown> => typeof v === "object" && v !== null && !Array.isArray(v);
++const text = (v: unknown): v is string => typeof v === "string" && v.trim().length > 0;
++const hash = (v: unknown): v is string => typeof v === "string" && /^[a-f0-9]{64}$/.test(v);
++const probability = (v: unknown): v is number => typeof v === "number" && Number.isFinite(v) && v >= 0 && v <= 1;
++const nonnegative = (v: unknown): v is number => typeof v === "number" && Number.isFinite(v) && v >= 0;
++const day = (v: unknown): v is string => typeof v === "string" && /^\d{4}-\d{2}-\d{2}$/.test(v)
++  && Number.isFinite(Date.parse(`${v}T00:00:00Z`)) && new Date(`${v}T00:00:00Z`).toISOString().slice(0, 10) === v;
++const endpoint = (v: unknown): v is PairEndpoint => record(v)
++  && [v.personId, v.name, v.sourceCandidateId, v.modelCandidateId].every(text) && hash(v.identitySha256);
++const endpointMatches = (v: unknown, expected: PairEndpoint) => record(v)
++  && ["personId", "sourceCandidateId", "modelCandidateId", "identitySha256"].every(key => v[key] === expected[key as keyof PairEndpoint]);
++const exactArms = (v: unknown): v is Record<PairComparisonArm, unknown> => record(v)
++  && Object.keys(v).length === 3 && pairComparisonArms.every(arm => Object.hasOwn(v, arm));
++
++/** Validate invented supplied summaries. No scoring, pooling or missing-mass renormalization. */
++export function candidatePairComparisonReadiness(input: unknown): CandidatePairComparisonReadiness {
++  const fail = (...messages: string[]): CandidatePairComparisonReadiness => ({
++    productionActivated: false, valid: false, display: false, problems: messages,
++  });
++  if (!record(input) || input.kind !== "candidate_pair_comparison_preparation" || !record(input.provenance)
++      || input.provenance.kind !== "invented_fixture" || !text(input.provenance.label) || !text(input.label))
++    return fail("Explicit invented-fixture provenance is required; this is not a real result adapter.");
++  const b = input.binding, q = input.qualification;
++  if (!record(b) || ![b.requestSha256, b.comparisonContextSha256, b.pairSpecificationSha256].every(hash)
++      || !Number.isInteger(b.cycle) || Number(b.cycle) < 1900 || Number(b.cycle) > 2200
++      || !text(b.informationCutoff) || !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z$/.test(b.informationCutoff)
++      || !Number.isFinite(Date.parse(b.informationCutoff)) || b.horizonDays !== 14
++      || !exactArms(b.sources)) return fail("The source records or the date 14 days before the example election are incomplete.");
++  for (const arm of pairComparisonArms) {
++    const source = b.sources[arm];
++    if (!record(source) || !text(source.id) || !hash(source.artifactSha256))
++      return fail("Each model needs a named source and an exact saved-result record.");
++  }
++  if (!record(q) || q.experimental !== true || q.posterior !== "not_established" || q.adoption !== "not_qualified"
++      || q.informationSets !== "different" || !text(q.explanation))
++    return fail("The example must remain experimental, unapproved for public use and clear about different input data.");
++  if (!Array.isArray(input.requiredPairs) || input.requiredPairs.length === 0 || !Array.isArray(input.rows))
++    return fail("A nonempty fixed pair roster and explicit result rows are required.");
++  const pairs = new Map<string, NamedPairIdentity>();
++  const races = new Set<string>(), contests = new Set<string>();
++  for (const pair of input.requiredPairs) {
++    if (!record(pair) || ![pair.id, pair.raceId, pair.contestId, pair.eventId].every(text) || !day(pair.electionDate)
++        || !endpoint(pair.first) || !endpoint(pair.second)) return fail("Each expected pair needs an election date, event and two named candidates.");
++    if (pair.first.personId === pair.second.personId || pair.first.sourceCandidateId === pair.second.sourceCandidateId
++        || pair.first.modelCandidateId === pair.second.modelCandidateId)
++      return fail("A pair must contain two distinct named endpoints.");
++    if (pairs.has(String(pair.id)) || races.has(String(pair.raceId)) || contests.has(String(pair.contestId)))
++      return fail("The fixed roster cannot repeat a pair, race or contest.");
++    if (Number(pair.electionDate.slice(0, 4)) !== b.cycle || Date.parse(`${pair.electionDate}T00:00:00Z`) - Date.parse(String(b.informationCutoff)) !== 14 * 86400000)
++      return fail("Each example election date must be exactly 14 days after the declared input cutoff.");
++    pairs.set(String(pair.id), pair as unknown as NamedPairIdentity);
++    races.add(String(pair.raceId)); contests.add(String(pair.contestId));
++  }
++  const supplied = new Set<string>();
++  const scoredByArm = { count: 0, F: 0, FP: 0 };
++  let fullyScoredPairs = 0;
++  for (const row of input.rows) {
++    if (!record(row) || !text(row.pairId) || !pairs.has(row.pairId) || supplied.has(row.pairId) || !exactArms(row.arms))
++      return fail("Result rows must identify each expected pair at most once and retain all three model slots.");
++    if (row.observedFirstPairShare !== null && !probability(row.observedFirstPairShare))
++      return fail("An observed pair share must be in [0,1] or explicitly unavailable.");
++    supplied.add(row.pairId);
++    const pair = pairs.get(row.pairId)!;
++    let allScored = true;
++    for (const arm of pairComparisonArms) {
++      const view = row.arms[arm], source = b.sources[arm] as Record<string, unknown>;
++      if (!record(view) || !record(view.binding)) return fail("Every model slot needs a bound result or an explicit unavailable state.");
++      const binding = view.binding;
++      if (binding.comparisonContextSha256 !== b.comparisonContextSha256 || binding.pairSpecificationSha256 !== b.pairSpecificationSha256
++          || binding.sourceId !== source.id || binding.artifactSha256 !== source.artifactSha256
++          || binding.pairId !== pair.id || binding.raceId !== pair.raceId || binding.contestId !== pair.contestId
++          || binding.eventId !== pair.eventId || binding.electionDate !== pair.electionDate
++          || !endpointMatches(binding.first, pair.first) || !endpointMatches(binding.second, pair.second))
++        return fail("The model summaries do not refer to the same ordered candidates, source records, race, event and date.");
++      if (binding.estimand !== "candidate_marks" || !record(binding.denominator)
++          || binding.denominator.kind !== "named_pair_counts" || binding.denominator.firstPersonId !== pair.first.personId
++          || binding.denominator.secondPersonId !== pair.second.personId)
++        return fail("Shares must use the same two named candidates in the same order; shares among all candidates cannot substitute.");
++      const distribution = view.distribution, evaluation = view.evaluation;
++      if (!record(distribution) || !record(evaluation) || !record(view.precision)
++          || view.precision.status !== "unavailable" || !text(view.precision.reason))
++        return fail("Predictions, errors and missing calculation-precision information must stay separate.");
++      if (distribution.status === "available") {
++        const summary = distribution.summary;
++        if (distribution.undefinedMass !== 0 || !record(summary) || !probability(summary.mean) || !probability(summary.median)
++            || !Array.isArray(summary.intervals) || summary.intervals.length === 0)
++          return fail("A displayed share needs valid summary values and no outcomes in which that share cannot be calculated.");
++        const levels = new Set<number>();
++        for (const interval of summary.intervals) {
++          if (!record(interval) || !probability(interval.level) || interval.level === 0 || interval.level === 1
++              || levels.has(interval.level) || !probability(interval.lower) || !probability(interval.upper) || interval.lower > interval.upper)
++            return fail("Predictive intervals need distinct stated levels and ordered bounded shares.");
++          levels.add(interval.level);
++        }
++      } else if (distribution.status === "undefined_share") {
++        if (!probability(distribution.undefinedMass) || distribution.undefinedMass === 0 || distribution.summary !== null || !text(distribution.reason))
++          return fail("The chance of an incalculable share must remain visible; no replacement summary can be supplied.");
++      } else if (distribution.status === "unavailable") {
++        if (distribution.undefinedMass !== null || distribution.summary !== null || !text(distribution.reason))
++          return fail("A missing result must remain unknown, not a zero share or a claim that every share could be calculated.");
++      } else return fail("Unsupported predictive state.");
++      if (evaluation.status === "scored") {
++        if (distribution.status !== "available" || row.observedFirstPairShare === null || !record(evaluation.score)
++            || ![evaluation.score.crps, evaluation.score.weightedIntervalScore, evaluation.score.absoluteMeanError].every(nonnegative))
++          return fail("Scores require a defined prediction, observed share and finite nonnegative supplied losses.");
++        const summary = distribution.summary as Record<string, unknown>;
++        if (Math.abs(Number(evaluation.score.absoluteMeanError) - Math.abs(Number(summary.mean) - row.observedFirstPairShare)) > 1e-12)
++          return fail("The supplied absolute error must agree with the displayed mean and observed pair share.");
++        scoredByArm[arm] += 1;
++      } else if (evaluation.status !== "unavailable" || evaluation.score !== null || !text(evaluation.reason))
++        return fail("Missing scores require null values and a reason; missing is not zero loss.");
++      else allScored = false;
++    }
++    if (allScored) fullyScoredPairs += 1;
++  }
++  return { productionActivated: false, valid: true, display: true, problems: [],
++    view: input as unknown as CandidatePairComparisonDraft,
++    coverage: { expectedPairs: pairs.size, suppliedPairs: supplied.size, fullyScoredPairs, scoredByArm,
++      missingPairIds: [...pairs.keys()].filter(id => !supplied.has(id)) } };
++}
+diff --git a/tests/fixtures/candidate-pair-comparison.mjs b/tests/fixtures/candidate-pair-comparison.mjs
+new file mode 100644
+index 0000000..20074e3
+--- /dev/null
++++ b/tests/fixtures/candidate-pair-comparison.mjs
+@@ -0,0 +1,35 @@
++/** Invented presentation fixtures only; no real people, sources or predictions. */
++const hashes = { request: "a".repeat(64), context: "b".repeat(64), pair: "c".repeat(64), count: "d".repeat(64), F: "e".repeat(64), FP: "f".repeat(64) };
++const endpoint = (place, side) => ({ personId: `${place}-${side}`, name: `${side === "first" ? "Alex" : "Blair"} ${place} Example`, sourceCandidateId: `source-${place}-${side}`, modelCandidateId: `model-${place}-${side}`, identitySha256: side === "first" ? "1".repeat(64) : "2".repeat(64) });
++const pair = place => ({ id: `pair-${place}`, raceId: `invented-${place}-race`, contestId: `invented-${place}-contest`, eventId: `invented-${place}-event`, electionDate: "2024-11-05", first: endpoint(place, "first"), second: endpoint(place, "second") });
++const binding = (p, arm) => {
++  const omitName = endpoint => Object.fromEntries(Object.entries(endpoint).filter(([key]) => key !== "name"));
++  return { comparisonContextSha256: hashes.context, pairSpecificationSha256: hashes.pair, sourceId: `invented-${arm}-source`, artifactSha256: hashes[arm], pairId: p.id, raceId: p.raceId, contestId: p.contestId, eventId: p.eventId, electionDate: p.electionDate, first: omitName(p.first), second: omitName(p.second), estimand: "candidate_marks", denominator: { kind: "named_pair_counts", firstPersonId: p.first.personId, secondPersonId: p.second.personId } };
++};
++const available = (p, arm, mean, observed) => ({ binding: binding(p, arm), distribution: { status: "available", undefinedMass: 0, summary: { mean, median: mean-.01, intervals: [{ level: .8, lower: .3, upper: .75 }] } }, evaluation: { status: "scored", score: { crps: .08, weightedIntervalScore: .12, absoluteMeanError: Math.abs(mean-observed) } }, precision: { status: "unavailable", reason: "No estimate of variation from running the calculation again is supplied." } });
++const undefinedShare = (p, arm) => ({ binding: binding(p,arm), distribution: { status: "undefined_share", undefinedMass: .2, summary: null, reason: "Both named candidates receive zero votes in some invented outcomes." }, evaluation: { status: "unavailable", score: null, reason: "Some possible outcomes have no combined votes for this pair, so a share cannot be calculated." }, precision: { status: "unavailable", reason: "No estimate of calculation variation is supplied." } });
++const unavailable = (p, arm) => ({ binding: binding(p,arm), distribution: { status: "unavailable", undefinedMass: null, summary: null, reason: "The invented result was not supplied." }, evaluation: { status: "unavailable", score: null, reason: "No score was supplied." }, precision: { status: "unavailable", reason: "No estimate of calculation variation was supplied." } });
++
++export function partialPairComparisonFixture() {
++  const harbor=pair("Harbor"), valley=pair("Valley"), ridge=pair("Ridge");
++  return { kind: "candidate_pair_comparison_preparation", provenance: { kind: "invented_fixture", label: "Invented ordinary candidate-mark pair examples" }, label: "Named candidate-pair comparison",
++    binding: { requestSha256: hashes.request, comparisonContextSha256: hashes.context, pairSpecificationSha256: hashes.pair, cycle: 2024, informationCutoff: "2024-10-22T00:00:00Z", horizonDays: 14, sources: Object.fromEntries(["count","F","FP"].map(arm=>[arm,{id:`invented-${arm}-source`,artifactSha256:hashes[arm]}])) },
++    qualification: { experimental: true, posterior: "not_established", adoption: "not_qualified", informationSets: "different", explanation: "These invented models use different historical data and assumptions. Their errors cannot show that polling alone caused a change or approve any real forecast." },
++    requiredPairs: [harbor,valley,ridge], rows: [
++      { pairId: harbor.id, observedFirstPairShare: .52, arms: { count: available(harbor,"count",.6,.52), F: available(harbor,"F",.55,.52), FP: available(harbor,"FP",.58,.52) } },
++      { pairId: valley.id, observedFirstPairShare: null, arms: { count: undefinedShare(valley,"count"), F: unavailable(valley,"F"), FP: unavailable(valley,"FP") } },
++    ],
++  };
++}
++
++export function missingObservationFixture() {
++  const view=partialPairComparisonFixture();const row=view.rows[0];row.observedFirstPairShare=null;
++  for(const arm of Object.values(row.arms)) arm.evaluation={status:"unavailable",score:null,reason:"Observed pair share is not supplied in this example."};
++  return view;
++}
++
++export function incompatiblePairFixture() {
++  const view=partialPairComparisonFixture();
++  view.rows[0].arms.FP.binding.first.modelCandidateId="different-person";
++  return view;
++}
+diff --git a/tests/candidate-pair-comparison-view.test.mjs b/tests/candidate-pair-comparison-view.test.mjs
+new file mode 100644
+index 0000000..46e5d57
+--- /dev/null
++++ b/tests/candidate-pair-comparison-view.test.mjs
+@@ -0,0 +1,131 @@
++import test from "node:test";
++import assert from "node:assert/strict";
++import { candidatePairComparisonReadiness as readiness } from "../lib/candidate-pair-comparison-view.ts";
++import { partialPairComparisonFixture, missingObservationFixture, incompatiblePairFixture } from "./fixtures/candidate-pair-comparison.mjs";
++
++const first = view => view.rows[0].arms.count;
++
++test("fixed expected coverage retains missing pairs and undefined/unavailable model slots", () => {
++  const result=readiness(partialPairComparisonFixture());
++  assert.equal(result.valid,true);assert.equal(result.productionActivated,false);
++  assert.deepEqual(result.coverage,{expectedPairs:3,suppliedPairs:2,fullyScoredPairs:1,scoredByArm:{count:1,F:1,FP:1},missingPairIds:["pair-Ridge"]});
++});
++
++test("exact ordered endpoints, context, source, contest and date bindings cannot be mixed", () => {
++  for(const mutate of [
++    v=>first(v).binding.first.modelCandidateId="someone-else",
++    v=>first(v).binding.second.sourceCandidateId="different-publisher-id",
++    v=>first(v).binding.first.identitySha256="9".repeat(64),
++    v=>first(v).binding.first.personId=v.requiredPairs[0].second.personId,
++    v=>first(v).binding.comparisonContextSha256="9".repeat(64),
++    v=>first(v).binding.pairSpecificationSha256="9".repeat(64),
++    v=>first(v).binding.artifactSha256=v.binding.sources.F.artifactSha256,
++    v=>first(v).binding.sourceId=v.binding.sources.F.id,
++    v=>first(v).binding.eventId="other-event",
++    v=>first(v).binding.contestId="other-contest",
++    v=>first(v).binding.raceId="other-race",
++    v=>first(v).binding.electionDate="2024-11-06",
++  ]) {const v=partialPairComparisonFixture();mutate(v);assert.equal(readiness(v).valid,false);}
++  assert.equal(readiness(incompatiblePairFixture()).display,false);
++});
++
++test("named pair denominator and candidate-mark estimand cannot become all-candidate or reversed shares", () => {
++  for(const mutate of [
++    v=>first(v).binding.denominator.kind="all_candidate_votes",
++    v=>first(v).binding.denominator.firstPersonId=v.requiredPairs[0].second.personId,
++    v=>first(v).binding.denominator.secondPersonId="third-person",
++    v=>first(v).binding.estimand="final_round",
++    v=>v.requiredPairs[0].second.sourceCandidateId=v.requiredPairs[0].first.sourceCandidateId,
++    v=>v.requiredPairs[0].second.modelCandidateId=v.requiredPairs[0].first.modelCandidateId,
++  ]) {const v=partialPairComparisonFixture();mutate(v);assert.equal(readiness(v).display,false);}
++});
++
++test("missing observations leave defined predictive summaries available but never fabricate scores", () => {
++  const view=missingObservationFixture(),result=readiness(view);
++  assert.equal(result.valid,true);assert.equal(result.coverage.fullyScoredPairs,0);
++  assert.equal(first(view).distribution.summary.mean,.6);
++  const invalid=missingObservationFixture();first(invalid).evaluation={status:"scored",score:{crps:0,weightedIntervalScore:0,absoluteMeanError:0}};
++  assert.equal(readiness(invalid).valid,false);
++});
++
++test("positive undefined mass is never discarded, converted to unknown, or given a replacement summary", () => {
++  for(const mutate of [
++    v=>first(v).distribution.undefinedMass=1e-100,
++    v=>v.rows[1].arms.count.distribution.undefinedMass=0,
++    v=>v.rows[1].arms.count.distribution.summary={mean:.5,median:.5,intervals:[{level:.8,lower:0,upper:1}]},
++    v=>v.rows[1].arms.F.distribution.undefinedMass=0,
++    v=>v.rows[1].arms.F.distribution.summary=first(v).distribution.summary,
++    v=>v.rows[1].arms.count.evaluation={status:"scored",score:{crps:0,weightedIntervalScore:0,absoluteMeanError:0}},
++  ]) {const v=partialPairComparisonFixture();mutate(v);assert.equal(readiness(v).valid,false);}
++  const allUndefined=partialPairComparisonFixture();allUndefined.rows[1].arms.count.distribution.undefinedMass=1;
++  assert.equal(readiness(allUndefined).valid,true);
++});
++
++test("an explicitly defined zero share and zero score remain different from unavailable support", () => {
++  const v=partialPairComparisonFixture();v.rows[0].observedFirstPairShare=0;
++  for(const arm of Object.values(v.rows[0].arms)) {
++    arm.distribution.summary={mean:0,median:0,intervals:[{level:.8,lower:0,upper:0}]};
++    arm.evaluation.score={crps:0,weightedIntervalScore:0,absoluteMeanError:0};
++  }
++  assert.equal(readiness(v).valid,true);assert.equal(readiness(v).coverage.fullyScoredPairs,1);
++});
++
++test("a supplied absolute mean error must agree with the displayed mean and observed pair share", () => {
++  const v=partialPairComparisonFixture();first(v).evaluation.score.absoluteMeanError=0;
++  assert.equal(readiness(v).valid,false);
++});
++
++test("unsupported qualification claims or absent precision disclosures cannot activate the fixture", () => {
++  for(const mutate of [
++    v=>v.provenance.kind="actual_posterior",
++    v=>v.qualification.experimental=false,
++    v=>v.qualification.posterior="qualified",
++    v=>v.qualification.adoption="qualified",
++    v=>v.qualification.informationSets="matched",
++    v=>v.qualification.explanation="",
++    v=>first(v).precision=null,
++    v=>first(v).precision.status="precise",
++  ]) {const v=partialPairComparisonFixture();mutate(v);const result=readiness(v);assert.equal(result.display,false);assert.equal(result.productionActivated,false);}
++});
++
++test("malformed scalar values, predictive intervals and score values fail closed", () => {
++  for(const mutate of [
++    v=>first(v).distribution.summary.mean=NaN,
++    v=>first(v).distribution.summary.median=1.1,
++    v=>first(v).distribution.summary.intervals=[],
++    v=>first(v).distribution.summary.intervals[0].level=0,
++    v=>first(v).distribution.summary.intervals[0].lower=.9,
++    v=>first(v).distribution.summary.intervals.push({...first(v).distribution.summary.intervals[0]}),
++    v=>first(v).evaluation.score.crps=-1,
++    v=>first(v).evaluation.score.weightedIntervalScore=Infinity,
++    v=>v.rows[0].observedFirstPairShare=undefined,
++  ]) {const v=partialPairComparisonFixture();mutate(v);assert.equal(readiness(v).valid,false);}
++});
++
++test("duplicate/extra pairs, missing arm slots and cross-race row borrowing cannot change coverage", () => {
++  for(const mutate of [
++    v=>v.requiredPairs.push(structuredClone(v.requiredPairs[0])),
++    v=>v.rows.push(structuredClone(v.rows[0])),
++    v=>v.rows[0].pairId="not-in-fixed-roster",
++    v=>delete v.rows[0].arms.FP,
++    v=>v.rows[0].arms.count=null,
++    v=>v.rows[1].arms.FP=structuredClone(v.rows[0].arms.FP),
++  ]) {const v=partialPairComparisonFixture();mutate(v);assert.equal(readiness(v).valid,false);}
++  const v=partialPairComparisonFixture();v.rows=[];const result=readiness(v);
++  assert.equal(result.valid,true);assert.equal(result.coverage.expectedPairs,3);assert.equal(result.coverage.suppliedPairs,0);
++});
++
++test("H14 cutoff and election identity need a consistent cycle and explicit UTC time", () => {
++  for(const mutate of [
++    v=>v.binding.cycle=2022,
++    v=>v.binding.informationCutoff="2024-10-22T00:00:00",
++    v=>v.binding.informationCutoff="2024-10-21T00:00:00Z",
++    v=>v.binding.horizonDays=7,
++    v=>v.requiredPairs[0].electionDate="2024-11-31",
++  ]) {const v=partialPairComparisonFixture();mutate(v);assert.equal(readiness(v).valid,false);}
++});
++
++test("arbitrary malformed values return unavailable rather than throwing", () => {
++  for(const value of [null,undefined,[],{},false,"actual-owner-output",{kind:"candidate_pair_comparison_preparation"}])
++    assert.doesNotThrow(()=>assert.equal(readiness(value).display,false));
++});
+diff --git a/tests/candidate-pair-comparison-preview.test.mjs b/tests/candidate-pair-comparison-preview.test.mjs
+new file mode 100644
+index 0000000..c5d4f77
+--- /dev/null
++++ b/tests/candidate-pair-comparison-preview.test.mjs
+@@ -0,0 +1,106 @@
++import test, { after } from "node:test";
++import assert from "node:assert/strict";
++import { mkdtempSync, mkdirSync, readFileSync, writeFileSync, rmSync, readdirSync } from "node:fs";
++import { dirname, join } from "node:path";
++import { fileURLToPath, pathToFileURL } from "node:url";
++import ts from "typescript";
++import React from "react";
++import { renderToStaticMarkup } from "react-dom/server";
++import { partialPairComparisonFixture, missingObservationFixture, incompatiblePairFixture } from "./fixtures/candidate-pair-comparison.mjs";
++
++const root=join(dirname(fileURLToPath(import.meta.url)),"..");
++const directory=mkdtempSync(join(root,"tests",".candidate-pair-preview-"));
++after(()=>rmSync(directory,{recursive:true,force:true}));
++writeFileSync(join(directory,"package.json"),'{"type":"module"}\n');
++for(const relative of ["components/CandidatePairComparisonPreview.tsx","lib/candidate-pair-comparison-view.ts"]) {
++  const js=ts.transpileModule(readFileSync(join(root,relative),"utf8"),{fileName:relative,compilerOptions:{target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ESNext,jsx:ts.JsxEmit.ReactJSX,rewriteRelativeImportExtensions:true}}).outputText;
++  const output=join(directory,relative.replace(/\.tsx?$/,".js"));mkdirSync(dirname(output),{recursive:true});writeFileSync(output,js);
++}
++const {default:Preview}=await import(pathToFileURL(join(directory,"components/CandidatePairComparisonPreview.js")).href);
++const render=view=>renderToStaticMarkup(React.createElement(Preview,{view}));
++
++test("pair denominator, differing information and qualification stay visible beside supplied numbers",()=>{
++  const html=render(partialPairComparisonFixture());
++  assert.match(html,/Illustrative data only · Private comparison study/);
++  assert.match(html,/not an owner-approved format for real results/);
++  assert.match(html,/Votes included in the share: Alex Harbor Example plus Blair Harbor Example/);
++  assert.match(html,/neither all-candidate share nor a probability of winning/);
++  assert.match(html,/60% <span>average pair share \(mean\)/);
++  assert.match(html,/Experimental/);assert.match(html,/Model checks/);assert.match(html,/does not approve a forecast or change the public default/);
++  assert.match(html,/Different across these models/);assert.match(html,/cannot tell us what polling alone changed/);
++  assert.match(html,/lead this pair and still trail a third person/);
++  assert.doesNotMatch(html,/Alex Harbor Example wins|type="checkbox"|<select/);
++});
++
++test("score units, meanings and accessible heading levels are explained in plain language",()=>{
++  const html=render(partialPairComparisonFixture());
++  assert.match(html, /mean is the average of possible pair shares/);
++  assert.match(html, /median is the middle predicted share/);
++  assert.match(html, /compares all the possible shares and the probabilities assigned to them/);
++  assert.match(html, /rewards narrower prediction ranges and penalizes ranges that miss/);
++  assert.match(html, /All three errors are shown in percentage-point units/);
++  assert.match(html, /0 is perfect and lower is better/);
++  assert.match(html, /<dt>Full-distribution error \(CRPS\)<\/dt><dd[^>]*>8 points/);
++  assert.match(html, /<h4>Experimental vote-count model<\/h4>/);
++  assert.match(html, /<dd style="white-space:nowrap">12 points<\/dd>/);
++  assert.match(html, /<h5>Errors against the invented result<\/h5>/);
++  assert.doesNotMatch(html, /Posterior qualification|Adoption status|Information sets|renormalized|Monte Carlo error bars/);
++  assert.doesNotMatch(html.split('<details class="count-checks">')[0], /invented-Harbor-race|invented-Harbor-event|model-Harbor-first/);
++});
++
++test("coverage retains missing and undefined pairs instead of advertising a complete mean loss",()=>{
++  const html=render(partialPairComparisonFixture());
++  assert.match(html,/1 of 3 expected pairs have scores for all three models/);
++  assert.match(html,/Results are supplied for 2 of 3 pairs/);
++  assert.match(html,/No result supplied for this expected pair/);
++  assert.match(html,/Alex Ridge Example/);
++  assert.match(html,/share cannot be calculated in 20% of the predicted outcomes/);
++  assert.match(html,/remaining outcomes do not get extra weight/);
++  assert.match(html,/We do not know how often the share could be calculated/);
++  assert.match(html,/No overall average error is shown using only the pairs that happened to have results/);
++  assert.match(html,/Scores unavailable/);assert.match(html,/No perfect score is substituted/);
++});
++
++test("tiny positive and nearly complete undefined shares never round to exact zero or one",()=>{
++  for(const [mass,label] of [[1e-100,"less than 0.1%"],[.0001,"less than 0.1%"],[1-1e-10,"more than 99.9%"],[1,"100%"]]) {
++    const view=partialPairComparisonFixture();view.rows[1].arms.count.distribution.undefinedMass=mass;
++    const html=render(view);
++    assert.ok(html.includes(`share cannot be calculated in ${label} of the predicted outcomes`));
++    assert.doesNotMatch(html,/share cannot be calculated in 0% of/);
++    if(mass<1)assert.doesNotMatch(html,/share cannot be calculated in 100% of/);
++  }
++});
++
++test("missing truth preserves predictive summaries without a fabricated score",()=>{
++  const html=render(missingObservationFixture());
++  assert.match(html,/Observed pair share unavailable/);assert.match(html,/60% <span>average pair share \(mean\)/);
++  assert.match(html,/0 of 3 expected pairs have scores/);assert.doesNotMatch(html,/<dt>Full-distribution error \(CRPS\)<\/dt>/);
++});
++
++test("simulation precision is not confused with a predictive interval",()=>{
++  const html=render(partialPairComparisonFixture());
++  assert.match(html,/80% predictive range: 30%–75%/);
++  assert.match(html,/Calculation precision unavailable/);
++  assert.match(html,/not that calculation error/);
++  assert.doesNotMatch(html,/significant improvement|qualified posterior|±/i);
++});
++
++test("incompatible identities or denominators suppress numerical display",()=>{
++  const denominator=partialPairComparisonFixture();denominator.rows[0].arms.count.binding.denominator.kind="all_candidate_votes";
++  for(const value of [incompatiblePairFixture(),denominator,null]) {
++    const html=render(value);assert.match(html,/Comparison unavailable/);
++    assert.doesNotMatch(html,/count-value|60%|<dt>CRPS<\/dt>/);
++  }
++});
++
++test("preview and fixture stay out of all existing production pages, APIs and validators",()=>{
++  const files=path=>readdirSync(path,{withFileTypes:true}).flatMap(entry=>entry.isDirectory()?files(join(path,entry.name)):[join(path,entry.name)]);
++  for(const file of [...files(join(root,"app")),...files(join(root,"components")),...files(join(root,"lib"))].filter(file=>/\.[cm]?[jt]sx?$/.test(file)&&!file.endsWith("CandidatePairComparisonPreview.tsx")&&!file.endsWith("candidate-pair-comparison-view.ts")))
++    assert.doesNotMatch(readFileSync(file,"utf8"),/(?:from\s*|import\s*\(|require\s*\()["'][^"']*(?:CandidatePairComparisonPreview|candidate-pair-comparison-view|fixtures\/candidate-pair-comparison)/,file);
++});
++
++test("export optional standalone private examples for visual review",{skip:!process.env.BALLOTMANCY_PAIR_PREVIEW_OUTPUT},()=>{
++  const css=readFileSync(join(root,"app/globals.css"),"utf8");
++  const html=[partialPairComparisonFixture,missingObservationFixture,incompatiblePairFixture].map(f=>render(f())).join('<hr style="margin:60px 0">');
++  writeFileSync(process.env.BALLOTMANCY_PAIR_PREVIEW_OUTPUT,`<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Invented candidate-pair comparison</title><style>${css}</style><body><main style="padding:20px">${html}</main></body></html>`);
++});
+diff --git a/docs/frontend-candidate-pair-preparation-20261025.md b/docs/frontend-candidate-pair-preparation-20261025.md
+new file mode 100644
+index 0000000..4731a7c
+--- /dev/null
++++ b/docs/frontend-candidate-pair-preparation-20261025.md
+@@ -0,0 +1,37 @@
++# Private named candidate-pair comparison preparation
++
++This work is an invented presentation study. It is not an owner-approved browser contract, raw artifact parser, public page or live-data adapter. No production module imports the new preview. The existing one-page site, CountView, ElectionOutcomePreview, APIs, controls and styles remain unchanged.
++
++`components/CandidatePairComparisonPreview.tsx` uses the existing private count-preview styles. `lib/candidate-pair-comparison-view.ts` checks a separate invented draft with three model slots: an experimental vote-count model and the preserved F/FP comparisons, described in the display as earlier models without/with race polls.
++
++The fixed expected pair roster binds two named people in an explicit order, their declared source/model IDs and identity hashes, a race/contest/physical event and election date. Each model slot must match that roster, comparison context, pair specification and its declared source artifact. The draft is limited to ordinary candidate marks and a consistent H14 cutoff in one cycle. These are choices for the invented study, not a promise about the owner's eventual export.
++
++Every displayed share divides the first person's votes by the two named people's combined votes. It cannot substitute all-candidate share, ranked-round share, a winner probability or chamber control. Positive probability of a zero pair total leaves that share unavailable; remaining outcomes are not given extra weight. Tiny positive chances display as “less than 0.1%,” and values just below one as “more than 99.9%”; exact zero/one remain distinct. Missing support stays unknown rather than becoming zero. Missing pairs remain in the coverage denominator, and no overall mean error is formed from a successful subset.
++
++Prediction availability, score availability, calculation precision and qualification are separate. A missing observed share can leave a predictive summary visible while withholding scores. All supplied losses must be finite and nonnegative; the absolute error of the mean must agree with the displayed mean and observation. CRPS and weighted interval score remain supplied illustrative values: the validator does not recreate distributions or certify those calculations. It also does not authenticate the declared hashes or real observations.
++
++The display explains means/medians, predictive ranges, CRPS, weighted interval score and average-share miss. Scores are converted from share fractions to percentage-point units, with lower-is-better and zero-is-perfect labels. It explains the difference between uncertainty about election outcomes and variation from running a simulation again. Model checks and permission for public use are explicitly unestablished; technical IDs/hashes stay in collapsed details. Model headings are h4 below each pair's h3. Each numeric error stays on one line with its points unit.
++
++## Verification
++
++From this isolated worktree:
++
++```sh
++node --experimental-strip-types --test \
++  tests/candidate-pair-comparison-view.test.mjs \
++  tests/candidate-pair-comparison-preview.test.mjs \
++  tests/count-view.test.mjs tests/count-preview.test.mjs \
++  tests/election-outcome-view.test.mjs tests/election-outcome-preview.test.mjs
++npm run typecheck
++npm run build
++```
++
++The new tests cover changed/reversed endpoint and source identities, event/date/context mismatch, pair-versus-all-candidate denominators, unavailable/undefined support, explicit legitimate zeroes, missing observations, coverage, inconsistent scalar summaries/scores, invalid qualification claims, rendering, readable labels and production-import isolation. The optional `BALLOTMANCY_PAIR_PREVIEW_OUTPUT` test exports a standalone invented HTML page for visual review without adding a route. Existing tests and validators remain unchanged.
++
++## Questions for a future owner export
++
++The source audit is recorded in the lab's `frontend-national-output-readiness-sol-v2.json` (SHA `9101b44e613d7061ce206a3fc97e65d39a8d58714f57f4de88704b75f7f70fbb`). The new owner interface binds 113 historical principal pairs, but that implementation receipt is not a completed count posterior or forecast qualification.
++
++Before real integration, owner and frontend review must settle a separately versioned exported summary with authenticated source/rule/target/cutoff, exact person and alias crosswalks, event/contest axes, parent weighting and numerical/forecast evidence. Observed values need their own authenticated label/source/estimand binding; the observation in this draft is only invented. The comparison row currently keeps display names/event/date/source IDs in a separate pinned pair specification, and baseline summaries are only available inside scores when truth exists. A real projection needs an explicit choice for truth-independent summaries and missing values.
++
++The meanings and availability of per-functional calculation precision, score-difference precision, incomplete support, competitive masks, same-row winner summaries and any national coverage claims also remain owner questions. Different training/input information does not isolate a model contribution. No fixture field or validator result resolves these questions, admits a real source, qualifies a forecast or permits a public-default change. Do not widen the existing count/outcome validators or connect a public API based on this study.

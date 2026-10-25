@@ -1,0 +1,53 @@
+{
+  "action": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/checkpoints/momentum-score-action-root-v1.json",
+    "sha256": "d4904753937b2f8571b652ea9e26e177690179536a9163599f49bc568a1ce495"
+  },
+  "admission": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/checkpoints/momentum-score-admission-root-v1.json",
+    "sha256": "1cfc43cbab0a1f809d52f75831223846999489c5bce34ad26e5112c16c60dffd"
+  },
+  "engine_launch_record_created": false,
+  "engine_terminal_created": false,
+  "failure": {
+    "call_path": [
+      "score.py:main",
+      "score.py:run_scoring:verify_admission",
+      "score_reader.py:verify_admission:_verify_job",
+      "score_reader.py:_verify_job:load_trace",
+      "snapshots/trace_diagnostics.py:load_trace:exact source_pins equality"
+    ],
+    "message": "Trace source pins mismatch",
+    "type": "ValueError"
+  },
+  "frozen_masks": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/checkpoints/momentum-score-masks-root-v1.json",
+    "sha256": "c0606cd51dbf98fb270ffe6db69e8752ac3806384654ce2b8a2d178e0a855e2f"
+  },
+  "label_access_basis": "verify_admission raises before destination.mkdir, launch creation, and read_labels_after_admission; source call order reviewed; output path absent.",
+  "numeric_label_reader_invoked": false,
+  "numeric_labels_opened_by_this_invocation": false,
+  "output_directory_exists_at_recording": false,
+  "output_path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-forecast-scoring-sol-v1/actual-root-v1",
+  "pid_recorded": false,
+  "prediction_selection": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/checkpoints/momentum-forecast-prelabel-selection-v1.json",
+    "sha256": "183d3544e68493a811092e5933823a5bbc44fd17f900387aee286c17446e8d3e"
+  },
+  "recorded_utc": "2026-10-25T09:39:29.152940+00:00",
+  "repair_scope": "Versioned reader metadata contract repair only: construct and validate exact immutable REQUIRED_SOURCE_PINS union caller provenance pins. Preserve v1 and original forecasts.",
+  "retry_disposition": "Separate v2 source, independent review, new root admission/action and unused output path required.",
+  "retuning_authorized": false,
+  "sampling_authorized": false,
+  "schema": "MomentumRootScoringInvocationFailureV1",
+  "scoring_manifest": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-forecast-scoring-sol-v1/artifact-manifest.json",
+    "sha256": "cd9eb4b4e8bd6869e6a34d45b96ba137624df271d44e57c0aaae99b5f5ff3b9c"
+  },
+  "tool_result": {
+    "chunk_id": "b29a7c",
+    "exit_code": 1,
+    "session_id": null,
+    "wall_time_seconds": 0.79513762
+  }
+}
