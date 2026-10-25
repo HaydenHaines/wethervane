@@ -1,0 +1,295 @@
+{
+  "schema": "HouseLiveFrontendHandoffV1",
+  "issued_utc": "2026-10-25T14:14:53.733742+00:00",
+  "frontend_owner_thread": "01a15a54-c818-75b0-86f3-8797c3d1cfa2",
+  "backend_owner_thread": "01a15ae1-4e5d-7711-bec6-113673b68a1d",
+  "frontend_worktree": "/home/hayden/projects/ballotmancy-house-live-ui-20261025",
+  "frontend_branch": "feature/house-live-20261025",
+  "base_commit": "801dda8912f575b01af034702455b055f956874e",
+  "scope": "Live 2026 House parity with the 16 already-published 2026 Senate runs. Separate from unfinished population/count research and from historical House benchmarks.",
+  "coordination": {
+    "backend_acknowledgment_received": true,
+    "backend_scope": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-20261025",
+    "backend_parity_catalog": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-20261025/parity-v1/senate-models.json",
+    "native_export_contract": "Backend drafting; frontend will adapt explicit semantics rather than relabel historical packets."
+  },
+  "ui_contract_pins": [
+    {
+      "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/public/data/explorer/registry.json",
+      "sha256": "c326e51625e67633830ebafeeb85a9c4a2c664a7067e95936feff9af97ffe0ba"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/public/data/explorer/capabilities.json",
+      "sha256": "90de625f6177fdecc1d9297922dd475e43be1877b6971b380a2c88138950c4f9"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/public/data/explorer/current-index.json",
+      "sha256": "a3ad7f490a98681d85f0c2bf4c7b680e02702a125663b825f1a50aa65bd5d93b"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/public/data/explorer/current-comparisons-index.json",
+      "sha256": "af330d607cf0d4cf71a07a3773b7f3add336ab1f6d6720887da81c3c353163ea"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/lib/explorer-types.ts",
+      "sha256": "298ed317da9ae538160e663029add0590bb5b1a5768ea644060b7e5fc00b7d92"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/lib/chamber.ts",
+      "sha256": "133bd04cdb50a95852642fa6fd0e9a215308b418ac59b81c751136a4715b29c5"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/lib/house-result.ts",
+      "sha256": "9e4c5ee2bb1989cb9ba81aea31e7ea9054da71ef434c7515ef893bdbfc070596"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/lib/house-reviewed-catalog.ts",
+      "sha256": "c3755636c81dd84489b38d79f487cc8cb048a0909c19d4386bf1636ca7e502bb"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/lib/district-geography.ts",
+      "sha256": "69669ede0279a81ebff229b23a84b23255d0c5c76b6ceb3e7fffbc69aa63c171"
+    }
+  ],
+  "saved_senate_2026_runs": [
+    {
+      "id": "current-comparison-recent_calendar_history-f",
+      "label": "Recent calendar history \u00b7 without polls",
+      "components": {
+        "base": "recent_calendar_history",
+        "polling": "none",
+        "uncertainty": "standard"
+      },
+      "href": "/data/explorer/current-comparison-recent_calendar_history-f.json",
+      "sha256": "548551c43ed44eeeb0a48306614cc84fa0eb46663ea64a3d76167b594873d76b"
+    },
+    {
+      "id": "current-comparison-recent_calendar_history-fp",
+      "label": "Recent calendar history \u00b7 with polls",
+      "components": {
+        "base": "recent_calendar_history",
+        "polling": "standard",
+        "uncertainty": "standard"
+      },
+      "href": "/data/explorer/current-comparison-recent_calendar_history-fp.json",
+      "sha256": "c407a8cd7befc14e631a305d595ee63dda04272bc9b89b083c31002f70626628"
+    },
+    {
+      "id": "current-comparison-senate_history_refreshed_v1-f",
+      "label": "Refreshed history \u00b7 without polls",
+      "components": {
+        "base": "senate_history_refreshed_v1",
+        "polling": "none",
+        "uncertainty": "standard"
+      },
+      "href": "/data/explorer/current-comparison-senate_history_refreshed_v1-f.json",
+      "sha256": "951728669a488b54622804f241e3bdc5d650d20f539b51c5c8ac656485057cb9"
+    },
+    {
+      "id": "current-comparison-senate_history_refreshed_v1-fp",
+      "label": "Refreshed history \u00b7 with polls",
+      "components": {
+        "base": "senate_history_refreshed_v1",
+        "polling": "standard",
+        "uncertainty": "standard"
+      },
+      "href": "/data/explorer/current-comparison-senate_history_refreshed_v1-fp.json",
+      "sha256": "5724731e9202e942c5b6592ba00305f80e608afb81a378c0357a8af468d63dd4"
+    },
+    {
+      "id": "current-comparison-senate_presidential_slope_v1-f",
+      "label": "Learned presidential slope \u00b7 without polls",
+      "components": {
+        "base": "senate_presidential_slope_v1",
+        "polling": "none",
+        "uncertainty": "standard"
+      },
+      "href": "/data/explorer/current-comparison-senate_presidential_slope_v1-f.json",
+      "sha256": "258dd9587c730fc15a44f5e53996d870ab7de32ad9cba14cf6c2a20dfa7ae359"
+    },
+    {
+      "id": "current-comparison-senate_presidential_slope_v1-fp",
+      "label": "Learned presidential slope \u00b7 with polls",
+      "components": {
+        "base": "senate_presidential_slope_v1",
+        "polling": "standard",
+        "uncertainty": "standard"
+      },
+      "href": "/data/explorer/current-comparison-senate_presidential_slope_v1-fp.json",
+      "sha256": "5f3160a3ec00d81470a24d67ec56ef06ce4542cc0a05fc1839fffd40e64de5ba"
+    },
+    {
+      "id": "current-comparison-senate_relative_context_v1-f",
+      "label": "Relative lean with presidential context \u00b7 without polls",
+      "components": {
+        "base": "senate_relative_context_v1",
+        "polling": "none",
+        "uncertainty": "standard"
+      },
+      "href": "/data/explorer/current-comparison-senate_relative_context_v1-f.json",
+      "sha256": "9645ebdcdf14e5b738b36cd17dad853867cb806e72a75d0ab595f5bef1d63bd9"
+    },
+    {
+      "id": "current-comparison-senate_relative_context_v1-fp",
+      "label": "Relative lean with presidential context \u00b7 with polls",
+      "components": {
+        "base": "senate_relative_context_v1",
+        "polling": "standard",
+        "uncertainty": "standard"
+      },
+      "href": "/data/explorer/current-comparison-senate_relative_context_v1-fp.json",
+      "sha256": "2806088ca7678508266162039662d776fef2adab9afc687a720aa7aac22ba529"
+    },
+    {
+      "id": "current-comparison-senate_relative_lean_v1-f",
+      "label": "Relative state and national lean \u00b7 without polls",
+      "components": {
+        "base": "senate_relative_lean_v1",
+        "polling": "none",
+        "uncertainty": "standard"
+      },
+      "href": "/data/explorer/current-comparison-senate_relative_lean_v1-f.json",
+      "sha256": "22dd49ab4b2386c52d6fda781f0ce5cba989a4fa914afd5b37d450c95428aa5f"
+    },
+    {
+      "id": "current-comparison-senate_relative_lean_v1-fp",
+      "label": "Relative state and national lean \u00b7 with polls",
+      "components": {
+        "base": "senate_relative_lean_v1",
+        "polling": "standard",
+        "uncertainty": "standard"
+      },
+      "href": "/data/explorer/current-comparison-senate_relative_lean_v1-fp.json",
+      "sha256": "5b5f84e86dafa3b7fd4b3f99bc7082895d8dcb7bb5ef3a458e22a2c55ddd7c87"
+    },
+    {
+      "id": "current-cycle-high",
+      "label": "Polling error: common-cycle SD \u00d7 2",
+      "components": {
+        "base": "fundamentals",
+        "polling": "standard",
+        "uncertainty": "cycle-high"
+      },
+      "href": "/data/explorer/current-cycle-high.json",
+      "sha256": "6e99087927e18c3b1f8dfcd30e4b4de6d23577d82593455a6859ea4b9d22de79"
+    },
+    {
+      "id": "current-cycle-low",
+      "label": "Polling error: common-cycle SD \u00d7 0.5",
+      "components": {
+        "base": "fundamentals",
+        "polling": "standard",
+        "uncertainty": "cycle-low"
+      },
+      "href": "/data/explorer/current-cycle-low.json",
+      "sha256": "10b358d4450559beb31384be7f1351c8e7e5322c6bce58208a88b057908ccc08"
+    },
+    {
+      "id": "current-error-high",
+      "label": "Polling error: all scales \u00d7 1.5",
+      "components": {
+        "base": "fundamentals",
+        "polling": "standard",
+        "uncertainty": "error-high"
+      },
+      "href": "/data/explorer/current-error-high.json",
+      "sha256": "ada879bfdcb80a58c2ed110c0bc7e1339155b4ef7f5a178e4487d5df0ed384b2"
+    },
+    {
+      "id": "current-error-low",
+      "label": "Polling error: all scales \u00d7 2/3",
+      "components": {
+        "base": "fundamentals",
+        "polling": "standard",
+        "uncertainty": "error-low"
+      },
+      "href": "/data/explorer/current-error-low.json",
+      "sha256": "a4f4cb2e1a04a2b60c30f77ac621b61846868d5c088583359627d46a40f47b21"
+    },
+    {
+      "id": "current-fundamentals",
+      "label": "Fundamentals",
+      "components": {
+        "base": "fundamentals",
+        "polling": "none",
+        "uncertainty": "standard"
+      },
+      "href": "/data/explorer/current-fundamentals.json",
+      "sha256": "37af627c934f519f32b2cf77a326f5658758a24153ee574fdc1a0ba46bfd51c1"
+    },
+    {
+      "id": "current-polling",
+      "label": "Standard polling",
+      "components": {
+        "base": "fundamentals",
+        "polling": "standard",
+        "uncertainty": "standard"
+      },
+      "href": "/data/explorer/current-polling.json",
+      "sha256": "0f757b24ff6b9206f3065744fc8c35cceb4451591fc5b75198c51ec6a0ef8223"
+    }
+  ],
+  "senate_sources": {
+    "root": "/home/hayden/projects/wethervane-redesign-20261006/integration",
+    "four_fundamentals": "src/forecasting/fundamentals_v1.py",
+    "joint_prediction_and_polling": "src/forecasting/aggregate_component_factory_v1.py",
+    "preserved_history": "src/forecasting/baseline_v5.py",
+    "polling_posterior": "src/forecasting/polling_basis_v1.py",
+    "source_catalog": "research/fundamentals-iteration-20261020/registry-sol/catalog-v1/catalog.json",
+    "reviewed_current_comparisons": "research/fundamentals-iteration-20261020/frontend-contract-root-v2/interface-v1/current-comparisons.json",
+    "scope": "Existing Senate packets predict principal-pair aggregate outcomes; House needs its own fitted parameters, roster and electoral rules."
+  },
+  "frontend_parity": [
+    "Single-page Senate/House navigation; explicit live 2026 and historical selections, with no automatic historical substitution for a missing live forecast.",
+    "435-district current map, dynamic ranked ribbon above map, qualified chamber-control graphic below map, and selected district details synchronized with map and race list.",
+    "Show only safe, likely and tossup categories; heading uses qualified projected-control color, purple for tossup.",
+    "Model builder initially collapsed with the reviewed default selected; show all eight conceptual roles, implemented availability and supported option combinations separately.",
+    "Exact saved configurations, browser history, share links and matched comparisons preserve configuration, run, cutoff, geography and artifact identity.",
+    "First 10 races with an expand control; independently usable focus sidebar and keyboard/mobile interactions.",
+    "Explain source inclusion, assumptions and terms in plain language; separate successful computation, experimental status, testing evidence and publication qualification.",
+    "Historical accuracy remains accessible; the current 2026 view cannot display observed 2026 winners or invented historical scores."
+  ],
+  "native_packet_requirements": [
+    "Versioned manifest and reviewed source/audit receipts; exact configuration identities, artifact hashes, default, supported and unsupported combinations, and intended publication scope.",
+    "All 435 unique district identities with cycle 2026, explicit mapVintage and exact geometry/source evidence; retain candidate/group target, roster source/cutoff and electoral-rule semantics.",
+    "Candidate and group outcomes must remain distinct. Preserve independent/other/unopposed/ranked-choice/runoff support; do not force every district into two D/R candidate rows. Gonzales TX-23 excluded from current roster per backend owner.",
+    "Actual issued/forecast/source cutoff timestamps, poll counts/inclusion explanations, assumptions and qualifications; never infer strict original-vintage availability from a retrieval timestamp.",
+    "Joint draw identity, configuration, source digest, draw count and complete ordered district set. For qualified control, coherent D/R/unresolved seat PMFs, 435 total seats, threshold 218 and zero retained seats, plus precision evidence.",
+    "Tipping requires its explicit statistic and per-district frequencies calculated from the same joint uncertainty. Per-race probabilities alone do not qualify control or tipping.",
+    "Provide party/caucus aggregation explicitly where independent or pooled outcomes exist. No frontend allocation of pooled probability to named candidates.",
+    "Share outputs must name their denominator and preserve uncertainty. Scores need exact earlier-election model/configuration/cutoff bindings; current results have no observed outcomes."
+  ],
+  "adapter_decision": {
+    "new_live_adapter_required": true,
+    "reason": "Existing legacy HouseResult only accepts two named D/R candidate outcomes. Existing all-435 historical group adapter supports D/R/O but requires historical truth and explicitly unqualified control. Neither contract should be weakened or used to fake a live packet.",
+    "reuse": [
+      "DistrictMap",
+      "HouseRibbon or shared ribbon layout with reviewed outcome adapter",
+      "ChamberControl",
+      "ModelSliceControls",
+      "RaceListToggle",
+      "existing responsive map/list/focus patterns"
+    ],
+    "preserve": "Frozen historical loaders, hash bindings, saved views and scoreboards remain available.",
+    "pending": "Native live export schema from backend; exact parser and importer will be implemented against it."
+  },
+  "verification_plan": [
+    "Validate all 16 run/configuration bindings and preserve baseline/polling/sensitivity distinctions.",
+    "Reject incomplete/duplicate/wrong-vintage coverage, mismatched hashes/cutoffs, historical rows presented as current, unsupported probability allocation and incompatible comparisons.",
+    "Independently check joint-derived seat/control/tipping identities and precision qualification; verify marginal agreement where the packet target allows it.",
+    "Exercise live/historical tab and year routing, default collapse, saved/share/history restoration, failed loading preservation, 435 map/ribbon/list interactions and mobile/desktop layouts.",
+    "Run applicable typecheck, build, unit and browser tests; integrate reviewed artifacts and verify the deployed view after publication."
+  ],
+  "updated_utc": "2026-10-25T14:16:46.924683+00:00",
+  "ui_contract_pin_scope": "Original deployed base commit; the label-only correction below is the sole subsequent change to pinned UI contract files.",
+  "polling_label_correction": {
+    "status": "Corrected in UI branch; not yet deployed.",
+    "true_all_scale_multiplier": 0.6666666666666666,
+    "label": "Polling error scales \u00d7 2/3",
+    "cycle_only_low_multiplier": 0.5,
+    "independent_review": "Sol verified frozen source plan, exact reviewed run specification, implementation multiplication, public bundle source binding and exporter validation.",
+    "source_run_specification": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/forecast-sensitivity-low-v1/run-specification.json",
+    "scope": "One label in exporter and regenerated capabilities; all 48 saved configuration IDs and all forecast bytes unchanged.",
+    "validation": "7 composition tests and 6 current-explorer tests passed. System Python lacked numpy; current-explorer tests passed in the existing integration virtualenv."
+  }
+}
