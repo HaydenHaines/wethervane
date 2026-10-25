@@ -12,6 +12,8 @@ import { parseHouseLiveResult } from "../lib/house-live-result.ts";
 import { parseHouseLiveCatalog } from "../lib/house-live-catalog.ts";
 import { houseLiveView, houseLiveCatalogView } from "../lib/house-live-view.ts";
 import { makeHouseLivePublication } from "./fixtures/house-live-publication.mjs";
+import { makeHousePublication, fixtureSha256 } from "./fixtures/house.mjs";
+import { parseHousePublicationWithCatalog } from "../lib/house-catalog.ts";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const directory = mkdtempSync(join(root, "tests", ".house-live-render-"));
@@ -24,6 +26,12 @@ function compile(relative) {
   if (compiled.has(relative)) return;
   compiled.add(relative);
   const source = join(root, relative);
+  if (relative.endsWith(".json")) {
+    const destination = join(directory, relative);
+    mkdirSync(dirname(destination), { recursive: true });
+    writeFileSync(destination, readFileSync(source));
+    return;
+  }
   let output = ts.transpileModule(readFileSync(source, "utf8"), { fileName: source,
     compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext, jsx: ts.JsxEmit.ReactJSX } }).outputText;
   output = output.replace(/(from\s*|import\s*)(["'])(\.[^"']+)\2/g, (match, prefix, quote, specifier) => {
@@ -31,7 +39,7 @@ function compile(relative) {
     const filename = [target, `${target}.ts`, `${target}.tsx`].find(path => existsSync(path));
     assert.ok(filename, `Cannot resolve ${specifier} from ${source}`);
     compile(filename.slice(root.length + 1));
-    return `${prefix}${quote}${specifier.replace(/\.tsx?$/, "")}.js${quote}`;
+    return `${prefix}${quote}${filename.endsWith(".json") ? specifier : `${specifier.replace(/\.tsx?$/, "")}.js`}${quote}`;
   });
   const destination = join(directory, relative.replace(/\.tsx?$/, ".js"));
   mkdirSync(dirname(destination), { recursive: true });
@@ -320,4 +328,156 @@ createRoot(document.getElementById('root')).render(React.createElement('div',{cl
     assert.equal(await page.evaluate(() => localStorage.length), 0);
     assert.deepEqual(pageErrors, []);
   } finally { releaseDelayed?.(); await browser.close(); }
+});
+
+let routerPreview;
+async function buildRouterPreview() {
+  if (routerPreview) return routerPreview;
+  compile("components/HouseWorkspace.tsx");
+  const entry = join(directory, "router-entry.js");
+  writeFileSync(entry, `import React from 'react';import {createRoot} from 'react-dom/client';import HouseWorkspace from './components/HouseWorkspace.js';
+createRoot(document.getElementById('root')).render(React.createElement('div',{className:'shell'},React.createElement('p',{},'INVENTED ROUTER FIXTURE. No published election data.'),React.createElement(HouseWorkspace,{onReturn:()=>{globalThis.senateRequested=true;}})));`);
+  const require = createRequire(import.meta.url), { webpack } = require("next/dist/compiled/webpack/webpack");
+  await new Promise((resolve, reject) => webpack({ mode: "development", target: "web", devtool: false, entry,
+    output: { path: join(directory, "router-bundle"), filename: "preview.js" } }, (error, stats) =>
+    error || stats.hasErrors() ? reject(error || Error(stats.toString({ all: false, errors: true }))) : resolve()));
+  const script = readFileSync(join(directory, "router-bundle/preview.js"), "utf8").replaceAll("</script", "<\\/script");
+  routerPreview = `<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Invented House edition router</title><style>${readFileSync(join(root, "app/globals.css"), "utf8")}</style><body><div id="root"></div><script>${script}</script></body></html>`;
+  return routerPreview;
+}
+
+test("browser House router: publication availability, edition links, failures, history, and mobile navigation", {
+  skip: !process.env.BALLOTMANCY_LIVE_HOUSE_BROWSER, timeout: 120000,
+}, async () => {
+  const html = await buildRouterPreview();
+  const current = makeHouseLivePublication();
+  current.publicationReview = { limitations: ["Invented publication review note for browser verification."] };
+  const historical = makeHousePublication({ eligibleCount: 16, year: 2022 });
+  const historicalId = "house_history_refreshed_v1-2022-h14";
+  historical.result.run.id = historicalId;
+  historical.resultSha256 = fixtureSha256(historical.result);
+  historical.catalog = { schemaVersion: 1, defaultRunId: historicalId,
+    selectionNote: "Invented historical test catalog only.",
+    runs: [{ ...historical.result.run, resultSha256: historical.resultSha256,
+      raceCount: historical.result.races.length, available: true, unavailableReason: null }] };
+  const earlier = makeHousePublication({ eligibleCount: 16, year: 2020 });
+  const earlierId = "house_history_refreshed_v1-2020-h14";
+  earlier.result.run.id = earlierId;
+  earlier.result.run.configurationId = historical.result.run.configurationId;
+  earlier.result.metadata.configurationId = historical.result.run.configurationId;
+  earlier.resultSha256 = fixtureSha256(earlier.result);
+  historical.catalog.runs.push({ ...earlier.result.run, resultSha256: earlier.resultSha256,
+    raceCount: earlier.result.races.length, available: true, unavailableReason: null });
+  earlier.catalog = historical.catalog;
+  assert.ok(parseHousePublicationWithCatalog(historical));
+  assert.ok(parseHousePublicationWithCatalog(earlier));
+  const { chromium, expect } = await import("@playwright/test");
+  const browser = await chromium.launch({ headless: true });
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 }, reducedMotion: "reduce" });
+  const requests = { availability: 0, live: 0, historical: 0, group: 0 };
+  const pageErrors = [];
+  let availabilityStatus = 200, available = false, liveStatus = 200;
+  page.on("pageerror", error => pageErrors.push(error.message));
+  await page.route("http://house-router.test/**", route => {
+    const url = new URL(route.request().url());
+    if (url.pathname === "/") return route.fulfill({ contentType: "text/html", body: html });
+    if (url.pathname === "/api/chambers/house/live/availability") {
+      requests.availability++;
+      return route.fulfill({ status: availabilityStatus, json: availabilityStatus === 200
+        ? { schema: "HouseLiveAvailabilityV1", available } : { error: "Invented unavailable status" } });
+    }
+    if (url.pathname === "/api/chambers/house/live") {
+      requests.live++;
+      return route.fulfill({ status: liveStatus, json: liveStatus === 200 ? current : { error: "Invented current outage" } });
+    }
+    if (url.pathname === "/api/chambers/house") {
+      requests.historical++;
+      const id = url.searchParams.get("run");
+      if (id === earlierId) return route.fulfill({ json: earlier });
+      return route.fulfill({ status: id === null || id === historicalId ? 200 : 400,
+        json: id === null || id === historicalId ? historical : { error: "Unknown invented historical run" } });
+    }
+    if (url.pathname.startsWith("/api/chambers/house/groups")) requests.group++;
+    return route.fulfill({ status: 404, body: "No fixture endpoint" });
+  });
+  const go = search => page.goto(`http://house-router.test/${search}`);
+  const currentHero = page.locator(".hero .eyebrow").filter({ hasText: "2026 United States House" });
+  const historicalHero = page.locator(".hero .eyebrow").filter({ hasText: "2022 United States House" });
+  try {
+    // Bare House links may choose history only after an explicit unpublished response.
+    await go("?chamber=house");
+    await expect(historicalHero).toBeVisible();
+    assert.equal(requests.live, 0);
+    assert.ok(requests.historical > 0);
+    await expect(page.getByRole("button", { name: "Current · 2026" })).toBeDisabled();
+    await page.setViewportSize({ width: 390, height: 844 });
+    assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
+    await expect(page.getByRole("group", { name: "House election edition" })).toBeVisible();
+
+    available = true;
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await go("?chamber=house");
+    await expect(currentHero).toBeVisible();
+    await expect(page.getByRole("region", { name: "Publication review notes" }))
+      .toContainText(current.publicationReview.limitations[0]);
+    const historicalBeforeSwitch = requests.historical;
+    await page.getByRole("button", { name: "Historical elections" }).click();
+    await expect(historicalHero).toBeVisible();
+    assert.ok(requests.historical > historicalBeforeSwitch);
+    await page.goBack();
+    await expect(currentHero).toBeVisible();
+    await expect(page.getByRole("button", { name: "Current · 2026" })).toHaveAttribute("aria-pressed", "true");
+    await page.setViewportSize({ width: 390, height: 844 });
+    assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
+    if (process.env.BALLOTMANCY_LIVE_HOUSE_SCREENSHOT_DIR) {
+      mkdirSync(process.env.BALLOTMANCY_LIVE_HOUSE_SCREENSHOT_DIR, { recursive: true });
+      await page.screenshot({ path: join(process.env.BALLOTMANCY_LIVE_HOUSE_SCREENSHOT_DIR, "edition-navigation-mobile.png") });
+    }
+
+    // A failing availability check is an error, never an unpublished signal.
+    await page.setViewportSize({ width: 1440, height: 900 });
+    availabilityStatus = 503;
+    const historicalBeforeError = requests.historical;
+    await go("?chamber=house");
+    await expect(page.getByRole("heading", { name: "House forecast availability could not be checked" })).toBeVisible();
+    assert.equal(requests.historical, historicalBeforeError);
+
+    // Explicit current intent stays current even if both endpoints fail.
+    liveStatus = 503;
+    await go("?chamber=house&edition=current");
+    await expect(page.getByRole("heading", { name: "Current House forecast unavailable" })).toBeVisible();
+    assert.equal(requests.historical, historicalBeforeError);
+    liveStatus = 200;
+    availabilityStatus = 200;
+
+    const liveBeforeHistorical = requests.live;
+    await go("?chamber=house&edition=historical&year=2022");
+    await expect(historicalHero).toBeVisible();
+    assert.equal(requests.live, liveBeforeHistorical);
+    await go(`?chamber=house&run=${historicalId}`);
+    await expect(historicalHero).toBeVisible();
+    assert.equal(requests.live, liveBeforeHistorical);
+
+    // A year-only link must load that year, even when the catalog defaults to another.
+    await go("?chamber=house&edition=historical&year=2020&view=actual");
+    await expect(page.locator(".hero .eyebrow").filter({ hasText: "2020 United States House" })).toBeVisible();
+    assert.equal(new URL(page.url()).searchParams.get("run"), earlierId);
+    assert.equal(new URL(page.url()).searchParams.get("view"), "actual");
+    await go("?chamber=house&edition=historical&year=2018");
+    await expect(page.getByRole("heading", { name: "House view unavailable" })).toBeVisible();
+    await expect(page.getByRole("alert")).toContainText("2018");
+    await expect(historicalHero).toHaveCount(0);
+    await page.getByRole("button", { name: "Load published default" }).click();
+    await expect(historicalHero).toBeVisible();
+    assert.equal(new URL(page.url()).searchParams.get("year"), null);
+
+    const bothBeforeInvalid = { live: requests.live, historical: requests.historical };
+    await go("?chamber=house&edition=current&year=2024");
+    await expect(page.getByRole("heading", { name: "This House link could not be opened" })).toBeVisible();
+    assert.equal(requests.live, bothBeforeInvalid.live);
+    assert.equal(requests.historical, bothBeforeInvalid.historical);
+    assert.equal(requests.group, 0);
+    assert.equal(await page.evaluate(() => localStorage.length), 0);
+    assert.deepEqual(pageErrors, []);
+  } finally { await browser.close(); }
 });

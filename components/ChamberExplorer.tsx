@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { ChamberId } from "../lib/chamber";
 import SenateWorkspace from "./SenateWorkspace";
-import HouseExplorer from "./HouseExplorer";
+import HouseWorkspace from "./HouseWorkspace";
 
 const fromUrl = (): ChamberId =>
   new URLSearchParams(location.search).get("chamber") === "house"
@@ -98,7 +98,7 @@ export default function ChamberExplorer() {
           {chamber === "senate" ? (
             <SenateWorkspace />
           ) : (
-            <HouseExplorer onReturn={() => select("senate")} />
+            <HouseWorkspace onReturn={() => select("senate")} />
           )}
         </div>
       ) : (

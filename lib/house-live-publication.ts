@@ -12,6 +12,8 @@ export interface HouseLivePublication {
   catalog: HouseLiveCatalogView;
   view: HouseLiveView;
   geography: DistrictGeography | null;
+  /** Website-owned operator review, separate from native model qualifications. */
+  publicationReview?: { limitations: string[] };
 }
 
 const expectedConfigurations = new Set<string>(HOUSE_LIVE_ALLOWED_CONFIGURATION_KEYS);
@@ -282,5 +284,13 @@ export function parseHouseLivePublication(value: unknown): HouseLivePublication 
   if (!view) return null;
   const geography = parseGeography(value.geography, view);
   if (geography === undefined) return null;
-  return { schema: "HouseLivePublicationV1", status: "available", catalog, view, geography };
+  let publicationReview: HouseLivePublication["publicationReview"];
+  if ("publicationReview" in value) {
+    const review = value.publicationReview;
+    if (!object(review) || !exactKeys(review, ["limitations"]) ||
+      !Array.isArray(review.limitations) || !review.limitations.every(text)) return null;
+    publicationReview = { limitations: [...review.limitations] };
+  }
+  return { schema: "HouseLivePublicationV1", status: "available", catalog, view, geography,
+    ...(publicationReview ? { publicationReview } : {}) };
 }

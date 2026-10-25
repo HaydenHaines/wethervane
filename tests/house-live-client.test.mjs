@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { loadHouseLive } from "../lib/house-live-client.ts";
+import { loadHouseLive, loadHouseLiveAvailability } from "../lib/house-live-client.ts";
 import { makeHouseLivePublication } from "./fixtures/house-live-publication.mjs";
 
 async function withResponse(response, check) {
@@ -49,4 +49,22 @@ test("invalid requests never cause a fetch", async () => {
       await assert.rejects(loadHouseLive(request, new AbortController().signal));
     assert.equal(calls.length, 0);
   });
+});
+
+test("availability distinguishes an unpublished edition from a failed or malformed release", async () => {
+  const signal = new AbortController().signal;
+  for (const available of [false, true]) {
+    await withResponse(Response.json({ schema: "HouseLiveAvailabilityV1", available }), async calls => {
+      assert.equal(await loadHouseLiveAvailability(signal), available);
+      assert.equal(calls[0].url, "/api/chambers/house/live/availability");
+      assert.equal(calls[0].options.signal, signal);
+    });
+  }
+  for (const response of [new Response(null, { status: 503 }), Response.json({ available: false }),
+    Response.json({ schema: "HouseLiveAvailabilityV1", available: "false" }),
+    Response.json({ schema: "HouseLiveAvailabilityV1", available: false, error: "corrupt release" })]) {
+    await withResponse(response, async () => {
+      await assert.rejects(loadHouseLiveAvailability(signal), /could not be verified/);
+    });
+  }
 });

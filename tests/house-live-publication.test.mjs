@@ -31,6 +31,30 @@ test("accepts a complete 435-district selected result and preserves only the pub
   assert.equal("path" in output.view.sources[0], false);
   assert.equal("private_model_draws" in output.view.races[0], false);
   assert.equal(output.view.races[0].outcomes.every(outcome => !("share" in outcome)), true);
+  assert.equal("publicationReview" in output, false);
+});
+
+test("preserves optional website publication notes separately from native limitations", () => {
+  const input = publication();
+  const nativeLimitations = [...input.view.qualification.limitations];
+  input.publicationReview = { limitations: ["Invented operator review note.", "No observed 2026 result yet."] };
+  const output = parseHouseLivePublication(input);
+  assert.ok(output);
+  assert.deepEqual(output.publicationReview.limitations, input.publicationReview.limitations);
+  assert.deepEqual(output.view.qualification.limitations, nativeLimitations);
+  output.publicationReview.limitations.push("Display-only mutation.");
+  assert.equal(input.publicationReview.limitations.length, 2);
+});
+
+test("rejects malformed or embellished website publication notes", () => {
+  for (const publicationReview of [
+    null, { limitations: "not a list" }, { limitations: [""] },
+    { limitations: ["Valid note", 3] }, { limitations: [], privatePath: "/srv/private" },
+  ]) {
+    const input = publication();
+    input.publicationReview = publicationReview;
+    assert.equal(parseHouseLivePublication(input), null);
+  }
 });
 
 test("requires all 16 exact allowed configurations and selected id/config/result digest binding", () => {

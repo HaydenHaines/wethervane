@@ -7,6 +7,17 @@ export interface HouseLiveRequest {
   expectedResultSha256?: string;
 }
 
+export async function loadHouseLiveAvailability(signal: AbortSignal): Promise<boolean> {
+  const response = await fetch("/api/chambers/house/live/availability", { signal, cache: "no-store" });
+  if (!response.ok) throw Error("Current House publication status could not be verified.");
+  const value: unknown = await response.json();
+  if (!value || typeof value !== "object" || Array.isArray(value) ||
+    !("schema" in value) || value.schema !== "HouseLiveAvailabilityV1" ||
+    !("available" in value) || typeof value.available !== "boolean" || Object.keys(value).length !== 2)
+    throw Error("The current House availability response could not be verified.");
+  return value.available;
+}
+
 export async function loadHouseLive(request: HouseLiveRequest, signal: AbortSignal): Promise<HouseLivePublication> {
   if (request.runId !== null && !houseLiveRunId(request.runId))
     throw Error("This House model selection is invalid.");

@@ -25,6 +25,7 @@ export interface HouseLiveResultsProps {
   view: HouseLiveView;
   catalog: HouseLiveCatalogView;
   geography: DistrictGeography | null;
+  publicationLimitations?: readonly string[];
   builderExpanded: boolean;
   onBuilderExpandedChange: (expanded: boolean) => void;
   busy?: boolean;
@@ -124,7 +125,7 @@ function HouseLiveChamberControl({ scenario }: { scenario: NonNullable<HouseLive
 
 export default function HouseLiveResults({ view, catalog, geography, builderExpanded, onBuilderExpandedChange,
   busy = false, error = "", onSelect, onRetry, onHistorical,
-  selectedRaceId, onRaceSelect, comparisonTools }: HouseLiveResultsProps) {
+  selectedRaceId, onRaceSelect, comparisonTools, publicationLimitations = [] }: HouseLiveResultsProps) {
   const sorted = useMemo(() => [...view.races].sort(competitiveOrder), [view.races]);
   const ribbonRaces = useMemo<GroupRibbonRace[]>(() => view.races.map((race) => ({
     id: race.id,
@@ -225,7 +226,12 @@ export default function HouseLiveResults({ view, catalog, geography, builderExpa
         <div><h3>Numerical checks</h3><p>{statusLabel(view.qualification.numericalStatus, "numerical")}. {view.chamberPrecision ? `${view.jointDraws.count.toLocaleString()} simulated elections across ${view.jointDraws.chainCount} independent sampling runs. The largest estimated standard errors are ${view.chamberPrecision.maxSeatMeanMcse.toFixed(2)} seats for average seats and ${(view.chamberPrecision.maxControlMcse * 100).toFixed(1)} percentage points for control chances. Standard error measures variation from a finite simulation; it is separate from uncertainty about the election.` : "No chamber computation is available for this run."}</p></div>
         <div><h3>Publication review and forecast skill</h3><p>{statusLabel(view.qualification.publicationStatus, "publication")}. Forecast skill: {statusLabel(view.qualification.forecastSkill, "skill")}. Numerical checks do not by themselves establish forecast accuracy.</p></div>
       </div>
+      <h3>Model limitations</h3>
       <ul>{view.qualification.limitations.map((limitation, index) => <li key={index}>{limitation}</li>)}</ul>
+      {publicationLimitations.length > 0 && <section aria-labelledby="house-live-publication-review-notes">
+        <h3 id="house-live-publication-review-notes">Publication review notes</h3>
+        <ul>{publicationLimitations.map((limitation, index) => <li key={index}>{limitation}</li>)}</ul>
+      </section>}
     </section>
 
     <section className="methodology" aria-labelledby="historical-house-title">
