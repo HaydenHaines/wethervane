@@ -1,0 +1,54 @@
+{
+  "schema": "HouseLiveFrontendPreparationV1",
+  "issued_utc": "2026-10-25T14:21:15.742625+00:00",
+  "owner_request": "House session is implementing all 16 already-live Senate model configurations for LIVE2026 House; this session owns frontend integration and tests.",
+  "coordination": {
+    "frontend_thread": "01a15a54-c818-75b0-86f3-8797c3d1cfa2",
+    "backend_thread": "01a15ae1-4e5d-7711-bec6-113673b68a1d",
+    "backend_acknowledgment_received": true,
+    "outgoing_native_transport": "Failed at 127.0.0.1:40059/mcp; shared-file response was acknowledged by backend."
+  },
+  "handoff": {
+    "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/docs/development/house-live-frontend-handoff-20261025.json",
+    "sha256": "a3d7eb12f43f73d026f41efc26542dd77b69c1599efc221e4d134d44c9754891"
+  },
+  "backend_parity_inventory": {
+    "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-20261025/parity-v1/senate-models.json",
+    "sha256": "3f1bc06e60008381a12eccc8859b878112066a14570abe0f4945e5e9df1d8201"
+  },
+  "parity_check": "All 16 current Senate run IDs, components and result hashes match the backend inventory.",
+  "frontend_worktree": "/home/hayden/projects/ballotmancy-house-live-ui-20261025",
+  "frontend_branch": "feature/house-live-20261025",
+  "frontend_remote_head": "ae5a4ec1c94f8f4fcf332f1ba3b5ef973bb8a052",
+  "independent_reviews": {
+    "sol": "Audited actual live catalog, source model implementations, saved configuration identity, geography, joint control and tipping contracts; independently authenticated the error-low 2/3 factor.",
+    "luna": "Audited same-page chamber routing, dynamic House map/ribbon/control, model builder, saved/comparison views and concrete live2026 test gaps."
+  },
+  "new_live_adapter": "Required because legacy HouseResult assumes two named D/R candidates and historical group outputs assume observed historical truth with no public chamber control. Preserve those historical contracts.",
+  "current_state": "Catalog and frontend parity handoff completed and shared; awaiting backend native export schema. No new live House packet, model qualification, map or forecast published by this work.",
+  "label_fix": {
+    "description": "Correct all-scale error-low label from x0.5 to x2/3; saved forecast bytes and all 48 configuration IDs unchanged.",
+    "feature_commit": "ae5a4ec1c94f8f4fcf332f1ba3b5ef973bb8a052",
+    "deployment_commit": "30826678719ac4def26cf6504be9317d8273b012",
+    "deployment_branch_pushed": true,
+    "local_tests": {
+      "composition": 7,
+      "current_explorer": 6,
+      "status": "passed"
+    },
+    "setup_failures_resolved": [
+      "System Python lacked numpy; existing integration virtualenv passed current-explorer tests.",
+      "Initial feature push lacked web ESLint dependencies; linked existing dependency trees and all pre-push checks passed."
+    ],
+    "ci": {
+      "run_id": 40201550388,
+      "job_id": 121193605606,
+      "status": "in_progress",
+      "last_observed": "All tests through build, typecheck and browser installation passed; browser tests running.",
+      "url": "https://github.com/HaydenHaines/wethervane/actions/runs/40201550388"
+    },
+    "public_verification": "Direct public URL returned HTTP403; web tool also could not access it. Served label not independently confirmed."
+  },
+  "no_repeated_fit": "Original Senate TX2018 and A2022 jobs left untouched; full-count ranking and promotion remain unqualified.",
+  "durability": "Tracked source and documentation only; no new raw scientific outputs or journal mutations, so no new raw-output backup required."
+}
