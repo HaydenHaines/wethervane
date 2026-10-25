@@ -9,6 +9,7 @@ import { parseHouseLiveResult, houseLiveConfigurationKey } from "./house-live-re
 import { houseLiveCatalogView, houseLiveView } from "./house-live-view.ts";
 import { parseHouseLivePublication, type HouseLivePublication } from "./house-live-publication.ts";
 import { houseLiveRunId } from "./house-live-navigation.ts";
+import { parseHouseLivePublicationQualification } from "./house-live-native-qualification.ts";
 
 export interface HouseLiveSiteManifestV1 {
   schema: "HouseLiveSiteManifestV1";
@@ -31,6 +32,8 @@ export interface HouseLiveSiteManifestV1 {
 export interface HouseLiveSiteReviewV1 {
   schema: "HouseLiveSiteReviewV1";
   decision: "publish";
+  joint_format: "house_live_npz_chain_major_v1";
+  seat_quantile_convention: "inverse_cdf" | "linear";
   catalog_sha256: string;
   source_policy_sha256: string;
   qualification_sha256: string;
@@ -86,11 +89,13 @@ function parseManifest(value: unknown): HouseLiveSiteManifestV1 {
   return value as unknown as HouseLiveSiteManifestV1;
 }
 
-function parseReview(value: unknown): HouseLiveSiteReviewV1 {
+export function parseHouseLiveSiteReview(value: unknown): HouseLiveSiteReviewV1 {
   if (!object(value) || !exactKeys(value, ["schema", "decision", "catalog_sha256",
     "source_policy_sha256", "qualification_sha256", "geography_sha256",
-    "geography_source_receipt_sha256", "results", "checks", "limitations"]) ||
+    "geography_source_receipt_sha256", "results", "checks", "limitations", "joint_format", "seat_quantile_convention"]) ||
     value.schema !== "HouseLiveSiteReviewV1" || value.decision !== "publish" ||
+    value.joint_format !== "house_live_npz_chain_major_v1" ||
+    !["inverse_cdf", "linear"].includes(String(value.seat_quantile_convention)) ||
     ![value.catalog_sha256, value.source_policy_sha256, value.qualification_sha256,
       value.geography_sha256, value.geography_source_receipt_sha256].every(hash) ||
     !object(value.checks) || !exactKeys(value.checks, ["inputsVerified", "calculationsReviewed",
@@ -152,7 +157,7 @@ async function loadStaged(directory: string, runId?: string | null): Promise<{
   const manifest = await readFixedManifest(directory);
   const catalog = parseHouseLiveCatalog(await readPinnedHouseLiveJson(directory, manifest.catalog));
   if (!catalog) throw Error("Invalid native live House catalog.");
-  const review = parseReview(await readPinnedHouseLiveJson(directory, manifest.review));
+  const review = parseHouseLiveSiteReview(await readPinnedHouseLiveJson(directory, manifest.review));
   bindRelease(manifest, review, catalog);
   const selectedId = runId ?? catalog.default_id;
   const entry = catalog.entries.find(row => row.id === selectedId);
@@ -163,7 +168,10 @@ async function loadStaged(directory: string, runId?: string | null): Promise<{
   // records prior importer checks of raw joint rows and all-run roster identity;
   // neither this loader nor matching booleans re-establish those findings.
   await verifyPinnedHouseLiveArtifact(directory, manifest.sourcePolicy);
-  await verifyPinnedHouseLiveArtifact(directory, manifest.qualification);
+  const qualification = parseHouseLivePublicationQualification(await readPinnedHouseLiveJson(directory, manifest.qualification));
+  if (!qualification || qualification.seat_quantile_convention !== review.seat_quantile_convention)
+    throw Error("Native House qualification is unreviewed or disagrees with the reviewed export convention.");
+  await verifyPinnedHouseLiveArtifact(directory, qualification.numerical_review);
   await verifyPinnedHouseLiveArtifact(directory, manifest.geography.sourceReceipt);
   const geojson = await readPinnedHouseLiveJson(directory, manifest.geography.artifact);
   const native = parseHouseLiveResult(await readPinnedHouseLiveJson(directory, staged.artifact));
@@ -172,7 +180,8 @@ async function loadStaged(directory: string, runId?: string | null): Promise<{
     native.geography.sha256 !== manifest.geography.artifact.sha256 ||
     native.geography.source_receipt.sha256 !== manifest.geography.sourceReceipt.sha256 ||
     native.joint_draws.sha256 !== reviewResult.joint_draws_sha256 ||
-    native.qualification.publication_status !== "reviewed")
+    native.qualification.publication_status !== "reviewed" ||
+    qualification.limitations.some(note => !native.qualification.limitations.includes(note)))
     throw Error("Selected native live House result does not match its reviewed release.");
   const geography: DistrictGeography = {
     metadata: { cycle: 2026, mapVintage: native.map_vintage, admission: "verified",

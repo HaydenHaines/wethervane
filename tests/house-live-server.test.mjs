@@ -39,7 +39,12 @@ async function fixture(t, mutate) {
   const geographyPin = await put(directory, "stage/geography.geojson", geometry(results));
   const receiptPin = await put(directory, "stage/source-receipt.json", { synthetic: true, edition: "invented-grid" });
   const policyPin = await put(directory, "stage/source-policy.json", { synthetic: true, policy: "invented" });
-  const qualificationPin = await put(directory, "stage/qualification.json", { synthetic: true, review: "invented" });
+  const numericalReviewPin = await put(directory, "stage/numerical-review.json", { synthetic: true, review: "invented" });
+  const qualificationPin = await put(directory, "stage/qualification.json", {
+    schema: "HouseLivePublicationQualificationV1", status: "reviewed", numerical_review: numericalReviewPin,
+    seat_quantile_convention: "inverse_cdf", share_quantile_convention: "linear",
+    limitations: results[0].qualification.limitations,
+  });
   const stagedResults = [];
   for (const [index, result] of results.entries()) {
     const id = catalog.entries[index].id;
@@ -54,6 +59,7 @@ async function fixture(t, mutate) {
   const catalogPin = await put(directory, "stage/catalog.json", catalog);
   const review = {
     schema: "HouseLiveSiteReviewV1", decision: "publish",
+    joint_format: "house_live_npz_chain_major_v1", seat_quantile_convention: "inverse_cdf",
     catalog_sha256: catalogPin.sha256,
     source_policy_sha256: policyPin.sha256,
     qualification_sha256: qualificationPin.sha256,
@@ -146,6 +152,13 @@ test("review decision, check gates, selected publication status, and joint bindi
   await assert.rejects(loadHouseLiveSitePublication(wrongId.directory), /reviewed release/);
 
   const site = await fixture(t);
+  delete site.review.seat_quantile_convention;
+  await site.writeReview();
+  await assert.rejects(readHouseLiveAvailability(site.directory), /site review/);
+  site.review.seat_quantile_convention = "choose_whichever_matches";
+  await site.writeReview();
+  await assert.rejects(readHouseLiveAvailability(site.directory), /site review/);
+  site.review.seat_quantile_convention = "inverse_cdf";
   site.review.checks.jointRowsVerified = false;
   await site.writeReview();
   await assert.rejects(readHouseLiveAvailability(site.directory), /site review/);

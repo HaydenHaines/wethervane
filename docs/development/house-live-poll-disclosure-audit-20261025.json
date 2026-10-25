@@ -1,0 +1,205 @@
+{
+  "schema": "HouseLivePollDisclosureAuditPreparationV1",
+  "status": "preparation_only_not_source_admission",
+  "created_from": "Read-only inspection of the current House polling normalizer and polls-v3 artifacts on 2026-10-25.",
+  "inspected_artifacts": [
+    {
+      "path": "research/house-live-20261025/current_polls.py",
+      "sha256": "271268d44018e1eb89a2d51bc5a82e2c8159db44139d654c64b1d39fbf38c10a"
+    },
+    {
+      "path": "research/house-live-20261025/polls-v3/receipt.json",
+      "sha256": "13127f2839a2e65e91f66c1020ea00c966787dc3aba79057f342d769ccffa7a2"
+    },
+    {
+      "path": "research/house-live-20261025/polls-v3/ledger.json",
+      "sha256": "67eedef5f40f3b233a0e1f557cface5e430e6f64cef3fa59d380f725ea6c3c73"
+    },
+    {
+      "path": "research/house-live-20261025/polls-v3/selected.csv",
+      "sha256": "4414b8649fa30e2c377dab55d439293b2e2aaee09fd438321a7e9e926a7aa3db"
+    },
+    {
+      "path": "research/house-live-20261025/polls-v3/identities.json",
+      "sha256": "3e5eb19cd7d86b18442d2d8baf32deb8724e68ef6fd0ed6aa5d45a7c446fd60b"
+    }
+  ],
+  "artifact_status": {
+    "receipt_schema": "HouseLivePollSelectionV1",
+    "receipt_status": "normalized_pending_source_and_identity_review",
+    "issued_at": "2026-10-25T15:38:29.257689+00:00",
+    "forecast_cutoff": "2026-10-25T15:36:34Z",
+    "interpretation": "The normalization receipt alone does not establish completed source or identity review. The later_evidence_2026-10-25 section records the subsequent separate aggregate-input admission, which still does not admit website publication."
+  },
+  "observed_units_and_counts": {
+    "ledger_rows": 1628,
+    "selected_poll_question_district_rows": 167,
+    "excluded_ledger_rows": 1461,
+    "selected_races": 98,
+    "current_house_districts": 435,
+    "districts_with_selected_rows": 98,
+    "districts_without_selected_rows": 337,
+    "coverage_fraction_of_435": 0.2253,
+    "normalized_pollster_keys_in_selected_rows": 61,
+    "selected_population_rows": {
+      "likely_voter": 151,
+      "registered_voter": 16
+    },
+    "selected_rows_without_reported_nominal_sample_size": 27,
+    "selected_rows_marked_internal": 0,
+    "selected_rows_with_partisan_label": 102,
+    "interpretation": "The selected row is one poll question applied to one district/race. It is not a respondent, and rows need not represent independent samples: a multi-district poll may yield a row in each district. The 1,628 denominator is the normalizer's ledgered question groups, not a count of current House polls; many groups are other offices, cycles, or non-district records."
+  },
+  "exclusion_ledger_first_reason_counts": {
+    "not_one_current_house_district": 868,
+    "not_2026_house_regular_general": 310,
+    "outside_100_day_field_end_window": 189,
+    "unresolved_or_departed_candidate_in_question": 35,
+    "earlier_same_pollster_race_sample": 22,
+    "reallocated_or_later_round_not_initial_pair_share": 12,
+    "outside_named_principal_pair_support": 12,
+    "alternative_question_same_sample": 6,
+    "unavailable_at_cutoff_under_created_plus_one_day_rule": 4,
+    "missouri_fieldwork_before_final_old_map_confirmation": 2,
+    "question_does_not_include_current_principal_pair": 1,
+    "interpretation": "The implementation assigns the first failing reason, so these reason counts are mutually exclusive pipeline outcomes. The large non-House/non-district categories mean the excluded denominator must not be labeled as current House polls rejected for quality. Exact duplicate rows within a question group are silently dropped and are not quantified in this ledger."
+  },
+  "selection_behavior_observed_in_code": {
+    "source_used_by_normalizer": "nyt-house-discovery snapshot",
+    "grouping_and_row_deduplication": "Group source rows by poll_id and question_id, then drop exact duplicate rows within each group.",
+    "base_eligibility": [
+      "2026 U.S. House regular general election in one current district",
+      "District is in the named-principal-pair support set",
+      "Not hypothetical, tracking, a subgroup, or a reallocated/later ranked-choice round",
+      "Population is likely voters, registered voters, or adults",
+      "Question metadata is consistent; dates are valid and election date is 2026-11-03",
+      "Field end is 0 through 100 days before election day",
+      "Availability proxy is on or before the forecast cutoff",
+      "Missouri fieldwork starts on or after 2026-09-24",
+      "Reported sample size, when present, is positive and finite",
+      "Candidate options resolve to current roster identities; both principal candidates are present; no duplicate candidate response",
+      "Toplines are finite and nonnegative, the pair toplines are positive and within stated total/rounding bounds"
+    ],
+    "within_sample_race_choice": "Retain one valid question for the same sample/race, prioritizing likely voters, then registered voters, then adults; fuller candidate lineups; then question ID ordering.",
+    "within_pollster_race_choice": "Retain the latest field-end question for each normalized pollster/race; earlier ones are logged as earlier_same_pollster_race_sample.",
+    "availability_proxy": "max(field_end day, aggregator_created_date + 1 day). This is a conservative day-level ingestion proxy, not a verified original publication timestamp.",
+    "cutoff_comparison": "The proxy availability timestamp must be no later than the receipt's forecast_cutoff.",
+    "share_denominator": "first_share = first principal candidate percentage / (first principal candidate percentage + second principal candidate percentage). The share is conditional on those two candidates; it excludes other responses from the denominator and does not rescale original toplines.",
+    "sample_size_use": "The receipt says calibrated total logit error already includes sampling error and no additional nominal-sample-size term is added. Missing nominal n is kept missing, not imputed.",
+    "pollster_weights": "The receipt says pollster grades, ratings, actual outcomes, and numeric grade weights do not enter selection."
+  },
+  "identity_audit_shape": {
+    "records": 546,
+    "mapped_records": 476,
+    "unresolved_or_ambiguous_records": 70,
+    "interpretation": "The identity file contains candidate-name resolution attempts made before final sample/race and pollster deduplication; it is not 546 selected polls or selected candidates. Unresolved identities exclude their question."
+  },
+  "source_claim_caveat": {
+    "receipt_prose": "The receipt says NYT question metadata is primary and VoteHub is an independent coverage cross-check that is never independently counted for duplicate samples.",
+    "evidence_seen": "The inspected normalizer reads nyt-house-discovery, and every selected/ledger source_id is nyt-house-discovery. The inspected receipt input pins do not include a VoteHub artifact.",
+    "safe_claim": "Do not claim that VoteHub coverage was actually checked based on these artifacts alone. Treat that receipt sentence as policy prose awaiting supporting evidence or owner clarification."
+  },
+  "suggested_plain_language_disclosure": {
+    "coverage": "The current selection contains 167 poll-question results across 98 of 435 districts. Districts without a selected poll still receive a forecast.",
+    "unit": "A count is a selected poll question for a district, not a count of respondents or necessarily a separate independent survey.",
+    "selection": "The selection favors likely-voter samples, then registered-voter and adult samples, and keeps the latest eligible sample from each pollster in a district.",
+    "availability": "Poll availability is estimated from field-end and aggregator-created dates; original publication times and later revisions have not been verified.",
+    "share": "The modeled poll share compares the two named principal candidates and excludes other responses from its denominator.",
+    "status": "The inspected receipt is pending source and identity review; do not display this selection as reviewed or publishable until its status and evidence are resolved."
+  },
+  "not_yet_established_or_not_inferred": [
+    "Do not infer the schema or semantics of a future native sourcePolicy artifact from this audit.",
+    "Do not infer that every excluded ledger record is a current House poll; many are other offices, cycles, or non-district data.",
+    "Do not infer that the VoteHub cross-check ran from the receipt prose alone.",
+    "Do not infer that 167 rows are 167 mutually independent surveys.",
+    "Do not treat hashes, selection counts, or source-name matching as completed independent scientific review.",
+    "Future release admission should bind native poll_source_ids to exact selected observation/source identities and cutoff using the owner-defined native contract; this audit does not assume whether that field means poll IDs, question IDs, source IDs, or another unit."
+  ],
+  "frontend_note": "The historical House poll-count note and HousePollingShares component describe separate historical artifacts and should not be reused as live evidence. HouseLiveResults can host a live-specific disclosure once reviewed source-policy and native poll identity metadata are available.",
+  "later_evidence_2026-10-25": {
+    "verified_at": "2026-10-25T16:02:51Z",
+    "purpose": "Independent, local-only verification of the later source-policy VoteHub coverage statement; no network access or model run.",
+    "authoritative_artifact_pins": [
+      {
+        "path": "research/house-live-20261025/source-policy-v1.json",
+        "sha256": "3877b504fdfd9f75c54d5162cdf07259b2071a611d32703105db87624d5511dd"
+      },
+      {
+        "path": "research/house-live-20261025/input-review-v1.json",
+        "sha256": "8b31e0faa5544c1ba04404e8b9420e23ce9726c467cb9c939b70d8695a24c465"
+      },
+      {
+        "path": "research/house-live-20261025/admission-v1.json",
+        "sha256": "1a64a1c2f040c9a427f3a5ff84d645776b436cee9ea1d19276d02d9af0974978"
+      },
+      {
+        "path": "research/house-live-20261025/raw-v1/votehub-house/body",
+        "sha256": "b7a569fb017bae85c09006f6e42b85e5e05f150d900271a69e6158be5e02e90e"
+      },
+      {
+        "path": "research/house-live-20261025/raw-v1/nyt-house-discovery/body",
+        "sha256": "a57e2a9a0e7e0de238d15e92a7db5fd7e8573aa741384b0e5df74cd8412499fc"
+      },
+      {
+        "path": "research/house-live-20261025/panel-v1/support.json",
+        "sha256": "664ebde07da4c2624c7844bd905f531f3e5f38c53168b8aaf31b270adf3f8dee"
+      }
+    ],
+    "pin_check": "All six byte digests match the paths, and admission-v1.json itself pins the source-policy, input-review, VoteHub body, NYT body, and support roster bytes used here.",
+    "independent_coverage_comparison": {
+      "expected_roster": "The pinned panel-v1/support.json contains 435 unique current 2026 district keys.",
+      "normalization": "VoteHub seat_name values and NYT state+seat_number rows were mapped to those expected district keys, including the current at-large 0/1 aliases used by current_polls.py. NYT rows were limited to cycle 2026 and office_type U.S. House for the inventory comparison.",
+      "nyt_inventory": {
+        "raw_rows": 6065,
+        "distinct_current_expected_districts": 157
+      },
+      "votehub_inventory": {
+        "raw_records": 175,
+        "distinct_current_expected_districts": 78,
+        "all_records_poll_type": "us-representative",
+        "all_records_have_2026_subject": true
+      },
+      "covered_by_votehub_but_absent_from_nyt_inventory": [
+        "FL-28"
+      ],
+      "overlap": {
+        "votehub_districts_in_nyt_inventory": 77,
+        "votehub_districts_absent_from_nyt_inventory": 1
+      },
+      "fl28_records": [
+        {
+          "votehub_id": "us-202mdwdd432a7f",
+          "pollster": "MDW Communications",
+          "field_dates": "2026-03-03 through 2026-03-07",
+          "aggregator_created_date": "2026-06-11",
+          "sample_size": 514,
+          "url": "https://floridapolitics.com/archives/788279-poll-shows-carlos-gimenezs-lead-narrowing-in-cd-28-amid-economic-policy-headwinds/"
+        },
+        {
+          "votehub_id": "us-202mdw7112002f",
+          "pollster": "MDW Communications",
+          "field_dates": "2026-03-03 through 2026-03-07",
+          "aggregator_created_date": "2026-06-11",
+          "sample_size": 514,
+          "url": "https://floridapolitics.com/archives/788279-poll-shows-carlos-gimenezs-lead-narrowing-in-cd-28-amid-economic-policy-headwinds/"
+        }
+      ],
+      "fl28_interpretation": "The two VoteHub records share pollster, field dates, sample size, subject, and source URL but give differently labeled answer series; this comparison does not count them as two independent samples. Field end March 7 is 241 days before November 3, so both are outside the stated 100-day field-end window. The availability proxy is June 12, before the October 25 polling cutoff; the exclusion follows the field-end window, not the cutoff.",
+      "nyt_inventory_note": "The 157-district NYT count is raw inventory coverage, before current_polls.py eligibility, candidate identity, age, sample/race deduplication, and final pollster/race deduplication. It is distinct from the 98 districts in selected.csv."
+    },
+    "status_separation": {
+      "source_policy_claim": "The later source-policy-v1.json now explicitly states the VoteHub coverage exception, and admission-v1.json pins both raw snapshots plus the 435-district support roster.",
+      "input_review_status": "reviewed_with_explicit_scope",
+      "admission_status": "admitted_for_current_aggregate_comparison",
+      "website_publication_admitted": false,
+      "interpretation": "The input review and aggregate-input admission are not a website publication decision. The source normalizer receipt remains pinned at status normalized_pending_source_and_identity_review; retain that artifact fact and do not describe the current website as published or the poll receipt itself as finalized."
+    },
+    "reconciliation_with_earlier_finding": "The earlier finding remains accurate for the then-inspected polls-v3 receipt, ledger, selected rows, identity file, and normalizer: those artifacts alone did not evidence a VoteHub coverage check. The later source-policy/input-review/admission artifacts add a pinned coverage assertion; the raw snapshot comparison now independently verifies its narrow district-inventory claim, with FL-28 as the sole exception.",
+    "boundaries": [
+      "This verifies the narrow inventory-coverage statement from the pinned raw snapshots; it does not verify every NYT or VoteHub poll questionnaire, topline, candidate identity, or selection decision.",
+      "The VoteHub snapshot is used only for coverage comparison here; it contributes no selected observations.",
+      "The 100-day exclusion is based on field-end date and election date, not the aggregator-created date.",
+      "No inference is made about the native sourcePolicy schema or the future meaning of native poll_source_ids."
+    ]
+  }
+}

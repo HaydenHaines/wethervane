@@ -1,0 +1,94 @@
+{
+  "schema": "HouseLiveOfflineImportPreparationV1",
+  "issued_utc": "2026-10-25T16:10:16.573146+00:00",
+  "base_commit": "2c2e26766f35fb99c95f8fdffab0d74e9ad76944",
+  "status": "tested_offline_importer_and_real_pilot_adapter_check_not_publication_admission",
+  "implemented": [
+    "Bounded standard-library decoder authenticates the same NPZ file before and after streaming, validates exact dtype/shape/race order and chain/draw IDs, D/R/O winners, per-row seat sidecars, finite shocks and nonnegative bank indices.",
+    "Node bridge feeds the existing independent numerical checker and accepts only a successful decoder exit, including final-byte verification; partial streams and late failures cannot qualify a result.",
+    "Native HouseLivePublicationQualificationV1 parser binds explicit reviewed export conventions and numerical-review artifact. Site operator review cannot silently select another convention, and global native limitations must remain in every displayed result.",
+    "Offline importer checks all16 actual native results, candidate/group/geometry collection identity and joint numerical summaries; preserves native JSON bytes; stages only selected display/source/review artifacts, with no raw predictive or training archives.",
+    "Atomic Linux renameat2(RENAME_NOREPLACE) installation rejects all existing destinations, including empty directories and symlinks, without fallback. Unsupported platforms or filesystems fail before installation.",
+    "Independent poll-disclosure audit and later pinned raw-source coverage check provide exact counts, units, source rules, exclusion reasons and qualifications for upcoming UI work."
+  ],
+  "actual_data_check": {
+    "schema": "HouseLiveActualAdapterCheckV1",
+    "issued_utc": "2026-10-25T16:04:23.789Z",
+    "sourceDirectory": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-20261025/adapter-check-v2",
+    "resultSha256": "71f2128496e3f013033efbe6582e50eeba3b2d763eec4d36f2d7561f1844dac4",
+    "status": "read_only_adapter_check_not_publication_admission",
+    "nativePublicationStatus": "not_reviewed",
+    "numericalStatus": "incomplete",
+    "checks": {
+      "rowsChecked": 16000,
+      "raceCount": 435,
+      "chamberChecked": false,
+      "artifactSha256": "01a4997ef83ada529b826b90d78875c95c421cf1bbc7f31f4b013ca2e5a80f0f",
+      "archiveFormat": "house_live_npz_chain_major_v1",
+      "seatQuantileConvention": "inverse_cdf"
+    }
+  },
+  "verification": [
+    {
+      "command": "npm run test:house-live",
+      "log": "/tmp/ballotmancy-live-house-unit-v5-final.log",
+      "exit_code": 0,
+      "passed": 103,
+      "skipped": 3,
+      "note": "Optional browser cases unchanged and not rerun; final suite includes11 importer/installer cases and4 archive-bridge cases."
+    },
+    {
+      "command": "npm run test:house-live-decoder",
+      "log": "/tmp/ballotmancy-live-house-decoder-v1.log",
+      "exit_code": 0,
+      "passed": 7,
+      "note": "Version/header limits, integer shapes, identities, sidecars, truncation/trailing payloads, CRC and fingerprint failures; later source edits only added documentation links."
+    },
+    {
+      "command": "npm run build",
+      "log": "/tmp/ballotmancy-live-house-build-v5.log",
+      "exit_code": 0,
+      "note": "Final production build includes TypeScript check after native qualification changes."
+    },
+    {
+      "review": "Sol implemented decoder and importer separately; Luna independently reviewed bridge/decoder, identified a directory replacement race in the initial importer; root and importer Sol replaced it with kernel no-replace installation and tested failures. Root reviewed native qualifier/installation code and verified actual pilot rows."
+    },
+    {
+      "runtime_trace": "Both built current House API traces contain no NPZ, decoder, installer or importer files."
+    }
+  ],
+  "limits": [
+    "No final native all16 scientific packet or current House publication was created. Pilot publication_status remains not_reviewed and numerical_status incomplete; chamber null means only race frequencies were numerically checked against all16000 rows.",
+    "Decoder verifies archive structure and row identity, not bank-index upper bounds, model validity, fit convergence, full covariance qualification or historical predictive skill. Max2M rows per archive; bounded-memory output may still be large.",
+    "Native numerical-review bytes are authenticated; final scientific review still requires inspecting their actual scope and gates, rather than trusting a filename/status or boolean.",
+    "New user configuration saving remains out of scope. No live site or model outputs were modified."
+  ],
+  "next": [
+    "Implement the live poll inclusion/exclusion display using the now-existing source policy and audited ledger, bound to final native poll_source_ids and exact result hashes. Use poll-question-by-district units, distinguish other-contest source exclusions, and preserve approximate publication-date wording.",
+    "Inspect completed 1M-draw default F/FP and remaining configurations only when owner receipts are terminal; no duplicate runs or process changes. Read actual reviewed scientific receipt and native catalog before operator review/import.",
+    "Run importer against real reviewed packet, validate actual map/controls/model comparisons/poll disclosure, then publish. No current tipping statistic until separately qualified."
+  ],
+  "specification_sources": [
+    "https://numpy.org/doc/stable/reference/generated/numpy.lib.format.html",
+    "https://docs.python.org/3/library/zipfile.html",
+    "https://man7.org/linux/man-pages/man2/rename.2.html"
+  ],
+  "source_fingerprints": {
+    ".github/workflows/siteground-web.yml": "45ae3157b4ad96d061d20eb7fd5e16743c6e49ab68eae81e09bee965ff511afb",
+    "docs/development/house-live-poll-disclosure-audit-20261025.json": "6e9909c29b93decf4161cd0604309a78cb7628acb61c77302555405b9cb2a305",
+    "docs/development/ui-house-live-decoder-and-poll-review-20261025.json": "b847087d959bcf2a13939d794783f96c02ea9b5ada9bc110a733dfcc6cc135c9",
+    "docs/development/ui-house-live-native-adapter-validation-20261025.json": "46d34e5842f2385be91c1d3949a30ea8fe2d26ffbf3fd27fd9bc6cc00c6778f6",
+    "lib/house-live-joint-archive.ts": "fc15f16754997fd657823f2badb510abba366aae86051a58388bc2104fb4a59f",
+    "lib/house-live-native-qualification.ts": "112bd1192404a4e4597013cbb5e652bcee1273cd70aabb66661f959f11085b94",
+    "lib/house-live-server.ts": "3524b59610a7018aed779e87fa5cd11d697661540931d94c13f0e055c861ec22",
+    "package.json": "62b81febd1a94f5e8078c54ab7aa26fb6e59af85fd18369895051dbd7a5b0aab",
+    "scripts/decode_house_live_joint.py": "c5234b6cfac4934dedabbb4f6a6a93c9e3cd832ad81f5aa442ca80e5dbf27997",
+    "scripts/import_house_live.mjs": "2046f1b7ba575f1ee41c692096809e182a2286b599adda4f99195731612014ec",
+    "scripts/install_house_live_release.py": "b137f599acf7f8a885c9484598b9b5a528b5ad61dded5d2eaaccf5aa14c4eeae",
+    "tests/fixtures/house-live-joint-archive.py": "4dce25bb8be9c1021aa53ab4cd6666257eb27f000cab1edde0ba6bda1d7b60a5",
+    "tests/house-live-import.test.mjs": "626b445974c33696cc108ddfe805ea3c170e51119717cb939713667fadefb43e",
+    "tests/house-live-joint-archive.test.mjs": "ef6eb0cc193ebd546c9492c84c93107b5225e4c43229f75983577d8497def3da",
+    "tests/house-live-server.test.mjs": "547d8dd2de2511110a67b84b1f106beb1161e94cfdad4097c023c0c9668af100",
+    "tests/site_house_live_joint_decoder_test.py": "9c8aba22ce7313d9352bd1cbaece27c5b02ac114cb1526e6f6e6e18eae263035"
+  }
+}
