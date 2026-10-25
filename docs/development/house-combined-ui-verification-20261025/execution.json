@@ -1,0 +1,84 @@
+{
+  "schema": "HouseCombinedUIRootExecutionV1",
+  "head": "10885bad9eee1076ea850ffaf6737f12844b62da",
+  "records": [
+    {
+      "name": "house-live",
+      "command": [
+        "npm",
+        "run",
+        "test:house-live"
+      ],
+      "environmentOverrides": {
+        "BALLOTMANCY_LIVE_HOUSE_BROWSER": "1"
+      },
+      "startedAt": "2026-10-25T19:48:45.513777+00:00",
+      "elapsedSeconds": 29.763975112931803,
+      "returnCode": 0,
+      "log": {
+        "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/docs/development/house-combined-ui-verification-20261025/house-live.log",
+        "sha256": "0008c9e55e4ea33fd7d6bb4741cadb4e25abe1649dab6f2a5b3d54ade57b5ba7",
+        "size": 43656
+      }
+    },
+    {
+      "name": "decoder",
+      "command": [
+        "python3",
+        "-B",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-p",
+        "site_house_live_joint_decoder_test.py"
+      ],
+      "environmentOverrides": {},
+      "startedAt": "2026-10-25T19:49:15.280089+00:00",
+      "elapsedSeconds": 2.017162637086585,
+      "returnCode": 0,
+      "log": {
+        "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/docs/development/house-combined-ui-verification-20261025/decoder.log",
+        "sha256": "62358465256af66731c4ee8995eefff241c092ecaf66b7a9d0da492e08ac790b",
+        "size": 110
+      }
+    },
+    {
+      "name": "typecheck",
+      "command": [
+        "npx",
+        "tsc",
+        "--noEmit",
+        "--incremental",
+        "false"
+      ],
+      "environmentOverrides": {},
+      "startedAt": "2026-10-25T19:49:17.299529+00:00",
+      "elapsedSeconds": 7.232120075030252,
+      "returnCode": 0,
+      "log": {
+        "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/docs/development/house-combined-ui-verification-20261025/typecheck.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    },
+    {
+      "name": "build",
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "environmentOverrides": {},
+      "startedAt": "2026-10-25T19:49:24.534147+00:00",
+      "elapsedSeconds": 12.10036287503317,
+      "returnCode": 0,
+      "log": {
+        "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/docs/development/house-combined-ui-verification-20261025/build.log",
+        "sha256": "a0a1f4b2403cf5941ecbd0f6c0f4942dc633b8f318fd11469ed11427d178ed23",
+        "size": 1127
+      }
+    }
+  ]
+}
