@@ -1,0 +1,84 @@
+{
+  "schema": "native_nm_menu_review_luna_v1",
+  "reviewed_at_utc": "2026-10-25 12:54:54 UTC",
+  "question": "Whether the already acquired statewide NM source can close an actual Senate candidate-menu native integration gap, and whether a source-to-native draft advances owner work.",
+  "current_owner_state": {
+    "checkpoint": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/checkpoint-root-v35.json",
+      "sha256": "6cab3621586e190ae84ca5c57a3df8e3d52e33875cf44c0326008b8661c839ce"
+    },
+    "finding": "NM remains among the nine held settings (26/35 supported); v35 still reports no new menu settings closed and points to the earlier proposal/root review. No later owner admission or successor selection was found in the cited current artifacts.",
+    "selection": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-integration-root-v1/menu-successor-selection.json",
+      "sha256": "c25ff432bc792be016ee251ed1b1c5a157e5908541fc7256dcc441e4b4739d09",
+      "relevant_selection": "NC_NM retains printed-person identities/corroboration, while qualified-write-in support remains unclosed."
+    },
+    "existing_menu_proposal": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-menu-followup-sol-v3/proposal.json",
+      "sha256": "0d8f0d644d64a4971d652a7b4aae5fc3f5c2c200cc163de52e4eff2d7b76b15c",
+      "finding": "The two proposed NM IDs are sourced to the older Santa Fe County master list; proposal status is support_unclosed, conditional and pending root selection. It predates the statewide portal packet."
+    },
+    "prior_root_review": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-menu-followup-root-v2/NM-review.json",
+      "sha256": "507052424eff308c4ede0ca02d2e4b2f5dc27d8c8298fd97e3aa885eaf36c036",
+      "finding": "Its browser-failed portal and county-only scope describe an earlier state; its held-write-in and cutoff conclusions remain relevant."
+    }
+  },
+  "statewide_source": {
+    "handoff": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/docs/development/ui-new-mexico-portal-source-ready-20261025.json",
+      "sha256": "83c053bcb01963fc9a7de56cf02cc95b3e2e6e897d20a4e078c8fd21d28eda11"
+    },
+    "acquisition_receipt": {
+      "path": "research/improvement-loop-20261024/nm-portal-acquisition-root-v1/receipt.json",
+      "sha256": "be93671629f06d8d4075b6d9efc557c31dd072a2f50e0017f65484ee99fdd549"
+    },
+    "independent_review_receipt": {
+      "path": "research/improvement-loop-20261024/nm-portal-source-review-sol-v1/receipt.json",
+      "sha256": "4aef642b8aa8b4223ac80f284fbaa01fb889e23d27fee44145ad14dbd6fcd411"
+    },
+    "raw_portal": {
+      "path": "research/improvement-loop-20261024/nm-portal-acquisition-root-v1/raw/nm-candidate-list.html",
+      "sha256": "a8b53e22f8a7609e7d2cbd239e241a664334a19c1f26f80954d61cf8ed4213af"
+    },
+    "portal_url": "https://candidateportal.servis.sos.state.nm.us/CandidateList.aspx?eid=2917&cty=99",
+    "scope": "SOS-homepage-linked 2026 General Election Candidate List; County filter 99 labeled State, all contests and all parties selected; unpaged one-page response with 524 rows.",
+    "observed_senate_rows": [
+      {"name": "BEN R LUJAN", "party_code": "DEM", "status": "Qualified", "filing_date_display": "2/3/2026 9:44:07 AM"},
+      {"name": "LARRY E MARKER", "party_code": "REP", "status": "Qualified", "filing_date_display": "3/17/2026 9:10:00 AM"},
+      {"name": "MIRA OCONNELL", "party_code": "DTS", "status": "Disqualified", "filing_date_display": "6/25/2026 4:31:00 PM"},
+      {"name": "BOB PERLS", "party_code": "FWD", "status": "Disqualified", "filing_date_display": "6/25/2026 11:44:16 AM"}
+    ],
+    "write_in_observation": "Six rows in other contests explicitly carry a '(write-in)' suffix; none of the four US Senate rows does. This is evidence of statewide coverage and portal display capability, not proof there are no unrecorded, later, or legally qualifying Senate write-ins.",
+    "retrieval_and_cutoff": "Retrieved October 25, 2026. Neither portal nor saved source metadata establishes exact publication/status availability by the October 20 forecast cutoff; do not backdate this evidence."
+  },
+  "native_contract_mapping": {
+    "setting_id": "2026:NM:senate:regular",
+    "seat_id": "US-SEN-NM-CLASS-2",
+    "event_group_key": "NM:2026-11-03",
+    "existing_source_local_ids": ["NM-2026-general-source-local-1", "NM-2026-general-source-local-2"],
+    "draft_mapping": [
+      {"source_id": "NM-2026-general-source-local-1", "name_literal": "BEN R LUJAN", "party_literal": "DEM", "observed_state": "Qualified", "eligible_named_menu_role": "printed candidate, conditionally supported at Oct 25 retrieval"},
+      {"source_id": "NM-2026-general-source-local-2", "name_literal": "LARRY E MARKER", "party_literal": "REP", "observed_state": "Qualified", "eligible_named_menu_role": "printed candidate, conditionally supported at Oct 25 retrieval"}
+    ],
+    "exclude_from_menu": [
+      {"name_literal": "MIRA OCONNELL", "party_literal": "DTS", "observed_state": "Disqualified", "treatment": "Retain as source evidence/status; do not materialize as a candidate option."},
+      {"name_literal": "BOB PERLS", "party_literal": "FWD", "observed_state": "Disqualified", "treatment": "Retain as source evidence/status; do not materialize as a candidate option."}
+    ],
+    "implementation_notes": [
+      "A source-to-native draft is worthwhile: bind the existing two source-local IDs to the statewide portal rows, preserve exact literal party codes and status/date fields, and keep the older county list and ballot as corroboration rather than primary statewide scope.",
+      "Do not add candidate axes or globally merge identities. Translate party code to model affiliation only in a separately explicit mapping; leave caucus assignment null.",
+      "Keep the finite menu conditional and support_unclosed; list only the two observed qualified printed names. Do not encode the lack of a Senate write-in row as an empty legal write-in set or an authenticated none certificate."
+    ]
+  },
+  "remaining_blockers": [
+    "Root/source owner selection and admission are absent; this review is not an admission or native input change.",
+    "October 25 retrieval cannot support the October 20 forecast information set. Any use requires a later dated input/forecast or independent as-of publication evidence; it cannot be backdated.",
+    "Portal roster/status does not independently establish qualified write-in closure, legal write-in markability/validity, or election-day immunity from revisions. Preserve the existing write-in hold until a supported complete statewide certificate/roster or explicit no-certificate conclusion appropriate under the operative rule is selected.",
+    "A complete native model-side problem still requires owner bindings for candidate utility roles, incumbency, caucus behavior, and source-specific participation/choice; party labels alone do not set caucus."
+  ],
+  "recommendation": "Prepare a narrow source-to-native successor draft in the owner workflow if the owner wants to advance NM's conditional named printed menu. It materially improves the source scope from county ALL ballotstyles/precincts to the statewide State-selected all-party/all-contest portal and distinguishes Qualified from Disqualified Senate rows. It does not close NM support, legal write-in domain, Oct 20 cutoff, fit, or public qualification.",
+  "new_network_queries": false,
+  "owner_input_or_model_mutated": false,
+  "source_admission_or_fit": false
+}

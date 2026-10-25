@@ -1,0 +1,205 @@
+{
+  "schema": "NationalFiniteMenuSourceSuccessorDraftV1",
+  "created_utc": "2026-10-25 12:56:08 UTC",
+  "disposition": "DRAFT_ONLY_UNADMITTED_SUPPORT_UNCLOSED",
+  "native_template": {
+    "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-finite-menu-expansion-astra-v1/bindings.json",
+    "sha256": "929c5c61bac9e135d1add6a91cc7d48777bf24872624aadc7f4172af10f9aef8",
+    "json_pointer": "/rows/1",
+    "reuse": "Preserves the owner's current row and candidate fields, including source/event-local IDs, party recipe fields, eligibility flag, and null caucus assignment."
+  },
+  "source": {
+    "publisher": "New Mexico Secretary of State candidate portal, linked from SOS homepage",
+    "title": "2026 General Election Contest/Candidate List",
+    "url": "https://candidateportal.servis.sos.state.nm.us/CandidateList.aspx?eid=2917&cty=99",
+    "retrieved_at_utc": "2026-10-25T11:03:55.781438+00:00",
+    "source_file": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/nm-portal-acquisition-root-v1/raw/nm-candidate-list.html",
+      "bytes": 967953,
+      "sha256": "a8b53e22f8a7609e7d2cbd239e241a664334a19c1f26f80954d61cf8ed4213af"
+    },
+    "selection": {
+      "county_filter": {"value": "99", "label": "State"},
+      "contest_filter": {"value": "0", "label": "all contests"},
+      "party_filter": {"value": "0", "label": "all parties"},
+      "pagination": {"AllowPaging": false, "PageCount": 1, "CurrentPageIndex": 0, "visible_rows": 524}
+    },
+    "official_link_provenance": {
+      "homepage_path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/nm-portal-acquisition-root-v1/raw/nm-sos-home.html",
+      "homepage_sha256": "c2dab8d005534519dec63f3085f7e6323b0ef8698557755a69d844898eb056db",
+      "link_text": "2026 General Election – Candidate Filing Day",
+      "link_target": "https://candidateportal.servis.sos.state.nm.us/CandidateList.aspx?eid=2917&cty=99"
+    },
+    "extraction_and_review": {
+      "extraction_path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/nm-portal-acquisition-root-v1/extraction.json",
+      "extraction_sha256": "35744d54f6bed9b5813c34882767a65c623d8a51be51d89f69ca19ec9810f9b1",
+      "independent_review_path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/nm-portal-source-review-sol-v1/receipt.json",
+      "independent_review_sha256": "4aef642b8aa8b4223ac80f284fbaa01fb889e23d27fee44145ad14dbd6fcd411"
+    },
+    "cutoff": "October 25 retrieval does not establish or refute availability by the October 20 forecast cutoff. This draft makes no October 20 availability claim and cannot be backdated."
+  },
+  "rows": [
+    {
+      "setting_id": "2026:NM:senate:regular",
+      "state": "NM",
+      "seat_id": "US-SEN-NM-CLASS-2",
+      "event_group_key": "NM:2026-11-03",
+      "event_date": "2026-11-03",
+      "event_kind": "regular",
+      "old_roster_event_id": "US-SEN-NM-20261103-REGULAR-CLASSII",
+      "candidates": [
+        {
+          "candidate_id": "NM-2026-general-source-local-1",
+          "source_record_id": "NM-2026-general-source-local-1",
+          "name_literal": "BEN R LUJAN",
+          "party_literal": "DEM",
+          "party_recipe": {"affiliation": "Democratic", "party_id": "Democratic"},
+          "canonical_person_id": null,
+          "identity_scope": "existing event/source-local identifier; not global identity",
+          "status": "printed_official_statewide_portal_qualified_at_retrieval",
+          "eligible_in_selected_menu": true,
+          "caucus_assignment": null,
+          "source_metadata": {
+            "source_id": "nm-sos-2026-general-candidate-portal-state-99-eid-2917",
+            "publisher": "New Mexico Secretary of State",
+            "source_url": "https://candidateportal.servis.sos.state.nm.us/CandidateList.aspx?eid=2917&cty=99",
+            "source_file_sha256": "a8b53e22f8a7609e7d2cbd239e241a664334a19c1f26f80954d61cf8ed4213af",
+            "source_row": {
+              "selector": "table#ctl00_MainContent_rgCandidate_ctl00 > tbody > tr#ctl00_MainContent_rgCandidate_ctl00__0",
+              "visible_data_row_index_zero_based": 0,
+              "row_sha256": "c5fa85c7276a84ec627ee63f0e937bfd914554adeb00d9bbb036282fff763ab7",
+              "fields": {"Contest": "United States Senator", "Name": "BEN R LUJAN", "Party": "DEM", "Filing Date/Time": "2/3/2026 9:44:07 AM", "Ballot Order": "1", "Status": "Qualified", "DistrictType": "SW"}
+            },
+            "retrieved_at_utc": "2026-10-25T11:03:55.781438+00:00",
+            "scope": "State-selected 2026 general portal row; party/contest unfiltered. The displayed qualified printed candidate is conditionally mapped; source does not by itself settle the legal write-in domain.",
+            "publication_date": null,
+            "historical_october_20_availability": "not_established_or_refuted",
+            "original_bytes_preserved": true,
+            "contact_fields_in_native_record": false
+          }
+          ,"source_record": {
+            "record_id": "NM-2026-general-source-local-1",
+            "source_id": "nm-sos-2026-general-candidate-portal-state-99-eid-2917",
+            "state": "NM",
+            "office_literal": "United States Senator",
+            "office_normalized": "United States Senator",
+            "event_date": "2026-11-03",
+            "stage": "general",
+            "candidate_name_literal": "BEN R LUJAN",
+            "party_literal": "DEM",
+            "status_literal": "Qualified",
+            "write_in": false,
+            "write_in_boolean_meaning": "No '(write-in)' suffix on this observed printed-candidate row; not a legal write-in-domain conclusion.",
+            "raw_source_file_sha256": "a8b53e22f8a7609e7d2cbd239e241a664334a19c1f26f80954d61cf8ed4213af",
+            "raw_source_row_selector": "table#ctl00_MainContent_rgCandidate_ctl00 > tbody > tr#ctl00_MainContent_rgCandidate_ctl00__0",
+            "raw_source_row_sha256": "c5fa85c7276a84ec627ee63f0e937bfd914554adeb00d9bbb036282fff763ab7",
+            "retrieved_at_utc": "2026-10-25T11:03:55.781438+00:00",
+            "model_admitted": false
+          }
+        },
+        {
+          "candidate_id": "NM-2026-general-source-local-2",
+          "source_record_id": "NM-2026-general-source-local-2",
+          "name_literal": "LARRY E MARKER",
+          "party_literal": "REP",
+          "party_recipe": {"affiliation": "Republican", "party_id": "Republican"},
+          "canonical_person_id": null,
+          "identity_scope": "existing event/source-local identifier; not global identity",
+          "status": "printed_official_statewide_portal_qualified_at_retrieval",
+          "eligible_in_selected_menu": true,
+          "caucus_assignment": null,
+          "source_metadata": {
+            "source_id": "nm-sos-2026-general-candidate-portal-state-99-eid-2917",
+            "publisher": "New Mexico Secretary of State",
+            "source_url": "https://candidateportal.servis.sos.state.nm.us/CandidateList.aspx?eid=2917&cty=99",
+            "source_file_sha256": "a8b53e22f8a7609e7d2cbd239e241a664334a19c1f26f80954d61cf8ed4213af",
+            "source_row": {
+              "selector": "table#ctl00_MainContent_rgCandidate_ctl00 > tbody > tr#ctl00_MainContent_rgCandidate_ctl00__1",
+              "visible_data_row_index_zero_based": 1,
+              "row_sha256": "7a5e98a737765c65f48a4a93e67aae62cce7bab9b8dac107abea226a07a14eb5",
+              "fields": {"Contest": "United States Senator", "Name": "LARRY E MARKER", "Party": "REP", "Filing Date/Time": "3/17/2026 9:10:00 AM", "Ballot Order": "2", "Status": "Qualified", "DistrictType": "SW"}
+            },
+            "retrieved_at_utc": "2026-10-25T11:03:55.781438+00:00",
+            "scope": "State-selected 2026 general portal row; party/contest unfiltered. The displayed qualified printed candidate is conditionally mapped; source does not by itself settle the legal write-in domain.",
+            "publication_date": null,
+            "historical_october_20_availability": "not_established_or_refuted",
+            "original_bytes_preserved": true,
+            "contact_fields_in_native_record": false
+          }
+          ,"source_record": {
+            "record_id": "NM-2026-general-source-local-2",
+            "source_id": "nm-sos-2026-general-candidate-portal-state-99-eid-2917",
+            "state": "NM",
+            "office_literal": "United States Senator",
+            "office_normalized": "United States Senator",
+            "event_date": "2026-11-03",
+            "stage": "general",
+            "candidate_name_literal": "LARRY E MARKER",
+            "party_literal": "REP",
+            "status_literal": "Qualified",
+            "write_in": false,
+            "write_in_boolean_meaning": "No '(write-in)' suffix on this observed printed-candidate row; not a legal write-in-domain conclusion.",
+            "raw_source_file_sha256": "a8b53e22f8a7609e7d2cbd239e241a664334a19c1f26f80954d61cf8ed4213af",
+            "raw_source_row_selector": "table#ctl00_MainContent_rgCandidate_ctl00 > tbody > tr#ctl00_MainContent_rgCandidate_ctl00__1",
+            "raw_source_row_sha256": "7a5e98a737765c65f48a4a93e67aae62cce7bab9b8dac107abea226a07a14eb5",
+            "retrieved_at_utc": "2026-10-25T11:03:55.781438+00:00",
+            "model_admitted": false
+          }
+        }
+      ],
+      "withdrawn_record_history": [],
+      "prior_discovery_history": [],
+      "seat_binding": {
+        "status": "conditional_research_join",
+        "basis": "Retained from existing native template; this portal row mapping makes no independent class or seat claim."
+      },
+      "winner_rule": {
+        "kind": "single_mark_unique_plurality",
+        "majority_required": false,
+        "ties": "unresolved_no_winner_no_rng",
+        "rule_source": "NM Constitution Article VII section 5, SOS 2025 edition; retained from current native template."
+      },
+      "writein_domain": {
+        "eligible_writein_candidates": null,
+        "legal_writein_voting": true,
+        "basis": "Keep the existing unresolved/conditional write-in treatment. The statewide portal has no explicit Senate '(write-in)' suffix among four observed Senate filings, while six other-contest rows do; this is scoped portal evidence, not a legal zero or a completeness certificate. Root may select a conditional research support assumption using this and existing rule evidence."
+      },
+      "conditional_finite_menu_supported": false,
+      "named_menu_preparation_supported": true,
+      "public_legal_certificate": false,
+      "fit_admitted": false,
+      "publication_admitted": false,
+      "remaining_gaps": [
+        "Owner/source selection and admission remain pending.",
+        "October 25 retrieval is not an October 20 as-of source claim.",
+        "The portal's observed Senate list does not, alone, resolve applicable write-in scope or unobserved/later revisions; retain the support hold or have the owner explicitly select a suitably qualified conditional research scope.",
+        "Candidate utility, incumbency and caucus settings remain separate assembler inputs; party affiliation is not caucus assignment."
+      ]
+    }
+  ],
+  "excluded_source_records": [
+    {
+      "disposition": "evidence_only_not_candidate_axis",
+      "source_row": {
+        "selector": "table#ctl00_MainContent_rgCandidate_ctl00 > tbody > tr#ctl00_MainContent_rgCandidate_ctl00__2",
+        "visible_data_row_index_zero_based": 2,
+        "row_sha256": "6e36a599e30e92959dcba92568da944356ffc620ca0ce9c7ffc649e063f1daf3",
+        "fields": {"Contest": "United States Senator", "Name": "MIRA OCONNELL", "Party": "DTS", "Filing Date/Time": "6/25/2026 4:31:00 PM", "Ballot Order": "99", "Status": "Disqualified", "DistrictType": "SW"}
+      }
+    },
+    {
+      "disposition": "evidence_only_not_candidate_axis",
+      "source_row": {
+        "selector": "table#ctl00_MainContent_rgCandidate_ctl00 > tbody > tr#ctl00_MainContent_rgCandidate_ctl00__3",
+        "visible_data_row_index_zero_based": 3,
+        "row_sha256": "d6029911afcf938ec764e3fa8ef72b4c7b3c668854e05f8dd73b96184775bbfb",
+        "fields": {"Contest": "United States Senator", "Name": "BOB PERLS", "Party": "FWD", "Filing Date/Time": "6/25/2026 11:44:16 AM", "Ballot Order": "99", "Status": "Disqualified", "DistrictType": "SW"}
+      }
+    }
+  ],
+  "owner_action": "Review this source-to-native draft and choose whether to supersede the old county-sourced NM row with this later statewide source, with its explicit as-of and write-in limitations. No source admission, input edit, fit, or cutoff backdating is made here.",
+  "source_admitted": false,
+  "native_input_mutated": false,
+  "fit_or_constructor_run": false,
+  "candidate_axis_changed": false
+}
