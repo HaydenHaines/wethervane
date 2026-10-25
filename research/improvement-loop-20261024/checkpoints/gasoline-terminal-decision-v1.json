@@ -1,0 +1,321 @@
+{
+  "schema": "G01AggregateGasolineDecisionV1",
+  "utc": "2026-10-25T12:38:51.099858+00:00",
+  "experiment": "g01-aggregate-gasoline-20261025",
+  "decision": "retain",
+  "incumbent": "F0 relative-context aggregate baseline",
+  "challenger": "G01 F0 plus one president-oriented thirteen-week TWIP gas-change mean term",
+  "original_tool_session": 11060,
+  "terminal_exit_code": 0,
+  "all12fits_completed_and_numerically_passed": true,
+  "primary_scope": "Fixed H14 ordinary Senate D/(D+R), identical2002+support in H0/F0/G01; A2018/22 andB2020/24 exposed retrospective development benchmarks. No fullcounts/chamber/current2026 qualification.",
+  "cycles": [
+    {
+      "target": 2018,
+      "F0_CRPS": 0.03406012199166035,
+      "G01_CRPS": 0.03179103538969238,
+      "G01_minus_F0": -0.002269086601967972,
+      "relative_loss_percent": -6.662003743038736
+    },
+    {
+      "target": 2020,
+      "F0_CRPS": 0.031224653506250873,
+      "G01_CRPS": 0.03137182235226746,
+      "G01_minus_F0": 0.00014716884601658625,
+      "relative_loss_percent": 0.4713225912566955
+    },
+    {
+      "target": 2022,
+      "F0_CRPS": 0.026230859322743754,
+      "G01_CRPS": 0.028200531502095748,
+      "G01_minus_F0": 0.0019696721793519938,
+      "relative_loss_percent": 7.50898838317572
+    },
+    {
+      "target": 2024,
+      "F0_CRPS": 0.023438953192819138,
+      "G01_CRPS": 0.022327126462603042,
+      "G01_minus_F0": -0.0011118267302160957,
+      "relative_loss_percent": -4.74349993819997
+    }
+  ],
+  "equal_cycle_deltas": {
+    "A": {
+      "coverage80": 0.0,
+      "coverage95": 0.0,
+      "share_crps": -0.00014970721130799086,
+      "share_wis": -0.0002786064103991494,
+      "width80": -0.004582860479482198,
+      "width95": -0.005465770208809451,
+      "win_brier": 0.002559334697916693,
+      "win_log_score": 0.004534790342560824
+    },
+    "B": {
+      "coverage80": -0.0357142857142857,
+      "coverage95": 0.0,
+      "share_crps": -0.00048232894209975646,
+      "share_wis": -0.00039087195802323116,
+      "width80": -0.004992659503869401,
+      "width95": -0.005752665238346832,
+      "win_brier": 0.0009500290022321292,
+      "win_log_score": 0.0008149894140281055
+    }
+  },
+  "numerical_comparison": [
+    {
+      "tier": "A",
+      "stratum": "all",
+      "metric": "share_crps",
+      "status": "available",
+      "G01_minus_F0": -0.00014970721130848526,
+      "combined_mcse": 5.0309863651199475e-05,
+      "loss": false,
+      "loss_beyond_two_mcse": false,
+      "precision_resolved": true
+    },
+    {
+      "tier": "A",
+      "stratum": "all",
+      "metric": "win_brier",
+      "status": "available",
+      "G01_minus_F0": 0.0025593346979166827,
+      "combined_mcse": 0.0001512740034437498,
+      "loss": true,
+      "loss_beyond_two_mcse": true,
+      "precision_resolved": true
+    },
+    {
+      "tier": "A",
+      "stratum": "all",
+      "metric": "win_log_score",
+      "status": "available",
+      "G01_minus_F0": 0.004534790342560796,
+      "combined_mcse": 0.00044631840309828844,
+      "loss": true,
+      "loss_beyond_two_mcse": true,
+      "precision_resolved": true
+    },
+    {
+      "tier": "A",
+      "stratum": "competitive",
+      "metric": "share_crps",
+      "status": "available",
+      "G01_minus_F0": 0.0007681617212971677,
+      "combined_mcse": 5.864232753088856e-05,
+      "loss": true,
+      "loss_beyond_two_mcse": true,
+      "precision_resolved": true
+    },
+    {
+      "tier": "A",
+      "stratum": "competitive",
+      "metric": "win_brier",
+      "status": "available",
+      "G01_minus_F0": 0.008454410538983576,
+      "combined_mcse": 0.0004360577399265532,
+      "loss": true,
+      "loss_beyond_two_mcse": true,
+      "precision_resolved": true
+    },
+    {
+      "tier": "A",
+      "stratum": "competitive",
+      "metric": "win_log_score",
+      "status": "available",
+      "G01_minus_F0": 0.016760354545953066,
+      "combined_mcse": 0.0010754588939515164,
+      "loss": true,
+      "loss_beyond_two_mcse": true,
+      "precision_resolved": true
+    },
+    {
+      "tier": "A",
+      "stratum": "near_even",
+      "metric": "share_crps",
+      "status": "unavailable_missing_or_empty_cycle_mask",
+      "G01_minus_F0": null,
+      "combined_mcse": null,
+      "loss": null,
+      "loss_beyond_two_mcse": null,
+      "precision_resolved": false
+    },
+    {
+      "tier": "A",
+      "stratum": "near_even",
+      "metric": "win_brier",
+      "status": "unavailable_missing_or_empty_cycle_mask",
+      "G01_minus_F0": null,
+      "combined_mcse": null,
+      "loss": null,
+      "loss_beyond_two_mcse": null,
+      "precision_resolved": false
+    },
+    {
+      "tier": "A",
+      "stratum": "near_even",
+      "metric": "win_log_score",
+      "status": "unavailable_missing_or_empty_cycle_mask",
+      "G01_minus_F0": null,
+      "combined_mcse": null,
+      "loss": null,
+      "loss_beyond_two_mcse": null,
+      "precision_resolved": false
+    },
+    {
+      "tier": "B",
+      "stratum": "all",
+      "metric": "share_crps",
+      "status": "available",
+      "G01_minus_F0": -0.0004823289420997825,
+      "combined_mcse": 3.418652121961425e-05,
+      "loss": false,
+      "loss_beyond_two_mcse": false,
+      "precision_resolved": true
+    },
+    {
+      "tier": "B",
+      "stratum": "all",
+      "metric": "win_brier",
+      "status": "available",
+      "G01_minus_F0": 0.0009500290022321327,
+      "combined_mcse": 0.00014542304158121077,
+      "loss": true,
+      "loss_beyond_two_mcse": true,
+      "precision_resolved": true
+    },
+    {
+      "tier": "B",
+      "stratum": "all",
+      "metric": "win_log_score",
+      "status": "available",
+      "G01_minus_F0": 0.0008149894140280917,
+      "combined_mcse": 0.0003733378652276117,
+      "loss": true,
+      "loss_beyond_two_mcse": true,
+      "precision_resolved": true
+    },
+    {
+      "tier": "B",
+      "stratum": "competitive",
+      "metric": "share_crps",
+      "status": "available",
+      "G01_minus_F0": -0.0004910848748310454,
+      "combined_mcse": 4.9409282480785305e-05,
+      "loss": false,
+      "loss_beyond_two_mcse": false,
+      "precision_resolved": true
+    },
+    {
+      "tier": "B",
+      "stratum": "competitive",
+      "metric": "win_brier",
+      "status": "available",
+      "G01_minus_F0": 0.0023003522793222514,
+      "combined_mcse": 0.0003380347043941086,
+      "loss": true,
+      "loss_beyond_two_mcse": true,
+      "precision_resolved": true
+    },
+    {
+      "tier": "B",
+      "stratum": "competitive",
+      "metric": "win_log_score",
+      "status": "available",
+      "G01_minus_F0": 0.0036967309713029917,
+      "combined_mcse": 0.0008213441888783507,
+      "loss": true,
+      "loss_beyond_two_mcse": true,
+      "precision_resolved": true
+    },
+    {
+      "tier": "B",
+      "stratum": "near_even",
+      "metric": "share_crps",
+      "status": "available",
+      "G01_minus_F0": -0.001347332072358461,
+      "combined_mcse": 0.00024163932679873636,
+      "loss": false,
+      "loss_beyond_two_mcse": false,
+      "precision_resolved": true
+    },
+    {
+      "tier": "B",
+      "stratum": "near_even",
+      "metric": "win_brier",
+      "status": "available",
+      "G01_minus_F0": 0.0017902654166666448,
+      "combined_mcse": 0.0015917486772240002,
+      "loss": true,
+      "loss_beyond_two_mcse": false,
+      "precision_resolved": true
+    },
+    {
+      "tier": "B",
+      "stratum": "near_even",
+      "metric": "win_log_score",
+      "status": "available",
+      "G01_minus_F0": 0.002620687421786838,
+      "combined_mcse": 0.0033173575197251864,
+      "loss": true,
+      "loss_beyond_two_mcse": false,
+      "precision_resolved": true
+    }
+  ],
+  "reasons": [
+    "A all-race CRPS improves only0.000149707 (about0.50%); 2018 gain6.662% opposes2022 loss7.509%. The average masks a material recent-midterm regression.",
+    "A winner Brier/log scores worsen; competitive A CRPS and probability scores worsen. Both A near-even masks are empty and remain unavailable.",
+    "B average CRPS improves0.000482329 (about1.76%), with2020 loss and2024 gain. Brier worsens in both B cycles, and B log-score average also worsens.",
+    "Matched training support, unchanged cutoffs, priors and frozen masks prevent a data-coverage or post-score selection advantage. Root preserved every per-race contribution and localized costs without excluding races.",
+    "Parameter/construction checks and independent score recomputation pass. Numerical MCSE resolves several differences, but is not confidence about generalization from two elections per tier.",
+    "The modest aggregate distribution gains do not outweigh recent-midterm and competitive/winner-score costs. This rejects adoption of this specification, not every gasoline, inflation or purchasing-power hypothesis."
+  ],
+  "verification": {
+    "root_preparation_tests": 7,
+    "root_execution_tests": 13,
+    "independent_raw_jobs": 12,
+    "max_reconstructed_logit_or_share_error": 0,
+    "independent_score_tolerance": 2e-10,
+    "all_fold_and_producer_summary_comparisons_passed": true,
+    "predictive_diagnostic_scope": "Stored predictive ArviZ estimates checked against gates; independent raw parameter estimates recomputed, but not every predictive ArviZ estimate recomputed."
+  },
+  "reviews": {
+    "raw": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-results-review-sol-v1/reviews-manifest-v3.json",
+      "sha256": "f6fc7e60730598c8df70edf67ff1ef0508c2348cf2b8fde068a67d7d08c01d2c",
+      "bytes": 3849
+    },
+    "scores": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-results-review-luna-v1/independent-score-review-all4.json",
+      "sha256": "0b71332e4f5a54edf3a473c39c115d473359f0c59b6bff3918490c990d9936d6",
+      "bytes": 33701
+    },
+    "score_seal": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-results-review-luna-v1/final-review-seal.json",
+      "sha256": "df8b41a1f8a6a5587e349679a61b2a94de6021b5b0b774c887b4a55b06f7ad89",
+      "bytes": 1140
+    },
+    "per_race_cost_localization": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/checkpoints/gasoline-regression-root-analysis-v1.json",
+      "sha256": "51e00a4cf69b7d0ce480dcd35a94541a02b65379449a449f8448af5001e8c586",
+      "bytes": 133633
+    }
+  },
+  "output_inventory": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/checkpoints/gasoline-actual-output-inventory-v1.json",
+    "sha256": "2a3bbb4ac8cf5b8d2f18112d93ab39b19de68781a171c61b326e2c76975ebeb6",
+    "bytes": 66237
+  },
+  "preservation": {
+    "all_incumbents_challengers_predictions_saved": true,
+    "user_configurations_deleted_or_rebound": false,
+    "active_model_promotion": false,
+    "public_default_changed": false,
+    "automatic_retry": false
+  },
+  "next_action": [
+    "Do not repeat this exact experiment or optimize its prior/window against these outcomes without an explicit new versioned scientific reason.",
+    "Potential next economic hypotheses need their own source/time-support and overlap review; no automatic conditional-CPI/state-exposure expansion.",
+    "Continue owner complete-count A/B/complementarity work before weakest-layer ranking; integrate only qualified immutable exports."
+  ],
+  "standing_goal_complete": false
+}

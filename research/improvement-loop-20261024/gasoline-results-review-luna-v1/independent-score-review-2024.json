@@ -1,0 +1,392 @@
+{
+  "schema": "independent_g01_score_arithmetic_review_v1",
+  "status": "independent_recomputation_complete",
+  "scope": "Retrospective exposed development comparison only; no fit, resampling, qualification, or promotion.",
+  "plan_sha256": "63f6de0e57949857a48d02e5084af8cc9d576b4ffa96985b13afc938fe55b5ab",
+  "preparation_sha256": "ee3cdefc9b3a5f9bc98598acd47ef7db81d0393f32c874396843e587566849ef",
+  "selection_sha256": "e0a6728938cbe213c100fa71be512931abe9ed7c6291210bd0ba7b30ce164492",
+  "per_cycle": [
+    {
+      "target": 2024,
+      "tier": "B",
+      "race_count": 30,
+      "masks": {
+        "all": 30,
+        "competitive": 14,
+        "near_even": 3
+      },
+      "arms": {
+        "H0": {
+          "strata": {
+            "all": {
+              "status": "available",
+              "n": 30,
+              "share_crps": 0.030811501673666676,
+              "share_wis": 0.020226397239228488,
+              "win_brier": 0.058244763692708326,
+              "win_log_score": 0.2101140052759039,
+              "margin_mae_pp": 8.229846206025522,
+              "coverage80": 0.9333333333333333,
+              "width80": 0.19790683023679556,
+              "coverage95": 1.0,
+              "width95": 0.3195152288801643,
+              "mcse": {
+                "share_crps": 9.387141235087326e-05,
+                "win_brier": 0.00015098384373314806,
+                "win_log_score": 0.00042454012462114543
+              },
+              "unresolved_win_tail_race_ids": [],
+              "tail_precision_resolved": true
+            },
+            "competitive": {
+              "status": "available",
+              "n": 14,
+              "share_crps": 0.026479796831116332,
+              "share_wis": 0.018483008372651457,
+              "win_brier": 0.11821291093749998,
+              "win_log_score": 0.38837036958328514,
+              "margin_mae_pp": 6.6154525615250614,
+              "coverage80": 1.0,
+              "width80": 0.20771686451202673,
+              "coverage95": 1.0,
+              "width95": 0.3341709439386219,
+              "mcse": {
+                "share_crps": 9.782699227085107e-05,
+                "win_brier": 0.00028670348152395143,
+                "win_log_score": 0.000691709826574595
+              },
+              "unresolved_win_tail_race_ids": [],
+              "tail_precision_resolved": true
+            },
+            "near_even": {
+              "status": "available",
+              "n": 3,
+              "share_crps": 0.019959950946602814,
+              "share_wis": 0.01399894183938124,
+              "win_brier": 0.15210336010416667,
+              "win_log_score": 0.4935285407419067,
+              "margin_mae_pp": 2.1424390827438744,
+              "coverage80": 1.0,
+              "width80": 0.21138519282696674,
+              "coverage95": 1.0,
+              "width95": 0.33980362473353015,
+              "mcse": {
+                "share_crps": 6.213638013255337e-05,
+                "win_brier": 0.000763949469345263,
+                "win_log_score": 0.0015900483424567337
+              },
+              "unresolved_win_tail_race_ids": [],
+              "tail_precision_resolved": true
+            }
+          },
+          "references": {
+            "always_half_winner_brier": 0.25,
+            "always_half_winner_log_score": 0.6931471805599453,
+            "earlier_equal_cycle_D_win_frequency": 0.508813803919477,
+            "earlier_frequency_brier": 0.2489025092836007,
+            "earlier_frequency_log_score": 0.6909519797822459
+          },
+          "numerical_passed": true
+        },
+        "F0": {
+          "strata": {
+            "all": {
+              "status": "available",
+              "n": 30,
+              "share_crps": 0.023438953192818426,
+              "share_wis": 0.015991864949289225,
+              "win_brier": 0.06733542575000001,
+              "win_log_score": 0.22568145086874583,
+              "margin_mae_pp": 6.291077700056223,
+              "coverage80": 1.0,
+              "width80": 0.16836481114272447,
+              "coverage95": 1.0,
+              "width95": 0.2810416079041734,
+              "mcse": {
+                "share_crps": 3.4943732716738426e-05,
+                "win_brier": 0.00014741395810845116,
+                "win_log_score": 0.0003940770404302641
+              },
+              "unresolved_win_tail_race_ids": [],
+              "tail_precision_resolved": true
+            },
+            "competitive": {
+              "status": "available",
+              "n": 14,
+              "share_crps": 0.021731649081857297,
+              "share_wis": 0.015569423531071736,
+              "win_brier": 0.14172112372767856,
+              "win_log_score": 0.4371452051953204,
+              "margin_mae_pp": 5.607151871874154,
+              "coverage80": 1.0,
+              "width80": 0.17481843687787926,
+              "coverage95": 1.0,
+              "width95": 0.2911497302388972,
+              "mcse": {
+                "share_crps": 4.180404817330564e-05,
+                "win_brier": 0.00031058400004535064,
+                "win_log_score": 0.000766117791623454
+              },
+              "unresolved_win_tail_race_ids": [],
+              "tail_precision_resolved": true
+            },
+            "near_even": {
+              "status": "available",
+              "n": 3,
+              "share_crps": 0.017661436445442116,
+              "share_wis": 0.013227143840048807,
+              "win_brier": 0.25046785880208333,
+              "win_log_score": 0.6937689963667134,
+              "margin_mae_pp": 3.2340131344135052,
+              "coverage80": 1.0,
+              "width80": 0.17704044507520486,
+              "coverage95": 1.0,
+              "width95": 0.29463373458436043,
+              "mcse": {
+                "share_crps": 4.516988748656471e-05,
+                "win_brier": 0.0010535002439032313,
+                "win_log_score": 0.0021322594657845933
+              },
+              "unresolved_win_tail_race_ids": [],
+              "tail_precision_resolved": true
+            }
+          },
+          "references": {
+            "always_half_winner_brier": 0.25,
+            "always_half_winner_log_score": 0.6931471805599453,
+            "earlier_equal_cycle_D_win_frequency": 0.508813803919477,
+            "earlier_frequency_brier": 0.2489025092836007,
+            "earlier_frequency_log_score": 0.6909519797822459
+          },
+          "numerical_passed": true
+        },
+        "G01": {
+          "strata": {
+            "all": {
+              "status": "available",
+              "n": 30,
+              "share_crps": 0.022327126462602122,
+              "share_wis": 0.015583965065164377,
+              "win_brier": 0.06885068759374999,
+              "win_log_score": 0.2291754441728437,
+              "margin_mae_pp": 6.02738859069684,
+              "coverage80": 1.0,
+              "width80": 0.165830460747827,
+              "coverage95": 1.0,
+              "width95": 0.2781530560975574,
+              "mcse": {
+                "share_crps": 4.2305215700657337e-05,
+                "win_brier": 0.00017092639966508936,
+                "win_log_score": 0.0004329033773882289
+              },
+              "unresolved_win_tail_race_ids": [],
+              "tail_precision_resolved": true
+            },
+            "competitive": {
+              "status": "available",
+              "n": 14,
+              "share_crps": 0.020571001535377106,
+              "share_wis": 0.015257398138030365,
+              "win_brier": 0.14500698065848214,
+              "win_log_score": 0.4446853473239907,
+              "margin_mae_pp": 5.4594957543608285,
+              "coverage80": 1.0,
+              "width80": 0.1720454618089426,
+              "coverage95": 1.0,
+              "width95": 0.28813591538959366,
+              "mcse": {
+                "share_crps": 4.5616700999194346e-05,
+                "win_brier": 0.0003622586761761097,
+                "win_log_score": 0.000865427746240757
+              },
+              "unresolved_win_tail_race_ids": [],
+              "tail_precision_resolved": true
+            },
+            "near_even": {
+              "status": "available",
+              "n": 3,
+              "share_crps": 0.01814554380808284,
+              "share_wis": 0.013743652120474717,
+              "win_brier": 0.27787493338541663,
+              "win_log_score": 0.7491589010387948,
+              "margin_mae_pp": 3.8626075695052386,
+              "coverage80": 1.0,
+              "width80": 0.17395365817999106,
+              "coverage95": 1.0,
+              "width95": 0.2914837771148058,
+              "mcse": {
+                "share_crps": 8.768912653660569e-05,
+                "win_brier": 0.0014606679138109546,
+                "win_log_score": 0.00304026873602897
+              },
+              "unresolved_win_tail_race_ids": [],
+              "tail_precision_resolved": true
+            }
+          },
+          "references": {
+            "always_half_winner_brier": 0.25,
+            "always_half_winner_log_score": 0.6931471805599453,
+            "earlier_equal_cycle_D_win_frequency": 0.508813803919477,
+            "earlier_frequency_brier": 0.2489025092836007,
+            "earlier_frequency_log_score": 0.6909519797822459
+          },
+          "numerical_passed": true
+        }
+      }
+    }
+  ],
+  "A_B_equal_cycle_summaries": {
+    "A": {
+      "status": "unavailable_incomplete_cycle_pair",
+      "targets": []
+    },
+    "B": {
+      "status": "unavailable_incomplete_cycle_pair",
+      "targets": [
+        2024
+      ]
+    }
+  },
+  "primary_G01_minus_F0": {
+    "per_cycle": [
+      {
+        "target": 2024,
+        "tier": "B",
+        "stratum": "all",
+        "metric": "share_crps",
+        "status": "available",
+        "G01_minus_F0": -0.0011118267302163039,
+        "combined_mcse": 5.4870718344650814e-05,
+        "loss": false,
+        "loss_beyond_two_mcse": false,
+        "precision_resolved": true
+      },
+      {
+        "target": 2024,
+        "tier": "B",
+        "stratum": "all",
+        "metric": "win_brier",
+        "status": "available",
+        "G01_minus_F0": 0.0015152618437499765,
+        "combined_mcse": 0.0002257137770444464,
+        "loss": true,
+        "loss_beyond_two_mcse": true,
+        "precision_resolved": true
+      },
+      {
+        "target": 2024,
+        "tier": "B",
+        "stratum": "all",
+        "metric": "win_log_score",
+        "status": "available",
+        "G01_minus_F0": 0.003493993304097859,
+        "combined_mcse": 0.0005854075912972186,
+        "loss": true,
+        "loss_beyond_two_mcse": true,
+        "precision_resolved": true
+      },
+      {
+        "target": 2024,
+        "tier": "B",
+        "stratum": "competitive",
+        "metric": "share_crps",
+        "status": "available",
+        "G01_minus_F0": -0.0011606475464801917,
+        "combined_mcse": 6.18745654831285e-05,
+        "loss": false,
+        "loss_beyond_two_mcse": false,
+        "precision_resolved": true
+      },
+      {
+        "target": 2024,
+        "tier": "B",
+        "stratum": "competitive",
+        "metric": "win_brier",
+        "status": "available",
+        "G01_minus_F0": 0.0032858569308035768,
+        "combined_mcse": 0.0004771726831546813,
+        "loss": true,
+        "loss_beyond_two_mcse": true,
+        "precision_resolved": true
+      },
+      {
+        "target": 2024,
+        "tier": "B",
+        "stratum": "competitive",
+        "metric": "win_log_score",
+        "status": "available",
+        "G01_minus_F0": 0.0075401421286702686,
+        "combined_mcse": 0.0011558121190770386,
+        "loss": true,
+        "loss_beyond_two_mcse": true,
+        "precision_resolved": true
+      },
+      {
+        "target": 2024,
+        "tier": "B",
+        "stratum": "near_even",
+        "metric": "share_crps",
+        "status": "available",
+        "G01_minus_F0": 0.000484107362640724,
+        "combined_mcse": 9.863925003923011e-05,
+        "loss": true,
+        "loss_beyond_two_mcse": true,
+        "precision_resolved": true
+      },
+      {
+        "target": 2024,
+        "tier": "B",
+        "stratum": "near_even",
+        "metric": "win_brier",
+        "status": "available",
+        "G01_minus_F0": 0.027407074583333302,
+        "combined_mcse": 0.0018009479499255425,
+        "loss": true,
+        "loss_beyond_two_mcse": true,
+        "precision_resolved": true
+      },
+      {
+        "target": 2024,
+        "tier": "B",
+        "stratum": "near_even",
+        "metric": "win_log_score",
+        "status": "available",
+        "G01_minus_F0": 0.05538990467208138,
+        "combined_mcse": 0.003713457205449282,
+        "loss": true,
+        "loss_beyond_two_mcse": true,
+        "precision_resolved": true
+      }
+    ],
+    "equal_cycle_tiers": []
+  },
+  "precision_limits": {
+    "constant_probability": "Constant empirical winner tails stay explicitly unresolved even if computed MCSE is zero.",
+    "empty_near_even": "Empty masks remain unavailable with n=0 and no score/MCSE; never zero-filled.",
+    "replication": "Equal-cycle summaries; race rows are not independent national macro replications.",
+    "numerical_error": "Per-cycle delta MCSE=hypot(G01,F0); two-cycle equal-cycle mean MCSE=sqrt(sum(per-cycle MCSE^2))/2; numerical integration only."
+  },
+  "source_pins": {
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/checkpoints/gasoline-execution-root-selection-v1.json": "e0a6728938cbe213c100fa71be512931abe9ed7c6291210bd0ba7b30ce164492",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/checkpoints/gasoline-actual-launch-v1.json": "a8b413a3dfb21e4c606e26abb8c9e28e5a1d0331bf442ec0a4eb74399608e4ef",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/launch.json": "c0cad6d52dfbf307e4b1dd040a3c8225d009eb80a7646ead62572b5f3b1d8ba4",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/prepared-v2/plan.json": "63f6de0e57949857a48d02e5084af8cc9d576b4ffa96985b13afc938fe55b5ab",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-experiment-v1/prepared-v2/plan.json": "ee3cdefc9b3a5f9bc98598acd47ef7db81d0393f32c874396843e587566849ef",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/2024/H0/prediction-seal.json": "ea34df412063b8a09c1d896d0b096baa9ae86aaf58911ef8c98011848ce80d7c",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/2024/F0/prediction-seal.json": "676366be2a1f26977289297588e7e09176821bd88da1ce6d37fad2e62916a8ca",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/2024/G01/prediction-seal.json": "7781184971cadea4d520c7ccb13e7506dfad7715247ee954e800cfeec4ab8ef2",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/2024/masks.json": "a65205d7a00d5d7f8a1f5f9245c57da5a9611285265fb76e887536fcc72a2382",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/2024/H0/terminal.json": "2406cb3a2fb0e8cc6610980475582f8e7b0699c6ccb85cb16e4140791f44c81b",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/2024/F0/terminal.json": "d683c1a47d743eec4087d7457bce96cbf567bfac21004d86b734c1380223d5da",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/2024/G01/terminal.json": "fff417b53f91e76395bd0bbf38d31a6564f6586adc2a91f9988a67ef0376b924",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/2024/H0/predictions.npz": "eaea5ad57ba6e891f5e6ec3226936e9f462844ce170cb402f23903b418e6058e",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/2024/F0/predictions.npz": "47f76af8f14b0799ba0e8bf7a4bd307a7fdf780272170e9467653afe4599d484",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/2024/G01/predictions.npz": "45a1528425d69517b0e0ed9f439772e6b0a839ba6af47576d6dba436eed3a5c3",
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/fundamentals-iteration-20261020/panel-sol/labels/outcomes-SEPARATE.csv": "5f5cafa1afc53387331d4e75b3c65f92ed4cab3a91578dcb7cb0815357b029ad",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/2024/H0/scores.json": "81177d35f8beb9e80715c61d2911d42a285d20e67ad3547ade342e27cd959165",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/2024/F0/scores.json": "4518d2884c23d73d70db6e00e82506172da0ad8037aee55591d172921aaacbe1",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/2024/G01/scores.json": "14a9aa4c2f0876f3d24a51da7ae1ebcfc21f075b5335acb601dac1546ff2b9f3"
+  },
+  "fit_or_sampler_invoked": false,
+  "producer_scores_compared_after_recalculation": true
+}

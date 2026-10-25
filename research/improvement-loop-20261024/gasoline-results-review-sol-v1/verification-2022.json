@@ -1,0 +1,294 @@
+{
+  "schema": "G01IndependentRawVerifierSolV1",
+  "utc": "2026-10-25T12:31:24.475540+00:00",
+  "reviewed_folds": [
+    {
+      "year": 2022,
+      "tier": "A",
+      "scaler": {
+        "earlier_unique_cycles": 10,
+        "mean": 0.052933472485728404,
+        "sd": 0.12707774586356518
+      },
+      "arms": [
+        {
+          "arm": "H0",
+          "fit_values": {
+            "max_rank_rhat": 1.0015310136888247,
+            "min_bulk_ess": 2521.9004961291457,
+            "min_tail_ess": 3452.259636501026,
+            "divergences": 0,
+            "max_depth_hits": 0
+          },
+          "fit_checks": {
+            "rhat": true,
+            "bulk": true,
+            "tail": true,
+            "divergences": true,
+            "depth": true
+          },
+          "predictive_stored": {
+            "checks": {
+              "bulk": true,
+              "finite": true,
+              "rhat": true,
+              "subtotal": true,
+              "tail": true,
+              "wins": true
+            },
+            "passed": true,
+            "rare_tail_precision_resolved": true,
+            "scope": "joint-chain Monte Carlo integration and future simulation; constant empirical winner tails remain unresolved; not election-to-election uncertainty",
+            "unresolved_constant_win_race_ids": [],
+            "values": {
+              "max_rank_rhat": 1.00019122198084,
+              "max_win_mcse": 0.002431220543951791,
+              "min_bulk_ess": 25403.77927263891,
+              "min_tail_ess": 35662.686135947595,
+              "subset_seat_mean_mcse": 0.021435586649308336
+            }
+          },
+          "predictive_threshold_checks": {
+            "finite": true,
+            "rhat": true,
+            "bulk": true,
+            "tail": true,
+            "wins": true,
+            "subtotal": true
+          },
+          "gas_coefficient_posterior": null,
+          "numerical_passed": true,
+          "max_logit_error": 0.0,
+          "max_share_error": 0.0
+        },
+        {
+          "arm": "F0",
+          "fit_values": {
+            "max_rank_rhat": 1.0010674962586084,
+            "min_bulk_ess": 5064.450467722624,
+            "min_tail_ess": 6407.2633754655635,
+            "divergences": 0,
+            "max_depth_hits": 0
+          },
+          "fit_checks": {
+            "rhat": true,
+            "bulk": true,
+            "tail": true,
+            "divergences": true,
+            "depth": true
+          },
+          "predictive_stored": {
+            "checks": {
+              "bulk": true,
+              "finite": true,
+              "rhat": true,
+              "subtotal": true,
+              "tail": true,
+              "wins": true
+            },
+            "passed": true,
+            "rare_tail_precision_resolved": true,
+            "scope": "joint-chain Monte Carlo integration and future simulation; constant empirical winner tails remain unresolved; not election-to-election uncertainty",
+            "unresolved_constant_win_race_ids": [],
+            "values": {
+              "max_rank_rhat": 1.0002510520530739,
+              "max_win_mcse": 0.0027141124239795206,
+              "min_bulk_ess": 36318.691111808,
+              "min_tail_ess": 44585.248255929655,
+              "subset_seat_mean_mcse": 0.01572232191026516
+            }
+          },
+          "predictive_threshold_checks": {
+            "finite": true,
+            "rhat": true,
+            "bulk": true,
+            "tail": true,
+            "wins": true,
+            "subtotal": true
+          },
+          "gas_coefficient_posterior": null,
+          "numerical_passed": true,
+          "max_logit_error": 0.0,
+          "max_share_error": 0.0
+        },
+        {
+          "arm": "G01",
+          "fit_values": {
+            "max_rank_rhat": 1.0008446360708478,
+            "min_bulk_ess": 3670.1566229255895,
+            "min_tail_ess": 3515.8469536911903,
+            "divergences": 0,
+            "max_depth_hits": 0
+          },
+          "fit_checks": {
+            "rhat": true,
+            "bulk": true,
+            "tail": true,
+            "divergences": true,
+            "depth": true
+          },
+          "predictive_stored": {
+            "checks": {
+              "bulk": true,
+              "finite": true,
+              "rhat": true,
+              "subtotal": true,
+              "tail": true,
+              "wins": true
+            },
+            "passed": true,
+            "rare_tail_precision_resolved": true,
+            "scope": "joint-chain Monte Carlo integration and future simulation; constant empirical winner tails remain unresolved; not election-to-election uncertainty",
+            "unresolved_constant_win_race_ids": [],
+            "values": {
+              "max_rank_rhat": 1.0001016231912525,
+              "max_win_mcse": 0.002551878393131874,
+              "min_bulk_ess": 39421.909872672906,
+              "min_tail_ess": 44358.043878966564,
+              "subset_seat_mean_mcse": 0.009959592907819996
+            }
+          },
+          "predictive_threshold_checks": {
+            "finite": true,
+            "rhat": true,
+            "bulk": true,
+            "tail": true,
+            "wins": true,
+            "subtotal": true
+          },
+          "gas_coefficient_posterior": {
+            "mean": 0.04543311255512991,
+            "q05_q50_q95": [
+              -0.0005748691806416614,
+              0.04669968551633393,
+              0.08794127123408568
+            ],
+            "coefficient_correlations": {
+              "environment.carryover": 0.1743929576623446,
+              "environment.party": -0.007588709242835161,
+              "environment.midterm": 0.14279887595484764
+            },
+            "interpretation": "retrospective joint posterior description, not causal or sign qualification"
+          },
+          "numerical_passed": true,
+          "max_logit_error": 0.0,
+          "max_share_error": 0.0
+        }
+      ],
+      "seal_before_mask_before_score_mtime_consistency": true
+    }
+  ],
+  "inspected_sha256": {
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-results-review-sol-v1/verify-v2.py": "c35f1aaba77860cf129341dd0bd45b7790beac619c1d1fbd569be55f9e6ad286",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/prepared-v2/plan.json": "63f6de0e57949857a48d02e5084af8cc9d576b4ffa96985b13afc938fe55b5ab",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-experiment-v1/prepared-v2/plan.json": "ee3cdefc9b3a5f9bc98598acd47ef7db81d0393f32c874396843e587566849ef",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/launch.json": "c0cad6d52dfbf307e4b1dd040a3c8225d009eb80a7646ead62572b5f3b1d8ba4",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/economic-execution-v1/runtime/acceptance.json": "956a66375738bb5e2be2e0296e734c8e46ee7c94a90e3e19cc3618b27a63fcac",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/runner.py": "f8a93e0c4b41c4e5e529053b6dc1aae5cfb585fb343b3a96a2ae0bfcc729879d",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/scoring.py": "fa7b243f82327bd327bca098aef2d6fe38f5c694ed56e27a35068646dbcea30d",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/test_execution.py": "b713931c1711dda44e4a5e6e6e74b9baa592c2d90687aa24d36bd75004ccc97e",
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/src/forecasting/aggregate_component_factory_v1.py": "583f4e204360fc71f980bd70a86aa3f27afaefaee13a27c5f1833b8b54ae5366",
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/src/forecasting/fundamentals_v1.py": "d1437063c84cb9276382b5f96d04577d8ccce04c8aeaf4d1e20420e258d7fac9",
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/src/forecasting/baseline_v5.py": "93d8ed66d363fc7171ff626917866b4bf78a909ca0e7e6be84bc136509dbdae4",
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/src/forecasting/polling_basis_v1.py": "d0722a26b02f0e9e0d54bdc73036b1b08d7720a27dc6c36e7ff8ead548747142",
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/src/forecasting/polling_v1.py": "5876ab790f43c8bd6324590f2a3d007f2da853bce49d0e60cd19142046ab0bcb",
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/src/forecasting/response_v5_reuse.py": "d4330647dba36d08d437237098cd9ac198657e1c9980d243b0e82b1ee65fd850",
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/src/forecasting/predictive_metrics.py": "f50e44eb5400c101a31e318e431df99c5417484a4d05b78059b79fceaaf04d8a",
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/src/model_stack/artifacts.py": "a5d4533ebab5007e8ab05cc5d63ea2abf2eb904f6a7d37d99124890625a4ffce",
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/src/model_stack/contracts.py": "2ff6f84315fbef60fb223815f8125f63da0244aa01704b083f4c451fdd2686f8",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-experiment-v1/prepare.py": "645766d1cf62f024d8d2bb431c5d3c3db99dc1b43fbc2b3ea08264609aeb34f7",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-experiment-v1/test_prepare.py": "d448b85f5cf3cb6b47ff3a480f872b1f3a905cc34b332d7627b87f594eac69a5",
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/fundamentals-iteration-20261020/panel-sol/receipt.json": "3beff840bcf37aa348cd9bb8ba5b28535ba752d717d45d6a9a9f97503e9ca7f3",
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/fundamentals-iteration-20261020/panel-sol/features/all-cycles.csv": "0a2a1b9c15a83f33406828e7b7e2c1b24230570ed0639c995c410b2bbe9ec786",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-twip-cutoff-v1/receipt.json": "329ddc83d6f17b8399363f77dbaacc15c0b7f9fded29b1f2d9f859be88c4b397",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-twip-cutoff-v1/panel.json": "9f4627170f846bfa6768e2bda43659a6218c4a577a2daf92989b14bd78ed3902",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-twip-cutoff-v1/repair-receipt.json": "6f6f5081828537ec6f44e2293f6ad0b70fea1c03d2bacc979355b3d049b8c7a6",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/checkpoints/gasoline-preparation-root-selection-v1.json": "0f3912d0d5eddf89052629cf8202f9f3e281d511357fc89edb1319a52aeb4fd0",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-twip-cutoff-v1/2004-review-evidence.json": "39a46fefdf4a0b06e328be80a6e637767a3ae213829e7c7d8177e4baaf7288f3",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-twip-cutoff-v1/acquisition.json": "e598ef24f6002a356e494dd2d150e272ee42e8c7f0306002a591174cc28d5381",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-twip-cutoff-v1/intake.py": "c7a2c9f7ebaf25484fd803f3c0d7ba6a2bb4c43a50c73f69b10d97d905cb1272",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-twip-cutoff-v1/raw/021017.html": "46111008f4e9654fe8e138341d34d0ff9ae7b2c202562f403909daa1e46907b6",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-twip-cutoff-v1/raw/2002-07-17.html": "50d9e52888a94f1d61901dd870dfd6546e1a9327d3e74db8867e2b6a7729d1c4",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-twip-cutoff-v1/raw/2002-10-17.html": "46111008f4e9654fe8e138341d34d0ff9ae7b2c202562f403909daa1e46907b6",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-twip-cutoff-v1/raw/2004-07-14-review-only.html": "a4fd22f6842d7fd108190f0403caf95702e1b6c583ca83af9948aae1ec95f20d",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-twip-cutoff-v1/raw/2004-07-14.html": "a4fd22f6842d7fd108190f0403caf95702e1b6c583ca83af9948aae1ec95f20d",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-twip-cutoff-v1/raw/2004-10-14.html": "58543d9c56d405343e4752a47d678a2d5dc522bb124f87d2731ba1af466d2528",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-twip-cutoff-v1/raw/2006-07-19.html": "43af422cd099f6ba8cf43c1c22e2ae165fd0603cd5ba92e6e8f5929daeb43ba5",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-twip-cutoff-v1/raw/2006-10-18.html": "761aab638289ff0cffbeaec2755851f5d556fd81c4e4112ad57143f0d2bc3ea3",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-twip-cutoff-v1/raw/2008-07-16.html": "ef7bcb3861f0d31122f4efbd34c93eee777581f8a00277cd535ab58b5552afb2",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-twip-cutoff-v1/raw/2008-10-16.html": "5606f492cc40a8109ef38ca427def0c4de007b856a4258f3271257212fbb0abc",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-twip-cutoff-v1/raw/2010-07-14.html": "31c10d892fcebe545e4f6b99f1dba07c0e541d84e6135ed90255a5e8b57d75b9",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-twip-cutoff-v1/raw/2010-10-14.html": "78d4deebe14d52adf3c01e4e3a0d9b697a9599bc2c98ed1dd304dd92b55b1ff1",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-twip-cutoff-v1/raw/2012-07-18.html": "07d173b08b3580059d7ae9bd5ace2a32366de6f7e69281c09a9960d0fc6aeea3",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-twip-cutoff-v1/raw/2012-10-17.html": "dbba93d7866bb50eb84c35c7b4cf6f01613afe65cad9129ce3a9dc0dfe95c22e",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-twip-cutoff-v1/raw/2014-07-16.html": "8829b4709b0f2da8c4be6180ea541a7f409dbae3aa95c2ea3e87d64ba06afe98",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-twip-cutoff-v1/raw/2014-10-16.html": "43b250656b4c351c4e78fce6799feda690902ebfa7d59f1d8443aaf8899ddaf6",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-twip-cutoff-v1/raw/2016-07-20.html": "b173064fa00112572d8b1c627f73de4b25d2ea084210a86920f7d9eaabe2d9df",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-twip-cutoff-v1/raw/2016-10-19.html": "8fee50b0b72853f75979ff01e81eca7141d7323a05a0bfafc788c0b68b5244c5",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-twip-cutoff-v1/raw/2018-07-18.html": "78bda83631e829e1543c6f6874b3441fcc0f9ce11455c0ee1a32e555b8662f3f",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-twip-cutoff-v1/raw/2018-10-17.html": "34a91203a7d5a466bf89aeafff27b5e0c53be86d2864621ba8fa3703f57576cc",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-twip-cutoff-v1/raw/2020-07-15.html": "bf86574ba071b0758f0aa20fa14a4b78683a93f564f5a4546a9c5086df8f100d",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-twip-cutoff-v1/raw/2020-10-15.html": "ac318c886f8af142078800407ed41abed601922a8ca86fb35d66eb4ca8c17bef",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-twip-cutoff-v1/raw/2022-07-20.html": "afc961e06d3e63d8e0724e89ee38d3def0612513047b8411eee334be47e86e6a",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-twip-cutoff-v1/raw/2022-10-19.html": "8b396c2451dffc348c24b9d2cfa6175542b47a2f2a1dbcdc0badd12965f3326d",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-twip-cutoff-v1/raw/2024-07-17.html": "8d61cc27f552aaa2524ee0fe311070cac591c0acf1f2671d3f636bf1f1a8ab58",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-twip-cutoff-v1/raw/2024-10-17.html": "adf41c545b323e5efcb7e90c28eaaaf146d437a5359de29d486b0045e2e2d971",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-twip-cutoff-v1/raw/index.html": "58f8c79895d1e7f9a8834d5bdef40d9032b1ba3a9e145f5b131947cf128d5db8",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-twip-cutoff-v1/supplementary-acquisition.json": "5b80e8433b312e88913ebf0fb82ff63b247a34fbdee2e6e5124983ff9270ce32",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/economic-execution-v1/runtime/requirements.txt": "167a349b4bdf7dc42ee0820602786d6d7c765dc5a97f6bec87f51df3fe7d9748",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/2022/masks.json": "7d417d558dc8887de7b830d89ec88bc3199eb9be18a78af7fc1bbf23096da37a",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/2022/H0/prediction-seal.json": "dfdd185b80933b42843178f58443ad2cb836409a970c4a1111c6ac8bc04be8d7",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/2022/F0/prediction-seal.json": "007ccd368b4d1e4c51a2909a6eeb95635c5811d6e61bff1142ed5f631cf2e481",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/2022/G01/prediction-seal.json": "bbf0513d70a4f4b82fb5e1d9e246bbbfd4eab2628f07506251e43bcaa7efd42f",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/2022/H0/predictions.npz": "94ce74dd95bde912474bf627b6a79f189a23fa408922764eb1fd132b0a68c1a4",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/2022/F0/predictions.npz": "78735a934cebe4c0646a9030d3eea4659c1e7dd8d0ef83b9ab28929c264f9ae9",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/2022/G01/predictions.npz": "252b0409b7420827f3f926e9b706f4ad2889eb705c06cde8cc7acbffb087da4f",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-experiment-v1/prepared-v2/features-through-2022-LABEL-FREE.csv": "ce7d2ec36214152f46b4dd91aa83fb12fa342f105b2b5cd2c2f0f30809755fb7",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/2022/H0/terminal.json": "d4d07e9b968c7867411a4b916fc362e3f988d4057f8143079c4c61248b7603c6",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/2022/H0/fit-diagnostics.json": "e72470c3aa6f0b8ea2331b0425ee2f9e7a25ea6e227ac0ff45be269eaca67dac",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/2022/H0/prediction-diagnostics.json": "c5e2ff91c51a23f6e8e42bd9a8d250b69c67023354e5b12b414951b4bf2df715",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/2022/H0/chain-0/raw-bank.nc": "79176e6cf32595d3fc132883021d398a3a5a4720b2390f8d06a600399dfa1b94",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/2022/H0/chain-0-complete.json": "cd609ce07ac548f0d7d2d5e1d1729ed61e4775f4b6a46703356e9eb6159a829b",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/2022/H0/chain-1/raw-bank.nc": "75cb42b7850c1432fbebddc95db309f4ae274d1cfc5320abce913dc1aa76dda1",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/2022/H0/chain-1-complete.json": "fce34ebaea97d96be3d318aa9fd2e21fd066643e19bab1389d8ead0029ef18dc",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/2022/H0/chain-2/raw-bank.nc": "e32c6e5777d20abe5a48f1814d3841b69d35bdc19c2e0c4075f11317a48ac591",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/2022/H0/chain-2-complete.json": "766a678f64f1ccf65a5abb46a0b174bb69fa31f042596f307e75519df6f28d0d",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/2022/H0/chain-3/raw-bank.nc": "ce2205de3e2d4080f8fc0f2d141297a81cc1be55894cfc4e129acca31610d1e8",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/2022/H0/chain-3-complete.json": "3ce4bb33f5a560cb306250d1720b7609b2936bbb8c66ede108a5f915ffbbc619",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/2022/F0/terminal.json": "b49a8e5187f8427d908b6ecbcec2a791d2ac675efe3dfb05e4bf8df0ec5bae20",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/2022/F0/fit-diagnostics.json": "ce7d81e32d45939ce73c5f78944699ebfd086d42594befcb67bdcb8986d08fa4",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/2022/F0/prediction-diagnostics.json": "f4a6f244c2149556726bc222d1fa95a5b3fe086662bef80f493942ba5ba688ee",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/2022/F0/chain-0/raw-bank.nc": "963d902f7195cee37c9ba1376509f8bba2c08671594328ed635e47147b3ca4b1",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/2022/F0/chain-0-complete.json": "842d794c861cff9de5edd09e0749af18cfeea037df6921db6f379a3122582e66",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/2022/F0/chain-1/raw-bank.nc": "78c9023162cb6b95e09f65f3605e943ed86579ba2f6ae4ee8bc48c16bbf752fb",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/2022/F0/chain-1-complete.json": "8889658abe449cce7c839015360c1a9a5435eea12aabf763ff2ba42e927f8c7a",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/2022/F0/chain-2/raw-bank.nc": "dbc54f2753b2ce922e2e20b4c322d8dc0e14de5919772b000d10166d8e8b8e46",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/2022/F0/chain-2-complete.json": "4f89ea27a9cbea558d3a91137a3c4a72a1f47fa3429f69c1d99fc2bcd8b548d3",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/2022/F0/chain-3/raw-bank.nc": "329da280deb7bdddb9abf6f0025a37f22085d70ca48a17a39158f2ac40afc797",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/2022/F0/chain-3-complete.json": "ac37fba3184bd0210939f88a61b19613af0591078a755af9c579e5e4bb0e92af",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/2022/G01/terminal.json": "5c4c6bda7b96e034891f8a138d77c10ed5ec18b67772dd2da69af103ce38dc03",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/2022/G01/fit-diagnostics.json": "051155f3380e011ca0282a691872828c79236feda490e4c0e5f94a99663f245b",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/2022/G01/prediction-diagnostics.json": "5c54d44a4b7d0ecba72dbb85c77ddb781163f0cfbcebc4b94769fcf14b13159e",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/2022/G01/chain-0/raw-bank.nc": "2a8f7dbd260577cbc69057ae8c58111cc4822f4982005b0fa9db6045812c3296",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/2022/G01/chain-0-complete.json": "ba0862ca30f0ecc67785e61fade20c62936708b36788a6c706c1c7c9f21707fd",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/2022/G01/chain-1/raw-bank.nc": "f0eff59f8d627f8558fe06e41ae45f0bc117be925968c16ddda0f03f2591fccb",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/2022/G01/chain-1-complete.json": "23cb1623d934aadb8e1254c05d2a750883e7d7ccfa6bdbb3b420ade7d1fa53da",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/2022/G01/chain-2/raw-bank.nc": "4dd7242b149bed0f157bc35bfaed8fd9f1d1412d1814e2cb21bd6592b9376c3d",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/2022/G01/chain-2-complete.json": "1b3b94e57d94a353076de6e00637ca7b030c39cbd9b6d3b27b8d9cf0941c6f66",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/2022/G01/chain-3/raw-bank.nc": "32f01e616437d6e45debd8df4a21f7693b2c66163427c75f5b16877af9d56990",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/2022/G01/chain-3-complete.json": "70789b717ab568341c923ca5810ed5b89a52c294debfb1d3f3f465c359c055b0"
+  },
+  "deferred_outcome_source_pins": [
+    {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/fundamentals-iteration-20261020/panel-sol/labels/outcomes-SEPARATE.csv",
+      "sha256": "5f5cafa1afc53387331d4e75b3c65f92ed4cab3a91578dcb7cb0815357b029ad"
+    }
+  ],
+  "terminal": null,
+  "numeric_target_labels_parsed": false,
+  "sampler_or_predictive_simulation_invoked": false,
+  "limitations": [
+    "Filesystem chronology is consistency evidence, not authenticated first label access.",
+    "Stored predictive ArviZ gates are checked for status but not independently recomputed."
+  ]
+}

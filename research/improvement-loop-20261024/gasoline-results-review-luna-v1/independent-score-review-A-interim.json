@@ -1,0 +1,325 @@
+{
+  "schema": "independent_g01_A_tier_interim_score_summary_v1",
+  "status": "interim_A_pair_only",
+  "scope": "A2018/A2022 equally weighted descriptive retrospective development summary; both targets were exposed benchmarks. Not a prospective validation or a final G01 decision.",
+  "inputs": [
+    {
+      "target": 2018,
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-results-review-luna-v1/independent-score-review-2018-r2.json",
+      "sha256": "c320ee29350de4e077a2d39bb9c16862757c330d37c53629444a8f313350eaef"
+    },
+    {
+      "target": 2022,
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-results-review-luna-v1/independent-score-review-2022.json",
+      "sha256": "8e2f3ee714cbfda0b94b0f6038b6e582e6c4627ccf41e5ca695d9bef564a9e43"
+    }
+  ],
+  "equal_cycle_means_all_races": {
+    "H0": {
+      "share_crps": 0.03295140379726799,
+      "share_wis": 0.021357279581783337,
+      "win_brier": 0.07394397372395832,
+      "win_log_score": 0.26063090601709715,
+      "margin_mae_pp": 8.383411730921143,
+      "coverage80": 0.9666666666666667,
+      "width80": 0.21579159032483272,
+      "coverage95": 1.0,
+      "width95": 0.3462589631532226
+    },
+    "F0": {
+      "share_crps": 0.0301454906572003,
+      "share_wis": 0.019300428715410187,
+      "win_brier": 0.07081842557291665,
+      "win_log_score": 0.23448068954567192,
+      "margin_mae_pp": 8.197486725419255,
+      "coverage80": 0.9166666666666667,
+      "width80": 0.18298833989443397,
+      "coverage95": 1.0,
+      "width95": 0.30289494831837394
+    },
+    "G01": {
+      "share_crps": 0.029995783445891815,
+      "share_wis": 0.019021822305011038,
+      "win_brier": 0.07337776027083334,
+      "win_log_score": 0.23901547988823274,
+      "margin_mae_pp": 8.095060455245127,
+      "coverage80": 0.9166666666666667,
+      "width80": 0.17840547941495177,
+      "coverage95": 1.0,
+      "width95": 0.2974291781095645
+    }
+  },
+  "G01_minus_F0_equal_cycle_delta_all_races": {
+    "share_crps": -0.000149707211308487,
+    "share_wis": -0.0002786064103991494,
+    "win_brier": 0.002559334697916693,
+    "win_log_score": 0.004534790342560824,
+    "margin_mae_pp": -0.10242627017412786,
+    "coverage80": 0.0,
+    "width80": -0.004582860479482198,
+    "coverage95": 0.0,
+    "width95": -0.005465770208809451
+  },
+  "primary_G01_minus_F0": [
+    {
+      "tier": "A",
+      "stratum": "all",
+      "metric": "share_crps",
+      "status": "available",
+      "cycle_deltas": [
+        {
+          "target": 2018,
+          "delta": -0.0022690866019685965,
+          "combined_mcse": 7.343746290094823e-05
+        },
+        {
+          "target": 2022,
+          "delta": 0.001969672179351626,
+          "combined_mcse": 6.878421741272472e-05
+        }
+      ],
+      "G01_minus_F0": -0.00014970721130848526,
+      "combined_mcse": 5.0309863651199475e-05,
+      "loss": false,
+      "loss_beyond_two_mcse": false,
+      "precision_resolved": true
+    },
+    {
+      "tier": "A",
+      "stratum": "all",
+      "metric": "win_brier",
+      "status": "available",
+      "cycle_deltas": [
+        {
+          "target": 2018,
+          "delta": 0.00018626555208335616,
+          "combined_mcse": 0.00024312287327554565
+        },
+        {
+          "target": 2022,
+          "delta": 0.004932403843750009,
+          "combined_mcse": 0.0001800737764413283
+        }
+      ],
+      "G01_minus_F0": 0.0025593346979166827,
+      "combined_mcse": 0.0001512740034437498,
+      "loss": true,
+      "loss_beyond_two_mcse": true,
+      "precision_resolved": true
+    },
+    {
+      "tier": "A",
+      "stratum": "all",
+      "metric": "win_log_score",
+      "status": "available",
+      "cycle_deltas": [
+        {
+          "target": 2018,
+          "delta": -0.0013243101569396787,
+          "combined_mcse": 0.0007496174331603193
+        },
+        {
+          "target": 2022,
+          "delta": 0.01039389084206127,
+          "combined_mcse": 0.0004846381863606699
+        }
+      ],
+      "G01_minus_F0": 0.004534790342560796,
+      "combined_mcse": 0.00044631840309828844,
+      "loss": true,
+      "loss_beyond_two_mcse": true,
+      "precision_resolved": true
+    },
+    {
+      "tier": "A",
+      "stratum": "competitive",
+      "metric": "share_crps",
+      "status": "available",
+      "cycle_deltas": [
+        {
+          "target": 2018,
+          "delta": -0.0008985150275066314,
+          "combined_mcse": 7.971122044130126e-05
+        },
+        {
+          "target": 2022,
+          "delta": 0.0024348384701009668,
+          "combined_mcse": 8.603378202031059e-05
+        }
+      ],
+      "G01_minus_F0": 0.0007681617212971677,
+      "combined_mcse": 5.864232753088856e-05,
+      "loss": true,
+      "loss_beyond_two_mcse": true,
+      "precision_resolved": true
+    },
+    {
+      "tier": "A",
+      "stratum": "competitive",
+      "metric": "win_brier",
+      "status": "available",
+      "cycle_deltas": [
+        {
+          "target": 2018,
+          "delta": 0.0018684772585227105,
+          "combined_mcse": 0.0006551019956790632
+        },
+        {
+          "target": 2022,
+          "delta": 0.01504034381944444,
+          "combined_mcse": 0.0005756967825658944
+        }
+      ],
+      "G01_minus_F0": 0.008454410538983576,
+      "combined_mcse": 0.0004360577399265532,
+      "loss": true,
+      "loss_beyond_two_mcse": true,
+      "precision_resolved": true
+    },
+    {
+      "tier": "A",
+      "stratum": "competitive",
+      "metric": "win_log_score",
+      "status": "available",
+      "cycle_deltas": [
+        {
+          "target": 2018,
+          "delta": 0.002934568334909793,
+          "combined_mcse": 0.0015964114995519034
+        },
+        {
+          "target": 2022,
+          "delta": 0.03058614075699634,
+          "combined_mcse": 0.0014414984059707176
+        }
+      ],
+      "G01_minus_F0": 0.016760354545953066,
+      "combined_mcse": 0.0010754588939515164,
+      "loss": true,
+      "loss_beyond_two_mcse": true,
+      "precision_resolved": true
+    },
+    {
+      "tier": "A",
+      "stratum": "near_even",
+      "metric": "share_crps",
+      "status": "unavailable_empty_mask",
+      "G01_minus_F0": null,
+      "combined_mcse": null,
+      "loss": null,
+      "loss_beyond_two_mcse": null,
+      "precision_resolved": false
+    },
+    {
+      "tier": "A",
+      "stratum": "near_even",
+      "metric": "win_brier",
+      "status": "unavailable_empty_mask",
+      "G01_minus_F0": null,
+      "combined_mcse": null,
+      "loss": null,
+      "loss_beyond_two_mcse": null,
+      "precision_resolved": false
+    },
+    {
+      "tier": "A",
+      "stratum": "near_even",
+      "metric": "win_log_score",
+      "status": "unavailable_empty_mask",
+      "G01_minus_F0": null,
+      "combined_mcse": null,
+      "loss": null,
+      "loss_beyond_two_mcse": null,
+      "precision_resolved": false
+    }
+  ],
+  "practical_CRPS_review_aid": {
+    "all": {
+      "absolute_threshold": 0.0005,
+      "relative_threshold": 0.02,
+      "effective_loss_threshold": 0.000602909813144006,
+      "delta": -0.00014970721130848526,
+      "exceeds_loss_threshold": false
+    },
+    "competitive": {
+      "absolute_threshold": 0.0005,
+      "relative_threshold": 0.02,
+      "effective_loss_threshold": 0.0005985857040908206,
+      "delta": 0.0007681617212971677,
+      "exceeds_loss_threshold": true
+    }
+  },
+  "cycle_results": {
+    "2018": {
+      "all_race_G01_minus_F0": {
+        "target": 2018,
+        "tier": "A",
+        "stratum": "all",
+        "metric": "share_crps",
+        "status": "available",
+        "G01_minus_F0": -0.0022690866019685965,
+        "combined_mcse": 7.343746290094823e-05,
+        "loss": false,
+        "loss_beyond_two_mcse": false,
+        "precision_resolved": true
+      },
+      "competitive_G01_minus_F0": {
+        "target": 2018,
+        "tier": "A",
+        "stratum": "competitive",
+        "metric": "share_crps",
+        "status": "available",
+        "G01_minus_F0": -0.0008985150275066314,
+        "combined_mcse": 7.971122044130126e-05,
+        "loss": false,
+        "loss_beyond_two_mcse": false,
+        "precision_resolved": true
+      },
+      "F0_mask_counts": {
+        "all": 30,
+        "competitive": 11,
+        "near_even": 0
+      },
+      "near_even_status": "unavailable_empty_mask"
+    },
+    "2022": {
+      "all_race_G01_minus_F0": {
+        "target": 2022,
+        "tier": "A",
+        "stratum": "all",
+        "metric": "share_crps",
+        "status": "available",
+        "G01_minus_F0": 0.001969672179351626,
+        "combined_mcse": 6.878421741272472e-05,
+        "loss": true,
+        "loss_beyond_two_mcse": true,
+        "precision_resolved": true
+      },
+      "competitive_G01_minus_F0": {
+        "target": 2022,
+        "tier": "A",
+        "stratum": "competitive",
+        "metric": "share_crps",
+        "status": "available",
+        "G01_minus_F0": 0.0024348384701009668,
+        "combined_mcse": 8.603378202031059e-05,
+        "loss": true,
+        "loss_beyond_two_mcse": true,
+        "precision_resolved": true
+      },
+      "F0_mask_counts": {
+        "all": 30,
+        "competitive": 9,
+        "near_even": 0
+      },
+      "near_even_status": "unavailable_empty_mask"
+    }
+  },
+  "precision_limits": {
+    "empty_near_even": "Both A-cycle F0-defined near-even masks are empty; all near-even A comparison scores and MCSE remain unavailable, not zero.",
+    "independent_macro_cycles": "A has only two exposed national cycle units; equal weighting is descriptive and no race-count replication is implied.",
+    "numerical_mcse": "Per-cycle delta MCSE uses hypot(G01,F0). A equal-cycle mean uses sqrt(sum(per-cycle delta MCSE^2))/2; numerical integration only."
+  },
+  "method": "Read only the previously created independent 2018-r2 and 2022 score reports. No prediction bank, outcome label, producer scoring function, model, or fit was opened.",
+  "fit_or_resampling_invoked": false
+}

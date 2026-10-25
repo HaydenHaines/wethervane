@@ -1,0 +1,15 @@
+{
+  "schema": "independent_score_review_correction_v1",
+  "created_at_utc": "2026-10-25T12:22:42Z",
+  "superseded_report": {
+    "path": "independent-score-review-2018.json",
+    "sha256": "a52a483535d9f92064fc626200dab83f7a369239d985ab414446b51074706434"
+  },
+  "corrected_report": {
+    "path": "independent-score-review-2018-r2.json",
+    "sha256": "c320ee29350de4e077a2d39bb9c16862757c330d37c53629444a8f313350eaef"
+  },
+  "reason": "The first partial-fold report had correct per-race/stratum scores but its comparison aggregation placed per-cycle deltas inside the two-cycle A/B tier loop, leaving the 2018 primary comparison list empty. The checker was corrected to emit per-cycle G01-F0 deltas independently of tier completion, and the immutable 2018 r2 report was produced.",
+  "preservation": "The r1 report remains unchanged; r2 supersedes its missing primary-delta field. No other fold was read or scored for either 2018 report.",
+  "no_fit_or_resampling": true
+}

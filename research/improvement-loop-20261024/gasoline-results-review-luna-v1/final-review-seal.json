@@ -1,0 +1,16 @@
+{
+  "schema": "independent_g01_score_review_seal_v1",
+  "reviewed_at_utc": "2026-10-25 12:37:26 UTC",
+  "checker": {
+    "path": "research/improvement-loop-20261024/gasoline-results-review-luna-v1/combine_final.py",
+    "sha256": "e57810c70cc18edf9a186cee75eff54868ac2def4bf7dacb939e513fe1d4fdd0"
+  },
+  "report": {
+    "path": "research/improvement-loop-20261024/gasoline-results-review-luna-v1/independent-score-review-all4.json",
+    "sha256": "0b71332e4f5a54edf3a473c39c115d473359f0c59b6bff3918490c990d9936d6"
+  },
+  "scope": "Combines four immutable independently recomputed fold score reports; reads no raw predictive banks or labels. Cross-checks the completed producer summary, masks, status/availability, per-cycle and equal-cycle regression metrics and precision flags.",
+  "comparison": "All available reported fields match within 2e-10. Producer records only the unavailable status for equal-cycle strata with empty masks; those were checked by status, not by inventing metric values.",
+  "recomputation_or_fit": false,
+  "recommendation": "Retain F0; do not adopt G01 based on exposed retrospective development comparisons."
+}

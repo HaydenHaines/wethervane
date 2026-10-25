@@ -1,0 +1,1090 @@
+{
+  "schema": "independent_g01_final_score_arithmetic_review_v1",
+  "status": "all_four_fold_recomputation_and_producer_summary_comparison_passed",
+  "scope": "Exposed retrospective development evidence only; not prospective validation or full count qualification.",
+  "per_cycle_independent_reports": [
+    {
+      "target": 2018,
+      "path": "independent-score-review-2018-r2.json",
+      "sha256": "c320ee29350de4e077a2d39bb9c16862757c330d37c53629444a8f313350eaef"
+    },
+    {
+      "target": 2020,
+      "path": "independent-score-review-2020.json",
+      "sha256": "5bb744100205bfc64e45d86b0b562273fc93f25c69f560b3a199b18e7338419f"
+    },
+    {
+      "target": 2022,
+      "path": "independent-score-review-2022.json",
+      "sha256": "8e2f3ee714cbfda0b94b0f6038b6e582e6c4627ccf41e5ca695d9bef564a9e43"
+    },
+    {
+      "target": 2024,
+      "path": "independent-score-review-2024.json",
+      "sha256": "c56e14fa614e4efc6976057aa9cb950d2a30bbe63244a9ad72be9314fe56e3d8"
+    }
+  ],
+  "producer_terminal": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/terminal.json",
+    "sha256": "f9922ed230ce99c83f88d8663f7ec1f3b97634e0707e4dd62ac1f91fc4ac4ec9"
+  },
+  "producer_summary": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/summary.json",
+    "sha256": "b72223532e63555332a3628ab4b9d4aeafd5a3f2d926f6111f126f7e8e673b22"
+  },
+  "per_cycle_masks_numerical_passes": [
+    {
+      "target": 2018,
+      "tier": "A",
+      "all_three_arms_numerical_passed": true,
+      "mask_counts": {
+        "all": 30,
+        "competitive": 11,
+        "near_even": 0
+      },
+      "near_even_status": "unavailable_empty_mask"
+    },
+    {
+      "target": 2020,
+      "tier": "B",
+      "all_three_arms_numerical_passed": true,
+      "mask_counts": {
+        "all": 28,
+        "competitive": 11,
+        "near_even": 1
+      },
+      "near_even_status": "available"
+    },
+    {
+      "target": 2022,
+      "tier": "A",
+      "all_three_arms_numerical_passed": true,
+      "mask_counts": {
+        "all": 30,
+        "competitive": 9,
+        "near_even": 0
+      },
+      "near_even_status": "unavailable_empty_mask"
+    },
+    {
+      "target": 2024,
+      "tier": "B",
+      "all_three_arms_numerical_passed": true,
+      "mask_counts": {
+        "all": 30,
+        "competitive": 14,
+        "near_even": 3
+      },
+      "near_even_status": "available"
+    }
+  ],
+  "equal_cycle_tiers": {
+    "A": {
+      "cycles": [
+        2018,
+        2022
+      ],
+      "equal_cycle_means": {
+        "H0": {
+          "share_crps": 0.03295140379726799,
+          "share_wis": 0.021357279581783337,
+          "win_brier": 0.07394397372395832,
+          "win_log_score": 0.26063090601709715,
+          "margin_mae_pp": 8.383411730921143,
+          "coverage80": 0.9666666666666667,
+          "width80": 0.21579159032483272,
+          "coverage95": 1.0,
+          "width95": 0.3462589631532226
+        },
+        "F0": {
+          "share_crps": 0.0301454906572003,
+          "share_wis": 0.019300428715410187,
+          "win_brier": 0.07081842557291665,
+          "win_log_score": 0.23448068954567192,
+          "margin_mae_pp": 8.197486725419255,
+          "coverage80": 0.9166666666666667,
+          "width80": 0.18298833989443397,
+          "coverage95": 1.0,
+          "width95": 0.30289494831837394
+        },
+        "G01": {
+          "share_crps": 0.029995783445891815,
+          "share_wis": 0.019021822305011038,
+          "win_brier": 0.07337776027083334,
+          "win_log_score": 0.23901547988823274,
+          "margin_mae_pp": 8.095060455245127,
+          "coverage80": 0.9166666666666667,
+          "width80": 0.17840547941495177,
+          "coverage95": 1.0,
+          "width95": 0.2974291781095645
+        }
+      },
+      "G01_minus_F0": {
+        "share_crps": -0.000149707211308487,
+        "share_wis": -0.0002786064103991494,
+        "win_brier": 0.002559334697916693,
+        "win_log_score": 0.004534790342560824,
+        "margin_mae_pp": -0.10242627017412786,
+        "coverage80": 0.0,
+        "width80": -0.004582860479482198,
+        "coverage95": 0.0,
+        "width95": -0.005465770208809451
+      },
+      "primary_comparison": [
+        {
+          "tier": "A",
+          "stratum": "all",
+          "metric": "share_crps",
+          "status": "available",
+          "equal_cycle_delta": -0.00014970721130848526,
+          "numerical_mcse": 5.0309863651199475e-05,
+          "loss": false,
+          "tail_precision_resolved": true,
+          "loss_beyond_two_mcse": false
+        },
+        {
+          "tier": "A",
+          "stratum": "all",
+          "metric": "win_brier",
+          "status": "available",
+          "equal_cycle_delta": 0.0025593346979166827,
+          "numerical_mcse": 0.0001512740034437498,
+          "loss": true,
+          "tail_precision_resolved": true,
+          "loss_beyond_two_mcse": true
+        },
+        {
+          "tier": "A",
+          "stratum": "all",
+          "metric": "win_log_score",
+          "status": "available",
+          "equal_cycle_delta": 0.004534790342560796,
+          "numerical_mcse": 0.00044631840309828844,
+          "loss": true,
+          "tail_precision_resolved": true,
+          "loss_beyond_two_mcse": true
+        },
+        {
+          "tier": "A",
+          "stratum": "competitive",
+          "metric": "share_crps",
+          "status": "available",
+          "equal_cycle_delta": 0.0007681617212971677,
+          "numerical_mcse": 5.864232753088856e-05,
+          "loss": true,
+          "tail_precision_resolved": true,
+          "loss_beyond_two_mcse": true
+        },
+        {
+          "tier": "A",
+          "stratum": "competitive",
+          "metric": "win_brier",
+          "status": "available",
+          "equal_cycle_delta": 0.008454410538983576,
+          "numerical_mcse": 0.0004360577399265532,
+          "loss": true,
+          "tail_precision_resolved": true,
+          "loss_beyond_two_mcse": true
+        },
+        {
+          "tier": "A",
+          "stratum": "competitive",
+          "metric": "win_log_score",
+          "status": "available",
+          "equal_cycle_delta": 0.016760354545953066,
+          "numerical_mcse": 0.0010754588939515164,
+          "loss": true,
+          "tail_precision_resolved": true,
+          "loss_beyond_two_mcse": true
+        },
+        {
+          "tier": "A",
+          "stratum": "near_even",
+          "metric": "share_crps",
+          "status": "unavailable_missing_or_empty_cycle_mask",
+          "equal_cycle_delta": null,
+          "numerical_mcse": null,
+          "loss": null,
+          "tail_precision_resolved": false,
+          "loss_beyond_two_mcse": null
+        },
+        {
+          "tier": "A",
+          "stratum": "near_even",
+          "metric": "win_brier",
+          "status": "unavailable_missing_or_empty_cycle_mask",
+          "equal_cycle_delta": null,
+          "numerical_mcse": null,
+          "loss": null,
+          "tail_precision_resolved": false,
+          "loss_beyond_two_mcse": null
+        },
+        {
+          "tier": "A",
+          "stratum": "near_even",
+          "metric": "win_log_score",
+          "status": "unavailable_missing_or_empty_cycle_mask",
+          "equal_cycle_delta": null,
+          "numerical_mcse": null,
+          "loss": null,
+          "tail_precision_resolved": false,
+          "loss_beyond_two_mcse": null
+        }
+      ]
+    },
+    "B": {
+      "cycles": [
+        2020,
+        2024
+      ],
+      "equal_cycle_means": {
+        "H0": {
+          "share_crps": 0.03130303837237582,
+          "share_wis": 0.020801879890927563,
+          "win_brier": 0.042777741508742556,
+          "win_log_score": 0.17269823602496354,
+          "margin_mae_pp": 8.548173683488661,
+          "coverage80": 0.9666666666666667,
+          "width80": 0.20563318421355448,
+          "coverage95": 1.0,
+          "width95": 0.331456813965337
+        },
+        "F0": {
+          "share_crps": 0.027331803349533137,
+          "share_wis": 0.01785008542317375,
+          "win_brier": 0.05030555252622768,
+          "win_log_score": 0.18225658915287238,
+          "margin_mae_pp": 7.669863542399035,
+          "coverage80": 1.0,
+          "width80": 0.17581021849554346,
+          "coverage95": 1.0,
+          "width95": 0.29180576424682436
+        },
+        "G01": {
+          "share_crps": 0.026849474407433356,
+          "share_wis": 0.017459213465150527,
+          "win_brier": 0.05125558152845981,
+          "win_log_score": 0.18307157856690048,
+          "margin_mae_pp": 7.53195015204507,
+          "coverage80": 0.9642857142857143,
+          "width80": 0.17081755899167406,
+          "coverage95": 1.0,
+          "width95": 0.28605309900847753
+        }
+      },
+      "G01_minus_F0": {
+        "share_crps": -0.00048232894209978075,
+        "share_wis": -0.0003908719580232242,
+        "win_brier": 0.0009500290022321292,
+        "win_log_score": 0.0008149894140281055,
+        "margin_mae_pp": -0.13791339035396533,
+        "coverage80": -0.0357142857142857,
+        "width80": -0.004992659503869401,
+        "coverage95": 0.0,
+        "width95": -0.005752665238346832
+      },
+      "primary_comparison": [
+        {
+          "tier": "B",
+          "stratum": "all",
+          "metric": "share_crps",
+          "status": "available",
+          "equal_cycle_delta": -0.0004823289420997825,
+          "numerical_mcse": 3.418652121961425e-05,
+          "loss": false,
+          "tail_precision_resolved": true,
+          "loss_beyond_two_mcse": false
+        },
+        {
+          "tier": "B",
+          "stratum": "all",
+          "metric": "win_brier",
+          "status": "available",
+          "equal_cycle_delta": 0.0009500290022321327,
+          "numerical_mcse": 0.00014542304158121077,
+          "loss": true,
+          "tail_precision_resolved": true,
+          "loss_beyond_two_mcse": true
+        },
+        {
+          "tier": "B",
+          "stratum": "all",
+          "metric": "win_log_score",
+          "status": "available",
+          "equal_cycle_delta": 0.0008149894140280917,
+          "numerical_mcse": 0.0003733378652276117,
+          "loss": true,
+          "tail_precision_resolved": true,
+          "loss_beyond_two_mcse": true
+        },
+        {
+          "tier": "B",
+          "stratum": "competitive",
+          "metric": "share_crps",
+          "status": "available",
+          "equal_cycle_delta": -0.0004910848748310454,
+          "numerical_mcse": 4.9409282480785305e-05,
+          "loss": false,
+          "tail_precision_resolved": true,
+          "loss_beyond_two_mcse": false
+        },
+        {
+          "tier": "B",
+          "stratum": "competitive",
+          "metric": "win_brier",
+          "status": "available",
+          "equal_cycle_delta": 0.0023003522793222514,
+          "numerical_mcse": 0.0003380347043941086,
+          "loss": true,
+          "tail_precision_resolved": true,
+          "loss_beyond_two_mcse": true
+        },
+        {
+          "tier": "B",
+          "stratum": "competitive",
+          "metric": "win_log_score",
+          "status": "available",
+          "equal_cycle_delta": 0.0036967309713029917,
+          "numerical_mcse": 0.0008213441888783507,
+          "loss": true,
+          "tail_precision_resolved": true,
+          "loss_beyond_two_mcse": true
+        },
+        {
+          "tier": "B",
+          "stratum": "near_even",
+          "metric": "share_crps",
+          "status": "available",
+          "equal_cycle_delta": -0.001347332072358461,
+          "numerical_mcse": 0.00024163932679873636,
+          "loss": false,
+          "tail_precision_resolved": true,
+          "loss_beyond_two_mcse": false
+        },
+        {
+          "tier": "B",
+          "stratum": "near_even",
+          "metric": "win_brier",
+          "status": "available",
+          "equal_cycle_delta": 0.0017902654166666448,
+          "numerical_mcse": 0.0015917486772240002,
+          "loss": true,
+          "tail_precision_resolved": true,
+          "loss_beyond_two_mcse": false
+        },
+        {
+          "tier": "B",
+          "stratum": "near_even",
+          "metric": "win_log_score",
+          "status": "available",
+          "equal_cycle_delta": 0.002620687421786838,
+          "numerical_mcse": 0.0033173575197251864,
+          "loss": true,
+          "tail_precision_resolved": true,
+          "loss_beyond_two_mcse": false
+        }
+      ]
+    }
+  },
+  "primary_comparison_per_cycle": [
+    {
+      "target": 2018,
+      "tier": "A",
+      "stratum": "all",
+      "metric": "share_crps",
+      "status": "available",
+      "G01_minus_F0": -0.0022690866019685965,
+      "combined_mcse": 7.343746290094823e-05,
+      "loss": false,
+      "loss_beyond_two_mcse": false,
+      "precision_resolved": true
+    },
+    {
+      "target": 2018,
+      "tier": "A",
+      "stratum": "all",
+      "metric": "win_brier",
+      "status": "available",
+      "G01_minus_F0": 0.00018626555208335616,
+      "combined_mcse": 0.00024312287327554565,
+      "loss": true,
+      "loss_beyond_two_mcse": false,
+      "precision_resolved": true
+    },
+    {
+      "target": 2018,
+      "tier": "A",
+      "stratum": "all",
+      "metric": "win_log_score",
+      "status": "available",
+      "G01_minus_F0": -0.0013243101569396787,
+      "combined_mcse": 0.0007496174331603193,
+      "loss": false,
+      "loss_beyond_two_mcse": false,
+      "precision_resolved": true
+    },
+    {
+      "target": 2018,
+      "tier": "A",
+      "stratum": "competitive",
+      "metric": "share_crps",
+      "status": "available",
+      "G01_minus_F0": -0.0008985150275066314,
+      "combined_mcse": 7.971122044130126e-05,
+      "loss": false,
+      "loss_beyond_two_mcse": false,
+      "precision_resolved": true
+    },
+    {
+      "target": 2018,
+      "tier": "A",
+      "stratum": "competitive",
+      "metric": "win_brier",
+      "status": "available",
+      "G01_minus_F0": 0.0018684772585227105,
+      "combined_mcse": 0.0006551019956790632,
+      "loss": true,
+      "loss_beyond_two_mcse": true,
+      "precision_resolved": true
+    },
+    {
+      "target": 2018,
+      "tier": "A",
+      "stratum": "competitive",
+      "metric": "win_log_score",
+      "status": "available",
+      "G01_minus_F0": 0.002934568334909793,
+      "combined_mcse": 0.0015964114995519034,
+      "loss": true,
+      "loss_beyond_two_mcse": false,
+      "precision_resolved": true
+    },
+    {
+      "target": 2018,
+      "tier": "A",
+      "stratum": "near_even",
+      "metric": "share_crps",
+      "status": "unavailable_empty_mask",
+      "G01_minus_F0": null,
+      "combined_mcse": null,
+      "loss": null,
+      "loss_beyond_two_mcse": null,
+      "precision_resolved": false
+    },
+    {
+      "target": 2018,
+      "tier": "A",
+      "stratum": "near_even",
+      "metric": "win_brier",
+      "status": "unavailable_empty_mask",
+      "G01_minus_F0": null,
+      "combined_mcse": null,
+      "loss": null,
+      "loss_beyond_two_mcse": null,
+      "precision_resolved": false
+    },
+    {
+      "target": 2018,
+      "tier": "A",
+      "stratum": "near_even",
+      "metric": "win_log_score",
+      "status": "unavailable_empty_mask",
+      "G01_minus_F0": null,
+      "combined_mcse": null,
+      "loss": null,
+      "loss_beyond_two_mcse": null,
+      "precision_resolved": false
+    },
+    {
+      "target": 2020,
+      "tier": "B",
+      "stratum": "all",
+      "metric": "share_crps",
+      "status": "available",
+      "G01_minus_F0": 0.0001471688460167389,
+      "combined_mcse": 4.079310236717161e-05,
+      "loss": true,
+      "loss_beyond_two_mcse": true,
+      "precision_resolved": true
+    },
+    {
+      "target": 2020,
+      "tier": "B",
+      "stratum": "all",
+      "metric": "win_brier",
+      "status": "available",
+      "G01_minus_F0": 0.00038479616071428885,
+      "combined_mcse": 0.0001834250117711654,
+      "loss": true,
+      "loss_beyond_two_mcse": true,
+      "precision_resolved": true
+    },
+    {
+      "target": 2020,
+      "tier": "B",
+      "stratum": "all",
+      "metric": "win_log_score",
+      "status": "available",
+      "G01_minus_F0": -0.0018640144760416755,
+      "combined_mcse": 0.00046348958834307183,
+      "loss": false,
+      "loss_beyond_two_mcse": false,
+      "precision_resolved": true
+    },
+    {
+      "target": 2020,
+      "tier": "B",
+      "stratum": "competitive",
+      "metric": "share_crps",
+      "status": "available",
+      "G01_minus_F0": 0.0001784777968181009,
+      "combined_mcse": 7.704963937188931e-05,
+      "loss": true,
+      "loss_beyond_two_mcse": true,
+      "precision_resolved": true
+    },
+    {
+      "target": 2020,
+      "tier": "B",
+      "stratum": "competitive",
+      "metric": "win_brier",
+      "status": "available",
+      "G01_minus_F0": 0.001314847627840926,
+      "combined_mcse": 0.00047893222479826063,
+      "loss": true,
+      "loss_beyond_two_mcse": true,
+      "precision_resolved": true
+    },
+    {
+      "target": 2020,
+      "tier": "B",
+      "stratum": "competitive",
+      "metric": "win_log_score",
+      "status": "available",
+      "G01_minus_F0": -0.00014668018606428523,
+      "combined_mcse": 0.0011672717986020175,
+      "loss": false,
+      "loss_beyond_two_mcse": false,
+      "precision_resolved": true
+    },
+    {
+      "target": 2020,
+      "tier": "B",
+      "stratum": "near_even",
+      "metric": "share_crps",
+      "status": "available",
+      "G01_minus_F0": -0.003178771507357646,
+      "combined_mcse": 0.0004731052265349478,
+      "loss": false,
+      "loss_beyond_two_mcse": false,
+      "precision_resolved": true
+    },
+    {
+      "target": 2020,
+      "tier": "B",
+      "stratum": "near_even",
+      "metric": "win_brier",
+      "status": "available",
+      "G01_minus_F0": -0.023826543750000012,
+      "combined_mcse": 0.0026251174997390884,
+      "loss": false,
+      "loss_beyond_two_mcse": false,
+      "precision_resolved": true
+    },
+    {
+      "target": 2020,
+      "tier": "B",
+      "stratum": "near_even",
+      "metric": "win_log_score",
+      "status": "available",
+      "G01_minus_F0": -0.050148529828507704,
+      "combined_mcse": 0.005498152347653325,
+      "loss": false,
+      "loss_beyond_two_mcse": false,
+      "precision_resolved": true
+    },
+    {
+      "target": 2022,
+      "tier": "A",
+      "stratum": "all",
+      "metric": "share_crps",
+      "status": "available",
+      "G01_minus_F0": 0.001969672179351626,
+      "combined_mcse": 6.878421741272472e-05,
+      "loss": true,
+      "loss_beyond_two_mcse": true,
+      "precision_resolved": true
+    },
+    {
+      "target": 2022,
+      "tier": "A",
+      "stratum": "all",
+      "metric": "win_brier",
+      "status": "available",
+      "G01_minus_F0": 0.004932403843750009,
+      "combined_mcse": 0.0001800737764413283,
+      "loss": true,
+      "loss_beyond_two_mcse": true,
+      "precision_resolved": true
+    },
+    {
+      "target": 2022,
+      "tier": "A",
+      "stratum": "all",
+      "metric": "win_log_score",
+      "status": "available",
+      "G01_minus_F0": 0.01039389084206127,
+      "combined_mcse": 0.0004846381863606699,
+      "loss": true,
+      "loss_beyond_two_mcse": true,
+      "precision_resolved": true
+    },
+    {
+      "target": 2022,
+      "tier": "A",
+      "stratum": "competitive",
+      "metric": "share_crps",
+      "status": "available",
+      "G01_minus_F0": 0.0024348384701009668,
+      "combined_mcse": 8.603378202031059e-05,
+      "loss": true,
+      "loss_beyond_two_mcse": true,
+      "precision_resolved": true
+    },
+    {
+      "target": 2022,
+      "tier": "A",
+      "stratum": "competitive",
+      "metric": "win_brier",
+      "status": "available",
+      "G01_minus_F0": 0.01504034381944444,
+      "combined_mcse": 0.0005756967825658944,
+      "loss": true,
+      "loss_beyond_two_mcse": true,
+      "precision_resolved": true
+    },
+    {
+      "target": 2022,
+      "tier": "A",
+      "stratum": "competitive",
+      "metric": "win_log_score",
+      "status": "available",
+      "G01_minus_F0": 0.03058614075699634,
+      "combined_mcse": 0.0014414984059707176,
+      "loss": true,
+      "loss_beyond_two_mcse": true,
+      "precision_resolved": true
+    },
+    {
+      "target": 2022,
+      "tier": "A",
+      "stratum": "near_even",
+      "metric": "share_crps",
+      "status": "unavailable_empty_mask",
+      "G01_minus_F0": null,
+      "combined_mcse": null,
+      "loss": null,
+      "loss_beyond_two_mcse": null,
+      "precision_resolved": false
+    },
+    {
+      "target": 2022,
+      "tier": "A",
+      "stratum": "near_even",
+      "metric": "win_brier",
+      "status": "unavailable_empty_mask",
+      "G01_minus_F0": null,
+      "combined_mcse": null,
+      "loss": null,
+      "loss_beyond_two_mcse": null,
+      "precision_resolved": false
+    },
+    {
+      "target": 2022,
+      "tier": "A",
+      "stratum": "near_even",
+      "metric": "win_log_score",
+      "status": "unavailable_empty_mask",
+      "G01_minus_F0": null,
+      "combined_mcse": null,
+      "loss": null,
+      "loss_beyond_two_mcse": null,
+      "precision_resolved": false
+    },
+    {
+      "target": 2024,
+      "tier": "B",
+      "stratum": "all",
+      "metric": "share_crps",
+      "status": "available",
+      "G01_minus_F0": -0.0011118267302163039,
+      "combined_mcse": 5.4870718344650814e-05,
+      "loss": false,
+      "loss_beyond_two_mcse": false,
+      "precision_resolved": true
+    },
+    {
+      "target": 2024,
+      "tier": "B",
+      "stratum": "all",
+      "metric": "win_brier",
+      "status": "available",
+      "G01_minus_F0": 0.0015152618437499765,
+      "combined_mcse": 0.0002257137770444464,
+      "loss": true,
+      "loss_beyond_two_mcse": true,
+      "precision_resolved": true
+    },
+    {
+      "target": 2024,
+      "tier": "B",
+      "stratum": "all",
+      "metric": "win_log_score",
+      "status": "available",
+      "G01_minus_F0": 0.003493993304097859,
+      "combined_mcse": 0.0005854075912972186,
+      "loss": true,
+      "loss_beyond_two_mcse": true,
+      "precision_resolved": true
+    },
+    {
+      "target": 2024,
+      "tier": "B",
+      "stratum": "competitive",
+      "metric": "share_crps",
+      "status": "available",
+      "G01_minus_F0": -0.0011606475464801917,
+      "combined_mcse": 6.18745654831285e-05,
+      "loss": false,
+      "loss_beyond_two_mcse": false,
+      "precision_resolved": true
+    },
+    {
+      "target": 2024,
+      "tier": "B",
+      "stratum": "competitive",
+      "metric": "win_brier",
+      "status": "available",
+      "G01_minus_F0": 0.0032858569308035768,
+      "combined_mcse": 0.0004771726831546813,
+      "loss": true,
+      "loss_beyond_two_mcse": true,
+      "precision_resolved": true
+    },
+    {
+      "target": 2024,
+      "tier": "B",
+      "stratum": "competitive",
+      "metric": "win_log_score",
+      "status": "available",
+      "G01_minus_F0": 0.0075401421286702686,
+      "combined_mcse": 0.0011558121190770386,
+      "loss": true,
+      "loss_beyond_two_mcse": true,
+      "precision_resolved": true
+    },
+    {
+      "target": 2024,
+      "tier": "B",
+      "stratum": "near_even",
+      "metric": "share_crps",
+      "status": "available",
+      "G01_minus_F0": 0.000484107362640724,
+      "combined_mcse": 9.863925003923011e-05,
+      "loss": true,
+      "loss_beyond_two_mcse": true,
+      "precision_resolved": true
+    },
+    {
+      "target": 2024,
+      "tier": "B",
+      "stratum": "near_even",
+      "metric": "win_brier",
+      "status": "available",
+      "G01_minus_F0": 0.027407074583333302,
+      "combined_mcse": 0.0018009479499255425,
+      "loss": true,
+      "loss_beyond_two_mcse": true,
+      "precision_resolved": true
+    },
+    {
+      "target": 2024,
+      "tier": "B",
+      "stratum": "near_even",
+      "metric": "win_log_score",
+      "status": "available",
+      "G01_minus_F0": 0.05538990467208138,
+      "combined_mcse": 0.003713457205449282,
+      "loss": true,
+      "loss_beyond_two_mcse": true,
+      "precision_resolved": true
+    }
+  ],
+  "primary_comparison_equal_cycle": [
+    {
+      "tier": "A",
+      "stratum": "all",
+      "metric": "share_crps",
+      "status": "available",
+      "G01_minus_F0": -0.00014970721130848526,
+      "combined_mcse": 5.0309863651199475e-05,
+      "loss": false,
+      "loss_beyond_two_mcse": false,
+      "precision_resolved": true
+    },
+    {
+      "tier": "A",
+      "stratum": "all",
+      "metric": "win_brier",
+      "status": "available",
+      "G01_minus_F0": 0.0025593346979166827,
+      "combined_mcse": 0.0001512740034437498,
+      "loss": true,
+      "loss_beyond_two_mcse": true,
+      "precision_resolved": true
+    },
+    {
+      "tier": "A",
+      "stratum": "all",
+      "metric": "win_log_score",
+      "status": "available",
+      "G01_minus_F0": 0.004534790342560796,
+      "combined_mcse": 0.00044631840309828844,
+      "loss": true,
+      "loss_beyond_two_mcse": true,
+      "precision_resolved": true
+    },
+    {
+      "tier": "A",
+      "stratum": "competitive",
+      "metric": "share_crps",
+      "status": "available",
+      "G01_minus_F0": 0.0007681617212971677,
+      "combined_mcse": 5.864232753088856e-05,
+      "loss": true,
+      "loss_beyond_two_mcse": true,
+      "precision_resolved": true
+    },
+    {
+      "tier": "A",
+      "stratum": "competitive",
+      "metric": "win_brier",
+      "status": "available",
+      "G01_minus_F0": 0.008454410538983576,
+      "combined_mcse": 0.0004360577399265532,
+      "loss": true,
+      "loss_beyond_two_mcse": true,
+      "precision_resolved": true
+    },
+    {
+      "tier": "A",
+      "stratum": "competitive",
+      "metric": "win_log_score",
+      "status": "available",
+      "G01_minus_F0": 0.016760354545953066,
+      "combined_mcse": 0.0010754588939515164,
+      "loss": true,
+      "loss_beyond_two_mcse": true,
+      "precision_resolved": true
+    },
+    {
+      "tier": "A",
+      "stratum": "near_even",
+      "metric": "share_crps",
+      "status": "unavailable_missing_or_empty_cycle_mask",
+      "G01_minus_F0": null,
+      "combined_mcse": null,
+      "loss": null,
+      "loss_beyond_two_mcse": null,
+      "precision_resolved": false
+    },
+    {
+      "tier": "A",
+      "stratum": "near_even",
+      "metric": "win_brier",
+      "status": "unavailable_missing_or_empty_cycle_mask",
+      "G01_minus_F0": null,
+      "combined_mcse": null,
+      "loss": null,
+      "loss_beyond_two_mcse": null,
+      "precision_resolved": false
+    },
+    {
+      "tier": "A",
+      "stratum": "near_even",
+      "metric": "win_log_score",
+      "status": "unavailable_missing_or_empty_cycle_mask",
+      "G01_minus_F0": null,
+      "combined_mcse": null,
+      "loss": null,
+      "loss_beyond_two_mcse": null,
+      "precision_resolved": false
+    },
+    {
+      "tier": "B",
+      "stratum": "all",
+      "metric": "share_crps",
+      "status": "available",
+      "G01_minus_F0": -0.0004823289420997825,
+      "combined_mcse": 3.418652121961425e-05,
+      "loss": false,
+      "loss_beyond_two_mcse": false,
+      "precision_resolved": true
+    },
+    {
+      "tier": "B",
+      "stratum": "all",
+      "metric": "win_brier",
+      "status": "available",
+      "G01_minus_F0": 0.0009500290022321327,
+      "combined_mcse": 0.00014542304158121077,
+      "loss": true,
+      "loss_beyond_two_mcse": true,
+      "precision_resolved": true
+    },
+    {
+      "tier": "B",
+      "stratum": "all",
+      "metric": "win_log_score",
+      "status": "available",
+      "G01_minus_F0": 0.0008149894140280917,
+      "combined_mcse": 0.0003733378652276117,
+      "loss": true,
+      "loss_beyond_two_mcse": true,
+      "precision_resolved": true
+    },
+    {
+      "tier": "B",
+      "stratum": "competitive",
+      "metric": "share_crps",
+      "status": "available",
+      "G01_minus_F0": -0.0004910848748310454,
+      "combined_mcse": 4.9409282480785305e-05,
+      "loss": false,
+      "loss_beyond_two_mcse": false,
+      "precision_resolved": true
+    },
+    {
+      "tier": "B",
+      "stratum": "competitive",
+      "metric": "win_brier",
+      "status": "available",
+      "G01_minus_F0": 0.0023003522793222514,
+      "combined_mcse": 0.0003380347043941086,
+      "loss": true,
+      "loss_beyond_two_mcse": true,
+      "precision_resolved": true
+    },
+    {
+      "tier": "B",
+      "stratum": "competitive",
+      "metric": "win_log_score",
+      "status": "available",
+      "G01_minus_F0": 0.0036967309713029917,
+      "combined_mcse": 0.0008213441888783507,
+      "loss": true,
+      "loss_beyond_two_mcse": true,
+      "precision_resolved": true
+    },
+    {
+      "tier": "B",
+      "stratum": "near_even",
+      "metric": "share_crps",
+      "status": "available",
+      "G01_minus_F0": -0.001347332072358461,
+      "combined_mcse": 0.00024163932679873636,
+      "loss": false,
+      "loss_beyond_two_mcse": false,
+      "precision_resolved": true
+    },
+    {
+      "tier": "B",
+      "stratum": "near_even",
+      "metric": "win_brier",
+      "status": "available",
+      "G01_minus_F0": 0.0017902654166666448,
+      "combined_mcse": 0.0015917486772240002,
+      "loss": true,
+      "loss_beyond_two_mcse": false,
+      "precision_resolved": true
+    },
+    {
+      "tier": "B",
+      "stratum": "near_even",
+      "metric": "win_log_score",
+      "status": "available",
+      "G01_minus_F0": 0.002620687421786838,
+      "combined_mcse": 0.0033173575197251864,
+      "loss": true,
+      "loss_beyond_two_mcse": false,
+      "precision_resolved": true
+    }
+  ],
+  "B_cycle_primary_results": [
+    {
+      "target": 2020,
+      "tier": "B",
+      "stratum": "all",
+      "metric": "share_crps",
+      "status": "available",
+      "G01_minus_F0": 0.0001471688460167389,
+      "combined_mcse": 4.079310236717161e-05,
+      "loss": true,
+      "loss_beyond_two_mcse": true,
+      "precision_resolved": true
+    },
+    {
+      "target": 2024,
+      "tier": "B",
+      "stratum": "all",
+      "metric": "share_crps",
+      "status": "available",
+      "G01_minus_F0": -0.0011118267302163039,
+      "combined_mcse": 5.4870718344650814e-05,
+      "loss": false,
+      "loss_beyond_two_mcse": false,
+      "precision_resolved": true
+    }
+  ],
+  "practical_CRPS_review_aid": {
+    "A": {
+      "threshold": 0.000602909813144006,
+      "delta": -0.000149707211308487,
+      "exceeds_loss_threshold": false
+    },
+    "B": {
+      "threshold": 0.0005466360669906628,
+      "delta": -0.00048232894209978075,
+      "exceeds_loss_threshold": false
+    }
+  },
+  "comparison_checks": {
+    "cycle_arm_strata_metrics_masks_and_MCSE_flags": "matched independent reports",
+    "A_B_equal_cycle_metrics": "matched producer summary",
+    "per_cycle_delta_and_regression_flags": "matched producer regression report",
+    "equal_cycle_delta_MCSE_and_flags": "matched producer regression report",
+    "no_fill_for_empty_masks": true,
+    "all_numerical_passed": true,
+    "promotion_authorized": false
+  },
+  "assessment": {
+    "recommendation": "retain F0; do not adopt G01 from these development comparisons",
+    "A_tier": "All-race share CRPS improves by about 0.000150 equal-cycle, but this averages a 2018 gain against a 2022 loss. A-tier win Brier and log score worsen, and competitive-race metrics are materially worse; both A near-even masks are empty.",
+    "B_tier": "All-race share CRPS is slightly better on equal-cycle average, with a 2020 loss and 2024 gain. Win Brier is worse in both 2020 and 2024; win log score improves in 2020 but worsens in 2024. This does not establish stable added value.",
+    "limits": "Each target was an already exposed development benchmark. Numerical MCSE measures integration precision only; four election cycles are not untouched validation, and state-race rows do not multiply national feature replication."
+  },
+  "precision_limits": {
+    "constant_probability": "Constant empirical winner tails remain unresolved even when the empirical influence MCSE is numerically zero; per-cycle/tier flags are retained.",
+    "empty_near_even": "A near-even is unavailable in both A cycles; B near-even uses only available fixed-F0 masks and is not zero-filled.",
+    "numerical_error": "Independent-arm delta MCSE is hypot(G01,F0); equal-cycle mean MCSE is sqrt(sum(per-cycle delta MCSE^2))/2. Numerical integration only."
+  },
+  "fit_resampling_or_reread_of_prior_banks": false,
+  "source_pins": {
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-results-review-luna-v1/independent-score-review-2018-r2.json": "c320ee29350de4e077a2d39bb9c16862757c330d37c53629444a8f313350eaef",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-results-review-luna-v1/independent-score-review-2020.json": "5bb744100205bfc64e45d86b0b562273fc93f25c69f560b3a199b18e7338419f",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-results-review-luna-v1/independent-score-review-2022.json": "8e2f3ee714cbfda0b94b0f6038b6e582e6c4627ccf41e5ca695d9bef564a9e43",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-results-review-luna-v1/independent-score-review-2024.json": "c56e14fa614e4efc6976057aa9cb950d2a30bbe63244a9ad72be9314fe56e3d8",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/terminal.json": "f9922ed230ce99c83f88d8663f7ec1f3b97634e0707e4dd62ac1f91fc4ac4ec9",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/summary.json": "b72223532e63555332a3628ab4b9d4aeafd5a3f2d926f6111f126f7e8e673b22"
+  }
+}
