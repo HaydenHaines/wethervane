@@ -30,7 +30,8 @@ RACES = 435
 MAX_REQUEST_BYTES = 128_000
 MAX_HEADER_BYTES = 16_384
 MAX_PLAN_BYTES = 1_000_000
-MAX_ROWS = 2_000_000
+# Bound the stream while allowing five-source precision extensions without row loss.
+MAX_ROWS = 5_000_000
 BASE_MEMBERS = {
     "winner_codes.npy": ("|i1", lambda count: (count, RACES), 1),
     "seat_counts.npy": ("<i2", lambda count: (count, 3), 2),

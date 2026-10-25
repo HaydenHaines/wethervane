@@ -128,6 +128,33 @@ class JointDecoderTest(unittest.TestCase):
                 self.assertEqual(result.stdout, b"".join(ROWS))
                 self.assertEqual(result.stderr, b"")
 
+    def test_five_million_draw_plan_still_requires_bound_rows_and_sources(self) -> None:
+        plan = combined_plan()
+        plan["settings"] = {"chains": 20, "draws": 250_000, "warmup_per_source": 5000}
+        template = plan["source_runs"][0]
+        plan["source_runs"] = []
+        for index in range(5):
+            source = copy.deepcopy(template)
+            source["directory"] = f"predictions-v{index + 1}/invented"
+            prefix = f"research/house-live-20261025/{source['directory']}"
+            source["receipt"]["path"] = f"{prefix}/receipt.json"
+            source["plan"]["path"] = f"{prefix}/plan.json"
+            source["settings"] = {"chains": 4, "draws": 250_000, "warmup": 5000, "seed": 100 + index}
+            source["joint_draw_offset"] = index * 1_000_000
+            source["predictive_chain_offset"] = index * 4
+            plan["source_runs"].append(source)
+        plan["inputs"] = [source["receipt"] for source in plan["source_runs"]]
+        artifact = self.archive(combined_members())
+        request = self.combined_request(artifact, plan)
+        request.update(count=5_000_000, chainCount=20)
+        # The declared size is accepted, but four actual rows cannot prove 5M.
+        self.rejected(request, "dtype, shape, or order")
+        plan["source_runs"][4]["settings"]["seed"] = 100
+        request["combinedPlan"] = self.plan_pin(plan)
+        self.rejected(request, "layout or seed")
+        self.rejected({**request, "count": 5_000_001, "chainCount": 1}, "Draw count or chain count")
+        self.rejected({**request, "chainCount": 21}, "Draw count or chain count")
+
     def test_hash_and_path_binding(self) -> None:
         artifact = self.archive()
         self.rejected(self.request({**artifact, "sha256": "0" * 64}), "fingerprint")
