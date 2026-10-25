@@ -1,0 +1,92 @@
+{
+  "schema": "E01AggregateExecutionRootSelectionV1",
+  "recorded_utc": "2026-10-25T05:17:50.685652+00:00",
+  "decision": "launch_reviewed_fundamentals_only_comparison",
+  "execution_plan": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/economic-execution-v1/prepared-v2/plan.json",
+    "sha256": "e3faefeb89a5bca837bc7f8b01e666112d563b95fe16e909060edf5aa1cbfc50"
+  },
+  "runtime_acceptance": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/economic-execution-v1/runtime/acceptance.json",
+    "sha256": "956a66375738bb5e2be2e0296e734c8e46ee7c94a90e3e19cc3618b27a63fcac"
+  },
+  "independent_execution_review": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/economic-execution-review-sol-v1.md",
+    "sha256": "e396f32836574644a5b7870a5ba3b0c8f53ea90ded18c6b00269d4cd769c48e6"
+  },
+  "preparation_review": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/economic-preparation-root-review-v1.md",
+    "sha256": "e5e30029be0dddc134277787563691521f223a1001517d55a8f1354a20a21b3d"
+  },
+  "fit_count": 16,
+  "arms": [
+    "H0",
+    "F0",
+    "E01",
+    "E01_sd025"
+  ],
+  "target_cycles": [
+    2018,
+    2020,
+    2022,
+    2024
+  ],
+  "tiers": {
+    "A": [
+      2018,
+      2022
+    ],
+    "B": [
+      2020,
+      2024
+    ]
+  },
+  "source_scope": "ordinary_D_R_aggregate_preparation_only_not_population_cut_or_count_qualification",
+  "fitting_scope": "complete joint aggregate coefficient/cycle/scale refits; no count/population-cut/FP activation",
+  "fit_gates": {
+    "divergences": 0,
+    "max_depth_hits": 0,
+    "max_rank_rhat": 1.01,
+    "min_bulk_ess": 400,
+    "min_tail_ess": 400
+  },
+  "predictive_gates": {
+    "max_rank_rhat": 1.01,
+    "max_subset_seat_mean_mcse": 0.03,
+    "max_win_mcse": 0.005,
+    "min_bulk_ess": 1000,
+    "min_tail_ess": 1000
+  },
+  "validation": {
+    "preparation_tests": 7,
+    "execution_tests": 13,
+    "root_original_execution_suite_passed": 12,
+    "independent_repair_delta_tests": 3,
+    "exact_v2_cli_validation_exit_code": 0,
+    "real_sampling_at_record": false,
+    "synthetic_batch_is_not_fit_evidence": true
+  },
+  "launch_environment": {
+    "OPENBLAS_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "NUMEXPR_NUM_THREADS": "1",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONUNBUFFERED": "1",
+    "PYTENSOR_FLAGS": "base_compiledir=/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/economic-v1-cache,floatX=float64"
+  },
+  "output": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/economic-execution-v1/attempt-v1",
+  "log": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/economic-execution-v1/attempt-v1.log",
+  "automatic_retry": false,
+  "postfit_independent_review_required": true,
+  "promotion_authorized": false,
+  "full_count_qualification": false,
+  "scientific_limits": [
+    "Earlier-information aggregate replay retains retrospective roster/archive qualification.",
+    "National replication is by cycle; CPI/context confounding and 2022 extrapolation remain visible.",
+    "Tighter prior is a sensitivity, not an outcome-selected primary model.",
+    "Monte Carlo errors are not uncertainty from having two national elections per tier.",
+    "Terminal workflow completion is distinct from numerical/predictive passing.",
+    "Senate owner retains original count run72164; this experiment does not modify it."
+  ]
+}
