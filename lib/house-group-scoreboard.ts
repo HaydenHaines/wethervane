@@ -1,4 +1,5 @@
-import type { HouseGroupBloc, HouseGroupResult } from "./house-group-result.ts";
+import type { HouseGroupBloc } from "./house-group-result.ts";
+import type { HouseReviewedGroupResult as HouseGroupResult } from "./house-reviewed-catalog.ts";
 
 export interface HouseGroupScoreSummary {
   forecastRaces: number;

@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState, type ReactNode } from "react";
-import type { HouseGroupPublication } from "../lib/house-group-catalog.ts";
-import { groupFundamentalsId, houseFundamentalsLabel } from "../lib/house-group-presentation.ts";
-import { houseGroupModelSlices } from "../lib/house-group-model-slices.ts";
+import type { HouseReviewedPublication as HouseGroupPublication } from "../lib/house-reviewed-catalog.ts";
+import { houseFundamentalsLabel } from "../lib/house-group-presentation.ts";
+import { houseGroupModelSlices } from "../lib/house-reviewed-model-slices.ts";
 import ModelSliceControls from "./ModelSliceControls";
 
 export default function HouseGroupControls({ selectionKey, expanded, onExpandedChange, publication, busy, error, onChoose, onRetry, onLegacy, children }: {
@@ -23,14 +23,12 @@ export default function HouseGroupControls({ selectionKey, expanded, onExpandedC
   const { result, entry, catalog } = publication;
   useEffect(() => { setShareUrl(""); setNotice(""); }, [result.id, selectionKey]);
   const years = [...new Set(catalog.runs.map(run => run.cycle))].sort((a, b) => b - a);
-  const fundamentals = groupFundamentalsId(result.configuration);
-  const currentLabel = houseFundamentalsLabel(fundamentals);
+  const fundamentals = entry.fundamentalsId;
+  const currentLabel = entry.label;
   const requestedLabel = catalog.runs.find(run => run.id === entry.id)?.label || currentLabel;
 
   function chooseYear(year: number) {
-    const matching = catalog.runs.find(run => run.cycle === year && run.fundamentalsId === fundamentals);
-    const fallback = catalog.runs.find(run => run.cycle === year);
-    const next = matching || fallback;
+    const next = catalog.runs.find(run => run.cycle === year && run.fundamentalsId === fundamentals && run.polling === entry.polling);
     if (next) onChoose(next.id);
   }
   async function share() {
@@ -52,7 +50,7 @@ export default function HouseGroupControls({ selectionKey, expanded, onExpandedC
           </div>
         </div>
       </div>
-      <p className="small">Changing year keeps {currentLabel} when that model is available for the year.</p>
+      <p className="small">Changing year keeps {houseFundamentalsLabel(fundamentals)} and your polling choice.</p>
       <div className="stack-actions">
         <button disabled={busy || entry.id === catalog.initialRunId} onClick={() => onChoose(catalog.initialRunId)}>Reset group view</button>
         <button disabled={busy} onClick={share}>Share House view ↗</button>
@@ -60,17 +58,18 @@ export default function HouseGroupControls({ selectionKey, expanded, onExpandedC
       <ModelSliceControls slices={houseGroupModelSlices(publication)} busy={busy}
         explain={(slot, value, fallback) => slot === "house-winner-target" && value === "legacy" ? "The original saved D/R candidate forecasts cover a smaller reviewed subset. They remain a separate result." : fallback}
         onChange={(id, value) => {
-          if (id === "house-group-run") onChoose(value);
+          if (id === "house-group-run" || id === "house-group-polling") onChoose(value);
           if (id === "house-winner-target" && value === "legacy") onLegacy();
         }} />
       <dl>
         <dt>Research status</dt><dd>Experimental research</dd>
         <dt>Author review</dt><dd>Research review complete</dd>
         <dt>Forecast coverage</dt><dd>{result.races.length} of 435 districts</dd>
-        <dt>Source support</dt><dd>Candidate lists assembled after the election</dd>
+        <dt>Candidate lists</dt><dd>Assembled after the election</dd>
         <dt>Displayed model</dt><dd>{requestedLabel}</dd>
+        <dt>Polling</dt><dd>{entry.polling ? "Historical polls included" : "Off — election history only"}</dd>
       </dl>
-      <p className="small">The author’s checks are complete; independent review has not yet been received. Some source information uses final candidate lists assembled after each election, so these are historical reconstructions rather than forecasts published before election day.</p>
+      <p className="small">{entry.polling ? "The published calculations and source checks have been reviewed. Poll cutoffs use interview dates and the day after the archive recorded each poll; original publication dates are often unavailable. " : "The author’s checks are complete; independent scientific review has not yet been received. "}Some source information uses final candidate lists assembled after each election, so these are historical reconstructions rather than forecasts published before election day.</p>
       {children}
       {notice && <p role="status" className="small">{notice}</p>}
       {shareUrl && <div className="share-link"><label htmlFor="house-group-share-url">Shareable House view</label><input id="house-group-share-url" readOnly value={shareUrl} onFocus={event => event.target.select()} /></div>}

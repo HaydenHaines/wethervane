@@ -2509,6 +2509,16 @@ select:focus-visible {
 .house-scoreboard-cards {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
+.house-group-scoreboard .house-scoreboard-cards {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+.house-polling-shares dl > div {
+  margin: 16px 0;
+}
+.house-polling-shares dd {
+  margin: 6px 0 0;
+  line-height: 1.6;
+}
 .house-ribbon {
   margin: 24px 0;
 }
@@ -2782,6 +2792,9 @@ select:focus-visible {
     grid-row: 1;
   }
   .house-scoreboard-cards {
+    grid-template-columns: 1fr;
+  }
+  .house-group-scoreboard .house-scoreboard-cards {
     grid-template-columns: 1fr;
   }
   .house-scoreboard-cards .scoreboard-card {

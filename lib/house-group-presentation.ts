@@ -6,7 +6,7 @@ export const houseFundamentalsLabel = (id: string) => ({ house_history_refreshed
 export const groupFundamentalsId = (configuration: string) => configuration.replace(/-loading-1$/, "");
 
 /** Map-only presentation; preserves group probabilities and never allocates them among members. */
-export function groupRaceForMap(race: HouseGroupRace): ExplorerRace {
+export function groupRaceForMap(race: Pick<HouseGroupRace,"id"|"cycle"|"districtKey"|"groups"|"observed">): ExplorerRace {
   return {
     id: race.id, state: race.districtKey.slice(0, 2), seatId: race.districtKey,
     electionLabel: `${race.cycle} U.S. House — ${race.districtKey}`,

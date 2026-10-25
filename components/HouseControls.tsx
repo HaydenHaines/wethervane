@@ -51,10 +51,11 @@ export default function HouseControls({ selectionKey, expanded, onExpandedChange
             </div>
             {choices.some((run) => !run.available) && <details className="assumptions"><summary>Why some choices are unavailable</summary>{choices.filter((run) => !run.available).map((run) => <p key={run.id}><strong>{run.label}:</strong> {run.unavailableReason}</p>)}</details>}
             <p className="small">{houseSelectionNote(catalog.selectionNote)} The initial selection is a reference, not a model chosen for having the best historical score.</p>
-            {catalog.capabilities?.polling === false && <p className="small">These published models use electoral history without polls. Polling integration is not available in this collection.</p>}
+            {catalog.capabilities?.polling === false && <p className="small">This saved forecast uses electoral history without polls. Historical polling options are available in the all-district model builder.</p>}
             <div className="stack-actions">
               <button disabled={busy || result.run.id === catalog.defaultRunId} onClick={() => onSelect(catalog.defaultRunId)}>Reset House view</button>
               <button disabled={busy} onClick={share}>Share House view ↗</button>
+              {onGroups && <button disabled={busy} onClick={onGroups}>Open all-district polling options</button>}
             </div>
           </>
         ) : <p>This saved combination is selected. Additional model choices will appear when reviewed results are published.</p>}

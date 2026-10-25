@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import type { HouseGroupPublication } from "../lib/house-group-catalog";
-import { loadHouseGroup } from "../lib/house-group-client";
-import { verifyHouseGroupComparison } from "../lib/house-group-comparison";
-import { groupSelectionUrl } from "../lib/house-group-selection";
+import type { HouseReviewedPublication as HouseGroupPublication } from "../lib/house-reviewed-catalog";
+import { loadHouseGroup } from "../lib/house-reviewed-client";
+import { verifyHouseGroupComparison } from "../lib/house-reviewed-comparison";
+import { groupSelectionUrl } from "../lib/house-reviewed-selection";
 
 export default function useHouseGroupComparison(publication: HouseGroupPublication, seed?: HouseGroupPublication | null) {
   const [, refresh] = useState(0);
@@ -46,6 +46,7 @@ export default function useHouseGroupComparison(publication: HouseGroupPublicati
     refresh(n => n + 1);
   }
   return { requestedId, ready, error, busy: !!requestedId && !ready && !error,
-    choices: publication.catalog.runs.filter(run => run.cycle === publication.result.cycle && run.id !== publication.result.id),
+    choices: publication.catalog.runs.filter(run => run.cycle === publication.result.cycle && run.id !== publication.result.id &&
+      (run.polling === publication.entry.polling || run.fundamentalsId === publication.entry.fundamentalsId)),
     choose, retry: () => setAttempt(n => n + 1) };
 }

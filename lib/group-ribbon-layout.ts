@@ -1,4 +1,5 @@
-import type { HouseGroupBloc, HouseGroupRace } from "./house-group-result.ts";
+import type { HouseGroupBloc } from "./house-group-result.ts";
+import type { HouseReviewedGroupRace as HouseGroupRace } from "./house-reviewed-catalog.ts";
 import { layoutSerpentine, type SerpentineLayout } from "./serpentine-layout.ts";
 
 export interface GroupRibbonEntry {

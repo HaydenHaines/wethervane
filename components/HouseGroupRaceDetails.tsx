@@ -1,9 +1,10 @@
-import type { HouseGroupBloc, HouseGroupMember, HouseGroupRace, HouseResultGroup } from "../lib/house-group-result.ts";
+import type { HouseGroupBloc, HouseGroupMember, HouseResultGroup } from "../lib/house-group-result.ts";
+import type { HouseReviewedGroupRace } from "../lib/house-reviewed-catalog.ts";
 import { COLORS, probability } from "../lib/presentation.ts";
 
 const blocName: Record<HouseGroupBloc, string> = { D: "Democratic group", R: "Republican group", O: "Other group" };
 const ruleName = { plurality: "Plurality election", ranked_choice: "Ranked-choice election", majority_runoff: "Majority-runoff election" };
-function ruleExplanation(rule: HouseGroupRace["ruleFamily"]) {
+function ruleExplanation(rule: HouseReviewedGroupRace["ruleFamily"]) {
   if (rule === "plurality") return "In this format, the candidate with the most votes wins.";
   if (rule === "ranked_choice") return "Voters rank candidates, and those rankings are counted through rounds.";
   return "In this format, candidates may advance to another election if no one reaches the required majority.";
@@ -32,8 +33,10 @@ function diff(current: number, compared: number) {
   return `${value > 0 ? "+" : ""}${value.toFixed(1)} percentage points (selected minus compared)`;
 }
 
-export default function HouseGroupRaceDetails({ race, comparisonRace }: { race: HouseGroupRace; comparisonRace?: HouseGroupRace | null }) {
+export default function HouseGroupRaceDetails({ race, comparisonRace }: { race: HouseReviewedGroupRace; comparisonRace?: HouseReviewedGroupRace | null }) {
   const compared = comparisonRace && comparisonRace.districtKey === race.districtKey && comparisonRace.cycle === race.cycle ? comparisonRace : null;
+  const polling = "pollCount" in race;
+  const comparedPolling = compared && "pollCount" in compared;
   const groups = (["D", "R", "O"] as const).map(id => race.groups.find(group => group.id === id)).filter((group): group is HouseResultGroup => !!group);
   return <section aria-label={`${race.districtKey} group-win details`}>
     <h3 className="detail-label">Chance of group winning</h3>
@@ -62,6 +65,15 @@ export default function HouseGroupRaceDetails({ race, comparisonRace }: { race: 
       </article>;
     })}
     <p className="detail-note">These probabilities estimate which party/candidate group ultimately wins; they are not vote shares. Other-group probability stays separate and is not distributed among named people or write-ins.</p>
+    {polling ? <section className="detail-note" aria-label="District polling information">
+      <strong>Historical polling in this district:</strong> {race.pollCount > 0
+        ? <>{race.pollCount} local {race.pollCount === 1 ? "poll was" : "polls were"} included at the model’s nominal fourteen-day cutoff. Local polls are available only in some districts.</>
+        : <>No local polls were included. Polls from other districts inform a shared national estimate; they are not treated as local surveys of this district.</>}
+      {compared && <p>{comparedPolling
+        ? `Compared result also uses ${compared.pollCount} local ${compared.pollCount === 1 ? "poll" : "polls"} in this district.`
+        : "The compared saved result does not include polls."}</p>}
+      <p>These are historical poll reconstructions. Interview dates and the day after an archive recorded a poll serve as timing proxies where exact publication dates are unavailable; they do not establish that each poll was public by the nominal cutoff.</p>
+    </section> : <p className="detail-note"><strong>Polling:</strong> This saved result uses election history without polls.</p>}
     <p className="detail-note"><strong>Election format:</strong> {ruleName[race.ruleFamily]}. {ruleExplanation(race.ruleFamily)} This result uses an aggregate approximation: it does not simulate vote counts, ranked-choice counting rounds, or runoff rounds.</p>
     <p className="detail-note"><strong>How to read the probability:</strong> {race.structural
       ? "Only one group appears in the source candidate list, so the model assigns it all of the group probability. This depends on the source list and does not guarantee the actual result."

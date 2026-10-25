@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
-import type { HouseGroupBloc, HouseGroupRace } from "../lib/house-group-result.ts";
+import type { HouseGroupBloc } from "../lib/house-group-result.ts";
+import type { HouseReviewedGroupRace as HouseGroupRace } from "../lib/house-reviewed-catalog.ts";
 import { layoutGroupRibbon, type GroupRibbonEntry } from "../lib/group-ribbon-layout.ts";
 import { COLORS, probability } from "../lib/presentation.ts";
 import HouseGroupLegend from "./HouseGroupLegend";

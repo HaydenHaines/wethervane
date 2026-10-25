@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import type { HouseGroupPublication } from "../lib/house-group-catalog";
-import type { HouseGroupSavedView } from "../lib/house-group-saved-views";
-import { groupSelectionUrl } from "../lib/house-group-selection";
-import { groupRaceForMap, houseFundamentalsLabel } from "../lib/house-group-presentation";
+import type { HouseReviewedPublication as HouseGroupPublication } from "../lib/house-reviewed-catalog";
+import type { HouseGroupSavedView } from "../lib/house-reviewed-saved-views";
+import { groupSelectionUrl } from "../lib/house-reviewed-selection";
+import { groupRaceForMap } from "../lib/house-group-presentation";
 import { competitiveOrder, raceRating, STATE_NAMES } from "../lib/presentation";
 import HouseGroupControls from "./HouseGroupControls";
 import HouseGroupRibbon from "./HouseGroupRibbon";
@@ -12,6 +12,7 @@ import HouseGroupLegend from "./HouseGroupLegend";
 import HouseGroupScoreboard from "./HouseGroupScoreboard";
 import HouseGroupRaceDetails from "./HouseGroupRaceDetails";
 import HouseGroupSavedViews from "./HouseGroupSavedViews";
+import HousePollingShares from "./HousePollingShares";
 import useHouseGroupComparison from "./useHouseGroupComparison";
 import DistrictMap from "./DistrictMap";
 import RaceListToggle from "./RaceListToggle";
@@ -22,7 +23,7 @@ export default function HouseGroupResults({ builderExpanded, onBuilderExpandedCh
   busy: boolean; error: string; onChoose: (id: string) => void; onRetry: () => void;
   onRestore: (view: HouseGroupSavedView) => void;
 }) {
-  const { result, entry } = publication;
+  const { result, entry, catalog } = publication;
   const comparison = useHouseGroupComparison(publication, restoredComparison);
   const mapRaces = useMemo(() => result.races.map(groupRaceForMap), [result]);
   const ordered = useMemo(() => [...mapRaces].sort(competitiveOrder), [mapRaces]);
@@ -35,7 +36,9 @@ export default function HouseGroupResults({ builderExpanded, onBuilderExpandedCh
   const detail = useRef<HTMLElement>(null);
   const selected = result.races.find(race => race.id === selectedId) || result.races.find(race => race.id === ordered[0].id)!;
   const selectedMap = mapRaces.find(race => race.id === selected.id)!;
-  const label = houseFundamentalsLabel(entry.fundamentalsId);
+  const label = entry.label;
+  const polling = "polling" in result && result.polling ? result.pollingCoverage : null;
+  const withoutPolls = catalog.runs.find(run => run.cycle === result.cycle && run.fundamentalsId === entry.fundamentalsId && !run.polling);
   useEffect(() => {
     const restore = () => {
       const params = new URLSearchParams(location.search);
@@ -78,7 +81,7 @@ export default function HouseGroupResults({ builderExpanded, onBuilderExpandedCh
         <select id="house-group-comparison" value={comparison.requestedId || ""} disabled={busy} aria-describedby="house-group-comparison-help" onChange={event => comparison.choose(event.target.value)}>
           <option value="">No comparison</option>
           {comparison.requestedId && !knownComparison && <option value={comparison.requestedId} disabled>Unavailable comparison</option>}
-          {comparison.choices.map(run => <option key={run.id} value={run.id}>{houseFundamentalsLabel(run.fundamentalsId)}</option>)}
+          {comparison.choices.map(run => <option key={run.id} value={run.id}>{run.label}</option>)}
         </select>
         <p id="house-group-comparison-help">Compare group forecasts for the same election year. The selected model stays in the charts. Changing year or winner outcome set clears the comparison.</p>
       </div>
@@ -86,7 +89,13 @@ export default function HouseGroupResults({ builderExpanded, onBuilderExpandedCh
     </HouseGroupControls>
     {comparison.busy && <div className="compare-banner" role="status"><strong>Loading group comparison…</strong><span>Still displaying {label} for {result.cycle}.</span></div>}
     {comparison.error && <div className="compare-banner" role="alert"><strong>Comparison unavailable</strong><span>{comparison.error} The selected forecast remains visible.</span><button onClick={comparison.retry}>Retry comparison</button><button onClick={() => comparison.choose("")}>Remove comparison</button></div>}
-    {comparison.ready && <section className="house-comparison-note" aria-label="House model comparison"><strong>{label} compared with {houseFundamentalsLabel(comparison.ready.entry.fundamentalsId)} · {result.cycle}</strong><p>Both models predict the same groups in the same districts. Differences describe these saved forecasts; they do not measure how certain one model’s advantage is.</p></section>}
+    {comparison.ready && <section className="house-comparison-note" aria-label="House model comparison"><strong>{label} compared with {comparison.ready.entry.label} · {result.cycle}</strong><p>Both models predict the same groups in the same districts. Differences describe these saved forecasts; they do not measure how certain one model’s advantage is.</p></section>}
+    {polling && <section className="house-comparison-note" aria-label="Historical polling coverage">
+      <strong>Polls in {polling.polledDistricts} of {polling.totalDistricts} districts</strong>
+      <p>{polling.polls} selected polls were included at the fourteen-day cutoff. Every district still has a forecast: polls can also change unpolled districts through the model’s estimate of the national political environment.</p>
+      {withoutPolls && comparison.ready?.entry.id !== withoutPolls.id && <button disabled={busy || comparison.busy} onClick={() => comparison.choose(withoutPolls.id)}>Compare with the same model without polls</button>}
+      <p className="small">Adding polls has helped some historical comparisons and hurt others. Compare the scores for this election before choosing a configuration.</p>
+    </section>}
     <HouseGroupScoreboard publication={publication} comparison={comparison.ready} />
     <HouseGroupRibbon races={result.races} selectedRaceId={selected.id} onSelect={select} />
     <div className="house-results-layout">
@@ -114,6 +123,7 @@ export default function HouseGroupResults({ builderExpanded, onBuilderExpandedCh
       <aside ref={detail} tabIndex={0} id="house-race-detail" className="detail" aria-label="Selected House race detail" aria-live="polite">
         <div className="eyebrow">District in focus · {raceRating(selectedMap)}</div><h2 id="house-detail-title" tabIndex={-1}>{selected.districtKey}</h2><p className="small">{STATE_NAMES[selectedMap.state]} · {selectedMap.electionLabel}</p>
         <HouseGroupRaceDetails race={selected} comparisonRace={comparison.ready?.result.races.find(race => race.id === selected.id)} />
+        {entry.polling && <HousePollingShares key={entry.id} entry={entry} raceId={selected.id} eligible={selected.voteShareReferenceAvailable} />}
         <details><summary>Original two-party vote-share forecast</summary><p>Vote shares and winning chances answer different questions. The earlier share forecast measures Democratic votes as a fraction of Democratic plus Republican votes, excluding Other.</p>
           {selected.voteShareReferenceAvailable ? <button onClick={() => onChoose(entry.legacyRunId)}>View this district’s original forecast</button> : <p>This district was outside the original two-candidate study, so it has no earlier share forecast.</p>}
         </details>
@@ -122,8 +132,9 @@ export default function HouseGroupResults({ builderExpanded, onBuilderExpandedCh
     <section className="methodology" id="methodology">
       <div><div className="eyebrow">Read the evidence</div><h2>Every district, with context.</h2></div>
       <div className="method-content"><div><h3>What these forecasts predict</h3><p>The model estimates the group of the eventual winner. It does not simulate individual ranked-choice transfers or runoff rounds. When a group contains several people, winning that group does not identify which person wins. Other remains pooled even when a source lists a single name.</p><h3>A reconstruction of past elections</h3><p>The nominal forecast date is fourteen days before the election, but some inputs use final candidate lists assembled later. These results are not a replay using only information available on that date. The test elections also informed model development.</p></div>
-        <div><h3>What is included?</h3><p>All 435 districts have group forecasts in 2018, 2020, 2022 and 2024. The annulled 2018 NC-09 election has no certified result and is excluded from scoring; its later election is not substituted. The original candidate and vote-share forecasts remain available for their smaller study population.</p><p>These models use election history without polls. Population, turnout and separate polling components are not connected.</p>
-          <details><summary>Publication fingerprints</summary><p>These file fingerprints identify the exact saved result and review used here. They check file identity, not forecasting accuracy.</p><p className="house-digest">Result: {entry.resultSha256}<br />Author qualification: {publication.catalog.qualificationSha256}</p><a href={`/api/chambers/house/groups?${new URLSearchParams({ run: result.id })}`}>View this saved result as structured data (JSON)</a></details>
+        <div><h3>What is included?</h3><p>All 435 districts have group forecasts in 2018, 2020, 2022 and 2024. The annulled 2018 NC-09 election has no certified result and is excluded from scoring; its later election is not substituted. The original candidate and vote-share forecasts remain available for their smaller study population.</p><p>{polling ? "This selection combines election history with historical polling. Separate population and turnout components are not connected." : "This selection uses election history without polls. A version with historical polling is available in Build your perspective. Separate population and turnout components are not connected."}</p>
+          {polling && <p>With polling enabled, local surveys update the districts they cover and also inform the national political environment shared by districts. The archive’s recording date helps approximate when a poll was available; it is not a verified publication timestamp.</p>}
+          <details><summary>Publication fingerprints</summary><p>These file fingerprints identify the exact saved result and review used here. They check file identity, not forecasting accuracy.</p><p className="house-digest">Result: {entry.resultSha256}<br />Calculation review: {entry.qualificationSha256}</p><a href={`/api/chambers/house/groups?${new URLSearchParams({ run: result.id })}`}>View this saved result as structured data (JSON)</a></details>
         </div></div>
     </section>
     <footer className="footer"><span className="footer-brand">ballotmancy</span><span>Independent research. Visible assumptions.<br />House research preview</span></footer>

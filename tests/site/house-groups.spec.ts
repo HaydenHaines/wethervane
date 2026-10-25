@@ -23,7 +23,7 @@ test("one-page winner selection preserves model/year/race, maps all435, and rest
   await expect(page.getByLabel("House model", {exact:true})).toHaveValue(run(2022,"relative_lean"));
   await expect(page.getByRole("group",{name:"Map view",exact:true}).getByRole("button",{name:"Actual winners",exact:true})).toHaveAttribute("aria-pressed","true");
   await expect(builder(page).locator(".model-slice")).toHaveCount(8);
-  await expect(builder(page).locator(".model-slice.is-unavailable")).toHaveCount(4);
+  await expect(builder(page).locator(".model-slice.is-unavailable")).toHaveCount(3);
   await expect(builder(page).locator(".model-slice.is-fixed")).toHaveCount(2);
   await expect(page.getByRole("region",{name:"House group-win probability ribbon"}).locator(".house-ribbon-cell")).toHaveCount(435);
   await page.goBack();
@@ -113,7 +113,7 @@ test("same-party and Other outcomes stay grouped; responsive map/ribbon selectio
   const ribbon=page.getByRole("region",{name:"House group-win probability ribbon"});
   const first=ribbon.locator("button.house-ribbon-cell").first();await first.focus();await page.keyboard.press("End");await page.keyboard.press("Enter");
   await expect(ribbon.locator('button.house-ribbon-cell[aria-pressed="true"]')).toHaveCount(1);
-  await page.getByText("Score by district group",{exact:true}).click();
+  await page.getByText("Group-win score by district group",{exact:true}).click();
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   expect(errors).toEqual([]);
 });

@@ -8,11 +8,11 @@ import { parseHousePublicationWithCatalog, type HousePublicationWithCatalog } fr
 import { houseSelectionForResult, houseSelectionUrl } from "../lib/house-selection";
 import HouseControls from "./HouseControls";
 import HouseGroupResults from "./HouseGroupResults";
-import { groupRunId, type HouseGroupPublication } from "../lib/house-group-catalog";
-import { loadHouseGroup } from "../lib/house-group-client";
-import { groupSelectionForResult, groupSelectionUrl } from "../lib/house-group-selection";
-import { verifyHouseGroupSavedView, type HouseGroupSavedView } from "../lib/house-group-saved-views";
-import { verifyHouseGroupComparison } from "../lib/house-group-comparison";
+import { groupRunId, type HouseReviewedPublication as HouseGroupPublication } from "../lib/house-reviewed-catalog";
+import { loadHouseGroup } from "../lib/house-reviewed-client";
+import { groupSelectionForResult, groupSelectionUrl } from "../lib/house-reviewed-selection";
+import { verifyHouseGroupSavedView, type HouseGroupSavedView } from "../lib/house-reviewed-saved-views";
+import { verifyHouseGroupComparison } from "../lib/house-reviewed-comparison";
 
 type HousePublication = HousePublicationWithCatalog | HouseGroupPublication;
 const isGroup = (value: HousePublication): value is HouseGroupPublication => "family" in value && value.family === "house_groups";

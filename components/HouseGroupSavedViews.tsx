@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useId, useState } from "react";
-import type { HouseGroupPublication } from "../lib/house-group-catalog";
-import { HOUSE_GROUP_SAVED_VIEWS_STORAGE_KEY,MAX_HOUSE_GROUP_SAVED_VIEWS,createHouseGroupSavedView,houseGroupSavedViewAvailability,parseHouseGroupSavedViews,serializeHouseGroupSavedViews,verifyHouseGroupSavedView,type HouseGroupSavedView } from "../lib/house-group-saved-views";
+import type { HouseReviewedPublication as HouseGroupPublication } from "../lib/house-reviewed-catalog";
+import { HOUSE_GROUP_SAVED_VIEWS_STORAGE_KEY,MAX_HOUSE_GROUP_SAVED_VIEWS,createHouseGroupSavedView,houseGroupSavedViewAvailability,parseHouseGroupSavedViews,serializeHouseGroupSavedViews,verifyHouseGroupSavedView,type HouseGroupSavedView } from "../lib/house-reviewed-saved-views";
 export default function HouseGroupSavedViews({publication,raceId,mapView,comparison,busy,error,onRestore}:{publication:HouseGroupPublication;raceId:string;mapView:"forecast"|"actual";comparison:HouseGroupPublication|null;busy:boolean;error:string;onRestore:(view:HouseGroupSavedView)=>void}){
   const inputId=useId(),[views,setViews]=useState<HouseGroupSavedView[]>([]),[label,setLabel]=useState(""),[notice,setNotice]=useState(""),[storageReady,setStorageReady]=useState(false),[saving,setSaving]=useState(false),[exactStatuses,setExactStatuses]=useState<Record<string,{status:string;reason?:string}>>({});
   useEffect(()=>{
