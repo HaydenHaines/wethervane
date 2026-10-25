@@ -1,0 +1,226 @@
+{
+  "schema": "NMOfficialPortalSourceReceiptV1",
+  "utc": "2026-10-25T11:08:12.839993+00:00",
+  "disposition": "OFFICIAL_STATE_SELECTED_2026_GENERAL_CANDIDATE_LIST_ACQUIRED_REVIEW_PENDING",
+  "acquisition": {
+    "path": "research/improvement-loop-20261024/nm-portal-acquisition-root-v1/initial-receipt.json",
+    "sha256": "d0a01f790074c9d936f64ea6b817aace040fa04cb1141d295f4719d8e79de144",
+    "bytes": 2160
+  },
+  "sources": [
+    {
+      "url": "https://www.sos.nm.gov/",
+      "method": "GET",
+      "utc": "2026-10-25T11:03:55.498381+00:00",
+      "source_admitted": false,
+      "status": 200,
+      "final_url": "https://www.sos.nm.gov/",
+      "content_type": "text/html; charset=UTF-8",
+      "path": "research/improvement-loop-20261024/nm-portal-acquisition-root-v1/raw/nm-sos-home.html",
+      "bytes": 143252,
+      "sha256": "c2dab8d005534519dec63f3085f7e6323b0ef8698557755a69d844898eb056db",
+      "headers_path": "research/improvement-loop-20261024/nm-portal-acquisition-root-v1/raw/nm-sos-home.html.headers",
+      "headers_sha256": "07edb5de5e0d35171e9f713d90550c14ee29efe2c84eb39196cf8dd9e4bbd8d3"
+    },
+    {
+      "url": "https://candidateportal.servis.sos.state.nm.us/CandidateList.aspx?eid=2917&cty=99",
+      "method": "GET",
+      "utc": "2026-10-25T11:03:55.781438+00:00",
+      "source_admitted": false,
+      "status": 200,
+      "final_url": "https://candidateportal.servis.sos.state.nm.us/CandidateList.aspx?eid=2917&cty=99",
+      "content_type": "text/html; charset=utf-8",
+      "path": "research/improvement-loop-20261024/nm-portal-acquisition-root-v1/raw/nm-candidate-list.html",
+      "bytes": 967953,
+      "sha256": "a8b53e22f8a7609e7d2cbd239e241a664334a19c1f26f80954d61cf8ed4213af",
+      "headers_path": "research/improvement-loop-20261024/nm-portal-acquisition-root-v1/raw/nm-candidate-list.html.headers",
+      "headers_sha256": "0669387ba2ade837cebc2e9a7736caa2c575587e0db88b81c8eb3cdb2ef22c89"
+    }
+  ],
+  "official_link": {
+    "parent_url": "https://www.sos.nm.gov/",
+    "text": "2026 General Election \u2013 Candidate Filing Day",
+    "target": "https://candidateportal.servis.sos.state.nm.us/CandidateList.aspx?eid=2917&cty=99",
+    "derived_from_original_homepage": true
+  },
+  "extraction": {
+    "path": "research/improvement-loop-20261024/nm-portal-acquisition-root-v1/extraction.json",
+    "sha256": "35744d54f6bed9b5813c34882767a65c623d8a51be51d89f69ca19ec9810f9b1",
+    "bytes": 5147
+  },
+  "script": {
+    "path": "research/improvement-loop-20261024/nm-portal-acquisition-root-v1/extract.py",
+    "sha256": "1f8c17c3b38a60582657633255c5c65faa256ad6ea3073ca20a94cc84b6eab4f",
+    "bytes": 4252
+  },
+  "source_scope": {
+    "title": "2026 General Election Contest/Candidate List",
+    "filters": {
+      "ddlCounty": {
+        "value": "99",
+        "label": "State"
+      },
+      "ddlContest": {
+        "value": "0",
+        "label": ""
+      },
+      "ddlParty": {
+        "value": "0",
+        "label": ""
+      }
+    },
+    "pagination": {
+      "AllowPaging": false,
+      "PageCount": 1,
+      "CurrentPageIndex": 0,
+      "PageSize": 10,
+      "VirtualItemCount": 0
+    },
+    "data_rows": 524,
+    "status_counts": {
+      "Qualified": 503,
+      "Disqualified": 11,
+      "Withdrawn": 10
+    },
+    "senate_rows": [
+      {
+        "District": "",
+        "Filing County": "",
+        "Name": "BEN R LUJAN",
+        "Party": "DEM",
+        "Filing Date/Time": "2/3/2026 9:44:07 AM",
+        "Ballot Order": "1",
+        "Status": "Qualified",
+        "DistrictType": "SW",
+        "Contest display": "United States Senator",
+        "Contest": "United States Senator"
+      },
+      {
+        "District": "",
+        "Filing County": "",
+        "Name": "LARRY E MARKER",
+        "Party": "REP",
+        "Filing Date/Time": "3/17/2026 9:10:00 AM",
+        "Ballot Order": "2",
+        "Status": "Qualified",
+        "DistrictType": "SW",
+        "Contest display": "United States Senator",
+        "Contest": "United States Senator"
+      },
+      {
+        "District": "",
+        "Filing County": "",
+        "Name": "MIRA OCONNELL",
+        "Party": "DTS",
+        "Filing Date/Time": "6/25/2026 4:31:00 PM",
+        "Ballot Order": "99",
+        "Status": "Disqualified",
+        "DistrictType": "SW",
+        "Contest display": "United States Senator",
+        "Contest": "United States Senator"
+      },
+      {
+        "District": "",
+        "Filing County": "",
+        "Name": "BOB PERLS",
+        "Party": "FWD",
+        "Filing Date/Time": "6/25/2026 11:44:16 AM",
+        "Ballot Order": "99",
+        "Status": "Disqualified",
+        "DistrictType": "SW",
+        "Contest display": "United States Senator",
+        "Contest": "United States Senator"
+      }
+    ],
+    "explicit_other_contest_writein_rows": [
+      {
+        "District": "DIVISION 3",
+        "Filing County": "Lea",
+        "Name": "SHANNON ELIZABETH ARGUELLO (write-in)",
+        "Party": "REP",
+        "Filing Date/Time": "6/25/2026 3:58:19 PM",
+        "Ballot Order": "99",
+        "Status": "Qualified",
+        "DistrictType": "MGX",
+        "Contest display": "Magistrate Judge Division 3 DIVISION 3",
+        "Contest": "Magistrate Judge"
+      },
+      {
+        "District": "",
+        "Filing County": "De Baca",
+        "Name": "KAYDEN WAYNE CONES (write-in)",
+        "Party": "REP",
+        "Filing Date/Time": "6/25/2026 9:00:00 AM",
+        "Ballot Order": "99",
+        "Status": "Qualified",
+        "DistrictType": "CTY",
+        "Contest display": "County Sheriff",
+        "Contest": "County Sheriff"
+      },
+      {
+        "District": "DISTRICT 3",
+        "Filing County": "Dona Ana",
+        "Name": "JULIA TONDALEAH BROWN (write-in)",
+        "Party": "DEM",
+        "Filing Date/Time": "6/25/2026 12:40:05 PM",
+        "Ballot Order": "99",
+        "Status": "Qualified",
+        "DistrictType": "CCX",
+        "Contest display": "County Commissioner DISTRICT 3",
+        "Contest": "County Commissioner by Commissioner District"
+      },
+      {
+        "District": "DISTRICT 4",
+        "Filing County": "Lincoln",
+        "Name": "RANDALL T CAMP (write-in)",
+        "Party": "REP",
+        "Filing Date/Time": "6/25/2026 4:01:00 PM",
+        "Ballot Order": "99",
+        "Status": "Qualified",
+        "DistrictType": "CCX",
+        "Contest display": "County Commissioner DISTRICT 4",
+        "Contest": "County Commissioner by Commissioner District"
+      },
+      {
+        "District": "",
+        "Filing County": "Luna",
+        "Name": "JOSE LEOPOLDO MARTINEZ (write-in)",
+        "Party": "DEM",
+        "Filing Date/Time": "6/25/2026 12:44:38 PM",
+        "Ballot Order": "99",
+        "Status": "Qualified",
+        "DistrictType": "CTY",
+        "Contest display": "County Sheriff",
+        "Contest": "County Sheriff"
+      },
+      {
+        "District": "DISTRICT 2",
+        "Filing County": "Mora",
+        "Name": "TRINNIE B CORDOVA (write-in)",
+        "Party": "DEM",
+        "Filing Date/Time": "6/25/2026 9:05:45 AM",
+        "Ballot Order": "99",
+        "Status": "Qualified",
+        "DistrictType": "CCX",
+        "Contest display": "County Commissioner DISTRICT 2",
+        "Contest": "County Commissioner by Commissioner District"
+      }
+    ]
+  },
+  "interpretation": "The directly linked official2026general State-selected list returns fourSenate filings: Lujan/Marker Qualified and OConnell/Perls Disqualified. NoSenate name bears the explicit(write-in)suffix; sixothercontestrows do. This materially improves on the prior county-only evidence. It is the exact displayed roster/status at retrieval, not an independent adjudication or historic publication proof.",
+  "source_limits": [
+    "State is the literal selected portalcountyfilter label99; no alternativecounty/electionIDs guessed.",
+    "Grid disablespaging andshowsonepage; dormantPageSize10 andVirtualItemCount0 do not truncate or zero the524displayedrows.",
+    "Presence ofexplicitwrite-inselsewhere supports that the portal can representwrite-ins; it doesnot alone prove absence ofunrecorded/later filings.",
+    "RetrievedOct25; exact list/statuspublication byOct20forecastcutoff remainsunproved.",
+    "Countyballotvisual and rule analysis remain separate supporting evidence; no sourceadmission/modelchange."
+  ],
+  "extraction_development": [
+    "Initialunsealedparser expectedclientID onselect; originalHTMLusesname attributes. It failed before creating output, then corrected to exactnames.",
+    "Initialunsealedparser assumedtwoContestcolumns equal globally; observedfirstdisplay includesdistrict andsecondbaseoffice. It failed before output, then preservedboth andrequiresbothUnitedStatesSenator onlyforSenaterows.",
+    "Finalextractor ran successfully against originalunchangedrawbytes; independentreviewrequested."
+  ],
+  "contact_fields_excluded": true,
+  "source_admitted": false,
+  "model_or_owner_change": false
+}

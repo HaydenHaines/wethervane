@@ -1,0 +1,177 @@
+{
+  "schema": "NMPortalIndependentSourceReviewSolV1",
+  "created_utc": "2026-10-25T11:11:02.789078+00:00",
+  "disposition": "INDEPENDENT_PARSE_CONFIRMS_ROOT_PACKET_WITH_BOUNDED_SCOPE",
+  "root_packet": {
+    "path": "research/improvement-loop-20261024/nm-portal-acquisition-root-v1/receipt.json",
+    "bytes": 8910,
+    "sha256": "be93671629f06d8d4075b6d9efc557c31dd072a2f50e0017f65484ee99fdd549"
+  },
+  "root_initial_acquisition": {
+    "path": "research/improvement-loop-20261024/nm-portal-acquisition-root-v1/initial-receipt.json",
+    "bytes": 2160,
+    "sha256": "d0a01f790074c9d936f64ea6b817aace040fa04cb1141d295f4719d8e79de144"
+  },
+  "root_extraction": {
+    "path": "research/improvement-loop-20261024/nm-portal-acquisition-root-v1/extraction.json",
+    "bytes": 5147,
+    "sha256": "35744d54f6bed9b5813c34882767a65c623d8a51be51d89f69ca19ec9810f9b1"
+  },
+  "root_script": {
+    "path": "research/improvement-loop-20261024/nm-portal-acquisition-root-v1/extract.py",
+    "bytes": 4252,
+    "sha256": "1f8c17c3b38a60582657633255c5c65faa256ad6ea3073ca20a94cc84b6eab4f"
+  },
+  "verified_original_sources": [
+    {
+      "url": "https://www.sos.nm.gov/",
+      "method": "GET",
+      "retrieved_utc": "2026-10-25T11:03:55.498381+00:00",
+      "source": {
+        "path": "research/improvement-loop-20261024/nm-portal-acquisition-root-v1/raw/nm-sos-home.html",
+        "bytes": 143252,
+        "sha256": "c2dab8d005534519dec63f3085f7e6323b0ef8698557755a69d844898eb056db"
+      },
+      "headers": {
+        "path": "research/improvement-loop-20261024/nm-portal-acquisition-root-v1/raw/nm-sos-home.html.headers",
+        "bytes": 903,
+        "sha256": "07edb5de5e0d35171e9f713d90550c14ee29efe2c84eb39196cf8dd9e4bbd8d3"
+      },
+      "http_status_as_reported_by_root_acquisition": 200,
+      "header_file_includes_status_line": false
+    },
+    {
+      "url": "https://candidateportal.servis.sos.state.nm.us/CandidateList.aspx?eid=2917&cty=99",
+      "method": "GET",
+      "retrieved_utc": "2026-10-25T11:03:55.781438+00:00",
+      "source": {
+        "path": "research/improvement-loop-20261024/nm-portal-acquisition-root-v1/raw/nm-candidate-list.html",
+        "bytes": 967953,
+        "sha256": "a8b53e22f8a7609e7d2cbd239e241a664334a19c1f26f80954d61cf8ed4213af"
+      },
+      "headers": {
+        "path": "research/improvement-loop-20261024/nm-portal-acquisition-root-v1/raw/nm-candidate-list.html.headers",
+        "bytes": 259,
+        "sha256": "0669387ba2ade837cebc2e9a7736caa2c575587e0db88b81c8eb3cdb2ef22c89"
+      },
+      "http_status_as_reported_by_root_acquisition": 200,
+      "header_file_includes_status_line": false
+    }
+  ],
+  "independent_check": {
+    "path": "research/improvement-loop-20261024/nm-portal-source-review-sol-v1/independent-checks.json",
+    "bytes": 4807,
+    "sha256": "70216251c1b5913352a2e23e3a2cf0191c961f04aeeb2a543ff884b3410ce8d0"
+  },
+  "independent_script": {
+    "path": "research/improvement-loop-20261024/nm-portal-source-review-sol-v1/independent_check.py",
+    "bytes": 6740,
+    "sha256": "2590054d7c9cb7086f01ea96eda9ac5bf497f26b1604220810bee8bd22d66c73"
+  },
+  "report": {
+    "path": "research/improvement-loop-20261024/nm-portal-source-review-sol-v1/REPORT.md",
+    "bytes": 1977,
+    "sha256": "e8669c1acf75e2ad620701c4947d936e3047fbf60eda30be04801165d4e6d38f"
+  },
+  "review_results": {
+    "homepage_2026_general_link_bound": true,
+    "portal_title_bound": true,
+    "selected_filters": {
+      "ddlCounty": {
+        "value": "99",
+        "label": "State"
+      },
+      "ddlContest": {
+        "value": "0",
+        "label": ""
+      },
+      "ddlParty": {
+        "value": "0",
+        "label": ""
+      }
+    },
+    "grid": {
+      "AllowPaging": false,
+      "PageCount": 1,
+      "CurrentPageIndex": 0,
+      "PageSize": 10,
+      "VirtualItemCount": 0,
+      "visible_data_rows": 524
+    },
+    "status_counts": {
+      "Qualified": 503,
+      "Disqualified": 11,
+      "Withdrawn": 10
+    },
+    "senate_rows": [
+      {
+        "Contest display": "United States Senator",
+        "Contest": "United States Senator",
+        "District": "",
+        "Filing County": "",
+        "Name": "BEN R LUJAN",
+        "Party": "DEM",
+        "Filing Date/Time": "2/3/2026 9:44:07 AM",
+        "Ballot Order": "1",
+        "Status": "Qualified",
+        "DistrictType": "SW"
+      },
+      {
+        "Contest display": "United States Senator",
+        "Contest": "United States Senator",
+        "District": "",
+        "Filing County": "",
+        "Name": "LARRY E MARKER",
+        "Party": "REP",
+        "Filing Date/Time": "3/17/2026 9:10:00 AM",
+        "Ballot Order": "2",
+        "Status": "Qualified",
+        "DistrictType": "SW"
+      },
+      {
+        "Contest display": "United States Senator",
+        "Contest": "United States Senator",
+        "District": "",
+        "Filing County": "",
+        "Name": "MIRA OCONNELL",
+        "Party": "DTS",
+        "Filing Date/Time": "6/25/2026 4:31:00 PM",
+        "Ballot Order": "99",
+        "Status": "Disqualified",
+        "DistrictType": "SW"
+      },
+      {
+        "Contest display": "United States Senator",
+        "Contest": "United States Senator",
+        "District": "",
+        "Filing County": "",
+        "Name": "BOB PERLS",
+        "Party": "FWD",
+        "Filing Date/Time": "6/25/2026 11:44:16 AM",
+        "Ballot Order": "99",
+        "Status": "Disqualified",
+        "DistrictType": "SW"
+      }
+    ],
+    "explicit_writein_rows_other_contests": 6,
+    "senate_writein_suffix_rows": 0,
+    "other_rows_display_differs_from_base_office": 329,
+    "root_author_extraction_exact_matches": {
+      "title": true,
+      "filters": true,
+      "visible_rows": true,
+      "status_counts": true,
+      "senate_rows": true,
+      "explicit_writein_rows": true
+    }
+  },
+  "scope_limits": [
+    "State 99 is the literal selected portal control, materially broader than the prior one-county ballot; the portal response is an observed current roster rather than an independent certificate of all possible future/unrecorded filings.",
+    "Six explicit write-in suffixes in other contests demonstrate display capability; lack of the suffix in four Senate rows is not a guarantee of no unrecorded/later Senate write-in.",
+    "Retrieval October 25 follows the October 20 forecast cutoff. Portal/header data reviewed here do not authenticate exact publication or status availability by that cutoff.",
+    "Grid PageSize 10 and VirtualItemCount 0 do not truncate the unpaged 524 visible rows.",
+    "The earlier Luna reconciliation predates successful portal retrieval, so its portal-unavailable premise is historical."
+  ],
+  "contact_or_address_output": false,
+  "owner_source_admission_model_runtime_fit_scorer_mutation": false
+}

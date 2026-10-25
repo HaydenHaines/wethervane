@@ -1,0 +1,95 @@
+{
+  "schema": "NMSourceRuleReconciliationLunaV1",
+  "created_at_utc": "2026-10-25T11:02:04Z",
+  "purpose": "Bounded reconciliation of the prior New Mexico conditional Senate menu proposal against newly completed visual review and current official rule sources. Recommendation only; no admission or model edits.",
+  "reviewed_inputs": [
+    {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-menu-followup-sol-v3/proposal.json",
+      "finding": "Proposal status source_ready_conditional_inference_for_root_review; identified two printed U.S. Senate candidates from a Santa Fe County master ballot list and conditioned inferred menu on an uninspected sample PDF plus qualified-write-in-space rule."
+    },
+    {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-menu-followup-root-v2/NM-review.json",
+      "finding": "Prior root decision PRINTED_NAMES_CONFIRMED_WRITEIN_CLOSURE_HELD because the encoded sample PDF had no inspectable visual absence finding; county list alone did not establish qualified write-in absence."
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/national-source-acquisition-ui-v1/nm-visual-review-root-v1.json",
+      "sha256": "d39197c22d06f4fe6e580c0f0b5974e56c94cf06bf3bab4c064dfa35b73eee3b"
+    }
+  ],
+  "determination": {
+    "disposition": "VISUAL_GAP_RESOLVED_FOR_EXAMINED_SANTA_FE_COUNTY_BALLOT; STATEWIDE_MENU_SUPPORT_REMAINS_UNCLOSED",
+    "assessment": "The new full Senate-block visual inspection materially resolves the exact prior samplePDFnotinspectable gap. It confirms the examined Santa Fe County 2026 sample ballot shows Lujan and Marker and no declared write-in line in the complete Senate block. Under NMSA 1978 \u00a71-10-13, a write-in candidate qualified by the proper filing officer must have a clearly designated write-in space after other candidates for that office. Thus, subject to ballot correctness/completeness, no qualified write-in is reflected on this examined ballot. The visual fact does not itself prove the statewide roster is complete or that every county ballot correctly implements the state rule.",
+    "narrow_recommendation": "Root may replace the old no-visual-proof condition with the dated, hashed visual observation as affirmative county-ballot evidence and treat it as support for a conditional NM inference. Keep statewide candidate/write-in closure held pending an explicit complete official statewide 2026 general-election candidate/qualified-write-in roster or equivalent statewide scope evidence. The SOS homepage links a 2026 candidate-list portal, but that link did not return list contents through the research tool; do not infer contents from failure or guess portal IDs.",
+    "scope_risk": "Master-list ballot style ALL and precincts ALL means all styles/precincts within Santa Fe County only. It is not statewide coverage. One county's ballot can corroborate ballot construction but cannot alone establish statewide complete named support or statewide nonexistence of qualified write-ins.",
+    "cutoff": "All inspected county material and the visual review were retrieved/recorded on 2026-10-25, after the 2026-10-20 forecast/research cutoff. No source publication/effective date in the reviewed proposal establishes these items were available by Oct 20. Do not backdate them; preserve any Oct 20 forecast as-of qualification. The 2025 SOS handbook and current SOS write-in FAQ are current legal guidance available as retrieved, but do not retroactively date the 2026 ballot evidence."
+  },
+  "legal_rule": {
+    "essentials": [
+      "NMSA 1978 \u00a71-10-13 applies when a write-in candidate has been qualified by the proper filing officer and requires a clearly designated name-entry space headed \u201cDeclared Write-in Candidate\u201d after other candidates for that office.",
+      "The Secretary of State\u2019s current write-in FAQ says write-in candidates must file and be qualified before the election, points to election-specific qualification lists, and describes a write-in space for the appropriate contest."
+    ],
+    "current_primary_sources": [
+      {
+        "url": "https://www.sos.nm.gov/candidate-and-campaigns/how-to-become-a-political-action-committee/nm-election-handbook/",
+        "title": "New Mexico Secretary of State, NM Election Handbook page",
+        "publication": "Page lists the 2025 edition as the currently linked handbook.",
+        "retrieved_utc": "2026-10-25",
+        "relevance": "Official current SOS publication page for the 2025 handbook cited by the earlier proposal; handbook \u00a71-10-13 states the qualified-candidate/mandatory-space rule.",
+        "source_note": "The prior proposal already recorded the official SOS handbook PDF and hashed capture; this reconciliation did not independently re-download the PDF."
+      },
+      {
+        "url": "https://www.sos.nm.gov/voting-and-elections/voting-faqs/write-in-candidates/",
+        "title": "New Mexico Secretary of State, Write-in Candidates FAQ",
+        "publication": "Current SOS webpage; no dated publication stamp shown.",
+        "retrieved_utc": "2026-10-25",
+        "relevance": "Official explanation of qualification and the location of election-specific qualification lists."
+      },
+      {
+        "url": "https://www.nmlegis.gov/Sessions/25%20Regular/bills/senate/SB0218.HTML",
+        "title": "New Mexico Legislature, SB 218 (2025 Regular Session)",
+        "publication": "2025 bill text; proposed amended text is not enacted law and is not relied on for current rule.",
+        "retrieved_utc": "2026-10-25",
+        "relevance": "Primary legislative record confirming quoted \u00a71-10-13 text in bill amendment context; not treated as proof of enactment."
+      }
+    ],
+    "rule_limit": "The proposition is one-way: a qualified write-in requires a designated space. Absence of a space on the examined ballot supports absence of a qualified write-in on that ballot, assuming complete/correct ballot production. It is not itself a statewide none-filed/certification record."
+  },
+  "statewide_source_recovery": {
+    "official_candidate_list_link": {
+      "url": "https://www.sos.nm.gov/",
+      "page": "SOS homepage, 2026 General Election \u2013 Candidate Filing Day, \u201cClick here to view candidate list\u201d (link target candidateportal.servis.sos.state.nm.us/CandidateList.aspx?cty=99&eid=2917)",
+      "retrieval_result": "Following the explicit homepage link failed with restricted URL; list contents were not retrieved.",
+      "scope_implication": "A candidate list is explicitly linked by the SOS, so this is the bounded next official source to inspect if access becomes available. Do not guess alternate IDs, crawl unrelated portal routes, or treat inaccessible contents as evidence."
+    },
+    "remaining_proof": [
+      "Complete official 2026 general-election statewide candidate list covering U.S. Senate, including candidate roles and any certified/qualified write-ins; or",
+      "Another official statewide certification/roster plus evidence it is complete and current as of the target cutoff."
+    ],
+    "fallback_scope": "If the only support remains Santa Fe County records, keep the inference explicitly county-bounded and do not label candidate support statewide-complete."
+  },
+  "visual_evidence": {
+    "receipt_path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/national-source-acquisition-ui-v1/nm-visual-review-root-v1.json",
+    "source_documents": [
+      {
+        "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/national-source-acquisition-ui-v1/raw/nm-sample.pdf",
+        "sha256": "436a119c6dcc0753ab6dd1035af030c585a80790b2818d6c92c206a8747ae179",
+        "bytes": 74475,
+        "source_url": "https://www.santafecountynm.gov/uploads/documents/Sample-SANT_PCT001.pdf"
+      },
+      {
+        "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/national-source-acquisition-ui-v1/raw/nm-master.pdf",
+        "sha256": "424899bd085291589ada4c0f591c8f43c353a05fc4d1cc97bd3b940331906890",
+        "bytes": 149413,
+        "source_url": "https://www.santafecountynm.gov/uploads/documents/GENERAL_2026-Master_Ballot_List.pdf"
+      }
+    ],
+    "inspected_observation": "Sample page 1 complete Senate contest ends after BEN R LUJAN and LARRY E MARKER, before UNITED STATES REPRESENTATIVE; no write-in line visible. Master-list Senate entry names the same two candidates and marks style ALL and precincts ALL within Santa Fe County.",
+    "visual_review_utc": "2026-10-25T10:36:21.165514+00:00",
+    "source_admitted": false
+  },
+  "limits": [
+    "This is legal/source reconciliation only, not source admission, candidate-role adjudication, or model-support closure.",
+    "No raw source was re-retrieved for this reconciliation; the visual evidence references the separately hashed acquisition receipt.",
+    "No exhaustive portal search or outreach was performed."
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "schema": "UINewMexicoOfficialPortalHandoffV1",
+  "utc": "2026-10-25T11:16:20.253903+00:00",
+  "acquisition": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/nm-portal-acquisition-root-v1/receipt.json",
+    "sha256": "be93671629f06d8d4075b6d9efc557c31dd072a2f50e0017f65484ee99fdd549"
+  },
+  "independent_review": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/nm-portal-source-review-sol-v1/receipt.json",
+    "sha256": "4aef642b8aa8b4223ac80f284fbaa01fb889e23d27fee44145ad14dbd6fcd411"
+  },
+  "earlier_rule_reconciliation": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/nm-source-rule-reconciliation-luna-v1.json",
+    "sha256": "68a2cc4115f73c6f40e7dd02ef2e929a7df9ce76b9f7de08ee48bac73026d45c"
+  },
+  "finding": "The official SOS homepage links the 2026 General Election candidate portal with State (99), all contests and all parties selected. The unpaged response has 524 rows. US Senate has BEN R LUJAN and LARRY E MARKER Qualified; MIRA OCONNELL and BOB PERLS Disqualified. Six other contests explicitly display named write-ins; none of the four Senate names has that suffix.",
+  "scope": "This is an observed statewide portal roster, broader than the prior Santa Fe County ballot. It does not independently certify the absence of unrecorded or later qualified filings. The author and independent reviewer preserve the displayed contest and underlying office separately and agree on every Senate row.",
+  "time_scope": "Original bytes were retrieved October 25. The response does not establish exact publication or status availability by the October 20 forecast cutoff.",
+  "superseded_condition": "The earlier Luna note was correct about the failed retrieval available to that agent. Root subsequently retrieved the exact linked portal through a working direct connection; portal inaccessible is no longer the current condition. The earlier note remains immutable.",
+  "next_action": "The Senate owner can assess this original response for support admission, retaining cutoff and coverage limits. No need to repeat the county-only ballot search to recover this statewide roster.",
+  "source_admitted": false,
+  "owner_or_model_change": false,
+  "coordination": "Identical files are placed in both owners shared docs/development directories. No read acknowledgment is claimed."
+}
