@@ -1,0 +1,207 @@
+{
+  "schema": "EAVS2018DelawareOfficialDatasetExtractionV1",
+  "source_question": "F1a",
+  "source_question_codebook_location": "2018_EAVS_Codebook.xlsx xl/worksheets/sheet1.xml row 291: F1a, Numeric, Participation: Total",
+  "reference_election_date": "2018-11-06",
+  "calculation": "Sum the three Delaware jurisdiction F1a nonnegative integer literals; exclude missing or negative literals from comparison sums without treating them as observed zero.",
+  "versions": {
+    "EAC_version_1_0_released_2019_06_27": {
+      "delaware_rows": [
+        {
+          "FIPSCode": "1000100000",
+          "Jurisdiction_Name": "KENT COUNTY",
+          "State_Abbr": "DE",
+          "F1a_literal": "60230"
+        },
+        {
+          "FIPSCode": "1000300000",
+          "Jurisdiction_Name": "NEW CASTLE COUNTY",
+          "State_Abbr": "DE",
+          "F1a_literal": "212978"
+        },
+        {
+          "FIPSCode": "1000500000",
+          "Jurisdiction_Name": "SUSSEX COUNTY",
+          "State_Abbr": "DE",
+          "F1a_literal": "93342"
+        }
+      ],
+      "delaware_f1a_sum": 366550,
+      "delaware_nonnegative_numeric_count": 3,
+      "delaware_excluded_literals": {},
+      "state_f1a_sums": {
+        "AK": 287485,
+        "AL": 1723694,
+        "AR": 790656,
+        "AS": 8462,
+        "AZ": 2409906,
+        "CA": 13828680,
+        "CO": 2586432,
+        "CT": 1421650,
+        "DC": 231700,
+        "DE": 366550,
+        "FL": 8355817,
+        "GA": 3951876,
+        "GU": 37386,
+        "HI": 398657,
+        "IA": 1334279,
+        "ID": 612582,
+        "IL": 4751180,
+        "IN": 2933234,
+        "KS": 1070221,
+        "KY": 1619587,
+        "LA": 1519552,
+        "MA": 2753623,
+        "MD": 2335128,
+        "ME": 646083,
+        "MI": 4341340,
+        "MN": 2618245,
+        "MO": 2553274,
+        "MS": 961025,
+        "MT": 508652,
+        "NC": 3705224,
+        "ND": 329950,
+        "NE": 708924,
+        "NH": 581551,
+        "NJ": 3248642,
+        "NM": 697681,
+        "NV": 976587,
+        "NY": 6356896,
+        "OH": 4520678,
+        "OK": 1200164,
+        "OR": 1914923,
+        "PA": 5057630,
+        "RI": 389161,
+        "SC": 1739705,
+        "SD": 340324,
+        "TN": 2267428,
+        "TX": 7976548,
+        "UT": 1082972,
+        "VA": 3343186,
+        "VI": 26346,
+        "VT": 268758,
+        "WA": 3133462,
+        "WI": 2688341,
+        "WV": 597149,
+        "WY": 205275
+      },
+      "excluded_f1a_literals": {
+        "AR": {
+          "": 13,
+          "-99": 1
+        },
+        "HI": {
+          "-88": 1
+        },
+        "TX": {
+          "-99": 16
+        }
+      },
+      "brief_comparison": {
+        "brief_values_checked": 50,
+        "exact_matches": 50,
+        "differences": []
+      }
+    },
+    "EAC_version_1_3_released_2020_07_15": {
+      "delaware_rows": [
+        {
+          "FIPSCode": "1000100000",
+          "Jurisdiction_Name": "KENT COUNTY",
+          "State_Abbr": "DE",
+          "F1a_literal": "60230"
+        },
+        {
+          "FIPSCode": "1000300000",
+          "Jurisdiction_Name": "NEW CASTLE COUNTY",
+          "State_Abbr": "DE",
+          "F1a_literal": "212978"
+        },
+        {
+          "FIPSCode": "1000500000",
+          "Jurisdiction_Name": "SUSSEX COUNTY",
+          "State_Abbr": "DE",
+          "F1a_literal": "93342"
+        }
+      ],
+      "delaware_f1a_sum": 366550,
+      "delaware_nonnegative_numeric_count": 3,
+      "delaware_excluded_literals": {},
+      "state_f1a_sums": {
+        "AK": 287485,
+        "AL": 1723694,
+        "AR": 790656,
+        "AS": 8462,
+        "AZ": 2409906,
+        "CA": 13828680,
+        "CO": 2586432,
+        "CT": 1421650,
+        "DC": 231700,
+        "DE": 366550,
+        "FL": 8355817,
+        "GA": 3951876,
+        "GU": 37386,
+        "HI": 398657,
+        "IA": 1334279,
+        "ID": 612582,
+        "IL": 4751180,
+        "IN": 2933234,
+        "KS": 1070221,
+        "KY": 1619587,
+        "LA": 1519552,
+        "MA": 2753623,
+        "MD": 2335128,
+        "ME": 646083,
+        "MI": 4341340,
+        "MN": 2618245,
+        "MO": 2553274,
+        "MS": 961025,
+        "MT": 508652,
+        "NC": 3705224,
+        "ND": 329950,
+        "NE": 708924,
+        "NH": 581551,
+        "NJ": 3248642,
+        "NM": 697681,
+        "NV": 976587,
+        "NY": 6356896,
+        "OH": 4520678,
+        "OK": 1200164,
+        "OR": 1914923,
+        "PA": 5057630,
+        "RI": 389161,
+        "SC": 1739705,
+        "SD": 340324,
+        "TN": 2267428,
+        "TX": 7976548,
+        "UT": 1082972,
+        "VA": 3343186,
+        "VI": 26346,
+        "VT": 268758,
+        "WA": 3133462,
+        "WI": 2688341,
+        "WV": 597149,
+        "WY": 205275
+      },
+      "excluded_f1a_literals": {
+        "AR": {
+          "": 13,
+          "Data not available": 1
+        },
+        "HI": {
+          "-88": 1
+        },
+        "TX": {
+          "Data not available": 16
+        }
+      },
+      "brief_comparison": {
+        "brief_values_checked": 50,
+        "exact_matches": 50,
+        "differences": []
+      }
+    }
+  },
+  "selected_2018_brief_panel_unchanged": true,
+  "admission_performed": false
+}

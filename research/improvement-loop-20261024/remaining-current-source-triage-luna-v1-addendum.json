@@ -1,0 +1,86 @@
+{
+  "schema": "RemainingCurrentSenateSourceTriageLunaV1Addendum",
+  "issued_as_of": "2026-10-25",
+  "supersedes_fields_only": [
+    "NE classification",
+    "cutoff/retrieval timing interpretation",
+    "declared local-capture hash audit"
+  ],
+  "corrections": {
+    "NE": {
+      "previous_classification": "future_deadline_or_list_event",
+      "corrected_classification": "unclear",
+      "reason": "The Oct. 23 write-in deadline had already passed by the Oct. 25 triage date. The reviewed evidence does not establish when a complete post-deadline list will publish, or that such a list is currently available. This is an unknown publication/source state, not a future deadline.",
+      "priority": "Check the official SOS candidate source for an actual post-deadline complete Senate write-in list; pin publication date and original bytes if found. The Sep. 11 filing list remains pre-deadline evidence and cannot close support."
+    },
+    "AK": {
+      "classification_retained": "future_deadline_or_list_event",
+      "timing": "The Oct. 29, 2026 5 p.m. Alaska-time write-in deadline is still future as of Oct. 25. Reacquire/bind the official candidate source on or after the deadline."
+    }
+  },
+  "temporal_scope": {
+    "owner_forecast_cutoff": "2026-10-20",
+    "triage_as_of": "2026-10-25",
+    "rule": "The reviewed candidate/source records were acquired or represented as retrieved on Oct. 25, five days after the owner forecast cutoff. They may clarify current source gaps and propose retrieval work, but cannot authenticate what was publicly available by the Oct. 20 cutoff. No backdating or cutoff qualification is implied."
+  },
+  "local_capture_hash_audit": {
+    "method": "For every `local_capture` field declared in v1 state source pins, verified the file exists and computed SHA-256 over its current bytes; comparisons were made where v1 declared a local hash. All 9 local captures exist and all declared hashes match.",
+    "captures": [
+      {
+        "state": "AK",
+        "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-declaration-menu-sources-sol-v1/sources/ak-official-indexed.txt",
+        "sha256": "701c50076ec113503364162794c54bf5dfd81341667d9acd00625774e8ea5705",
+        "v1_declared_hash_matches": true
+      },
+      {
+        "state": "IL",
+        "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-declaration-menu-sources-sol-v1/proposal.json",
+        "sha256": "a27fbda9311ecc80f3941b91a32c7199a13f84cb0ab107c02234df25c0c7aa0e",
+        "v1_declared_hash_matches": true
+      },
+      {
+        "state": "KS",
+        "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-source-clarifications-root-v1/statute-capture.json",
+        "sha256": "aa66b475faa39e699441be307c6f27656c003ae7ff39cf48110010cff3213885",
+        "v1_declared_hash_matches": null
+      },
+      {
+        "state": "KS",
+        "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-source-clarifications-root-v1/county-capture.json",
+        "sha256": "f4103daa40dff99798e4e73a60a12a5aa6cfe9c36ca11e4b5389491be663c0b7",
+        "v1_declared_hash_matches": null
+      },
+      {
+        "state": "KS",
+        "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-declaration-followup-sol-v1/sources/ks-johnson-current.txt",
+        "sha256": "e07211056774b96a4086e01081009a3beb1e383ef724c30b2230496f00b430b9",
+        "v1_declared_hash_matches": true
+      },
+      {
+        "state": "MI",
+        "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-declaration-followup-sol-v1/sources/mi-current-state-list.txt",
+        "sha256": "3984db5f83f419016fd1d465489af82f6629ea8d489b9aa00e9e82cf69d0ec35",
+        "v1_declared_hash_matches": true
+      },
+      {
+        "state": "MT",
+        "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-MT-source-review-root-v1/primary-law-calendar-capture.json",
+        "sha256": "c7ccb7f311230caa12cae1d7b11504a74906576226681b15ea408df4ba98352a",
+        "v1_declared_hash_matches": null
+      },
+      {
+        "state": "NE",
+        "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-declaration-menu-sources-sol-v1/sources/ne-september-list.txt",
+        "sha256": "e955b27d2551d0d718b74a4bb5bbd63de060773df5a9c2e713dce1f7bd8b9d2e",
+        "v1_declared_hash_matches": true
+      },
+      {
+        "state": "TN",
+        "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-declaration-followup-sol-v1/sources/tn-writein-rule.txt",
+        "sha256": "ced7da7a3818949945063df4be489d57d48c77ae0caf73eed03732dd9561f53d",
+        "v1_declared_hash_matches": true
+      }
+    ]
+  },
+  "scope": "No repeat browsing, candidate inference, source admission, cutoff change, or model/input change."
+}

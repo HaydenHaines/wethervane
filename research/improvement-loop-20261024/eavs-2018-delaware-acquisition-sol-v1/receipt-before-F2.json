@@ -1,0 +1,129 @@
+{
+  "schema": "EAVS2018DelawareOfficialRawAcquisitionReceiptV1",
+  "status": "ORIGINAL_EAC_2018_V1_0_RAW_DATASET_ACQUIRED_DE_F1A",
+  "created_utc": "2026-10-25T10:49:39.650506+00:00",
+  "task_scope": "Public read-only acquisition and extraction; original EAC 2018 Delaware state brief or original EAC 2018 dataset raw source.",
+  "network_route": "Direct curl HTTPS GET to EAC official archive page and CSV assets; prior attempt used web reader that returned unsupported CSV/XLSX. No credentials or external contacts.",
+  "files": [
+    {
+      "path": "research/improvement-loop-20261024/eavs-2018-delaware-acquisition-sol-v1/raw/eac-studies.html",
+      "url": "https://www.eac.gov/research-and-data/studies-and-reports",
+      "method": "GET",
+      "http_status": 200,
+      "retrieved_utc": "2026-10-25T10:48:32.175902+00:00",
+      "content_type": "text/html",
+      "representation": "original HTTP response body bytes",
+      "bytes": 152349,
+      "sha256": "4835a5a4610406f48c58120194a7063773eea99d403ccf0a4d6dea515424cdce",
+      "response_headers_path": "research/improvement-loop-20261024/eavs-2018-delaware-acquisition-sol-v1/raw/eac-studies.headers",
+      "response_headers_bytes": 649,
+      "response_headers_sha256": "1feb0391d11e99c12798a2cd022237f807bd85fcd52226310543c518e750c818"
+    },
+    {
+      "path": "research/improvement-loop-20261024/eavs-2018-delaware-acquisition-sol-v1/raw/eac-2018-v1-0.csv",
+      "url": "https://www.eac.gov/sites/default/files/eac_assets/1/6/EAVS_2018_for_Public_Release_nolabel.csv",
+      "method": "GET",
+      "http_status": 200,
+      "retrieved_utc": "2026-10-25T10:47:53.159915+00:00",
+      "content_type": "text/csv",
+      "representation": "original HTTP response body bytes",
+      "bytes": 23398381,
+      "sha256": "c524c58cb324713196b127ecc9c9ea48adb1060c7c72fd586b448e207470d3e4",
+      "response_headers_path": "research/improvement-loop-20261024/eavs-2018-delaware-acquisition-sol-v1/raw/eac-2018-v1-0.headers",
+      "response_headers_bytes": 468,
+      "response_headers_sha256": "018f4d0c2a03250c0ca71df713d74ff2eb7740f80bf2daf830609e72ed8ad2f4"
+    },
+    {
+      "path": "research/improvement-loop-20261024/eavs-2018-delaware-acquisition-sol-v1/raw/eac-2018-v1-3.csv",
+      "url": "https://www.eac.gov/sites/default/files/Research/EAVS_2018_for_Public_Release_Updates3.csv",
+      "method": "GET",
+      "http_status": 200,
+      "retrieved_utc": "2026-10-25T10:47:54.919960+00:00",
+      "content_type": "text/csv",
+      "representation": "original HTTP response body bytes",
+      "bytes": 33766253,
+      "sha256": "ae2e763c01ed091e0f6b7b688603a951141f03224f1ab247a67d0af5d17e2364",
+      "response_headers_path": "research/improvement-loop-20261024/eavs-2018-delaware-acquisition-sol-v1/raw/eac-2018-v1-3.headers",
+      "response_headers_bytes": 468,
+      "response_headers_sha256": "89b8249ed7d75c2ff35283fa0a48ceac9a2296d08f0dd6099af0a193a24e3eb5"
+    },
+    {
+      "path": "research/improvement-loop-20261024/eavs-2018-delaware-acquisition-sol-v1/raw/eac-codebook.xlsx",
+      "url": "https://www.eac.gov/sites/default/files/eac_assets/1/6/2018_EAVS_Codebook.xlsx",
+      "method": "GET",
+      "http_status": 200,
+      "retrieved_utc": "2026-10-25T10:48:36.648015+00:00",
+      "content_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "representation": "original HTTP response body bytes",
+      "bytes": 43611,
+      "sha256": "1d30d68025e51d933153034ae328b1a65b5dc30891bdae9022eec9b68971a3dc",
+      "response_headers_path": "research/improvement-loop-20261024/eavs-2018-delaware-acquisition-sol-v1/raw/eac-codebook.headers",
+      "response_headers_bytes": 522,
+      "response_headers_sha256": "95d67e038ba6f494c889fb042b9b211e7c67aa692dc4a25e24f34a52ff4b3d05"
+    },
+    {
+      "path": "research/improvement-loop-20261024/eavs-2018-delaware-acquisition-sol-v1/raw/eac-de-brief-404.html",
+      "url": "https://www.eac.gov/sites/default/files/eac_assets/1/6/EAVS_2018_Data_Brief_DE.pdf",
+      "method": "GET",
+      "http_status": 404,
+      "retrieved_utc": "2026-10-25T10:49:15.227978+00:00",
+      "content_type": "text/html (HTTP 404 response)",
+      "representation": "original HTTP response body bytes",
+      "bytes": 59419,
+      "sha256": "2e4021823fa09ad5200c52ee359002827df12304a9f21b74519b8dbd63824dd5",
+      "response_headers_path": "research/improvement-loop-20261024/eavs-2018-delaware-acquisition-sol-v1/raw/eac-de-brief-404.headers",
+      "response_headers_bytes": 631,
+      "response_headers_sha256": "35619cf0ad9b6f689f7451ca05cfd023ddddceb81b1bd5bf606116b40be8d8de"
+    }
+  ],
+  "extraction": {
+    "path": "research/improvement-loop-20261024/eavs-2018-delaware-acquisition-sol-v1/extraction.json",
+    "sha256": "6b8ad835ab6345d0395769a0a2f31adc8d6bef81c27058568c4d506575af9ab0",
+    "script_path": "research/improvement-loop-20261024/eavs-2018-delaware-acquisition-sol-v1/extract.py",
+    "script_sha256": "6c23ca1421f5148da4e105b86b43fad5c84d11e243edf46eea28db017577b246",
+    "selected_50_brief_panel_path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/eavs-2018-source-sol-v1/state-f1a-source-rows.json",
+    "selected_50_brief_panel_sha256": "c56e25352fb4807b717afc777ef2286b0779f22770b073f731bfe58c6048608a",
+    "source_question": "F1a",
+    "codebook_location": "2018_EAVS_Codebook.xlsx xl/worksheets/sheet1.xml row 291: F1a, Numeric, Participation: Total",
+    "delaware_jurisdictions": [
+      {
+        "FIPSCode": "1000100000",
+        "Jurisdiction_Name": "KENT COUNTY",
+        "State_Abbr": "DE",
+        "F1a_literal": "60230"
+      },
+      {
+        "FIPSCode": "1000300000",
+        "Jurisdiction_Name": "NEW CASTLE COUNTY",
+        "State_Abbr": "DE",
+        "F1a_literal": "212978"
+      },
+      {
+        "FIPSCode": "1000500000",
+        "Jurisdiction_Name": "SUSSEX COUNTY",
+        "State_Abbr": "DE",
+        "F1a_literal": "93342"
+      }
+    ],
+    "delaware_f1a_sum": 366550,
+    "delaware_missing_or_negative_f1a_literals": {},
+    "version_1_0_50_brief_exact_matches": 50,
+    "version_1_3_50_brief_exact_matches": 50,
+    "version_1_0_vs_1_3_delaware_rows_identical": true
+  },
+  "archive_provenance": {
+    "version_1_0_label": "EAC archive labels dataset Version 1.0 released June 27, 2019; current archived path returns 200 text/csv.",
+    "version_1_3_label": "EAC archive labels dataset Version 1.3 released July 15, 2020; current archived path returns 200 text/csv.",
+    "delaware_brief": "EAC 2018 state-brief archive lacks a Delaware link; expected same-pattern DE PDF route returns HTTP 404. No Delaware brief bytes acquired.",
+    "initial_release_byte_identity": "Current retrieval and archive release label do not prove these exact hosted bytes existed on June 27, 2019; HTTP Last-Modified reflects later site hosting."
+  },
+  "interpretation": "The DE 366,550 F1a is directly observed from original-question EAC 2018 v1.0 public-release dataset, with three reported Delaware county rows and exact numeric agreement between dataset state aggregates and all 50 acquired EAC 2018 briefs. This resolves the numeric source-question link without substituting the WA report.",
+  "limits": [
+    "The Delaware 2018 one-page brief remains absent; this is raw official EAC dataset evidence.",
+    "F1a is original 2018 reported voter participation, not guaranteed physical turnout or later cast-and-counted quantity.",
+    "Within-state completeness and jurisdiction-level reporting quality were not established by this extraction.",
+    "Brief publication/revision dates and initial-cutoff byte availability remain unproven.",
+    "No source adoption, owner/report update, model fit, scoring, or statistical adapter mutation was performed."
+  ],
+  "support_admission_performed": false
+}

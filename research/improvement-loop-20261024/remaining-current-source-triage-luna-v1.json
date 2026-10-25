@@ -1,0 +1,161 @@
+{
+  "schema": "RemainingCurrentSenateSourceTriageLunaV1",
+  "as_of": "2026-10-25",
+  "purpose": "Bounded read-only source triage for the seven still-unsupported 2026 Senate settings requested. Existing evidence is pinned; no source admission or input/model changes are proposed.",
+  "inputs_reviewed": [
+    {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/checkpoint-root-v32.json",
+      "sha256": "2a70b30d2e55aebdd16026c6ce7a3f2584ef92207b08d241b25017d44cd32f37"
+    },
+    {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-menu-followup-sol-v2/receipt.json",
+      "sha256": "3f5e9430e0e4ddd34274d0799a7486b471b1deb2cc883ef84f3c3feb9dfa46d3"
+    },
+    {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-menu-followup-sol-v3/receipt.json",
+      "sha256": "b9613cf83a462661022bbdd886ff77a634ee0e1b7efc4ac514dd1504fa1d97fd"
+    },
+    {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-source-clarifications-root-v1/KS-deadline-clarification.json",
+      "sha256": "c397cfa84affde1e920f6bf7b317882eef0bf413e860fc897fe728b9e63d74f7"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/checkpoints/shared-official-sources-v2.json",
+      "sha256": "793ba836ad6d1c6ae6b99b35f661ffa81342e334677da1a38610b28e3a3ddef6"
+    }
+  ],
+  "classification_key": [
+    "original_public_payload_attempt",
+    "future_deadline_or_list_event",
+    "scientific_or_rule_adjudication",
+    "unclear"
+  ],
+  "states": [
+    {
+      "state": "AK",
+      "classification": "future_deadline_or_list_event",
+      "original_evidence": "Official indexed mixed candidate page has two United States Senator rows marked Certified, but direct page response and section/election binding were not authenticated. This supports two leads only; not admitted eligibility or closure.",
+      "original_source_pins": [
+        {
+          "url": "https://www.elections.alaska.gov/election-candidates/",
+          "local_capture": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-declaration-menu-sources-sol-v1/sources/ak-official-indexed.txt",
+          "sha256": "701c50076ec113503364162794c54bf5dfd81341667d9acd00625774e8ea5705"
+        }
+      ],
+      "proposed_claim": "After the official Oct. 29, 2026 5 p.m. Alaska-time write-in filing deadline, retrieve the official election candidates source and bind the complete Senate rows to the 2026 general election, including write-in status. The deadline is still future as of this triage.",
+      "next_action_that_changes_evidence": "On/after Oct. 29, reacquire original official candidates response and official 2026 candidate calendar; preserve event/section identifiers, full Senate result scope, status and retrieval time."
+    },
+    {
+      "state": "IL",
+      "classification": "original_public_payload_attempt",
+      "original_evidence": "Indexed official general ElectionID 71 table reportedly has Write-In and status columns, three active printed Senate rows, and Tyrone Muhammad marked Removed. Direct request returned 403; neither county declaration coverage nor statewide write-in completeness is established.",
+      "original_source_pins": [
+        {
+          "url": "https://www.elections.il.gov/",
+          "note": "Official Illinois State Board of Elections site; ElectionID 71 general table is referenced in prior indexed evidence, but exact direct request URL/client parameters were not authenticated in reviewed local records."
+        },
+        {
+          "local_capture": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-declaration-menu-sources-sol-v1/proposal.json",
+          "sha256": "a27fbda9311ecc80f3941b91a32c7199a13f84cb0ab107c02234df25c0c7aa0e"
+        }
+      ],
+      "proposed_claim": "A shell/network retrieval of the official State Board of Elections ElectionID 71 general-election table is a concrete next attempt, but the direct URL and request parameters must be recovered from the official client first. The current indexed table may establish only what that table covers; county filing and write-in completeness still need explicit source documentation.",
+      "next_action_that_changes_evidence": "Retrieve the official page/client and recover the ElectionID 71 request parameters, then fetch and save original response bytes through a working shell network with request and scope metadata. Do not treat blank write-in cells as zero."
+    },
+    {
+      "state": "KS",
+      "classification": "original_public_payload_attempt",
+      "original_evidence": "Current statute and county notice establish a fourth-Monday deadline. Clarification resolves the 2026 date as Oct. 12 (not Oct. 5); deadline passage does not prove zero declarations. Johnson/Sedgwick current ordinary candidate pages are not a complete write-in list.",
+      "original_source_pins": [
+        {
+          "url": "https://www.kslegislature.gov/li/m/statute/025_000_0000_chapter/025_003_0000_article/025_003_0005_section/025_003_0005_k.pdf",
+          "local_capture": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-source-clarifications-root-v1/statute-capture.json"
+        },
+        {
+          "url": "https://www.hvcoksvote.gov/2026-candidate-information",
+          "local_capture": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-source-clarifications-root-v1/county-capture.json"
+        },
+        {
+          "url": "https://www.jocoelection.org/candidates-elected-officials/candidates",
+          "local_capture": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-declaration-followup-sol-v1/sources/ks-johnson-current.txt",
+          "sha256": "e07211056774b96a4086e01081009a3beb1e383ef724c30b2230496f00b430b9"
+        }
+      ],
+      "proposed_claim": "The missing evidence is a post-deadline official SOS Senate affidavit/certification list or a county notice explicitly reproducing the complete statewide federal list. No zero-write-in claim is supported.",
+      "next_action_that_changes_evidence": "Attempt retrieval of the official SOS Senate affidavit/certification payload after the Oct. 12 deadline using the official linked client/page and a working shell network; record the complete scope and original bytes."
+    },
+    {
+      "state": "MI",
+      "classification": "unclear",
+      "original_evidence": "Official state GEN2026 working report has six retained Senate nominees; Macomb Sep. 3 and Wayne Sep. 10 lists predate the Oct. 23 deadline. The state report has no Write entries and no declaration-type coverage statement. A current report page exists, but its coverage cannot be inferred from blank rows.",
+      "original_source_pins": [
+        {
+          "url": "https://mi-boe.entellitrak.com/etk-mi-boe-prod/page.request.do?electionType=GEN&electionYear=2026&page=page.miboePublicReport",
+          "local_capture": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-declaration-followup-sol-v1/sources/mi-current-state-list.txt",
+          "sha256": "3984db5f83f419016fd1d465489af82f6629ea8d489b9aa00e9e82cf69d0ec35"
+        },
+        {
+          "url": "https://www.michigan.gov/sos/-/media/Project/Websites/sos/Elections/Ballot-Access/FC-GDE-10-Filing-for-Office-US-Senator.pdf",
+          "use": "Official Oct. 23 4 p.m. deadline guide; rule only, not a declaration list."
+        }
+      ],
+      "proposed_claim": "Current state report semantics and complete post-deadline declaration coverage remain unresolved. A report payload alone changes evidence only if its fields/documentation establish write-in declaration inclusion.",
+      "next_action_that_changes_evidence": "Find the post-Oct. 23 BOE or county federal declaration list with an explicit coverage description, or the state report's original payload/schema documentation establishing write-in coverage."
+    },
+    {
+      "state": "MT",
+      "classification": "scientific_or_rule_adjudication",
+      "original_evidence": "Current MCA 13-10-211 sets the ordinary deadline 90 days before the election and permits late declarations only where, after that deadline, an opposing candidate dies or is charged with a felony. The official filing lead has Jami Dee Woodman filed Aug. 7, after the Aug. 5 ordinary deadline; no qualifying exception/adjudication is acquired. Four printed people remain retained; Woodman stays held.",
+      "original_source_pins": [
+        {
+          "url": "https://mca.legmt.gov/bills/MCA/title_0130/chapter_0100/part_0020/section_0110/0130-0100-0020-0110.html",
+          "local_capture": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-MT-source-review-root-v1/primary-law-calendar-capture.json"
+        },
+        {
+          "url": "https://candidatefiling.mt.gov/candidatefiling/CandidateList.aspx?e=450002987",
+          "use": "Official Federal General 2026 candidate list; portal record is a filing lead, not proof of qualification."
+        }
+      ],
+      "proposed_claim": "Resolving Woodman's eligible write-in status requires the official exception basis and filing/acceptance adjudication, or a definitive official Senate qualified-write-in record. A late FILED label alone is insufficient.",
+      "next_action_that_changes_evidence": "Retrieve the official filing record/status and any official notice applying the statutory exception to the Senate contest; preserve the exact decision language and its source."
+    },
+    {
+      "state": "NE",
+      "classification": "future_deadline_or_list_event",
+      "original_evidence": "The official Sep. 11 statewide general candidate filing list predates the Oct. 23 write-in deadline. A Douglas County notice is explicitly for candidates appearing on the general ballot and does not cover write-in affidavits. Five Senate names remain preserved; no absence inference is supported.",
+      "original_source_pins": [
+        {
+          "url": "https://sos.nebraska.gov/sites/default/files/doc/elections/2026/Final_Statewide_General_Candidate_Filing_List_9.11.26.pdf",
+          "local_capture": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-declaration-menu-sources-sol-v1/sources/ne-september-list.txt",
+          "sha256": "e955b27d2551d0d718b74a4bb5bbd63de060773df5a9c2e713dce1f7bd8b9d2e"
+        },
+        {
+          "url": "https://sos.nebraska.gov/elections",
+          "note": "Official SOS elections landing page; exact post-deadline candidate-list payload/page is not pinned in reviewed evidence."
+        }
+      ],
+      "proposed_claim": "The next potentially informative evidence is an updated post-Oct. 23 statewide qualified write-in list or a source explicitly certifying complete Senate write-in coverage. Its publication date is not established.",
+      "next_action_that_changes_evidence": "Recheck the official SOS candidate filing page for a post-deadline list and retrieve original bytes plus election/office/status scope; do not use ordinary candidate notices to close write-in support."
+    },
+    {
+      "state": "TN",
+      "classification": "unclear",
+      "original_evidence": "Official Nashville rule confirms a timely certificate requirement and excludes same-office primary losers, but is not a 2026 named roster. Accessible ordinary candidate lists do not establish qualified write-in coverage; prior state/alternate-county URLs were inaccessible.",
+      "original_source_pins": [
+        {
+          "url": "https://www.nashville.gov/departments/elections/candidates/write-candidates",
+          "local_capture": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-declaration-followup-sol-v1/sources/tn-writein-rule.txt",
+          "sha256": "ced7da7a3818949945063df4be489d57d48c77ae0caf73eed03732dd9561f53d"
+        }
+      ],
+      "proposed_claim": "The specific county/Coordinator source that holds a complete 2026 federal write-in certificate list is not established from reviewed evidence; do not project Nashville's rule page into a statewide roster.",
+      "next_action_that_changes_evidence": "Locate an official Tennessee Coordinator of Elections or county source explicitly listing qualified Nov. 3, 2026 U.S. Senate write-in certificates and complete statewide/county scope; fetch original source and its rule/date metadata."
+    }
+  ],
+  "explicit_limits": [
+    "State facts above summarize retrieved official-source evidence as represented in the pinned local records; rendered/indexed captures are not original server bytes unless stated.",
+    "Proposed claims and next actions are research directions, not newly verified candidate claims.",
+    "No statement that an unnamed or absent write-in equals zero.",
+    "No owner/admission/model changes; no runtime, scorer, or fit work."
+  ]
+}

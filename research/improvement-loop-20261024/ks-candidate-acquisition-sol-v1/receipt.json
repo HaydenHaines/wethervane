@@ -1,0 +1,121 @@
+{
+  "schema": "Kansas2026GeneralCandidateSearchAcquisitionReceiptV1",
+  "status": "OFFICIAL_ORDINARY_CANDIDATE_TABLE_ACQUIRED_WRITEIN_SCOPE_UNRESOLVED",
+  "created_utc": "2026-10-25T10:54:09.624767+00:00",
+  "reference_election": "2026 General, November 3, 2026",
+  "prior_get": {
+    "path": "research/improvement-loop-20261024/remaining-source-retrieval-root-v1/raw/ks-candidates.html",
+    "sha256": "cc5cd0e4df01127baa0b4c60a22ca1241e5622353c791dc8aa9f51246823545c",
+    "source_receipt": "research/improvement-loop-20261024/remaining-source-retrieval-root-v1/ne-ks-acquisition.json"
+  },
+  "sources": [
+    {
+      "path": "research/improvement-loop-20261024/ks-candidate-acquisition-sol-v1/raw/ks-get.html",
+      "url": "https://www.sos.ks.gov/elections/elections_upcoming_candidate.aspx",
+      "method": "GET",
+      "http_status": 200,
+      "retrieved_utc": "2026-10-25T10:52:27.288244+00:00",
+      "content_type": "text/html",
+      "bytes": 35462,
+      "sha256": "cc5cd0e4df01127baa0b4c60a22ca1241e5622353c791dc8aa9f51246823545c",
+      "response_headers_path": "research/improvement-loop-20261024/ks-candidate-acquisition-sol-v1/raw/ks-get.headers",
+      "response_headers_bytes": 511,
+      "response_headers_sha256": "c31fcf50812df57a2abcae8fa3c645ab2f426f9974e96033a49b193b17b40c79",
+      "representation": "original response bytes"
+    },
+    {
+      "path": "research/improvement-loop-20261024/ks-candidate-acquisition-sol-v1/raw/ks-post.html",
+      "url": "https://www.sos.ks.gov/elections/elections_upcoming_candidate.aspx",
+      "method": "POST",
+      "http_status": 200,
+      "retrieved_utc": "2026-10-25T10:52:32.325755+00:00",
+      "content_type": "text/html",
+      "bytes": 204862,
+      "sha256": "9bfd6657be01e1234bdbe6f8d37f7d0c158e061ff316b2a3756262d1313b16f9",
+      "response_headers_path": "research/improvement-loop-20261024/ks-candidate-acquisition-sol-v1/raw/ks-post.headers",
+      "response_headers_bytes": 512,
+      "response_headers_sha256": "775244333ab9a18749d698457a8801246a67b1ce8fba10bbf5e124c2580bda8b",
+      "representation": "original response bytes"
+    },
+    {
+      "path": "research/improvement-loop-20261024/ks-candidate-acquisition-sol-v1/raw/ks-25-305.html",
+      "url": "https://kslegislature.gov/b2025_26/laws/025_000_0000_chapter/025_003_0000_article/025_003_0005_section/025_003_0005_k/",
+      "method": "GET",
+      "http_status": 200,
+      "retrieved_utc": "2026-10-25T10:53:25.392853+00:00",
+      "content_type": "text/html",
+      "bytes": 58842,
+      "sha256": "30f15c69ff665d2d5fec433d181dca013ae40e459bb422c5ea0f6ea8656816f3",
+      "response_headers_path": "research/improvement-loop-20261024/ks-candidate-acquisition-sol-v1/raw/ks-25-305.headers",
+      "response_headers_bytes": 937,
+      "response_headers_sha256": "00369bcb8fce973ce597ab7967757aba30c35d4e82fc9d1a46bad9bd2a6aa855",
+      "representation": "original response bytes"
+    }
+  ],
+  "request_contract": {
+    "source": "Official public form frmMain in GET response",
+    "action": "./elections_upcoming_candidate.aspx",
+    "method": "POST",
+    "content_type": "application/x-www-form-urlencoded",
+    "fields": [
+      "__VIEWSTATE",
+      "__VIEWSTATEGENERATOR",
+      "__EVENTVALIDATION",
+      "ddlElections",
+      "btnSubmit"
+    ],
+    "election_selector": {
+      "name": "ddlElections",
+      "value": "36",
+      "label": "2026 General"
+    },
+    "submit": {
+      "name": "btnSubmit",
+      "value": "Submit"
+    },
+    "exact_body_path": "research/improvement-loop-20261024/ks-candidate-acquisition-sol-v1/ks-post-body.txt",
+    "exact_body_bytes": 942,
+    "exact_body_sha256": "ff089ba63a8c0127b515579e8492370424c7807a955d519bb6b2026e916cb846",
+    "access": "public read-only search; no account, credentials, filing, or contact"
+  },
+  "extraction": {
+    "path": "research/improvement-loop-20261024/ks-candidate-acquisition-sol-v1/extraction.json",
+    "sha256": "2d65d25912a196c2d536bbf95f62556fd96905ec1e08a6a0aae4294b64276edc",
+    "script_path": "research/improvement-loop-20261024/ks-candidate-acquisition-sol-v1/extract.py",
+    "script_sha256": "c0c6aba978c4bd43d10d88617dd09137aacc4352678d8924107e598344a6e438",
+    "visible_table_rows": 362,
+    "senate_rows": [
+      {
+        "candidate": "Adam Hamilton",
+        "office": "United States Senate",
+        "party": "Democratic",
+        "date_filed": "05/29/2026"
+      },
+      {
+        "candidate": "Roger Marshall",
+        "office": "United States Senate",
+        "party": "Republican",
+        "date_filed": "01/22/2026"
+      },
+      {
+        "candidate": "David C Graham",
+        "office": "United States Senate",
+        "party": "Libertarian",
+        "date_filed": "05/12/2026"
+      }
+    ],
+    "has_explicit_writein_or_affidavit_term": false,
+    "has_table_pagination_control": false
+  },
+  "scope_evidence": {
+    "page_description": "Candidate table for primary or general national and state offices; page says table updates as candidates file valid petition or declaration of intention forms.",
+    "table_headers_include_writein_or_filing_status": false,
+    "current_law": "2026 Kansas Statutes 25-305(e) requires a U.S. Senate write-in affidavit filed with the Secretary of State by noon on the fourth Monday before the election.",
+    "post_deadline_affidavit_or_certification_roster_acquired": false,
+    "conclusion": "The three statewide ordinary candidate-list rows are observed. The table does not state whether it includes qualified write-ins; no zero-write-in declaration can be inferred."
+  },
+  "limit": "Returned table has 362 visible rows and no pagination control; that does not establish a complete universe of post-deadline write-in affidavits.",
+  "contact_or_address_normalization": false,
+  "support_admission_performed": false,
+  "owner_model_runtime_mutation": false
+}
