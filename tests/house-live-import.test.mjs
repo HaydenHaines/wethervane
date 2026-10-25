@@ -9,6 +9,7 @@ import test from "node:test";
 import { importHouseLive } from "../scripts/import_house_live.mjs";
 import { loadHouseLiveSitePublication, readHouseLiveAvailability } from "../lib/house-live-server.ts";
 import { makeHouseLiveCatalog, makeHouseLiveResult, SYNTHETIC_CONFIGURATIONS } from "./fixtures/house-live-fixtures.mjs";
+import { makeHouseLiveCombinedPlan } from "./fixtures/house-live-combined-plan.mjs";
 
 // Independent invented receipt construction: no fixture below asserts real review.
 const digest = bytes => createHash("sha256").update(bytes).digest("hex");
@@ -31,7 +32,8 @@ function geometry(results) {
       geometry: { type: "Polygon", coordinates: [[[x, y], [x + .5, y], [x + .5, y + .5], [x, y + .5], [x, y]]] } };
   }) };
 }
-async function fixture(t, { mutateResults, mutateCatalog, mutateReview, mutateGeography, mutateQualification } = {}) {
+async function fixture(t, { mutateResults, mutateCatalog, mutateReview, mutateGeography, mutateQualification,
+  predictionPlan, mutatePredictionPlan, mutatePredictionReceipt } = {}) {
   const base = await mkdtemp(join(tmpdir(), "house-live-offline-import-"));
   t.after(() => rm(base, { recursive: true, force: true }));
   const sourceRoot = join(base, "native"), reviewRoot = join(base, "operator");
@@ -42,7 +44,7 @@ async function fixture(t, { mutateResults, mutateCatalog, mutateReview, mutateGe
   await mkdir(join(sourceRoot, "private"));
   const written = spawnSync("python3", [fileURLToPath(new URL("./fixtures/house-live-joint-archive.py", import.meta.url))], {
     input: JSON.stringify({ destination: join(sourceRoot, jointPath), raceIds: results[0].joint_draws.ordered_race_ids,
-      rows: fourRows(), chains: 2 }), encoding: "utf8",
+      rows: fourRows(), chains: 2, ...(predictionPlan === "combined" ? { sourceRunLengths: [2, 2] } : {}) }), encoding: "utf8",
   });
   assert.equal(written.status, 0, written.stderr);
   const jointSha = digest(await readFile(join(sourceRoot, jointPath)));
@@ -58,12 +60,35 @@ async function fixture(t, { mutateResults, mutateCatalog, mutateReview, mutateGe
     limitations: [...results[0].qualification.limitations] };
   mutateQualification?.(qualification);
   catalog.qualification = await put(sourceRoot, catalog.qualification.path, qualification);
-  for (const result of results) {
+  const genericEvidence = await put(sourceRoot, "synthetic/qualification.json",
+    { schema: "InventedGenericQualificationEvidenceV1", note: "Invented evidence, with no prediction receipt or plan." });
+  const predictionEvidence = [];
+  for (const [index, result] of results.entries()) {
     result.qualification.publication_status = "reviewed";
     Object.assign(result.geography, geographyPin);
     result.geography.source_receipt = { ...sourceReceipt };
     Object.assign(result.joint_draws, { path: jointPath, sha256: jointSha });
     result.chamber.joint_draws_sha256 = jointSha;
+    result.qualification.evidence = [genericEvidence];
+    if (predictionPlan) {
+      const plan = makeHouseLiveCombinedPlan(result);
+      if (predictionPlan === "original") {
+        plan.schema = "HouseLivePredictionPlanV1";
+        plan.settings = { chains: 2, draws: 2, warmup: 1, seed: 2000 };
+        delete plan.source_runs;
+        delete plan.combination;
+      }
+      mutatePredictionPlan?.(plan, result, index);
+      const planPin = await put(sourceRoot, `evidence/local-${index}/frozen-law.json`, plan);
+      const receipt = { schema: "HouseLivePredictionReceiptV1", issued_at: result.issued_at,
+        configuration: { id: result.id, ...result.configuration }, status: "passed",
+        plan: { path: `research/never-follow-this/${result.id}/plan.json`, sha256: planPin.sha256 },
+        elapsed_seconds: 1, outputs: [{ path: `research/never-follow-this/${result.id}/joint-draws.npz`, sha256: jointSha }] };
+      mutatePredictionReceipt?.(receipt, result, index);
+      const receiptPin = await put(sourceRoot, `evidence/local-${index}/prediction-receipt.json`, receipt);
+      result.qualification.evidence.push(receiptPin, planPin);
+      predictionEvidence.push({ plan, planPin, receipt, receiptPin });
+    }
   }
   mutateResults?.(results, catalog);
   for (const [index, result] of results.entries()) catalog.entries[index].result =
@@ -86,7 +111,7 @@ async function fixture(t, { mutateResults, mutateCatalog, mutateReview, mutateGe
   const reviewPin = await put(reviewRoot, "decisions/release.json", review);
   await writeFile(join(sourceRoot, "private/conditional-shares.npz"), "must never be copied");
   await writeFile(join(sourceRoot, "private/training-bank.npz"), "must never be copied");
-  return { base, catalog, results, review, geographyPin, qualification,
+  return { base, catalog, results, review, geographyPin, qualification, genericEvidence, predictionEvidence,
     options: { sourceRoot, catalog: catalogPin, reviewRoot, review: reviewPin,
       geographySource: { name: "Invented grid", url: "https://example.invalid/grid", note: "Synthetic geometry only." },
       outputDirectory: join(base, "new-release") } };
@@ -157,7 +182,7 @@ test("imports all 16 invented native results byte for byte; site loads every cho
   assert.deepEqual(await readFile(join(options.outputDirectory, options.catalog.path)), before);
   assert.deepEqual(await readFile(join(options.sourceRoot, options.catalog.path)), before);
   for (const pin of [options.catalog, site.catalog.source_policy, site.catalog.qualification, site.qualification.numerical_review, site.geographyPin,
-    site.results[0].geography.source_receipt, ...site.catalog.entries.map(entry => entry.result)]) {
+    site.results[0].geography.source_receipt, site.genericEvidence, ...site.catalog.entries.map(entry => entry.result)]) {
     assert.deepEqual(await readFile(join(options.outputDirectory, pin.path)), await readFile(join(options.sourceRoot, pin.path)));
   }
   assert.deepEqual(await readFile(join(options.outputDirectory, manifest.review.path)),
@@ -172,7 +197,103 @@ test("imports all 16 invented native results byte for byte; site loads every cho
   const paths = await readdir(options.outputDirectory, { recursive: true });
   assert.equal(paths.filter(path => path.endsWith(".npz")).length, 0);
   assert.equal(paths.includes("private"), false);
-  assert.equal(paths.filter(path => /\.(?:geo)?json$/.test(path)).length, 24);
+  assert.equal(paths.filter(path => /\.(?:geo)?json$/.test(path)).length, 25);
+});
+
+test("combined archives use the authenticated local plan selected by receipt SHA and retain its exact evidence bytes", async t => {
+  const site = await fixture(t, { predictionPlan: "combined" });
+  const imported = await importHouseLive(site.options);
+  assert.equal(imported.results, 16);
+  assert.equal(imported.jointRowsChecked, 64);
+  for (const { planPin, receiptPin } of site.predictionEvidence) {
+    for (const pin of [planPin, receiptPin]) assert.deepEqual(
+      await readFile(join(site.options.outputDirectory, pin.path)), await readFile(join(site.options.sourceRoot, pin.path)));
+  }
+  for (const entry of site.catalog.entries) {
+    const publication = await loadHouseLiveSitePublication(site.options.outputDirectory, entry.id);
+    assert.equal(publication.view.run.id, entry.id);
+    assert.deepEqual(await readFile(join(site.options.outputDirectory, entry.result.path)),
+      await readFile(join(site.options.sourceRoot, entry.result.path)));
+  }
+  const paths = await readdir(site.options.outputDirectory, { recursive: true });
+  assert.equal(paths.some(path => path.endsWith(".npz")), false);
+  assert.equal(paths.includes("research"), false);
+  assert.equal(paths.includes("private"), false);
+  assert.deepEqual(await readHouseLiveAvailability(site.options.outputDirectory), { available: true });
+});
+
+test("original nine-member archives still accept an explicit authenticated original receipt and local plan", async t => {
+  const site = await fixture(t, { predictionPlan: "original" });
+  assert.equal((await importHouseLive(site.options)).results, 16);
+  assert.deepEqual(await readHouseLiveAvailability(site.options.outputDirectory), { available: true });
+});
+
+test("prediction receipt and local plan mappings cannot be missing or ambiguous", async t => {
+  const mutations = [
+    evidence => evidence.slice(0, -1),
+    evidence => [evidence[0], evidence[2]],
+    evidence => [...evidence, evidence[2]],
+    evidence => [...evidence, evidence[1]],
+  ];
+  for (const mutate of mutations) {
+    const site = await fixture(t, { predictionPlan: "combined", mutateResults: results => {
+      results[15].qualification.evidence = mutate(results[15].qualification.evidence);
+    } });
+    await assert.rejects(importHouseLive(site.options), /missing or ambiguous local prediction receipt\/plan mapping/);
+    await absent(site.options.outputDirectory);
+  }
+  const original = await fixture(t, { predictionPlan: "original", mutateResults: results => {
+    results[15].qualification.evidence.pop();
+  } });
+  await assert.rejects(importHouseLive(original.options), /missing or ambiguous local prediction receipt\/plan mapping/);
+  await absent(original.options.outputDirectory);
+});
+
+test("combined receipt must bind the native configuration, passing status, original plan SHA and joint artifact SHA", async t => {
+  const mutations = [
+    receipt => { receipt.plan.sha256 = "a".repeat(64); },
+    receipt => { receipt.outputs[0].sha256 = "a".repeat(64); },
+    receipt => { receipt.outputs.push(receipt.outputs[0]); },
+    receipt => { receipt.configuration.id = "invented-wrong-run"; },
+    receipt => { receipt.status = "diagnostic_failure"; },
+  ];
+  for (const mutate of mutations) {
+    const site = await fixture(t, { predictionPlan: "combined", mutatePredictionReceipt: (receipt, _result, index) => {
+      if (index === 15) mutate(receipt);
+    } });
+    await assert.rejects(importHouseLive(site.options), /prediction receipt/);
+    await absent(site.options.outputDirectory);
+  }
+});
+
+test("combined plan bytes, configuration, chain counts and source layout are authenticated before raw checks", async t => {
+  const mutations = [
+    plan => { plan.configuration.polling = "none"; },
+    plan => { delete plan.configuration.id; },
+    plan => { plan.settings.chains = 4; },
+    plan => { plan.settings.draws = 3; },
+    plan => { plan.source_runs[1].joint_draw_offset = 0; },
+    plan => { plan.source_runs[1].settings.seed = plan.source_runs[0].settings.seed; },
+  ];
+  for (const mutate of mutations) {
+    const site = await fixture(t, { predictionPlan: "combined", mutatePredictionPlan: (plan, _result, index) => {
+      if (index === 15) mutate(plan);
+    } });
+    await assert.rejects(importHouseLive(site.options), /prediction plan configuration or chain\/draw counts|combined source chain\/draw lineage/);
+    await absent(site.options.outputDirectory);
+  }
+  const corrupted = await fixture(t, { predictionPlan: "combined" });
+  await appendFile(join(corrupted.options.sourceRoot, corrupted.predictionEvidence[15].planPin.path), " ");
+  await assert.rejects(importHouseLive(corrupted.options), /fingerprint mismatch/);
+  await absent(corrupted.options.outputDirectory);
+});
+
+test("combined raw arrays cannot be admitted as an original archive when explicit prediction evidence is absent", async t => {
+  const site = await fixture(t, { predictionPlan: "combined", mutateResults: results => {
+    for (const result of results) result.qualification.evidence = result.qualification.evidence.slice(0, 1);
+  } });
+  await assert.rejects(importHouseLive(site.options), /decoder failed/);
+  await absent(site.options.outputDirectory);
 });
 
 test("changed source bytes and changed operator-review bytes prevent a destination", async t => {

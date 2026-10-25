@@ -1,18 +1,21 @@
 /** Offline archive verification only. Never import this module into a web route or browser bundle. */
 import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
-import { parseHouseLiveResult, type HouseLiveResult } from "./house-live-result.ts";
+import { houseLivePin, parseHouseLiveResult, type HouseLivePin, type HouseLiveResult } from "./house-live-result.ts";
 import { checkHouseLiveJointRows, type HouseLiveJointCheck, type HouseLiveJointCheckOptions } from "./house-live-joint-check.ts";
 
 export interface HouseLiveJointArchiveOptions extends HouseLiveJointCheckOptions {
   /** Offline tool executable; no Python or raw matrix is required on SiteGround. */
   pythonExecutable?: string;
   signal?: AbortSignal;
+  /** Explicit local evidence pin. No original research path is inferred or followed. */
+  combinedPlan?: HouseLivePin;
 }
 export interface HouseLiveJointArchiveCheck extends HouseLiveJointCheck {
   artifactSha256: string;
-  archiveFormat: "house_live_npz_chain_major_v1";
+  archiveFormat: "house_live_npz_chain_major_v1" | "house_live_npz_combined_chain_major_v1";
   seatQuantileConvention: "inverse_cdf" | "linear";
+  combinedPlanSha256?: string;
 }
 
 /**
@@ -27,6 +30,8 @@ export async function checkHouseLiveJointArchive(directory: string, input: House
   if (!options || !["inverse_cdf", "linear"].includes(options.seatQuantileConvention))
     throw Error("A reviewed seat-quantile convention is required for archive checking.");
   if (typeof directory !== "string" || !directory.length) throw Error("An explicit archive source directory is required.");
+  if (options.combinedPlan !== undefined && !houseLivePin(options.combinedPlan))
+    throw Error("A valid explicit local combined-plan pin is required.");
   const decoder = fileURLToPath(new URL("../scripts/decode_house_live_joint.py", import.meta.url));
   const child = spawn(options.pythonExecutable ?? "python3", [decoder], {
     stdio: ["pipe", "pipe", "pipe"], signal: options.signal,
@@ -41,7 +46,9 @@ export async function checkHouseLiveJointArchive(directory: string, input: House
   child.stdin.end(JSON.stringify({ schema: "HouseLiveJointDecodeRequestV1", directory,
     artifact: { path: result.joint_draws.path, sha256: result.joint_draws.sha256 },
     count: result.joint_draws.count, chainCount: result.joint_draws.chain_count,
-    orderedRaceIds: result.joint_draws.ordered_race_ids }));
+    orderedRaceIds: result.joint_draws.ordered_race_ids,
+    ...(options.combinedPlan === undefined ? {} : { combinedPlan: options.combinedPlan,
+      configuration: { id: result.id, ...result.configuration } }) }));
 
   async function* rows(): AsyncGenerator<number[]> {
     let remainder = Buffer.alloc(0);
@@ -62,7 +69,9 @@ export async function checkHouseLiveJointArchive(directory: string, input: House
   try {
     const checked = await checkHouseLiveJointRows(result, rows(), options);
     return { ...checked, artifactSha256: result.joint_draws.sha256,
-      archiveFormat: "house_live_npz_chain_major_v1", seatQuantileConvention: options.seatQuantileConvention };
+      archiveFormat: options.combinedPlan ? "house_live_npz_combined_chain_major_v1" : "house_live_npz_chain_major_v1",
+      seatQuantileConvention: options.seatQuantileConvention,
+      ...(options.combinedPlan ? { combinedPlanSha256: options.combinedPlan.sha256 } : {}) };
   } finally {
     // On a numerical mismatch the reader stops early; terminate only our own helper.
     if (child.exitCode === null && child.signalCode === null) child.kill();

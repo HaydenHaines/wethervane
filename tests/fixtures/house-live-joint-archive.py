@@ -27,6 +27,13 @@ members = {
     "core_posterior_index": npy("<i8", (count,), integer([0] * count)),
     "national_z": npy("<f8", (count,), struct.pack("<" + "d" * count, *([0.0] * count))),
 }
+if "sourceRunLengths" in request:
+    lengths = request["sourceRunLengths"]
+    assert len(lengths) >= 2 and sum(lengths) == count
+    source_indices = [i for i, length in enumerate(lengths) for _ in range(length)]
+    local_ids = [i for length in lengths for i in range(length)]
+    members["source_run_index"] = npy("<i2", (count,), struct.pack("<" + "h" * count, *source_indices))
+    members["source_joint_draw_id"] = npy("<i8", (count,), integer(local_ids))
 with zipfile.ZipFile(request["destination"], "x", compression=zipfile.ZIP_DEFLATED) as archive:
     for name, data in members.items():
         archive.writestr(name + ".npy", data)

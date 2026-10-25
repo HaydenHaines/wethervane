@@ -51,7 +51,7 @@ function HouseLiveRaceDetail({ race, detailRef }: { race: HouseLiveRaceView; det
     plurality: "Plurality: the candidate with the most votes wins; the forecast reports that candidate’s group.",
     ranked_choice: "Ranked choice: voters rank candidates; the winner’s group is the forecast outcome.",
     majority_runoff: "Majority runoff: a candidate must meet the required majority or a runoff is held; the forecast reports the winner’s group.",
-    top_two_plurality: "Top two by plurality: the two leading candidates advance; the forecast reports the winning candidate’s group.",
+    top_two_plurality: "This general election follows a top-two primary; the forecast reports the winning candidate’s group.",
   } as const)[race.ruleFamily];
   const method = /pair/i.test(race.method)
     ? "A vote-share estimate is conditional on the two named candidates; the group win chances remain separate."
@@ -169,7 +169,7 @@ export default function HouseLiveResults({ view, catalog, geography, builderExpa
     <section className="hero">
       <div>
         <div className="eyebrow">2026 United States House · {view.races.length} current districts</div>
-        <h1>The <span className="chamber-name" data-chamber-outlook={outlook.party} style={{ color: outlook.color }} title={outlook.label}>House</span>,<br />in perspective.</h1>
+        <h1>The <span className="chamber-name" data-chamber-outlook={outlook.party} style={{ color: outlook.color }} title={outlook.party === "U" ? "Neither party reaches 218 seats in most simulated elections" : outlook.label}>House</span>,<br />in perspective.</h1>
         <p>{view.run.label}. Current forecast with its inputs, testing status, and limitations shown separately.</p>
         <details className="edition-inputs">
           <summary>Input and forecast times</summary>
@@ -223,7 +223,7 @@ export default function HouseLiveResults({ view, catalog, geography, builderExpa
       <div><div className="eyebrow">Current run evidence</div><h2 id="live-evidence-title">Inputs, computation, and review.</h2></div>
       <div className="method-content">
         <div><h3>Input status</h3><p>{statusLabel(view.qualification.inputStatus, "input")}. Source cutoffs are listed above.</p></div>
-        <div><h3>Numerical checks</h3><p>{statusLabel(view.qualification.numericalStatus, "numerical")}. {view.chamberPrecision ? `${view.jointDraws.count.toLocaleString()} simulated elections across ${view.jointDraws.chainCount} independent sampling runs. The largest estimated standard errors are ${view.chamberPrecision.maxSeatMeanMcse.toFixed(2)} seats for average seats and ${(view.chamberPrecision.maxControlMcse * 100).toFixed(1)} percentage points for control chances. Standard error measures variation from a finite simulation; it is separate from uncertainty about the election.` : "No chamber computation is available for this run."}</p></div>
+        <div><h3>Numerical checks</h3><p>{statusLabel(view.qualification.numericalStatus, "numerical")}. {view.chamberPrecision ? `${view.jointDraws.count.toLocaleString()} simulated elections across ${view.jointDraws.chainCount} independent sampling runs. The largest estimated standard errors are ${view.chamberPrecision.maxSeatMeanMcse.toFixed(2)} seats for average seats and ${(view.chamberPrecision.maxControlMcse * 100).toFixed(1)} percentage points for control chances. Standard error measures variation from a finite simulation; it is separate from uncertainty about the election.` : "A qualified chamber summary is unavailable for this run."}</p></div>
         <div><h3>Publication review and forecast skill</h3><p>{statusLabel(view.qualification.publicationStatus, "publication")}. Forecast skill: {statusLabel(view.qualification.forecastSkill, "skill")}. Numerical checks do not by themselves establish forecast accuracy.</p></div>
       </div>
       <h3>Model limitations</h3>

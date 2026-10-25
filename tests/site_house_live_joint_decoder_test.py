@@ -4,6 +4,7 @@ from __future__ import annotations
 import hashlib
 import json
 import math
+import copy
 import struct
 import subprocess
 import sys
@@ -20,6 +21,8 @@ RACE_IDS = [f"2026:{'ABCDE'[index // 100]}A-{index % 100:02d}:house:regular"
             for index in range(435)]
 ROWS = [bytes([0] * 435), bytes([1] * 434 + [2]),
         bytes([2] + [0] * 434), bytes([1] * 435)]
+CONFIGURATION = {"id": "invented-current-fundamentals", "base": "fundamentals",
+                 "polling": "none", "uncertainty": "standard"}
 
 
 def npy(dtype: str, shape: tuple[int, ...], payload: bytes, version: int = 1) -> bytes:
@@ -50,6 +53,33 @@ def members(version: int = 1, rows: list[bytes] = ROWS) -> dict[str, bytes]:
     }
 
 
+def combined_members() -> dict[str, bytes]:
+    parts = members()
+    parts["source_run_index.npy"] = npy("<i2", (4,), struct.pack("<hhhh", 0, 0, 1, 1))
+    parts["source_joint_draw_id.npy"] = npy("<i8", (4,), struct.pack("<qqqq", 0, 1, 0, 1))
+    return parts
+
+
+def combined_plan() -> dict:
+    sources = []
+    for index in range(2):
+        directory = f"predictions-v{index + 1}/invented"
+        prefix = f"research/house-live-20261025/{directory}"
+        sources.append({"directory": directory,
+                        "receipt": {"path": f"{prefix}/receipt.json", "sha256": f"{index + 1:064x}"},
+                        "plan": {"path": f"{prefix}/plan.json", "sha256": f"{index + 3:064x}"},
+                        "settings": {"chains": 1, "draws": 2, "warmup": 0, "seed": 100 + index},
+                        "joint_draw_offset": 2 * index, "predictive_chain_offset": index})
+    return {"schema": "HouseLiveCombinedPredictionPlanV1", "issued_at": "2026-10-25T16:00:00Z",
+            "configuration": dict(CONFIGURATION), "pilot": False,
+            "settings": {"chains": 2, "draws": 2, "warmup_per_source": 0},
+            "source_runs": sources, "inputs": [row["receipt"] for row in sources],
+            "source": {"path": "research/house-live-20261025/combine_predictions.py", "sha256": "a" * 64},
+            "polling_error_scales": {name: .1 for name in ("independent", "cycle", "race", "house", "movement")},
+            "exact_electoral_rule_simulation": False, "source_2026_outcomes_loaded": False,
+            "combination": "All source rows retained in source order."}
+
+
 class JointDecoderTest(unittest.TestCase):
     def setUp(self) -> None:
         self.temporary = tempfile.TemporaryDirectory(prefix="house-joint-decoder-")
@@ -69,6 +99,15 @@ class JointDecoderTest(unittest.TestCase):
         return {"schema": "HouseLiveJointDecodeRequestV1", "directory": str(self.directory),
                 "artifact": artifact, "count": len(ROWS), "chainCount": 2,
                 "orderedRaceIds": RACE_IDS, **changes}
+
+    def plan_pin(self, plan: dict) -> dict:
+        path = self.directory / "combined-plan.json"
+        path.write_text(json.dumps(plan))
+        return {"path": path.name, "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
+
+    def combined_request(self, artifact: dict, plan: dict | None = None) -> dict:
+        return self.request(artifact, combinedPlan=self.plan_pin(plan or combined_plan()),
+                            configuration=dict(CONFIGURATION))
 
     def run_decoder(self, request: dict) -> subprocess.CompletedProcess:
         return subprocess.run([sys.executable, str(DECODER)], input=json.dumps(request).encode(),
@@ -190,6 +229,62 @@ class JointDecoderTest(unittest.TestCase):
         path.write_bytes(raw)
         artifact["sha256"] = hashlib.sha256(raw).hexdigest()
         self.rejected(self.request(artifact), "encrypted or unsupported")
+
+    def test_combined_archive_preserves_source_identity(self) -> None:
+        artifact = self.archive(combined_members())
+        result = self.run_decoder(self.combined_request(artifact))
+        self.assertEqual(result.returncode, 0, result.stderr.decode())
+        self.assertEqual(result.stdout, b"".join(ROWS))
+        self.assertEqual(result.stderr, b"")
+        self.rejected(self.request(artifact), "exact nine original or eleven combined")
+        original = self.archive(members())
+        self.rejected(self.combined_request(original), "exact nine original or eleven combined")
+
+    def test_combined_provenance_arrays_and_plan_pin(self) -> None:
+        altered = combined_members()
+        altered["source_run_index.npy"] = npy("<i2", (4,), struct.pack("<hhhh", 0, 0, 0, 1))
+        self.rejected(self.combined_request(self.archive(altered)), "source-run or local-draw")
+        altered = combined_members()
+        altered["source_joint_draw_id.npy"] = npy("<i8", (4,), struct.pack("<qqqq", 0, 1, 2, 1))
+        self.rejected(self.combined_request(self.archive(altered)), "source-run or local-draw")
+        altered = combined_members()
+        altered["source_joint_draw_id.npy"] = npy("<i4", (4,), struct.pack("<iiii", 0, 1, 0, 1))
+        self.rejected(self.combined_request(self.archive(altered)), "dtype, shape, or order")
+
+        artifact = self.archive(combined_members())
+        request = self.combined_request(artifact)
+        request["combinedPlan"]["sha256"] = "0" * 64
+        self.rejected(request, "Combined plan fingerprint mismatch")
+        request = self.combined_request(artifact)
+        request["combinedPlan"]["path"] = "../combined-plan.json"
+        self.rejected(request, "Combined plan pin has an unsafe path")
+        request = self.combined_request(artifact)
+        (self.directory / "combined-plan.json").write_text("{}")
+        self.rejected(request, "Combined plan fingerprint mismatch")
+        request = self.combined_request(artifact)
+        request["configuration"]["id"] = "different-valid-id"
+        self.rejected(request, "configuration differs")
+
+    def test_combined_plan_requires_complete_independent_layout(self) -> None:
+        artifact = self.archive(combined_members())
+        bad = copy.deepcopy(combined_plan())
+        bad["source_runs"][1]["joint_draw_offset"] = 1
+        self.rejected(self.combined_request(artifact, bad), "layout or seed")
+        bad = copy.deepcopy(combined_plan())
+        bad["source_runs"][1]["predictive_chain_offset"] = 0
+        self.rejected(self.combined_request(artifact, bad), "layout or seed")
+        bad = copy.deepcopy(combined_plan())
+        bad["source_runs"][1]["settings"]["seed"] = 100
+        self.rejected(self.combined_request(artifact, bad), "layout or seed")
+        bad = copy.deepcopy(combined_plan())
+        bad["source_runs"][1]["settings"]["draws"] = 1
+        self.rejected(self.combined_request(artifact, bad), "layout or seed")
+        bad = copy.deepcopy(combined_plan())
+        bad["inputs"].pop()
+        self.rejected(self.combined_request(artifact, bad), "evidence pins differ")
+        bad = copy.deepcopy(combined_plan())
+        bad["settings"]["chains"] = 4
+        self.rejected(self.combined_request(artifact, bad), "total draw or chain layout")
 
 
 if __name__ == "__main__":

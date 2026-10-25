@@ -32,6 +32,7 @@ export interface HouseLiveSiteManifestV1 {
 export interface HouseLiveSiteReviewV1 {
   schema: "HouseLiveSiteReviewV1";
   decision: "publish";
+  /** Common winner encoding; the offline importer also authenticates combined-source lineage when present. */
   joint_format: "house_live_npz_chain_major_v1";
   seat_quantile_convention: "inverse_cdf" | "linear";
   catalog_sha256: string;
