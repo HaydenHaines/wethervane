@@ -1,0 +1,32 @@
+{
+  "schema": "MomentumCalibrationRefinementRootReviewV1",
+  "recorded_utc": "2026-10-25T06:56:53.906351+00:00",
+  "disposition": "accept_bounded_numerical_refinement",
+  "predecessor_output_review": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-calibration-results-review-sol-v1/receipt.json",
+    "sha256": "76e224ced1ccd4eec2a6a591a628db86312e8a7023f9e0f01b3aba9dbc7c4a19"
+  },
+  "original_session": 71863,
+  "original_terminal": true,
+  "original_must_not_restart": true,
+  "new_design": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/checkpoints/momentum-calibration-execution-design-v2.json",
+    "sha256": "dede87ca1843d8d98fd569effe3ddc81f84ccbb5111486ea3d1b19508b541f62"
+  },
+  "v2_manifest": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-calibration-execution-sol-v2/artifact-manifest.json",
+    "sha256": "583ca465e8fea568843486542ad8d85832585661919aae974bcfb5c103e67160"
+  },
+  "root_verified": {
+    "v1_manifest_entries": 18,
+    "v2_manifest_entries": 21,
+    "runner_tests_runtime_supplied_results_byte_identical": true,
+    "guard_delta_only_design_and_bindings_sha_constants": true,
+    "optimizer_delta_only_ftol": true,
+    "all_scientific_sources_and_gates_unchanged": true
+  },
+  "reason": "Independent saved-point/log audit confirms relative-objective termination before unchanged gradient gate. Tighten ftol identically across all six models/folds, with original starts and no new targets or scoring.",
+  "historical_refinement_launched": false,
+  "forecast_scored": false,
+  "promotion": false
+}

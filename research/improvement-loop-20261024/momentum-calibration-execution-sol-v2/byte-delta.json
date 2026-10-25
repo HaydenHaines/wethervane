@@ -1,0 +1,80 @@
+{
+  "schema": "MomentumCalibrationExecutionByteDeltaV2",
+  "predecessor_manifest": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-calibration-execution-sol-v1/artifact-manifest.json",
+    "sha256": "fcaccb33a483045e16d179ce5266370520db853f4c997cb3e0e5afcb4c991ef2"
+  },
+  "predecessor_all18_manifest_artifacts_unchanged": true,
+  "design_v1": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/checkpoints/momentum-calibration-execution-design-v1.json",
+    "sha256": "5c13a5d7552fdfe893bb0548a9205688c9a921a5d9faf2fd90147d5ff1cf5234"
+  },
+  "design_v2": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/checkpoints/momentum-calibration-execution-design-v2.json",
+    "sha256": "dede87ca1843d8d98fd569effe3ddc81f84ccbb5111486ea3d1b19508b541f62"
+  },
+  "byte_identity_checks": [
+    {
+      "path": "runner.py",
+      "v1_sha256": "629216a7b36282812d4e3fa131503d27e3d5b7dbc0798f80075d45a242f383f3",
+      "v2_sha256": "629216a7b36282812d4e3fa131503d27e3d5b7dbc0798f80075d45a242f383f3",
+      "byte_identical": true
+    },
+    {
+      "path": "test_runner.py",
+      "v1_sha256": "165039282f54d6a5999da08980df25e2847c90791e4af2cf9f6cbdc21327936b",
+      "v2_sha256": "165039282f54d6a5999da08980df25e2847c90791e4af2cf9f6cbdc21327936b",
+      "byte_identical": true
+    },
+    {
+      "path": "runtime.json",
+      "v1_sha256": "f78840fc8096c201e315ec62f95cb6485d208695bcdf2a8089910859cdfa651a",
+      "v2_sha256": "f78840fc8096c201e315ec62f95cb6485d208695bcdf2a8089910859cdfa651a",
+      "byte_identical": true
+    }
+  ],
+  "source_guard": {
+    "v1_sha256": "609be9247e1cfbc64f7c288c0de22e2233e9971667b3fadfd99458d2f140a136",
+    "v2_sha256": "bb2d315e9daf9dcc71e06fd913415ed926e36efba62c8b07772517ecdee46ead",
+    "only_changed_constants": [
+      "DESIGN_SHA",
+      "BINDINGS_SHA"
+    ],
+    "normalizing_those_two_constants_is_byte_identical": true
+  },
+  "source_binding_change_only_first_design_record": true,
+  "remaining7_source_records_and_snapshots_unchanged": true,
+  "scientific_design_fields_unchanged": [
+    "references",
+    "arms",
+    "unique_training_targets",
+    "alias_target",
+    "alias_rule",
+    "objective",
+    "gates",
+    "diagnostics",
+    "scope_limits",
+    "implementation_tests",
+    "author_historical_optimization_authorized",
+    "forecast_authorized",
+    "public_promotion",
+    "goal_status"
+  ],
+  "optimizer_numerical_change": {
+    "path": "optimizer.options.ftol",
+    "old": 1e-11,
+    "new": 1e-14
+  },
+  "gtol_unchanged": 1e-06,
+  "maxiter_unchanged": 300,
+  "starts_unchanged": [
+    0.5,
+    1.0,
+    2.0
+  ],
+  "all_gates_unchanged": true,
+  "all_six_fits_selected": true,
+  "warmstarts_from_v1": false,
+  "author_historical_optimization_executed": false,
+  "forecast_scored": false
+}

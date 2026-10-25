@@ -1,0 +1,54 @@
+{
+  "incumbent_config": {
+    "kind": "conditional_log_SD_MAP_poll_error_calibration",
+    "arm": "brownian_total_error_map_v1",
+    "model_source": "9ae130b3f314d75a5255c7c92fab502ec596a7cca2960090706fa203b133e05d",
+    "full_execution_design": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/checkpoints/momentum-calibration-execution-design-v1.json",
+      "sha256": "5c13a5d7552fdfe893bb0548a9205688c9a921a5d9faf2fd90147d5ff1cf5234"
+    },
+    "regularizer": {
+      "coordinate": "log standard deviations",
+      "medians": {
+        "independent": 0.1,
+        "cycle": 0.06,
+        "race": 0.06,
+        "house": 0.03,
+        "movement": 0.05,
+        "persistent_linear": 0.05
+      },
+      "log_sd": 0.7,
+      "normalizer": "same incumbent penalty constant convention; not marginal evidence",
+      "no_new_jacobian": true
+    }
+  },
+  "scope": {
+    "stage": "calibration_only",
+    "comparison_arm": "brownian_plus_persistent_slope_map_v1",
+    "target_years": [
+      2018,
+      2020,
+      2022,
+      2024
+    ],
+    "unique_numerical_targets": [
+      2018,
+      2020,
+      2022
+    ],
+    "training_poll_counts": [
+      930,
+      1218,
+      1514,
+      1514
+    ],
+    "prepared_plan_sha256": "f5201d12ec69f378e03cf14af6aa0835ef84cfbbe213e6101dedc575297d16c9",
+    "runner_manifest_sha256": "fcaccb33a483045e16d179ce5266370520db853f4c997cb3e0e5afcb4c991ef2",
+    "strict_asof_qualified": false,
+    "forecast_scoring": false,
+    "public_promotion": false,
+    "weakest_layer_ranked": false
+  },
+  "target_layer": "measurement_polling_error_user_requested_hypothesis",
+  "hypothesis": "The five-component incumbent and persistent-slope challenger can be fit jointly within each law on matched earlier-only residuals under the declared numerical gates; numerical success alone does not demonstrate forecast improvement."
+}

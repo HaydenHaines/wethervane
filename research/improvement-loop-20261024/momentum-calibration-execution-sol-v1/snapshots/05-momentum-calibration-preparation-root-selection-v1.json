@@ -1,0 +1,96 @@
+{
+  "schema": "MomentumCalibrationPreparationSelectionV1",
+  "recorded_utc": "2026-10-25T06:12:00.398251+00:00",
+  "stage": "prepare_sources_and_matched_objectives_only",
+  "references": [
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/checkpoints/momentum-analytic-root-selection-v1.json",
+      "sha256": "0b28ea26002ba2b46ad4862a4028e285a6a0de2dcfff03830376ed4ffdfc3a4f"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-analytic-prototype-sol-v1/artifact-manifest.json",
+      "sha256": "01b76622f1c97c10abcd71e4134a5dd359ccb9ae22c1b92c815d32952438fd51"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-analytic-review-sol-v1/receipt.json",
+      "sha256": "df7889cb072a74c7b235c2340f2bebf8feae8c083fd77bafb3c2ff3309c49332"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/checkpoints/momentum-bank-root-review-v1.json",
+      "sha256": "17e30d3faed050d1dd96f6c6f8f7f00d302f5bfe2ea7b6f4a71739ea776496b2"
+    }
+  ],
+  "arms": [
+    "brownian_total_error_map_v1",
+    "brownian_plus_persistent_slope_map_v1"
+  ],
+  "historical_selector": "Exact standard_runner.py: all strictly earlier source cycles, days_before_election in inclusive[0,100], last end_date/observation_id per cycle/race/normalized_pollster/floor(lead/14). No target-horizon truncation.",
+  "folds": [
+    {
+      "target": 2018,
+      "training_cycles": [
+        2012,
+        2016
+      ],
+      "expected_rows": 930
+    },
+    {
+      "target": 2020,
+      "training_cycles": [
+        2012,
+        2016,
+        2018
+      ],
+      "expected_rows": 1218
+    },
+    {
+      "target": 2022,
+      "training_cycles": [
+        2012,
+        2016,
+        2018,
+        2020
+      ],
+      "expected_rows": 1514
+    },
+    {
+      "target": 2024,
+      "training_cycles": [
+        2012,
+        2016,
+        2018,
+        2020
+      ],
+      "expected_rows": 1514
+    }
+  ],
+  "residual": "logit(admitted published D/(D+R) share) minus logit(admitted actual D/(D+R) share), exact existing source normalization",
+  "regularizer": {
+    "coordinate": "log standard deviations",
+    "medians": {
+      "independent": 0.1,
+      "cycle": 0.06,
+      "race": 0.06,
+      "house": 0.03,
+      "movement": 0.05,
+      "persistent_linear": 0.05
+    },
+    "log_sd": 0.7,
+    "normalizer": "same incumbent penalty constant convention; not marginal evidence",
+    "no_new_jacobian": true
+  },
+  "identity_rules": [
+    "Full ordered earlier-row provenance and complete cycle blocks; all five or six scales fit jointly in a later authorized fit.",
+    "2020 Texas31 selected rows remain for this MAP target. The separate1483-row disjoint posterior bank has different exclusions and is not reused.",
+    "Prove any duplicate2022/2024 input identity before reusing a later numerical fit.",
+    "Reconcile corrected coverage ledgers before final sealing; preserve the rejected coverage packet.",
+    "No unknown field intervals become daily respondent samples or verified publication dates."
+  ],
+  "outputs": "momentum-calibration-preparation-sol-v1/",
+  "permitted": "Source copying/pinning, earlier-only selection, actual training residual preparation, supplied-point objective checks and meaningful deterministic tests.",
+  "optimizer_authorized": false,
+  "sampler_authorized": false,
+  "forecast_scoring_authorized": false,
+  "owner_modification": false,
+  "goal_status": "active"
+}

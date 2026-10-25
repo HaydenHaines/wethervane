@@ -1,0 +1,44 @@
+{
+  "schema": "MomentumCalibrationResultsIndependentReviewSolV2",
+  "disposition": "accepted_all_fixed_fit_gates_with_retained_failed_start",
+  "execution_receipt_sha256": "1854b4f9cd3a295a6e66f76528fe6fe69498c197733a2c10b01eac9d270aeca1",
+  "runner_manifest_sha256": "583ca465e8fea568843486542ad8d85832585661919aae974bcfb5c103e67160",
+  "summary_sha256": "2bdbea1cfa7dd3749c56980a9a96496f6e3d89c375ea0e958c6f93a2ba29d131",
+  "files": [
+    {
+      "path": "REPORT.md",
+      "sha256": "552e0d5f0a7914a75f9e92b98984e2a184334341b37c5bd4b600ff4c50ba16cd",
+      "bytes": 7207
+    },
+    {
+      "path": "check.py",
+      "sha256": "2ee7067b14110a78309cd0f7fce0679ed3048cac6f98c26fda4c1ca68d602c1a",
+      "bytes": 14448
+    },
+    {
+      "path": "results.json",
+      "sha256": "283d53938930129252e6c2ff40dabeb69f70456b418930f57f85822933e91fcf",
+      "bytes": 74034
+    }
+  ],
+  "fits_checked": 6,
+  "starts_checked": 18,
+  "fold_receipts_checked": 8,
+  "passed_fits": 6,
+  "optimizer_successful_starts": 17,
+  "retained_unsuccessful_start": {
+    "target": 2020,
+    "arm": "brownian_plus_persistent_slope_map_v1",
+    "start": 1,
+    "message": "ABNORMAL: ",
+    "excluded_from_successful_set": true
+  },
+  "v1_failure_and_all_inspected_outputs_unchanged": true,
+  "review_audit_v1_all_success_assumption_corrected_to_frozen_gate_contract": true,
+  "threshold_relaxed": false,
+  "optimizer_invoked": false,
+  "sampler_invoked": false,
+  "forecast_scores": false,
+  "original_outputs_modified": false,
+  "promotion_authorized": false
+}

@@ -1,0 +1,47 @@
+{
+  "metadata": {
+    "arm": "brownian_plus_persistent_slope_map_v1",
+    "components": [
+      "independent",
+      "cycle",
+      "race",
+      "house",
+      "movement",
+      "persistent_linear"
+    ],
+    "input_identity_sha256": "32563945a4cfd608efc68ed8f20600e4310705ef3ee736f1a378bf1372e8884a",
+    "prior_median_multiplier": 0.5,
+    "rows": 1514,
+    "start_index": 0,
+    "synthetic": false,
+    "target": 2022
+  },
+  "optimizer": {
+    "bounds_units": "natural SD values; take log for optimizer. Numerical incumbent box, not a scientific prior.",
+    "budget": "Three starts per arm for each of three unique inputs; six fitted results / eighteen attempts total. No silent retries.",
+    "log_sd_bounds": [
+      1e-05,
+      2.0
+    ],
+    "method": "L-BFGS-B",
+    "multiplicative_prior_median_starts": [
+      0.5,
+      1.0,
+      2.0
+    ],
+    "options": {
+      "ftol": 1e-11,
+      "gtol": 1e-06,
+      "maxiter": 300
+    }
+  },
+  "start": [
+    -2.995732273553991,
+    -3.506557897319982,
+    -3.506557897319982,
+    -4.199705077879927,
+    -3.6888794541139363,
+    -3.6888794541139363
+  ],
+  "utc": "2026-10-25T06:48:13.495256+00:00"
+}

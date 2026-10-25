@@ -1,0 +1,43 @@
+{
+  "schema": "MomentumCalibrationResultsIndependentReviewSolV1",
+  "disposition": "original_numerical_failure_confirmed_preserved",
+  "execution_receipt_sha256": "4c150bc181a474a64d75b121770bb9bf5da63e5cd1357ee950a8b3c4a480d79d",
+  "runner_manifest_sha256": "fcaccb33a483045e16d179ce5266370520db853f4c997cb3e0e5afcb4c991ef2",
+  "files": [
+    {
+      "path": "REPORT.md",
+      "sha256": "262ab30319987ce270913c049ec2d27ec89df18ae5fa1507b1f175db5cb1fc00",
+      "bytes": 7900
+    },
+    {
+      "path": "check.py",
+      "sha256": "5130824555fe4f36df0fc1359ccbc7a0faa08f31c2f002a49153ca96ae38eca9",
+      "bytes": 12585
+    },
+    {
+      "path": "results.json",
+      "sha256": "8483db42d42185cd2215adb0a1b296b92ac8efe362f410fbd7087bfb2e453b75",
+      "bytes": 39634
+    }
+  ],
+  "fits_checked": 6,
+  "starts_checked": 18,
+  "fold_receipts_checked": 8,
+  "passed_fits": 5,
+  "failed_fit": {
+    "target": 2022,
+    "arm": "brownian_plus_persistent_slope_map_v1",
+    "alias_target": 2024,
+    "failed_gate": "best_gradient_inf_max",
+    "gradient_inf": 0.00018883030515581822,
+    "limit": 0.0001
+  },
+  "diagnosis": "ftol_relative_objective_reduction_before_gradient_gate",
+  "optimizer_invoked": false,
+  "sampler_invoked": false,
+  "forecast_scores": false,
+  "original_outputs_modified": false,
+  "threshold_relaxed": false,
+  "v2_numerical_refinement_requires_separate_review": true,
+  "promotion_authorized": false
+}

@@ -1,0 +1,38 @@
+{
+  "schema": "MomentumCalibrationDecisionV2",
+  "recorded_utc": "2026-10-25T07:07:36.159039+00:00",
+  "scope": "Conditional calibration only, not a forecast comparison",
+  "numerical_disposition": "accept_v2_fixed_gate_calibrations_with_failed_start_preserved",
+  "forecast_decision": "retain_current_incumbent_pending_matched_forecast_evidence",
+  "recommendation": "retain",
+  "fit_gates_passed": 6,
+  "fits": 6,
+  "successful_optimizer_starts": 17,
+  "prescribed_starts": 18,
+  "failed_start": {
+    "target": 2020,
+    "arm": "brownian_plus_persistent_slope_map_v1",
+    "index": 1,
+    "status": "ABNORMAL",
+    "excluded_from_selection": true
+  },
+  "original_sessions": {
+    "71863": "terminal_exit0_with_preserved_v1fit_failure",
+    "65943": "terminal_exit0_v2accepted"
+  },
+  "must_not_restart": [
+    71863,
+    65943
+  ],
+  "root_report": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-calibration-terminal-root-review-v2.md",
+    "sha256": "86674fafe738163eb5f60b214dc859a09987b64273ffc30386a88c42932835a3"
+  },
+  "independent_results_review": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-calibration-results-review-sol-v2/receipt.json",
+    "sha256": "c58eea8c5be3d880b5d0942496c284233d35d9960889bb6370ad6a47cdb3be67"
+  },
+  "no_forecast_scores": true,
+  "no_public_promotion": true,
+  "standing_goal": "active"
+}

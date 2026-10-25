@@ -1,0 +1,117 @@
+{
+  "schema_version": 1,
+  "recorder_only": true,
+  "cycle": "m02-momentum-calibration-20261025",
+  "binding": {
+    "hypothesis": "The five-component incumbent and persistent-slope challenger can be fit jointly within each law on matched earlier-only residuals under the declared numerical gates; numerical success alone does not demonstrate forecast improvement.",
+    "incumbent_config": {
+      "arm": "brownian_total_error_map_v1",
+      "full_execution_design": {
+        "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/checkpoints/momentum-calibration-execution-design-v1.json",
+        "sha256": "5c13a5d7552fdfe893bb0548a9205688c9a921a5d9faf2fd90147d5ff1cf5234"
+      },
+      "kind": "conditional_log_SD_MAP_poll_error_calibration",
+      "model_source": "9ae130b3f314d75a5255c7c92fab502ec596a7cca2960090706fa203b133e05d",
+      "regularizer": {
+        "coordinate": "log standard deviations",
+        "log_sd": 0.7,
+        "medians": {
+          "cycle": 0.06,
+          "house": 0.03,
+          "independent": 0.1,
+          "movement": 0.05,
+          "persistent_linear": 0.05,
+          "race": 0.06
+        },
+        "no_new_jacobian": true,
+        "normalizer": "same incumbent penalty constant convention; not marginal evidence"
+      }
+    },
+    "scope": {
+      "comparison_arm": "brownian_plus_persistent_slope_map_v1",
+      "forecast_scoring": false,
+      "prepared_plan_sha256": "f5201d12ec69f378e03cf14af6aa0835ef84cfbbe213e6101dedc575297d16c9",
+      "public_promotion": false,
+      "runner_manifest_sha256": "fcaccb33a483045e16d179ce5266370520db853f4c997cb3e0e5afcb4c991ef2",
+      "stage": "calibration_only",
+      "strict_asof_qualified": false,
+      "target_years": [
+        2018,
+        2020,
+        2022,
+        2024
+      ],
+      "training_poll_counts": [
+        930,
+        1218,
+        1514,
+        1514
+      ],
+      "unique_numerical_targets": [
+        2018,
+        2020,
+        2022
+      ],
+      "weakest_layer_ranked": false
+    },
+    "target_layer": "measurement_polling_error_user_requested_hypothesis"
+  },
+  "checkpoints": [
+    {
+      "revision": 0,
+      "status": "research",
+      "note": "Cycle recorded",
+      "outcome": "success",
+      "recommendation": null,
+      "recorded_at": "2026-10-25T06:46:39.356774+00:00",
+      "references": {}
+    },
+    {
+      "revision": 1,
+      "status": "planned",
+      "note": "Sealed runner and exact three-input/two-arm calibration design recorded. Independent reviewer reports passing checks; terminal acceptance receipt and root actual launch binding next. No historical optimization started.",
+      "outcome": "success",
+      "recommendation": null,
+      "recorded_at": "2026-10-25T06:46:39.404504+00:00",
+      "references": {
+        "evaluation": "fcaccb33a483045e16d179ce5266370520db853f4c997cb3e0e5afcb4c991ef2",
+        "plan": "5c13a5d7552fdfe893bb0548a9205688c9a921a5d9faf2fd90147d5ff1cf5234"
+      }
+    },
+    {
+      "revision": 2,
+      "status": "evaluating",
+      "note": "Runner independently accepted; root selects exact source/runtime-bound six-fit historical calibration attempt. Launch handle will be recorded separately after tool return; no forecast sampling or scoring authorized.",
+      "outcome": "success",
+      "recommendation": null,
+      "recorded_at": "2026-10-25T06:47:50.412371+00:00",
+      "references": {
+        "plan": "4c150bc181a474a64d75b121770bb9bf5da63e5cd1357ee950a8b3c4a480d79d",
+        "review": "35fbcfa97e121d2173874104402fd0e2f9239f50dff3d8e3c1fe1a69b6671a61"
+      }
+    },
+    {
+      "revision": 3,
+      "status": "evaluating",
+      "note": "Original71863 terminated exit0 with all6fits/18starts preserved. Five fits pass;2022/2024 six-scale fit fails predeclared best-gradient gate0.00018883>0.0001. No forecast scoring; independent diagnosis pending, no automatic retry or gate relaxation.",
+      "outcome": "failure",
+      "recommendation": null,
+      "recorded_at": "2026-10-25T06:49:58.391267+00:00",
+      "references": {
+        "evaluation": "528604d93a2faff24e951d2d972635080ddd35839461e7034f9cb96cf7061cf3"
+      }
+    },
+    {
+      "revision": 4,
+      "status": "evaluating",
+      "note": "Independent v1failure audit confirms objective-reduction early stop. Root independently verifies identical v2runner/tests/runtime and sole ftol refinement; separate Sol delta also reports pass. Select newexclusive18start run, preserve original71863, keep allscientific inputs/gates unchanged.",
+      "outcome": "success",
+      "recommendation": null,
+      "recorded_at": "2026-10-25T06:58:41.712514+00:00",
+      "references": {
+        "plan": "1854b4f9cd3a295a6e66f76528fe6fe69498c197733a2c10b01eac9d270aeca1",
+        "review": "db314c5f3ce88bf032d374b8df9ff05a75fbee0a1e5d7d35f4777bace06fc15b"
+      }
+    }
+  ]
+}

@@ -1,0 +1,290 @@
+{
+  "schema": "BallotmancyContinuationCheckpointV8",
+  "observedAt": "2026-10-25T06:52:32.063661+00:00",
+  "goalStatus": "active",
+  "progressThisContinuation": true,
+  "consecutiveBlockedContinuations": 0,
+  "frontend": {
+    "liveCommit": "801dda8912f575b01af034702455b055f956874e",
+    "branch": "deploy/siteground",
+    "ciRun": 40161817151,
+    "ciStatus": "success",
+    "evidence": "evidence/house-polling-ci-v1.json",
+    "defaultPreserved": true,
+    "newFrontendChangesThisRound": false
+  },
+  "momentum": {
+    "version": 2,
+    "sourceSupportedRaces": 113,
+    "sufficientFieldEndComparisons": 31,
+    "risingAtLeastOneSharePoint": 12,
+    "moreThanOnePointAbove": 2,
+    "withinOnePointInclusive": 6,
+    "moreThanOnePointBelow": 4,
+    "tests": 12,
+    "independentReview": "accepted_bounded_descriptive",
+    "causalOrPredictiveQualification": false,
+    "sourceFieldPeriod": "ActiVote archived publisher confirms90-day rolling period; arithmetic midpoint not verified respondent median",
+    "researchCommit": "ba443a3"
+  },
+  "localCalibration": {
+    "originalExecSession": 66137,
+    "terminal": true,
+    "exitCode": 0,
+    "acceptedResearchBank": true,
+    "fullDownstreamFit": false,
+    "mustNotRestart": true,
+    "journalRevision": 3
+  },
+  "localEconomic": {
+    "originalExecSession": 38077,
+    "terminal": true,
+    "exitCode": 0,
+    "fitJobs": 16,
+    "allDeclaredNumericGatesPass": true,
+    "independentOutputReview": "completed_Luna_2018_and_Sol_all_cycles",
+    "decision": "retain_F0_within_aggregate_comparison",
+    "journalCycle": "e01-aggregate-cpi-20261025",
+    "journalRevision": 5,
+    "journalStatus": "decided",
+    "planSha256": "e3faefeb89a5bca837bc7f8b01e666112d563b95fe16e909060edf5aa1cbfc50",
+    "summarySha256": "203c598c90cde1dd22597a479e2205f194de23c7a70ba861e5293fcab3a72678",
+    "mustNotRestart": true,
+    "publicPromotion": false,
+    "fullCountQualification": false,
+    "completeRawInventory": "checkpoints/economic-run-inventory-v1.json",
+    "rawFilesRetained": 376
+  },
+  "bootstrapJournal": {
+    "revision": 11,
+    "status": "research",
+    "export": "checkpoints/bootstrap-export-v11.json"
+  },
+  "backup": {
+    "receipt": "checkpoints/research-backup-v6.json",
+    "objectsVerified": 985,
+    "allRestoredObjectHashesVerified": true,
+    "bytes": 1812680768,
+    "sha256": "be0a0e9f538cfc4df04a39e19fdd0d86fc0bb911c8e13b4ac9c2a77666cf4286",
+    "externalService": false,
+    "coversBootstrapThroughRevision": 11,
+    "laterRunnerRecords": "V6 precedes M02runner/actualoutputs. Those are preserved in current contentjournal and nextGit checkpoint; no newbackup claimed."
+  },
+  "senateOwner": {
+    "latestCheckpointRead": "v23",
+    "checkpointPath": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/checkpoint-root-v23.json",
+    "checkpointSha256": "3a8679aabf020af81115f0b037b391bcc76ba1274e9e8d285a274c28272ca2fe",
+    "fullFitSessionFromOwner": 72164,
+    "controlOrPollingByThisSession": false,
+    "qualifiedPublicPacket": false,
+    "historical2018TX": "source complete and startup checked; owner queued, not reported launched",
+    "doNotDuplicateOrOptimize": true,
+    "stateAtOwnerIssue": "Original72164 in parent0warmup; issue2026-10-25T06:16Z only, not fresh liveness proof",
+    "nationalConstructor": "Reviewed20setting actualconstructor, not posterior;23setting successor and target-aware joint outputs in development",
+    "historicalPopulationInputs": "AllfourA/B populationbanks prepared/reviewed; historical downstream fits still pending"
+  },
+  "coordination": {
+    "nativeTransport": "both_send_attempts_failed",
+    "newLocalHandoff": "checkpoints/shared-coordination-v3.json",
+    "recipientReadVerified": false
+  },
+  "activeAgentTasks": [
+    {
+      "agent": "receipt_repair_sol",
+      "task": "Prepare/test v2 exact runner with only tighter ftol binding; no historical optimization by agent",
+      "output": "momentum-calibration-execution-sol-v2/",
+      "completionAtCheckpoint": "in_progress"
+    },
+    {
+      "agent": "house_full_coverage_audit",
+      "task": "Independently review actual v1 calibration outputs and failure, then v2 source/binding delta",
+      "output": "momentum-calibration-results-review-sol-v1/",
+      "completionAtCheckpoint": "in_progress"
+    }
+  ],
+  "references": [
+    {
+      "path": "research/improvement-loop-20261024/momentum-audit-v2/artifact-manifest.json",
+      "sha256": "eef2616076d7e6070a47c73c2b18637a10bd3ff82a65d87617d27b9303efd872"
+    },
+    {
+      "path": "research/improvement-loop-20261024/momentum-audit-review-sol-v2.md",
+      "sha256": "a76cf981bdd70a18bb095fdfe62d4d7fb82a21e7c78f41774f2dbc42cae7e6fc"
+    },
+    {
+      "path": "research/improvement-loop-20261024/momentum-field-date-evidence-v2/receipt.json",
+      "sha256": "79e286db614849c1779e1ef76bfbecf6c69a5e53cbd26c471d6e5ff2ff98c8b8"
+    },
+    {
+      "path": "research/improvement-loop-20261024/economic-terminal-root-review-v1.md",
+      "sha256": "ca8af18306440340e2b7aa231a0d47f25801bb674e41cd6f9ea12563f35eb59f"
+    },
+    {
+      "path": "research/improvement-loop-20261024/checkpoints/economic-terminal-decision-v1.json",
+      "sha256": "486d3976b15ce80bd8ef67cfebfc8a1ddcb211a9125b4f2fe4741610ea31e9f1"
+    },
+    {
+      "path": "research/improvement-loop-20261024/checkpoints/economic-export-v5.json",
+      "sha256": "d76aa7ab182f5f19d8bda797c68816d88eeccaa89e0b871d38cc5c90f00808cb"
+    },
+    {
+      "path": "research/improvement-loop-20261024/checkpoints/research-backup-v5.json",
+      "sha256": "fecb5877fc58a4704d9358e208ca3c447746da52819aa12f6a96e97bd53ba701"
+    },
+    {
+      "path": "research/improvement-loop-20261024/checkpoints/shared-coordination-v2.json",
+      "sha256": "6cd493096ad33d0f4c7e0bbb8713e59b4ef40f762d5ec9a18008e583b40756df"
+    },
+    {
+      "path": "research/improvement-loop-20261024/momentum-challenger-plan-luna-v1.md",
+      "sha256": "3d73d9b4e0c7a2942e49efd30cf2a607ecb38edc39fdec45689f52221e7993d3"
+    },
+    {
+      "path": "research/improvement-loop-20261024/momentum-challenger-review-sol-v1.md",
+      "sha256": "0b6e855ce79551907938cbe2bb55009449dc5d7a5912bcc23f8497655d9be8a6"
+    },
+    {
+      "path": "research/improvement-loop-20261024/checkpoints/momentum-preflight-root-selection-v1.json",
+      "sha256": "5de976e5facbc84aa9db48e64fcc43864d1b8741fc5d1ddc134cc2e0fa05e5e9"
+    },
+    {
+      "path": "research/improvement-loop-20261024/checkpoints/bootstrap-export-v11.json",
+      "sha256": "29a0d4269c9a895930bf760a2acf92b4864148a486fc9073ac63185dd7572c28"
+    },
+    {
+      "path": "research/improvement-loop-20261024/checkpoints/momentum-preflight-progress-v3.json",
+      "sha256": "e50c3d7cfe8d9d125f4a979c051aeb07761e3d3f67624a3539861315ff109866"
+    },
+    {
+      "path": "research/improvement-loop-20261024/checkpoints/momentum-calibration-execution-design-v1.json",
+      "sha256": "5c13a5d7552fdfe893bb0548a9205688c9a921a5d9faf2fd90147d5ff1cf5234"
+    },
+    {
+      "path": "research/improvement-loop-20261024/checkpoints/research-backup-v6.json",
+      "sha256": "bd8897400de42caac323dbdfa8883b9c3cc6dd963a0b01f2eaba9f7ce5176fc7"
+    },
+    {
+      "path": "research/improvement-loop-20261024/momentum-calibration-preparation-root-review-v1.md",
+      "sha256": "9d6c224262f58959d6a0cefd82d072b350d4406d81e7c2a443e4d3942e100d94"
+    },
+    {
+      "path": "research/improvement-loop-20261024/momentum-event-identity-root-review-v1.md",
+      "sha256": "04de910e88d6621a22524a5260416baa4e9fcaddde52c3380ea06c66b5a6a7c8"
+    },
+    {
+      "path": "research/improvement-loop-20261024/momentum-execution-design-luna-v2.md",
+      "sha256": "4a2ef88c77b1df79ccb5461f1486f4c50dcc8a513e02df00d60c60f0136e0e63"
+    },
+    {
+      "path": "research/improvement-loop-20261024/checkpoints/momentum-calibration-terminal-root-v1.json",
+      "sha256": "528604d93a2faff24e951d2d972635080ddd35839461e7034f9cb96cf7061cf3"
+    },
+    {
+      "path": "research/improvement-loop-20261024/checkpoints/momentum-calibration-export-v3.json",
+      "sha256": "37b18145dbc6739bc493f4633fd564c763922ca35b912de534b6b026e066b980"
+    },
+    {
+      "path": "research/improvement-loop-20261024/checkpoints/momentum-calibration-execution-design-v2.json",
+      "sha256": "dede87ca1843d8d98fd569effe3ddc81f84ccbb5111486ea3d1b19508b541f62"
+    },
+    {
+      "path": "research/improvement-loop-20261024/momentum-calibration-execution-sol-v1/artifact-manifest.json",
+      "sha256": "fcaccb33a483045e16d179ce5266370520db853f4c997cb3e0e5afcb4c991ef2"
+    },
+    {
+      "path": "research/improvement-loop-20261024/momentum-calibration-execution-review-sol-v1/receipt.json",
+      "sha256": "35fbcfa97e121d2173874104402fd0e2f9239f50dff3d8e3c1fe1a69b6671a61"
+    }
+  ],
+  "nextActions": [
+    "Complete independent v1 output review; preserve numerical failure rather than claim forecasting loss or weaken gate.",
+    "Verify sealed v2 code delta/tests against exact refinement design; rootbindnewrunreceipt and launch newexclusiveattempt only after reviews. Neverrestart71863.",
+    "Review v2 calibration results, then freeze targetforecast source/operator/inference/scoring contract under accepted proposal corrections.",
+    "Include F-only,poll-only,combined references, exact sourcecoverage and meaningful uncertainty; allforecastcomparisons remain pending.",
+    "Integrate new qualified owner outputs when available; keep existing savedconfigs/default stable."
+  ],
+  "scientificLimits": [
+    "No weakest layer empirically identified.",
+    "No full count-stack complementarity qualification.",
+    "No universal polling momentum bonus or economic penalty.",
+    "Historical House optional polling is not a qualified current House/chamber forecast.",
+    "Standing goal remains active; one completed comparison does not complete it."
+  ],
+  "priorCheckpoint": "checkpoints/continuation-v7.json",
+  "completedMomentumDesign": {
+    "proposal": "3d73d9b4e0c7a2942e49efd30cf2a607ecb38edc39fdec45689f52221e7993d3",
+    "independentReview": "0b6e855ce79551907938cbe2bb55009449dc5d7a5912bcc23f8497655d9be8a6",
+    "rootSelection": "5de976e5facbc84aa9db48e64fcc43864d1b8741fc5d1ddc134cc2e0fa05e5e9",
+    "fitAuthorized": false,
+    "reviewCorrections": [
+      "Separate latest-per-pollster, full-series and historical fixed-lead-bin operators; do not silently change evidence.",
+      "Existing H0/F0 banks may be reused only after exact law/source/draw/support proof.",
+      "Uniform latent-trajectory averaging differs from Gaussian mixtures over unknown interview dates.",
+      "Log-coordinate penalized MAP and natural-scale densities require an explicit target.",
+      "The selected empirical-prior update is marginal; it is not a calibration cut."
+    ]
+  },
+  "completedMomentumPreflight": {
+    "rootReview": "momentum-preflight-root-review-v1.md",
+    "mathTests": 9,
+    "coverageAuthoritativeIndex": "momentum-preflight-coverage-luna-v1/authoritative-index-v2.json",
+    "independentCoverageReview": "momentum-coverage-review-sol-v1/receipt.json",
+    "eightBanksCompatible": true,
+    "preparation": "momentum-calibration-preparation-root-review-v1.md",
+    "preparedPlanSha256": "f5201d12ec69f378e03cf14af6aa0835ef84cfbbe213e6101dedc575297d16c9",
+    "preparationTests": 8,
+    "independentPreparationReceipt": "momentum-calibration-preparation-review-sol-v1/receipt.json",
+    "reviewProseCorrection": "momentum-calibration-preparation-review-sol-v1/documentation-correction-receipt.json",
+    "uniqueCalibrationInputs": 3,
+    "actualCalibrationOptimized": true,
+    "forecastRun": false
+  },
+  "eventIdentityIntake": {
+    "rootReview": "momentum-event-identity-root-review-v1.md",
+    "supportedProposedJoins": [
+      "MN2018",
+      "MS2018",
+      "OK2022",
+      "CA2024"
+    ],
+    "unresolved": [
+      "CA2022"
+    ],
+    "pollsAdmitted": 0
+  },
+  "gitResearchBaseCommit": "22db036213284aa9f85035f5c8ecc1306474d0ab",
+  "noActiveRootSamplerOrOptimizer": true,
+  "completedFollowups": {
+    "forecastProposalReview": "momentum-execution-design-review-sol-v1.md",
+    "forecastExecutionReady": false,
+    "frontendAnticipationReport": "frontend-national-output-readiness-luna-v1.md",
+    "newPublicContract": false
+  },
+  "momentumCalibrationRun": {
+    "originalExecSession": 71863,
+    "terminal": true,
+    "exitCode": 0,
+    "mustNotRestart": true,
+    "rawFiles": 113,
+    "rawBytes": 651083,
+    "completedFits": 6,
+    "fixedStarts": 18,
+    "passingFits": 5,
+    "failure": "2022/2024 six-scale best gradient .00018883030515581822 exceeds unchanged .0001 gate; other gates pass",
+    "independentResultsReview": "in_progress",
+    "terminalRoot": "checkpoints/momentum-calibration-terminal-root-v1.json",
+    "journalCycle": "m02-momentum-calibration-20261025",
+    "journalRevision": 3,
+    "journalStatus": "evaluating",
+    "export": "checkpoints/momentum-calibration-export-v3.json",
+    "forecastScored": false
+  },
+  "momentumNumericalRefinement": {
+    "design": "checkpoints/momentum-calibration-execution-design-v2.json",
+    "designSha256": "dede87ca1843d8d98fd569effe3ddc81f84ccbb5111486ea3d1b19508b541f62",
+    "change": "ftol 1e-11 to1e-14, same6fits/18originalstarts, unchanged scientific law/data/priors/gates/gtol/maxiter/bounds",
+    "reason": "Original failed fit stopped under relative objective reduction before gradient gate",
+    "historicalRunLaunched": false,
+    "originalFailurePreserved": true
+  }
+}

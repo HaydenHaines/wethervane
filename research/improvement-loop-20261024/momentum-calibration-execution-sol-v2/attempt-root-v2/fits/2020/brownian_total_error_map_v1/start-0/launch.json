@@ -1,0 +1,45 @@
+{
+  "metadata": {
+    "arm": "brownian_total_error_map_v1",
+    "components": [
+      "independent",
+      "cycle",
+      "race",
+      "house",
+      "movement"
+    ],
+    "input_identity_sha256": "f099eb6be26202c1814e2f5d0896e0f17eee02e3be29f42efbef88de11acb839",
+    "prior_median_multiplier": 0.5,
+    "rows": 1218,
+    "start_index": 0,
+    "synthetic": false,
+    "target": 2020
+  },
+  "optimizer": {
+    "bounds_units": "natural SD values; take log for optimizer. Numerical incumbent box, not a scientific prior.",
+    "budget": "Three starts per arm for each of three unique inputs; six fitted results / eighteen attempts total. No silent retries.",
+    "log_sd_bounds": [
+      1e-05,
+      2.0
+    ],
+    "method": "L-BFGS-B",
+    "multiplicative_prior_median_starts": [
+      0.5,
+      1.0,
+      2.0
+    ],
+    "options": {
+      "ftol": 1e-14,
+      "gtol": 1e-06,
+      "maxiter": 300
+    }
+  },
+  "start": [
+    -2.995732273553991,
+    -3.506557897319982,
+    -3.506557897319982,
+    -4.199705077879927,
+    -3.6888794541139363
+  ],
+  "utc": "2026-10-25T06:58:55.972598+00:00"
+}

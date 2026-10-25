@@ -1,0 +1,100 @@
+{
+  "schema": "MomentumCalibrationExecutionDesignV1",
+  "recorded_utc": "2026-10-25T06:28:22.204562+00:00",
+  "stage": "implement_and_test_matched_calibration_runner",
+  "references": [
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-calibration-preparation-sol-v1/artifact-manifest.json",
+      "sha256": "af9eaf18dd37ca1eafc4caa21715954010f48f4338bb428f032bdad08150a0ec"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-calibration-preparation-sol-v1/prepared-v1/plan.json",
+      "sha256": "f5201d12ec69f378e03cf14af6aa0835ef84cfbbe213e6101dedc575297d16c9"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-analytic-prototype-sol-v1/artifact-manifest.json",
+      "sha256": "01b76622f1c97c10abcd71e4134a5dd359ccb9ae22c1b92c815d32952438fd51"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-analytic-review-sol-v1/receipt.json",
+      "sha256": "df7889cb072a74c7b235c2340f2bebf8feae8c083fd77bafb3c2ff3309c49332"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/checkpoints/momentum-calibration-preparation-root-selection-v1.json",
+      "sha256": "f30f0a92920647276afa44f741515ff0cebfe5fe18417e273ae975d6133469e9"
+    }
+  ],
+  "arms": [
+    "brownian_total_error_map_v1",
+    "brownian_plus_persistent_slope_map_v1"
+  ],
+  "unique_training_targets": [
+    2018,
+    2020,
+    2022
+  ],
+  "alias_target": {
+    "2024": 2022
+  },
+  "alias_rule": "Only exact canonical input identity permits reuse; preserve both fold receipts.",
+  "objective": "Use the accepted five/six normalized Gaussian residual objectives, all dimensions jointly, and the frozen log-coordinate penalties. No new Jacobian or sampling variance.",
+  "optimizer": {
+    "method": "L-BFGS-B",
+    "multiplicative_prior_median_starts": [
+      0.5,
+      1.0,
+      2.0
+    ],
+    "log_sd_bounds": [
+      1e-05,
+      2.0
+    ],
+    "bounds_units": "natural SD values; take log for optimizer. Numerical incumbent box, not a scientific prior.",
+    "options": {
+      "ftol": 1e-11,
+      "gtol": 1e-06,
+      "maxiter": 300
+    },
+    "budget": "Three starts per arm for each of three unique inputs; six fitted results / eighteen attempts total. No silent retries."
+  },
+  "gates": {
+    "finite": true,
+    "optimizer_reported_success": true,
+    "best_gradient_inf_max": 0.0001,
+    "bound_log_distance_min": 0.0001,
+    "minimum_agreeing_successful_starts": 2,
+    "agreement_objective_abs": 1e-05,
+    "agreement_log_scale_inf": 0.001,
+    "agreement_reference": "Best successful solution. Preserve and report every other attempt, including failure or differing minima.",
+    "hessian_gradient_central_difference_steps": [
+      0.0001,
+      5e-05
+    ],
+    "hessian_relative_frobenius_difference_max": 0.001,
+    "hessian_positive_eigenvalues_required": true
+  },
+  "diagnostics": [
+    "Every start, all coordinates, full objective, recomputed gradient, iterations/evaluations/status/message, bound distances",
+    "At best solution, symmetrized Hessians from analytic-gradient central differences, both step sizes; eigenvalues and conditioning",
+    "Inverse observed penalized Hessian correlation for Brownian/slope labelled local log-SD curvature approximation, never empirical posterior correlation",
+    "Per cycle kernel rank, Brownian/slope Frobenius cosine, fitted covariance conditioning; geometry does not prove empirical identification"
+  ],
+  "scope_limits": [
+    "Calibration-only earlier-information retrospective working model; no held-out forecast gain claim from objective differences.",
+    "No new target polls, outcome scoring, F0 bank refresh, forecast simulation, public API or UI change.",
+    "2022/2024 identical calibration does not mean identical forecast features or fundamentals banks.",
+    "No posterior scale uncertainty or dependence with shared fundamentals calibration labels integrated."
+  ],
+  "implementation_tests": [
+    "Exact prepared plan/source/runtime identity and rejects modified/missing inputs",
+    "Five/six objective gradients at supplied actual/synthetic points match accepted implementations",
+    "Deterministic synthetic convergence and gating tests including false success, differing starts, boundary and Hessian failures",
+    "Exclusive attempt output directory; preserve every attempt/failure and aliased provenance without overwrites"
+  ],
+  "output_directory": "momentum-calibration-execution-sol-v1",
+  "execution_contract": "Root may launch after independent preparation acceptance and root review of sealed runner/tests. Execution receipt must bind this plan, preparation acceptance, runner manifest, exact interpreter/environment and original handle. Author implements/tests only; no actual historical optimization yet.",
+  "author_historical_optimization_authorized": false,
+  "forecast_authorized": false,
+  "public_promotion": false,
+  "goal_status": "active"
+}
