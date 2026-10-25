@@ -339,11 +339,15 @@ createRoot(document.getElementById('root')).render(React.createElement('div',{cl
     await expect(page.getByRole("alert")).toContainText("Unable to change House models");
     await expect(page.locator(".hero > div > p")).toContainText(primary.view.run.label);
     assert.equal(new URL(page.url()).searchParams.get("run"), primary.view.run.id);
+    // A district chosen after failure must survive retrying that model request.
+    await page.locator('.house-ribbon-cell[data-district="AL-03"]').click();
+    await expect(page.locator("#house-live-detail-title")).toHaveText("AL-03");
     failedId = null;
     await page.getByRole("button", { name: "Try again", exact: true }).click();
     await expect(page.locator(".hero > div > p")).toContainText(alternative.label);
     await expect(compareSelect).toHaveValue("");
-    await expect(page.locator("#house-live-detail-title")).toHaveText("AL-04");
+    await expect(page.locator("#house-live-detail-title")).toHaveText("AL-03");
+    assert.equal(new URL(page.url()).searchParams.get("race"), "2026:AL-03:house:regular");
     assert.equal(new URL(page.url()).searchParams.get("run"), alternative.id);
     await page.goBack();
     await expect(page.locator(".hero > div > p")).toContainText(primary.view.run.label);
@@ -360,6 +364,26 @@ createRoot(document.getElementById('root')).render(React.createElement('div',{cl
     releaseDelayed?.();
     await expect(page.locator(".hero > div > p")).toContainText(primary.view.run.label);
     await expect(page.getByRole("alert")).toHaveCount(0);
+    await expect(page.locator("#house-live-detail-title")).toHaveText("AL-04");
+    assert.equal(new URL(page.url()).searchParams.get("race"), "2026:AL-04:house:regular");
+
+    // District navigation while a model is loading must not refetch or revert.
+    delayedId = alternative.id;
+    releaseDelayed = null;
+    await base.selectOption("recent_calendar_history");
+    await expect(page.getByRole("status").filter({ hasText: "Loading the selected House result" })).toBeVisible();
+    await expect.poll(() => typeof releaseDelayed).toBe("function");
+    const pendingRequests = requests.filter(id => id === alternative.id).length;
+    await page.locator('.house-ribbon-cell[data-district="AL-02"]').click();
+    await expect(page.locator("#house-live-detail-title")).toHaveText("AL-02");
+    assert.equal(new URL(page.url()).searchParams.get("race"), "2026:AL-02:house:regular");
+    assert.equal(requests.filter(id => id === alternative.id).length, pendingRequests);
+    delayedId = null;
+    releaseDelayed();
+    await expect(page.locator(".hero > div > p")).toContainText(alternative.label);
+    await expect(page.locator("#house-live-detail-title")).toHaveText("AL-02");
+    assert.equal(new URL(page.url()).searchParams.get("race"), "2026:AL-02:house:regular");
+    assert.equal(requests.filter(id => id === alternative.id).length, pendingRequests);
 
     await page.goto("http://house-ui.test/?chamber=house&edition=current&compare=house-current-polling");
     await expect(page.getByRole("heading", { name: "Current House forecast unavailable" })).toBeVisible();

@@ -17,6 +17,7 @@ export default function HouseLiveWorkspace({ onHistorical, onReturn }: { onHisto
   const [publication, setPublication] = useState<HouseLivePublication | null>(null);
   const displayed = useRef<HouseLivePublication | null>(null);
   const attempt = useRef(0);
+  const latestDistrict = useRef<{ attempt: number; raceId: string } | null>(null);
   const [request, setRequest] = useState<Request | null>(null);
   const [busy, setBusy] = useState(true);
   const [error, setError] = useState("");
@@ -25,6 +26,11 @@ export default function HouseLiveWorkspace({ onHistorical, onReturn }: { onHisto
   const [comparisonId, setComparisonId] = useState<string | null>(null);
   const [comparisonAttempt, setComparisonAttempt] = useState(0);
   const [comparison, setComparison] = useState<ComparisonState>({ value: null, busy: false, error: "" });
+
+  function requestedSelection(value: Request): HouseLiveNavigation {
+    const latest = latestDistrict.current;
+    return latest?.attempt === value.attempt ? { ...value.selection, raceId: latest.raceId } : value.selection;
+  }
 
   useEffect(() => {
     function restore(navigation: "initial" | "pop") {
@@ -52,7 +58,7 @@ export default function HouseLiveWorkspace({ onHistorical, onReturn }: { onHisto
       const value = request!.navigation === "pop" && current?.view.run.id === request!.runId
         ? current : await loadHouseLive(request!, controller.signal);
       if (!isCurrent()) return;
-      const selection = request!.selection;
+      const selection = requestedSelection(request!);
       if (selection.raceId && !value.view.races.some(race => race.id === selection.raceId))
         throw Error("The district in this link is not part of the selected current House forecast.");
       if (selection.comparisonId && (selection.comparisonId === value.view.run.id ||
@@ -98,7 +104,7 @@ export default function HouseLiveWorkspace({ onHistorical, onReturn }: { onHisto
   }, [publication, comparisonId, comparisonAttempt]);
 
   const loadDefault = () => setRequest({ runId: null, selection: { runId: null, raceId: null, comparisonId: null }, navigation: "push", attempt: ++attempt.current });
-  const retry = () => request ? setRequest({ ...request, attempt: ++attempt.current }) : loadDefault();
+  const retry = () => request ? setRequest({ ...request, selection: requestedSelection(request), attempt: ++attempt.current }) : loadDefault();
   function chooseModel(id: string) {
     const entry = publication?.catalog.entries.find(entry => entry.id === id);
     if (!entry || busy) return;
@@ -108,6 +114,8 @@ export default function HouseLiveWorkspace({ onHistorical, onReturn }: { onHisto
   }
   function selectRace(id: string) {
     if (!publication) return;
+    // Keep the latest explicit choice with this request without restarting it.
+    if (request?.attempt === attempt.current) latestDistrict.current = { attempt: request.attempt, raceId: id };
     history.replaceState(null, "", houseLiveSelectionUrl(publication, { raceId: id, comparisonId }));
     setRaceId(id);
   }
