@@ -1,0 +1,106 @@
+{
+  "schema": "E01AggregateRuntimeSuppliedPointCheckV1",
+  "status": "passed",
+  "preparation_plan_sha256": "cfe669f6cef8cec82702b03e9ced060edf022fd434df131483515a054d24aef9",
+  "checker_sha256": "a493d4884b8a222fdb6bc809770571ded611592e8496f1dab01635bab76d9abc",
+  "requirements_sha256": "167a349b4bdf7dc42ee0820602786d6d7c765dc5a97f6bec87f51df3fe7d9748",
+  "versions": {
+    "numpy": "2.4.4",
+    "pandas": "2.3.3",
+    "scipy": "1.17.1",
+    "pydantic": "2.12.5",
+    "pymc": "5.28.0",
+    "pytensor": "2.38.2",
+    "arviz": "0.22.0",
+    "h5py": "3.16.0",
+    "h5netcdf": "1.8.1"
+  },
+  "pymc_imported_version": "5.28.0",
+  "supplied_point_checks": [
+    {
+      "arm": "H0",
+      "law_hash": "31c13bafb80b3661ecdf0fbda41f0e50bda078205b5c3eca4f7469fb83d8b26c",
+      "points": [
+        {
+          "point_index": 0,
+          "errors": {
+            "natural_log_density": 7.393521741505538e-07,
+            "factor_max_absolute_error": 2.4663808773084384e-09,
+            "jacobian_identity_error": 9.769962616701378e-15,
+            "transformed_gradient": 1.2789769243681803e-13
+          }
+        },
+        {
+          "point_index": 1,
+          "errors": {
+            "natural_log_density": 7.393520320420066e-07,
+            "factor_max_absolute_error": 2.4663804332192285e-09,
+            "jacobian_identity_error": 7.438494264988549e-15,
+            "transformed_gradient": 8.260059303211165e-14
+          }
+        }
+      ],
+      "offset_difference": 1.4210854715202004e-13
+    },
+    {
+      "arm": "F0",
+      "law_hash": "b4d5deaaa6beb2bc51a0637300bf3965426b6af364b7a89dfab012b16868729c",
+      "points": [
+        {
+          "point_index": 0,
+          "errors": {
+            "natural_log_density": 7.393525152110669e-07,
+            "factor_max_absolute_error": 2.466381765486858e-09,
+            "jacobian_identity_error": 9.769962616701378e-15,
+            "transformed_gradient": 4.263256414560601e-13
+          }
+        },
+        {
+          "point_index": 1,
+          "errors": {
+            "natural_log_density": 7.393521457288443e-07,
+            "factor_max_absolute_error": 2.4663808773084384e-09,
+            "jacobian_identity_error": 7.438494264988549e-15,
+            "transformed_gradient": 9.237055564881302e-14
+          }
+        }
+      ],
+      "offset_difference": 3.694822225952521e-13
+    },
+    {
+      "arm": "E01",
+      "law_hash": "a9d7cb2bbc45b97c190be102b55934430f0ca3fccec502aded6d7b6cd31c544f",
+      "points": [
+        {
+          "point_index": 0,
+          "errors": {
+            "natural_log_density": 7.393524015242292e-07,
+            "factor_max_absolute_error": 2.4663808773084384e-09,
+            "jacobian_identity_error": 9.769962616701378e-15,
+            "transformed_gradient": 5.684341886080802e-14
+          }
+        },
+        {
+          "point_index": 1,
+          "errors": {
+            "natural_log_density": 7.393521173071349e-07,
+            "factor_max_absolute_error": 2.4663808773084384e-09,
+            "jacobian_identity_error": 2.098321516541546e-14,
+            "transformed_gradient": 1.4566126083082054e-13
+          }
+        }
+      ],
+      "offset_difference": 2.8421709430404007e-13
+    }
+  ],
+  "diagnostic_api_fixture": {
+    "rank_rhat": 1.0006065071801495,
+    "bulk_ess": 4036.6502072284025,
+    "tail_ess": 3929.0699591056737
+  },
+  "netcdf_fixture_round_trip": true,
+  "normalization_roundoff_scope": "per-factor <=5e-9 and state-invariant aggregate offset at two supplied points; owner law unchanged",
+  "mcmc_launched": false,
+  "target_labels_scored": false,
+  "forecast_qualified": false
+}

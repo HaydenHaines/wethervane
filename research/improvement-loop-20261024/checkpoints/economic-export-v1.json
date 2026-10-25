@@ -1,0 +1,815 @@
+{
+  "schema_version": 1,
+  "recorder_only": true,
+  "cycle": "e01-aggregate-cpi-20261025",
+  "binding": {
+    "hypothesis": "One sign-free presidential-party-oriented headline CPI mean feature may improve earlier-information aggregate Senate predictions beyond the existing context and national-cycle model. This is incremental aggregate evidence, not a weakest-count-layer ranking.",
+    "incumbent_config": {
+      "folds": [
+        {
+          "F0_law_hash": "b4d5deaaa6beb2bc51a0637300bf3965426b6af364b7a89dfab012b16868729c",
+          "F0_recipe": {
+            "denominator": "D_plus_R",
+            "providers": [
+              {
+                "covariate_evidence_ids": [],
+                "instance_id": "candidate",
+                "kernel": "linear",
+                "kind": "mean",
+                "parameters": [
+                  {
+                    "mean": 0.0,
+                    "owner": "candidate",
+                    "parameter_id": "candidate.incumbency",
+                    "sd": 0.5
+                  }
+                ],
+                "provider_id": "aggregate_candidate_incumbency_v1",
+                "role": "fundamentals",
+                "scale_prior_sd": null,
+                "source_sha256": "583f4e204360fc71f980bd70a86aa3f27afaefaee13a27c5f1833b8b54ae5366",
+                "terms": [
+                  {
+                    "coefficient": {
+                      "parameter_id": "candidate.incumbency"
+                    },
+                    "feature_id": "incumbency",
+                    "owner": "candidate",
+                    "term_id": "candidate.0"
+                  }
+                ]
+              },
+              {
+                "covariate_evidence_ids": [],
+                "instance_id": "carryover",
+                "kernel": "linear",
+                "kind": "mean",
+                "parameters": [
+                  {
+                    "mean": 0.0,
+                    "owner": "carryover",
+                    "parameter_id": "environment.carryover",
+                    "sd": 0.5
+                  }
+                ],
+                "provider_id": "aggregate_national_carryover_v1",
+                "role": "environment",
+                "scale_prior_sd": null,
+                "source_sha256": "583f4e204360fc71f980bd70a86aa3f27afaefaee13a27c5f1833b8b54ae5366",
+                "terms": [
+                  {
+                    "coefficient": {
+                      "parameter_id": "environment.carryover"
+                    },
+                    "feature_id": "national",
+                    "owner": "carryover",
+                    "term_id": "carryover.0"
+                  }
+                ]
+              },
+              {
+                "covariate_evidence_ids": [],
+                "instance_id": "context",
+                "kernel": "linear",
+                "kind": "mean",
+                "parameters": [
+                  {
+                    "mean": 0.0,
+                    "owner": "context",
+                    "parameter_id": "environment.midterm",
+                    "sd": 0.15
+                  },
+                  {
+                    "mean": 0.0,
+                    "owner": "context",
+                    "parameter_id": "environment.party",
+                    "sd": 0.1
+                  }
+                ],
+                "provider_id": "aggregate_presidential_context_v1",
+                "role": "environment",
+                "scale_prior_sd": null,
+                "source_sha256": "583f4e204360fc71f980bd70a86aa3f27afaefaee13a27c5f1833b8b54ae5366",
+                "terms": [
+                  {
+                    "coefficient": {
+                      "parameter_id": "environment.party"
+                    },
+                    "feature_id": "party",
+                    "owner": "context",
+                    "term_id": "context.0"
+                  },
+                  {
+                    "coefficient": {
+                      "parameter_id": "environment.midterm"
+                    },
+                    "feature_id": "party_midterm",
+                    "owner": "context",
+                    "term_id": "context.1"
+                  }
+                ]
+              },
+              {
+                "covariate_evidence_ids": [],
+                "instance_id": "cycle",
+                "kernel": "normal_shared",
+                "kind": "cycle",
+                "parameters": [],
+                "provider_id": "aggregate_cycle_normal_v1",
+                "role": "environment",
+                "scale_prior_sd": 0.2,
+                "source_sha256": "583f4e204360fc71f980bd70a86aa3f27afaefaee13a27c5f1833b8b54ae5366",
+                "terms": []
+              },
+              {
+                "covariate_evidence_ids": [],
+                "instance_id": "poll",
+                "kernel": "identity",
+                "kind": "poll",
+                "parameters": [],
+                "provider_id": "aggregate_poll_gaussian_v1",
+                "role": "measurement",
+                "scale_prior_sd": null,
+                "source_sha256": "583f4e204360fc71f980bd70a86aa3f27afaefaee13a27c5f1833b8b54ae5366",
+                "terms": []
+              },
+              {
+                "covariate_evidence_ids": [],
+                "instance_id": "race",
+                "kernel": "student_t5",
+                "kind": "race",
+                "parameters": [],
+                "provider_id": "aggregate_race_student_t5_v1",
+                "role": "fundamentals",
+                "scale_prior_sd": 0.5,
+                "source_sha256": "583f4e204360fc71f980bd70a86aa3f27afaefaee13a27c5f1833b8b54ae5366",
+                "terms": []
+              },
+              {
+                "covariate_evidence_ids": [],
+                "instance_id": "structure",
+                "kernel": "linear",
+                "kind": "mean",
+                "parameters": [
+                  {
+                    "mean": 0.0,
+                    "owner": "structure",
+                    "parameter_id": "structure.office",
+                    "sd": 0.5
+                  },
+                  {
+                    "mean": 1.0,
+                    "owner": "structure",
+                    "parameter_id": "structure.state_slope",
+                    "sd": 0.35
+                  }
+                ],
+                "provider_id": "aggregate_structure_v1",
+                "role": "fundamentals",
+                "scale_prior_sd": null,
+                "source_sha256": "583f4e204360fc71f980bd70a86aa3f27afaefaee13a27c5f1833b8b54ae5366",
+                "terms": [
+                  {
+                    "coefficient": {
+                      "parameter_id": "structure.office"
+                    },
+                    "feature_id": "one",
+                    "owner": "structure",
+                    "term_id": "structure.0"
+                  },
+                  {
+                    "coefficient": {
+                      "parameter_id": "structure.state_slope"
+                    },
+                    "feature_id": "relative_lean",
+                    "owner": "structure",
+                    "term_id": "structure.1"
+                  }
+                ]
+              }
+            ],
+            "target_id": "senate_aggregate_logit_empirical_mixture_v1",
+            "universe": "ordinary_DR_contests"
+          },
+          "H0_law_hash": "31c13bafb80b3661ecdf0fbda41f0e50bda078205b5c3eca4f7469fb83d8b26c",
+          "target_cycle": 2018
+        },
+        {
+          "F0_law_hash": "ee5a16b769a483130ed0fab6682c38fc01834a915b7677793243e85823296865",
+          "F0_recipe": {
+            "denominator": "D_plus_R",
+            "providers": [
+              {
+                "covariate_evidence_ids": [],
+                "instance_id": "candidate",
+                "kernel": "linear",
+                "kind": "mean",
+                "parameters": [
+                  {
+                    "mean": 0.0,
+                    "owner": "candidate",
+                    "parameter_id": "candidate.incumbency",
+                    "sd": 0.5
+                  }
+                ],
+                "provider_id": "aggregate_candidate_incumbency_v1",
+                "role": "fundamentals",
+                "scale_prior_sd": null,
+                "source_sha256": "583f4e204360fc71f980bd70a86aa3f27afaefaee13a27c5f1833b8b54ae5366",
+                "terms": [
+                  {
+                    "coefficient": {
+                      "parameter_id": "candidate.incumbency"
+                    },
+                    "feature_id": "incumbency",
+                    "owner": "candidate",
+                    "term_id": "candidate.0"
+                  }
+                ]
+              },
+              {
+                "covariate_evidence_ids": [],
+                "instance_id": "carryover",
+                "kernel": "linear",
+                "kind": "mean",
+                "parameters": [
+                  {
+                    "mean": 0.0,
+                    "owner": "carryover",
+                    "parameter_id": "environment.carryover",
+                    "sd": 0.5
+                  }
+                ],
+                "provider_id": "aggregate_national_carryover_v1",
+                "role": "environment",
+                "scale_prior_sd": null,
+                "source_sha256": "583f4e204360fc71f980bd70a86aa3f27afaefaee13a27c5f1833b8b54ae5366",
+                "terms": [
+                  {
+                    "coefficient": {
+                      "parameter_id": "environment.carryover"
+                    },
+                    "feature_id": "national",
+                    "owner": "carryover",
+                    "term_id": "carryover.0"
+                  }
+                ]
+              },
+              {
+                "covariate_evidence_ids": [],
+                "instance_id": "context",
+                "kernel": "linear",
+                "kind": "mean",
+                "parameters": [
+                  {
+                    "mean": 0.0,
+                    "owner": "context",
+                    "parameter_id": "environment.midterm",
+                    "sd": 0.15
+                  },
+                  {
+                    "mean": 0.0,
+                    "owner": "context",
+                    "parameter_id": "environment.party",
+                    "sd": 0.1
+                  }
+                ],
+                "provider_id": "aggregate_presidential_context_v1",
+                "role": "environment",
+                "scale_prior_sd": null,
+                "source_sha256": "583f4e204360fc71f980bd70a86aa3f27afaefaee13a27c5f1833b8b54ae5366",
+                "terms": [
+                  {
+                    "coefficient": {
+                      "parameter_id": "environment.party"
+                    },
+                    "feature_id": "party",
+                    "owner": "context",
+                    "term_id": "context.0"
+                  },
+                  {
+                    "coefficient": {
+                      "parameter_id": "environment.midterm"
+                    },
+                    "feature_id": "party_midterm",
+                    "owner": "context",
+                    "term_id": "context.1"
+                  }
+                ]
+              },
+              {
+                "covariate_evidence_ids": [],
+                "instance_id": "cycle",
+                "kernel": "normal_shared",
+                "kind": "cycle",
+                "parameters": [],
+                "provider_id": "aggregate_cycle_normal_v1",
+                "role": "environment",
+                "scale_prior_sd": 0.2,
+                "source_sha256": "583f4e204360fc71f980bd70a86aa3f27afaefaee13a27c5f1833b8b54ae5366",
+                "terms": []
+              },
+              {
+                "covariate_evidence_ids": [],
+                "instance_id": "poll",
+                "kernel": "identity",
+                "kind": "poll",
+                "parameters": [],
+                "provider_id": "aggregate_poll_gaussian_v1",
+                "role": "measurement",
+                "scale_prior_sd": null,
+                "source_sha256": "583f4e204360fc71f980bd70a86aa3f27afaefaee13a27c5f1833b8b54ae5366",
+                "terms": []
+              },
+              {
+                "covariate_evidence_ids": [],
+                "instance_id": "race",
+                "kernel": "student_t5",
+                "kind": "race",
+                "parameters": [],
+                "provider_id": "aggregate_race_student_t5_v1",
+                "role": "fundamentals",
+                "scale_prior_sd": 0.5,
+                "source_sha256": "583f4e204360fc71f980bd70a86aa3f27afaefaee13a27c5f1833b8b54ae5366",
+                "terms": []
+              },
+              {
+                "covariate_evidence_ids": [],
+                "instance_id": "structure",
+                "kernel": "linear",
+                "kind": "mean",
+                "parameters": [
+                  {
+                    "mean": 0.0,
+                    "owner": "structure",
+                    "parameter_id": "structure.office",
+                    "sd": 0.5
+                  },
+                  {
+                    "mean": 1.0,
+                    "owner": "structure",
+                    "parameter_id": "structure.state_slope",
+                    "sd": 0.35
+                  }
+                ],
+                "provider_id": "aggregate_structure_v1",
+                "role": "fundamentals",
+                "scale_prior_sd": null,
+                "source_sha256": "583f4e204360fc71f980bd70a86aa3f27afaefaee13a27c5f1833b8b54ae5366",
+                "terms": [
+                  {
+                    "coefficient": {
+                      "parameter_id": "structure.office"
+                    },
+                    "feature_id": "one",
+                    "owner": "structure",
+                    "term_id": "structure.0"
+                  },
+                  {
+                    "coefficient": {
+                      "parameter_id": "structure.state_slope"
+                    },
+                    "feature_id": "relative_lean",
+                    "owner": "structure",
+                    "term_id": "structure.1"
+                  }
+                ]
+              }
+            ],
+            "target_id": "senate_aggregate_logit_empirical_mixture_v1",
+            "universe": "ordinary_DR_contests"
+          },
+          "H0_law_hash": "6604ad131e01cfd35edfda51e2ec28a8f7f424ab03a8d64bd122f55614188057",
+          "target_cycle": 2020
+        },
+        {
+          "F0_law_hash": "02e20ed3613eec1ef9f8f5b7b1347095a9fe39345dea467ca1d618be808a03c3",
+          "F0_recipe": {
+            "denominator": "D_plus_R",
+            "providers": [
+              {
+                "covariate_evidence_ids": [],
+                "instance_id": "candidate",
+                "kernel": "linear",
+                "kind": "mean",
+                "parameters": [
+                  {
+                    "mean": 0.0,
+                    "owner": "candidate",
+                    "parameter_id": "candidate.incumbency",
+                    "sd": 0.5
+                  }
+                ],
+                "provider_id": "aggregate_candidate_incumbency_v1",
+                "role": "fundamentals",
+                "scale_prior_sd": null,
+                "source_sha256": "583f4e204360fc71f980bd70a86aa3f27afaefaee13a27c5f1833b8b54ae5366",
+                "terms": [
+                  {
+                    "coefficient": {
+                      "parameter_id": "candidate.incumbency"
+                    },
+                    "feature_id": "incumbency",
+                    "owner": "candidate",
+                    "term_id": "candidate.0"
+                  }
+                ]
+              },
+              {
+                "covariate_evidence_ids": [],
+                "instance_id": "carryover",
+                "kernel": "linear",
+                "kind": "mean",
+                "parameters": [
+                  {
+                    "mean": 0.0,
+                    "owner": "carryover",
+                    "parameter_id": "environment.carryover",
+                    "sd": 0.5
+                  }
+                ],
+                "provider_id": "aggregate_national_carryover_v1",
+                "role": "environment",
+                "scale_prior_sd": null,
+                "source_sha256": "583f4e204360fc71f980bd70a86aa3f27afaefaee13a27c5f1833b8b54ae5366",
+                "terms": [
+                  {
+                    "coefficient": {
+                      "parameter_id": "environment.carryover"
+                    },
+                    "feature_id": "national",
+                    "owner": "carryover",
+                    "term_id": "carryover.0"
+                  }
+                ]
+              },
+              {
+                "covariate_evidence_ids": [],
+                "instance_id": "context",
+                "kernel": "linear",
+                "kind": "mean",
+                "parameters": [
+                  {
+                    "mean": 0.0,
+                    "owner": "context",
+                    "parameter_id": "environment.midterm",
+                    "sd": 0.15
+                  },
+                  {
+                    "mean": 0.0,
+                    "owner": "context",
+                    "parameter_id": "environment.party",
+                    "sd": 0.1
+                  }
+                ],
+                "provider_id": "aggregate_presidential_context_v1",
+                "role": "environment",
+                "scale_prior_sd": null,
+                "source_sha256": "583f4e204360fc71f980bd70a86aa3f27afaefaee13a27c5f1833b8b54ae5366",
+                "terms": [
+                  {
+                    "coefficient": {
+                      "parameter_id": "environment.party"
+                    },
+                    "feature_id": "party",
+                    "owner": "context",
+                    "term_id": "context.0"
+                  },
+                  {
+                    "coefficient": {
+                      "parameter_id": "environment.midterm"
+                    },
+                    "feature_id": "party_midterm",
+                    "owner": "context",
+                    "term_id": "context.1"
+                  }
+                ]
+              },
+              {
+                "covariate_evidence_ids": [],
+                "instance_id": "cycle",
+                "kernel": "normal_shared",
+                "kind": "cycle",
+                "parameters": [],
+                "provider_id": "aggregate_cycle_normal_v1",
+                "role": "environment",
+                "scale_prior_sd": 0.2,
+                "source_sha256": "583f4e204360fc71f980bd70a86aa3f27afaefaee13a27c5f1833b8b54ae5366",
+                "terms": []
+              },
+              {
+                "covariate_evidence_ids": [],
+                "instance_id": "poll",
+                "kernel": "identity",
+                "kind": "poll",
+                "parameters": [],
+                "provider_id": "aggregate_poll_gaussian_v1",
+                "role": "measurement",
+                "scale_prior_sd": null,
+                "source_sha256": "583f4e204360fc71f980bd70a86aa3f27afaefaee13a27c5f1833b8b54ae5366",
+                "terms": []
+              },
+              {
+                "covariate_evidence_ids": [],
+                "instance_id": "race",
+                "kernel": "student_t5",
+                "kind": "race",
+                "parameters": [],
+                "provider_id": "aggregate_race_student_t5_v1",
+                "role": "fundamentals",
+                "scale_prior_sd": 0.5,
+                "source_sha256": "583f4e204360fc71f980bd70a86aa3f27afaefaee13a27c5f1833b8b54ae5366",
+                "terms": []
+              },
+              {
+                "covariate_evidence_ids": [],
+                "instance_id": "structure",
+                "kernel": "linear",
+                "kind": "mean",
+                "parameters": [
+                  {
+                    "mean": 0.0,
+                    "owner": "structure",
+                    "parameter_id": "structure.office",
+                    "sd": 0.5
+                  },
+                  {
+                    "mean": 1.0,
+                    "owner": "structure",
+                    "parameter_id": "structure.state_slope",
+                    "sd": 0.35
+                  }
+                ],
+                "provider_id": "aggregate_structure_v1",
+                "role": "fundamentals",
+                "scale_prior_sd": null,
+                "source_sha256": "583f4e204360fc71f980bd70a86aa3f27afaefaee13a27c5f1833b8b54ae5366",
+                "terms": [
+                  {
+                    "coefficient": {
+                      "parameter_id": "structure.office"
+                    },
+                    "feature_id": "one",
+                    "owner": "structure",
+                    "term_id": "structure.0"
+                  },
+                  {
+                    "coefficient": {
+                      "parameter_id": "structure.state_slope"
+                    },
+                    "feature_id": "relative_lean",
+                    "owner": "structure",
+                    "term_id": "structure.1"
+                  }
+                ]
+              }
+            ],
+            "target_id": "senate_aggregate_logit_empirical_mixture_v1",
+            "universe": "ordinary_DR_contests"
+          },
+          "H0_law_hash": "76376e06189b4c68d33a3209d82cdcb79cd5314b19e75162321f7b5efedc44cb",
+          "target_cycle": 2022
+        },
+        {
+          "F0_law_hash": "90a8ecd7c7efba37f20336255e771d8335126007333d1384546fca21fc8cbe87",
+          "F0_recipe": {
+            "denominator": "D_plus_R",
+            "providers": [
+              {
+                "covariate_evidence_ids": [],
+                "instance_id": "candidate",
+                "kernel": "linear",
+                "kind": "mean",
+                "parameters": [
+                  {
+                    "mean": 0.0,
+                    "owner": "candidate",
+                    "parameter_id": "candidate.incumbency",
+                    "sd": 0.5
+                  }
+                ],
+                "provider_id": "aggregate_candidate_incumbency_v1",
+                "role": "fundamentals",
+                "scale_prior_sd": null,
+                "source_sha256": "583f4e204360fc71f980bd70a86aa3f27afaefaee13a27c5f1833b8b54ae5366",
+                "terms": [
+                  {
+                    "coefficient": {
+                      "parameter_id": "candidate.incumbency"
+                    },
+                    "feature_id": "incumbency",
+                    "owner": "candidate",
+                    "term_id": "candidate.0"
+                  }
+                ]
+              },
+              {
+                "covariate_evidence_ids": [],
+                "instance_id": "carryover",
+                "kernel": "linear",
+                "kind": "mean",
+                "parameters": [
+                  {
+                    "mean": 0.0,
+                    "owner": "carryover",
+                    "parameter_id": "environment.carryover",
+                    "sd": 0.5
+                  }
+                ],
+                "provider_id": "aggregate_national_carryover_v1",
+                "role": "environment",
+                "scale_prior_sd": null,
+                "source_sha256": "583f4e204360fc71f980bd70a86aa3f27afaefaee13a27c5f1833b8b54ae5366",
+                "terms": [
+                  {
+                    "coefficient": {
+                      "parameter_id": "environment.carryover"
+                    },
+                    "feature_id": "national",
+                    "owner": "carryover",
+                    "term_id": "carryover.0"
+                  }
+                ]
+              },
+              {
+                "covariate_evidence_ids": [],
+                "instance_id": "context",
+                "kernel": "linear",
+                "kind": "mean",
+                "parameters": [
+                  {
+                    "mean": 0.0,
+                    "owner": "context",
+                    "parameter_id": "environment.midterm",
+                    "sd": 0.15
+                  },
+                  {
+                    "mean": 0.0,
+                    "owner": "context",
+                    "parameter_id": "environment.party",
+                    "sd": 0.1
+                  }
+                ],
+                "provider_id": "aggregate_presidential_context_v1",
+                "role": "environment",
+                "scale_prior_sd": null,
+                "source_sha256": "583f4e204360fc71f980bd70a86aa3f27afaefaee13a27c5f1833b8b54ae5366",
+                "terms": [
+                  {
+                    "coefficient": {
+                      "parameter_id": "environment.party"
+                    },
+                    "feature_id": "party",
+                    "owner": "context",
+                    "term_id": "context.0"
+                  },
+                  {
+                    "coefficient": {
+                      "parameter_id": "environment.midterm"
+                    },
+                    "feature_id": "party_midterm",
+                    "owner": "context",
+                    "term_id": "context.1"
+                  }
+                ]
+              },
+              {
+                "covariate_evidence_ids": [],
+                "instance_id": "cycle",
+                "kernel": "normal_shared",
+                "kind": "cycle",
+                "parameters": [],
+                "provider_id": "aggregate_cycle_normal_v1",
+                "role": "environment",
+                "scale_prior_sd": 0.2,
+                "source_sha256": "583f4e204360fc71f980bd70a86aa3f27afaefaee13a27c5f1833b8b54ae5366",
+                "terms": []
+              },
+              {
+                "covariate_evidence_ids": [],
+                "instance_id": "poll",
+                "kernel": "identity",
+                "kind": "poll",
+                "parameters": [],
+                "provider_id": "aggregate_poll_gaussian_v1",
+                "role": "measurement",
+                "scale_prior_sd": null,
+                "source_sha256": "583f4e204360fc71f980bd70a86aa3f27afaefaee13a27c5f1833b8b54ae5366",
+                "terms": []
+              },
+              {
+                "covariate_evidence_ids": [],
+                "instance_id": "race",
+                "kernel": "student_t5",
+                "kind": "race",
+                "parameters": [],
+                "provider_id": "aggregate_race_student_t5_v1",
+                "role": "fundamentals",
+                "scale_prior_sd": 0.5,
+                "source_sha256": "583f4e204360fc71f980bd70a86aa3f27afaefaee13a27c5f1833b8b54ae5366",
+                "terms": []
+              },
+              {
+                "covariate_evidence_ids": [],
+                "instance_id": "structure",
+                "kernel": "linear",
+                "kind": "mean",
+                "parameters": [
+                  {
+                    "mean": 0.0,
+                    "owner": "structure",
+                    "parameter_id": "structure.office",
+                    "sd": 0.5
+                  },
+                  {
+                    "mean": 1.0,
+                    "owner": "structure",
+                    "parameter_id": "structure.state_slope",
+                    "sd": 0.35
+                  }
+                ],
+                "provider_id": "aggregate_structure_v1",
+                "role": "fundamentals",
+                "scale_prior_sd": null,
+                "source_sha256": "583f4e204360fc71f980bd70a86aa3f27afaefaee13a27c5f1833b8b54ae5366",
+                "terms": [
+                  {
+                    "coefficient": {
+                      "parameter_id": "structure.office"
+                    },
+                    "feature_id": "one",
+                    "owner": "structure",
+                    "term_id": "structure.0"
+                  },
+                  {
+                    "coefficient": {
+                      "parameter_id": "structure.state_slope"
+                    },
+                    "feature_id": "relative_lean",
+                    "owner": "structure",
+                    "term_id": "structure.1"
+                  }
+                ]
+              }
+            ],
+            "target_id": "senate_aggregate_logit_empirical_mixture_v1",
+            "universe": "ordinary_DR_contests"
+          },
+          "H0_law_hash": "84ef0f765317d4fb4f53d060fa6d859a9b661db76b6599a85af46624e221e69f",
+          "target_cycle": 2024
+        }
+      ],
+      "kind": "existing_aggregate_relative_context_with_refreshed_history_reference",
+      "preparation_plan_sha256": "cfe669f6cef8cec82702b03e9ced060edf022fd434df131483515a054d24aef9"
+    },
+    "scope": {
+      "count_stack_qualification": false,
+      "execution_plan_pending": true,
+      "forecast_horizon_days": 14,
+      "initial_execution": "fundamentals_only",
+      "primary_arms": [
+        "H0",
+        "F0",
+        "E01"
+      ],
+      "sensitivity": "E01_SD_0.025_four_complete_fits",
+      "source_qualification": "retrospective_roster_and_archive_proxy",
+      "target": "ordinary_Senate_D_R_conditional_share",
+      "tiers": {
+        "A": [
+          2018,
+          2022
+        ],
+        "B": [
+          2020,
+          2024
+        ]
+      }
+    },
+    "target_layer": "aggregate_fundamentals_mean_preparatory_comparator"
+  },
+  "checkpoints": [
+    {
+      "revision": 0,
+      "status": "research",
+      "note": "Cycle recorded",
+      "outcome": "success",
+      "recommendation": null,
+      "recorded_at": "2026-10-25T04:59:33.557225+00:00",
+      "references": {}
+    },
+    {
+      "revision": 1,
+      "status": "planned",
+      "note": "Frozen aggregate H0/F0/E01 preparation accepted after independent and root review. Sixteen full fits planned including the declared tighter prior sensitivity. Execution runner, scores, prediction precision and runtime still require review; no fit launched.",
+      "outcome": "success",
+      "recommendation": null,
+      "recorded_at": "2026-10-25T04:59:33.649358+00:00",
+      "references": {
+        "evaluation": "a8f3f7514a5a68b3c821d4cbf6db451cc0458b479248cf748680b2db585218c4",
+        "plan": "cfe669f6cef8cec82702b03e9ced060edf022fd434df131483515a054d24aef9",
+        "review": "e5e30029be0dddc134277787563691521f223a1001517d55a8f1354a20a21b3d"
+      }
+    }
+  ]
+}

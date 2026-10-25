@@ -1,0 +1,49 @@
+{
+  "schema": "E01AggregateRuntimeResearchAcceptanceV1",
+  "status": "accepted_for_reviewed_execution",
+  "recorded_utc": "2026-10-25T05:01:14.324641+00:00",
+  "scope": "dedicated_runtime_supplied_point_and_diagnostic_serialization_compatibility",
+  "python": "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/economic-v1-env/bin/python",
+  "result": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/economic-execution-v1/runtime/check-result.json",
+    "sha256": "ff4add4f607a77d01b3567113557695adf83e7f77d362031659ff98426242706"
+  },
+  "requirements": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/economic-execution-v1/runtime/requirements.txt",
+    "sha256": "167a349b4bdf7dc42ee0820602786d6d7c765dc5a97f6bec87f51df3fe7d9748"
+  },
+  "checker": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/economic-execution-v1/runtime/check_runtime.py",
+    "sha256": "a493d4884b8a222fdb6bc809770571ded611592e8496f1dab01635bab76d9abc"
+  },
+  "independent_review": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/runtime-review-luna-v1.md",
+    "sha256": "2415f9330d2b9b8f4fb1f15cde9918621589f87f2af3b66db8ca10927a460fb2"
+  },
+  "initial_failure": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/economic-execution-v1/runtime/initial-check-failure.json",
+    "sha256": "daa5641cef86e063455e0c9894a2fe558824155f137860d88af93ae39358bd08"
+  },
+  "factor_investigation": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/economic-execution-v1/runtime/normalizer-investigation-v1.json",
+    "sha256": "f0821bfd4abafc7fecef80140ec2a7cedd2c352b654d392d516b1e7b8ad57e09"
+  },
+  "versions": {
+    "numpy": "2.4.4",
+    "pandas": "2.3.3",
+    "scipy": "1.17.1",
+    "pydantic": "2.12.5",
+    "pymc": "5.28.0",
+    "pytensor": "2.38.2",
+    "arviz": "0.22.0",
+    "h5py": "3.16.0",
+    "h5netcdf": "1.8.1"
+  },
+  "preparation_plan_sha256": "cfe669f6cef8cec82702b03e9ced060edf022fd434df131483515a054d24aef9",
+  "execution_plan_review_still_required": true,
+  "mcmc_launched": false,
+  "forecast_qualified": false,
+  "owner_law_changed": false,
+  "inference_gates_changed": false,
+  "numerical_boundary": "Observed per-factor PyMC/SciPy normalization discrepancy below 5e-9, joint offset about 7.4e-7 remains disclosed, gradients and offset invariance checked at two supplied states; no universal identity claim."
+}
