@@ -1,0 +1,25 @@
+{
+  "schema": "momentum_identity_source_attempts_v1",
+  "attempts": [
+    {
+      "url": "https://sos.oregon.gov/elections/Documents/results/november-general-2022.pdf",
+      "status": "HTTP 404 on direct retrieval",
+      "note": "Search indexing exposed official Oregon results text for Jo Rae Perkins and 788,991 votes. The attempted URL bytes were not obtained; do not count indexed text as a retained source artifact."
+    },
+    {
+      "url": "https://sos.oregon.gov/blue-book/Documents/elections/2022-general.pdf",
+      "status": "HTTP 404 on direct retrieval",
+      "note": "No local PDF bytes retained. Official FEC results PDF independently reports the Oregon result under the Joe Rae spelling."
+    },
+    {
+      "url": "https://enr.indianavoters.in.gov/archive/2022General/index.html",
+      "status": "downloaded shell; no result table in captured HTML",
+      "note": "The saved page is an Angular shell. Its template \u201cmore information\u201d link resolved to a 404 path. FEC 2022 official result records were used for Indiana."
+    },
+    {
+      "url": "https://er.ncsbe.gov/?election_dt=11%2F08%2F2022",
+      "status": "downloaded shell; result rows not present in captured HTML",
+      "note": "Official page is dynamically rendered; exact Ted Budd result was visible in official indexed page/search content. Independently corroborated by FEC 2022 result PDF and workbook, which are retained."
+    }
+  ]
+}

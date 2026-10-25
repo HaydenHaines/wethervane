@@ -1,0 +1,277 @@
+{
+  "schema": "senate_momentum_descriptive_receipt_v2",
+  "source_scope": "eligible ordinary general D/R principal pair; retrospective archive; aggregator-created-plus-one-day availability proxy before election; not verified publication",
+  "identity_change": "three explicit reviewed 2022 aliases plus surrounding-whitespace FEC-ID key trim only",
+  "v1_plan_unchanged": true,
+  "identity_intake_receipt_sha256": "6aa19aa95aadd85a3a04a5802754c87ca1be835e265ddbf8088b26d0123be77f",
+  "helper_audits": [
+    {
+      "source_id": "538_senate_archive_v4",
+      "input_candidate_rows": 1555,
+      "input_questions": 684,
+      "retained_observations": 445,
+      "question_exclusions": {
+        "hypothetical": 10,
+        "unknown_population": 30,
+        "invalid_n_or_topline": 1,
+        "tracking_overlap": 30,
+        "alternate_question_same_sample": 168
+      },
+      "cutoff": "2018-11-05",
+      "roster_question_exclusions": {
+        "race_outside_eligible_roster": 59,
+        "question_not_actual_nominee_pair": 28
+      },
+      "cross_race_shared_sample_ids": 0
+    },
+    {
+      "source_id": "538_senate_archive_v4",
+      "input_candidate_rows": 1289,
+      "input_questions": 539,
+      "retained_observations": 435,
+      "question_exclusions": {
+        "unknown_population": 43,
+        "hypothetical": 4,
+        "tracking_overlap": 27,
+        "invalid_n_or_topline": 1,
+        "alternate_question_same_sample": 29
+      },
+      "cutoff": "2020-11-02",
+      "roster_question_exclusions": {
+        "question_not_actual_nominee_pair": 59,
+        "race_outside_eligible_roster": 229
+      },
+      "cross_race_shared_sample_ids": 0
+    },
+    {
+      "source_id": "538_senate_archive_v4",
+      "input_candidate_rows": 1238,
+      "input_questions": 523,
+      "retained_observations": 444,
+      "question_exclusions": {
+        "unknown_population": 7,
+        "hypothetical": 8,
+        "tracking_overlap": 11,
+        "alternate_question_same_sample": 53
+      },
+      "cutoff": "2022-11-07",
+      "roster_question_exclusions": {
+        "question_not_actual_nominee_pair": 125,
+        "race_outside_eligible_roster": 158
+      },
+      "cross_race_shared_sample_ids": 0
+    },
+    {
+      "source_id": "538_senate_archive_v4",
+      "input_candidate_rows": 2114,
+      "input_questions": 904,
+      "retained_observations": 744,
+      "question_exclusions": {
+        "hypothetical": 39,
+        "unknown_population": 8,
+        "invalid_n_or_topline": 4,
+        "alternate_question_same_sample": 109
+      },
+      "cutoff": "2024-11-04",
+      "roster_question_exclusions": {
+        "question_not_actual_nominee_pair": 140,
+        "race_outside_eligible_roster": 55
+      },
+      "cross_race_shared_sample_ids": 0
+    }
+  ],
+  "inputs": [
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-audit-v2/plan.json",
+      "sha256": "2312533373f59ea12dc0ce0ca6557ca80739382cc1d8e7894fb43bad8b8a9e5a",
+      "bytes": 1759
+    },
+    {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-intake-sol/event-roster-2018-2022.csv",
+      "sha256": "ee607d6d60f423e49c75e5c54d5fa241281db18613c4845f9712180c8f7a87f0",
+      "bytes": 31032
+    },
+    {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/cross-context-intake-sol/roster-2020-2024.csv",
+      "sha256": "5888ef979e96624fc57be165f067c8ceb2fe38c097023e1fc8b0453e2c71d4b1",
+      "bytes": 17909
+    },
+    {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/historical-intake-sol/derived/outcomes_allowed_cycles_SEPARATE.csv",
+      "sha256": "70f66904a37d05225b22061d63bb95ea1b3e6837146924a3477cb22bd8d3d9b3",
+      "bytes": 18263
+    },
+    {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/cross-context-intake-sol/outcomes-2020-SEPARATE.csv",
+      "sha256": "eb8e9562e589ca0341b48924653801e5e212b961ffe0364ef518aa24a280a47f",
+      "bytes": 5787
+    },
+    {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/cross-context-intake-sol/outcomes-2024-SEPARATE.csv",
+      "sha256": "ef3821e68c28d520279d91aa0b60b14845b3d38dd61a42950739b4d1e580f343",
+      "bytes": 10636
+    },
+    {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-intake-sol/candidates.csv",
+      "sha256": "bbbb600176526284ac58c52429ad028e7fc3322642382c74b7d273a7a8f3e32c",
+      "bytes": 538562
+    },
+    {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-intake-sol/official-outcomes/all-events-candidate-votes.csv",
+      "sha256": "ade2a8afeceb2207370a54ea11c02f3b0ff40ad9ae7bc346621bd88a97b7d7ab",
+      "bytes": 75340
+    },
+    {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/.redesign-runtime/forecast-20261007/polls/senate_polls_historical.csv",
+      "sha256": "09ae303a94f76dd761532fce7a356fe3b5beb1e24d4e5ba343c424c372fdfabf",
+      "bytes": 4535475
+    },
+    {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/src/forecasting/senate_data.py",
+      "sha256": "cc06e4be0979f811794ffe03a87808c1164dfa96d9b6c8aed2209c29f74648ff",
+      "bytes": 18537
+    },
+    {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/src/forecasting/poll_data.py",
+      "sha256": "9785255cfbfb3fbab1ac5d1ae78b82986eb37066b32f34caebf66c9ab63415d7",
+      "bytes": 17578
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-audit-v2/audit.py",
+      "sha256": "6e1959a38a199a21ff7664761350bbac5603db05dea781c86d781b9753b956f6",
+      "bytes": 13375
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-audit-v2/identity.py",
+      "sha256": "58280f3f9dc482570edd9d0c40795cf82fa14cf4a8b61f31d11d627e632a6a7e",
+      "bytes": 10579
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-audit-v2/v1-inventory.json",
+      "sha256": "0157621a50a2c01cdafc3d34784b496001093f50ce6f4a5f69ad7965cac7281f",
+      "bytes": 3113
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-audit-v2/reviewed-crosswalk.csv",
+      "sha256": "480799b9859e0962aed8fd45299065cf7d92273550e6daae86b57b42b679c0cd",
+      "bytes": 2028
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-identity-intake-luna-v2/receipt.json",
+      "sha256": "6aa19aa95aadd85a3a04a5802754c87ca1be835e265ddbf8088b26d0123be77f",
+      "bytes": 3572
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-identity-intake-luna-v2/REPORT.md",
+      "sha256": "3a1b73de20171eaaf472a2c2c3643866aa02554535898378478317c1238d43bd",
+      "bytes": 7047
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-identity-intake-luna-v2/crosswalk-proposal.csv",
+      "sha256": "480799b9859e0962aed8fd45299065cf7d92273550e6daae86b57b42b679c0cd",
+      "bytes": 2028
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-identity-intake-luna-v2/derived/ballot-list.txt",
+      "sha256": "dca232e1c830eb555814a6cb75b139f73415039f36992d2953a1e8e3250b20fb",
+      "bytes": 193880
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-identity-intake-luna-v2/derived/fec2022.txt",
+      "sha256": "a7274e5c4d39bbb00ba47ab2585c0643dc105dddd4869b1331e8f4374d57eb94",
+      "bytes": 667236
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-identity-intake-luna-v2/derived/pa-manual.txt",
+      "sha256": "5b1502b91f6fc8ae24a85ad18811a7191f0c3bb6ebcc335d9c446542e5084c09",
+      "bytes": 7095610
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-identity-intake-luna-v2/poll-roster-name-evidence.csv",
+      "sha256": "68566ac623e4002c8cef220cccad8f74a10a003507cca8881ae2f1a4b092a9b9",
+      "bytes": 643
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-identity-intake-luna-v2/raw/2022congressgecands.pdf",
+      "sha256": "205dd689d6f2a0a7468d291c5512bda181191bce9d6b260cc2f419b6fcff79ff",
+      "bytes": 572341
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-identity-intake-luna-v2/raw/fec_in_candidate.html",
+      "sha256": "c5b1200138e5697f93c747d6f621a627b0dd6afec6e15068eca0e195dca240c1",
+      "bytes": 63293
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-identity-intake-luna-v2/raw/fec_nc_candidate.html",
+      "sha256": "18c426c56bbdf2c42f6bdb82911399030308b4213f3d24f756ebdeb195d7d1ef",
+      "bytes": 64361
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-identity-intake-luna-v2/raw/fec_or_candidate.html",
+      "sha256": "e7fb9c0cdbe8dbd4c4a5f424f6988735956ffd2de8c750634bc96eb1ab8d5710",
+      "bytes": 66665
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-identity-intake-luna-v2/raw/fec_pa_candidate.html",
+      "sha256": "eac6585505cf0e8f35bc02237c1ca03083e5a45631635f8c68bb217007793505",
+      "bytes": 65363
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-identity-intake-luna-v2/raw/federalelections2022.pdf",
+      "sha256": "b1f92b288634814870e6c0e564f3ffa6592ed06a1390947078d799427d4332b5",
+      "bytes": 8047121
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-identity-intake-luna-v2/raw/federalelections2022.xlsx",
+      "sha256": "cdb258ea23803e50d752bcea19faa39b3c201eb960094bcb556c3a38c2350897",
+      "bytes": 3179722
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-identity-intake-luna-v2/raw/in_official_results_2022.html",
+      "sha256": "3114cf1a933f4f578e136f832127b83e319b1bc64e77fc145853ec4e387179d0",
+      "bytes": 18415
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-identity-intake-luna-v2/raw/nc_official_results.html",
+      "sha256": "4aedd3b22d656c502dd1c4c3aae1591684a5494b7ba84d1e1cdaa38141b843ed",
+      "bytes": 81837
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-identity-intake-luna-v2/raw/nc_senate_official_results.html",
+      "sha256": "4aedd3b22d656c502dd1c4c3aae1591684a5494b7ba84d1e1cdaa38141b843ed",
+      "bytes": 81837
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-identity-intake-luna-v2/raw/pa_manual_126.pdf",
+      "sha256": "c1c644d5bb6e434770380261041552b0723d0ff40b8a8d36128ecd4409dd9d83",
+      "bytes": 23933440
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-identity-intake-luna-v2/source-acquisition.json",
+      "sha256": "7887f9f416702b88ebb672c7b39f5b13ed7b6157b78612840cde715aca66c230",
+      "bytes": 3743
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-identity-intake-luna-v2/source-attempts.json",
+      "sha256": "ccce62e14e8f9ebbe279d1a8e8f8bbd20c7b88b834602ce4aee65e4a10b53223",
+      "bytes": 1433
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-identity-intake-luna-v2/source-inputs.json",
+      "sha256": "c86793213ab2e5c4632b31792e1e6af8d3e04bb40797ca29182fdeab749e248f",
+      "bytes": 1908
+    }
+  ],
+  "selected_polls": 2050,
+  "polls_before_truth_join": 2050,
+  "excluded_poll_rows_missing_truth": 0,
+  "eligible_races": {
+    "2018": 28,
+    "2020": 28,
+    "2022": 28,
+    "2024": 29
+  },
+  "fit": false,
+  "strict_asof_qualified": false,
+  "model_qualification": false
+}
