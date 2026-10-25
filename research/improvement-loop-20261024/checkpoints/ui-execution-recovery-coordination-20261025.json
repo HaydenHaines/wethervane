@@ -1,0 +1,28 @@
+{
+  "schema": "FrontendExecutionRecoveryCoordinationV1",
+  "issued_utc": "2026-10-25T17:09:39.730213+00:00",
+  "status": "independent_execution_work_in_progress_owner_jobs_unchanged",
+  "worktree": "/home/hayden/projects/ballotmancy-improvement-lab",
+  "scope": "Reusable single-attempt Linux execution/recovery around existing scientific CLIs. No scientific laws, native numerical gates, current owner jobs or live queue changed. A queue adapter and unattended scientific scheduler are later work.",
+  "existing_queue_source": {
+    "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-20261025/run_queue.py",
+    "sha256": "07538b0cfc7a71249b4528a6045e93e6de604f97ecf64d01b266cd96aabad76e"
+  },
+  "source_review_findings": [
+    {
+      "finding": "Adopted PIDs only affect worker capacity. They are removed when no longer live without any terminal receipt being added to results. A finished queue receipt alone therefore does not attest adopted-job completion.",
+      "scope": "Confirmed by reading run_queue.py. No completed queue receipt or incorrect forecast publication observed."
+    },
+    {
+      "finding": "Tracked-job success checks exit code and receipt status != missing. This is execution bookkeeping; it does not establish numerical or scientific qualification.",
+      "scope": "UI already requires exact all16 native publication qualification plus separate operator review."
+    },
+    {
+      "finding": "PID-only observation does not distinguish a reused PID; active/results/remaining job state is held in memory.",
+      "scope": "Future durable executor will bind boot ID/PID/start ticks and preserve unknown outcomes instead of relaunching."
+    }
+  ],
+  "requested_coordination": "Continue owner jobs as planned. Treat each native result/diagnostic/review as authoritative and keep queue status separate. Frontend is building/testing the reusable executor in its isolated improvement lab; integration into any active scientific queue is not requested.",
+  "user_correction": "No new saving of user configurations; scientific model/configuration/result history remains required.",
+  "transport": "Shared-file handoff. No direct-message delivery or read acknowledgment claimed."
+}
