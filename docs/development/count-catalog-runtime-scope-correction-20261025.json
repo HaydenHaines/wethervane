@@ -1,0 +1,24 @@
+{
+  "schema": "FrontendGPUScopeCorrectionV1",
+  "utc": "2026-10-25T19:23:10.719058+00:00",
+  "observation": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/checkpoints/gpu-texas-scope-observation-v2.json",
+    "sha256": "83f601f04148462d30d488a83208c8a5cefc63df2a613a6f1460dd08aad2321a"
+  },
+  "correction": "The active GPU run is Texas 2018 retrospective_proxy with cutoff 2018-10-23. The private count catalog and native adapter inspect a separate Texas 2026 actual_current configuration with cutoff 2026-10-20. These are distinct scientific tasks, not CPU/GPU versions of one task.",
+  "gpu_plan": {
+    "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/gpu-backend-implementation-20261025/texas-gpu-production-two-host-cores-v2/plan.json",
+    "sha256": "979899569e52dc57d1e389a7e2e754d7ad9932077fa26433337fdc39e2519975",
+    "size": 56507
+  },
+  "count_catalog_plan": {
+    "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/partial-affine-completion-root-v1/plan.json",
+    "sha256": "adef60442a7097dc581323f9e361bb2a75441e9292eb92912c2fa1a0900b61b1",
+    "size": 28106
+  },
+  "supersedes": "Earlier frontend preparation notes implying that the current GPU result is a successor of the recorded TX2026 count-application CPU plan. Those immutable receipts are preserved as history; this note corrects that interpretation.",
+  "integration_requirements": "Each completed result needs its own exact native target, scope, registration, request, prepared configuration, common joint output and review. Never attach TX2018 GPU results to the TX2026 catalog. Historical and current frontend views remain separately identified.",
+  "ownership": "GPU/Texas completion stays with session 01a173a3-fc75-7233-af2c-69be726131fc. Other CPU jobs and environments stay preserved.",
+  "runtime_preference": "For future compatible large batched work use documented isolated GPU route after model-specific parity and performance checks; no new job was launched.",
+  "status": "Read-only liveness confirmed; warmup is not posterior or forecast qualification."
+}
