@@ -33,6 +33,7 @@ jobs:
       - run: npm run test:count-preview
       - run: npm run test:scoreboard
       - run: npm run test:house
+      - run: npm run test:house-live
       - run: npm run test:explorer-state
       - run: npm run test:ribbon-layout
       - run: npm run catalog:build
@@ -40,4 +41,5 @@ jobs:
       - run: npm run build
       - run: npm run typecheck
       - run: npx playwright install --with-deps chromium
+      - run: npm run test:house-live-browser
       - run: npm run test:e2e

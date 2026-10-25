@@ -1,0 +1,111 @@
+{
+  "schema": "HouseLiveFrontendPreparationV2",
+  "issued_utc": "2026-10-25T14:55:16.411816+00:00",
+  "status": "tested_private_frontend_preparation_not_live_publication",
+  "branch": "feature/house-live-20261025",
+  "base_commit": "ae5a4ec1c94f8f4fcf332f1ba3b5ef973bb8a052",
+  "backend_contract": {
+    "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-20261025/frontend-contract-v1.json",
+    "sha256": "5c9583da083f45a5c3781973238a5ec6d9dce4ecd5a5d724518b192ca859cd60",
+    "status": "draft; publication admission not supplied"
+  },
+  "implemented": [
+    "Native current435 result and exact16 catalog structural parsers, including candidate group support and separate conditional two-candidate shares.",
+    "Local artifact hash/path checks and safe display projection without native private paths.",
+    "All16 shared candidate, group, rule, map, geography and candidate-source identity validation; semantic array order handled independently.",
+    "Streaming decoded joint-row checks of435 winner encodings, support, exact sample count, race frequencies, seat PMFs, means, explicit-convention quantiles and control; source byte authentication remains separate.",
+    "Collapsed model builder with immediate exact saved choice, no silent slot changes, visible computation-needed drafts, and parent-aware reset.",
+    "One data-driven current435 renderer, production keyboard-accessible ribbon with separate Other leaders/ties, map, control below map, first10 expandable/search list, independently scrolling sidebar and mobile selection focus.",
+    "Plain-language evidence distinctions and conditional-share explanation; computation evidence is below maps and races.",
+    "Npm validation scripts and CI steps for native contracts and standalone browser interactions."
+  ],
+  "verification": [
+    {
+      "command": "npm run test:house-live",
+      "exit_code": 0,
+      "passed": 45,
+      "failed": 0,
+      "skipped": 1,
+      "skip_reason": "Browser fixture is opt-in and was run separately."
+    },
+    {
+      "command": "npm run test:house-live-browser",
+      "exit_code": 0,
+      "passed": 3,
+      "failed": 0,
+      "coverage": [
+        "all16 rendered435race counts",
+        "defaultcollapsed",
+        "10race expandcollapse",
+        "Other-separated ribbon",
+        "keyboard selection",
+        "immediate model update",
+        "unsupported draft",
+        "failedload preserves oldresult",
+        "retry",
+        "reset whiledefaultdisplayed",
+        "desktop sidebar scroll",
+        "mobilefocus/nooverflow"
+      ]
+    },
+    {
+      "command": "npm run test:house",
+      "exit_code": 0,
+      "passed": 211,
+      "failed": 0,
+      "skipped": 1,
+      "prior_attempt": "All211checks reportedpass but outer shellreturned143; repeated same command exited0. No scientific job was changed."
+    },
+    {
+      "command": "npm run build",
+      "exit_code": 0,
+      "includes": "Next optimized build and TypeScript check"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0
+    },
+    {
+      "reviewer": "house_live_parity_luna",
+      "outcome": "No material issue after root changed hero Inputs through label to Forecast cutoff. Invented fixture/publication boundary explicitly reviewed."
+    },
+    {
+      "visual_review": "Root inspected desktop and390pxmobile screenshots of the invented grid fixture. Map test shapes are not legal district boundaries."
+    }
+  ],
+  "unimplemented": [
+    "Native binary simulation decoder, reviewed export manifest and import/publication admission.",
+    "Production live House API/client and same-page routing/default transition; existing historical page remains unchanged.",
+    "Saved live configurations, URL restoration and comparisons.",
+    "Poll inclusion/exclusion policy disclosure awaiting concrete source-policy schema.",
+    "Current tipping statistic absent until separately qualified by backend.",
+    "Real2026 data/geometry and all16 end-to-end integration/public-serving verification."
+  ],
+  "no_publication_claim": "No live House routes or data artifacts have been installed. All fixture names, probabilities, hashes and UI map squares are invented. Structural status, hash integrity, numerical agreement, scientific review and empirical skill are separate claims.",
+  "artifact_fingerprints": {
+    ".github/workflows/siteground-web.yml": "b9987a959cfb4bb06d582719fc259bbed9d2af47a62a0bb0241bbbd3bfae1889",
+    "components/HouseGroupRibbon.tsx": "dc2ccee5bcea1dceb75e03aff433c7a559d6b21b9d56ab5ce92f46869dea54fe",
+    "components/HouseLiveControls.tsx": "9668e4d76a559863bd968dda8229c0e7b682b96d49b74ccfecd6a4feabb9e7f6",
+    "components/HouseLiveResults.tsx": "760449eacdf97ce1bf51d4cc8868ae5196cf27df2b659b958b914239e133d4df",
+    "lib/group-ribbon-layout.ts": "529b2fe92fad1392bca4d4299beba2cd73d82208f4d6c235be4582ced83978eb",
+    "lib/house-live-artifacts.ts": "ad5c89902a396539ea6dd1c478c8238b4299d7f6a8a3480ab8023f56d6674b44",
+    "lib/house-live-catalog.ts": "ade2316c713a49bc2ad4ea4f9294e890fac3d10dbca9be9fee00d5aeaf700dc6",
+    "lib/house-live-collection.ts": "9a60ba12be783b9bf27f8659c3e5c99d73a7fc4859732acc534b1ded3f55ea99",
+    "lib/house-live-copy.ts": "38ac3b85ceccba07f106671c75146746a6dae19ad41e3873256cbdd9fb914e11",
+    "lib/house-live-joint-check.ts": "7d64e2d6dad5fb37f470a51316a57002bad47dd34800f1c7b93ca765dfacf022",
+    "lib/house-live-model-slices.ts": "0c175752fad89ed978f7aeffe9f8db76628cc8a20d2f008461ab6d08cf238a7e",
+    "lib/house-live-result.ts": "ab311d3719f8eb05aab94e0e8d6f9d63c2e503a8d7890b3218a0108f3d925c02",
+    "lib/house-live-selection.ts": "aa6d919aa533f1c6e0b792062a0813cf0e6b3705c8ad7a80a49731dc02183621",
+    "lib/house-live-view.ts": "d0ee8bde101afab5cc688fc454a89afa3b01e281075a166bc6085a9f8532484b",
+    "package.json": "b9c344b380a2155b831b52486a8860a3354db808448574d768c61dc6b0e59ceb",
+    "tests/fixtures/house-live-fixtures.mjs": "e8fafdcb222a2f0279e88746f74f871d41eea4f0e588bafdb77aa1a9d90f8c29",
+    "tests/group-ribbon-layout.test.mjs": "86d6417c422f2508f02ec59549dfcdb5f8b952bc1035ce1fe901377f51393a4d",
+    "tests/house-live-artifacts.test.mjs": "a0bb890b7ba64fdd03e390bda0fc62d9eefc7943858f9af541fff9cff6baf11b",
+    "tests/house-live-collection.test.mjs": "77b3fefdafabf3bc0c0733f707af0825be934b209a776ddb67b03b5fba9f5dfd",
+    "tests/house-live-joint-check.test.mjs": "7916803d27dfa82e21071a73738c2cbfd14d96b01e0ff829ee8ad0d3cbc49a95",
+    "tests/house-live-result.test.mjs": "40d08bbdaffa4d1c5bf4e10f39f632250adf159539646ab5e64e9f1ca47b827a",
+    "tests/house-live-results.test.mjs": "4441885ec5e4453fb112b8b36a9209983906b406c81f6b8d036c18d51b173596",
+    "tests/house-live-selection.test.mjs": "0b2e0a6f28a1ee64124efe950afa2d1246c129140a715e026ef3a0dfbc5440c6",
+    "tests/house-live-view.test.mjs": "c34f4983de11496c748cbf2137999ffcf97267b8b63665e9d725c6abff9ecdc9"
+  }
+}

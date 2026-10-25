@@ -25,6 +25,8 @@
     "test:component-studies": "python3 -m unittest discover -s tests -p site_component_results_test.py && node --experimental-strip-types --test tests/component-study.test.mjs tests/component-study-view.test.mjs",
     "test:count-preview": "node --experimental-strip-types --test tests/count-view.test.mjs tests/count-preview.test.mjs tests/election-outcome-view.test.mjs tests/election-outcome-preview.test.mjs",
     "test:scoreboard": "node --experimental-strip-types --test tests/scoreboard.test.mjs tests/presentation.test.mjs",
+    "test:house-live": "node --experimental-strip-types --test tests/house-live-*.test.mjs",
+    "test:house-live-browser": "BALLOTMANCY_LIVE_HOUSE_BROWSER=1 node --experimental-strip-types --test tests/house-live-results.test.mjs",
     "test:house": "node --experimental-strip-types --test tests/chamber.test.mjs tests/district-geography.test.mjs tests/house-ribbon.test.mjs tests/house-publication.test.mjs tests/house-catalog.test.mjs tests/house-model-slices.test.mjs tests/house-saved-views.test.mjs tests/house-comparison.test.mjs tests/house-score-evidence.test.mjs tests/house-party-share-view.test.mjs tests/house-party-share-preview.test.mjs tests/house-winner-view.test.mjs tests/house-winner-preview.test.mjs tests/house-geography-attachment.test.mjs tests/house-group-ribbon.test.mjs tests/house-group-ribbon-preview.test.mjs tests/house-group-result.test.mjs tests/house-group-publication.test.mjs tests/group-ribbon-layout.test.mjs tests/house-group-model-slices.test.mjs tests/house-group-state.test.mjs tests/house-group-scoreboard.test.mjs tests/house-reviewed-polling.test.mjs"
   },
   "dependencies": {
