@@ -16,7 +16,7 @@ function utcTime(value: string): string {
     hour: "numeric", minute: "2-digit", timeZone: "UTC", timeZoneName: "short" }).format(new Date(value));
 }
 
-export default function HouseLiveControls({ view, catalog, expanded, onExpandedChange, busy, error, onSelect, onRetry, children }: {
+export default function HouseLiveControls({ view, catalog, expanded, onExpandedChange, busy, error, onSelect, onRetry, shareUrl, children }: {
   view: HouseLiveView;
   catalog: HouseLiveCatalogView;
   expanded: boolean;
@@ -25,10 +25,13 @@ export default function HouseLiveControls({ view, catalog, expanded, onExpandedC
   error: string;
   onSelect: (runId: string) => void;
   onRetry: () => void;
+  shareUrl?: string;
   children?: ReactNode;
 }) {
   const [selected, setSelected] = useState<HouseLiveConfiguration>({ ...view.run.configuration });
   const [shareNotice, setShareNotice] = useState("");
+  const [shareFallbackUrl, setShareFallbackUrl] = useState("");
+  useEffect(() => { setShareNotice(""); setShareFallbackUrl(""); }, [shareUrl]);
   useEffect(() => setSelected({ ...view.run.configuration }), [view.run.id]);
   const resolution = resolveHouseLiveSelection(catalog, selected);
   const displayed = resolution.state === "ready" && resolution.entry.id === view.run.id &&
@@ -53,11 +56,15 @@ export default function HouseLiveControls({ view, catalog, expanded, onExpandedC
   const defaultChoice = catalog.entries.find(item => item.id === catalog.defaultId);
   const draftIsDefault = !!defaultChoice && sameHouseLiveConfiguration(selected, defaultChoice.configuration);
   async function share() {
+    if (!shareUrl) return;
+    const url = new URL(shareUrl, location.origin).href;
     try {
-      await navigator.clipboard.writeText(location.href);
-      setShareNotice("Link copied. It restores this model, selected district, and comparison.");
+      await navigator.clipboard.writeText(url);
+      setShareFallbackUrl("");
+      setShareNotice("Link copied. It restores the displayed model, selected district, and comparison.");
     } catch {
-      setShareNotice("Copy the address in your browser to share this view.");
+      setShareFallbackUrl(url);
+      setShareNotice("Copy this link to share the displayed forecast.");
     }
   }
 
@@ -71,9 +78,13 @@ export default function HouseLiveControls({ view, catalog, expanded, onExpandedC
       <div className="stack-actions">
         <button type="button" disabled={busy || (view.run.id === catalog.defaultId && draftIsDefault)}
           onClick={reset}>Reset to published default</button>
-        <button type="button" disabled={busy} onClick={() => void share()}>Share view ↗</button>
+        <button type="button" disabled={busy || !shareUrl} onClick={() => void share()}>Share view ↗</button>
       </div>
       {shareNotice && <p className="small" role="status" aria-live="polite">{shareNotice}</p>}
+      {shareFallbackUrl && <label className="stack-field">Link to displayed House forecast
+        <input type="text" readOnly value={shareFallbackUrl} style={{ width: "100%", minWidth: 0 }}
+          onFocus={event => event.currentTarget.select()} />
+      </label>}
       <p className="small" role="status" aria-live="polite">
         {displayed ? "These choices match the result now displayed." : resolution.state === "ready"
           ? `Saved choice: ${resolution.entry.label}. The displayed forecast changes only after verification.`

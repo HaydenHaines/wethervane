@@ -39,6 +39,7 @@ export interface HouseLiveResultsProps {
   selectedRaceId?: string;
   onRaceSelect?: (raceId: string) => void;
   comparisonTools?: ReactNode;
+  shareUrl?: string;
 }
 
 function candidatePartyLabel(race: HouseLiveRaceView, outcomeId: string, party: string): string {
@@ -130,7 +131,7 @@ function HouseLiveChamberControl({ scenario }: { scenario: NonNullable<HouseLive
 
 export default function HouseLiveResults({ view, catalog, geography, builderExpanded, onBuilderExpandedChange,
   busy = false, error = "", onSelect, onRetry, onHistorical,
-  selectedRaceId, onRaceSelect, comparisonTools, publicationLimitations = [], polling }: HouseLiveResultsProps) {
+  selectedRaceId, onRaceSelect, comparisonTools, shareUrl, publicationLimitations = [], polling }: HouseLiveResultsProps) {
   const sorted = useMemo(() => [...view.races].sort(competitiveOrder), [view.races]);
   const ribbonRaces = useMemo<GroupRibbonRace[]>(() => view.races.map((race) => ({
     id: race.id,
@@ -188,7 +189,7 @@ export default function HouseLiveResults({ view, catalog, geography, builderExpa
     </section>
 
     <HouseLiveControls view={view} catalog={catalog} expanded={builderExpanded} onExpandedChange={onBuilderExpandedChange}
-      busy={busy} error={error} onSelect={onSelect} onRetry={onRetry} />
+      busy={busy} error={error} onSelect={onSelect} onRetry={onRetry} shareUrl={shareUrl} />
     {comparisonTools}
 
     <HouseGroupRibbon races={ribbonRaces} selectedRaceId={selected.id} onSelect={selectRace} />

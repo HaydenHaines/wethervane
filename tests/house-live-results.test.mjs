@@ -325,6 +325,11 @@ createRoot(document.getElementById('root')).render(React.createElement('div',{cl
     await expect(comparePanel.getByRole("alert")).toContainText("Comparison unavailable");
     await expect(comparePanel).toContainText("last verified comparison");
     await expect(comparePanel.getByRole("table")).toHaveCount(3);
+    await builder.locator("summary").first().click();
+    await page.getByRole("button", { name: "Share view" }).click();
+    const retainedComparisonUrl = await page.evaluate(() => globalThis.copiedViewUrl);
+    assert.equal(new URL(retainedComparisonUrl).searchParams.get("compare"), baseline.id);
+    await builder.locator("summary").first().click();
     failedId = null;
     await comparePanel.getByRole("button", { name: "Try comparison again" }).click();
     await expect(comparePanel.getByRole("alert")).toHaveCount(0);
@@ -418,12 +423,48 @@ createRoot(document.getElementById('root')).render(React.createElement('div',{cl
     assert.equal(shared.searchParams.get("compare"), baseline.id);
     await page.evaluate(() => { globalThis.denyClipboard = true; });
     await page.getByRole("button", { name: "Share view" }).click();
-    await expect(page.getByRole("status").filter({ hasText: "Copy the address in your browser" })).toBeVisible();
+    await expect(page.getByRole("status").filter({ hasText: "Copy this link to share the displayed forecast" })).toBeVisible();
+    await expect(page.getByLabel("Link to displayed House forecast", { exact: true })).toHaveValue(sharedUrl);
     await page.goto(sharedUrl);
     await expect(page.locator(".hero > div > p")).toContainText(alternative.label);
     await expect(page.locator("#house-live-detail-title")).toHaveText("AL-03");
     await expect(compareSelect).toHaveValue(baseline.id);
     await expect(comparePanel.getByRole("table")).toHaveCount(3);
+    for (const direction of ["back", "forward"]) {
+      await page.goto("http://house-ui.test/?chamber=house&edition=current&race=2026%3AAL-04%3Ahouse%3Aregular");
+      await expect(page.locator(".hero > div > p")).toContainText(primary.view.run.label);
+      await builder.locator("summary").first().click();
+      await base.selectOption("recent_calendar_history");
+      await expect(page.locator(".hero > div > p")).toContainText(alternative.label);
+      await page.locator('.house-ribbon-cell[data-district="AL-03"]').click();
+      if (direction === "forward") {
+        await page.goBack();
+        await expect(page.locator(".hero > div > p")).toContainText(primary.view.run.label);
+      }
+      failedId = direction === "back" ? primary.view.run.id : alternative.id;
+      const retained = direction === "back" ? alternative : primary.view.run;
+      const retainedDistrict = direction === "back" ? "AL-03" : "AL-04";
+      if (direction === "back") await page.goBack();
+      else await page.goForward();
+      await expect(page.getByRole("alert")).toContainText("Unable to change House models");
+      await expect(page.locator(".hero > div > p")).toContainText(retained.label);
+      await expect(page.locator("#house-live-detail-title")).toHaveText(retainedDistrict);
+      assert.equal(new URL(page.url()).searchParams.get("run"), failedId);
+      await page.getByRole("button", { name: "Share view" }).click();
+      const retainedUrl = await page.evaluate(() => globalThis.copiedViewUrl);
+      assert.equal(new URL(retainedUrl).searchParams.get("run"), retained.id);
+      assert.equal(new URL(retainedUrl).searchParams.get("race"), `2026:${retainedDistrict}:house:regular`);
+      await page.evaluate(() => { globalThis.denyClipboard = true; });
+      await page.getByRole("button", { name: "Share view" }).click();
+      await expect(page.getByLabel("Link to displayed House forecast", { exact: true })).toHaveValue(retainedUrl);
+      await page.setViewportSize({ width: 390, height: 844 });
+      assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
+      await page.setViewportSize({ width: 1440, height: 900 });
+      failedId = null;
+      await page.goto(retainedUrl);
+      await expect(page.locator(".hero > div > p")).toContainText(retained.label);
+      await expect(page.locator("#house-live-detail-title")).toHaveText(retainedDistrict);
+    }
     assert.ok(requests.every(id => publications.has(id)));
     assert.equal(await page.evaluate(() => localStorage.length), 0);
     assert.deepEqual(pageErrors, []);

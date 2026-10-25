@@ -131,8 +131,14 @@ export default function HouseLiveWorkspace({ onHistorical, onReturn }: { onHisto
       <button onClick={onHistorical}>Explore historical House research</button><button onClick={onReturn}>Explore the Senate</button>
     </div> : <p role="status">Loading the current House forecast…</p>}
   </main>;
+  const compared = comparison.value?.status === "comparable" ? comparison.value.summary : null;
+  const sharedComparisonId = comparisonId && compared?.primary.id === publication.view.run.id &&
+    compared.primary.resultSha256 === publication.view.run.resultSha256 &&
+    compared.reference.resultSha256 === publication.catalog.entries.find(entry => entry.id === compared.reference.id)?.resultSha256
+    ? compared.reference.id : null;
+  const shareUrl = houseLiveSelectionUrl(publication, { raceId, comparisonId: sharedComparisonId });
   return <HouseLiveResults view={publication.view} catalog={publication.catalog} geography={publication.geography}
-    polling={publication.polling}
+    polling={publication.polling} shareUrl={shareUrl}
     publicationLimitations={publication.publicationReview?.limitations}
     builderExpanded={builderExpanded} onBuilderExpandedChange={setBuilderExpanded} busy={busy} error={error}
     onSelect={chooseModel} onRetry={retry} onHistorical={onHistorical} selectedRaceId={raceId} onRaceSelect={selectRace}
