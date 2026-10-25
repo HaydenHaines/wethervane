@@ -1,0 +1,21 @@
+{
+  "fixture_only": true,
+  "competing_processes": 2,
+  "accepted_writes": 1,
+  "stale_writes_rejected": 1,
+  "final_history_rows": 2,
+  "results": [
+    {
+      "cycle": "race",
+      "revision": 1,
+      "status": "research"
+    },
+    {
+      "rejected": "stale revision"
+    }
+  ],
+  "source_sha256": {
+    "ledger.py": "d65cea890ecf9b456f8b9625d173f15dac1e7fa94bb618d3407e26f368ee220a",
+    "test_ledger.py": "5a661b7910653f9ee86820a657906efe0195434b94afecfe44c6b70a8550c733"
+  }
+}

@@ -1,5 +1,12 @@
 # Ballotmancy
 
+**Continuous improvement workspace, October 24, 2026:** the [standing goal and
+execution checkpoint](research/improvement-loop-20261024/README.md) track the
+eight-layer research inventory, verification, candidate experiments and resumable
+journal. The older FL/GA/AL type-discovery metrics below describe that prototype;
+they do not qualify the successor national count stack or establish each layer's
+incremental predictive value.
+
 **SiteGround release branch:** The deployable Senate forecast visualization is
 at the repository root. See [SITEGROUND.md](SITEGROUND.md) for setup, data scope,
 and validation. The historical application described below remains in `web/`

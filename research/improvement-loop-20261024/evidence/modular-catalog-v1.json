@@ -1,0 +1,882 @@
+{
+  "baseline_compositions": [
+    {
+      "person_coordinates": "hybrid_v1",
+      "selections": [
+        [
+          "population",
+          "protected_full_parent_exposure_v1"
+        ],
+        [
+          "community",
+          "demographic_profile_drift_v1"
+        ],
+        [
+          "fundamentals",
+          "lean_carryover_context_incumbency_v1"
+        ],
+        [
+          "environment",
+          "separated_lkj2_cycle_student5_race_v1"
+        ],
+        [
+          "participation",
+          "profile_turnout_response_observed_total_gamma_v1"
+        ],
+        [
+          "choice",
+          "candidate_iid_profile_choice_v1"
+        ],
+        [
+          "counts_rules",
+          "single_mark_category_allocation_poisson_v1"
+        ],
+        [
+          "measurement",
+          "joint_CES_F1a_final_pair_total_error_v1"
+        ]
+      ],
+      "standardized": true
+    },
+    {
+      "person_coordinates": "hybrid_v1",
+      "selections": [
+        [
+          "population",
+          "protected_full_parent_exposure_v1"
+        ],
+        [
+          "community",
+          "demographic_profile_drift_v1"
+        ],
+        [
+          "fundamentals",
+          "lean_carryover_context_incumbency_v1"
+        ],
+        [
+          "environment",
+          "separated_lkj2_cycle_student5_race_v1"
+        ],
+        [
+          "participation",
+          "profile_turnout_response_observed_total_gamma_v1"
+        ],
+        [
+          "choice",
+          "candidate_TX_ballot_role_profile_choice_v1"
+        ],
+        [
+          "counts_rules",
+          "single_mark_category_allocation_poisson_v1"
+        ],
+        [
+          "measurement",
+          "joint_CES_F1a_final_pair_total_error_v1"
+        ]
+      ],
+      "standardized": true
+    }
+  ],
+  "implementations": [
+    {
+      "configuration_json": "{}",
+      "dependency_pins": [],
+      "implementation_id": "candidate_TX_ballot_role_profile_choice_v1",
+      "implementation_path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/modular-count-graph-astra-v1/components.py",
+      "implementation_sha256": "7baf3ea8e644c025763e5a63b1721b14ddc748a94be3f1e106adf9f34f6ad2a7",
+      "joint_inference_required": true,
+      "parameter_patterns": [
+        "choice_(main|(interaction|community|state)_(sd|raw))",
+        "candidate_contrast_.+",
+        "candidate_other_.+",
+        "candidate_role_(mean|sd)"
+      ],
+      "role": "choice",
+      "stages": [
+        {
+          "inputs": [
+            {
+              "axes": [],
+              "contest_map": true,
+              "denominator": "not_a_ratio",
+              "name": "structural_choice",
+              "time": "event_covariates",
+              "unit": "logit_shift",
+              "universe": "DR_choice"
+            },
+            {
+              "axes": [],
+              "contest_map": false,
+              "denominator": "not_a_ratio",
+              "name": "incumbency",
+              "time": "event_covariates",
+              "unit": "candidate_utility",
+              "universe": "named_candidates"
+            },
+            {
+              "axes": [
+                "cycle",
+                "behavior2"
+              ],
+              "contest_map": false,
+              "denominator": "not_a_ratio",
+              "name": "cycle_effect",
+              "time": "cycle",
+              "unit": "logit_shift",
+              "universe": "turnout_and_DR_choice"
+            },
+            {
+              "axes": [
+                "contest"
+              ],
+              "contest_map": false,
+              "denominator": "not_a_ratio",
+              "name": "race_effect",
+              "time": "final_contest_outcome",
+              "unit": "logit_shift",
+              "universe": "DR_choice"
+            }
+          ],
+          "name": "utility",
+          "outputs": [
+            {
+              "axes": [
+                "demographic",
+                "community",
+                "candidate"
+              ],
+              "contest_map": true,
+              "denominator": "not_a_ratio",
+              "name": "candidate_utilities",
+              "time": "final_contest_outcome",
+              "unit": "candidate_utility",
+              "universe": "named_candidates"
+            },
+            {
+              "axes": [
+                "demographic",
+                "community",
+                "candidate"
+              ],
+              "contest_map": true,
+              "denominator": "candidate_response",
+              "name": "candidate_probability",
+              "time": "final_contest_outcome",
+              "unit": "probability",
+              "universe": "named_candidates"
+            },
+            {
+              "axes": [
+                "candidate"
+              ],
+              "contest_map": true,
+              "denominator": "not_a_ratio",
+              "name": "political_axes",
+              "time": "contest_roster",
+              "unit": "contrast",
+              "universe": "named_candidates"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "configuration_json": "{}",
+      "dependency_pins": [],
+      "implementation_id": "candidate_iid_profile_choice_v1",
+      "implementation_path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/modular-count-graph-astra-v1/components.py",
+      "implementation_sha256": "7baf3ea8e644c025763e5a63b1721b14ddc748a94be3f1e106adf9f34f6ad2a7",
+      "joint_inference_required": true,
+      "parameter_patterns": [
+        "choice_(main|(interaction|community|state)_(sd|raw))",
+        "candidate_contrast_.+",
+        "candidate_other_.+",
+        "candidate_role_(mean|sd)"
+      ],
+      "role": "choice",
+      "stages": [
+        {
+          "inputs": [
+            {
+              "axes": [],
+              "contest_map": true,
+              "denominator": "not_a_ratio",
+              "name": "structural_choice",
+              "time": "event_covariates",
+              "unit": "logit_shift",
+              "universe": "DR_choice"
+            },
+            {
+              "axes": [],
+              "contest_map": false,
+              "denominator": "not_a_ratio",
+              "name": "incumbency",
+              "time": "event_covariates",
+              "unit": "candidate_utility",
+              "universe": "named_candidates"
+            },
+            {
+              "axes": [
+                "cycle",
+                "behavior2"
+              ],
+              "contest_map": false,
+              "denominator": "not_a_ratio",
+              "name": "cycle_effect",
+              "time": "cycle",
+              "unit": "logit_shift",
+              "universe": "turnout_and_DR_choice"
+            },
+            {
+              "axes": [
+                "contest"
+              ],
+              "contest_map": false,
+              "denominator": "not_a_ratio",
+              "name": "race_effect",
+              "time": "final_contest_outcome",
+              "unit": "logit_shift",
+              "universe": "DR_choice"
+            }
+          ],
+          "name": "utility",
+          "outputs": [
+            {
+              "axes": [
+                "demographic",
+                "community",
+                "candidate"
+              ],
+              "contest_map": true,
+              "denominator": "not_a_ratio",
+              "name": "candidate_utilities",
+              "time": "final_contest_outcome",
+              "unit": "candidate_utility",
+              "universe": "named_candidates"
+            },
+            {
+              "axes": [
+                "demographic",
+                "community",
+                "candidate"
+              ],
+              "contest_map": true,
+              "denominator": "candidate_response",
+              "name": "candidate_probability",
+              "time": "final_contest_outcome",
+              "unit": "probability",
+              "universe": "named_candidates"
+            },
+            {
+              "axes": [
+                "candidate"
+              ],
+              "contest_map": true,
+              "denominator": "not_a_ratio",
+              "name": "political_axes",
+              "time": "contest_roster",
+              "unit": "contrast",
+              "universe": "named_candidates"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "configuration_json": "{}",
+      "dependency_pins": [],
+      "implementation_id": "demographic_profile_drift_v1",
+      "implementation_path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/modular-count-graph-astra-v1/components.py",
+      "implementation_sha256": "7baf3ea8e644c025763e5a63b1721b14ddc748a94be3f1e106adf9f34f6ad2a7",
+      "joint_inference_required": true,
+      "parameter_patterns": [
+        "community_(intercept|main|interaction_(sd|raw)|state_(sd|raw)|drift_raw)"
+      ],
+      "role": "community",
+      "stages": [
+        {
+          "inputs": [],
+          "name": "composition",
+          "outputs": [
+            {
+              "axes": [
+                "state",
+                "demographic",
+                "community"
+              ],
+              "contest_map": false,
+              "denominator": "not_a_ratio",
+              "name": "community_logits",
+              "time": "first_community_date",
+              "unit": "log_relative_weight",
+              "universe": "citizen_adult_profile"
+            },
+            {
+              "axes": [
+                "date",
+                "community"
+              ],
+              "contest_map": false,
+              "denominator": "not_a_ratio",
+              "name": "community_temporal",
+              "time": "named_community_dates",
+              "unit": "log_relative_weight",
+              "universe": "citizen_adult_profile"
+            },
+            {
+              "axes": [
+                "event",
+                "demographic",
+                "community"
+              ],
+              "contest_map": false,
+              "denominator": "cell_population",
+              "name": "community",
+              "time": "event_date",
+              "unit": "probability",
+              "universe": "citizen_adult_profile"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "configuration_json": "{}",
+      "dependency_pins": [],
+      "implementation_id": "joint_CES_F1a_final_pair_total_error_v1",
+      "implementation_path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/modular-count-graph-astra-v1/components.py",
+      "implementation_sha256": "7baf3ea8e644c025763e5a63b1721b14ddc748a94be3f1e106adf9f34f6ad2a7",
+      "joint_inference_required": true,
+      "parameter_patterns": [
+        "source_(community|community_state|turnout|choice|response|not_sure|false_vote)",
+        "report_(release|state)"
+      ],
+      "role": "measurement",
+      "stages": [
+        {
+          "inputs": [
+            {
+              "axes": [
+                "state",
+                "demographic",
+                "community"
+              ],
+              "contest_map": false,
+              "denominator": "not_a_ratio",
+              "name": "community_logits",
+              "time": "first_community_date",
+              "unit": "log_relative_weight",
+              "universe": "citizen_adult_profile"
+            },
+            {
+              "axes": [
+                "date",
+                "community"
+              ],
+              "contest_map": false,
+              "denominator": "not_a_ratio",
+              "name": "community_temporal",
+              "time": "named_community_dates",
+              "unit": "log_relative_weight",
+              "universe": "citizen_adult_profile"
+            },
+            {
+              "axes": [
+                "event",
+                "demographic",
+                "community"
+              ],
+              "contest_map": false,
+              "denominator": "not_a_ratio",
+              "name": "turnout_logit",
+              "time": "event_date",
+              "unit": "logit",
+              "universe": "standardized_citizen_adult_propensity"
+            },
+            {
+              "axes": [
+                "demographic",
+                "community",
+                "candidate"
+              ],
+              "contest_map": true,
+              "denominator": "not_a_ratio",
+              "name": "candidate_utilities",
+              "time": "final_contest_outcome",
+              "unit": "candidate_utility",
+              "universe": "named_candidates"
+            },
+            {
+              "axes": [
+                "candidate"
+              ],
+              "contest_map": true,
+              "denominator": "not_a_ratio",
+              "name": "political_axes",
+              "time": "contest_roster",
+              "unit": "contrast",
+              "universe": "named_candidates"
+            },
+            {
+              "axes": [],
+              "contest_map": true,
+              "denominator": "not_a_ratio",
+              "name": "response_logits",
+              "time": "event_date",
+              "unit": "logit",
+              "universe": "contest_valid_candidate_response"
+            },
+            {
+              "axes": [
+                "event"
+              ],
+              "contest_map": false,
+              "denominator": "not_a_ratio",
+              "name": "event_intensity",
+              "time": "event_date",
+              "unit": "expected_participants",
+              "universe": "event_participants"
+            },
+            {
+              "axes": [
+                "category"
+              ],
+              "contest_map": true,
+              "denominator": "not_a_ratio",
+              "name": "category_rates",
+              "time": "final_contest_outcome",
+              "unit": "expected_counts",
+              "universe": "candidate_and_noncandidate_options"
+            }
+          ],
+          "name": "observations",
+          "outputs": []
+        }
+      ]
+    },
+    {
+      "configuration_json": "{}",
+      "dependency_pins": [],
+      "implementation_id": "lean_carryover_context_incumbency_v1",
+      "implementation_path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/modular-count-graph-astra-v1/components.py",
+      "implementation_sha256": "7baf3ea8e644c025763e5a63b1721b14ddc748a94be3f1e106adf9f34f6ad2a7",
+      "joint_inference_required": true,
+      "parameter_patterns": [
+        "choice_(intercept|relative_lean|national_carryover|president_midterm)",
+        "candidate_incumbency"
+      ],
+      "role": "fundamentals",
+      "stages": [
+        {
+          "inputs": [],
+          "name": "mean",
+          "outputs": [
+            {
+              "axes": [],
+              "contest_map": true,
+              "denominator": "not_a_ratio",
+              "name": "structural_choice",
+              "time": "event_covariates",
+              "unit": "logit_shift",
+              "universe": "DR_choice"
+            },
+            {
+              "axes": [],
+              "contest_map": false,
+              "denominator": "not_a_ratio",
+              "name": "incumbency",
+              "time": "event_covariates",
+              "unit": "candidate_utility",
+              "universe": "named_candidates"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "configuration_json": "{}",
+      "dependency_pins": [],
+      "implementation_id": "profile_turnout_response_observed_total_gamma_v1",
+      "implementation_path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/modular-count-graph-astra-v1/components.py",
+      "implementation_sha256": "7baf3ea8e644c025763e5a63b1721b14ddc748a94be3f1e106adf9f34f6ad2a7",
+      "joint_inference_required": true,
+      "parameter_patterns": [
+        "turnout_(intercept|midterm|main|(interaction|community|state)_(sd|raw))",
+        "response_(intercept|race_(sd|raw))",
+        "event_gamma_shape",
+        "event_observed_total_coordinate",
+        "eventG_unobserved"
+      ],
+      "role": "participation",
+      "stages": [
+        {
+          "inputs": [
+            {
+              "axes": [
+                "event",
+                "demographic"
+              ],
+              "contest_map": false,
+              "denominator": "not_a_ratio",
+              "name": "exposure",
+              "time": "event_date",
+              "unit": "persons",
+              "universe": "citizen_adult_exposure"
+            },
+            {
+              "axes": [
+                "event",
+                "demographic",
+                "community"
+              ],
+              "contest_map": false,
+              "denominator": "cell_population",
+              "name": "community",
+              "time": "event_date",
+              "unit": "probability",
+              "universe": "citizen_adult_profile"
+            },
+            {
+              "axes": [
+                "cycle",
+                "behavior2"
+              ],
+              "contest_map": false,
+              "denominator": "not_a_ratio",
+              "name": "cycle_effect",
+              "time": "cycle",
+              "unit": "logit_shift",
+              "universe": "turnout_and_DR_choice"
+            }
+          ],
+          "name": "behavior",
+          "outputs": [
+            {
+              "axes": [
+                "event",
+                "demographic",
+                "community"
+              ],
+              "contest_map": false,
+              "denominator": "not_a_ratio",
+              "name": "turnout_logit",
+              "time": "event_date",
+              "unit": "logit",
+              "universe": "standardized_citizen_adult_propensity"
+            },
+            {
+              "axes": [
+                "event",
+                "demographic",
+                "community"
+              ],
+              "contest_map": false,
+              "denominator": "cell_profile_exposure",
+              "name": "propensity",
+              "time": "event_date",
+              "unit": "probability",
+              "universe": "standardized_citizen_adult_propensity"
+            },
+            {
+              "axes": [
+                "event",
+                "demographic",
+                "community"
+              ],
+              "contest_map": false,
+              "denominator": "not_a_ratio",
+              "name": "cell_intensity",
+              "time": "event_date",
+              "unit": "expected_participants_before_G",
+              "universe": "event_participants"
+            },
+            {
+              "axes": [],
+              "contest_map": false,
+              "denominator": "not_a_ratio",
+              "name": "event_gamma_shape",
+              "time": "all_events",
+              "unit": "gamma_shape",
+              "universe": "event_frailty"
+            },
+            {
+              "axes": [],
+              "contest_map": true,
+              "denominator": "not_a_ratio",
+              "name": "response_logits",
+              "time": "event_date",
+              "unit": "logit",
+              "universe": "contest_valid_candidate_response"
+            },
+            {
+              "axes": [],
+              "contest_map": true,
+              "denominator": "event_participants",
+              "name": "response",
+              "time": "event_date",
+              "unit": "probability",
+              "universe": "contest_valid_candidate_response"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "axes": [
+                "event",
+                "demographic",
+                "community"
+              ],
+              "contest_map": false,
+              "denominator": "not_a_ratio",
+              "name": "cell_intensity",
+              "time": "event_date",
+              "unit": "expected_participants_before_G",
+              "universe": "event_participants"
+            },
+            {
+              "axes": [],
+              "contest_map": false,
+              "denominator": "not_a_ratio",
+              "name": "event_gamma_shape",
+              "time": "all_events",
+              "unit": "gamma_shape",
+              "universe": "event_frailty"
+            },
+            {
+              "axes": [
+                "category"
+              ],
+              "contest_map": true,
+              "denominator": "not_a_ratio",
+              "name": "base_category_rates",
+              "time": "final_contest_outcome",
+              "unit": "expected_counts_before_G",
+              "universe": "candidate_and_noncandidate_options"
+            }
+          ],
+          "name": "event",
+          "outputs": [
+            {
+              "axes": [
+                "event"
+              ],
+              "contest_map": false,
+              "denominator": "not_a_ratio",
+              "name": "eventG",
+              "time": "event_date",
+              "unit": "positive_multiplier",
+              "universe": "shared_event_frailty"
+            },
+            {
+              "axes": [
+                "event"
+              ],
+              "contest_map": false,
+              "denominator": "not_a_ratio",
+              "name": "event_intensity",
+              "time": "event_date",
+              "unit": "expected_participants",
+              "universe": "event_participants"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "configuration_json": "{}",
+      "dependency_pins": [],
+      "implementation_id": "protected_full_parent_exposure_v1",
+      "implementation_path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/modular-count-graph-astra-v1/components.py",
+      "implementation_sha256": "7baf3ea8e644c025763e5a63b1721b14ddc748a94be3f1e106adf9f34f6ad2a7",
+      "joint_inference_required": true,
+      "parameter_patterns": [],
+      "role": "population",
+      "stages": [
+        {
+          "inputs": [],
+          "name": "exposure",
+          "outputs": [
+            {
+              "axes": [
+                "event",
+                "demographic"
+              ],
+              "contest_map": false,
+              "denominator": "not_a_ratio",
+              "name": "exposure",
+              "time": "event_date",
+              "unit": "persons",
+              "universe": "citizen_adult_exposure"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "configuration_json": "{}",
+      "dependency_pins": [],
+      "implementation_id": "separated_lkj2_cycle_student5_race_v1",
+      "implementation_path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/modular-count-graph-astra-v1/components.py",
+      "implementation_sha256": "7baf3ea8e644c025763e5a63b1721b14ddc748a94be3f1e106adf9f34f6ad2a7",
+      "joint_inference_required": true,
+      "parameter_patterns": [
+        "cycle_(sd|correlation_unit|raw)",
+        "final_race_(sd|raw)"
+      ],
+      "role": "environment",
+      "stages": [
+        {
+          "inputs": [],
+          "name": "residuals",
+          "outputs": [
+            {
+              "axes": [
+                "cycle",
+                "behavior2"
+              ],
+              "contest_map": false,
+              "denominator": "not_a_ratio",
+              "name": "cycle_effect",
+              "time": "cycle",
+              "unit": "logit_shift",
+              "universe": "turnout_and_DR_choice"
+            },
+            {
+              "axes": [
+                "contest"
+              ],
+              "contest_map": false,
+              "denominator": "not_a_ratio",
+              "name": "race_effect",
+              "time": "final_contest_outcome",
+              "unit": "logit_shift",
+              "universe": "DR_choice"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "configuration_json": "{}",
+      "dependency_pins": [],
+      "implementation_id": "single_mark_category_allocation_poisson_v1",
+      "implementation_path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/modular-count-graph-astra-v1/components.py",
+      "implementation_sha256": "7baf3ea8e644c025763e5a63b1721b14ddc748a94be3f1e106adf9f34f6ad2a7",
+      "joint_inference_required": true,
+      "parameter_patterns": [
+        "noncandidate_allocation_.+"
+      ],
+      "role": "counts_rules",
+      "stages": [
+        {
+          "inputs": [
+            {
+              "axes": [
+                "event",
+                "demographic",
+                "community"
+              ],
+              "contest_map": false,
+              "denominator": "not_a_ratio",
+              "name": "cell_intensity",
+              "time": "event_date",
+              "unit": "expected_participants_before_G",
+              "universe": "event_participants"
+            },
+            {
+              "axes": [
+                "demographic",
+                "community",
+                "candidate"
+              ],
+              "contest_map": true,
+              "denominator": "candidate_response",
+              "name": "candidate_probability",
+              "time": "final_contest_outcome",
+              "unit": "probability",
+              "universe": "named_candidates"
+            },
+            {
+              "axes": [],
+              "contest_map": true,
+              "denominator": "event_participants",
+              "name": "response",
+              "time": "event_date",
+              "unit": "probability",
+              "universe": "contest_valid_candidate_response"
+            }
+          ],
+          "name": "allocation",
+          "outputs": [
+            {
+              "axes": [
+                "demographic",
+                "community",
+                "category"
+              ],
+              "contest_map": true,
+              "denominator": "event_participants",
+              "name": "category_probability",
+              "time": "final_contest_outcome",
+              "unit": "probability",
+              "universe": "candidate_and_noncandidate_options"
+            },
+            {
+              "axes": [
+                "category"
+              ],
+              "contest_map": true,
+              "denominator": "not_a_ratio",
+              "name": "base_category_rates",
+              "time": "final_contest_outcome",
+              "unit": "expected_counts_before_G",
+              "universe": "candidate_and_noncandidate_options"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "axes": [
+                "event"
+              ],
+              "contest_map": false,
+              "denominator": "not_a_ratio",
+              "name": "eventG",
+              "time": "event_date",
+              "unit": "positive_multiplier",
+              "universe": "shared_event_frailty"
+            },
+            {
+              "axes": [
+                "category"
+              ],
+              "contest_map": true,
+              "denominator": "not_a_ratio",
+              "name": "base_category_rates",
+              "time": "final_contest_outcome",
+              "unit": "expected_counts_before_G",
+              "universe": "candidate_and_noncandidate_options"
+            }
+          ],
+          "name": "counts",
+          "outputs": [
+            {
+              "axes": [
+                "category"
+              ],
+              "contest_map": true,
+              "denominator": "not_a_ratio",
+              "name": "category_rates",
+              "time": "final_contest_outcome",
+              "unit": "expected_counts",
+              "universe": "candidate_and_noncandidate_options"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "schema": "ModularCountComponentCatalogV1"
+}

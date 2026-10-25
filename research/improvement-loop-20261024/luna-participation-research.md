@@ -1,0 +1,96 @@
+# Luna participation, geography, and measurement research
+
+**Date:** 2026-10-24  
+**Scope:** Two rounds of code-grounded research and cross-critique for the selected modular count graph. This is a proposal record only: no source edits, fits, or model promotions were made. The candidates below are research priorities, not an empirical performance ranking.
+
+## Current selected coverage
+
+The selected baseline is already heterogeneous in several relevant dimensions. Its `Community` provider, `demographic_profile_drift_v1`, models profile composition over the supported demographic cells, state effects, and time drift. Its `Participation` provider, `profile_turnout_response_observed_total_gamma_v1`, has demographic main effects and age/race-by-education interactions, community and state effects, a shared event participation multiplier, and contest-specific response. `Measurement`, `joint_CES_F1a_final_pair_total_error_v1`, has source and source-by-state community offsets; source turnout, choice, and response shifts; survey observations; participation reports with release/state errors; and poll observations.
+
+Code anchors:
+
+- `research/senate-stack-integration-20261020/modular-count-graph-astra-v1/components.py`: `Community`, `Participation`, `Measurement`, `Fundamentals`, and `Choice` provider definitions.
+- `src/senate_count_stack_v1/demographics.py`: the 24 joint demographic cells (age 3 × race/ethnicity 4 × education 2) and their centered behavior contrasts.
+- `src/senate_count_stack_v1/population.py`: state-level, five-year ACS exposure input with 24 citizen demographic cells plus a noncitizen adult total. This is an exposure model, not an exact eligible-person cap.
+- `src/senate_count_stack_v1/inputs.py`: admitted survey/report/count contracts and their limits.
+- `src/senate_count_stack_v1/joint.py`: prior joint implementation of the compact participation, measurement, and count factors.
+- `src/participation_report_benchmark_v1/README.md`: existing 2020-to-2024 EAVS F1a state/DC carry-forward and resident-growth point comparison. Carry-forward won the three declared point losses in that single transition; this is not uncertainty qualification or a repeated-cycle result.
+
+The selected graph has state variation and event-total/report information, but no county/jurisdiction participation state, explicit registration-to-voting transition, or ballot-mode state. Its candidate utility includes party-bloc effects, incumbency, within-bloc candidate contrasts, and a separate Texas ballot-role hierarchy provider. It does not explicitly regress on prior elected-office experience or cutoff-frozen campaign receipts. A missing factor in this graph is not necessarily missing across the whole repository: the older fundamentals, survey transport, and candidate/provider research below are relevant comparators.
+
+## Round 1: population, participation, measurement, geography
+
+### A. Registration-to-voting transition
+
+**Mechanism and target.** Replace the single event voting propensity with a supported staged transition: active registration among the declared population/exposure, then event participation conditional on registration. Keep CVAP exposure, registered persons, and counted participants distinct. Target state/event and, only where observations support it, demographic-cell registration and voting totals.
+
+**Existing coverage and gap.** The selected `Participation` provider models demographic/community/state/event voting propensity and contest response, while the `Measurement` provider already admits participation reports. The graph does not have a distinct registration transition. The EAVS input/report path and `participation_report_benchmark_v1` mean that EAVS is not a wholly missing source; the structural decomposition and demographic registration evidence are the proposed additions.
+
+**Evidence and limitations.** CPS November Voting Supplements provide reported registration and voting by demographic characteristics and state. EAVS provides administrative registration and participation totals. Their estimands differ: CPS is survey self-report; administrative definitions and active-registration status vary. State-by-cell sparsity, eligibility/registration distinctions, reporting error, and the ecological leap from demographic margins to individual transition probabilities limit identification.
+
+**Dated source availability.** The Census API lists CPS supplements for 2018, 2020, 2022, and 2024 ([CPS Voting Supplement API and documentation](https://www.census.gov/data/developers/data-sets/census-microdata-api/cps/voting.html)). The EAC time series covers 2004–2024 ([EAVS retrospective and time-series downloads](https://www.eac.gov/research-and-data/eavs-retrospective)); EAC announced its 2024 EAVS report/data release on June 30, 2025 ([2024 release](https://www.eac.gov/news/2025/06/30/us-election-assistance-commission-releases-2024-election-administration-and-voting)). Its 2022 release was June 29, 2023 ([2022 release](https://www.eac.gov/news/2023/06/29/nations-most-comprehensive-report-2022-midterm-election-administration-and-voting)). These sources cover the requested cycles, but a target cycle's own post-election data can only be used as an outcome for scoring or as training for a later forecast after release. Historical replay must pin the exact release vintage available at each forecast cutoff.
+
+**Low-risk comparison and rejection.** Replace only the `Participation` provider; retain the other component definitions, source contracts, and evidence ownership. Refit the affected parameters in the full joint graph—do not freeze the incumbent posterior parameters—so dependencies and cross-component uncertainty are re-estimated. Use each EAVS total once: if the new transition factors explain component registration/voting counts, remove or condition the matching event-total/report factor so the same count is not entered twice. Reject if transition parameters remain weakly identified, posterior predictive registration/voter totals are poor, or the challenger fails to add useful out-of-cycle predictive evidence under the shared guard below. Do not synthesize a finite eligible-person denominator from CVAP.
+
+### B. Substate participation and mobility
+
+**Mechanism and target.** A partially pooled local participation layer could represent local event shocks and local exposure that a state-only turnout effect cannot express. ACS mobility could be considered as a lagged proxy for voter-file churn or registration friction, but is not itself a measure of registration loss.
+
+**Existing coverage and gap.** The selected graph is state/event-level for participation and reports; a local EAVS/ACS participation factor is not currently part of its data axis. Other repository geography and district/precinct evidence work exists, so this is an integration and model-support gap rather than an absence of geographic work overall.
+
+**Evidence and limitations.** EAVS contains jurisdiction-level election-administration data, with coverage/definitions requiring source-specific checks. ACS mobility estimates provide local population movement, not whether a mover re-registered or voted. County-to-state reconciliation, changing boundaries, denominator uncertainty, and ecological inference are material. Precinct/county observations and their state aggregates are the same evidence and cannot be treated as independent likelihoods. The Census flags 2020 one-year ACS estimates as experimental due to pandemic-era nonresponse ([ACS migration/geographic mobility series and 2020 note](https://www.census.gov/topics/population/migration/guidance/acs-1yr.html)).
+
+**Low-risk comparison and rejection.** Defer this behind a registration-stage test unless local turnout counts, denominators, and exact geography crosswalks are already admitted. If tested, replace only the participation component, keep the same state count target and aggregate local factors once, and jointly refit the full graph. Reject if performance does not add useful A/B evidence or gains depend on unstable local denominators/crosswalks. A local axis is not justified merely because data exist.
+
+### C. Survey selection and turnout-report calibration
+
+**Mechanism and target.** Distinguish target-population participation from selection into a survey and self-reported participation. A bridge could use known sampling design, replicate weights, response indicators, target margins, or paired voter-file validation. Source-level mean shifts alone do not identify the selection process.
+
+**Existing research and its boundary.** Several broader modules exist and should be reused or compared rather than described as absent:
+
+- `src/survey_transport_v1/quantification.py` and `src/survey_transport_v2/shift.py` estimate weighted mixtures among target respondents under stated stable class-conditional laws. They explicitly do not identify population selection/transport.
+- `src/survey_transport_provider_v1/ces.py` admits audited CES records and weights under a sealed protocol; it is not a respondent inclusion model.
+- `src/community_state_joint_v1/source.py` preserves publisher weights and audits missing/incomplete rows; `model.py` estimates weighted respondent composition.
+- `src/survey_measurement/ces_conditional_profile_dm_v2.py` supplies a normalized Dirichlet-multinomial mass conditional on supplied `theta` and `n`; it does not learn/transport demographic margins or model sample inclusion.
+- `src/survey_measurement/weighted_pattern_dirichlet_v1.py` defines a normalized synthetic weighted-release law, not an empirical source-admission or fitting route.
+
+**Normalized law versus weighted pseudoposterior.** A fully normalized sampling/measurement law and a likelihood weighted by survey weights define different inferential targets. A weighted pseudoposterior is not universally invalid, but it must be labeled as its own target and its uncertainty/interpretation justified; it must not be presented as a normalized raw-record likelihood. Conversely, having a normalized conditional count law does not by itself identify who was sampled or who responded. With respondent-only records and no frame, inclusion probabilities, or external bridge, nonignorable selection is generally not identified.
+
+**Dated sources.** The CPS archive includes cycle supplements and replicate weights ([CPS voting data and replicate-weight archive](https://www.census.gov/data/datasets/time-series/demo/cps/cps-supp_cps-repwgt/cps-voting.html)). The CES 2024 vote-validated dataset and guide were released September 5, 2025 ([Harvard Dataverse CES Common Content 2024](https://doi.org/10.7910/DVN/X11EP6)). That later release may be usable for training a subsequent forecast only if it was available at that later forecast's cutoff; it was unavailable as a 2024 forecast-time input. Validation records turnout, not nonrespondents' political choice, and validation coverage/weighting limits remain.
+
+**Jurisdiction-regime correction.** A national universal `P(register) × P(vote | register)` factorization is invalid without jurisdiction-specific registration regimes and compatible denominators. North Dakota has no voter-registration process: its Secretary of State describes voting eligibility and voter ID rather than registration ([official ND voting information](https://www.sos.nd.gov/elections/voter/voting-north-dakota/forms-voter-id)); its October 24, 2024 election media information also documents the 2024 general-election context ([dated 2024 official document](https://www.sos.nd.gov/sites/www/files/documents/news/2024-general-election-media-info-oct24.pdf)). Do not encode North Dakota as zero registration or as a failed registration hurdle. The model would need a regime-specific direct eligibility-to-participation route (with independently supported eligibility/exposure) or mark the registration transition not applicable. In same-day-registration jurisdictions, same-day registrations and voters may overlap or be observed at different timestamps; pre-election active-registration totals are not automatically the eligible-voter denominator or the set of people eligible to cast a ballot. Any hurdle therefore needs legal regime and effective-date support, compatible totals and dates, plus eligibility data distinct from CVAP. CVAP remains a population exposure measure, not exact legal eligibility.
+
+**Low-risk comparison and rejection.** First compare supported design/replicate-weight observation laws to the current source-offset observation law. Add explicit inclusion factors only when the source frame/response process or an external validation bridge supports them. Preserve all other provider definitions and data interfaces, but refit the full joint model and all affected parameters. Do not multiply the existing row log likelihood by weights and call it a normalized likelihood. A pseudoposterior can still be tested as a separately declared target if its estimand and uncertainty are explicit. Reject any proposed selection model with no identifiable selection information, unclear target/normalizer, duplicate respondents counted as independent, or apparent gains caused only by unmodeled weight concentration.
+
+## Round 2: cross-critique of economic, approval, and candidate predictors
+
+### D. Economy and presidential approval as an incremental fundamentals challenger
+
+The selected `Fundamentals` provider is not an empty baseline: `lean_carryover_context_incumbency_v1` uses relative state lean, national presidential carryover, presidential/midterm context, and incumbency. The graph also contains common cycle/race residuals and a poll likelihood. Adding macroeconomy or presidential approval is therefore a component-level expansion, not entirely new election context. It could add information, but economy/approval may correlate with the existing national and cycle terms and polls may already reflect much of their signal.
+
+`src/prediction/fundamentals.py` is a broader legacy comparator with presidential net approval, Q2 GDP growth, unemployment, and CPI. Its `FundamentalsModel` predicts House-share change and documents roughly thirteen midterm observations; its target and training support do not establish Senate candidate-count value. Keep this distinction explicit. Do not transfer its fitted House coefficients as if they were a qualified Senate-count law.
+
+**Test.** Compare separately nested, dated economy and approval providers against the selected fundamentals provider, preferably one predictor block at a time before any combined challenger. Hold component definitions, source roster, cutoff, and count target fixed; refit all parameters in the full joint model. Pin exact historical data vintages available by each forecast cutoff (including GDP vintage/revisions and approval polling windows). Poll evidence remains in the joint graph, so an approval factor must demonstrate incremental predictive value conditional on the polls and not enter the same poll data twice. Reject if the added signal is unstable/collinear with cycle/race effects or fails the adoption guard.
+
+### E. Candidate experience and campaign receipts
+
+The selected `Choice` provider contains party-bloc utility, incumbency, within-bloc candidate contrasts, and a Texas-specific ballot-role hierarchy. These are meaningful existing candidate/candidate-quality accommodations, but they do not explicitly use prior office/experience or campaign receipts. Any provider should compete with the existing contrast or role representation, not silently stack another candidate-quality term on top of it.
+
+Candidate experience can be coded from dated official histories, but identity joins and availability must be frozen as of each forecast cutoff. Campaign receipts are endogenous to expected competitiveness, polling, donor preferences, and entry; reports are filed after covered periods and can post-date the intended forecast cutoff. Use official filing periods and release timestamps, not final-cycle receipts or current candidate summaries, in historical replays. Candidate attributes and contribution totals may also duplicate information already captured by candidate identity, incumbency, poll likelihoods, and latent race effects.
+
+**Test.** If fixed-vintage sources are available across the relevant cycles, compare one candidate-feature provider against the current contrast/role prior, while keeping all other interfaces fixed and refitting the full joint graph. Evaluate experience and receipts separately first. Reject if the gain depends on target-cycle data unavailable at the cutoff, is concentrated in one election, or disappears when poll/race residual factors are retained. No candidate targeting or persuasion use is proposed.
+
+## Shared head-to-head protocol
+
+The component under study changes; all other component definitions, input contracts, evidence identities, and information cutoffs stay matched. The full joint graph is refit for every variant, including parameters of unchanged providers, so posterior dependence and affected parameters are not frozen at the baseline fit. Compare resulting joint candidate counts/event totals, not only marginal share or winner predictions. Keep each challenger and its negative findings.
+
+For a 2026 midterm target, the verification rubric names 2018 and 2022 as A-level midterms and 2020 and 2024 as B-level presidential cycles. A target cycle's own post-election labels may score its forecast or train a later forecast only after release; they are never forecast-time predictors for that same cycle. For every historical replay, bind source versions and publication/release times to the exact forecast cutoff and do not substitute currently revised files silently.
+
+Predeclare proper-score and calibration summaries and material-regression/noninferiority guards across A and B. Adoption requires useful A/B evidence and no material guard violation, with each election shown. It does not require every metric to improve in every election. The finite number of cycles limits certainty; preserve mixed results and distinguish data/interface feasibility from demonstrated predictive benefit.
+
+## Primary and authoritative data links
+
+- Census CPS November Voting Supplement years/API: [CPS API documentation](https://www.census.gov/data/developers/data-sets/census-microdata-api/cps/voting.html); [datasets and replicate weights](https://www.census.gov/data/datasets/time-series/demo/cps/cps-supp_cps-repwgt/cps-voting.html).
+- U.S. Election Assistance Commission EAVS historical time series: [EAVS retrospective](https://www.eac.gov/research-and-data/eavs-retrospective); [2022 release, June 29, 2023](https://www.eac.gov/news/2023/06/29/nations-most-comprehensive-report-2022-midterm-election-administration-and-voting); [2024 release, June 30, 2025](https://www.eac.gov/news/2025/06/30/us-election-assistance-commission-releases-2024-election-administration-and-voting).
+- Census ACS mobility and 2020 one-year estimate caveat: [ACS Migration/Geographic Mobility](https://www.census.gov/topics/population/migration/guidance/acs-1yr.html).
+- CES 2024 vote-validated release: [Harvard Dataverse dataset](https://doi.org/10.7910/DVN/X11EP6), released September 5, 2025.
