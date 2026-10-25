@@ -170,7 +170,7 @@ def _options(registry: dict[str, Any], implementations: list[dict[str, Any]]) ->
         *[
             option("uncertainty", key, label, desc)
             for key, label, desc in [
-                ("error-low", "Polling error scales × 0.5", "Saved 2026 sensitivity scaling all polling-error scales."),
+                ("error-low", "Polling error scales × 2/3", "Saved 2026 sensitivity scaling all polling-error scales."),
                 ("error-high", "Polling error scales × 1.5", "Saved 2026 sensitivity scaling all polling-error scales."),
                 ("cycle-low", "Common-cycle error SD × 0.5", "Saved 2026 sensitivity scaling the shared cycle-error SD."),
                 ("cycle-high", "Common-cycle error SD × 2", "Saved 2026 sensitivity scaling the shared cycle-error SD."),
