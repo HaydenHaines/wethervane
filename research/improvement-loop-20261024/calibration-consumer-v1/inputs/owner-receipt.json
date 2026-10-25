@@ -1,0 +1,101 @@
+{
+  "schema": "DisjointTXPollCalibrationSuccessorV1",
+  "status": "completed_event_disjoint_calibration",
+  "completed_utc": "2026-10-20T21:37:08.465813+00:00",
+  "calibration": {
+    "path": "research/senate-stack-integration-20261020/tx-disjoint-calibration-sol-v1/attempt-v1/calibration.json",
+    "sha256": "953b9c4989eb565e2776f48ff7a53c34b8b135afed4ee118c6d4860bd88e3374"
+  },
+  "component": {
+    "path": "research/senate-stack-integration-20261020/tx-disjoint-calibration-sol-v1/attempt-v1/poll-component.json",
+    "sha256": "1fe224a916a064c7812ebb47768ccb79364e10e4ab9b4d85657bf8d66635fb6b"
+  },
+  "target_coordinates": {
+    "path": "research/senate-stack-integration-20261020/tx-disjoint-calibration-sol-v1/attempt-v1/target-coordinates.json",
+    "sha256": "ef1793ee6d4cef3fef398c2c10fe5fdc1fb0c6654f7c40472d818bd8c835ed03"
+  },
+  "original_component": {
+    "path": "research/senate-stack-integration-20261020/actual-pilot-source-sol-v1/observation-maps-v2/TX2026-six-LV-poll-component.json",
+    "sha256": "50dd0f73307b1f15d99b8dbecbfcfac20e7ddf38f242a9da9858c1943b65ad89"
+  },
+  "route": {
+    "path": "research/senate-stack-integration-20261020/actual-source-review-astra-v1/disjoint-calibration-route.json",
+    "sha256": "f745bebf7f268a7b67c4fad010346c2efd42dd4258ad611ae59adde1d9f26361"
+  },
+  "retained_training": {
+    "path": "research/senate-stack-integration-20261020/tx-disjoint-calibration-sol-v1/attempt-v1/selected-disjoint-training.csv",
+    "sha256": "151a14846e850ff0b4537897a29faa772a5a5e0a81f8cd92f41fcdec202dcb61"
+  },
+  "excluded_training": {
+    "path": "research/senate-stack-integration-20261020/tx-disjoint-calibration-sol-v1/attempt-v1/excluded-original-rows.csv",
+    "sha256": "df7e7e85b32ec7f42751e5154b32b010c1255d408d1845ece2800b6efdd386e4"
+  },
+  "exact_excluded_ledger": {
+    "path": "research/senate-stack-integration-20261020/actual-source-review-astra-v1/excluded-calibration-observations.csv",
+    "sha256": "0dbcd883c5499e382cbd0d0d46467e31323c77e72543cc119db72dd6131bd08f"
+  },
+  "source_pins": [
+    {
+      "path": "research/senate-stack-integration-20261020/tx-disjoint-calibration-sol-v1/run.py",
+      "sha256": "0cafe24ae01a5115b332bf38657a05259581508c57906f9754f618d51f2bb2d2"
+    },
+    {
+      "path": "research/senate-stack-integration-20261020/actual-source-review-astra-v1/disjoint-calibration-route.json",
+      "sha256": "f745bebf7f268a7b67c4fad010346c2efd42dd4258ad611ae59adde1d9f26361"
+    },
+    {
+      "path": "research/polling-layer-implementation-20261020/calibration-v1/selected-training-polls.csv",
+      "sha256": "2cfe745917c250bd128fd3664357abaefa3e74fadd54b12f24d4cb914ef70a79"
+    },
+    {
+      "path": "research/senate-stack-integration-20261020/actual-source-review-astra-v1/excluded-calibration-observations.csv",
+      "sha256": "0dbcd883c5499e382cbd0d0d46467e31323c77e72543cc119db72dd6131bd08f"
+    },
+    {
+      "path": "src/forecasting/poll_covariance_v1.py",
+      "sha256": "9ae130b3f314d75a5255c7c92fab502ec596a7cca2960090706fa203b133e05d"
+    },
+    {
+      "path": "src/forecasting/polling_v1.py",
+      "sha256": "5876ab790f43c8bd6324590f2a3d007f2da853bce49d0e60cd19142046ab0bcb"
+    },
+    {
+      "path": "research/senate-stack-integration-20261020/actual-pilot-source-sol-v1/observation-maps-v2/receipt.json",
+      "sha256": "005ebe0736b874d6c7798eaf696a7d0de87828beb575316e60a5331434bbed1b"
+    },
+    {
+      "path": "research/senate-stack-integration-20261020/actual-pilot-source-sol-v1/observation-maps-v2/TX2026-poll-mapping-receipt.json",
+      "sha256": "3f425c5fe1c39e56a66a81e73aa09a77d5ed5e3afe54ed68c64c29104d6e5a92"
+    },
+    {
+      "path": "research/senate-stack-integration-20261020/actual-pilot-source-sol-v1/observation-maps-v2/TX2026-poll-observation-ID-map.json",
+      "sha256": "bd4f95648c8493df76605eed31b02418b56a5c55b3c3f9bb464a47d31ac1e705"
+    },
+    {
+      "path": "research/senate-stack-integration-20261020/actual-pilot-source-sol-v1/observation-maps-v2/TX2026-six-LV-poll-component.json",
+      "sha256": "50dd0f73307b1f15d99b8dbecbfcfac20e7ddf38f242a9da9858c1943b65ad89"
+    },
+    {
+      "path": "research/senate-stack-integration-20261020/actual-pilot-source-sol-v1/observation-maps-v2/TX2026-six-LV-poll-original-observations.json",
+      "sha256": "6decdb256747863abd3680a269d8314a9d5b545ae8becf9274fbaf1da6bdc491"
+    }
+  ],
+  "observation_values_ids_and_coordinates_unchanged": true,
+  "downstream_event_overlap": [],
+  "removed": 31,
+  "retained": 1483,
+  "races": 105,
+  "covariance_min_eigenvalue": 0.01234427887313929,
+  "old_covariance_disjoint": false,
+  "covariance_uncertainty_integrated": false,
+  "same_cycle_cross_state_dependence_qualified": false,
+  "actual_population_or_downstream_sampled": false,
+  "files": {
+    "selected-disjoint-training.csv": "151a14846e850ff0b4537897a29faa772a5a5e0a81f8cd92f41fcdec202dcb61",
+    "calibration.json": "953b9c4989eb565e2776f48ff7a53c34b8b135afed4ee118c6d4860bd88e3374",
+    "excluded-original-rows.csv": "df7e7e85b32ec7f42751e5154b32b010c1255d408d1845ece2800b6efdd386e4",
+    "poll-component.json": "1fe224a916a064c7812ebb47768ccb79364e10e4ab9b4d85657bf8d66635fb6b",
+    "launch.json": "622680af6e48be7870636b075db526e57606e37c61aa210c2d81671bd7f8f570",
+    "target-coordinates.json": "ef1793ee6d4cef3fef398c2c10fe5fdc1fb0c6654f7c40472d818bd8c835ed03"
+  }
+}

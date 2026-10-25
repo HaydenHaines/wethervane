@@ -1,0 +1,78 @@
+{
+  "schema": "economic_cutoff_adapter_v2_receipt_v1",
+  "fit": false,
+  "exact_cutoff": "inclusive 00:00 UTC at election day minus fourteen calendar days",
+  "input_manifest": {
+    "schema": "economic_cutoff_adapter_v2_inputs_v1",
+    "cutoff_convention": "inclusive_H14_calendar_day_start_00_00_UTC",
+    "v1_directory": "../economic-vintages-v1",
+    "v1_parser": {
+      "file": "../economic-vintages-v1/cpi_vintages.py",
+      "sha256": "42473ae777f1e17c1704b93894d9cb37bf92ea456a0a6245d7958da29198dafc"
+    },
+    "v1_rows": {
+      "file": "../economic-vintages-v1/rows.json",
+      "sha256": "02d54e39994fe41500c33c881b0fc70389deea41f66073d35ebb62e3e89099c4"
+    },
+    "v1_selections": {
+      "file": "../economic-vintages-v1/selections.json",
+      "sha256": "18cb3bd821ac036658423e6d1495d2295fd5d9430b65c58bbc7b200804b918cf"
+    },
+    "v1_receipt": {
+      "file": "../economic-vintages-v1/receipt.json",
+      "sha256": "7635903576d1154634fe96b9fcab9fcadc261f01827af92eb3ddd75810e22f6f"
+    }
+  },
+  "files": [
+    {
+      "file": "README.md",
+      "sha256": "a711992fb411a774c5c316c86e1ead63b15f5d23202b8ca14d1473d77ab2bdeb",
+      "bytes": 3685
+    },
+    {
+      "file": "acquisition.json",
+      "sha256": "5147b56ac62583d2204d5ed8329fbfbb0468b644f35c1ee77607b0b9c0be459c",
+      "bytes": 704
+    },
+    {
+      "file": "adapter.py",
+      "sha256": "9c15cf3bb100cadc20d10500aee8c4881f5202e706781db98acb366a24880924",
+      "bytes": 9064
+    },
+    {
+      "file": "inputs.json",
+      "sha256": "c7a80d5f5c38bf93f88e919b55cfdf28c45d0cd0049d226355d4f1bb70069c71",
+      "bytes": 795
+    },
+    {
+      "file": "rows.json",
+      "sha256": "e81be73948dd75d73e804b1bcb077ddcafdd4969effdd015aabb4a7137a80b2d",
+      "bytes": 49012
+    },
+    {
+      "file": "selections.json",
+      "sha256": "208c02593a8f39771ae23248ec2c5608aa493948cda2d90d64a53fdc3fbf0a0b",
+      "bytes": 50629
+    },
+    {
+      "file": "deltas.json",
+      "sha256": "038c8aabb3d57ee8db024e0e18370dec35d08bb97da8f28c4f7ffcf40d29ece3",
+      "bytes": 736
+    },
+    {
+      "file": "build-output.json",
+      "sha256": "b509819f4626d350b757de78c4215e8fb41ab23dc47ada4cc2dbabea5d016866",
+      "bytes": 299
+    },
+    {
+      "file": "test_adapter.py",
+      "sha256": "cc8731f45b499896cb67ff09d94812e9fbfb3a5b07f1b55eaec3d9dab9de03bb",
+      "bytes": 8037
+    },
+    {
+      "file": "raw/cpi_20040916.pdf",
+      "sha256": "b3d6b64f4e05fec3c842f2541b636e970b41c83bbfd0b18304d75850b50de357",
+      "bytes": 83331
+    }
+  ]
+}

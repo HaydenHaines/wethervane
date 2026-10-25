@@ -1,0 +1,183 @@
+{
+  "schema_version": 1,
+  "recorder_only": true,
+  "cycle": "m01-calibration-20261025",
+  "binding": {
+    "hypothesis": "A joint posterior over the five polling-error log scales can represent calibration uncertainty. This cycle evaluates sampling only; downstream predictive value and feedback target require separate experiments.",
+    "incumbent_config": {
+      "covariance": "unchanged PollCoordinates.kernels and gaussian_error_objective; one block per election cycle",
+      "downstream_feedback_target": null,
+      "kind": "standalone_owner_five_kernel_poll_error_calibration",
+      "plan_sha256": "9ffc1342bc0afad4c13ae3be73d3e6bfbd10cb8e88fecc178f76e40f6c1590be",
+      "prior": {
+        "coordinates": "log_standard_deviations",
+        "family": "independent_untruncated_normal",
+        "log_sd": 0.7,
+        "medians": [
+          0.1,
+          0.06,
+          0.06,
+          0.03,
+          0.05
+        ],
+        "optimizer_bounds_used": false
+      },
+      "source_snapshots": [
+        {
+          "owner": {
+            "path": "research/senate-stack-integration-20261020/tx-disjoint-calibration-sol-v1/attempt-v1/selected-disjoint-training.csv",
+            "sha256": "151a14846e850ff0b4537897a29faa772a5a5e0a81f8cd92f41fcdec202dcb61"
+          },
+          "snapshot": {
+            "path": "inputs/selected-disjoint-training.csv",
+            "sha256": "151a14846e850ff0b4537897a29faa772a5a5e0a81f8cd92f41fcdec202dcb61"
+          }
+        },
+        {
+          "owner": {
+            "path": "research/senate-stack-integration-20261020/tx-disjoint-calibration-sol-v1/attempt-v1/calibration.json",
+            "sha256": "953b9c4989eb565e2776f48ff7a53c34b8b135afed4ee118c6d4860bd88e3374"
+          },
+          "snapshot": {
+            "path": "inputs/calibration.json",
+            "sha256": "953b9c4989eb565e2776f48ff7a53c34b8b135afed4ee118c6d4860bd88e3374"
+          }
+        },
+        {
+          "owner": {
+            "path": "src/forecasting/poll_covariance_v1.py",
+            "sha256": "9ae130b3f314d75a5255c7c92fab502ec596a7cca2960090706fa203b133e05d"
+          },
+          "snapshot": {
+            "path": "snapshot-source/src/forecasting/poll_covariance_v1.py",
+            "sha256": "9ae130b3f314d75a5255c7c92fab502ec596a7cca2960090706fa203b133e05d"
+          }
+        },
+        {
+          "owner": {
+            "path": "src/forecasting/polling_v1.py",
+            "sha256": "5876ab790f43c8bd6324590f2a3d007f2da853bce49d0e60cd19142046ab0bcb"
+          },
+          "snapshot": {
+            "path": "snapshot-source/src/forecasting/polling_v1.py",
+            "sha256": "5876ab790f43c8bd6324590f2a3d007f2da853bce49d0e60cd19142046ab0bcb"
+          }
+        },
+        {
+          "owner": {
+            "path": "src/__init__.py",
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "snapshot": {
+            "path": "snapshot-source/src/__init__.py",
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "owner": {
+            "path": "src/forecasting/response_v5_reuse.py",
+            "sha256": "d4330647dba36d08d437237098cd9ac198657e1c9980d243b0e82b1ee65fd850"
+          },
+          "snapshot": {
+            "path": "snapshot-source/src/forecasting/response_v5_reuse.py",
+            "sha256": "d4330647dba36d08d437237098cd9ac198657e1c9980d243b0e82b1ee65fd850"
+          }
+        },
+        {
+          "owner": {
+            "path": "research/senate-stack-integration-20261020/tx-disjoint-calibration-sol-v1/attempt-v1/receipt.json",
+            "sha256": "07c53f2727a86680cf5f5e7acdc657e915728ab7310f39bd42d8b6f6bb2e2efe"
+          },
+          "snapshot": {
+            "path": "inputs/receipt.json",
+            "sha256": "07c53f2727a86680cf5f5e7acdc657e915728ab7310f39bd42d8b6f6bb2e2efe"
+          }
+        },
+        {
+          "owner": {
+            "path": "research/senate-stack-integration-20261020/tx-disjoint-calibration-sol-v1/attempt-v1/excluded-original-rows.csv",
+            "sha256": "df7e7e85b32ec7f42751e5154b32b010c1255d408d1845ece2800b6efdd386e4"
+          },
+          "snapshot": {
+            "path": "inputs/excluded-original-rows.csv",
+            "sha256": "df7e7e85b32ec7f42751e5154b32b010c1255d408d1845ece2800b6efdd386e4"
+          }
+        },
+        {
+          "owner": {
+            "path": "research/senate-stack-integration-20261020/actual-source-review-astra-v1/disjoint-calibration-route.json",
+            "sha256": "f745bebf7f268a7b67c4fad010346c2efd42dd4258ad611ae59adde1d9f26361"
+          },
+          "snapshot": {
+            "path": "inputs/disjoint-calibration-route.json",
+            "sha256": "f745bebf7f268a7b67c4fad010346c2efd42dd4258ad611ae59adde1d9f26361"
+          }
+        }
+      ]
+    },
+    "scope": {
+      "actual_population_or_count_fit": false,
+      "forecast_qualified": false,
+      "observations": 1483,
+      "races": 105,
+      "target_cycle": 2026,
+      "training_cycles": [
+        "2012",
+        "2016",
+        "2018",
+        "2020"
+      ]
+    },
+    "target_layer": "measurement_calibration_only"
+  },
+  "checkpoints": [
+    {
+      "revision": 0,
+      "status": "research",
+      "note": "Cycle recorded",
+      "outcome": "success",
+      "recommendation": null,
+      "recorded_at": "2026-10-25T04:19:53.188281+00:00",
+      "references": {}
+    },
+    {
+      "revision": 1,
+      "status": "evaluating",
+      "note": "Four-chain calibration-only posterior attempt-v1 launched; completed chains persist separately. Original execsession66137. Finaldiagnostics pending; no retries, forecast qualification, downstream mixing orpromotion.",
+      "outcome": "success",
+      "recommendation": null,
+      "recorded_at": "2026-10-25T04:19:53.193770+00:00",
+      "references": {
+        "evaluation": "1ad2be3ec5c0ab517f20d783c7a08faff744b065c47337e5b6eb6d46e43724d6",
+        "plan": "9ffc1342bc0afad4c13ae3be73d3e6bfbd10cb8e88fecc178f76e40f6c1590be",
+        "review": "386704fa5f92e2618b211813f42bf5c2ec90bdcec8c839d2eef0aa54e7fd1966"
+      }
+    },
+    {
+      "revision": 2,
+      "status": "reviewing",
+      "note": "Original calibration process completed with exit 0; independent raw-bank reconciliation and all declared diagnostics pass. Actual-bank supplied-mean consumer reviewed after manifest guard repair. No downstream fit or predictive claim.",
+      "outcome": "success",
+      "recommendation": null,
+      "recorded_at": "2026-10-25T04:50:33.417139+00:00",
+      "references": {
+        "evaluation": "3a7a18dc8d303497676c4d949ae18dd4eb549a15a7f73e6f8777dbfbe1adb420",
+        "plan": "9ffc1342bc0afad4c13ae3be73d3e6bfbd10cb8e88fecc178f76e40f6c1590be",
+        "review": "fa6b7b07ed3a9625e16cc7769da43110d102ea3c74a8d66bd9ce300a55fc017a"
+      }
+    },
+    {
+      "revision": 3,
+      "status": "decided",
+      "note": "Accept the completed calibration bank and bounded supplied-mean consumer for research. Retain the forecast incumbent: downstream feedback, complete joint refitting and matched predictive value remain separate. This closes only the computational calibration cycle; the standing goal remains active.",
+      "outcome": "success",
+      "recommendation": "retain",
+      "recorded_at": "2026-10-25T04:50:33.418851+00:00",
+      "references": {
+        "evaluation": "3a7a18dc8d303497676c4d949ae18dd4eb549a15a7f73e6f8777dbfbe1adb420",
+        "plan": "9ffc1342bc0afad4c13ae3be73d3e6bfbd10cb8e88fecc178f76e40f6c1590be",
+        "review": "fa6b7b07ed3a9625e16cc7769da43110d102ea3c74a8d66bd9ce300a55fc017a"
+      }
+    }
+  ]
+}

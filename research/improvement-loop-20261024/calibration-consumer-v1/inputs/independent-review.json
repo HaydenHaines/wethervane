@@ -1,0 +1,124 @@
+{
+  "status": "independent_terminal_bank_review_passed",
+  "plan_sha256": "9ffc1342bc0afad4c13ae3be73d3e6bfbd10cb8e88fecc178f76e40f6c1590be",
+  "terminal_sha256": "45fb5f20ecaf4934cfdc1d2558db9aa6fd54923211a8637858cd65d2aac7c0c3",
+  "posterior_bank_sha256": "449b9f50eecec0af250834457f256a8fd193616cb70b4847bd35acf614fe0539",
+  "raw_bank_sha256": "72af34279d20d60cb9e702408c291bbb44f8589166554b82dcc3da477c2f89bf",
+  "reviewer_verifier_sha256": "eb0aabc53e1678b4bad1e5bf1763011f10ab297933052e61ffb9073255a86cc8",
+  "terminal_status": "calibration_diagnostics_passed",
+  "netcdf_groups_checked": [
+    "posterior",
+    "sample_stats",
+    "warmup_posterior",
+    "warmup_sample_stats"
+  ],
+  "warmup_discarded_for_posterior_bank": true,
+  "joint_bank": {
+    "shape": [
+      4,
+      1000,
+      5
+    ],
+    "components": [
+      "independent",
+      "cycle",
+      "race",
+      "house",
+      "movement"
+    ],
+    "log_scale_correlation": [
+      [
+        1.0,
+        -0.014977035888532613,
+        0.0515566426376182,
+        -0.3561131699267961,
+        -0.2989089515877497
+      ],
+      [
+        -0.014977035888532613,
+        0.9999999999999999,
+        0.01870608629281117,
+        -0.005303930393628133,
+        -0.016295800000906847
+      ],
+      [
+        0.0515566426376182,
+        0.01870608629281117,
+        1.0,
+        0.00016759198192513837,
+        -0.3910099622946542
+      ],
+      [
+        -0.3561131699267962,
+        -0.005303930393628133,
+        0.00016759198192513837,
+        0.9999999999999999,
+        -0.06029774834430905
+      ],
+      [
+        -0.2989089515877497,
+        -0.016295800000906847,
+        -0.39100996229465423,
+        -0.060297748344309045,
+        1.0
+      ]
+    ]
+  },
+  "recomputed_diagnostics": {
+    "rank_rhat": [
+      1.0001447103621115,
+      1.0010187489642104,
+      1.000457957906903,
+      1.0010163994845507,
+      1.0016409704576785
+    ],
+    "bulk_ess": [
+      3516.8765943898143,
+      4534.433748212459,
+      4044.2240925439614,
+      3680.40896532527,
+      4186.727063620167
+    ],
+    "tail_ess": [
+      3352.336688464646,
+      2573.827973668295,
+      2574.760760609071,
+      2687.1800647105665,
+      3082.2209726667843
+    ],
+    "divergences": 0,
+    "depth_saturations": 0,
+    "max_observed_tree_depth": 4,
+    "ebfmi": [
+      1.084635598504665,
+      1.0430503690361417,
+      1.0777236614469976,
+      0.9740544372492878
+    ],
+    "finite": true
+  },
+  "diagnostic_gates_passed": true,
+  "transition_journals": {
+    "journals": 4,
+    "records_per_chain": 2000,
+    "warmup_records_per_chain": 1000,
+    "posterior_records_per_chain": 1000,
+    "all_transition_states_match_native_warmup_and_posterior_draws": true,
+    "first_transition_matches_declared_seeded_init_after_transition": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "note": "Seeded initialization and chain seeds are source/plan-bound; first callback is post-transition and is not required to equal the init point."
+  },
+  "all_terminal_artifact_hashes_match": true,
+  "scientific_scope": {
+    "prior_and_target": "M01 explicit untruncated log-SD prior and normalized Gaussian residual likelihood",
+    "training_cutoff": "2026-10-20T16:21:44Z",
+    "availability_limit": "field-end proxy; publication dates/history unverified",
+    "retrospective_only": true,
+    "downstream_feedback_target": "not_chosen",
+    "not_forecast_qualified": true
+  }
+}

@@ -1,0 +1,256 @@
+{
+  "schema": "M01CalibrationPosteriorPlanV1",
+  "created_utc": "2026-10-25T03:57:56.182828+00:00",
+  "status": "prepared_not_launched",
+  "target_id": "M01_disjoint_poll_covariance_calibration_posterior_v1",
+  "target_cycle": 2026,
+  "source_cutoff_utc": "2026-10-20T16:21:44Z",
+  "components": [
+    "independent",
+    "cycle",
+    "race",
+    "house",
+    "movement"
+  ],
+  "training_cycles": [
+    "2012",
+    "2016",
+    "2018",
+    "2020"
+  ],
+  "training_observations": 1483,
+  "training_races": 105,
+  "per_cycle": {
+    "2012": 467,
+    "2016": 463,
+    "2018": 288,
+    "2020": 265
+  },
+  "excluded_event_keys": [
+    "2020:TX:senate:regular",
+    "2024:TX:senate:regular"
+  ],
+  "residual": "logit(dem_share)-logit(actual_dem_share)",
+  "covariance": "unchanged PollCoordinates.kernels and gaussian_error_objective; one block per election cycle",
+  "prior": {
+    "coordinates": "log_standard_deviations",
+    "family": "independent_untruncated_normal",
+    "medians": [
+      0.1,
+      0.06,
+      0.06,
+      0.03,
+      0.05
+    ],
+    "log_sd": 0.7,
+    "optimizer_bounds_used": false
+  },
+  "density": "product of normalized Gaussian residual blocks times independent normalized Normal log-SD priors",
+  "density_normalizer": "owner objective plus 5*log(0.7*sqrt(2*pi)); no SD-coordinate Jacobian in log coordinates",
+  "sampler": {
+    "chains": 4,
+    "cores": 1,
+    "tune": 1000,
+    "draws": 1000,
+    "target_accept": 0.9,
+    "max_treedepth": 10,
+    "seed": 2026102401,
+    "chain_seeds": [
+      2678211351,
+      1767967282,
+      2782219441,
+      2794758142
+    ]
+  },
+  "diagnostic_gates": {
+    "max_rank_rhat": 1.01,
+    "min_bulk_ess": 400,
+    "min_tail_ess": 400,
+    "divergences": 0,
+    "depth_saturations": 0,
+    "min_ebfmi": 0.3
+  },
+  "initial_states": "original optimizer mode + fixed seeded Normal(0,0.2) offsets in log coordinates; not prior bounds",
+  "source_qualifications": {
+    "availability_basis": "field_end_date_proxy_only_NOT_verified_publication",
+    "row_count": 1483,
+    "publication_date_verified": false,
+    "historical_version_verified": false,
+    "strict_asof_qualified": false,
+    "earliest_historical_target_claim": null,
+    "qualification": "Retrospective 2026 calibration using outcomes through 2020; not a time-safe historical score"
+  },
+  "limitations": [
+    "New explicit prior target; original optimizer regularizer alone did not define posterior uncertainty.",
+    "Event-disjoint exclusions do not remove same-cycle cross-state dependence on downstream data.",
+    "No population/count likelihood, downstream feedback target, mixture choice, score, forecast, or activation.",
+    "The empirical bank by itself chooses neither marginal Bayes feedback nor calibration-cut feedback.",
+    "Untruncated real log scales: no optimizer bound reused; numerical failure preserves failed attempt.",
+    "Finite calibration bank has Monte Carlo error and is not a conjugate approximation or a Hessian bank."
+  ],
+  "snapshots": [
+    {
+      "owner": {
+        "path": "research/senate-stack-integration-20261020/tx-disjoint-calibration-sol-v1/attempt-v1/selected-disjoint-training.csv",
+        "sha256": "151a14846e850ff0b4537897a29faa772a5a5e0a81f8cd92f41fcdec202dcb61"
+      },
+      "snapshot": {
+        "path": "inputs/selected-disjoint-training.csv",
+        "sha256": "151a14846e850ff0b4537897a29faa772a5a5e0a81f8cd92f41fcdec202dcb61"
+      }
+    },
+    {
+      "owner": {
+        "path": "research/senate-stack-integration-20261020/tx-disjoint-calibration-sol-v1/attempt-v1/calibration.json",
+        "sha256": "953b9c4989eb565e2776f48ff7a53c34b8b135afed4ee118c6d4860bd88e3374"
+      },
+      "snapshot": {
+        "path": "inputs/calibration.json",
+        "sha256": "953b9c4989eb565e2776f48ff7a53c34b8b135afed4ee118c6d4860bd88e3374"
+      }
+    },
+    {
+      "owner": {
+        "path": "src/forecasting/poll_covariance_v1.py",
+        "sha256": "9ae130b3f314d75a5255c7c92fab502ec596a7cca2960090706fa203b133e05d"
+      },
+      "snapshot": {
+        "path": "snapshot-source/src/forecasting/poll_covariance_v1.py",
+        "sha256": "9ae130b3f314d75a5255c7c92fab502ec596a7cca2960090706fa203b133e05d"
+      }
+    },
+    {
+      "owner": {
+        "path": "src/forecasting/polling_v1.py",
+        "sha256": "5876ab790f43c8bd6324590f2a3d007f2da853bce49d0e60cd19142046ab0bcb"
+      },
+      "snapshot": {
+        "path": "snapshot-source/src/forecasting/polling_v1.py",
+        "sha256": "5876ab790f43c8bd6324590f2a3d007f2da853bce49d0e60cd19142046ab0bcb"
+      }
+    },
+    {
+      "owner": {
+        "path": "src/__init__.py",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "snapshot": {
+        "path": "snapshot-source/src/__init__.py",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "owner": {
+        "path": "src/forecasting/response_v5_reuse.py",
+        "sha256": "d4330647dba36d08d437237098cd9ac198657e1c9980d243b0e82b1ee65fd850"
+      },
+      "snapshot": {
+        "path": "snapshot-source/src/forecasting/response_v5_reuse.py",
+        "sha256": "d4330647dba36d08d437237098cd9ac198657e1c9980d243b0e82b1ee65fd850"
+      }
+    },
+    {
+      "owner": {
+        "path": "research/senate-stack-integration-20261020/tx-disjoint-calibration-sol-v1/attempt-v1/receipt.json",
+        "sha256": "07c53f2727a86680cf5f5e7acdc657e915728ab7310f39bd42d8b6f6bb2e2efe"
+      },
+      "snapshot": {
+        "path": "inputs/receipt.json",
+        "sha256": "07c53f2727a86680cf5f5e7acdc657e915728ab7310f39bd42d8b6f6bb2e2efe"
+      }
+    },
+    {
+      "owner": {
+        "path": "research/senate-stack-integration-20261020/tx-disjoint-calibration-sol-v1/attempt-v1/excluded-original-rows.csv",
+        "sha256": "df7e7e85b32ec7f42751e5154b32b010c1255d408d1845ece2800b6efdd386e4"
+      },
+      "snapshot": {
+        "path": "inputs/excluded-original-rows.csv",
+        "sha256": "df7e7e85b32ec7f42751e5154b32b010c1255d408d1845ece2800b6efdd386e4"
+      }
+    },
+    {
+      "owner": {
+        "path": "research/senate-stack-integration-20261020/actual-source-review-astra-v1/disjoint-calibration-route.json",
+        "sha256": "f745bebf7f268a7b67c4fad010346c2efd42dd4258ad611ae59adde1d9f26361"
+      },
+      "snapshot": {
+        "path": "inputs/disjoint-calibration-route.json",
+        "sha256": "f745bebf7f268a7b67c4fad010346c2efd42dd4258ad611ae59adde1d9f26361"
+      }
+    }
+  ],
+  "code_pins": [
+    {
+      "path": "calibration_bank.py",
+      "sha256": "5a52d811eb6e5620fedc1757bec27141bc9c50008c3c1457a375e09dd5a3e3fe"
+    },
+    {
+      "path": "prepare.py",
+      "sha256": "d6d5a4a59f3da1523e8bd826e9633aff8abb7503d7da775083580fa4a661466d"
+    },
+    {
+      "path": "test_calibration_bank.py",
+      "sha256": "7096cf93ad76957a78a0cb0c0f8b7ba0fdad7eb8274d6b54d95ddb1978a6a3d3"
+    }
+  ],
+  "environment": {
+    "executable": "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/bin/python",
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+    "packages": [
+      "Pygments==2.21.0",
+      "arviz==0.22.0",
+      "cachetools==6.2.6",
+      "cloudpickle==3.1.2",
+      "cons==0.4.7",
+      "contourpy==1.4.0",
+      "cycler==0.12.1",
+      "etuples==0.3.10",
+      "filelock==4.2.4",
+      "fonttools==4.67.0",
+      "h5netcdf==1.8.1",
+      "h5py==3.16.0",
+      "iniconfig==2.3.1",
+      "kiwisolver==1.5.1",
+      "llvmlite==0.50.0",
+      "logical-unification==0.4.7",
+      "markdown-it-py==4.2.0",
+      "matplotlib==3.11.2",
+      "mdurl==0.1.2",
+      "miniKanren==1.0.5",
+      "multipledispatch==1.0.0",
+      "numba==0.68.0",
+      "numpy==2.5.4",
+      "packaging==26.3",
+      "pandas==3.1.0",
+      "pillow==13.0.0",
+      "pluggy==1.7.0",
+      "pymc==5.28.0",
+      "pyparsing==3.3.3",
+      "pytensor==2.38.2",
+      "pytest==9.1.1",
+      "python-dateutil==3.0.0",
+      "rich==15.0.0",
+      "ruff==0.17.2",
+      "scipy==1.18.1",
+      "setuptools==84.2.1",
+      "six==1.17.0",
+      "threadpoolctl==3.7.0",
+      "toolz==1.2.0",
+      "typing_extensions==4.16.0",
+      "tzdata==2026.5",
+      "xarray-einstats==0.11.0",
+      "xarray==2026.9.0"
+    ],
+    "freeze": {
+      "path": "environment-freeze.txt",
+      "sha256": "420aeebe5a07ece8ae2d47a92e2b27aab5dd4b08dcf72d65234693c254c754d4"
+    }
+  },
+  "output_policy": "exclusive attempt directories; raw chain banks/warmup/stats retained even when diagnostics fail",
+  "automatic_retry": false,
+  "actual_population_or_count_fit": false,
+  "downstream_feedback_target": "not_chosen",
+  "forecast_qualified": false,
+  "publication_authorized": false
+}
