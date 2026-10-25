@@ -1,5 +1,9 @@
 # Standing frontend integration goal
 
+### October 24 historical-year clarification
+
+A live audit prompted by the reported Tony Gonzales withdrawal confirmed that House opens the 2024 historical result and offers only 2018/2020/2022/2024 results. TX-23's 2024 candidate and observed-winner identity is preserved. The all-district banner now explicitly says `{displayed year} historical group forecasts cover all 435 districts`, using the displayed result rather than a pending selection. This is a presentation clarification; scientific artifacts and the default remain unchanged. Typecheck and diff checks pass. Public deployment verification is recorded separately when available.
+
 Authorized by Hayden on October 20, 2026. This frontend session prepares reusable support for the Senate and House owners, then integrates, tests and publishes their completed, reviewed capabilities on SiteGround. This is the current status and backlog; earlier integration history is preserved in git.
 
 ## Current release and coordination

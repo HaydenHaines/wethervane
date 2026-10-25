@@ -419,7 +419,7 @@ function HouseResults({ builderExpanded, onBuilderExpandedChange, publication, r
         </div>
       </section>
       {groupRunId(`${result.run.id}-full435-v1`) && <section className="compare-banner" aria-label="All-district forecasts available">
-        <strong>Group forecasts now cover every district.</strong>
+        <strong>{result.run.year} historical group forecasts cover all 435 districts.</strong>
         <span>Explore which Democratic, Republican or Other candidate group wins in all 435 districts for {result.run.year}.</span>
         <button disabled={busy} onClick={() => onChoose(`${result.run.id}-full435-v1`)}>Explore all 435 districts</button>
       </section>}
