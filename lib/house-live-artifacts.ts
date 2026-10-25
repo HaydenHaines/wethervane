@@ -43,7 +43,7 @@ export async function verifyPinnedHouseLiveArtifact(directory: string, reference
 /** Parse the same bytes that were authenticated; never trust an embedded status as admission. */
 export async function readPinnedHouseLiveJson(directory: string, reference: unknown): Promise<unknown> {
   const pin = artifactPin(reference);
-  if (!pin.path.endsWith(".json")) throw Error("Live House JSON artifact must have a JSON filename.");
+  if (!/\.(?:geo)?json$/.test(pin.path)) throw Error("Live House JSON artifact must have a JSON or GeoJSON filename.");
   const bytes = await readFile(await artifactPath(directory, pin));
   if (createHash("sha256").update(bytes).digest("hex") !== pin.sha256)
     throw Error("Live House artifact fingerprint mismatch.");

@@ -79,6 +79,11 @@ const SEATS: Record<string, number> = {
   OR: 6, PA: 17, RI: 2, SC: 7, SD: 1, TN: 9, TX: 38, UT: 4, VT: 1,
   VA: 11, WA: 10, WV: 2, WI: 8, WY: 1,
 };
+/** Canonical current-district roster shared with the browser publication boundary. */
+export const HOUSE_LIVE_EXPECTED_DISTRICT_KEYS: readonly string[] = Object.freeze(
+  Object.entries(SEATS).flatMap(([state, count]) => Array.from({ length: count }, (_, index) =>
+    `${state}-${String(count === 1 ? 0 : index + 1).padStart(2, "0")}`)),
+);
 const object = (v: unknown): v is Record<string, unknown> => !!v && typeof v === "object" && !Array.isArray(v);
 const text = (v: unknown): v is string => typeof v === "string" && v.length > 0 && v.length <= 4000 && v === v.trim() && !/[\u0000-\u001f\u007f]/.test(v);
 const id = (v: unknown): v is string => text(v) && /^[A-Za-z0-9][A-Za-z0-9:._-]{0,199}$/.test(v);
@@ -261,11 +266,8 @@ export function parseHouseLiveResult(value: unknown): HouseLiveResult | null {
       seen.has(row.district_key) || value.joint_draws.ordered_race_ids[index] !== row.race_id) return null;
     seen.add(row.district_key);
   }
-  for (const [state, count] of Object.entries(SEATS)) {
-    for (let number = count === 1 ? 0 : 1; number <= (count === 1 ? 0 : count); number++) {
-      if (!seen.has(`${state}-${String(number).padStart(2, "0")}`)) return null;
-    }
-  }
+  if (seen.size !== HOUSE_LIVE_EXPECTED_DISTRICT_KEYS.length ||
+    HOUSE_LIVE_EXPECTED_DISTRICT_KEYS.some(key => !seen.has(key))) return null;
   if (value.chamber === null && !value.qualification.limitations.some((note: string) =>
     /(?:chamber|control|seat total)/i.test(note) &&
     /(?:unavailable|unqualified|failed|withheld|not published|not qualified)/i.test(note))) return null;

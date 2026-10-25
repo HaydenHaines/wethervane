@@ -24,6 +24,17 @@ test("reads authenticated nested JSON bytes without admitting them as a forecast
   assert.equal(await verifyPinnedHouseLiveArtifact(directory, pin), undefined);
 });
 
+test("reads a pinned GeoJSON companion using the backend map filename", async t => {
+  const { directory } = await fixture(t);
+  const bytes = Buffer.from('{"type":"FeatureCollection","features":[]}');
+  const pin = { path: "house-2026.geojson", sha256: digest(bytes) };
+  await writeFile(join(directory, pin.path), bytes);
+  assert.deepEqual(await readPinnedHouseLiveJson(directory, pin), { type: "FeatureCollection", features: [] });
+  // Integrity/JSON parsing alone does not admit an empty map as435 current districts.
+  await writeFile(join(directory, pin.path), '{"type":"FeatureCollection","features":[{}]}');
+  await assert.rejects(readPinnedHouseLiveJson(directory, pin), /fingerprint mismatch/);
+});
+
 test("changed artifact bytes invalidate the reviewed digest", async t => {
   const { directory, pin } = await fixture(t);
   await writeFile(join(directory, pin.path), '{"invented_test_fixture":true,"value":8}\n');

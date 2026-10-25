@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState, type RefObject } from "react";
+import { useEffect, useMemo, useRef, useState, type RefObject, type ReactNode } from "react";
 import type { DistrictGeography } from "../lib/district-geography";
 import type { HouseLiveCatalogView, HouseLiveRaceView, HouseLiveView } from "../lib/house-live-view";
 import type { GroupRibbonRace } from "../lib/group-ribbon-layout";
@@ -32,6 +32,9 @@ export interface HouseLiveResultsProps {
   onSelect: (runId: string) => void;
   onRetry: () => void;
   onHistorical: () => void;
+  selectedRaceId?: string;
+  onRaceSelect?: (raceId: string) => void;
+  comparisonTools?: ReactNode;
 }
 
 function candidatePartyLabel(race: HouseLiveRaceView, outcomeId: string, party: string): string {
@@ -120,7 +123,8 @@ function HouseLiveChamberControl({ scenario }: { scenario: NonNullable<HouseLive
 }
 
 export default function HouseLiveResults({ view, catalog, geography, builderExpanded, onBuilderExpandedChange,
-  busy = false, error = "", onSelect, onRetry, onHistorical }: HouseLiveResultsProps) {
+  busy = false, error = "", onSelect, onRetry, onHistorical,
+  selectedRaceId, onRaceSelect, comparisonTools }: HouseLiveResultsProps) {
   const sorted = useMemo(() => [...view.races].sort(competitiveOrder), [view.races]);
   const ribbonRaces = useMemo<GroupRibbonRace[]>(() => view.races.map((race) => ({
     id: race.id,
@@ -135,7 +139,7 @@ export default function HouseLiveResults({ view, catalog, geography, builderExpa
   const [query, setQuery] = useState("");
   const [expanded, setExpanded] = useState(false);
   const detail = useRef<HTMLElement>(null);
-  const selected = view.races.find((race) => race.id === selectedId) || sorted[0];
+  const selected = view.races.find((race) => race.id === (selectedRaceId ?? selectedId)) || sorted[0];
   const outlook = chamberOutlook(view.chamber?.control);
   useEffect(() => {
     if (!view.races.some((race) => race.id === selectedId)) setSelectedId(sorted[0]?.id ?? "");
@@ -144,6 +148,7 @@ export default function HouseLiveResults({ view, catalog, geography, builderExpa
   useEffect(() => { setExpanded(false); setQuery(""); }, [view.run.id]);
   function selectRace(id: string) {
     setSelectedId(id);
+    onRaceSelect?.(id);
     if (window.matchMedia("(max-width: 800px)").matches)
       requestAnimationFrame(() => {
         document.getElementById("house-live-detail-title")?.focus({ preventScroll: true });
@@ -178,6 +183,7 @@ export default function HouseLiveResults({ view, catalog, geography, builderExpa
 
     <HouseLiveControls view={view} catalog={catalog} expanded={builderExpanded} onExpandedChange={onBuilderExpandedChange}
       busy={busy} error={error} onSelect={onSelect} onRetry={onRetry} />
+    {comparisonTools}
 
     <HouseGroupRibbon races={ribbonRaces} selectedRaceId={selected.id} onSelect={selectRace} />
     <div className="house-results-layout">

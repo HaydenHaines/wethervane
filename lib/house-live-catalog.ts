@@ -17,13 +17,15 @@ export interface HouseLiveCatalog {
   qualification: HouseLivePin;
 }
 
-const BASES = ["fundamentals", "recent_calendar_history", "house_history_refreshed_v1",
-  "house_presidential_slope_v1", "house_relative_lean_v1", "house_relative_context_v1"] as const;
-const expected = new Set<string>([
-  ...BASES.flatMap(base => ["none", "standard"].map(polling => `${base}|${polling}|standard`)),
+/** Exact saved combinations shared with the browser publication response parser. */
+export const HOUSE_LIVE_ALLOWED_CONFIGURATION_KEYS: readonly string[] = Object.freeze([
+  ...["fundamentals", "recent_calendar_history", "house_history_refreshed_v1",
+    "house_presidential_slope_v1", "house_relative_lean_v1", "house_relative_context_v1"]
+    .flatMap(base => ["none", "standard"].map(polling => `${base}|${polling}|standard`)),
   ...["cycle-low", "cycle-high", "error-low", "error-high"].map(uncertainty =>
     `fundamentals|standard|${uncertainty}`),
 ]);
+const expected = new Set<string>(HOUSE_LIVE_ALLOWED_CONFIGURATION_KEYS);
 const object = (v: unknown): v is Record<string, unknown> => !!v && typeof v === "object" && !Array.isArray(v);
 const text = (v: unknown): v is string => typeof v === "string" && v.length > 0 &&
   v.length <= 4000 && v === v.trim() && !/[\u0000-\u001f\u007f]/.test(v);

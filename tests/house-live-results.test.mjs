@@ -11,6 +11,7 @@ import { makeHouseLiveResult, makeHouseLiveCatalog } from "./fixtures/house-live
 import { parseHouseLiveResult } from "../lib/house-live-result.ts";
 import { parseHouseLiveCatalog } from "../lib/house-live-catalog.ts";
 import { houseLiveView, houseLiveCatalogView } from "../lib/house-live-view.ts";
+import { makeHouseLivePublication } from "./fixtures/house-live-publication.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const directory = mkdtempSync(join(root, "tests", ".house-live-render-"));
@@ -207,4 +208,116 @@ test("browser: instant selection, retained failures, drafts, ribbon, sidebar, an
       await page.screenshot({ path: join(process.env.BALLOTMANCY_LIVE_HOUSE_SCREENSHOT_DIR, "mobile.png") });
     assert.deepEqual(errors, []);
   } finally { await browser.close(); }
+});
+
+test("browser workspace: verified requests, comparisons, failure recovery, navigation and mobile tables", {
+  skip: !process.env.BALLOTMANCY_LIVE_HOUSE_BROWSER, timeout: 120000,
+}, async () => {
+  compile("components/HouseLiveWorkspace.tsx");
+  const entry = join(directory, "workspace-entry.js");
+  writeFileSync(entry, `import React from 'react';import {createRoot} from 'react-dom/client';import Workspace from './components/HouseLiveWorkspace.js';
+createRoot(document.getElementById('root')).render(React.createElement('div',{className:'shell'},React.createElement('p',{},'INVENTED UI TEST DATA. No current election results.'),React.createElement(Workspace,{onHistorical:()=>{globalThis.historicalRequested=true;},onReturn:()=>{globalThis.senateRequested=true;}})));`);
+  const require = createRequire(import.meta.url), { webpack } = require("next/dist/compiled/webpack/webpack");
+  await new Promise((resolve, reject) => webpack({ mode: "development", target: "web", devtool: false, entry,
+    output: { path: join(directory, "workspace-bundle"), filename: "preview.js" } }, (error, stats) =>
+    error || stats.hasErrors() ? reject(error || Error(stats.toString({ all: false, errors: true }))) : resolve()));
+  const script = readFileSync(join(directory, "workspace-bundle/preview.js"), "utf8").replaceAll("</script", "<\\/script");
+  const html = `<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Invented House workspace</title><style>${readFileSync(join(root, "app/globals.css"), "utf8")}</style><body><div id="root"></div><script>${script}</script></body></html>`;
+  const publications = new Map(nativeCatalog.entries.map(entry => {
+    const value = makeHouseLivePublication(entry.configuration);
+    return [value.view.run.id, value];
+  }));
+  const primary = publications.get(catalog.defaultId);
+  const baseline = primary.catalog.entries.find(entry => entry.configuration.base === "fundamentals" && entry.configuration.polling === "none");
+  const alternative = primary.catalog.entries.find(entry => entry.configuration.base === "recent_calendar_history" && entry.configuration.polling === "standard");
+  const { chromium, expect } = await import("@playwright/test");
+  const browser = await chromium.launch({ headless: true });
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 }, reducedMotion: "reduce" });
+  const pageErrors = [], requests = [];
+  let failedId = null, delayedId = null, releaseDelayed = null;
+  page.on("pageerror", error => pageErrors.push(error.message));
+  await page.route("http://house-ui.test/**", async route => {
+    const url = new URL(route.request().url());
+    if (url.pathname === "/") return route.fulfill({ contentType: "text/html", body: html });
+    if (url.pathname === "/api/chambers/house/live") {
+      const id = url.searchParams.get("run") ?? primary.catalog.defaultId;
+      requests.push(id);
+      if (id === failedId) return route.fulfill({ status: 503, json: { error: "Invented failed response" } });
+      if (id === delayedId) await new Promise(resolve => { releaseDelayed = resolve; });
+      return route.fulfill({ status: publications.has(id) ? 200 : 400, json: publications.get(id) ?? { error: "Unknown model" } }).catch(() => {});
+    }
+    return route.fulfill({ status: 404, body: "No historical fallback in this fixture" });
+  });
+  try {
+    await page.goto("http://house-ui.test/?chamber=house&edition=current&race=2026%3AAL-04%3Ahouse%3Aregular");
+    await expect(page.locator("#house-live-detail-title")).toHaveText("AL-04");
+    const builder = page.locator("details.house-configuration");
+    await expect(builder).not.toHaveAttribute("open", "");
+    const compareSelect = page.getByLabel("Compare with", { exact: true });
+    const comparePanel = page.getByRole("region", { name: "Current House model comparison", exact: true });
+    await compareSelect.selectOption(baseline.id);
+    await expect(comparePanel.getByRole("table")).toHaveCount(3);
+    await expect(comparePanel).toContainText("not accuracy scores");
+    await expect(comparePanel.getByRole("table").last()).toContainText("AL-04");
+    assert.equal(new URL(page.url()).searchParams.get("compare"), baseline.id);
+
+    failedId = alternative.id;
+    await compareSelect.selectOption(alternative.id);
+    await expect(comparePanel.getByRole("alert")).toContainText("Comparison unavailable");
+    await expect(comparePanel).toContainText("last verified comparison");
+    await expect(comparePanel.getByRole("table")).toHaveCount(3);
+    failedId = null;
+    await comparePanel.getByRole("button", { name: "Try comparison again" }).click();
+    await expect(comparePanel.getByRole("alert")).toHaveCount(0);
+    await expect(comparePanel.getByRole("heading", { level: 2 })).toContainText(alternative.label);
+    if (process.env.BALLOTMANCY_LIVE_HOUSE_SCREENSHOT_DIR) {
+      mkdirSync(process.env.BALLOTMANCY_LIVE_HOUSE_SCREENSHOT_DIR, { recursive: true });
+      await comparePanel.scrollIntoViewIfNeeded();
+      await page.screenshot({ path: join(process.env.BALLOTMANCY_LIVE_HOUSE_SCREENSHOT_DIR, "comparison-desktop.png") });
+    }
+    await page.setViewportSize({ width: 390, height: 844 });
+    assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
+    if (process.env.BALLOTMANCY_LIVE_HOUSE_SCREENSHOT_DIR)
+      await page.screenshot({ path: join(process.env.BALLOTMANCY_LIVE_HOUSE_SCREENSHOT_DIR, "comparison-mobile.png") });
+    await page.setViewportSize({ width: 1440, height: 900 });
+
+    await builder.locator("summary").first().click();
+    const base = page.getByLabel("Electoral-history model", { exact: true });
+    failedId = alternative.id;
+    await base.selectOption("recent_calendar_history");
+    await expect(page.getByRole("alert")).toContainText("Unable to change House models");
+    await expect(page.locator(".hero > div > p")).toContainText(primary.view.run.label);
+    assert.equal(new URL(page.url()).searchParams.get("run"), primary.view.run.id);
+    failedId = null;
+    await page.getByRole("button", { name: "Try again", exact: true }).click();
+    await expect(page.locator(".hero > div > p")).toContainText(alternative.label);
+    await expect(compareSelect).toHaveValue("");
+    await expect(page.locator("#house-live-detail-title")).toHaveText("AL-04");
+    assert.equal(new URL(page.url()).searchParams.get("run"), alternative.id);
+    await page.goBack();
+    await expect(page.locator(".hero > div > p")).toContainText(primary.view.run.label);
+    await expect(compareSelect).toHaveValue(alternative.id);
+
+    // Returning to the previous history entry aborts a slow new primary selection.
+    await expect(page.getByRole("status").filter({ hasText: "Loading comparison…" })).toHaveCount(0);
+    delayedId = alternative.id;
+    await base.selectOption("recent_calendar_history");
+    await expect(page.getByRole("status").filter({ hasText: "Loading the selected House result" })).toBeVisible();
+    await page.goBack();
+    await expect(compareSelect).toHaveValue(baseline.id);
+    delayedId = null;
+    releaseDelayed?.();
+    await expect(page.locator(".hero > div > p")).toContainText(primary.view.run.label);
+    await expect(page.getByRole("alert")).toHaveCount(0);
+
+    await page.goto("http://house-ui.test/?chamber=house&edition=current&compare=house-current-polling");
+    await expect(page.getByRole("heading", { name: "Current House forecast unavailable" })).toBeVisible();
+    await expect(page.getByRole("alert")).toContainText("different model");
+    await page.getByRole("button", { name: "Load current default" }).click();
+    await expect(page.locator(".hero > div > p")).toContainText(primary.view.run.label);
+    await expect(compareSelect).toHaveValue("");
+    assert.ok(requests.every(id => publications.has(id)));
+    assert.equal(await page.evaluate(() => localStorage.length), 0);
+    assert.deepEqual(pageErrors, []);
+  } finally { releaseDelayed?.(); await browser.close(); }
 });
