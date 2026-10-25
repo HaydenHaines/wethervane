@@ -1,0 +1,66 @@
+{
+  "bank_batch_updates_replace_original_batch_positions": true,
+  "bank_sampled_occupancy_is_cumulative": true,
+  "batch_length": 100,
+  "complete": false,
+  "completed_draw_count_semantics": "completed_sweep observer records only; original missing-race RNG and raw predictive output assignment may not have occurred",
+  "completed_draws_per_chain": [
+    1,
+    0,
+    0,
+    0
+  ],
+  "completed_sweep_callback_precedes_missing_race_rng_and_output_assignment": true,
+  "completed_sweep_observer_records": 1,
+  "cursor_chain": 0,
+  "cursor_retained_draw": 1,
+  "delta_start_completed_records_per_chain": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "delta_stop_completed_records_per_chain": [
+    1,
+    0,
+    0,
+    0
+  ],
+  "elapsed_seconds": 0.009459115099161863,
+  "expected_phase": "gaussian_conditional",
+  "final_rng_state_chain_indices": [],
+  "final_rng_states_emitted": [],
+  "last_record": {
+    "chain": 0,
+    "phase": "completed_sweep",
+    "retained_draw": 0,
+    "retained_draws": null
+  },
+  "no_uninitialized_or_incomplete_observer_sweep_arrays": true,
+  "observer_phase_prefix_only": true,
+  "observer_records_seen": 3,
+  "original_full_predictive_draw_completion_not_certified": true,
+  "pending_row_weights_excluded": false,
+  "phase_contract": "pre_state_row_lambda_gaussian__post_row_gamma__v1",
+  "race_ids": [
+    "synthetic:A",
+    "synthetic:B",
+    "synthetic:C"
+  ],
+  "raw_predictive_draw_completeness_claimed": false,
+  "reason": "caught_exception_diagnostic_evidence",
+  "requested_chains": 4,
+  "requested_draws": 10,
+  "restartable": false,
+  "resumable_sampler_state": false,
+  "schema": "RetainedPollingTracePartialV1",
+  "source_identity": "synthetic-complete-joint-bank",
+  "source_pins": {
+    "correlated_mcse_source": "d4330647dba36d08d437237098cd9ac198657e1c9980d243b0e82b1ee65fd850",
+    "forecast_design": "45707d4a933ded2f7d4bffcbaab0fb6fb9a4ab7b1d62ad4494a27422b7d75678",
+    "marginal_math_manifest": "2bfa468bca013c7bfa7d6e80395ba7534947026ff35209fd2d51fed1b40f28c8",
+    "observed_sampler_manifest": "5e8608c4d1de978e8119a8cd1b4dded46ffe6253c4ff973f53e20d2bf98402c2",
+    "synthetic_fixture": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "utc": "2026-10-25T08:26:02.841370+00:00"
+}

@@ -1,0 +1,2119 @@
+I001 [*] Import block is un-sorted or un-formatted
+ --> test_trace_diagnostics.py:2:1
+  |
+1 |   """Authorized synthetic collector parity plus deterministic diagnostic fixtures."""
+2 | / import copy
+3 | | import hashlib
+4 | | import json
+5 | | from pathlib import Path
+6 | | import sys
+7 | | from unittest.mock import patch
+  | |_______________________________^
+8 |
+9 |   HERE=Path(__file__).resolve().parent
+  |
+help: Organize imports
+
+F401 [*] `hashlib` imported but unused
+ --> test_trace_diagnostics.py:3:8
+  |
+1 | """Authorized synthetic collector parity plus deterministic diagnostic fixtures."""
+2 | import copy
+3 | import hashlib
+  |        ^^^^^^^
+4 | import json
+5 | from pathlib import Path
+  |
+help: Remove unused import: `hashlib`
+
+E702 Multiple statements on one line (semicolon)
+  --> test_trace_diagnostics.py:10:41
+   |
+ 9 | HERE=Path(__file__).resolve().parent
+10 | sys.path.insert(0,str(HERE/'snapshots'));sys.path.insert(0,str(HERE))
+   |                                         ^
+11 | import numpy as np
+12 | import pytest
+   |
+
+E402 Module level import not at top of file
+  --> test_trace_diagnostics.py:11:1
+   |
+ 9 | HERE=Path(__file__).resolve().parent
+10 | sys.path.insert(0,str(HERE/'snapshots'));sys.path.insert(0,str(HERE))
+11 | import numpy as np
+   | ^^^^^^^^^^^^^^^^^^
+12 | import pytest
+13 | from scipy.special import logsumexp
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> test_trace_diagnostics.py:11:1
+   |
+ 9 |   HERE=Path(__file__).resolve().parent
+10 |   sys.path.insert(0,str(HERE/'snapshots'));sys.path.insert(0,str(HERE))
+11 | / import numpy as np
+12 | | import pytest
+13 | | from scipy.special import logsumexp
+14 | | from src.forecasting import polling_basis_v1 as original
+15 | | from src.forecasting.polling_v1 import GaussianPollLikelihood
+16 | | import observed_sampler as observed
+17 | | import trace_diagnostics as td
+   | |______________________________^
+   |
+help: Organize imports
+
+E402 Module level import not at top of file
+  --> test_trace_diagnostics.py:12:1
+   |
+10 | sys.path.insert(0,str(HERE/'snapshots'));sys.path.insert(0,str(HERE))
+11 | import numpy as np
+12 | import pytest
+   | ^^^^^^^^^^^^^
+13 | from scipy.special import logsumexp
+14 | from src.forecasting import polling_basis_v1 as original
+   |
+
+E402 Module level import not at top of file
+  --> test_trace_diagnostics.py:13:1
+   |
+11 | import numpy as np
+12 | import pytest
+13 | from scipy.special import logsumexp
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+14 | from src.forecasting import polling_basis_v1 as original
+15 | from src.forecasting.polling_v1 import GaussianPollLikelihood
+   |
+
+F401 [*] `scipy.special.logsumexp` imported but unused
+  --> test_trace_diagnostics.py:13:27
+   |
+11 | import numpy as np
+12 | import pytest
+13 | from scipy.special import logsumexp
+   |                           ^^^^^^^^^
+14 | from src.forecasting import polling_basis_v1 as original
+15 | from src.forecasting.polling_v1 import GaussianPollLikelihood
+   |
+help: Remove unused import: `scipy.special.logsumexp`
+
+E402 Module level import not at top of file
+  --> test_trace_diagnostics.py:14:1
+   |
+12 | import pytest
+13 | from scipy.special import logsumexp
+14 | from src.forecasting import polling_basis_v1 as original
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+15 | from src.forecasting.polling_v1 import GaussianPollLikelihood
+16 | import observed_sampler as observed
+   |
+
+E402 Module level import not at top of file
+  --> test_trace_diagnostics.py:15:1
+   |
+13 | from scipy.special import logsumexp
+14 | from src.forecasting import polling_basis_v1 as original
+15 | from src.forecasting.polling_v1 import GaussianPollLikelihood
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+16 | import observed_sampler as observed
+17 | import trace_diagnostics as td
+   |
+
+E402 Module level import not at top of file
+  --> test_trace_diagnostics.py:16:1
+   |
+14 | from src.forecasting import polling_basis_v1 as original
+15 | from src.forecasting.polling_v1 import GaussianPollLikelihood
+16 | import observed_sampler as observed
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+17 | import trace_diagnostics as td
+   |
+
+E402 Module level import not at top of file
+  --> test_trace_diagnostics.py:17:1
+   |
+15 | from src.forecasting.polling_v1 import GaussianPollLikelihood
+16 | import observed_sampler as observed
+17 | import trace_diagnostics as td
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+
+E501 Line too long (139 > 120)
+  --> test_trace_diagnostics.py:30:121
+   |
+28 | …
+29 | …
+30 | ….03*np.eye(m)+.002*np.ones((m,m)),tuple(f'SYNTHETIC:{j}' for j in range(m)))
+   |                                                           ^^^^^^^^^^^^^^^^^^^
+31 | …
+   |
+
+E702 Multiple statements on one line (semicolon)
+  --> test_trace_diagnostics.py:42:39
+   |
+41 | def synthetic(full=False):
+42 |     prior,polls=fixture(observed,full);sink=collector(prior,full=full);records=[]
+   |                                       ^
+43 |     def observer(record):sink(record);records.append(record)
+44 |     result=observed.sample_poll_posterior(prior,polls,chains=4,warmup=3,draws=10,seed=811,observer=observer)
+   |
+
+E702 Multiple statements on one line (semicolon)
+  --> test_trace_diagnostics.py:42:71
+   |
+41 | def synthetic(full=False):
+42 |     prior,polls=fixture(observed,full);sink=collector(prior,full=full);records=[]
+   |                                                                       ^
+43 |     def observer(record):sink(record);records.append(record)
+44 |     result=observed.sample_poll_posterior(prior,polls,chains=4,warmup=3,draws=10,seed=811,observer=observer)
+   |
+
+E702 Multiple statements on one line (semicolon)
+  --> test_trace_diagnostics.py:43:38
+   |
+41 | def synthetic(full=False):
+42 |     prior,polls=fixture(observed,full);sink=collector(prior,full=full);records=[]
+43 |     def observer(record):sink(record);records.append(record)
+   |                                      ^
+44 |     result=observed.sample_poll_posterior(prior,polls,chains=4,warmup=3,draws=10,seed=811,observer=observer)
+45 |     return prior,polls,sink,records,result
+   |
+
+E701 Multiple statements on one line (colon)
+  --> test_trace_diagnostics.py:49:32
+   |
+48 | def eq(a,b):
+49 |     if isinstance(a,np.ndarray):assert a.dtype==b.dtype and a.shape==b.shape and a.tobytes()==b.tobytes()
+   |                                ^
+50 |     elif isinstance(a,dict) or hasattr(a,'items'):
+51 |         assert set(a)==set(b)
+   |
+
+E701 Multiple statements on one line (colon)
+  --> test_trace_diagnostics.py:52:21
+   |
+50 |     elif isinstance(a,dict) or hasattr(a,'items'):
+51 |         assert set(a)==set(b)
+52 |         for key in a:eq(a[key],b[key])
+   |                     ^
+53 |     elif isinstance(a,(tuple,list)):
+54 |         assert len(a)==len(b)
+   |
+
+E701 Multiple statements on one line (colon)
+  --> test_trace_diagnostics.py:55:28
+   |
+53 |     elif isinstance(a,(tuple,list)):
+54 |         assert len(a)==len(b)
+55 |         for x,y in zip(a,b):eq(x,y)
+   |                            ^
+56 |     else:assert a==b
+   |
+
+E701 Multiple statements on one line (colon)
+  --> test_trace_diagnostics.py:56:9
+   |
+54 |         assert len(a)==len(b)
+55 |         for x,y in zip(a,b):eq(x,y)
+56 |     else:assert a==b
+   |         ^
+   |
+
+F841 Local variable `states` is assigned to but never used
+  --> test_trace_diagnostics.py:62:5
+   |
+60 | def test_original_outputs_rng_and_collector_alignment(full):
+61 |     native=np.random.default_rng
+62 |     states=[]
+   |     ^^^^^^
+63 |     def run(module,prior,polls,observer=None):
+64 |         generators=[]
+   |
+help: Remove assignment to unused variable `states`
+
+E702 Multiple statements on one line (semicolon)
+  --> test_trace_diagnostics.py:66:29
+   |
+64 |         generators=[]
+65 |         def factory(seed):
+66 |             rng=native(seed);generators.append(rng);return rng
+   |                             ^
+67 |         with patch.object(np.random,'default_rng',factory):
+68 |             kwargs={} if observer is None else {'observer':observer}
+   |
+
+E702 Multiple statements on one line (semicolon)
+  --> test_trace_diagnostics.py:66:52
+   |
+64 |         generators=[]
+65 |         def factory(seed):
+66 |             rng=native(seed);generators.append(rng);return rng
+   |                                                    ^
+67 |         with patch.object(np.random,'default_rng',factory):
+68 |             kwargs={} if observer is None else {'observer':observer}
+   |
+
+E702 Multiple statements on one line (semicolon)
+  --> test_trace_diagnostics.py:71:36
+   |
+69 |             result=module.sample_poll_posterior(prior,polls,chains=4,warmup=3,draws=10,seed=811,**kwargs)
+70 |         return result,[copy.deepcopy(r.bit_generator.state) for r in generators]
+71 |     p0,polls=fixture(original,full);p1,_=fixture(observed,full);sink=collector(p1,full=full)
+   |                                    ^
+72 |     baseline,s0=run(original,p0,polls);result,s1=run(observed,p1,polls,sink)
+73 |     eq(baseline,result);eq(s0,s1)
+   |
+
+E702 Multiple statements on one line (semicolon)
+  --> test_trace_diagnostics.py:71:64
+   |
+69 |             result=module.sample_poll_posterior(prior,polls,chains=4,warmup=3,draws=10,seed=811,**kwargs)
+70 |         return result,[copy.deepcopy(r.bit_generator.state) for r in generators]
+71 |     p0,polls=fixture(original,full);p1,_=fixture(observed,full);sink=collector(p1,full=full)
+   |                                                                ^
+72 |     baseline,s0=run(original,p0,polls);result,s1=run(observed,p1,polls,sink)
+73 |     eq(baseline,result);eq(s0,s1)
+   |
+
+E702 Multiple statements on one line (semicolon)
+  --> test_trace_diagnostics.py:72:39
+   |
+70 |         return result,[copy.deepcopy(r.bit_generator.state) for r in generators]
+71 |     p0,polls=fixture(original,full);p1,_=fixture(observed,full);sink=collector(p1,full=full)
+72 |     baseline,s0=run(original,p0,polls);result,s1=run(observed,p1,polls,sink)
+   |                                       ^
+73 |     eq(baseline,result);eq(s0,s1)
+74 |     exported=sink.export();a=exported['arrays'];meta=exported['metadata']
+   |
+
+E702 Multiple statements on one line (semicolon)
+  --> test_trace_diagnostics.py:73:24
+   |
+71 |     p0,polls=fixture(original,full);p1,_=fixture(observed,full);sink=collector(p1,full=full)
+72 |     baseline,s0=run(original,p0,polls);result,s1=run(observed,p1,polls,sink)
+73 |     eq(baseline,result);eq(s0,s1)
+   |                        ^
+74 |     exported=sink.export();a=exported['arrays'];meta=exported['metadata']
+75 |     eq(s0,meta['final_rng_states'])
+   |
+
+E702 Multiple statements on one line (semicolon)
+  --> test_trace_diagnostics.py:74:27
+   |
+72 |     baseline,s0=run(original,p0,polls);result,s1=run(observed,p1,polls,sink)
+73 |     eq(baseline,result);eq(s0,s1)
+74 |     exported=sink.export();a=exported['arrays'];meta=exported['metadata']
+   |                           ^
+75 |     eq(s0,meta['final_rng_states'])
+76 |     np.testing.assert_array_equal(a['observed_theta'],result['logits'][:,:,a['observed_race_indices']])
+   |
+
+E702 Multiple statements on one line (semicolon)
+  --> test_trace_diagnostics.py:74:48
+   |
+72 |     baseline,s0=run(original,p0,polls);result,s1=run(observed,p1,polls,sink)
+73 |     eq(baseline,result);eq(s0,s1)
+74 |     exported=sink.export();a=exported['arrays'];meta=exported['metadata']
+   |                                                ^
+75 |     eq(s0,meta['final_rng_states'])
+76 |     np.testing.assert_array_equal(a['observed_theta'],result['logits'][:,:,a['observed_race_indices']])
+   |
+
+E701 Multiple statements on one line (colon)
+  --> test_trace_diagnostics.py:85:39
+   |
+83 |     for value in a.values():
+84 |         assert not value.flags.writeable
+85 |         with pytest.raises(ValueError):value.setflags(write=True)
+   |                                       ^
+86 |     with pytest.raises(TypeError):meta['draws']=20
+87 |     with pytest.raises(ValueError,match='complete'):sink({'phase':'gaussian_conditional'})
+   |
+
+E701 Multiple statements on one line (colon)
+  --> test_trace_diagnostics.py:86:34
+   |
+84 |         assert not value.flags.writeable
+85 |         with pytest.raises(ValueError):value.setflags(write=True)
+86 |     with pytest.raises(TypeError):meta['draws']=20
+   |                                  ^
+87 |     with pytest.raises(ValueError,match='complete'):sink({'phase':'gaussian_conditional'})
+   |
+
+E701 Multiple statements on one line (colon)
+  --> test_trace_diagnostics.py:87:52
+   |
+85 |         with pytest.raises(ValueError):value.setflags(write=True)
+86 |     with pytest.raises(TypeError):meta['draws']=20
+87 |     with pytest.raises(ValueError,match='complete'):sink({'phase':'gaussian_conditional'})
+   |                                                    ^
+   |
+
+E702 Multiple statements on one line (semicolon)
+  --> test_trace_diagnostics.py:92:27
+   |
+90 | def test_npz_json_roundtrip_and_tamper_rejection(tmp_path):
+91 |     *_,sink,records,result=synthetic() # prior,polls,sink,records,result
+92 |     exported=sink.export();path=tmp_path/'exclusive'
+   |                           ^
+93 |     receipt=td.save_trace(exported,path)
+94 |     loaded=td.load_trace(path,expected_source_pins=exported['metadata']['source_pins'],expected_receipt_sha256=receipt['receipt_sha256…
+   |
+
+E702 Multiple statements on one line (semicolon)
+  --> test_trace_diagnostics.py:94:138
+   |
+92 | …
+93 | …
+94 | …['source_pins'],expected_receipt_sha256=receipt['receipt_sha256']);eq(exported,loaded)
+   |                                                                    ^
+95 | …
+96 | …ype.hasobject for k in archive.files)
+   |
+
+E701 Multiple statements on one line (colon)
+  --> test_trace_diagnostics.py:97:40
+   |
+95 |     with np.load(path/'trace.npz',allow_pickle=False) as archive:
+96 |         assert all(archive[k].dtype.kind in 'iuf' and not archive[k].dtype.hasobject for k in archive.files)
+97 |     with pytest.raises(FileExistsError):td.save_trace(exported,path)
+   |                                        ^
+98 |     with pytest.raises(ValueError,match='source pins'):td.load_trace(path,expected_source_pins={},expected_receipt_sha256=receipt['re…
+99 |     (path/'trace.npz').write_bytes((path/'trace.npz').read_bytes()+b'tampered')
+   |
+
+E701 Multiple statements on one line (colon)
+   --> test_trace_diagnostics.py:98:55
+    |
+ 96 |         assert all(archive[k].dtype.kind in 'iuf' and not archive[k].dtype.hasobject for k in archive.files)
+ 97 |     with pytest.raises(FileExistsError):td.save_trace(exported,path)
+ 98 |     with pytest.raises(ValueError,match='source pins'):td.load_trace(path,expected_source_pins={},expected_receipt_sha256=receipt['re…
+    |                                                       ^
+ 99 |     (path/'trace.npz').write_bytes((path/'trace.npz').read_bytes()+b'tampered')
+100 |     with pytest.raises(ValueError,match='digest'):td.load_trace(path,expected_source_pins=exported['metadata']['source_pins'],expecte…
+    |
+
+E501 Line too long (148 > 120)
+   --> test_trace_diagnostics.py:98:121
+    |
+ 96 | ….dtype.hasobject for k in archive.files)
+ 97 | …
+ 98 | …(path,expected_source_pins={},expected_receipt_sha256=receipt['receipt_sha256'])
+    |                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ 99 | …'tampered')
+100 | …,expected_source_pins=exported['metadata']['source_pins'],expected_receipt_sha256=receipt['receipt_sha256'])
+    |
+
+E701 Multiple statements on one line (colon)
+   --> test_trace_diagnostics.py:100:50
+    |
+ 98 |     with pytest.raises(ValueError,match='source pins'):td.load_trace(path,expected_source_pins={},expected_receipt_sha256=receipt['re…
+ 99 |     (path/'trace.npz').write_bytes((path/'trace.npz').read_bytes()+b'tampered')
+100 |     with pytest.raises(ValueError,match='digest'):td.load_trace(path,expected_source_pins=exported['metadata']['source_pins'],expecte…
+    |                                                  ^
+    |
+
+E501 Line too long (176 > 120)
+   --> test_trace_diagnostics.py:100:121
+    |
+ 98 | …_source_pins={},expected_receipt_sha256=receipt['receipt_sha256'])
+ 99 | …
+100 | …ce_pins=exported['metadata']['source_pins'],expected_receipt_sha256=receipt['receipt_sha256'])
+    |                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> test_trace_diagnostics.py:105:36
+    |
+103 | @pytest.mark.parametrize('kind',['skip','duplicate','wrong_chain','wrong_draw','bad_variance','nonfinite_mean','weight_lambda','weigh…
+104 | def test_malformed_observer_streams_rejected(kind):
+105 |     prior,_,_,records,_=synthetic();sink=collector(prior)
+    |                                    ^
+106 |     index=0;record=dict(records[0]);prefix=[]
+107 |     if kind=='skip':record=dict(records[1])
+    |
+
+F841 Local variable `index` is assigned to but never used
+   --> test_trace_diagnostics.py:106:5
+    |
+104 | def test_malformed_observer_streams_rejected(kind):
+105 |     prior,_,_,records,_=synthetic();sink=collector(prior)
+106 |     index=0;record=dict(records[0]);prefix=[]
+    |     ^^^^^
+107 |     if kind=='skip':record=dict(records[1])
+108 |     if kind=='duplicate':prefix=[records[0]];record=dict(records[0])
+    |
+help: Remove assignment to unused variable `index`
+
+E702 Multiple statements on one line (semicolon)
+   --> test_trace_diagnostics.py:106:12
+    |
+104 | def test_malformed_observer_streams_rejected(kind):
+105 |     prior,_,_,records,_=synthetic();sink=collector(prior)
+106 |     index=0;record=dict(records[0]);prefix=[]
+    |            ^
+107 |     if kind=='skip':record=dict(records[1])
+108 |     if kind=='duplicate':prefix=[records[0]];record=dict(records[0])
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> test_trace_diagnostics.py:106:36
+    |
+104 | def test_malformed_observer_streams_rejected(kind):
+105 |     prior,_,_,records,_=synthetic();sink=collector(prior)
+106 |     index=0;record=dict(records[0]);prefix=[]
+    |                                    ^
+107 |     if kind=='skip':record=dict(records[1])
+108 |     if kind=='duplicate':prefix=[records[0]];record=dict(records[0])
+    |
+
+E701 Multiple statements on one line (colon)
+   --> test_trace_diagnostics.py:107:20
+    |
+105 |     prior,_,_,records,_=synthetic();sink=collector(prior)
+106 |     index=0;record=dict(records[0]);prefix=[]
+107 |     if kind=='skip':record=dict(records[1])
+    |                    ^
+108 |     if kind=='duplicate':prefix=[records[0]];record=dict(records[0])
+109 |     if kind=='wrong_chain':record['chain']=1
+    |
+
+E701 Multiple statements on one line (colon)
+   --> test_trace_diagnostics.py:108:25
+    |
+106 |     index=0;record=dict(records[0]);prefix=[]
+107 |     if kind=='skip':record=dict(records[1])
+108 |     if kind=='duplicate':prefix=[records[0]];record=dict(records[0])
+    |                         ^
+109 |     if kind=='wrong_chain':record['chain']=1
+110 |     if kind=='wrong_draw':record['retained_draw']=1
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> test_trace_diagnostics.py:108:45
+    |
+106 |     index=0;record=dict(records[0]);prefix=[]
+107 |     if kind=='skip':record=dict(records[1])
+108 |     if kind=='duplicate':prefix=[records[0]];record=dict(records[0])
+    |                                             ^
+109 |     if kind=='wrong_chain':record['chain']=1
+110 |     if kind=='wrong_draw':record['retained_draw']=1
+    |
+
+E701 Multiple statements on one line (colon)
+   --> test_trace_diagnostics.py:109:27
+    |
+107 |     if kind=='skip':record=dict(records[1])
+108 |     if kind=='duplicate':prefix=[records[0]];record=dict(records[0])
+109 |     if kind=='wrong_chain':record['chain']=1
+    |                           ^
+110 |     if kind=='wrong_draw':record['retained_draw']=1
+111 |     if kind=='bad_variance':record['marginal_variances']=np.zeros(3)
+    |
+
+E701 Multiple statements on one line (colon)
+   --> test_trace_diagnostics.py:110:26
+    |
+108 |     if kind=='duplicate':prefix=[records[0]];record=dict(records[0])
+109 |     if kind=='wrong_chain':record['chain']=1
+110 |     if kind=='wrong_draw':record['retained_draw']=1
+    |                          ^
+111 |     if kind=='bad_variance':record['marginal_variances']=np.zeros(3)
+112 |     if kind=='nonfinite_mean':record['mean_theta_cycle']=np.full(3,np.nan)
+    |
+
+E701 Multiple statements on one line (colon)
+   --> test_trace_diagnostics.py:111:28
+    |
+109 |     if kind=='wrong_chain':record['chain']=1
+110 |     if kind=='wrong_draw':record['retained_draw']=1
+111 |     if kind=='bad_variance':record['marginal_variances']=np.zeros(3)
+    |                            ^
+112 |     if kind=='nonfinite_mean':record['mean_theta_cycle']=np.full(3,np.nan)
+113 |     if kind in ['weight_lambda','weight_sum']:
+    |
+
+E701 Multiple statements on one line (colon)
+   --> test_trace_diagnostics.py:112:30
+    |
+110 |     if kind=='wrong_draw':record['retained_draw']=1
+111 |     if kind=='bad_variance':record['marginal_variances']=np.zeros(3)
+112 |     if kind=='nonfinite_mean':record['mean_theta_cycle']=np.full(3,np.nan)
+    |                              ^
+113 |     if kind in ['weight_lambda','weight_sum']:
+114 |         prefix=[records[0]];record=dict(records[1])
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> test_trace_diagnostics.py:114:28
+    |
+112 |     if kind=='nonfinite_mean':record['mean_theta_cycle']=np.full(3,np.nan)
+113 |     if kind in ['weight_lambda','weight_sum']:
+114 |         prefix=[records[0]];record=dict(records[1])
+    |                            ^
+115 |         if kind=='weight_lambda':record['conditioning_lambda']=record['conditioning_lambda']+1
+116 |         else:record['normalized_row_weights']=np.ones(12)
+    |
+
+E701 Multiple statements on one line (colon)
+   --> test_trace_diagnostics.py:115:33
+    |
+113 |     if kind in ['weight_lambda','weight_sum']:
+114 |         prefix=[records[0]];record=dict(records[1])
+115 |         if kind=='weight_lambda':record['conditioning_lambda']=record['conditioning_lambda']+1
+    |                                 ^
+116 |         else:record['normalized_row_weights']=np.ones(12)
+117 |     if kind in ['post_lambda','axes','cycle','missing_location']:
+    |
+
+E701 Multiple statements on one line (colon)
+   --> test_trace_diagnostics.py:116:13
+    |
+114 |         prefix=[records[0]];record=dict(records[1])
+115 |         if kind=='weight_lambda':record['conditioning_lambda']=record['conditioning_lambda']+1
+116 |         else:record['normalized_row_weights']=np.ones(12)
+    |             ^
+117 |     if kind in ['post_lambda','axes','cycle','missing_location']:
+118 |         prefix=records[:2];record=dict(records[2])
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> test_trace_diagnostics.py:118:27
+    |
+116 |         else:record['normalized_row_weights']=np.ones(12)
+117 |     if kind in ['post_lambda','axes','cycle','missing_location']:
+118 |         prefix=records[:2];record=dict(records[2])
+    |                           ^
+119 |         if kind=='post_lambda':record['lambda_after_gamma']=np.zeros(2)
+120 |         if kind=='axes':record['observed_race_indices']=np.array([1,0])
+    |
+
+E701 Multiple statements on one line (colon)
+   --> test_trace_diagnostics.py:119:31
+    |
+117 |     if kind in ['post_lambda','axes','cycle','missing_location']:
+118 |         prefix=records[:2];record=dict(records[2])
+119 |         if kind=='post_lambda':record['lambda_after_gamma']=np.zeros(2)
+    |                               ^
+120 |         if kind=='axes':record['observed_race_indices']=np.array([1,0])
+121 |         if kind=='cycle':record['cycle']+=1
+    |
+
+E701 Multiple statements on one line (colon)
+   --> test_trace_diagnostics.py:120:24
+    |
+118 |         prefix=records[:2];record=dict(records[2])
+119 |         if kind=='post_lambda':record['lambda_after_gamma']=np.zeros(2)
+120 |         if kind=='axes':record['observed_race_indices']=np.array([1,0])
+    |                        ^
+121 |         if kind=='cycle':record['cycle']+=1
+122 |         if kind=='missing_location':record['missing_location']=np.array([np.inf])
+    |
+
+E701 Multiple statements on one line (colon)
+   --> test_trace_diagnostics.py:121:25
+    |
+119 |         if kind=='post_lambda':record['lambda_after_gamma']=np.zeros(2)
+120 |         if kind=='axes':record['observed_race_indices']=np.array([1,0])
+121 |         if kind=='cycle':record['cycle']+=1
+    |                         ^
+122 |         if kind=='missing_location':record['missing_location']=np.array([np.inf])
+123 |     if kind=='next_row':
+    |
+
+E701 Multiple statements on one line (colon)
+   --> test_trace_diagnostics.py:122:36
+    |
+120 |         if kind=='axes':record['observed_race_indices']=np.array([1,0])
+121 |         if kind=='cycle':record['cycle']+=1
+122 |         if kind=='missing_location':record['missing_location']=np.array([np.inf])
+    |                                    ^
+123 |     if kind=='next_row':
+124 |         prefix=records[:3];record=dict(records[3]);record['conditioning_row_index']=(records[2]['sampled_row_index']+1)%12
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> test_trace_diagnostics.py:124:27
+    |
+122 |         if kind=='missing_location':record['missing_location']=np.array([np.inf])
+123 |     if kind=='next_row':
+124 |         prefix=records[:3];record=dict(records[3]);record['conditioning_row_index']=(records[2]['sampled_row_index']+1)%12
+    |                           ^
+125 |     for item in prefix:sink(item)
+126 |     with pytest.raises((ValueError,TypeError)):sink(record)
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> test_trace_diagnostics.py:124:51
+    |
+122 |         if kind=='missing_location':record['missing_location']=np.array([np.inf])
+123 |     if kind=='next_row':
+124 |         prefix=records[:3];record=dict(records[3]);record['conditioning_row_index']=(records[2]['sampled_row_index']+1)%12
+    |                                                   ^
+125 |     for item in prefix:sink(item)
+126 |     with pytest.raises((ValueError,TypeError)):sink(record)
+    |
+
+E701 Multiple statements on one line (colon)
+   --> test_trace_diagnostics.py:125:23
+    |
+123 |     if kind=='next_row':
+124 |         prefix=records[:3];record=dict(records[3]);record['conditioning_row_index']=(records[2]['sampled_row_index']+1)%12
+125 |     for item in prefix:sink(item)
+    |                       ^
+126 |     with pytest.raises((ValueError,TypeError)):sink(record)
+127 |     with pytest.raises(ValueError,match='Incomplete'):sink.export()
+    |
+
+E701 Multiple statements on one line (colon)
+   --> test_trace_diagnostics.py:126:47
+    |
+124 |         prefix=records[:3];record=dict(records[3]);record['conditioning_row_index']=(records[2]['sampled_row_index']+1)%12
+125 |     for item in prefix:sink(item)
+126 |     with pytest.raises((ValueError,TypeError)):sink(record)
+    |                                               ^
+127 |     with pytest.raises(ValueError,match='Incomplete'):sink.export()
+    |
+
+E701 Multiple statements on one line (colon)
+   --> test_trace_diagnostics.py:127:54
+    |
+125 |     for item in prefix:sink(item)
+126 |     with pytest.raises((ValueError,TypeError)):sink(record)
+127 |     with pytest.raises(ValueError,match='Incomplete'):sink.export()
+    |                                                      ^
+    |
+
+E701 Multiple statements on one line (colon)
+   --> test_trace_diagnostics.py:133:54
+    |
+131 |     prior,_=fixture(observed)
+132 |     sink=collector(prior)
+133 |     with pytest.raises(ValueError,match='Incomplete'):sink.export()
+    |                                                      ^
+134 |     with pytest.raises(ValueError,match='at least one observed'):
+135 |         td.RetainedTraceCollector(chains=4,draws=10,race_ids=prior.race_ids,observed_race_indices=[],missing_race_indices=[0,1,2],pos…
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> test_trace_diagnostics.py:136:29
+    |
+134 |     with pytest.raises(ValueError,match='at least one observed'):
+135 |         td.RetainedTraceCollector(chains=4,draws=10,race_ids=prior.race_ids,observed_race_indices=[],missing_race_indices=[0,1,2],pos…
+136 |     _,_,sink,_,_=synthetic();ex=sink.export()
+    |                             ^
+137 |     arrays={k:v.copy() for k,v in ex['arrays'].items()};meta=td.plain(ex['metadata'])
+138 |     arrays['conditioning_row_index'][0,1]=(arrays['sampled_row_index'][0,0]+1)%12
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> test_trace_diagnostics.py:137:56
+    |
+135 |         td.RetainedTraceCollector(chains=4,draws=10,race_ids=prior.race_ids,observed_race_indices=[],missing_race_indices=[0,1,2],pos…
+136 |     _,_,sink,_,_=synthetic();ex=sink.export()
+137 |     arrays={k:v.copy() for k,v in ex['arrays'].items()};meta=td.plain(ex['metadata'])
+    |                                                        ^
+138 |     arrays['conditioning_row_index'][0,1]=(arrays['sampled_row_index'][0,0]+1)%12
+139 |     with pytest.raises(ValueError,match='phase alignment'):td.save_trace(dict(arrays=arrays,metadata=meta),tmp_path/'bad')
+    |
+
+E701 Multiple statements on one line (colon)
+   --> test_trace_diagnostics.py:139:59
+    |
+137 |     arrays={k:v.copy() for k,v in ex['arrays'].items()};meta=td.plain(ex['metadata'])
+138 |     arrays['conditioning_row_index'][0,1]=(arrays['sampled_row_index'][0,0]+1)%12
+139 |     with pytest.raises(ValueError,match='phase alignment'):td.save_trace(dict(arrays=arrays,metadata=meta),tmp_path/'bad')
+    |                                                           ^
+140 |     assert not (tmp_path/'bad').exists()
+141 |     arrays={k:v.copy() for k,v in ex['arrays'].items()};arrays['cycle']=np.array([[object()]],dtype=object)
+    |
+
+E501 Line too long (122 > 120)
+   --> test_trace_diagnostics.py:139:121
+    |
+137 |     arrays={k:v.copy() for k,v in ex['arrays'].items()};meta=td.plain(ex['metadata'])
+138 |     arrays['conditioning_row_index'][0,1]=(arrays['sampled_row_index'][0,0]+1)%12
+139 |     with pytest.raises(ValueError,match='phase alignment'):td.save_trace(dict(arrays=arrays,metadata=meta),tmp_path/'bad')
+    |                                                                                                                         ^^
+140 |     assert not (tmp_path/'bad').exists()
+141 |     arrays={k:v.copy() for k,v in ex['arrays'].items()};arrays['cycle']=np.array([[object()]],dtype=object)
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> test_trace_diagnostics.py:141:56
+    |
+139 |     with pytest.raises(ValueError,match='phase alignment'):td.save_trace(dict(arrays=arrays,metadata=meta),tmp_path/'bad')
+140 |     assert not (tmp_path/'bad').exists()
+141 |     arrays={k:v.copy() for k,v in ex['arrays'].items()};arrays['cycle']=np.array([[object()]],dtype=object)
+    |                                                        ^
+142 |     with pytest.raises(ValueError,match='non-pickle'):td.save_trace(dict(arrays=arrays,metadata=meta),tmp_path/'object')
+    |
+
+E701 Multiple statements on one line (colon)
+   --> test_trace_diagnostics.py:142:54
+    |
+140 |     assert not (tmp_path/'bad').exists()
+141 |     arrays={k:v.copy() for k,v in ex['arrays'].items()};arrays['cycle']=np.array([[object()]],dtype=object)
+142 |     with pytest.raises(ValueError,match='non-pickle'):td.save_trace(dict(arrays=arrays,metadata=meta),tmp_path/'object')
+    |                                                      ^
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> test_trace_diagnostics.py:151:17
+    |
+150 | def test_mcse_rhat_passes_and_independent_batch_variance_oracle():
+151 |     x=supplied();values=np.stack([x,np.zeros_like(x)],axis=2)
+    |                 ^
+152 |     result=td.function_diagnostics(values,['signal','constant'])
+153 |     independent=[np.var(x.mean(axis=1),ddof=1)/4]
+    |
+
+E701 Multiple statements on one line (colon)
+   --> test_trace_diagnostics.py:166:35
+    |
+164 |     declared=td.function_diagnostics(values,['signal','constant'],structural_constants=['constant'])['coordinates'][1]
+165 |     assert declared['status']=='structural' and declared['mcse']==0
+166 |     with pytest.raises(ValueError):td.function_diagnostics(values,['signal','constant'],structural_constants=['signal'])
+    |                                   ^
+167 |     with pytest.raises(ValueError):td.function_diagnostics(values[:,:100],['signal','constant'])
+    |
+
+E701 Multiple statements on one line (colon)
+   --> test_trace_diagnostics.py:167:35
+    |
+165 |     assert declared['status']=='structural' and declared['mcse']==0
+166 |     with pytest.raises(ValueError):td.function_diagnostics(values,['signal','constant'],structural_constants=['signal'])
+167 |     with pytest.raises(ValueError):td.function_diagnostics(values[:,:100],['signal','constant'])
+    |                                   ^
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> test_trace_diagnostics.py:185:28
+    |
+183 |     empty=td.log_tail_diagnostics(np.full((4,1600,1),-np.inf),['lose'])['coordinates'][0]
+184 |     assert empty['status']=='unresolved_all_negative_infinity' and empty['relative_mcse'] is None
+185 |     zeros=np.array(base-10);zeros[0]=-np.inf
+    |                            ^
+186 |     result=td.log_tail_diagnostics(zeros[...,None],['lose'])['coordinates'][0]
+187 |     assert result['chains_without_tail_support']==[0] and result['gates']['chain_log_difference'] is False
+    |
+
+E701 Multiple statements on one line (colon)
+   --> test_trace_diagnostics.py:188:35
+    |
+186 |     result=td.log_tail_diagnostics(zeros[...,None],['lose'])['coordinates'][0]
+187 |     assert result['chains_without_tail_support']==[0] and result['gates']['chain_log_difference'] is False
+188 |     with pytest.raises(ValueError):td.log_tail_diagnostics(np.ones((4,1600,1)),['bad'])
+    |                                   ^
+189 |     json.dumps(rare,allow_nan=False);json.dumps(result,allow_nan=False)
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> test_trace_diagnostics.py:189:37
+    |
+187 |     assert result['chains_without_tail_support']==[0] and result['gates']['chain_log_difference'] is False
+188 |     with pytest.raises(ValueError):td.log_tail_diagnostics(np.ones((4,1600,1)),['bad'])
+189 |     json.dumps(rare,allow_nan=False);json.dumps(result,allow_nan=False)
+    |                                     ^
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> test_trace_diagnostics.py:193:41
+    |
+192 | def test_bank_metrics_against_exact_weights_and_relabel_invariance():
+193 |     weights=np.array([.5,.25,.125,.125]);sums=np.tile(weights,(4,2,1))*100
+    |                                         ^
+194 |     counts=np.full((4,2),100);source=np.array([0,0,1,1])
+195 |     result=td.bank_diagnostics(sums,counts,source)
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> test_trace_diagnostics.py:194:30
+    |
+192 | def test_bank_metrics_against_exact_weights_and_relabel_invariance():
+193 |     weights=np.array([.5,.25,.125,.125]);sums=np.tile(weights,(4,2,1))*100
+194 |     counts=np.full((4,2),100);source=np.array([0,0,1,1])
+    |                              ^
+195 |     result=td.bank_diagnostics(sums,counts,source)
+196 |     np.testing.assert_array_equal(result['row_mass'],weights)
+    |
+
+E501 Line too long (169 > 120)
+   --> test_trace_diagnostics.py:204:121
+    |
+202 | …
+203 | …])
+204 | …9_mass','original_source_chain_mass','forecast_chain_tv']:assert result[key]==renamed[key]
+    |                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+205 | …
+206 | …
+    |
+
+E701 Multiple statements on one line (colon)
+   --> test_trace_diagnostics.py:204:137
+    |
+202 | …
+203 | …mutation])
+204 | …rrying_99_mass','original_source_chain_mass','forecast_chain_tv']:assert result[key]==renamed[key]
+    |                                                                   ^
+205 | …
+206 | …
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> test_trace_diagnostics.py:205:26
+    |
+203 |     renamed=td.bank_diagnostics(sums[:,:,permutation],counts,source[permutation])
+204 |     for key in ['max_row_mass','effective_bank_rows','entropy','rows_carrying_99_mass','original_source_chain_mass','forecast_chain_t…
+205 |     divergent=sums.copy();divergent[0]=np.tile([100,0,0,0],(2,1))
+    |                          ^
+206 |     failed=td.bank_diagnostics(divergent,counts,source)
+207 |     assert not failed['gates']['forecast_chain_tv'] and failed['bank_approximation_sensitive']
+    |
+
+E701 Multiple statements on one line (colon)
+   --> test_trace_diagnostics.py:208:35
+    |
+206 |     failed=td.bank_diagnostics(divergent,counts,source)
+207 |     assert not failed['gates']['forecast_chain_tv'] and failed['bank_approximation_sensitive']
+208 |     with pytest.raises(ValueError):td.bank_diagnostics(sums*2,counts,source)
+    |                                   ^
+    |
+
+E701 Multiple statements on one line (colon)
+   --> test_trace_diagnostics.py:219:35
+    |
+217 |     assert display['scope']=='interval_display_only_not_score_precision_or_sampling_retry'
+218 |     assert td.DiagnosticConfig().design_sha256==td.ROOT_DESIGN_SHA256
+219 |     with pytest.raises(ValueError):td.DiagnosticConfig(design_sha256='a'*64)
+    |                                   ^
+220 |     with pytest.raises(ValueError):td.DiagnosticConfig(batch_lengths=(50,))
+    |
+
+E701 Multiple statements on one line (colon)
+   --> test_trace_diagnostics.py:220:35
+    |
+218 |     assert td.DiagnosticConfig().design_sha256==td.ROOT_DESIGN_SHA256
+219 |     with pytest.raises(ValueError):td.DiagnosticConfig(design_sha256='a'*64)
+220 |     with pytest.raises(ValueError):td.DiagnosticConfig(batch_lengths=(50,))
+    |                                   ^
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> test_trace_diagnostics.py:225:17
+    |
+223 | def test_selected_core_coordinate_assembly_on_supplied_arrays():
+224 |     from scipy.special import expit
+225 |     x=supplied();c,d=x.shape
+    |                 ^
+226 |     logits=np.stack([x,x+.1,x-.1],axis=2)
+227 |     cycle=.03+x/10;row=np.tile(np.arange(d)%12,(c,1))
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> test_trace_diagnostics.py:227:19
+    |
+225 |     x=supplied();c,d=x.shape
+226 |     logits=np.stack([x,x+.1,x-.1],axis=2)
+227 |     cycle=.03+x/10;row=np.tile(np.arange(d)%12,(c,1))
+    |                   ^
+228 |     coefficient_names=tuple(f'b{j}' for j in range(6))
+229 |     result=dict(race_ids=('A','B','C'),posterior_index=row,shared_cycle=cycle,
+    |
+
+E701 Multiple statements on one line (colon)
+   --> test_trace_diagnostics.py:244:53
+    |
+242 |     assert abs(report['coordinates'][-1]['mean']-np.log(lam[:,:,1]).mean())<1e-15
+243 |     trace['arrays']['cycle']=cycle+1
+244 |     with pytest.raises(ValueError,match='row-cycle'):td.core_state_diagnostics(result,trace)
+    |                                                     ^
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> test_trace_diagnostics.py:249:38
+    |
+247 | def test_strict_source_binding_and_log_side_independence():
+248 |     prior,_=fixture(observed)
+249 |     bad=dict(td.REQUIRED_SOURCE_PINS);bad['forecast_design']='0'*64
+    |                                      ^
+250 |     with pytest.raises(ValueError,match='pins mismatch'):
+251 |         td.RetainedTraceCollector(chains=4,draws=10,race_ids=prior.race_ids,observed_race_indices=[0,1],missing_race_indices=[2],post…
+    |
+
+E701 Multiple statements on one line (colon)
+   --> test_trace_diagnostics.py:252:34
+    |
+250 |     with pytest.raises(ValueError,match='pins mismatch'):
+251 |         td.RetainedTraceCollector(chains=4,draws=10,race_ids=prior.race_ids,observed_race_indices=[0,1],missing_race_indices=[2],post…
+252 |     with pytest.raises(TypeError):td.REQUIRED_SOURCE_PINS['forecast_design']='0'*64
+    |                                  ^
+253 |     for invalid in [np.nan,np.inf,.01]:
+254 |         with pytest.raises(ValueError):td.log_tail_diagnostics(np.full((4,1600,1),invalid),['lose'])
+    |
+
+E701 Multiple statements on one line (colon)
+   --> test_trace_diagnostics.py:254:39
+    |
+252 |     with pytest.raises(TypeError):td.REQUIRED_SOURCE_PINS['forecast_design']='0'*64
+253 |     for invalid in [np.nan,np.inf,.01]:
+254 |         with pytest.raises(ValueError):td.log_tail_diagnostics(np.full((4,1600,1),invalid),['lose'])
+    |                                       ^
+255 |     with pytest.raises(ValueError):td.DiagnosticConfig(batch_lengths=[50,100])
+    |
+
+E701 Multiple statements on one line (colon)
+   --> test_trace_diagnostics.py:255:35
+    |
+253 |     for invalid in [np.nan,np.inf,.01]:
+254 |         with pytest.raises(ValueError):td.log_tail_diagnostics(np.full((4,1600,1),invalid),['lose'])
+255 |     with pytest.raises(ValueError):td.DiagnosticConfig(batch_lengths=[50,100])
+    |                                   ^
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> test_trace_diagnostics.py:259:29
+    |
+258 | def test_external_receipt_rejects_coherent_valid_numeric_rewrite(tmp_path):
+259 |     _,_,sink,_,_=synthetic();exported=sink.export();path=tmp_path/'rewrite'
+    |                             ^
+260 |     receipt=td.save_trace(exported,path)
+261 |     arrays={k:v.copy() for k,v in exported['arrays'].items()}
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> test_trace_diagnostics.py:259:52
+    |
+258 | def test_external_receipt_rejects_coherent_valid_numeric_rewrite(tmp_path):
+259 |     _,_,sink,_,_=synthetic();exported=sink.export();path=tmp_path/'rewrite'
+    |                                                    ^
+260 |     receipt=td.save_trace(exported,path)
+261 |     arrays={k:v.copy() for k,v in exported['arrays'].items()}
+    |
+
+E501 Line too long (125 > 120)
+   --> test_trace_diagnostics.py:273:121
+    |
+271 |     # Without the independent pin, shape-valid alternate data would pass.
+272 |     altered=td.load_trace(path,expected_source_pins=exported['metadata']['source_pins'],expected_receipt_sha256=td.sha(path/'receipt.…
+273 |     assert not np.array_equal(altered['arrays']['gaussian_mean_theta_cycle'],exported['arrays']['gaussian_mean_theta_cycle'])
+    |                                                                                                                         ^^^^^
+    |
+
+E501 Line too long (132 > 120)
+   --> test_trace_diagnostics.py:277:121
+    |
+276 | def test_selected_threshold_overrides_cannot_claim_frozen_design():
+277 |     for kwargs in [dict(max_rhat=1.05),dict(min_mean_ess=1),dict(max_win_absolute_mcse=.5),dict(bank_warning_min_effective_rows=1)]:
+    |                                                                                                                         ^^^^^^^^^^^^
+278 |         with pytest.raises(ValueError,match='threshold override'):td.DiagnosticConfig(**kwargs)
+    |
+
+E701 Multiple statements on one line (colon)
+   --> test_trace_diagnostics.py:278:66
+    |
+276 | def test_selected_threshold_overrides_cannot_claim_frozen_design():
+277 |     for kwargs in [dict(max_rhat=1.05),dict(min_mean_ess=1),dict(max_win_absolute_mcse=.5),dict(bank_warning_min_effective_rows=1)]:
+278 |         with pytest.raises(ValueError,match='threshold override'):td.DiagnosticConfig(**kwargs)
+    |                                                                  ^
+    |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> trace_diagnostics.py:6:1
+   |
+ 4 |   forecast qualification, retry, model selection, marginal scoring or fitting.
+ 5 |   """
+ 6 | / from collections.abc import Mapping
+ 7 | | from dataclasses import asdict, dataclass
+ 8 | | import hashlib
+ 9 | | import json
+10 | | from pathlib import Path
+11 | | from types import MappingProxyType
+12 | |
+13 | | import numpy as np
+14 | | from scipy.special import logsumexp
+15 | | from observed_sampler import RetainedRowWeightAccumulator, _observed_copy
+16 | | from src.forecasting.response_v5_reuse import correlated_mcse
+   | |_____________________________________________________________^
+   |
+help: Organize imports
+
+E701 Multiple statements on one line (colon)
+  --> trace_diagnostics.py:46:33
+   |
+45 | def plain(value):
+46 |     if isinstance(value,Mapping):return {str(k):plain(v) for k,v in value.items()}
+   |                                 ^
+47 |     if isinstance(value,(tuple,list)):return [plain(v) for v in value]
+48 |     if isinstance(value,np.ndarray):return value.tolist()
+   |
+
+E701 Multiple statements on one line (colon)
+  --> trace_diagnostics.py:47:38
+   |
+45 | def plain(value):
+46 |     if isinstance(value,Mapping):return {str(k):plain(v) for k,v in value.items()}
+47 |     if isinstance(value,(tuple,list)):return [plain(v) for v in value]
+   |                                      ^
+48 |     if isinstance(value,np.ndarray):return value.tolist()
+49 |     if isinstance(value,np.generic):return value.item()
+   |
+
+E701 Multiple statements on one line (colon)
+  --> trace_diagnostics.py:48:36
+   |
+46 |     if isinstance(value,Mapping):return {str(k):plain(v) for k,v in value.items()}
+47 |     if isinstance(value,(tuple,list)):return [plain(v) for v in value]
+48 |     if isinstance(value,np.ndarray):return value.tolist()
+   |                                    ^
+49 |     if isinstance(value,np.generic):return value.item()
+50 |     require(isinstance(value,(str,int,float,bool,type(None))), 'JSON-compatible provenance required')
+   |
+
+E701 Multiple statements on one line (colon)
+  --> trace_diagnostics.py:49:36
+   |
+47 |     if isinstance(value,(tuple,list)):return [plain(v) for v in value]
+48 |     if isinstance(value,np.ndarray):return value.tolist()
+49 |     if isinstance(value,np.generic):return value.item()
+   |                                    ^
+50 |     require(isinstance(value,(str,int,float,bool,type(None))), 'JSON-compatible provenance required')
+51 |     return value
+   |
+
+E702 Multiple statements on one line (semicolon)
+  --> trace_diagnostics.py:63:45
+   |
+61 |                  posterior_source_chain, posterior_source_draw, source_identity,
+62 |                  source_pins, batch_length=100, weight_sum_tolerance=1e-10):
+63 |         self.chains=integer(chains,'chains');self.draws=integer(draws,'draws')
+   |                                             ^
+64 |         require(self.chains>=2 and self.draws>=1,'At least two chains and positive retained draws required')
+65 |         self.race_ids=tuple(race_ids);self.n=len(self.race_ids)
+   |
+
+E702 Multiple statements on one line (semicolon)
+  --> trace_diagnostics.py:65:38
+   |
+63 | …     self.chains=integer(chains,'chains');self.draws=integer(draws,'draws')
+64 | …     require(self.chains>=2 and self.draws>=1,'At least two chains and positive retained draws required')
+65 | …     self.race_ids=tuple(race_ids);self.n=len(self.race_ids)
+   |                                    ^
+66 | …     require(self.n>0 and len(set(self.race_ids))==self.n and all(isinstance(s,str) and s for s in self.race_ids),'Unique named races…
+67 | …     self.observed=array(observed_race_indices,(len(observed_race_indices),),'observed axes',index=True)
+   |
+
+E501 Line too long (147 > 120)
+  --> trace_diagnostics.py:66:121
+   |
+64 | …ns and positive retained draws required')
+65 | …
+66 | …l(isinstance(s,str) and s for s in self.race_ids),'Unique named races required')
+   |                                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+67 | …e_indices),),'observed axes',index=True)
+68 | …ndices),),'missing axes',index=True)
+   |
+
+E702 Multiple statements on one line (semicolon)
+  --> trace_diagnostics.py:69:34
+   |
+67 | …     self.observed=array(observed_race_indices,(len(observed_race_indices),),'observed axes',index=True)
+68 | …     self.missing=array(missing_race_indices,(len(missing_race_indices),),'missing axes',index=True)
+69 | …     self.m=len(self.observed);self.u=len(self.missing)
+   |                                ^
+70 | …     require(self.m>0,'Polling trace requires at least one observed race; direct prior unsupported')
+71 | …     require(np.array_equal(np.sort(np.r_[self.observed,self.missing]),np.arange(self.n)),'Observed/missing axes must partition races…
+   |
+
+E501 Line too long (138 > 120)
+  --> trace_diagnostics.py:71:121
+   |
+69 | …
+70 | …bserved race; direct prior unsupported')
+71 | ….missing]),np.arange(self.n)),'Observed/missing axes must partition races')
+   |                                                           ^^^^^^^^^^^^^^^^^^
+72 | …ved)) and np.array_equal(self.missing,np.sort(self.missing)),'Native sorted observed/missing axes required')
+73 | …
+   |
+
+E501 Line too long (171 > 120)
+  --> trace_diagnostics.py:72:121
+   |
+70 | …rect prior unsupported')
+71 | …ange(self.n)),'Observed/missing axes must partition races')
+72 | …ay_equal(self.missing,np.sort(self.missing)),'Native sorted observed/missing axes required')
+   |                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+73 | …
+74 | …
+   |
+
+E501 Line too long (181 > 120)
+  --> trace_diagnostics.py:81:121
+   |
+79 | …entity required')
+80 | …ce pins required')
+81 | … in '0123456789abcdef' for c in v) for k,v in source_pins.items()),'SHA256 source pins required')
+   |                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+82 | …Required selected source/design pins mismatch')
+83 | …
+   |
+
+E501 Line too long (131 > 120)
+  --> trace_diagnostics.py:82:121
+   |
+80 | …     require(isinstance(source_pins,Mapping) and bool(source_pins),'Nonempty source pins required')
+81 | …     require(all(isinstance(k,str) and isinstance(v,str) and len(v)==64 and all(c in '0123456789abcdef' for c in v) for k,v in source…
+82 | …     require(all(source_pins.get(k)==v for k,v in REQUIRED_SOURCE_PINS.items()),'Required selected source/design pins mismatch')
+   |                                                                                                                       ^^^^^^^^^^^
+83 | …     self.source_identity=source_identity;self.source_pins=dict(source_pins)
+84 | …     require(np.isfinite(weight_sum_tolerance) and 0<weight_sum_tolerance<=1e-6,'Explicit small positive weight tolerance required')
+   |
+
+E702 Multiple statements on one line (semicolon)
+  --> trace_diagnostics.py:83:45
+   |
+81 | …     require(all(isinstance(k,str) and isinstance(v,str) and len(v)==64 and all(c in '0123456789abcdef' for c in v) for k,v in source…
+82 | …     require(all(source_pins.get(k)==v for k,v in REQUIRED_SOURCE_PINS.items()),'Required selected source/design pins mismatch')
+83 | …     self.source_identity=source_identity;self.source_pins=dict(source_pins)
+   |                                           ^
+84 | …     require(np.isfinite(weight_sum_tolerance) and 0<weight_sum_tolerance<=1e-6,'Explicit small positive weight tolerance required')
+85 | …     self.weight_sum_tolerance=float(weight_sum_tolerance)
+   |
+
+E501 Line too long (135 > 120)
+  --> trace_diagnostics.py:84:121
+   |
+82 |         require(all(source_pins.get(k)==v for k,v in REQUIRED_SOURCE_PINS.items()),'Required selected source/design pins mismatch')
+83 |         self.source_identity=source_identity;self.source_pins=dict(source_pins)
+84 |         require(np.isfinite(weight_sum_tolerance) and 0<weight_sum_tolerance<=1e-6,'Explicit small positive weight tolerance required')
+   |                                                                                                                         ^^^^^^^^^^^^^^^
+85 |         self.weight_sum_tolerance=float(weight_sum_tolerance)
+86 |         self.accumulator=RetainedRowWeightAccumulator(batch_length=batch_length)
+   |
+
+E702 Multiple statements on one line (semicolon)
+   --> trace_diagnostics.py:100:21
+    |
+ 98 |             'missing_scale':np.empty((c,d)),
+ 99 |         }
+100 |         self.chain=0;self.draw=0;self.phase='gaussian_conditional';self.final_states=[]
+    |                     ^
+101 |
+102 |     def __call__(self, record):
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> trace_diagnostics.py:100:33
+    |
+ 98 |             'missing_scale':np.empty((c,d)),
+ 99 |         }
+100 |         self.chain=0;self.draw=0;self.phase='gaussian_conditional';self.final_states=[]
+    |                                 ^
+101 |
+102 |     def __call__(self, record):
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> trace_diagnostics.py:100:67
+    |
+ 98 |             'missing_scale':np.empty((c,d)),
+ 99 |         }
+100 |         self.chain=0;self.draw=0;self.phase='gaussian_conditional';self.final_states=[]
+    |                                                                   ^
+101 |
+102 |     def __call__(self, record):
+    |
+
+E501 Line too long (174 > 120)
+   --> trace_diagnostics.py:111:121
+    |
+109 | …draws,'Wrong retained count')
+110 | …
+111 | …ator'),str) and isinstance(state.get('state'),Mapping),'Generator state provenance required')
+    |                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+112 | …
+113 | …
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> trace_diagnostics.py:114:58
+    |
+112 |             encoded=json.dumps(plain(state),allow_nan=False)
+113 |             self.accumulator(record)
+114 |             self.final_states.append(json.loads(encoded));self.chain+=1;self.draw=0;self.phase='gaussian_conditional'
+    |                                                          ^
+115 |             return
+116 |         d=integer(record.get('retained_draw'),'retained draw')
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> trace_diagnostics.py:114:72
+    |
+112 |             encoded=json.dumps(plain(state),allow_nan=False)
+113 |             self.accumulator(record)
+114 |             self.final_states.append(json.loads(encoded));self.chain+=1;self.draw=0;self.phase='gaussian_conditional'
+    |                                                                        ^
+115 |             return
+116 |         d=integer(record.get('retained_draw'),'retained draw')
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> trace_diagnostics.py:114:84
+    |
+112 |             encoded=json.dumps(plain(state),allow_nan=False)
+113 |             self.accumulator(record)
+114 |             self.final_states.append(json.loads(encoded));self.chain+=1;self.draw=0;self.phase='gaussian_conditional'
+    |                                                                                    ^
+115 |             return
+116 |         d=integer(record.get('retained_draw'),'retained draw')
+    |
+
+E501 Line too long (139 > 120)
+   --> trace_diagnostics.py:126:121
+    |
+124 | …
+125 | …d-1],'Pre-row differs from preceding completed row')
+126 | …fter_gamma'][c,d-1]),'Pre-lambda differs from preceding post-gamma lambda')
+    |                                                          ^^^^^^^^^^^^^^^^^^^
+127 | …
+128 | …
+    |
+
+E501 Line too long (142 > 120)
+   --> trace_diagnostics.py:139:121
+    |
+137 | …elf.k,),'row weights')
+138 | …
+139 | …self.weight_sum_tolerance,'Normalized nonnegative all-bank weights required')
+    |                                                         ^^^^^^^^^^^^^^^^^^^^^^
+140 | …d] and np.array_equal(lam,self.values['conditioning_lambda'][c,d]),'Row-weight conditioning phase mismatch')
+141 | …
+    |
+
+E501 Line too long (173 > 120)
+   --> trace_diagnostics.py:140:121
+    |
+138 | …
+139 | …tolerance,'Normalized nonnegative all-bank weights required')
+140 | …equal(lam,self.values['conditioning_lambda'][c,d]),'Row-weight conditioning phase mismatch')
+    |                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+141 | …
+142 | …cle
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> trace_diagnostics.py:142:53
+    |
+140 | …         require(row==self.values['conditioning_row_index'][c,d] and np.array_equal(lam,self.values['conditioning_lambda'][c,d]),'Ro…
+141 | …         self.accumulator(record)
+142 | …         self.values['observed_theta'][c,d]=theta;self.values['cycle'][c,d]=cycle
+    |                                                   ^
+143 | …         self.phase='completed_sweep'
+144 | …     elif self.phase=='completed_sweep':
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> trace_diagnostics.py:149:53
+    |
+147 |             lam=array(record.get('lambda_after_gamma'),(self.m,),'post-gamma precision',positive=True)
+148 |             location=array(record.get('missing_location'),(self.u,),'missing location')
+149 |             scale=float(record.get('missing_scale'));cycle=float(record.get('cycle'))
+    |                                                     ^
+150 |             observed=array(record.get('observed_race_indices'),(self.m,),'completed observed axes',index=True)
+151 |             missing=array(record.get('missing_race_indices'),(self.u,),'completed missing axes',index=True)
+    |
+
+E501 Line too long (129 > 120)
+   --> trace_diagnostics.py:152:121
+    |
+150 |             observed=array(record.get('observed_race_indices'),(self.m,),'completed observed axes',index=True)
+151 |             missing=array(record.get('missing_race_indices'),(self.u,),'completed missing axes',index=True)
+152 |             require(np.array_equal(observed,self.observed) and np.array_equal(missing,self.missing),'Completed race axes differ')
+    |                                                                                                                         ^^^^^^^^^
+153 |             require(np.isfinite(scale) and scale>0 and np.isfinite(cycle),'Positive missing scale / finite cycle required')
+154 |             require(cycle==self.values['cycle'][c,d],'Completed cycle phase mismatch')
+    |
+
+E501 Line too long (123 > 120)
+   --> trace_diagnostics.py:153:121
+    |
+151 |             missing=array(record.get('missing_race_indices'),(self.u,),'completed missing axes',index=True)
+152 |             require(np.array_equal(observed,self.observed) and np.array_equal(missing,self.missing),'Completed race axes differ')
+153 |             require(np.isfinite(scale) and scale>0 and np.isfinite(cycle),'Positive missing scale / finite cycle required')
+    |                                                                                                                         ^^^
+154 |             require(cycle==self.values['cycle'][c,d],'Completed cycle phase mismatch')
+155 |             self.accumulator(record)
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> trace_diagnostics.py:156:54
+    |
+154 |             require(cycle==self.values['cycle'][c,d],'Completed cycle phase mismatch')
+155 |             self.accumulator(record)
+156 |             self.values['sampled_row_index'][c,d]=row;self.values['lambda_after_gamma'][c,d]=lam
+    |                                                      ^
+157 |             self.values['missing_location'][c,d]=location;self.values['missing_scale'][c,d]=scale
+158 |             self.draw+=1
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> trace_diagnostics.py:157:58
+    |
+155 |             self.accumulator(record)
+156 |             self.values['sampled_row_index'][c,d]=row;self.values['lambda_after_gamma'][c,d]=lam
+157 |             self.values['missing_location'][c,d]=location;self.values['missing_scale'][c,d]=scale
+    |                                                          ^
+158 |             self.draw+=1
+159 |             self.phase='chain_final_rng' if self.draw==self.draws else 'gaussian_conditional'
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> trace_diagnostics.py:163:44
+    |
+161 |     def export(self):
+162 |         require(self.chain==self.chains,'Incomplete observer trace')
+163 |         aggregate=self.accumulator.export();length=self.accumulator.batch_length
+    |                                            ^
+164 |         batches=(self.draws+length-1)//length
+165 |         sums=np.empty((self.chains,batches,self.k))
+    |
+
+E701 Multiple statements on one line (colon)
+   --> trace_diagnostics.py:173:63
+    |
+171 |                 sums[c,b]=aggregate['batch_weight_sums'][(c,b)]
+172 |                 counts[c,b]=min(length,self.draws-b*length)
+173 |             for row,count in aggregate['occupancy'][c].items():occupancy[c,row]=count
+    |                                                               ^
+174 |         arrays={**self.values,'observed_race_indices':self.observed,'missing_race_indices':self.missing,
+175 |                 'posterior_source_chain':self.source_chain,'posterior_source_draw':self.source_draw,
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> trace_diagnostics.py:190:36
+    |
+188 |     """Exclusive NPZ+JSON write; all NPZ arrays have non-object numeric dtype."""
+189 |     directory=Path(destination)
+190 |     arrays=dict(exported['arrays']);metadata=plain(exported['metadata'])
+    |                                    ^
+191 |     require(all(np.asarray(v).dtype.kind in 'iuf' and not np.asarray(v).dtype.hasobject for v in arrays.values()),'Numeric non-pickle…
+192 |     validate_trace_arrays(arrays,metadata)
+    |
+
+E501 Line too long (151 > 120)
+   --> trace_diagnostics.py:191:121
+    |
+189 | …
+190 | …])
+191 | …).dtype.hasobject for v in arrays.values()),'Numeric non-pickle arrays required')
+    |                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+192 | …
+193 | …2)+'\n'
+    |
+
+E501 Line too long (133 > 120)
+   --> trace_diagnostics.py:197:121
+    |
+195 |     np.savez_compressed(directory/'trace.npz',**arrays)
+196 |     (directory/'provenance.json').write_text(encoded)
+197 |     receipt=dict(schema='RetainedPollingTraceReceiptV1',files={name:sha(directory/name) for name in ['trace.npz','provenance.json']},
+    |                                                                                                                         ^^^^^^^^^^^^^
+198 |                  arrays={name:dict(shape=list(v.shape),dtype=v.dtype.str) for name,v in arrays.items()})
+199 |     (directory/'receipt.json').write_text(json.dumps(receipt,sort_keys=True,indent=2)+'\n')
+    |
+
+E501 Line too long (132 > 120)
+   --> trace_diagnostics.py:206:121
+    |
+204 |     """Verify exclusive receipt and required source pins; never use pickle."""
+205 |     directory=Path(destination)
+206 |     require(isinstance(expected_receipt_sha256,str) and len(expected_receipt_sha256)==64,'Externally bound receipt SHA256 required')
+    |                                                                                                                         ^^^^^^^^^^^^
+207 |     require(sha(directory/'receipt.json')==expected_receipt_sha256,'Externally bound receipt digest mismatch')
+208 |     receipt=json.loads((directory/'receipt.json').read_text())
+    |
+
+E701 Multiple statements on one line (colon)
+   --> trace_diagnostics.py:211:48
+    |
+209 |     require(receipt.get('schema')=='RetainedPollingTraceReceiptV1','Unknown trace receipt')
+210 |     require(set(receipt['files'])=={'trace.npz','provenance.json'},'Exact trace file receipt required')
+211 |     for name,digest in receipt['files'].items():require(sha(directory/name)==digest,'Trace byte digest mismatch')
+    |                                                ^
+212 |     metadata=json.loads((directory/'provenance.json').read_text())
+213 |     require(metadata.get('schema')=='RetainedPollingTraceV1','Unknown trace schema')
+    |
+
+E501 Line too long (136 > 120)
+   --> trace_diagnostics.py:219:121
+    |
+217 | …files}
+218 | …
+219 | …hasobject and np.isfinite(value).all(),'Invalid serialized numeric trace')
+    |                                                            ^^^^^^^^^^^^^^^^
+220 | …ape'] and value.dtype.str==receipt['arrays'][name]['dtype'],'Trace shape/dtype receipt mismatch')
+221 | …
+    |
+
+E501 Line too long (159 > 120)
+   --> trace_diagnostics.py:220:121
+    |
+218 | …
+219 | …d np.isfinite(value).all(),'Invalid serialized numeric trace')
+220 | …lue.dtype.str==receipt['arrays'][name]['dtype'],'Trace shape/dtype receipt mismatch')
+    |                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+221 | …
+222 | …
+    |
+
+E501 Line too long (133 > 120)
+   --> trace_diagnostics.py:227:121
+    |
+225 | def validate_trace_arrays(arrays,metadata):
+226 |     require(metadata.get('schema')=='RetainedPollingTraceV1','Unknown trace schema')
+227 |     require(metadata.get('phase_contract')=='pre_state_row_lambda_gaussian__post_row_gamma__v1','Serialized phase contract mismatch')
+    |                                                                                                                         ^^^^^^^^^^^^^
+228 |     pins=metadata.get('source_pins',{})
+229 |     require(all(pins.get(k)==v for k,v in REQUIRED_SOURCE_PINS.items()),'Serialized required source/design pins mismatch')
+    |
+
+E501 Line too long (122 > 120)
+   --> trace_diagnostics.py:229:121
+    |
+227 |     require(metadata.get('phase_contract')=='pre_state_row_lambda_gaussian__post_row_gamma__v1','Serialized phase contract mismatch')
+228 |     pins=metadata.get('source_pins',{})
+229 |     require(all(pins.get(k)==v for k,v in REQUIRED_SOURCE_PINS.items()),'Serialized required source/design pins mismatch')
+    |                                                                                                                         ^^
+230 |     require(isinstance(metadata.get('source_identity'),str) and bool(metadata['source_identity']),'Serialized source identity require…
+231 |     c=integer(metadata.get('chains'),'serialized chains');d=integer(metadata.get('draws'),'serialized draws')
+    |
+
+E501 Line too long (136 > 120)
+   --> trace_diagnostics.py:230:121
+    |
+228 | …
+229 | ….items()),'Serialized required source/design pins mismatch')
+230 | …d bool(metadata['source_identity']),'Serialized source identity required')
+    |                                                            ^^^^^^^^^^^^^^^^
+231 | …teger(metadata.get('draws'),'serialized draws')
+232 | …
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> trace_diagnostics.py:231:58
+    |
+229 |     require(all(pins.get(k)==v for k,v in REQUIRED_SOURCE_PINS.items()),'Serialized required source/design pins mismatch')
+230 |     require(isinstance(metadata.get('source_identity'),str) and bool(metadata['source_identity']),'Serialized source identity require…
+231 |     c=integer(metadata.get('chains'),'serialized chains');d=integer(metadata.get('draws'),'serialized draws')
+    |                                                          ^
+232 |     races=tuple(metadata.get('race_ids',()));n=len(races)
+233 |     require(c>=2 and d>0 and n>0 and len(set(races))==n,'Invalid serialized dimensions/races')
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> trace_diagnostics.py:232:45
+    |
+230 |     require(isinstance(metadata.get('source_identity'),str) and bool(metadata['source_identity']),'Serialized source identity require…
+231 |     c=integer(metadata.get('chains'),'serialized chains');d=integer(metadata.get('draws'),'serialized draws')
+232 |     races=tuple(metadata.get('race_ids',()));n=len(races)
+    |                                             ^
+233 |     require(c>=2 and d>0 and n>0 and len(set(races))==n,'Invalid serialized dimensions/races')
+234 |     observed=np.asarray(arrays.get('observed_race_indices'));missing=np.asarray(arrays.get('missing_race_indices'))
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> trace_diagnostics.py:234:61
+    |
+232 |     races=tuple(metadata.get('race_ids',()));n=len(races)
+233 |     require(c>=2 and d>0 and n>0 and len(set(races))==n,'Invalid serialized dimensions/races')
+234 |     observed=np.asarray(arrays.get('observed_race_indices'));missing=np.asarray(arrays.get('missing_race_indices'))
+    |                                                             ^
+235 |     require(observed.ndim==missing.ndim==1 and len(observed)>0,'Serialized polling axes required')
+236 |     require(np.array_equal(np.sort(np.r_[observed,missing]),np.arange(n)),'Serialized axes do not partition races')
+    |
+
+E501 Line too long (141 > 120)
+   --> trace_diagnostics.py:237:121
+    |
+235 | …erialized polling axes required')
+236 | …ange(n)),'Serialized axes do not partition races')
+237 | …ay_equal(missing,np.sort(missing)),'Serialized native sorted axes required')
+    |                                                         ^^^^^^^^^^^^^^^^^^^^^
+238 | …urce_chain',()))
+239 | … length');require(length>0 and k>0,'Positive serialized batch/bank size required')
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> trace_diagnostics.py:238:20
+    |
+236 |     require(np.array_equal(np.sort(np.r_[observed,missing]),np.arange(n)),'Serialized axes do not partition races')
+237 |     require(np.array_equal(observed,np.sort(observed)) and np.array_equal(missing,np.sort(missing)),'Serialized native sorted axes re…
+238 |     m=len(observed);u=len(missing);k=len(arrays.get('posterior_source_chain',()))
+    |                    ^
+239 |     length=integer(metadata.get('batch_length'),'serialized batch length');require(length>0 and k>0,'Positive serialized batch/bank s…
+240 |     b=(d+length-1)//length
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> trace_diagnostics.py:238:35
+    |
+236 |     require(np.array_equal(np.sort(np.r_[observed,missing]),np.arange(n)),'Serialized axes do not partition races')
+237 |     require(np.array_equal(observed,np.sort(observed)) and np.array_equal(missing,np.sort(missing)),'Serialized native sorted axes re…
+238 |     m=len(observed);u=len(missing);k=len(arrays.get('posterior_source_chain',()))
+    |                                   ^
+239 |     length=integer(metadata.get('batch_length'),'serialized batch length');require(length>0 and k>0,'Positive serialized batch/bank s…
+240 |     b=(d+length-1)//length
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> trace_diagnostics.py:239:75
+    |
+237 |     require(np.array_equal(observed,np.sort(observed)) and np.array_equal(missing,np.sort(missing)),'Serialized native sorted axes re…
+238 |     m=len(observed);u=len(missing);k=len(arrays.get('posterior_source_chain',()))
+239 |     length=integer(metadata.get('batch_length'),'serialized batch length');require(length>0 and k>0,'Positive serialized batch/bank s…
+    |                                                                           ^
+240 |     b=(d+length-1)//length
+241 |     shapes={'conditioning_row_index':(c,d),'conditioning_lambda':(c,d,m),'gaussian_mean_theta_cycle':(c,d,m+1),
+    |
+
+E501 Line too long (147 > 120)
+   --> trace_diagnostics.py:239:121
+    |
+237 | …equal(missing,np.sort(missing)),'Serialized native sorted axes required')
+238 | …e_chain',()))
+239 | …ngth');require(length>0 and k>0,'Positive serialized batch/bank size required')
+    |                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+240 | …
+241 | …d,m),'gaussian_mean_theta_cycle':(c,d,m+1),
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> trace_diagnostics.py:249:39
+    |
+247 |     index_names={'conditioning_row_index','sampled_row_index','observed_race_indices','missing_race_indices','posterior_source_chain'…
+248 |     for name,shape in shapes.items():
+249 |         value=np.asarray(arrays[name]);require(value.shape==shape and value.dtype.kind in 'iuf' and np.isfinite(value).all(),'Seriali…
+    |                                       ^
+250 |         if name in index_names:require(value.dtype.kind in 'iu' and (value>=0).all(),'Serialized integer coordinate required: '+name)
+251 |     for name in ['conditioning_lambda','lambda_after_gamma','gaussian_variance_theta_cycle','missing_scale']:require((arrays[name]>0)…
+    |
+
+E501 Line too long (172 > 120)
+   --> trace_diagnostics.py:249:121
+    |
+247 | …ices','missing_race_indices','posterior_source_chain','posterior_source_draw','bank_batch_counts','bank_sampled_occupancy'}
+248 | …
+249 | …e.kind in 'iuf' and np.isfinite(value).all(),'Serialized trace shape/value mismatch: '+name)
+    |                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+250 | …ll(),'Serialized integer coordinate required: '+name)
+251 | …heta_cycle','missing_scale']:require((arrays[name]>0).all(),'Serialized positive state required: '+name)
+    |
+
+E701 Multiple statements on one line (colon)
+   --> trace_diagnostics.py:250:31
+    |
+248 |     for name,shape in shapes.items():
+249 |         value=np.asarray(arrays[name]);require(value.shape==shape and value.dtype.kind in 'iuf' and np.isfinite(value).all(),'Seriali…
+250 |         if name in index_names:require(value.dtype.kind in 'iu' and (value>=0).all(),'Serialized integer coordinate required: '+name)
+    |                               ^
+251 |     for name in ['conditioning_lambda','lambda_after_gamma','gaussian_variance_theta_cycle','missing_scale']:require((arrays[name]>0)…
+252 |     for name in ['conditioning_row_index','sampled_row_index']:require((arrays[name]<k).all(),'Serialized bank row outside support')
+    |
+
+E501 Line too long (133 > 120)
+   --> trace_diagnostics.py:250:121
+    |
+248 | …
+249 | …hape and value.dtype.kind in 'iuf' and np.isfinite(value).all(),'Serialized trace shape/value mismatch: '+name)
+250 | …u' and (value>=0).all(),'Serialized integer coordinate required: '+name)
+    |                                                             ^^^^^^^^^^^^^
+251 | …gaussian_variance_theta_cycle','missing_scale']:require((arrays[name]>0).all(),'Serialized positive state required: '+name)
+252 | …]:require((arrays[name]<k).all(),'Serialized bank row outside support')
+    |
+
+E701 Multiple statements on one line (colon)
+   --> trace_diagnostics.py:251:109
+    |
+249 |         value=np.asarray(arrays[name]);require(value.shape==shape and value.dtype.kind in 'iuf' and np.isfinite(value).all(),'Seriali…
+250 |         if name in index_names:require(value.dtype.kind in 'iu' and (value>=0).all(),'Serialized integer coordinate required: '+name)
+251 |     for name in ['conditioning_lambda','lambda_after_gamma','gaussian_variance_theta_cycle','missing_scale']:require((arrays[name]>0)…
+    |                                                                                                             ^
+252 |     for name in ['conditioning_row_index','sampled_row_index']:require((arrays[name]<k).all(),'Serialized bank row outside support')
+253 |     require(len(set(zip(arrays['posterior_source_chain'],arrays['posterior_source_draw'])))==k,'Serialized duplicate source identity')
+    |
+
+E501 Line too long (184 > 120)
+   --> trace_diagnostics.py:251:121
+    |
+249 | … in 'iuf' and np.isfinite(value).all(),'Serialized trace shape/value mismatch: '+name)
+250 | …Serialized integer coordinate required: '+name)
+251 | …ycle','missing_scale']:require((arrays[name]>0).all(),'Serialized positive state required: '+name)
+    |                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+252 | …).all(),'Serialized bank row outside support')
+253 | …'])))==k,'Serialized duplicate source identity')
+    |
+
+E701 Multiple statements on one line (colon)
+   --> trace_diagnostics.py:252:63
+    |
+250 |         if name in index_names:require(value.dtype.kind in 'iu' and (value>=0).all(),'Serialized integer coordinate required: '+name)
+251 |     for name in ['conditioning_lambda','lambda_after_gamma','gaussian_variance_theta_cycle','missing_scale']:require((arrays[name]>0)…
+252 |     for name in ['conditioning_row_index','sampled_row_index']:require((arrays[name]<k).all(),'Serialized bank row outside support')
+    |                                                               ^
+253 |     require(len(set(zip(arrays['posterior_source_chain'],arrays['posterior_source_draw'])))==k,'Serialized duplicate source identity')
+254 |     require(np.array_equal(arrays['conditioning_row_index'][:,1:],arrays['sampled_row_index'][:,:-1]) and np.array_equal(arrays['cond…
+    |
+
+E501 Line too long (132 > 120)
+   --> trace_diagnostics.py:252:121
+    |
+250 | …iu' and (value>=0).all(),'Serialized integer coordinate required: '+name)
+251 | …'gaussian_variance_theta_cycle','missing_scale']:require((arrays[name]>0).all(),'Serialized positive state required: '+name)
+252 | …']:require((arrays[name]<k).all(),'Serialized bank row outside support')
+    |                                                              ^^^^^^^^^^^^
+253 | …ays['posterior_source_draw'])))==k,'Serialized duplicate source identity')
+254 | …:,1:],arrays['sampled_row_index'][:,:-1]) and np.array_equal(arrays['conditioning_lambda'][:,1:],arrays['lambda_after_gamma'][:,:-1]…
+    |
+
+E501 Line too long (134 > 120)
+   --> trace_diagnostics.py:253:121
+    |
+251 | …gaussian_variance_theta_cycle','missing_scale']:require((arrays[name]>0).all(),'Serialized positive state required: '+name)
+252 | …]:require((arrays[name]<k).all(),'Serialized bank row outside support')
+253 | …ys['posterior_source_draw'])))==k,'Serialized duplicate source identity')
+    |                                                             ^^^^^^^^^^^^^^
+254 | …,1:],arrays['sampled_row_index'][:,:-1]) and np.array_equal(arrays['conditioning_lambda'][:,1:],arrays['lambda_after_gamma'][:,:-1])…
+255 | …b)])
+    |
+
+E501 Line too long (241 > 120)
+   --> trace_diagnostics.py:254:121
+    |
+252 | …outside support')
+253 | …e source identity')
+254 | …equal(arrays['conditioning_lambda'][:,1:],arrays['lambda_after_gamma'][:,:-1]),'Serialized pre/post phase alignment mismatch')
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+255 | …
+256 | …smatch')
+    |
+
+E501 Line too long (123 > 120)
+   --> trace_diagnostics.py:256:121
+    |
+254 |     require(np.array_equal(arrays['conditioning_row_index'][:,1:],arrays['sampled_row_index'][:,:-1]) and np.array_equal(arrays['cond…
+255 |     expected=np.array([min(length,d-j*length) for j in range(b)])
+256 |     require(np.array_equal(arrays['bank_batch_counts'],np.tile(expected,(c,1))),'Serialized bank batch retention mismatch')
+    |                                                                                                                         ^^^
+257 |     require((arrays['bank_batch_weight_sums']>=0).all() and np.allclose(arrays['bank_batch_weight_sums'].sum(axis=2),arrays['bank_bat…
+258 |     require(np.array_equal(arrays['bank_sampled_occupancy'].sum(axis=1),np.full(c,d)),'Serialized occupancy count mismatch')
+    |
+
+E501 Line too long (199 > 120)
+   --> trace_diagnostics.py:257:121
+    |
+255 | …
+256 | …nk batch retention mismatch')
+257 | …ght_sums'].sum(axis=2),arrays['bank_batch_counts'],atol=1e-8,rtol=1e-10),'Serialized bank mass mismatch')
+    |                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+258 | …zed occupancy count mismatch')
+259 | …atch')
+    |
+
+E501 Line too long (124 > 120)
+   --> trace_diagnostics.py:258:121
+    |
+256 |     require(np.array_equal(arrays['bank_batch_counts'],np.tile(expected,(c,1))),'Serialized bank batch retention mismatch')
+257 |     require((arrays['bank_batch_weight_sums']>=0).all() and np.allclose(arrays['bank_batch_weight_sums'].sum(axis=2),arrays['bank_bat…
+258 |     require(np.array_equal(arrays['bank_sampled_occupancy'].sum(axis=1),np.full(c,d)),'Serialized occupancy count mismatch')
+    |                                                                                                                         ^^^^
+259 |     require(len(metadata.get('final_rng_states',()))==c,'Serialized final RNG state count mismatch')
+260 |     json.dumps(plain(metadata),allow_nan=False)
+    |
+
+E501 Line too long (147 > 120)
+   --> trace_diagnostics.py:285:121
+    |
+283 | …
+284 | …ign SHA mismatch')
+285 | …ch_lengths)==(50,100),'This diagnostic version requires batch passes50 and100')
+    |                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+286 | …
+287 | …
+    |
+
+E501 Line too long (125 > 120)
+   --> trace_diagnostics.py:289:121
+    |
+287 |             if key not in ('batch_lengths','design_sha256'):
+288 |                 require(np.isfinite(value) and value>0,f'Positive finite diagnostic threshold {key} required')
+289 |                 require(value==self.__dataclass_fields__[key].default,f'Selected-design threshold override forbidden: {key}')
+    |                                                                                                                         ^^^^^
+290 |         require(self.max_rhat>=1,'Rhat threshold must be at least1')
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> trace_diagnostics.py:294:36
+    |
+293 | def _diagnostic_inputs(values,names,structural_constants):
+294 |     values=np.asarray(values,float);names=tuple(names);structural=set(structural_constants)
+    |                                    ^
+295 |     require(values.ndim==3 and values.shape[2]==len(names) and len(names)>0 and len(set(names))==len(names),'Unique aligned function …
+296 |     require(np.isfinite(values).all(),'Finite function traces required')
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> trace_diagnostics.py:294:55
+    |
+293 | def _diagnostic_inputs(values,names,structural_constants):
+294 |     values=np.asarray(values,float);names=tuple(names);structural=set(structural_constants)
+    |                                                       ^
+295 |     require(values.ndim==3 and values.shape[2]==len(names) and len(names)>0 and len(set(names))==len(names),'Unique aligned function …
+296 |     require(np.isfinite(values).all(),'Finite function traces required')
+    |
+
+E501 Line too long (155 > 120)
+   --> trace_diagnostics.py:295:121
+    |
+293 | …
+294 | …ructural_constants)
+295 | …)>0 and len(set(names))==len(names),'Unique aligned function coordinates required')
+    |                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+296 | …
+297 | …dinate')
+    |
+
+E501 Line too long (149 > 120)
+   --> trace_diagnostics.py:299:121
+    |
+297 | …oordinate')
+298 | …
+299 | …n structural),'Structural declaration requires an actually constant coordinate')
+    |                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+300 | …
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> trace_diagnostics.py:306:52
+    |
+304 |     values,names,structural,constants=_diagnostic_inputs(values,names,structural_constants)
+305 |     passes=[correlated_mcse(values,batch_length=b) for b in config.batch_lengths]
+306 |     mcse=np.max([p['mcse'] for p in passes],axis=0);rhat=np.max([p['rank_rhat'] for p in passes],axis=0)
+    |                                                    ^
+307 |     variance=np.var(values.reshape(-1,len(names)),axis=0,ddof=1)
+308 |     if max_mean_mcse is not None:
+    |
+
+E701 Multiple statements on one line (colon)
+   --> trace_diagnostics.py:311:9
+    |
+309 |         limits=np.broadcast_to(np.asarray(max_mean_mcse,float),(len(names),))
+310 |         require(np.isfinite(limits).all() and (limits>0).all(),'Explicit positive coordinate MCSE limits required')
+311 |     else:limits=None
+    |         ^
+312 |     rows=[]
+313 |     for j,name in enumerate(names):
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> trace_diagnostics.py:314:36
+    |
+312 |     rows=[]
+313 |     for j,name in enumerate(names):
+314 |         constant=bool(constants[j]);known=name in structural
+    |                                    ^
+315 |         unresolved=(constant and not known) or (not constant and mcse[j]<=0)
+316 |         ess=None if constant or mcse[j]<=0 else float(variance[j]/mcse[j]**2)
+    |
+
+E701 Multiple statements on one line (colon)
+   --> trace_diagnostics.py:319:30
+    |
+317 | …     gates=dict(rhat=None if unresolved or known else bool(rhat[j]<=config.max_rhat),
+318 | …                mean_ess=None if constant or ess is None else bool(ess>=config.min_mean_ess))
+319 | …     if limits is not None:gates['mean_mcse']=None if unresolved else bool(mcse[j]<=limits[j])
+    |                            ^
+320 | …     rows.append(dict(coordinate=name,constant=constant,structural_constant=known,
+321 | …                      status='structural' if known else 'unresolved_constant' if constant else 'unresolved_zero_mcse' if unresolved …
+    |
+
+E501 Line too long (151 > 120)
+   --> trace_diagnostics.py:321:121
+    |
+319 | …se bool(mcse[j]<=limits[j])
+320 | …constant=known,
+321 | …_constant' if constant else 'unresolved_zero_mcse' if unresolved else 'measured',
+    |                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+322 | …at(variance[j]),
+323 | …
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> trace_diagnostics.py:333:45
+    |
+332 | def log_tail_diagnostics(log_probabilities,names,*,structural_constants=(),config=DiagnosticConfig()):
+333 |     logs=np.asarray(log_probabilities,float);names=tuple(names)
+    |                                             ^
+334 |     require(logs.ndim==3 and logs.shape[2]==len(names) and len(set(names))==len(names),'Aligned named log-tail traces required')
+335 |     require(not np.isnan(logs).any() and not np.isposinf(logs).any() and (logs<=0).all(),'Nonpositive log probabilities required')
+    |
+
+E501 Line too long (128 > 120)
+   --> trace_diagnostics.py:334:121
+    |
+332 | def log_tail_diagnostics(log_probabilities,names,*,structural_constants=(),config=DiagnosticConfig()):
+333 |     logs=np.asarray(log_probabilities,float);names=tuple(names)
+334 |     require(logs.ndim==3 and logs.shape[2]==len(names) and len(set(names))==len(names),'Aligned named log-tail traces required')
+    |                                                                                                                         ^^^^^^^^
+335 |     require(not np.isnan(logs).any() and not np.isposinf(logs).any() and (logs<=0).all(),'Nonpositive log probabilities required')
+336 |     structural=set(structural_constants);require(structural.issubset(names),'Unknown structural tail coordinate')
+    |
+
+E501 Line too long (130 > 120)
+   --> trace_diagnostics.py:335:121
+    |
+333 |     logs=np.asarray(log_probabilities,float);names=tuple(names)
+334 |     require(logs.ndim==3 and logs.shape[2]==len(names) and len(set(names))==len(names),'Aligned named log-tail traces required')
+335 |     require(not np.isnan(logs).any() and not np.isposinf(logs).any() and (logs<=0).all(),'Nonpositive log probabilities required')
+    |                                                                                                                         ^^^^^^^^^^
+336 |     structural=set(structural_constants);require(structural.issubset(names),'Unknown structural tail coordinate')
+337 |     maxima=np.max(logs,axis=(0,1));valid=np.isfinite(maxima)
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> trace_diagnostics.py:336:41
+    |
+334 |     require(logs.ndim==3 and logs.shape[2]==len(names) and len(set(names))==len(names),'Aligned named log-tail traces required')
+335 |     require(not np.isnan(logs).any() and not np.isposinf(logs).any() and (logs<=0).all(),'Nonpositive log probabilities required')
+336 |     structural=set(structural_constants);require(structural.issubset(names),'Unknown structural tail coordinate')
+    |                                         ^
+337 |     maxima=np.max(logs,axis=(0,1));valid=np.isfinite(maxima)
+338 |     scaled=np.zeros_like(logs)
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> trace_diagnostics.py:337:35
+    |
+335 |     require(not np.isnan(logs).any() and not np.isposinf(logs).any() and (logs<=0).all(),'Nonpositive log probabilities required')
+336 |     structural=set(structural_constants);require(structural.issubset(names),'Unknown structural tail coordinate')
+337 |     maxima=np.max(logs,axis=(0,1));valid=np.isfinite(maxima)
+    |                                   ^
+338 |     scaled=np.zeros_like(logs)
+339 |     scaled[:,:,valid]=np.exp(logs[:,:,valid]-maxima[valid])
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> trace_diagnostics.py:355:48
+    |
+353 |         logmean=float(maxima[j]+centered_logmean)
+354 |         differences=logsumexp(centered_logs,axis=1)-np.log(logs.shape[1])-centered_logmean
+355 |         mean_scaled=float(scaled[:,:,j].mean());mcse=base['mcse']
+    |                                                ^
+356 |         relative=None if mcse is None else float(mcse/mean_scaled)
+357 |         log_mcse=None if mcse is None or mcse==0 else float(maxima[j]+np.log(mcse))
+    |
+
+E501 Line too long (121 > 120)
+   --> trace_diagnostics.py:359:121
+    |
+357 | …     log_mcse=None if mcse is None or mcse==0 else float(maxima[j]+np.log(mcse))
+358 | …     unresolved=base['status'].startswith('unresolved')
+359 | …     absolute_gate=None if unresolved else (True if mcse==0 else bool(log_mcse<=np.log(config.max_win_absolute_mcse)))
+    |                                                                                                                       ^
+360 | …     gates=dict(absolute_mcse=absolute_gate,relative_mcse=None if unresolved else bool(relative<=config.max_tail_relative_mcse),
+361 | …                chain_log_difference=None if unresolved else bool(np.max(np.abs(differences))<=config.max_chain_logtail_difference))
+    |
+
+E501 Line too long (131 > 120)
+   --> trace_diagnostics.py:360:121
+    |
+358 | …
+359 | …=0 else bool(log_mcse<=np.log(config.max_win_absolute_mcse)))
+360 | …=None if unresolved else bool(relative<=config.max_tail_relative_mcse),
+    |                                                              ^^^^^^^^^^^
+361 | …lse bool(np.max(np.abs(differences))<=config.max_chain_logtail_difference))
+362 | …'],log_probability=logmean,
+    |
+
+E501 Line too long (135 > 120)
+   --> trace_diagnostics.py:361:121
+    |
+359 | … else bool(log_mcse<=np.log(config.max_win_absolute_mcse)))
+360 | …one if unresolved else bool(relative<=config.max_tail_relative_mcse),
+361 | …e bool(np.max(np.abs(differences))<=config.max_chain_logtail_difference))
+    |                                                            ^^^^^^^^^^^^^^^
+362 | …,log_probability=logmean,
+363 | …cse=log_mcse,
+    |
+
+E501 Line too long (156 > 120)
+   --> trace_diagnostics.py:364:121
+    |
+362 | …bility=logmean,
+363 | …se,
+364 | …s not None and np.exp(log_mcse)==0) else 0. if mcse==0 else float(np.exp(log_mcse)),
+    |                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+365 | …one and np.exp(log_mcse)==0),
+366 | …te(x) else None for x in differences],
+    |
+
+E501 Line too long (135 > 120)
+   --> trace_diagnostics.py:369:121
+    |
+367 | …nzero(~np.isfinite(differences)).tolist(),
+368 | …ded_split_rhat'],mean_ess_estimate=base['mean_ess_estimate'],
+369 | …gates'],gates=gates,failures=[k for k,v in gates.items() if v is False]))
+    |                                                            ^^^^^^^^^^^^^^^
+370 | …ail_mcse',sides_independent_no_subtraction=True,
+371 | …),coordinates=rows)
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> trace_diagnostics.py:383:45
+    |
+382 | def bank_diagnostics(batch_weight_sums,batch_counts,posterior_source_chain,*,config=DiagnosticConfig()):
+383 |     sums=np.asarray(batch_weight_sums,float);counts=np.asarray(batch_counts)
+    |                                             ^
+384 |     require(sums.ndim==3 and counts.shape==sums.shape[:2] and sums.shape[0]>=2 and sums.shape[2]>0,'Aligned bank batch sums/counts re…
+385 |     require(np.isfinite(sums).all() and (sums>=0).all() and np.isfinite(counts).all() and (counts>0).all() and np.equal(counts,np.flo…
+    |
+
+E501 Line too long (141 > 120)
+   --> trace_diagnostics.py:384:121
+    |
+382 | …rce_chain,*,config=DiagnosticConfig()):
+383 | …tch_counts)
+384 | …s.shape[0]>=2 and sums.shape[2]>0,'Aligned bank batch sums/counts required')
+    |                                                         ^^^^^^^^^^^^^^^^^^^^^
+385 | …finite(counts).all() and (counts>0).all() and np.equal(counts,np.floor(counts)).all(),'Finite nonnegative bank sums and positive int…
+386 | …-10),'Bank mass does not match retained counts')
+    |
+
+E501 Line too long (219 > 120)
+   --> trace_diagnostics.py:385:121
+    |
+383 | …
+384 | …ned bank batch sums/counts required')
+385 | …() and np.equal(counts,np.floor(counts)).all(),'Finite nonnegative bank sums and positive integer counts required')
+    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+386 | … counts')
+387 | …
+    |
+
+E501 Line too long (176 > 120)
+   --> trace_diagnostics.py:388:121
+    |
+386 | …oes not match retained counts')
+387 | …
+388 | …ual(source,np.floor(source)).all() and (source>=0).all(),'Original source-chain map required')
+    |                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+389 | …
+390 | …
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> trace_diagnostics.py:389:30
+    |
+387 |     source=np.asarray(posterior_source_chain)
+388 |     require(source.shape==(sums.shape[2],) and np.isfinite(source).all() and np.equal(source,np.floor(source)).all() and (source>=0).…
+389 |     totals=counts.sum(axis=1);chain_weights=sums.sum(axis=1)/totals[:,None]
+    |                              ^
+390 |     weights=sums.sum(axis=(0,1))/counts.sum()
+391 |     ordered=np.sort(weights)[::-1]
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> trace_diagnostics.py:393:33
+    |
+391 |     ordered=np.sort(weights)[::-1]
+392 |     support=int(np.searchsorted(np.cumsum(ordered),.99,side='left')+1)
+393 |     source_ids=np.unique(source);source_mass=np.array([weights[source==s].sum() for s in source_ids])
+    |                                 ^
+394 |     forecast_source_mass=np.array([[w[source==s].sum() for s in source_ids] for w in chain_weights])
+395 |     tv=.5*np.abs(chain_weights-weights).sum(axis=1)
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> trace_diagnostics.py:398:23
+    |
+396 |     source_difference=np.max(np.abs(forecast_source_mass-source_mass),axis=1)
+397 |     effective=float(1/np.sum(weights*weights))
+398 |     positive=weights>0;entropy=float(-np.sum(weights[positive]*np.log(weights[positive])))
+    |                       ^
+399 |     gates=dict(forecast_chain_tv=bool(np.max(tv)<=config.max_bank_chain_tv),source_chain_mass_difference=bool(np.max(source_differenc…
+400 |     warnings=dict(max_row_mass=bool(ordered[0]>config.bank_warning_max_row_mass),effective_rows=bool(effective<config.bank_warning_mi…
+    |
+
+E501 Line too long (145 > 120)
+   --> trace_diagnostics.py:409:121
+    |
+407 | … not v],bank_warning_flags=warnings,
+408 | …,bank_effective_rows_is_not_historical_or_gibbs_ess=True,
+409 | …ration error; no uniform source-chain mass requirement',config=asdict(config))
+    |                                                       ^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> trace_diagnostics.py:414:27
+    |
+412 | def core_state_diagnostics(result,trace,*,structural_constants=(),config=DiagnosticConfig()):
+413 |     """Selected F0 core coordinates, preserving forecast chain/draw axes."""
+414 |     arrays=trace['arrays'];metadata=trace['metadata'];obs=arrays['observed_race_indices']
+    |                           ^
+415 |     require(tuple(result['race_ids'])==tuple(metadata['race_ids']),'Original/trace race identity mismatch')
+416 |     require(np.array_equal(result['posterior_index'],arrays['sampled_row_index']) and np.array_equal(result['shared_cycle'],arrays['c…
+    |
+
+E702 Multiple statements on one line (semicolon)
+   --> trace_diagnostics.py:414:54
+    |
+412 | def core_state_diagnostics(result,trace,*,structural_constants=(),config=DiagnosticConfig()):
+413 |     """Selected F0 core coordinates, preserving forecast chain/draw axes."""
+414 |     arrays=trace['arrays'];metadata=trace['metadata'];obs=arrays['observed_race_indices']
+    |                                                      ^
+415 |     require(tuple(result['race_ids'])==tuple(metadata['race_ids']),'Original/trace race identity mismatch')
+416 |     require(np.array_equal(result['posterior_index'],arrays['sampled_row_index']) and np.array_equal(result['shared_cycle'],arrays['c…
+    |
+
+E501 Line too long (177 > 120)
+   --> trace_diagnostics.py:416:121
+    |
+414 | …ices']
+415 | …race identity mismatch')
+416 | …nd np.array_equal(result['shared_cycle'],arrays['cycle']),'Original/trace row-cycle mismatch')
+    |                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+417 | …ginal/trace observed theta mismatch')
+418 | …
+    |
+
+E501 Line too long (130 > 120)
+   --> trace_diagnostics.py:419:121
+    |
+417 |     require(np.array_equal(result['logits'][:,:,obs],arrays['observed_theta']),'Original/trace observed theta mismatch')
+418 |     coefficient_names=tuple(result['coefficient_names'])
+419 |     require(len(coefficient_names)==6 and result['coefficients'].shape[-1]==6,'Selected six-column F0 coefficient trace required')
+    |                                                                                                                         ^^^^^^^^^^
+420 |     values=np.concatenate([result['logits'][:,:,obs],result['shares'][:,:,obs],result['coefficients'],
+421 |         result['tau_cycle'][...,None],result['tau_race'][...,None],result['shared_cycle'][...,None],
+    |
+
+E501 Line too long (130 > 120)
+   --> trace_diagnostics.py:437:121
+    |
+437 | def interval_display_diagnostics(conditional_cdfs,names,share_bracket_widths,*,structural_constants=(),config=DiagnosticConfig()):
+    |                                                                                                                         ^^^^^^^^^^
+438 |     """Display-only supplied CDF/bracket checks, never score qualification."""
+439 |     values=np.asarray(conditional_cdfs,float)
+    |
+
+E701 Multiple statements on one line (colon)
+   --> trace_diagnostics.py:449:51
+    |
+447 |         row['share_bracket_width']=float(width)
+448 |         row['gates']['share_bracket_width']=bool(width<=config.max_interval_bracket_width)
+449 |         if width>config.max_interval_bracket_width:row['failures'].append('share_bracket_width')
+    |                                                   ^
+450 |     return result
+    |
+
+Found 196 errors.
+[*] 5 fixable with the `--fix` option (2 hidden fixes can be enabled with the `--unsafe-fixes` option).

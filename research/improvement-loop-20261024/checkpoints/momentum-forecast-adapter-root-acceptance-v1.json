@@ -1,0 +1,49 @@
+{
+  "schema": "MomentumForecastAdapterRootAcceptanceV1",
+  "issued_utc": "2026-10-25T08:00:52.960882+00:00",
+  "disposition": "accepted_complete_F0_and_H14_measurement_construction_only",
+  "references": [
+    {
+      "path": "momentum-forecast-adapter-sol-v1/artifact-manifest.json",
+      "sha256": "1fed21e47d1ae377bdce69a486011fe6a8172ede93e656b23845ab0b3933062d"
+    },
+    {
+      "path": "momentum-forecast-adapter-review-sol-v1/receipt.json",
+      "sha256": "62b6d25f8d47ac4e410f166bc670ce278aba64ec1181b014fd5fc64d1367afc2"
+    },
+    {
+      "path": "checkpoints/momentum-forecast-design-v1.json",
+      "sha256": "45707d4a933ded2f7d4bffcbaab0fb6fb9a4ab7b1d62ad4494a27422b7d75678"
+    },
+    {
+      "path": "checkpoints/momentum-target-preparation-root-acceptance-v1.json",
+      "sha256": "51f59909026e937b76d7954491f9597b83b0755fe2651dec3b6dded612e0a60e"
+    }
+  ],
+  "author_tests": 12,
+  "independent_tests_on_sealed_bytes": 12,
+  "all_artifact_hashes_verified": 44,
+  "full_parameter_rows_per_cycle": 16000,
+  "cycles": [
+    2018,
+    2020,
+    2022,
+    2024
+  ],
+  "exact_raw_joint_row_reconstruction": true,
+  "independent_covariance_reconstructions": 12,
+  "covariance_max_abs_error": 0.0,
+  "prior_and_likelihood_constructor_identity_checked": true,
+  "archive_reference_scope": "Byte hashes, recipe/generator/feature identities, NPY headers and race/draw/replicate vectors only; predictive values and probabilities not parsed.",
+  "not_completed": [
+    "Actual target Gibbs chains",
+    "Target numeric label scoring",
+    "Collector and runner qualification",
+    "Full candidate-count or public forecast qualification"
+  ],
+  "root_evidence_read": [
+    "Producer README/runtime",
+    "Independent REPORT and sealed receipt",
+    "Exact44artifact manifest verification"
+  ]
+}

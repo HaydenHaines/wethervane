@@ -1,0 +1,264 @@
+{
+  "schema": "MomentumMatchedH14ForecastDesignV1",
+  "issued_utc": "2026-10-25T07:46:17.570844+00:00",
+  "status": "selected_scientific_design_implementation_and_execution_binding_pending",
+  "target": "conditional_empirical_Bayes_aggregate_DR_share_not_population_cut_count_stack",
+  "references": [
+    {
+      "path": "momentum-inference-contract-sol-v1.md",
+      "sha256": "036273e2520f2bb97a4cd89235d9a361f82dcdd75bb60f9fff2a1737c42c4c06"
+    },
+    {
+      "path": "checkpoints/momentum-target-preparation-root-acceptance-v1.json",
+      "sha256": "51f59909026e937b76d7954491f9597b83b0755fe2651dec3b6dded612e0a60e"
+    },
+    {
+      "path": "momentum-target-preparation-sol-v1/prepared-v1/plan.json",
+      "sha256": "e1c2a96cd4bbd95b3c004733d2c6787339b3ce41a97e7c3cfb5d8489c6ff3d84"
+    },
+    {
+      "path": "momentum-calibration-terminal-root-review-v2.md",
+      "sha256": "86674fafe738163eb5f60b214dc859a09987b64273ffc30386a88c42932835a3"
+    },
+    {
+      "path": "checkpoints/momentum-calibration-decision-v2.json",
+      "sha256": "101876415da0752456c5ca8ec297f1fc7358d3b3ac2f5413f0af40ebc72e2e59"
+    },
+    {
+      "path": "momentum-observed-sampler-sol-v1/MANIFEST.json",
+      "sha256": "5e8608c4d1de978e8119a8cd1b4dded46ffe6253c4ff973f53e20d2bf98402c2"
+    },
+    {
+      "path": "momentum-marginal-math-root-v2/artifact-manifest.json",
+      "sha256": "2bfa468bca013c7bfa7d6e80395ba7534947026ff35209fd2d51fed1b40f28c8"
+    },
+    {
+      "path": "momentum-marginal-math-review-sol-v2/artifact-manifest.json",
+      "sha256": "c935747ae3b1b0d582913b08f3e1926613957c1ca06fbac5293a2e0beb132771"
+    }
+  ],
+  "precedence": "This root selection supersedes conflicting choices in Sol proposal v1. Unchanged equations and phase descriptions there remain reference material. Source/runtime/runner validation and immutable launch receipt are still required; no target forecast executed yet.",
+  "hypothesis": "A symmetric persistent race trend component, calibrated using strictly earlier cycles, improves forecast predictive distributions beyond native Brownian measurement error on matched full-series polling data.",
+  "comparison": {
+    "A": [
+      2018,
+      2022
+    ],
+    "B": [
+      2020,
+      2024
+    ],
+    "horizon_days": 14,
+    "extra_availability_lag_days": 0,
+    "strict_asof_qualified": false,
+    "new_sources_or_event_joins": false,
+    "primary_pair": [
+      "FS6",
+      "FS5"
+    ],
+    "arms": {
+      "FS5": "Full native series; accepted fold v2 five-component MAP; full original F0 prior bank.",
+      "FS6": "Exact FS5 observation IDs; accepted fold v2 six-component MAP; same F0 prior bank.",
+      "LP5": "Latest per race/pollster anchor; same fold five-component MAP; same F0 prior bank.",
+      "F0_archived_predictive": "Reuse exactly authenticated original H14 F0 predictive distribution, five contiguous future replicates per original parameter row. No new deterministic F0 integration or prior draws.",
+      "PO5": "Full FS5 observations and covariance, independent final logit N(0,2.5^2). Exact Gaussian update by Cholesky solves."
+    }
+  },
+  "bank": {
+    "original_chains": 4,
+    "retained_per_chain": 4000,
+    "total_joint_rows": 16000,
+    "flatten": "chain*4000+draw",
+    "initial_row_mass": "1/16000",
+    "thin_shuffle_refit_resample": false,
+    "historical_cycle_z_as_target_shock": false,
+    "historical_and_future_replicate_axes_distinct": true,
+    "scale_uncertainty_integrated": false,
+    "historical_bank_error_eliminated_by_forecast_draws": false
+  },
+  "scoring_masks": {
+    "common_polled_races_by_cycle": {
+      "2018": 25,
+      "2020": 22,
+      "2022": 23,
+      "2024": 27
+    },
+    "full_bank_races_by_cycle": {
+      "2018": 30,
+      "2020": 28,
+      "2022": 30,
+      "2024": 30
+    },
+    "primary": "Exact ordered common-polled event identity masks from accepted preparation. Never remove races because a metric failed or an outcome is surprising.",
+    "competitive": "Inclusive .20 <= archived_F0_empirical_D_win_probability <= .80, frozen before numeric target labels.",
+    "near_even": "Inclusive .40 <= archived_F0_empirical_D_win_probability <= .60, frozen before numeric target labels.",
+    "mask_boundary_uncertainty": "Report archived source-chain probability dispersion and boundaries; never change the fixed mask after labels. All-common-polled results remain primary.",
+    "unpolled": "Preserve complete original joint sampler arrays and source identities. Full-bank raw empirical descriptive summaries remain separate and do not inherit conditional-Gaussian or common-mask qualification. No whole-chamber claim.",
+    "ties": "Exact binary outcome ties excluded identically only from binary scores with explicit counts; retained in share scores."
+  },
+  "sampling": {
+    "sampler": "exact pinned empirical basis blocked Gibbs plus independently reviewed observation-only private copy",
+    "chains": 4,
+    "attempt0": {
+      "warmup": 1000,
+      "draws": 4000
+    },
+    "attempt1": {
+      "warmup": 2000,
+      "draws": 8000
+    },
+    "master_seed": 2026102501,
+    "arm_codes": {
+      "FS5": 1,
+      "FS6": 2,
+      "LP5": 3
+    },
+    "seed": "int(SeedSequence([master_seed,cycle,arm_code,attempt]).generate_state(1,dtype=uint64)[0]); unchanged sampler spawns four child streams",
+    "arm_rng": "independent; never claim paired simulations from common seed integers",
+    "initial_job_count": 12,
+    "maximum_job_count": 24,
+    "retry": "One matched larger attempt for all three polling arms of a fold if any arm fails shared state/integration or bulk mean/win precision gates before labels. Select the larger attempt for all three arms, retain initial artifacts, never concatenate/reselect by scores.",
+    "retry_triggers": [
+      "nonstructural core state Rhat/mean-ESS failures",
+      "bulk mean-share or absolute win-probability MCSE failure",
+      "forecast-chain bank mass consistency failure"
+    ],
+    "not_retry_triggers": [
+      "tiny-tail relative precision failure alone",
+      "interval-display precision failure alone",
+      "historical bank concentration warning",
+      "post-label score precision failure"
+    ],
+    "failure_cap": "No second retry, seed search, bank refit or scale retuning; preserve failed output and mark corresponding forecast/metrics unresolved.",
+    "HMC_diagnostics": "BFMI/divergences/tree depth not applicable"
+  },
+  "observer": {
+    "gaussian": "Pre-state incoming row/lambda; joint observed logit/cycle Gaussian mean and marginal variance.",
+    "row_weights": "Full16k categorical conditional mass, accumulated by forecast chain and contiguous100-draw batches.",
+    "completed_sweep": "Post-categorical row, post-gamma lambda; cycle and missing-race Student-t location/scale.",
+    "original_draws": "Preserve every original output and final RNG state; separately save all observer arrays with forecast chain/draw and original source identity axes.",
+    "no_poll": "Use archived F0 branch, never invent missing Gaussian or lambda records."
+  },
+  "numerical": {
+    "correlated_mcse_batch_lengths": [
+      50,
+      100
+    ],
+    "combine": "Maximum MCSE over passes; maximum rank/folded split Rhat; variance/MCSE^2 named mean-ESS only.",
+    "core_max_rhat": 1.01,
+    "core_min_nonconstant_mean_ess": 400,
+    "core_coordinates": [
+      "observed logits/shares",
+      "six coefficients",
+      "tau scales",
+      "cycle/cycle_z",
+      "log post-gamma lambda"
+    ],
+    "constant_policy": "Only explicitly declared structural constants are exempt; unexpected constants unresolved. Raw constant wins do not establish zero tail error.",
+    "mean_share_max_mcse": 0.001,
+    "win_probability_max_absolute_mcse": 0.0025,
+    "tail_per_side": {
+      "max_relative_mcse": 0.05,
+      "max_chain_log_difference": 0.15,
+      "method": "Separate log tails, logsumexp and shared rescaling of conditional probabilities; no subtraction from1, smoothing or probability floor.",
+      "effect": "Precompute qualification for each side before labels. A failed small tail does not invalidate otherwise qualified share/Brier metrics."
+    },
+    "interval_display": {
+      "q": [
+        0.025,
+        0.1,
+        0.25,
+        0.5,
+        0.75,
+        0.9,
+        0.975
+      ],
+      "max_probability_cdf_mcse": 0.0025,
+      "max_total_share_width_of_3mcse_quantile_bracket": 0.005,
+      "effect": "Display precision flag distinct from score qualification; failure does not itself reject CRPS/Brier/WIS or trigger sampling."
+    },
+    "bank_chain_consistency": {
+      "max_chain_to_pooled_total_variation": 0.05,
+      "max_original_source_chain_mass_difference": 0.02,
+      "source_chain_mass_need_be_uniform": false
+    },
+    "inherited_bank_flags": {
+      "max_row_mass_above": 0.02,
+      "inverse_sum_squared_mass_below": 400,
+      "rows_for_99_percent_mass_below": 100,
+      "original_source_chain_mass_above": 0.8,
+      "effect": "Archive conditional finite-bank results but mark approximation sensitive; no confident improvement or automatic promotion. Extra target Gibbs draws cannot repair inherited bank support."
+    }
+  },
+  "marginals": {
+    "observed_polling": "Equal-weight mixture of saved pre-state Gaussian logit marginal CDFs; stable separate log-CDF and log-survival; use accepted root math v2.",
+    "mean_component_computation": "Shared adaptive quadrature nodes over the vector of conditional survival functions, chunk if needed; not a separate adaptive integral for every retained draw.",
+    "quantiles": "Bisection bracket width<=1e-10; inverse mixture CDF, not mean component quantiles.",
+    "deterministic_quad": {
+      "initial_epsabs": 1e-09,
+      "initial_epsrel": 1e-08,
+      "initial_limit": 200,
+      "retry_epsabs": 1e-10,
+      "retry_epsrel": 1e-09,
+      "retry_limit": 400,
+      "max_absolute_error": 1e-08,
+      "max_retry_difference": 2e-08,
+      "failure": "Metric unresolved; no silent tolerance relaxation."
+    },
+    "PO5": "C=(I/6.25+H.T solve(R,H))^-1 and m=C H.T solve(R,y), implemented with Cholesky solves. Relative solve residual<=1e-10; share mean is not logistic(m).",
+    "F0": "Empirical CDF from original4x20000 predictive values; generalized-inverse quantiles sorted_x[ceil(Nq)-1]; preserve5replicates within each of4x4000 source rows. CRPS exact empirical formula and Brier.",
+    "F0_WIS_uncertainty": "Exact WIS for archived empirical distribution; only source-chain WIS dispersion, no certified nonlinear WIS MCSE or continuous-density influence. No fine FS-vs-F0 WIS superiority claim. This does not disqualify separately precise FS6\u2212FS5 WIS.",
+    "F0_tail_uncertainty": "Row-clustered empirical indicator uncertainty; constant indicators remain unresolved. No invented population tail.",
+    "unpolled": "Original raw empirical predictive draws only in this bounded implementation; no required new Student-t marginal integration."
+  },
+  "scores": {
+    "primary_share": "CRPS",
+    "other_required": [
+      "Brier",
+      "unclipped negative log score",
+      "WIS50/80/95"
+    ],
+    "aggregation": "Equal race mean within each fixed mask/cycle; equal cycle means separately for A and B. A+B descriptive only.",
+    "WIS": "(0.5*abs(y-median)+sum(alpha/2*IS_alpha))/3.5; alpha=.50,.20,.05.",
+    "winner_reference_half": {
+      "Brier": 0.25,
+      "negative_log": "log(2)"
+    },
+    "winner_reference_frequency": "(earlier_training_D_wins+.5)/(n_earlier_training+1), using admitted fundamentals training event scope only; no target labels.",
+    "references_have_no_invented_share_distribution": true,
+    "CRPS_upper_influence": "-2*SF*(F_t-F), equivalently +2*SF*(SF_t-SF); original Sol proposal correct.",
+    "uncertainty": "Average race influences within forecast chain/draw before correlated MCSE. Independent-arm difference MCSE sqrt(v1+v2), conditional on fixed historical banks. Tier variance uses equal-cycle weights.",
+    "max_cycle_mcse": {
+      "Brier": 0.0005,
+      "negative_log": 0.005,
+      "CRPS": 0.0005,
+      "WIS": 0.0005
+    },
+    "difference_resolution": "Smaller than3differenceMCSE is numerical unresolved; not an election-generalization confidence interval.",
+    "nonlinear_check": "Compare influence estimates with per-chain recomputed nonlinear scores; discrepancy>3estimatedMCSE or unstable quantile density/linearization means uncertainty unresolved.",
+    "logscore_missing": "If any fixed-mask true-outcome tail fails its prelabel gate, preserve all per-race values/failures and mark full-mask log-score qualification unavailable. Never replace with a selected successful-race mean or change masks.",
+    "post_label_sampling": false,
+    "calibration": "Cycle-specific calibration bins/counts, PIT,50/80/95 coverage and widths; four cycles do not establish population calibration.",
+    "near_even_diagnostics": "Expected and median D-minus-R margin; intervals; P(abs(margin)<=.02); P(abs(margin)>=.10), separately from win-probability closeness."
+  },
+  "review_decision": {
+    "automatic_promotion": false,
+    "qualification_scope": "Aggregate conditional comparison only; no full-count layer ranking, no chamber-control or public default change.",
+    "primary_CRPS_materiality_review_aid": {
+      "absolute": 0.0005,
+      "relative": 0.02,
+      "meaning": "Report both absolute and relative change, every A/B cycle and3MCSE; not permission to hide individual regressions or ignore required scores."
+    },
+    "require_independent_review": true,
+    "incomplete_required_metric": "Retain incumbent/inconclusive; preserve all results.",
+    "revisited_cycles": "Development evidence, not untouched holdout."
+  },
+  "phase_order": [
+    "Freeze selected design and exact source/runtime/runner binding; independently verify adapter, sampler observer, diagnostics and score arithmetic.",
+    "Create exclusive root execution receipt before launching actual forecasts; retain authentic process handles and every terminal result.",
+    "Seal raw predictions, fixed masks and all prelabel numerical statuses, including failures.",
+    "Read authorized target numeric labels only through scoring reader requiring those receipts; no tuning based on scores.",
+    "Independently review score results and issue bounded aggregate decision; preserve incumbent/configurations/failed attempts."
+  ],
+  "record_correction": "Root earlier misread the proposal CRPS upper influence. Exact unchanged proposal had correct -2*SF*(F_t-F). V1 helper verification incorrectly claimed a proposal defect; v2 and independent reviews explicitly correct that historical assertion. Three actual v1 helper numerical boundary defects were repaired and independently verified."
+}

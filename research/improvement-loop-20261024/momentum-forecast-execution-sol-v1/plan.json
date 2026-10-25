@@ -1,0 +1,79 @@
+{
+  "schema": "MomentumForecastExecutionPlanV1",
+  "forecast_design": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/checkpoints/momentum-forecast-design-v1.json",
+    "sha256": "45707d4a933ded2f7d4bffcbaab0fb6fb9a4ab7b1d62ad4494a27422b7d75678",
+    "bytes": 14683,
+    "snapshot": "00-momentum-forecast-design-v1.json",
+    "inventory": false
+  },
+  "scope": "conditional empirical-Bayes aggregate D/R; no count qualification",
+  "source_bindings_sha256": "b87f10262822c57a4a733a130a5ccc73e858d312898e9c8d4ed802d11f94934a",
+  "chains": 4,
+  "attempts": {
+    "0": {
+      "warmup": 1000,
+      "draws": 4000
+    },
+    "1": {
+      "warmup": 2000,
+      "draws": 8000
+    }
+  },
+  "cycles": [
+    2018,
+    2020,
+    2022,
+    2024
+  ],
+  "arms": [
+    "FS5",
+    "FS6",
+    "LP5"
+  ],
+  "master_seed": 2026102501,
+  "arm_codes": {
+    "FS5": 1,
+    "FS6": 2,
+    "LP5": 3
+  },
+  "seed": "int(SeedSequence([master_seed,cycle,arm_code,attempt]).generate_state(1,dtype=uint64)[0])",
+  "prior_rows": 16000,
+  "prior_mass": "1/16000; preserve original full 4x4000 joint rows",
+  "common_polled_counts": {
+    "2018": 25,
+    "2020": 22,
+    "2022": 23,
+    "2024": 27
+  },
+  "retry": "root-only new matched three-arm larger attempt after pinned completed attempt0 numerical triggers; never timeout/exception/score",
+  "partials": "100 completed observer records; immutable prefix deltas, not raw prediction completeness or resumable state",
+  "deterministic_math": "selected root v2 bounded quadrature; shared vector nodes, chunk65536 components; quantile bisection1e-10",
+  "numerical_scopes": {
+    "core": "Rhat<=1.01 and nonconstant meanESS>=400",
+    "bulk": "share MCSE<=.001; both side probability absolute MCSE<=.0025",
+    "tails": "per side relativeMCSE<=.05 and chain log difference<=.15",
+    "interval": "CDF MCSE<=.0025 and 3MCSE share bracket width<=.005",
+    "bank": "chainTV<=.05/source mass difference<=.02; concentration warnings separate"
+  },
+  "references": "separate root prelabel action: archived F0 exact bytes/order, original empirical CDF/masks and analytic PO5 N(0,6.25); no new F0 integration",
+  "target_labels": "no numeric target label reader in this packet",
+  "scores": false,
+  "author_execution": "synthetic fixtures only",
+  "numerical_clarification": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/checkpoints/momentum-numerical-implementation-clarification-v1.json",
+    "sha256": "0d6dd97153687df2583c0a086e92e8a42c22eb0c850ed0a0133acdcb87c14024",
+    "bytes": 4886,
+    "snapshot": "10-momentum-numerical-implementation-clarification-v1.json",
+    "inventory": false
+  },
+  "paired_tail_manifest": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-paired-tail-diagnostics-sol-v2/artifact-manifest.json",
+    "sha256": "f35357f4615757be5e6a4e51a60c0b47f13c88cd8613c53ae0511b8abd542198",
+    "bytes": 3681,
+    "snapshot": "11-artifact-manifest.json",
+    "inventory": true
+  },
+  "interval_method": "selected local frozen-pointwise CDF MCSE mapping; no variable-MCSE envelope or confidence guarantee",
+  "earlier_training_frequency_reference": "scoring stage only after sealed prelabel gateway; no numeric outcome-column parsing here"
+}

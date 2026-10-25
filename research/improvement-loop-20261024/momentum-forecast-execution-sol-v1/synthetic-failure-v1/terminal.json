@@ -1,0 +1,46 @@
+{
+  "artifacts": {
+    "launch": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-forecast-execution-sol-v1/synthetic-failure-v1/launch.json",
+      "sha256": "2cc60588154883f70d7ea333fe847794d8c42631ecded4fdd061a6277b43cf05"
+    }
+  },
+  "exception": "SYNTHETIC deliberate observer-prefix failure before original output assignment",
+  "exception_type": "RuntimeError",
+  "job": {
+    "arm": "FS5",
+    "attempt": 0,
+    "chains": 4,
+    "cycle": 2018,
+    "draws": 10,
+    "seed": 10202026,
+    "synthetic_budget": true,
+    "warmup": 20
+  },
+  "numeric_target_labels": false,
+  "original_full_draws_not_certified_from_partial": true,
+  "output": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-forecast-execution-sol-v1/synthetic-failure-v1",
+  "partial_observer": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-forecast-execution-sol-v1/synthetic-failure-v1/partial-00000-receipt.json",
+    "sha256": "3b0c0491c8ce0038bbd08162053fb4022d667df874f32e08e4278d15de5a50a1"
+  },
+  "partial_observer_receipts": [
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-forecast-execution-sol-v1/synthetic-failure-v1/partial-00000-receipt.json",
+      "sha256": "3b0c0491c8ce0038bbd08162053fb4022d667df874f32e08e4278d15de5a50a1"
+    }
+  ],
+  "provenance": {
+    "run_id": "synthetic-harness",
+    "synthetic": true,
+    "trace_source_pins": {
+      "synthetic_fixture": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    }
+  },
+  "schema": "MomentumForecastJobTerminalV1",
+  "scores": false,
+  "status": "failed_preserved_no_restart",
+  "synthetic": true,
+  "traceback": "Traceback (most recent call last):\n  File \"/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-forecast-execution-sol-v1/runner.py\", line 395, in run_prepared_job\n    result = modules[\"sampler\"].sample_poll_posterior(\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-forecast-execution-sol-v1/synthetic_harness.py\", line 20, in fail\n    return original(prior, polls, observer=callback, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-observed-sampler-sol-v1/observed_sampler.py\", line 323, in sample_poll_posterior\n    _emit(observer, phase=\"completed_sweep\", chain=chain,\n  File \"/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-observed-sampler-sol-v1/observed_sampler.py\", line 210, in _emit\n    observer(_observed_copy(values))\n  File \"/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-forecast-execution-sol-v1/synthetic_harness.py\", line 18, in callback\n    raise RuntimeError(\"SYNTHETIC deliberate observer-prefix failure before original output assignment\")\nRuntimeError: SYNTHETIC deliberate observer-prefix failure before original output assignment\n",
+  "utc": "2026-10-25T08:26:02.837481+00:00"
+}

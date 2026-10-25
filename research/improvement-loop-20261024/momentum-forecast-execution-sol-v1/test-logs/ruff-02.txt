@@ -1,0 +1,14 @@
+F841 Local variable `paired` is assigned to but never used
+   --> research/improvement-loop-20261024/momentum-forecast-execution-sol-v1/execution_sources.py:127:5
+    |
+125 |     math = module("execution_marginal", LAB / "momentum-marginal-math-root-v2/marginal.py")
+126 |     replacements["trace_diagnostics"] = trace
+127 |     paired = module(
+    |     ^^^^^^
+128 |         "execution_paired_tail", LAB / "momentum-paired-tail-diagnostics-sol-v2/paired_tail.py", replacements
+129 |     )
+    |
+help: Remove assignment to unused variable `paired`
+
+Found 1 error.
+No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).

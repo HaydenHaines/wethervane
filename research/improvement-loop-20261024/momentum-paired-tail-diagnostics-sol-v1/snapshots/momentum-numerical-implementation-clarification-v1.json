@@ -1,0 +1,55 @@
+{
+  "schema": "MomentumNumericalImplementationClarificationV1",
+  "issued_utc": "2026-10-25T08:13:35.164488+00:00",
+  "status": "selected_before_actual_target_forecasts",
+  "references": [
+    {
+      "path": "checkpoints/momentum-forecast-design-v1.json",
+      "sha256": "45707d4a933ded2f7d4bffcbaab0fb6fb9a4ab7b1d62ad4494a27422b7d75678"
+    },
+    {
+      "path": "checkpoints/momentum-paired-tail-boundary-probe-v1.json",
+      "sha256": "b5980691828f68d056144149b685d1d2549f832a63c9f4dd5343748b0f061c6c"
+    },
+    {
+      "path": "momentum-trace-diagnostics-sol-v1/artifact-manifest.json",
+      "sha256": "8e93d2d78f9efcadb208350ecf03872fdf6e5f929d437834d33058ea74a74513"
+    }
+  ],
+  "unchanged": [
+    "Scientific target, conditional Gaussian/Student-t law, source bank rows, calibration/data/cutoffs and model arms.",
+    "All selected diagnostic thresholds, fixed masks, random streams and bounded attempt budgets.",
+    "Raw constant indicators and nonstructural constant-tail uncertainty remain unresolved.",
+    "No post-label changes, no probability floors, no extra resampling/refits or promotion."
+  ],
+  "paired_tail_method": {
+    "reason": "Confirmed supplied Gaussian z9..10 fixture: exponentiating large-side conditional log probabilities rounds all to1 despite varying, well-resolved complementary small probabilities. Requiring that numerically constant large coordinate to establish absolute MCSE needlessly rejects valid complementary information.",
+    "input": "Jointly aligned per-component log-win and log-lose with validated complementary normalization and common forecast chain/draw/race axes.",
+    "coordinate": "Choose pooled smaller side, retain its stable rescaled conditional probabilities and centered deviations. Equal-weight conditional mixture; never multiply by categorical row weights again.",
+    "larger_side": "Use the exact negative centered smaller-side deviations for complement probability. Absolute MCSE is identical; larger-side relative MCSE uses its stable log mean, and source/forecast-chain differences use stable log1mexp of the small-side chain means.",
+    "stable_outputs": "Retain finite log probability/log MCSE even when ordinary probabilities or MCSE underflow. Missing numeric display is not an exact zero-error certificate. Tests must exercise the below-machine-epsilon near-one case and tiny tails.",
+    "unsupported": "If the informative smaller coordinate is nonstructurally constant, all\u2212infinity or otherwise unresolved, do not manufacture qualification for the pair. Preserve original one-sided status alongside derived complementary evidence.",
+    "scope": "Paired mathematical coordinate for the same probability functional, not a weakened convergence threshold or raw-all-win rule."
+  },
+  "score_influences": {
+    "Brier": "Use the shared smaller-side centered deviation with the correct side sign; do not subtract two probabilities rounded to1.",
+    "negative_log": "Use the same stable centered deviations divided in log/scaled form by the applicable outcome probability; never evaluate1\u2212exp(nearly0) by cancellation.",
+    "PO5": "Deterministic analytic Gaussian reference has no Monte Carlo quantile influence requirement. A truth exactly on a quantile is a valid WIS evaluation; no sampling derivative is needed. Deterministic quadrature error remains separate.",
+    "F0": "Retain original unsorted predictive replicates or their authenticated reference so row-clustered CRPS influences can be reconstructed; sorted pooled CDF/row means alone are insufficient."
+  },
+  "interval_display": {
+    "selected_method": "Pointwise local frozen-CDF-MCSE mapping: evaluate MCSE at qhat, then invert pooled CDF at max(0,q\u22123MCSE) and min(1,q+3MCSE).",
+    "qualification": "Explicit first-order/local numerical diagnostic only. Not a variable-MCSE monotone envelope, conservative bound, simultaneous interval or calibration guarantee.",
+    "unchanged_limits": {
+      "cdf_mcse": 0.0025,
+      "total_share_bracket_width": 0.005
+    },
+    "effect": "Display status only, distinct from primary score MCSE and retry. Unstable/failed numerical inversion remains unresolved.",
+    "precedence": "This explicit implementation choice supersedes the unselected variable-MCSE-envelope recommendation in the Sol design proposal."
+  },
+  "fail_closed_gates": "Every requested gate name must be present and explicitly true or an explicitly valid structural exemption. Missing/null/unresolved gate values are not successful by vacuous all(empty).",
+  "implementation_acceptance": "Separate paired helper and runner/scoring changes require exact source pins and independent supplied-fixture review before execution. Existing sealed trace/math packets remain unchanged.",
+  "actual_target_data_used_for_selection": false,
+  "actual_target_forecast_executed": false,
+  "numeric_target_labels_read": false
+}

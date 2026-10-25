@@ -1,0 +1,41 @@
+{
+  "schema": "MomentumTraceDiagnosticsRootAcceptanceV1",
+  "issued_utc": "2026-10-25T08:18:37.152492+00:00",
+  "disposition": "accepted_trace_storage_core_diagnostics_and_one_sided_measurements_with_documented_integration_limit",
+  "references": [
+    {
+      "path": "momentum-trace-diagnostics-sol-v1/artifact-manifest.json",
+      "sha256": "8e93d2d78f9efcadb208350ecf03872fdf6e5f929d437834d33058ea74a74513"
+    },
+    {
+      "path": "momentum-trace-diagnostics-review-sol-v1/receipt.json",
+      "sha256": "34cd592b4d3331c89b9ad0dfea1c8235dcd0b206f8064940e0325d5a55211c50"
+    },
+    {
+      "path": "checkpoints/momentum-forecast-design-v1.json",
+      "sha256": "45707d4a933ded2f7d4bffcbaab0fb6fb9a4ab7b1d62ad4494a27422b7d75678"
+    },
+    {
+      "path": "checkpoints/momentum-paired-tail-boundary-probe-v1.json",
+      "sha256": "b5980691828f68d056144149b685d1d2549f832a63c9f4dd5343748b0f061c6c"
+    },
+    {
+      "path": "checkpoints/momentum-numerical-implementation-clarification-v1.json",
+      "sha256": "0d6dd97153687df2583c0a086e92e8a42c22eb0c850ed0a0133acdcb87c14024"
+    }
+  ],
+  "verified_artifacts": 32,
+  "author_tests": 28,
+  "independent_tests": 28,
+  "independent_partial_boundaries": 125,
+  "preserved_unsealed_findings": [
+    "Trace load initially lacked external expected receipt SHA.",
+    "Diagnostic config initially allowed arbitrary threshold changes under original selected design identity."
+  ],
+  "scope": "Phase-aligned immutable complete traces; observer-prefix-only partial diagnostics; core and supplied functional mean-ESS/Rhat/MCSE; bank mass diagnostics. No actual target forecasts or labels.",
+  "partial_semantics": "completed_sweep observer phase precedes missing-race RNG/raw predictive assignment; never claim original predictive completion or resumable state; only emitted RNG final states retained.",
+  "one_sided_integration_limit": "Near-one conditional probabilities can round to constant on exponentiation while opposite side remains informative. Root selected a separately reviewed paired stable helper; do not use both one-sided absolute statuses as the sole whole-probability gate.",
+  "paired_v1_status": "Recoverable inconsistent rare-tail inputs remain unguarded; preserved v1 not selected for execution. V2 repair and independent acceptance pending.",
+  "underlying_statistical_thresholds_changed": false,
+  "actual_target_execution": false
+}

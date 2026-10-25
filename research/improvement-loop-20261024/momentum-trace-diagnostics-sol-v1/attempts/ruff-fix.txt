@@ -1,0 +1,89 @@
+E402 Module level import not at top of file
+  --> test_trace_diagnostics.py:12:1
+   |
+10 | sys.path.insert(0, str(HERE / "snapshots"))
+11 | sys.path.insert(0, str(HERE))
+12 | import numpy as np
+   | ^^^^^^^^^^^^^^^^^^
+13 | import observed_sampler as observed
+14 | import pytest
+   |
+
+E402 Module level import not at top of file
+  --> test_trace_diagnostics.py:13:1
+   |
+11 | sys.path.insert(0, str(HERE))
+12 | import numpy as np
+13 | import observed_sampler as observed
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+14 | import pytest
+15 | import trace_diagnostics as td
+   |
+
+E402 Module level import not at top of file
+  --> test_trace_diagnostics.py:14:1
+   |
+12 | import numpy as np
+13 | import observed_sampler as observed
+14 | import pytest
+   | ^^^^^^^^^^^^^
+15 | import trace_diagnostics as td
+16 | from src.forecasting import polling_basis_v1 as original
+   |
+
+E402 Module level import not at top of file
+  --> test_trace_diagnostics.py:15:1
+   |
+13 | import observed_sampler as observed
+14 | import pytest
+15 | import trace_diagnostics as td
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+16 | from src.forecasting import polling_basis_v1 as original
+17 | from src.forecasting.polling_v1 import GaussianPollLikelihood
+   |
+
+E402 Module level import not at top of file
+  --> test_trace_diagnostics.py:16:1
+   |
+14 | import pytest
+15 | import trace_diagnostics as td
+16 | from src.forecasting import polling_basis_v1 as original
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+17 | from src.forecasting.polling_v1 import GaussianPollLikelihood
+   |
+
+E402 Module level import not at top of file
+  --> test_trace_diagnostics.py:17:1
+   |
+15 | import trace_diagnostics as td
+16 | from src.forecasting import polling_basis_v1 as original
+17 | from src.forecasting.polling_v1 import GaussianPollLikelihood
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+
+F841 Local variable `states` is assigned to but never used
+  --> test_trace_diagnostics.py:91:5
+   |
+89 | def test_original_outputs_rng_and_collector_alignment(full):
+90 |     native = np.random.default_rng
+91 |     states = []
+   |     ^^^^^^
+92 |
+93 |     def run(module, prior, polls, observer=None):
+   |
+help: Remove assignment to unused variable `states`
+
+F841 Local variable `index` is assigned to but never used
+   --> test_trace_diagnostics.py:181:5
+    |
+179 |     prior, _, _, records, _ = synthetic()
+180 |     sink = collector(prior)
+181 |     index = 0
+    |     ^^^^^
+182 |     record = dict(records[0])
+183 |     prefix = []
+    |
+help: Remove assignment to unused variable `index`
+
+Found 13 errors (5 fixed, 8 remaining).
+No fixes available (2 hidden fixes can be enabled with the `--unsafe-fixes` option).

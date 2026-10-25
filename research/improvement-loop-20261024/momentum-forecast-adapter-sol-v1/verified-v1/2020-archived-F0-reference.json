@@ -1,0 +1,162 @@
+{
+  "archive_headers": {
+    "logits": {
+      "dtype": "float64",
+      "fortran_order": false,
+      "shape": [
+        4,
+        20000,
+        28
+      ]
+    },
+    "new_cycle_z": {
+      "dtype": "float64",
+      "fortran_order": false,
+      "shape": [
+        4,
+        20000
+      ]
+    },
+    "new_race_z": {
+      "dtype": "float64",
+      "fortran_order": false,
+      "shape": [
+        4,
+        20000,
+        28
+      ]
+    },
+    "posterior_draw": {
+      "dtype": "int64",
+      "fortran_order": false,
+      "shape": [
+        20000
+      ]
+    },
+    "race_ids": {
+      "dtype": "<U22",
+      "fortran_order": false,
+      "shape": [
+        28
+      ]
+    },
+    "replicate": {
+      "dtype": "int64",
+      "fortran_order": false,
+      "shape": [
+        20000
+      ]
+    },
+    "shares": {
+      "dtype": "float64",
+      "fortran_order": false,
+      "shape": [
+        4,
+        20000,
+        28
+      ]
+    }
+  },
+  "coefficient_names": [
+    "structure.office",
+    "candidate.incumbency",
+    "structure.state_slope",
+    "environment.carryover",
+    "environment.party",
+    "environment.midterm"
+  ],
+  "cycle": 2020,
+  "execution_plan": {
+    "bytes": 272375,
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/economic-execution-v1/prepared-v2/plan.json",
+    "sha256": "e3faefeb89a5bca837bc7f8b01e666112d563b95fe16e909060edf5aa1cbfc50"
+  },
+  "feature_design": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-target-preparation-sol-v1/prepared-v1/2020/target-design.json",
+    "sha256": "670d93966bcfe8b16651fb3e1270421c286565ee5b5a1c071577e3aa81bc56a4"
+  },
+  "forecast_design": {
+    "bytes": 14683,
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/checkpoints/momentum-forecast-design-v1.json",
+    "sha256": "45707d4a933ded2f7d4bffcbaab0fb6fb9a4ab7b1d62ad4494a27422b7d75678"
+  },
+  "generator_source": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/economic-execution-v1/runner.py",
+    "sha256": "8911e85789132721c2c1e79fb6e940fb5e168e1cedfc0d375ca876791afc4378"
+  },
+  "identity_array_pins": {
+    "posterior_draw": {
+      "dtype": "int64",
+      "sha256": "1cc82c5577736db6ab5a34bdba7e96e909bf8e1bfe582f51bd14736b6df7dff4",
+      "shape": [
+        20000
+      ]
+    },
+    "race_ids": {
+      "dtype": "<U22",
+      "sha256": "681684416c2690db20c40b7b71a8a917bddaca1c842a89581aee1b33243b830b",
+      "shape": [
+        28
+      ]
+    },
+    "replicate": {
+      "dtype": "int64",
+      "sha256": "862ab46239a71df109f9f8df2e028f84a101581c3684281fd9b78261c04e442b",
+      "shape": [
+        20000
+      ]
+    }
+  },
+  "identity_scope": "sealed bytes, generator metadata/source, exact target law/features/axes; numeric predictive values not replayed",
+  "numerical_probabilities_or_scores_summarized": false,
+  "ordered_race_ids": [
+    "2020:AL:senate:regular",
+    "2020:CO:senate:regular",
+    "2020:DE:senate:regular",
+    "2020:IA:senate:regular",
+    "2020:ID:senate:regular",
+    "2020:IL:senate:regular",
+    "2020:KS:senate:regular",
+    "2020:KY:senate:regular",
+    "2020:MA:senate:regular",
+    "2020:MI:senate:regular",
+    "2020:MN:senate:regular",
+    "2020:MS:senate:regular",
+    "2020:MT:senate:regular",
+    "2020:NC:senate:regular",
+    "2020:NE:senate:regular",
+    "2020:NH:senate:regular",
+    "2020:NJ:senate:regular",
+    "2020:NM:senate:regular",
+    "2020:OK:senate:regular",
+    "2020:OR:senate:regular",
+    "2020:RI:senate:regular",
+    "2020:SC:senate:regular",
+    "2020:SD:senate:regular",
+    "2020:TN:senate:regular",
+    "2020:TX:senate:regular",
+    "2020:VA:senate:regular",
+    "2020:WV:senate:regular",
+    "2020:WY:senate:regular"
+  ],
+  "parameter_rows": 16000,
+  "posterior_rows_replaced_by_predictive_arrays": false,
+  "prediction_bytes": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/economic-execution-v1/attempt-v1/2020/F0/predictions.npz",
+    "sha256": "82901de4999e2b1a694e216bdd20598baba36c5a98ff7608719b91ffca8d4ab4"
+  },
+  "prediction_seal": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/economic-execution-v1/attempt-v1/2020/F0/prediction-seal.json",
+    "sha256": "34767a993fb0fce6a52ca6260e966338346e07097b52a251762289029f847475"
+  },
+  "prediction_seed": 2026153520,
+  "predictive_realizations": 80000,
+  "probability_or_logit_values_read": false,
+  "recipe_sha256": "d124e06832366a370a830e326f4f527c5150937d1d32fe5d9701cafa29cfb64d",
+  "replicates_per_parameter_row": 5,
+  "representation": "four original chains, 4000 posterior rows each, five saved future realizations per row",
+  "schema": "ArchivedF0PredictiveReferenceIdentityV1",
+  "source_identity": "ec24e51a79cb161366c1009256e17f6d0117babe4409c7b210aa22fc43cc4604",
+  "target_design_sha256": "b7539513cae490d03241149e684e2975d5ad393b1829832143876cc104425c47",
+  "target_offset_sha256": "6eb69e26de2a26eda48af77d4cec893aa0cf4748a64cbefcfe11a22c1e680ad9"
+}

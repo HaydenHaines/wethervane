@@ -1,0 +1,63 @@
+{
+  "schema": "PairedTailIntegrationBoundaryProbeV1",
+  "scope": "Supplied synthetic numerical arrays, not target data or Gibbs forecast",
+  "source_sha256": "95a91a4c65d7504a60a63235c01e5e44165a551068cb17689957cbd2ba885a4d",
+  "fixture": "default_rng(1516).uniform(9,10,size=(4,1600,1)); Gaussian log_ndtr(z),log_ndtr(-z)",
+  "win": {
+    "coordinate": "synthetic_safe_race",
+    "status": "unresolved_constant",
+    "log_probability": -7.621479582774684e-24,
+    "relative_mcse": null,
+    "log_absolute_mcse": null,
+    "absolute_mcse": null,
+    "absolute_mcse_underflows": false,
+    "per_chain_log_difference": [
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "chains_without_tail_support": [],
+    "rank_folded_split_rhat": null,
+    "mean_ess_estimate": null,
+    "tail_function_diagnostic_gates": {
+      "rhat": null,
+      "mean_ess": null
+    },
+    "gates": {
+      "absolute_mcse": null,
+      "relative_mcse": null,
+      "chain_log_difference": null
+    },
+    "failures": []
+  },
+  "lose": {
+    "coordinate": "synthetic_safe_race",
+    "status": "measured",
+    "log_probability": -45.85867790813795,
+    "relative_mcse": 0.02845533519765924,
+    "log_absolute_mcse": -49.41809751521313,
+    "absolute_mcse": 3.451381310114011e-22,
+    "absolute_mcse_underflows": false,
+    "per_chain_log_difference": [
+      0.014239822828397308,
+      0.031132939585153174,
+      -0.08777507139977647,
+      0.03736205323793218
+    ],
+    "chains_without_tail_support": [],
+    "rank_folded_split_rhat": 0.9999659037993957,
+    "mean_ess_estimate": 4526.699722309041,
+    "tail_function_diagnostic_gates": {
+      "rhat": true,
+      "mean_ess": true
+    },
+    "gates": {
+      "absolute_mcse": true,
+      "relative_mcse": true,
+      "chain_log_difference": true
+    },
+    "failures": []
+  },
+  "finding": "Large-side normalized exponentials round to a constant1 while the complementary small side varies and has measurable absolute precision. Joint probability diagnostics need a noncancelling complement coordinate."
+}

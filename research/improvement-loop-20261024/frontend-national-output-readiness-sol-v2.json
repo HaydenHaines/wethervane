@@ -1,0 +1,453 @@
+{
+  "schema": "FrontendNationalOutputReadinessSolV2",
+  "issued_utc": "2026-10-25T08:47:03.046291+00:00",
+  "scope": "Read-only local source/schema audit. One new lab report only; no frontend, owner, frozen runner or active output modifications.",
+  "frontend_head": "801dda8912f575b01af034702455b055f956874e",
+  "frontend_worktree_clean_before_and_after": true,
+  "decision": "SAFE_PRIVATE_PAIR_COMPARISON_FIXTURES_CAN_BE_PREPARED; REAL_ADAPTER_AND_PUBLIC_DISPLAY_REMAIN_BLOCKED",
+  "checkpoint_interpretation": {
+    "as_of_checkpoint_issuance": "2026-10-25T08:19:25.725649+00:00",
+    "current_input_settings_supported": 25,
+    "current_input_settings_total": 35,
+    "current_full_run_posterior_complete": false,
+    "five_exact_private_executor_input_sets_registered": true,
+    "national_historical_fit_runs_launched_at_checkpoint": false,
+    "comparison_receipt_accepts": "Saved-result comparison implementation and source/identity boundaries, not an actual posterior, comparison result or adoption.",
+    "no_process_status_inferred_beyond_checkpoint": true
+  },
+  "new_since_luna_v1": [
+    "Current admitted-input/constructor coverage increased from the prior 20-setting snapshot to 25 of 35; this remains input readiness, not completed output.",
+    "There is now a reviewed saved-count versus preserved F/FP comparison interface with 113 exact named principal pairs across A2018/A2022 and B2020/B2024.",
+    "All 113 selected pair endpoints are candidate_marks. Ranked/conditional-runoff projection work remains important for general count output but is not a prerequisite for a narrowly scoped invented principal-pair comparison fixture.",
+    "The four existing private count/outcome model/component bytes are unchanged from the prior audit; their fixture-only and denominator restrictions remain appropriate."
+  ],
+  "owner_interface": {
+    "request_schema": "HistoricalMixedPrincipalPairComparisonRequestV1",
+    "response_schema": "HistoricalMixedPrincipalPairComparisonV1",
+    "pair_binding_schema": "HistoricalMixedPrincipalPairBindingsV1",
+    "required_request_pins": [
+      "executor_receipt",
+      "source_inputs",
+      "counts",
+      "labels",
+      "pairs"
+    ],
+    "artifact_store": "repository-relative store; saved counts read through registered context/evaluator",
+    "pair_functional": "Named first count / (named first + named second count), with exact source/model endpoint identity and election date; not all-candidate share or legal winner probability.",
+    "comparison_columns": [
+      "new saved mixed-count model",
+      "preserved F fundamentals",
+      "preserved FP standard polling"
+    ],
+    "per_race_outputs": [
+      "race_id",
+      "contest_id",
+      "ordered model endpoint pair",
+      "count_estimand",
+      "observed_first_pair_share",
+      "count_model metric/status",
+      "preserved_baselines",
+      "new_minus_baseline_loss"
+    ],
+    "scores": [
+      "CRPS",
+      "weighted_interval_score",
+      "mean_absolute_error",
+      "interval coverage/width in scalar score output"
+    ],
+    "baseline_summary_nuance": "When truth is defined, baseline.score includes predictive mean/median/intervals as well as losses via distribution_score. When truth is absent baseline.score=null; a separate truth-independent baseline summary is not exported.",
+    "explicit_limit_flags": {
+      "information_sets_matched": false,
+      "forecast_adoption_qualified": false,
+      "legal_winner_or_chamber_comparison": false
+    },
+    "count_metric_statuses": [
+      "scored",
+      "label_missing",
+      "undefined_predictive_mass"
+    ],
+    "undefined_mass_policy": "Any positive undefined predictive mass retains the row/status with null summary/score; do not drop rows or normalize remaining predictive mass.",
+    "coverage_by_cycle": {
+      "2018": {
+        "tier": "A",
+        "horizon_days": 14,
+        "bound_pairs": 28,
+        "incoming_owner_contests": 35,
+        "held_baseline_pairs": 0,
+        "count_view_estimand": "candidate_marks",
+        "incoming_not_in_preserved_baseline": [
+          "2018:CA:senate:regular",
+          "2018:ME:senate:regular",
+          "2018:MN:senate:regular",
+          "2018:MN:senate:special",
+          "2018:MS:senate:regular",
+          "2018:MS:senate:special",
+          "2018:VT:senate:regular"
+        ]
+      },
+      "2020": {
+        "tier": "B",
+        "horizon_days": 14,
+        "bound_pairs": 28,
+        "incoming_owner_contests": 35,
+        "held_baseline_pairs": 0,
+        "count_view_estimand": "candidate_marks",
+        "incoming_not_in_preserved_baseline": [
+          "2020:AK:senate:regular",
+          "2020:AR:senate:regular",
+          "2020:AZ:senate:special",
+          "2020:GA:senate:regular",
+          "2020:GA:senate:special",
+          "2020:LA:senate:regular",
+          "2020:ME:senate:regular"
+        ]
+      },
+      "2022": {
+        "tier": "A",
+        "horizon_days": 14,
+        "bound_pairs": 28,
+        "incoming_owner_contests": 35,
+        "held_baseline_pairs": 0,
+        "count_view_estimand": "candidate_marks",
+        "incoming_not_in_preserved_baseline": [
+          "2022:AK:senate:regular",
+          "2022:CA:senate:regular",
+          "2022:GA:senate:regular",
+          "2022:LA:senate:regular",
+          "2022:OK:senate:regular",
+          "2022:OK:senate:special",
+          "2022:UT:senate:regular"
+        ]
+      },
+      "2024": {
+        "tier": "B",
+        "horizon_days": 14,
+        "bound_pairs": 29,
+        "incoming_owner_contests": 34,
+        "held_baseline_pairs": 0,
+        "count_view_estimand": "candidate_marks",
+        "incoming_not_in_preserved_baseline": [
+          "2024:CA:senate:regular",
+          "2024:ME:senate:regular",
+          "2024:NE:senate:regular",
+          "2024:NE:senate:special",
+          "2024:VT:senate:regular"
+        ]
+      }
+    },
+    "total_pairs": 113
+  },
+  "findings": [
+    {
+      "id": "pair_projection",
+      "priority": "safe_private_preparation_now",
+      "gap": "No typed/frontend projection for this named-pair comparison exists. CountQuantity candidate_share deliberately requires complete countable_candidate_total and rejects pair denominators.",
+      "safe_work": "Add a separate invented-fixture principal-pair comparison draft/validator and private preview; preserve CountView/ElectionOutcomeDraft native validators.",
+      "minimum_fields": [
+        "version and invented provenance",
+        "request/context/count-artifact/comparator/pair/source SHA bindings",
+        "cycle/tier/H14 cutoff",
+        "race/contest/event/date",
+        "ordered source+model IDs and display names",
+        "denominator first+second and count estimand",
+        "arm-specific original summary/score/status and coverage"
+      ],
+      "evidence": [
+        "count_view",
+        "count_validator_tests",
+        "mixed_comparison_declared_file_1",
+        "mixed_comparison_declared_file_6"
+      ]
+    },
+    {
+      "id": "identity_and_missing_projection_fields",
+      "priority": "owner_projection_contract_before_real_adapter",
+      "gap": "Comparison rows have model endpoint IDs but no direct event/date/display-name/source-ID fields; these remain in the separately pinned pair specification. Baseline summaries disappear when observed truth is absent. There is no browser DTO/import/API or reviewed production summary-admission contract.",
+      "safe_work": "Specify a source-bound export projection and fixtures for identity joins, swapped/reversed endpoints, duplicate IDs, date/context drift and missing labels. Populate actual fields only after owner freezes the exported projection; do not make the browser load Python/artifact stores or infer aliases/parties.",
+      "evidence": [
+        "mixed_comparison_declared_file_1",
+        "mixed_comparison_declared_file_6",
+        "preserved_baseline_reader",
+        "scalar_score_summary_implementation"
+      ]
+    },
+    {
+      "id": "status_precision_and_comparison_claims",
+      "priority": "safe_private_preparation_now",
+      "gap": "Current CountView scalar quantities have no scored/label-missing/undefined-mass comparison state or score-precision fields. New report has loss differences but no per-loss MCSE, competitive-mask qualification, joint chamber comparison or isolated component-effect claim.",
+      "safe_work": "Fixture a comparison table with scored/total counts, explicit null reasons/undefined mass, predictive intervals distinct from Monte Carlo precision, and mandatory differing-information-set/adoption-unqualified notices. Labels should say preserved F/FP baselines; no contribution toggle, winner label or superiority badge.",
+      "evidence": [
+        "count_view",
+        "count_preview",
+        "mixed_comparison_declared_file_0",
+        "mixed_comparison_declared_file_1",
+        "mixed_evaluator_v3"
+      ]
+    },
+    {
+      "id": "coverage_not_national_control",
+      "priority": "safe_private_preparation_now",
+      "gap": "The 113-pair roster is smaller than 139 incoming historical contests and is unrelated to the 25 of 35 current input-readiness count. All preserved baseline pairs are bound (zero held); ranked/runoff and other additional incoming contests are outside that baseline roster.",
+      "safe_work": "Display distinct comparator-roster and full-input coverage ledgers; retain all expected IDs/held states and never advertise a full-Senate or 2026 posterior result. Fixtures should distinguish an unrepresented contest, undefined pair mass and a failed parent.",
+      "evidence": [
+        "checkpoint_v27",
+        "mixed_comparison_declared_file_0",
+        "count_view",
+        "count_preview"
+      ]
+    },
+    {
+      "id": "winner_and_ranked_semantics",
+      "priority": "preserve_existing_guards",
+      "gap": "Pair-share majorities and count evaluator named-winner probability bounds cannot fill ElectionOutcomeDraft mutually exclusive final-outcome distributions. That preview needs explicit same-joint final outcomes, event conditioning, unresolved reasons and person identities. Its rankedExample is one row, not a weighted round forecast.",
+      "safe_work": "Add invented examples where the leading principal-pair candidate loses to a third person, plus label/denominator/zero-mass cases. Leave wider ranked-round/continuing-ballot projections pending an owner contract; do not widen the plurality union to ingest this comparison.",
+      "evidence": [
+        "outcome_view",
+        "outcome_preview",
+        "mixed_evaluator_v3",
+        "count_view"
+      ]
+    }
+  ],
+  "blocked_until_owner_supply": [
+    "An actual complete source-bound saved count result with initialized-contract, original-parent coverage, numerical and predictive precision evidence; constructor/interface receipts alone cannot supply this.",
+    "A separately reviewed exported summary/browser contract including source/rule/target/cutoff, exact axes/denominators, parent weighting, per-functional unavailable/precision states and immutable summary-to-artifact binding.",
+    "Actual historical matched comparison results and explicit decision scope; differing information sets prevent isolated-layer claims even if endpoint losses later improve.",
+    "For any public national control display: complete qualified contest/event support, fixed-seat ledger, organizing scenario and same-joint legal-winner rows. The new pair report expressly supplies none of these."
+  ],
+  "validation": {
+    "expected_checkpoint_and_receipt_hashes_match": true,
+    "comparison_receipt_direct_file_and_review_pins_verified": 10,
+    "pair_spec_linked_source_pin_checks": 13,
+    "pair_counts_ids_and_candidate_marks_metadata_reconciled": true,
+    "private_preview_source_hashes_match_luna_v1": true,
+    "production_import_scan": "No app/component/lib consumers outside the private preview modules; dedicated isolation tests remain present.",
+    "pure_validator_command": "node --experimental-strip-types --test tests/count-view.test.mjs tests/election-outcome-view.test.mjs",
+    "node": "v22.22.1",
+    "pure_validator_tests_passed": 27,
+    "failed": 0,
+    "skipped": 0,
+    "render_or_build_rerun": false,
+    "owner_comparison_executed": false,
+    "posterior_arrays_read": false,
+    "scientific_process_control": false
+  },
+  "source_pins": {
+    "checkpoint_v27": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/checkpoint-root-v27.json",
+      "sha256": "32b79966c7ef684a25216041dd2643c4e3d28156458623157de60899e66f8ad3",
+      "bytes": 9802
+    },
+    "mixed_comparison_receipt": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-mixed-comparison-root-v1/receipt.json",
+      "sha256": "305f40a9dd025a01f56969875f24101ca1ba4cad9ef56a103a548fe24030229f",
+      "bytes": 2555
+    },
+    "mixed_comparison_declared_file_0": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-mixed-comparison-root-v1/README.md",
+      "sha256": "7e25ba34973f5b04fd1b475624d98ec75aab52279ee173c8cceac1a63de0a675",
+      "bytes": 3067
+    },
+    "mixed_comparison_declared_file_1": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-mixed-comparison-root-v1/compare.py",
+      "sha256": "0724d8fa0135d4235fa8534a3951d32ac16604993fff76c837e6f84f60319972",
+      "bytes": 8255
+    },
+    "mixed_comparison_declared_file_2": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-mixed-comparison-root-v1/pairs-2018.json",
+      "sha256": "c07e1f7af21b6091e97240f97e7511b2c0008718499f85c1e6881903422003a4",
+      "bytes": 24355
+    },
+    "mixed_comparison_declared_file_3": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-mixed-comparison-root-v1/pairs-2020.json",
+      "sha256": "f6de89e47b22e1f0789e0eec8d2e1eadb43ab565c33decc10b070ae8f28b082a",
+      "bytes": 24456
+    },
+    "mixed_comparison_declared_file_4": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-mixed-comparison-root-v1/pairs-2022.json",
+      "sha256": "ddb12e305e6719b3b6719f630d0a53b7f24e32729296a663c15f2004a8643e0d",
+      "bytes": 25798
+    },
+    "mixed_comparison_declared_file_5": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-mixed-comparison-root-v1/pairs-2024.json",
+      "sha256": "cd8d0588ea43e66caec4eff2841a2c57b521eb34b760e485e7dd164856c2401b",
+      "bytes": 25217
+    },
+    "mixed_comparison_declared_file_6": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-mixed-comparison-root-v1/prepare_pairs.py",
+      "sha256": "3cea5cd85780ae49d30044a9850f7f38f57f91637a9227d18f00ffcd1755d710",
+      "bytes": 5403
+    },
+    "integration_review": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-multicycle-integration-review-astra-v1/review-receipt-v1.json",
+      "sha256": "4af45a6e5f45b6f943b01cdc0f0bac02bb5ba6eb8d8f272ae95105f31d3b3e50",
+      "bytes": 3938
+    },
+    "all_pair_identity_review": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-mixed-pair-review-sol-v1/receipt.json",
+      "sha256": "d7f532638af042581e7766412af7b49220ed31a90be97bebdcaac06c2effd70b",
+      "bytes": 752
+    },
+    "actual_context_labels": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/historical-count-labels-review-root-v1/receipt.json",
+      "sha256": "a5fc51050974f4415df5cb1aa05f665c989491dd2b727e6a387c3bcbf130e572",
+      "bytes": 5768
+    },
+    "2018_source_packet": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/historical-national-count-labels-sol-v2/source-packet-2018.json",
+      "sha256": "cb699f0344720e51bb2e5b3a079bd2061b1193f7f9aee1b20c5960289d6e6a94",
+      "bytes": 258553
+    },
+    "2018_catalog": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/historical-aggregate-comparators-root-v1/prepared-v1/catalog.json",
+      "sha256": "49ca9ded85b040b5c70a38d4f85d3ad059e210e8c347b9c79ddcc0003e9c8591",
+      "bytes": 376663
+    },
+    "2018_input_index": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/historical-national-2018-assembly-astra-v1/index.json",
+      "sha256": "fdc49012159c936ea3431eadff9c5b69fc4dd5386530e2f15412b82c58ca0af6",
+      "bytes": 6259
+    },
+    "2020_source_packet": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/historical-national-count-labels-sol-v2/source-packet-2020.json",
+      "sha256": "3952f467a9f70eba88989eda257edda987c935e03f100adb531924c3a185f2af",
+      "bytes": 300251
+    },
+    "2020_catalog": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/historical-aggregate-comparators-root-v1/prepared-v1/catalog.json",
+      "sha256": "49ca9ded85b040b5c70a38d4f85d3ad059e210e8c347b9c79ddcc0003e9c8591",
+      "bytes": 376663
+    },
+    "2020_input_index": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/historical-crossyear-runoff-astra-v1/prepared-B2020/index.json",
+      "sha256": "7b4e6f2b9636015f8576a3c94bb19948205a0fb97063f8a2b08874d37eb01b3d",
+      "bytes": 3459
+    },
+    "2022_source_packet": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/historical-national-count-labels-sol-v1/source-packet-2022.json",
+      "sha256": "b3b12b93eee8d8b8fc27aff5ba7997a251c1179122324368799304dd4beb3228",
+      "bytes": 278009
+    },
+    "2022_catalog": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/historical-aggregate-comparators-root-v1/prepared-v1/catalog.json",
+      "sha256": "49ca9ded85b040b5c70a38d4f85d3ad059e210e8c347b9c79ddcc0003e9c8591",
+      "bytes": 376663
+    },
+    "2022_input_index": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/historical-ranked-support-astra-v1/prepared-2022/index.json",
+      "sha256": "f321260e3bc0fcefaadb202ac87b78570d44ab0b501978e87f27e790605231ec",
+      "bytes": 4041
+    },
+    "2022_identity_bridge_0": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/historical-national-2022-assembly-astra-v1/poll-owner-ledger.json",
+      "sha256": "b6797329fe70e8fc3a796dc07d67858d4b004a427738e384a0a77dcb4511b5de",
+      "bytes": 2029047
+    },
+    "2024_source_packet": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/historical-national-count-labels-sol-v1/source-packet-2024.json",
+      "sha256": "f02922f61b559bd09865c9af01be16ac67d7f2d28067ee3b4aba3f1c92f24cdf",
+      "bytes": 210453
+    },
+    "2024_catalog": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/historical-aggregate-comparators-root-v1/prepared-v1/catalog.json",
+      "sha256": "49ca9ded85b040b5c70a38d4f85d3ad059e210e8c347b9c79ddcc0003e9c8591",
+      "bytes": 376663
+    },
+    "2024_input_index": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/historical-ranked-support-astra-v1/prepared-2024/index.json",
+      "sha256": "9df498c08485a69ab6b58276acf89a58ecb541bf8d8ccc3b8712251b493d71ac",
+      "bytes": 4041
+    },
+    "preserved_baseline_reader": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/historical-aggregate-comparators-root-v1/comparators.py",
+      "sha256": "97cf693171b2aae843f03a6b5e00dca4b417e18387e22d8bc603de8b56b71821",
+      "bytes": 9446
+    },
+    "mixed_evaluator_v3": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/mixed-count-evaluation-astra-v3/evaluate.py",
+      "sha256": "58f9b14c4b91c32fe8235ea62fcd11304e52637f03061980a734630da465af7f",
+      "bytes": 11624
+    },
+    "scalar_evaluator": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/complete-count-evaluation-astra-v1/evaluate.py",
+      "sha256": "f74b0d2111184137919c8c930e182548bd018690f819b7cad604e97f6a7374a8",
+      "bytes": 16536
+    },
+    "registered_saved_scorer": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-multicycle-execution-astra-v1/score.py",
+      "sha256": "ec874af92e6139b10144036f0071c0e8ca2dc6f3e25f8d33d72c9422fe84fd17",
+      "bytes": 1771
+    },
+    "count_output_acceptance": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-integration-root-v1/national-count-output-acceptance.json",
+      "sha256": "367cfd8e626fce6f5cf82f3e31ce3c0adacb3fc35fb83a50ceba6552d9642292",
+      "bytes": 2024
+    },
+    "scalar_score_summary_implementation": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/src/forecasting/count_scoring.py",
+      "sha256": "9443224f79e157586fba24200ee377f6fd7821e808ddea32d8d9dc994b718075",
+      "bytes": 15814
+    },
+    "prior_readiness_v1": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/frontend-national-output-readiness-luna-v1.md",
+      "sha256": "a8a755b1de0af9563c623191a530486cd028dac36c1428b52cd22aa76aeb59bf",
+      "bytes": 9063
+    },
+    "count_view": {
+      "path": "/home/hayden/projects/ballotmancy-siteground/lib/count-view.ts",
+      "sha256": "24944e496eff888929d014f2b9aac0a0edecce15f5e0df3d7eee425c03960d04",
+      "bytes": 27597
+    },
+    "outcome_view": {
+      "path": "/home/hayden/projects/ballotmancy-siteground/lib/election-outcome-view.ts",
+      "sha256": "1b4926920f4b4697b75274819555129edd52eb35c2d6a384e599de2868fe3304",
+      "bytes": 11204
+    },
+    "count_preview": {
+      "path": "/home/hayden/projects/ballotmancy-siteground/components/CountForecastPreview.tsx",
+      "sha256": "b06c66ae0766498c38c0aa349ef393b7411161c32f6037b114896915b9b6e941",
+      "bytes": 13558
+    },
+    "outcome_preview": {
+      "path": "/home/hayden/projects/ballotmancy-siteground/components/ElectionOutcomePreview.tsx",
+      "sha256": "ad847f3d9de5b4870c600fdaf3e6ded16fd0b383034d499cb0b5e8f92031a813",
+      "bytes": 6807
+    },
+    "frontend_preparation_doc": {
+      "path": "/home/hayden/projects/ballotmancy-siteground/docs/frontend-count-preparation-20261020.md",
+      "sha256": "44fb5713f9fb32e30d107274ed7fe8f51fdc4404760a5b7ef5f94fc1dfa1212a",
+      "bytes": 10587
+    },
+    "count_validator_tests": {
+      "path": "/home/hayden/projects/ballotmancy-siteground/tests/count-view.test.mjs",
+      "sha256": "e5aac653243a98863fa5a0b16365497d07d61e6a0d54440b8cd1ee5ded4a3098",
+      "bytes": 12976
+    },
+    "outcome_validator_tests": {
+      "path": "/home/hayden/projects/ballotmancy-siteground/tests/election-outcome-view.test.mjs",
+      "sha256": "211aad6656efb414cbc684aa69a985eabd121d14c3fe334ede4d80fa024b8e6d",
+      "bytes": 6545
+    },
+    "count_fixture": {
+      "path": "/home/hayden/projects/ballotmancy-siteground/tests/fixtures/count-view.mjs",
+      "sha256": "0c8ef815bd0197f4665adcd16bb83fad708e99e69caedfa1bfd4d7ae77251168",
+      "bytes": 10433
+    },
+    "outcome_fixture": {
+      "path": "/home/hayden/projects/ballotmancy-siteground/tests/fixtures/election-outcome.mjs",
+      "sha256": "9a2331feed6a0f3440ae6bfa4d70fd3e4f625bd1e1fda353911fef4234a47944",
+      "bytes": 4686
+    },
+    "count_render_and_isolation_tests": {
+      "path": "/home/hayden/projects/ballotmancy-siteground/tests/count-preview.test.mjs",
+      "sha256": "78fdb7c3832d07d24228ae75d1ae847b38662414d70b48fc375b4e3cc1345b8a",
+      "bytes": 6967
+    },
+    "outcome_render_and_isolation_tests": {
+      "path": "/home/hayden/projects/ballotmancy-siteground/tests/election-outcome-preview.test.mjs",
+      "sha256": "1b9ec91345e65495e8f7f6df94b1ce62f927105b45ed084150e13bc6e71ef771",
+      "bytes": 5263
+    }
+  },
+  "qualification": "This report identifies interface preparation work only. Supplied-state/source-bound interfaces and passing fixture tests establish no posterior, forecast accuracy, national completeness, deployment permission or public qualification."
+}

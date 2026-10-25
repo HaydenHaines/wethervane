@@ -1,0 +1,53 @@
+{
+  "schema": "MomentumPairedTailRootAcceptanceV1",
+  "issued_utc": "2026-10-25T08:27:11.241601+00:00",
+  "selected_version": 2,
+  "disposition": "accepted_supplied_complementary_probability_arithmetic_and_raw_recoverable_input_validation",
+  "references": [
+    {
+      "path": "momentum-paired-tail-diagnostics-sol-v1/artifact-manifest.json",
+      "sha256": "522b89bcb9629805735109f86da781451d77463ff978ddfa082df48677426603"
+    },
+    {
+      "path": "momentum-paired-tail-diagnostics-review-sol-v1/receipt.json",
+      "sha256": "614f4fecde2a694e8b299d107c6792677d773b148c9e659ce6cd577011650564"
+    },
+    {
+      "path": "momentum-paired-tail-diagnostics-sol-v2/artifact-manifest.json",
+      "sha256": "f35357f4615757be5e6a4e51a60c0b47f13c88cd8613c53ae0511b8abd542198"
+    },
+    {
+      "path": "momentum-paired-tail-diagnostics-review-sol-v2/receipt.json",
+      "sha256": "8868d1ff239e294201a96e385ad6ea10714e4e52194af9ffd0b6cb407e89ab19"
+    },
+    {
+      "path": "checkpoints/momentum-numerical-implementation-clarification-v1.json",
+      "sha256": "0d6dd97153687df2583c0a086e92e8a42c22eb0c850ed0a0133acdcb87c14024"
+    }
+  ],
+  "verified_artifacts": 21,
+  "author_tests": 11,
+  "independent_tests": 11,
+  "root_read": "Independent v2 delta report and prior boundary failure; verified complete final manifest.",
+  "independent_oracles": {
+    "decimal_precision_digits": 90,
+    "max_complement_log_error": 6.63e-35,
+    "Gaussian_grid_points": 100001,
+    "normal_recoverable": 93799,
+    "relative_cross_validation_unavailable": 6202,
+    "maximum_recoverable_log_mismatch": 1.14e-13,
+    "MCSE_algebra_error": 0.0
+  },
+  "critical_properties": [
+    "Validate raw recoverable log-tail contradiction BEFORE any joint normalization.",
+    "Magnitude of dominant negative log>=float64.tiny permits stable smaller log recovery via log(-expm1(log_large)); tolerance1e-12 is arithmetic, not a statistical gate.",
+    "Zero/subnormal dominant log cannot certify rare relative consistency; explicitly flag and retain provenance reliance.",
+    "Shared small-side centered coordinate provides exact negative complement deviations and identical absolute MCSE without large-side cancellation.",
+    "Numeric MCSE underflow is missing with finite log form, not an exact zero-error certificate.",
+    "Original one-sided constant statuses retained; raw constant indicators remain unresolved."
+  ],
+  "v1_failure_preserved": "Absolute normalization alone accepted recoverable +.1 contradictory rare log tails; v1 is not selected.",
+  "statistical_thresholds_changed": false,
+  "actual_target_forecasts_or_labels_used": false,
+  "next": "Bind accepted v2 and clarification into runner/scoring final source manifests, then execute under frozen root receipts."
+}

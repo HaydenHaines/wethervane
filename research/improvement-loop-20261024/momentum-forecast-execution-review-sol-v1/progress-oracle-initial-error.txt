@@ -1,0 +1,19 @@
+{"progress": {"phase": "completed_sweep", "chain": 0, "retained_draw": 3, "retained_draws": null}, "records": 12, "completed_observer_sweeps": 4, "partial": "/tmp/tmpimmixtkc/partial-00000"}
+{"progress": {"phase": "completed_sweep", "chain": 0, "retained_draw": 7, "retained_draws": null}, "records": 24, "completed_observer_sweeps": 8, "partial": "/tmp/tmpimmixtkc/partial-00001"}
+{"progress": {"phase": "chain_final_rng", "chain": 0, "retained_draw": null, "retained_draws": 10}, "records": 31, "completed_observer_sweeps": 10, "partial": "/tmp/tmpimmixtkc/partial-00002"}
+{"progress": {"phase": "completed_sweep", "chain": 1, "retained_draw": 1, "retained_draws": null}, "records": 37, "completed_observer_sweeps": 12, "partial": "/tmp/tmpimmixtkc/partial-00003"}
+{"progress": {"phase": "completed_sweep", "chain": 1, "retained_draw": 5, "retained_draws": null}, "records": 49, "completed_observer_sweeps": 16, "partial": "/tmp/tmpimmixtkc/partial-00004"}
+{"progress": {"phase": "completed_sweep", "chain": 1, "retained_draw": 9, "retained_draws": null}, "records": 61, "completed_observer_sweeps": 20, "partial": "/tmp/tmpimmixtkc/partial-00005"}
+{"progress": {"phase": "chain_final_rng", "chain": 1, "retained_draw": null, "retained_draws": 10}, "records": 62, "completed_observer_sweeps": 20, "partial": "/tmp/tmpimmixtkc/partial-00006"}
+{"progress": {"phase": "completed_sweep", "chain": 2, "retained_draw": 3, "retained_draws": null}, "records": 74, "completed_observer_sweeps": 24, "partial": "/tmp/tmpimmixtkc/partial-00007"}
+{"progress": {"phase": "completed_sweep", "chain": 2, "retained_draw": 7, "retained_draws": null}, "records": 86, "completed_observer_sweeps": 28, "partial": "/tmp/tmpimmixtkc/partial-00008"}
+{"progress": {"phase": "chain_final_rng", "chain": 2, "retained_draw": null, "retained_draws": 10}, "records": 93, "completed_observer_sweeps": 30, "partial": "/tmp/tmpimmixtkc/partial-00009"}
+{"progress": {"phase": "completed_sweep", "chain": 3, "retained_draw": 1, "retained_draws": null}, "records": 99, "completed_observer_sweeps": 32, "partial": "/tmp/tmpimmixtkc/partial-00010"}
+{"progress": {"phase": "completed_sweep", "chain": 3, "retained_draw": 5, "retained_draws": null}, "records": 111, "completed_observer_sweeps": 36, "partial": "/tmp/tmpimmixtkc/partial-00011"}
+{"progress": {"phase": "completed_sweep", "chain": 3, "retained_draw": 9, "retained_draws": null}, "records": 123, "completed_observer_sweeps": 40, "partial": "/tmp/tmpimmixtkc/partial-00012"}
+{"progress": {"phase": "chain_final_rng", "chain": 3, "retained_draw": null, "retained_draws": 10}, "records": 124, "completed_observer_sweeps": 40, "partial": "/tmp/tmpimmixtkc/partial-00013"}
+Traceback (most recent call last):
+  File "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-forecast-execution-review-sol-v1/check_progress.py", line 32, in <module>
+    target[:,:old.shape[1]]=old;target[:,offset:end]=value;reconstructed[name]=target
+                                ~~~~~~^^^^^^^^^^^^^^
+ValueError: could not broadcast input array from shape (1,0,12) into shape (1,1,12)
