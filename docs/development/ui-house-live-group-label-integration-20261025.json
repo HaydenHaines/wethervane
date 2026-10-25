@@ -1,0 +1,53 @@
+{
+  "schema": "HouseLiveGroupLabelIntegrationV1",
+  "issued_utc": "2026-10-25T17:55:04.015567+00:00",
+  "status": "integrated_in_frontend_branch_not_deployed",
+  "source_commit": "06f671e9163be0c35520b8a4bb3a9b7e7d8f5e37",
+  "integrated_commit": "7d7bf17b36e9585da7373d3c0cd3a674495d4567",
+  "source": {
+    "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/components/HouseLiveResults.tsx",
+    "sha256": "5dd8734cd125fd2c1fc36ce9072b8867cd90b94982500215e3332c8fab0fd5a8",
+    "size": 19494
+  },
+  "owner_handoff": {
+    "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/coordination-frontend-20261025/house-group-label-fix-ready-v1.json",
+    "sha256": "a2a1fd7582b4093c56949c1cdda7c883aa4f9e4907b957324d03344b53459d91",
+    "size": 2164
+  },
+  "native_draft_review": {
+    "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/coordination-frontend-20261025/house-group-label-review-v1.json",
+    "sha256": "79c9b010dc0e76092255576353b0b8d8ff86957f13a8c89e2a90c10a1e134a6d",
+    "size": 7423
+  },
+  "change": "Grouped Other outcomes display Other (O), while individual member affiliations and singleton labels remain visible. No forecast probabilities changed.",
+  "validation": {
+    "source_bytes_match_reviewed_patch": true,
+    "git_diff_check_exit_code": 0,
+    "coordinator_validation": {
+      "typecheck": {
+        "command": "npm run typecheck",
+        "exit_code": 0
+      },
+      "existing_static_render_suite": {
+        "command": "node --experimental-strip-types tests/house-live-results.test.mjs",
+        "passed": 3,
+        "browser_cases_skipped": 4,
+        "exit_code": 0
+      },
+      "native_draft_label_replay": {
+        "outcomes": 1047,
+        "group_headers_corrected": 32,
+        "unexpected_changes": 0
+      },
+      "git_diff_check_exit_code": 0,
+      "applies_cleanly_to_frontend_worktree_now": true,
+      "apply_check_output": ""
+    },
+    "reviewed_native_outcomes": 1047,
+    "reviewed_group_headers_changed": 32,
+    "unexpected_label_changes": 0,
+    "root_repeated_unchanged_tests": false
+  },
+  "publication_status": "No current House release has been imported or deployed. Mixed-group real-data browser validation remains part of final collection import and release checks.",
+  "scope_correction": "No new user-save/bookmark/storage features."
+}
