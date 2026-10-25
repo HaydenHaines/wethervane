@@ -33,3 +33,12 @@ Continue autonomously across cycles. Coordinate with the Senate and House owners
 The initial inventory uses **implemented in research**. Later promotion means the **selected incumbent for an explicit scientific scope and complete compatible configuration**. Public availability is a separate, tested integration decision. These three meanings must remain visible and must not be inferred from one another.
 
 The user's phrase "without deleting the user" is interpreted here as preserving both the losing model and users' saved configurations. No destructive cleanup is part of this goal.
+
+## Specifically requested research threads
+
+Hayden added two priorities during the next research round:
+
+- Gasoline prices, inflation and purchasing power as predictors of midterm performance. Test incremental information beyond the existing fundamentals, national environment and polls; distinguish price levels, changes, household exposure and attribution. Preserve historical publication vintages and do not assume a 2026 party effect.
+- Polling momentum: measure how often a candidate whose late polling rises outperforms or underperforms final polls. Separate fieldwork age from publication lag, actual opinion change from survey noise and pollster composition, and avoid mechanical associations caused by using the same poll to define both trend and error. Preserve denominators, election-cycle dependence and qualified source availability. A universal one-to-two-week lag is a hypothesis, not a given.
+
+These priorities extend the research backlog; they do not bypass matched validation, independent review or the incumbent-preservation rules above.

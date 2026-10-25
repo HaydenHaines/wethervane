@@ -1,0 +1,154 @@
+{
+  "schema": "senate_momentum_descriptive_receipt_v1",
+  "source_scope": "eligible ordinary general D/R principal pair; retrospective archive; aggregator-created-plus-one-day availability proxy before election; not verified publication",
+  "helper_audits": [
+    {
+      "source_id": "538_senate_archive_v4",
+      "input_candidate_rows": 1555,
+      "input_questions": 684,
+      "retained_observations": 445,
+      "question_exclusions": {
+        "hypothetical": 10,
+        "unknown_population": 30,
+        "invalid_n_or_topline": 1,
+        "tracking_overlap": 30,
+        "alternate_question_same_sample": 168
+      },
+      "cutoff": "2018-11-05",
+      "roster_question_exclusions": {
+        "race_outside_eligible_roster": 59,
+        "question_not_actual_nominee_pair": 28
+      },
+      "cross_race_shared_sample_ids": 0
+    },
+    {
+      "source_id": "538_senate_archive_v4",
+      "input_candidate_rows": 1289,
+      "input_questions": 539,
+      "retained_observations": 435,
+      "question_exclusions": {
+        "unknown_population": 43,
+        "hypothetical": 4,
+        "tracking_overlap": 27,
+        "invalid_n_or_topline": 1,
+        "alternate_question_same_sample": 29
+      },
+      "cutoff": "2020-11-02",
+      "roster_question_exclusions": {
+        "question_not_actual_nominee_pair": 59,
+        "race_outside_eligible_roster": 229
+      },
+      "cross_race_shared_sample_ids": 0
+    },
+    {
+      "source_id": "538_senate_archive_v4",
+      "input_candidate_rows": 1238,
+      "input_questions": 523,
+      "retained_observations": 444,
+      "question_exclusions": {
+        "unknown_population": 7,
+        "hypothetical": 8,
+        "tracking_overlap": 11,
+        "alternate_question_same_sample": 53
+      },
+      "cutoff": "2022-11-07",
+      "roster_question_exclusions": {
+        "question_not_actual_nominee_pair": 125,
+        "race_outside_eligible_roster": 158
+      },
+      "cross_race_shared_sample_ids": 0
+    },
+    {
+      "source_id": "538_senate_archive_v4",
+      "input_candidate_rows": 2114,
+      "input_questions": 904,
+      "retained_observations": 744,
+      "question_exclusions": {
+        "hypothetical": 39,
+        "unknown_population": 8,
+        "invalid_n_or_topline": 4,
+        "alternate_question_same_sample": 109
+      },
+      "cutoff": "2024-11-04",
+      "roster_question_exclusions": {
+        "question_not_actual_nominee_pair": 140,
+        "race_outside_eligible_roster": 55
+      },
+      "cross_race_shared_sample_ids": 0
+    }
+  ],
+  "inputs": [
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-audit-v1/plan.json",
+      "sha256": "2312533373f59ea12dc0ce0ca6557ca80739382cc1d8e7894fb43bad8b8a9e5a",
+      "bytes": 1759
+    },
+    {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-intake-sol/event-roster-2018-2022.csv",
+      "sha256": "ee607d6d60f423e49c75e5c54d5fa241281db18613c4845f9712180c8f7a87f0",
+      "bytes": 31032
+    },
+    {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/cross-context-intake-sol/roster-2020-2024.csv",
+      "sha256": "5888ef979e96624fc57be165f067c8ceb2fe38c097023e1fc8b0453e2c71d4b1",
+      "bytes": 17909
+    },
+    {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/historical-intake-sol/derived/outcomes_allowed_cycles_SEPARATE.csv",
+      "sha256": "70f66904a37d05225b22061d63bb95ea1b3e6837146924a3477cb22bd8d3d9b3",
+      "bytes": 18263
+    },
+    {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/cross-context-intake-sol/outcomes-2020-SEPARATE.csv",
+      "sha256": "eb8e9562e589ca0341b48924653801e5e212b961ffe0364ef518aa24a280a47f",
+      "bytes": 5787
+    },
+    {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/cross-context-intake-sol/outcomes-2024-SEPARATE.csv",
+      "sha256": "ef3821e68c28d520279d91aa0b60b14845b3d38dd61a42950739b4d1e580f343",
+      "bytes": 10636
+    },
+    {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-intake-sol/candidates.csv",
+      "sha256": "bbbb600176526284ac58c52429ad028e7fc3322642382c74b7d273a7a8f3e32c",
+      "bytes": 538562
+    },
+    {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-intake-sol/official-outcomes/all-events-candidate-votes.csv",
+      "sha256": "ade2a8afeceb2207370a54ea11c02f3b0ff40ad9ae7bc346621bd88a97b7d7ab",
+      "bytes": 75340
+    },
+    {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/.redesign-runtime/forecast-20261007/polls/senate_polls_historical.csv",
+      "sha256": "09ae303a94f76dd761532fce7a356fe3b5beb1e24d4e5ba343c424c372fdfabf",
+      "bytes": 4535475
+    },
+    {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/src/forecasting/senate_data.py",
+      "sha256": "cc06e4be0979f811794ffe03a87808c1164dfa96d9b6c8aed2209c29f74648ff",
+      "bytes": 18537
+    },
+    {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/src/forecasting/poll_data.py",
+      "sha256": "9785255cfbfb3fbab1ac5d1ae78b82986eb37066b32f34caebf66c9ab63415d7",
+      "bytes": 17578
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-audit-v1/audit.py",
+      "sha256": "18440b010992c41d60a6804103039f3c1d65205be77d5bd202cb9a22f8472a0e",
+      "bytes": 14412
+    }
+  ],
+  "selected_polls": 1960,
+  "polls_before_truth_join": 2050,
+  "excluded_poll_rows_missing_truth": 90,
+  "eligible_races": {
+    "2018": 28,
+    "2020": 28,
+    "2022": 28,
+    "2024": 29
+  },
+  "fit": false,
+  "strict_asof_qualified": false,
+  "model_qualification": false
+}

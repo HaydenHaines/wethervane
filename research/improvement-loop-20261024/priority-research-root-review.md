@@ -1,0 +1,48 @@
+# Gas prices, inflation and polling momentum: root assessment
+
+October 25, 2026 UTC. These user-requested threads extend the standing improvement goal. They do not identify an empirically weakest layer or authorize a forecast adjustment. Luna reviewed literature, Sol checked existing implementations and data, and root checked consequential claims and the descriptive momentum results. Original proposals and corrections remain available.
+
+## Polling momentum
+
+Opinion can change during a campaign. An observed rise in poll averages is a mixture of that change, sampling/non-sampling error, and changes in the pollsters and respondents being measured. A claim that a rising candidate will beat the final polls requires its own evidence. Neither average improvement in polling accuracy toward Election Day nor a poll's age establishes that directional claim.
+
+Sol's [bounded Senate audit](momentum-audit-v1/REPORT.md) measures the change in two-party candidate share between polls ending 8–14 days and 1–7 days before the election. Each window needs at least two selected samples and two pollsters; one race contributes one rising-candidate case. Among 113 supported ordinary D/R roster races in 2018/2020/2022/2024, 29 have sufficient windows and truth, and 12 show a rise of at least one share percentage point.
+
+| Result against final-week polling average | Cases | Share of these 12 cases |
+| --- | ---: | ---: |
+| Outperformed by more than one share point | 2 | 16.7% |
+| Within one share point, inclusive | 6 | 50.0% |
+| Underperformed by more than one share point | 4 | 33.3% |
+
+Ignoring the one-point band, four finished above their final average and eight below. This is a descriptive answer for the selected cases, not a general probability for the next rising candidate. One point of two-party share is two points of two-party margin; raw all-candidate vote share is a different quantity.
+
+The primary trend and error share a noisy term with opposite signs: trend is `late − prior`, error is `actual − late`. Selecting a large rise can therefore select an unusually favorable late estimate and produce apparent underperformance. A non-overlapping earlier trend with the same final benchmark produces 10 cases: four outperform, three fall within the band and three underperform. Its membership also differs. The same-pollster primary comparison has only one rising case. These sensitivities prevent interpreting the headline as a reliable positive or negative momentum coefficient.
+
+Root read the generator, checked the inclusion/identity/orientation logic, and ran all four export checks. [Independent Luna review](momentum-review-luna.md) confirms the arithmetic and recommends two wording corrections, now applied: “plan-defined” does not imply proven outcome-blind preregistration; field end is on or before the stated cutoff. The source archive uses a created-date-plus-one-day availability proxy, not verified original publication timestamps. Four strict 2022 identity/truth exclusions remain explicit. Original archive revision histories are unavailable here.
+
+Final-week fieldwork midpoints have medians about 6.75–7.5 days before the election across these cycles. Some polls are much older. This supports examining actual interview dates; it does not support a universal one-to-two-week public-opinion lag. [AAPOR disclosure standards](https://aapor.org/standards-and-ethics/transparency-initiative/) distinguish collection dates and methods needed to interpret polls.
+
+The [Jennings–Wlezien cross-national study](https://www.nature.com/articles/s41562-018-0315-6) addresses average polling accuracy, not the user's conditional frequency. [Shirani-Mehr and colleagues](https://sites.stat.columbia.edu/gelman/research/published/polling-errors.pdf) find substantial shared and non-sampling error in U.S. election polls. [Tierney and Volfovsky](https://doi.org/10.1093/jrsssa/qnae066) explicitly separate evolving preferences from poll error. The literature motivates a time-aware measurement model; it does not supply an automatic trend extrapolation rule.
+
+The selected polling implementation already includes a movement covariance kernel. That represents uncertainty associated with timing; it does not by itself prove a learned persistent directional trend. A future challenger should compare the exact existing law against a regularized latent-trend law, use actual field intervals where supported, preserve shared pollster/race/cycle errors, and shrink weakly supported slopes toward zero. It must jointly refit affected components and improve matched historical proper scores after existing fundamentals and polls. First acquire more supported repeated-pollster coverage and review candidate aliases and original release metadata. Do not silently lower inclusion requirements to obtain a desired frequency.
+
+**Decision:** retain the incumbent. Preserve momentum as a research hypothesis; no directional bonus or penalty is supported by this audit. No production forecast was fit or changed.
+
+## Gasoline, inflation and purchasing power
+
+The repository already contains a legacy national economic fundamentals model with approval, GDP, unemployment and CPI. The selected count graph instead has lean/carryover, presidential-midterm and incumbency terms with shared national residuals; explicit weekly gasoline information is a source-adaptation gap in the inspected paths. This is a candidate extension of fundamentals and the national environment, not a missing ninth broad layer.
+
+[Sol's data and experiment design](gas-inflation-data-design-sol.md) is the preferred starting specification. It separates monthly inflation, weekly gasoline changes and real disposable income per person. Add one block at a time, first without polls and then with identical polling inputs. A national economic realization supplies one cycle's information, not hundreds of independent observations because many races share it. Do not add an independent economic shock on top of the existing shared environment using the same evidence.
+
+The literature warrants investigation but not a forced party penalty. For example, Mutz and Mansfield's [2020–2022 panel study](https://doi.org/10.1073/pnas.2319512121) finds that inflation/economic changes did not explain congressional vote switching in that panel, while abortion-related changes did. Its individual switching estimand does not prove that economic conditions never affect aggregate elections. The gasoline/commuting study in [Luna's report](gas-inflation-research-luna.md) concerns presidential accountability; transferring its effect to congressional midterms is a hypothesis. Attribution, timing, real purchasing power and other events can change the relationship.
+
+Two consequential corrections are retained:
+
+- A field named `cpi_yoy_oct` is not enough to diagnose leakage. The legacy 2018 value 2.5 matches October CPI, released after that election. The 2022 value 8.2 matches September CPI, released before the election; October's value was 7.7. There are no 2020/2024 rows in that legacy midterm table. Audit actual values and publication dates rather than declaring every row contaminated.
+- An eight-week gasoline change minus twelve-month CPI is not a matched-horizon relative-price change. Treat those as separate predictors, or align dates/scales before defining a relative-price contrast. The competing eight-week and thirteen-week gas windows are research proposals; no window has been selected by forecast scores.
+
+At the historical fourteen-day cutoffs, September CPI is available but September BEA income/PCE is not available in any of 2018/2020/2022/2024. Use the admitted August income release and preserve original vintages. EIA gasoline has a May 2018 methodology break; a late-October thirteen-week change avoids crossing it, while a year-over-year change crosses it. Current revised API data and present-day retrieval timestamps do not establish historical availability. The legacy 2026 snapshot contains April/May observations despite October-named keys.
+
+Start with an admitted headline-inflation-only restriction of the existing joint fundamentals law. Consider core/contrast, gasoline and real-income extensions as separately versioned additions when earlier-cycle training data support them. Use symmetric regularizing priors subject to prior-predictive review; no hand-coded sign, 2026 penalty or state-price interpolation. State exposure is later work requiring actual pre-cutoff source editions and overlap checks against existing economic/type mechanisms.
+
+**Decision:** prepare release-vintage inputs and matched comparison plans. No gas/inflation challenger has been fit, ranked, promoted or published. Source and model owners have received the findings; this workspace will not duplicate their active Senate pilot or House polling benchmark.

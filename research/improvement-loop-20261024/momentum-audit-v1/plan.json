@@ -1,0 +1,37 @@
+{
+  "schema": "senate_momentum_descriptive_plan_v1",
+  "cycles": [
+    2018,
+    2020,
+    2022,
+    2024
+  ],
+  "source": "538 archive only; canonical senate_polls_as_of helper",
+  "scope": "eligible ordinary general D/R principal pair; retrospective archive; aggregator-created-plus-one-day availability proxy before election; not verified publication",
+  "final_field_end_leads": [
+    1,
+    7
+  ],
+  "prior_field_end_leads": [
+    8,
+    14
+  ],
+  "share_units": "D/(D+R), percentage points; not margin points",
+  "average": "equal selected sample/question weight within race/window",
+  "universe": "LV or RV after native LV>RV>adults per-sample question selection; no adults",
+  "partisan": "retain and report flags; sensitivity excluding explicitly partisan rows; unknown not verified nonpartisan",
+  "minimum_coverage": "each window >=2 samples and >=2 distinct named pollsters",
+  "rising_thresholds_pp": [
+    0,
+    1,
+    2
+  ],
+  "primary_threshold_pp": 1,
+  "orientation": "sign(final-prior); exclude exact zero trend",
+  "performance": "orientation * (observed D share - final D share); below -1pp, within inclusive +/-1pp, above +1pp",
+  "matched": "shared pollsters in both windows; >=2 shared; equal pollster means within each window",
+  "midpoint_sensitivity": "same lead windows by actual field midpoint, requiring valid starts",
+  "uncertainty": "descriptive only; race once per threshold; no independent D/R cases, no fit, no causal/model qualification",
+  "independent_earlier_trend": "trend leads8to14 minus15to21; same final1to7 benchmark; >=2samplesand2pollsters in ALL3windows; matched requires2shared inALL3",
+  "midpoint_window_edges": "continuous lead intervals [1,8),[8,15),[15,22); same intervals on integer field-end leads"
+}
