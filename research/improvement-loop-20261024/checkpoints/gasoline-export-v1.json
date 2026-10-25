@@ -1,0 +1,248 @@
+{
+  "schema_version": 1,
+  "recorder_only": true,
+  "cycle": "g01-aggregate-gasoline-20261025",
+  "binding": {
+    "hypothesis": "Does one president-oriented, earlier-cycle-standardized13-week gasoline log-change term improve a matched F0 predictive distribution? Distinct source/time-horizon from retained negative headline-CPI comparison; sign unrestricted.",
+    "incumbent_config": {
+      "fit_law_sha256": "9d0fda23bd49d07cca024c5b4e0106e41f246a3c464e4bb5975574cf75774880",
+      "name": "F0_relative_context_aggregate",
+      "recipe": {
+        "denominator": "D_plus_R",
+        "providers": [
+          {
+            "covariate_evidence_ids": [],
+            "instance_id": "candidate",
+            "kernel": "linear",
+            "kind": "mean",
+            "parameters": [
+              {
+                "mean": 0.0,
+                "owner": "candidate",
+                "parameter_id": "candidate.incumbency",
+                "sd": 0.5
+              }
+            ],
+            "provider_id": "aggregate_candidate_incumbency_v1",
+            "role": "fundamentals",
+            "scale_prior_sd": null,
+            "source_sha256": "583f4e204360fc71f980bd70a86aa3f27afaefaee13a27c5f1833b8b54ae5366",
+            "terms": [
+              {
+                "coefficient": {
+                  "parameter_id": "candidate.incumbency"
+                },
+                "feature_id": "incumbency",
+                "owner": "candidate",
+                "term_id": "candidate.0"
+              }
+            ]
+          },
+          {
+            "covariate_evidence_ids": [],
+            "instance_id": "carryover",
+            "kernel": "linear",
+            "kind": "mean",
+            "parameters": [
+              {
+                "mean": 0.0,
+                "owner": "carryover",
+                "parameter_id": "environment.carryover",
+                "sd": 0.5
+              }
+            ],
+            "provider_id": "aggregate_national_carryover_v1",
+            "role": "environment",
+            "scale_prior_sd": null,
+            "source_sha256": "583f4e204360fc71f980bd70a86aa3f27afaefaee13a27c5f1833b8b54ae5366",
+            "terms": [
+              {
+                "coefficient": {
+                  "parameter_id": "environment.carryover"
+                },
+                "feature_id": "national",
+                "owner": "carryover",
+                "term_id": "carryover.0"
+              }
+            ]
+          },
+          {
+            "covariate_evidence_ids": [],
+            "instance_id": "context",
+            "kernel": "linear",
+            "kind": "mean",
+            "parameters": [
+              {
+                "mean": 0.0,
+                "owner": "context",
+                "parameter_id": "environment.midterm",
+                "sd": 0.15
+              },
+              {
+                "mean": 0.0,
+                "owner": "context",
+                "parameter_id": "environment.party",
+                "sd": 0.1
+              }
+            ],
+            "provider_id": "aggregate_presidential_context_v1",
+            "role": "environment",
+            "scale_prior_sd": null,
+            "source_sha256": "583f4e204360fc71f980bd70a86aa3f27afaefaee13a27c5f1833b8b54ae5366",
+            "terms": [
+              {
+                "coefficient": {
+                  "parameter_id": "environment.party"
+                },
+                "feature_id": "party",
+                "owner": "context",
+                "term_id": "context.0"
+              },
+              {
+                "coefficient": {
+                  "parameter_id": "environment.midterm"
+                },
+                "feature_id": "party_midterm",
+                "owner": "context",
+                "term_id": "context.1"
+              }
+            ]
+          },
+          {
+            "covariate_evidence_ids": [],
+            "instance_id": "cycle",
+            "kernel": "normal_shared",
+            "kind": "cycle",
+            "parameters": [],
+            "provider_id": "aggregate_cycle_normal_v1",
+            "role": "environment",
+            "scale_prior_sd": 0.2,
+            "source_sha256": "583f4e204360fc71f980bd70a86aa3f27afaefaee13a27c5f1833b8b54ae5366",
+            "terms": []
+          },
+          {
+            "covariate_evidence_ids": [],
+            "instance_id": "poll",
+            "kernel": "identity",
+            "kind": "poll",
+            "parameters": [],
+            "provider_id": "aggregate_poll_gaussian_v1",
+            "role": "measurement",
+            "scale_prior_sd": null,
+            "source_sha256": "583f4e204360fc71f980bd70a86aa3f27afaefaee13a27c5f1833b8b54ae5366",
+            "terms": []
+          },
+          {
+            "covariate_evidence_ids": [],
+            "instance_id": "race",
+            "kernel": "student_t5",
+            "kind": "race",
+            "parameters": [],
+            "provider_id": "aggregate_race_student_t5_v1",
+            "role": "fundamentals",
+            "scale_prior_sd": 0.5,
+            "source_sha256": "583f4e204360fc71f980bd70a86aa3f27afaefaee13a27c5f1833b8b54ae5366",
+            "terms": []
+          },
+          {
+            "covariate_evidence_ids": [],
+            "instance_id": "structure",
+            "kernel": "linear",
+            "kind": "mean",
+            "parameters": [
+              {
+                "mean": 0.0,
+                "owner": "structure",
+                "parameter_id": "structure.office",
+                "sd": 0.5
+              },
+              {
+                "mean": 1.0,
+                "owner": "structure",
+                "parameter_id": "structure.state_slope",
+                "sd": 0.35
+              }
+            ],
+            "provider_id": "aggregate_structure_v1",
+            "role": "fundamentals",
+            "scale_prior_sd": null,
+            "source_sha256": "583f4e204360fc71f980bd70a86aa3f27afaefaee13a27c5f1833b8b54ae5366",
+            "terms": [
+              {
+                "coefficient": {
+                  "parameter_id": "structure.office"
+                },
+                "feature_id": "one",
+                "owner": "structure",
+                "term_id": "structure.0"
+              },
+              {
+                "coefficient": {
+                  "parameter_id": "structure.state_slope"
+                },
+                "feature_id": "relative_lean",
+                "owner": "structure",
+                "term_id": "structure.1"
+              }
+            ]
+          }
+        ],
+        "target_id": "senate_aggregate_logit_empirical_mixture_v1",
+        "universe": "ordinary_DR_contests"
+      },
+      "scope": "F_only; no polling factor applied",
+      "training_support": "2002+ fixed common support; new fit required; not old1998+ F0 posterior"
+    },
+    "scope": {
+      "A": [
+        2018,
+        2022
+      ],
+      "B": [
+        2020,
+        2024
+      ],
+      "cutoff": "00:00UTC election minus14days",
+      "development_benchmarks_exposed": true,
+      "full_stack_ranking": false,
+      "horizon_days": 14,
+      "target": "ordinary Senate D/(D+R)",
+      "target_races": [
+        30,
+        28,
+        30,
+        30
+      ],
+      "train_races": [
+        236,
+        266,
+        294,
+        324
+      ]
+    },
+    "target_layer": "fundamentals_national_environment_mean"
+  },
+  "checkpoints": [
+    {
+      "revision": 0,
+      "status": "research",
+      "note": "Cycle recorded",
+      "outcome": "success",
+      "recommendation": null,
+      "recorded_at": "2026-10-25T12:06:49.858639+00:00",
+      "references": {}
+    },
+    {
+      "revision": 1,
+      "status": "research",
+      "note": "Luna/Sol recursive design reviewed and sources independently checked. Preparing three-arm H0/F0/G01 implementation; no new posterior fit or result. Existing user authorization applies.",
+      "outcome": "success",
+      "recommendation": null,
+      "recorded_at": "2026-10-25T12:06:49.860204+00:00",
+      "references": {
+        "plan": "0f3912d0d5eddf89052629cf8202f9f3e281d511357fc89edb1319a52aeb4fd0",
+        "review": "05031789cbf9680a7c2dc505a6c6d68ff10fb78d5e6ed576c585da4c6c8ce765"
+      }
+    }
+  ]
+}

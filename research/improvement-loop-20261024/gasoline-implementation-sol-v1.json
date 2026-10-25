@@ -1,0 +1,164 @@
+{
+  "schema": "G01AggregatePreparationExecutionImplementationSolV1",
+  "created_utc": "2026-10-25T12:14:45Z",
+  "status": "prepared_and_independently_reviewed_no_posterior_fit",
+  "scope": "isolated lab aggregate F-only retrospective H0/F0/G01, not count-stack or public forecast",
+  "selected_root_decision_sha256": "0f3912d0d5eddf89052629cf8202f9f3e281d511357fc89edb1319a52aeb4fd0",
+  "current_plans": {
+    "preparation": {
+      "path": "gasoline-experiment-v1/prepared-v2/plan.json",
+      "sha256": "ee3cdefc9b3a5f9bc98598acd47ef7db81d0393f32c874396843e587566849ef",
+      "bytes": 161961
+    },
+    "execution": {
+      "path": "gasoline-execution-v1/prepared-v2/plan.json",
+      "sha256": "63f6de0e57949857a48d02e5084af8cc9d576b4ffa96985b13afc938fe55b5ab",
+      "bytes": 183895
+    }
+  },
+  "superseded_immutable_plans": {
+    "preparation_v1": "af4739e5d2ad44aa8203f84efeacad79b1d64f2560236894838a3e1aab145b5f",
+    "execution_v1": "ec6f9c9a3c6178a0066eebc6f57a3192b0c19aeed41e6ad1cf6a21490d55ae4f"
+  },
+  "implementation_delta": [
+    "Preparation verifies fixed root selection and all 32 TWIP receipt files before factory compilation; source row checks include series, units, method regime, raw hash, 2004 exact exception, Monday/91-day arithmetic and availability before exact midnight H14.",
+    "Every arm uses 2002+ training support; p-first equal-earlier-cycle population-SD gasoline feature and one sign-unrestricted Normal(0,.05) G01 mean coefficient. No CPI, interaction, alternate window or extra shock.",
+    "H0/F0 owner aggregate laws and E01 predictive/scoring algorithms are reused; runner has 12 ordered fresh jobs, source/seed/budget/gate binding and all-three forecast seals before target numeric labels.",
+    "Existing E01 certificate is pinned for locked package/runtime behavior only; new preparation/execution code has independent G01 plan review. Old posteriors and scores are not reused."
+  ],
+  "plan_inventory": {
+    "preparation_source_pins": 46,
+    "fold_training_races": [
+      236,
+      266,
+      294,
+      324
+    ],
+    "fold_target_races": [
+      30,
+      28,
+      30,
+      30
+    ],
+    "execution_jobs": 12,
+    "execution_arms": [
+      "H0",
+      "F0",
+      "G01"
+    ],
+    "fit_gates": {
+      "divergences": 0,
+      "max_depth_hits": 0,
+      "max_rank_rhat": 1.01,
+      "min_bulk_ess": 400,
+      "min_tail_ess": 400
+    },
+    "predictive_gates": {
+      "max_rank_rhat": 1.01,
+      "max_subset_seat_mean_mcse": 0.03,
+      "max_win_mcse": 0.005,
+      "min_bulk_ess": 1000,
+      "min_tail_ess": 1000
+    },
+    "fit_launched": false
+  },
+  "checks": {
+    "preparation_unittest": "7 passed, actual-source/supplied-point; no sampler",
+    "runner_unittest": "13 passed, synthetic four-fold roundtrip and failure/continuation; no sampler",
+    "ruff": "passed for both new packages",
+    "cli_validate_execution": "Verified execution plan; no sampler called",
+    "independent_review": "Luna frozen-v2 source/prior/execution review passed; see pinned review"
+  },
+  "pending_before_real_fit": [
+    "Root records final selection/plan review and uses an exclusive new attempt directory.",
+    "Root confirms local resources and no conflict with owner processes.",
+    "Full numerical gates and per-fold prediction seals must be evaluated on the actual fresh joint draws; tests do not establish fit success."
+  ],
+  "known_limits": [
+    "Archived TWIP reports do not authenticate original posting/no-revision history.",
+    "All four target years are disclosed retrospective development benchmarks, with only 8/9/10/11 earlier national gas observations.",
+    "Aggregate fundamentals-only results cannot qualify protected-population count forecasts or a 2026 public prediction."
+  ],
+  "pins": {
+    "root_selection": {
+      "path": "checkpoints/gasoline-preparation-root-selection-v1.json",
+      "sha256": "0f3912d0d5eddf89052629cf8202f9f3e281d511357fc89edb1319a52aeb4fd0",
+      "bytes": 4571
+    },
+    "twip_receipt": {
+      "path": "gasoline-twip-cutoff-v1/receipt.json",
+      "sha256": "329ddc83d6f17b8399363f77dbaacc15c0b7f9fded29b1f2d9f859be88c4b397",
+      "bytes": 5067
+    },
+    "twip_panel": {
+      "path": "gasoline-twip-cutoff-v1/panel.json",
+      "sha256": "9f4627170f846bfa6768e2bda43659a6218c4a577a2daf92989b14bd78ed3902",
+      "bytes": 36046
+    },
+    "prepare_source": {
+      "path": "gasoline-experiment-v1/prepare.py",
+      "sha256": "645766d1cf62f024d8d2bb431c5d3c3db99dc1b43fbc2b3ea08264609aeb34f7",
+      "bytes": 26221
+    },
+    "prepare_tests": {
+      "path": "gasoline-experiment-v1/test_prepare.py",
+      "sha256": "d448b85f5cf3cb6b47ff3a480f872b1f3a905cc34b332d7627b87f594eac69a5",
+      "bytes": 7979
+    },
+    "preparation_plan": {
+      "path": "gasoline-experiment-v1/prepared-v2/plan.json",
+      "sha256": "ee3cdefc9b3a5f9bc98598acd47ef7db81d0393f32c874396843e587566849ef",
+      "bytes": 161961
+    },
+    "runner_source": {
+      "path": "gasoline-execution-v1/runner.py",
+      "sha256": "f8a93e0c4b41c4e5e529053b6dc1aae5cfb585fb343b3a96a2ae0bfcc729879d",
+      "bytes": 44759
+    },
+    "scoring_source": {
+      "path": "gasoline-execution-v1/scoring.py",
+      "sha256": "fa7b243f82327bd327bca098aef2d6fe38f5c694ed56e27a35068646dbcea30d",
+      "bytes": 5988
+    },
+    "runner_tests": {
+      "path": "gasoline-execution-v1/test_execution.py",
+      "sha256": "b713931c1711dda44e4a5e6e6e74b9baa592c2d90687aa24d36bd75004ccc97e",
+      "bytes": 19365
+    },
+    "execution_plan": {
+      "path": "gasoline-execution-v1/prepared-v2/plan.json",
+      "sha256": "63f6de0e57949857a48d02e5084af8cc9d576b4ffa96985b13afc938fe55b5ab",
+      "bytes": 183895
+    },
+    "runtime_acceptance": {
+      "path": "economic-execution-v1/runtime/acceptance.json",
+      "sha256": "956a66375738bb5e2be2e0296e734c8e46ee7c94a90e3e19cc3618b27a63fcac",
+      "bytes": 2633
+    },
+    "independent_review": {
+      "path": "gasoline-prior-review-luna-v1/implementation-review-v2.json",
+      "sha256": "b487a95e87cb9d7bf51b519aa0041b748ab6f43452dcdcdd80178cd0c7480e48",
+      "bytes": 4334
+    },
+    "preparation_readme": {
+      "path": "gasoline-experiment-v1/README.md",
+      "sha256": "a0ecc78e16fbf5ea68b31ea2b3f5562a28067ae40417fa1c539dfb5d947e3c38",
+      "bytes": 2425
+    },
+    "execution_readme": {
+      "path": "gasoline-execution-v1/README.md",
+      "sha256": "4dd300690d0df8f2f8351c488e540c9b26951b506d9bde8e45a32b05d80ba611",
+      "bytes": 3245
+    },
+    "preparation_supersession": {
+      "path": "gasoline-experiment-v1/SUPERSESSION.md",
+      "sha256": "80bec15824878e66f3e45e6f8f5c44183b993a729329ab70a7233966d6f17000",
+      "bytes": 522
+    },
+    "execution_supersession": {
+      "path": "gasoline-execution-v1/SUPERSESSION.md",
+      "sha256": "1b758bdfc2217fda638763a6dbf1dd5ec736e136b6b13a932988694bba2a336d",
+      "bytes": 690
+    }
+  }
+}

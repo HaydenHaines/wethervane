@@ -1,0 +1,31 @@
+{
+  "schema": "g01_preparation_independent_review_v1",
+  "created_at_utc": "2026-10-25T12:11:10Z",
+  "reviewed_frozen_plan": {
+    "path": "../gasoline-experiment-v1/prepared-v1/plan.json",
+    "sha256": "af4739e5d2ad44aa8203f84efeacad79b1d64f2560236894838a3e1aab145b5f"
+  },
+  "independent_review": "PASS_WITH_PROVENANCE_NOTE",
+  "verified": [
+    "All 32 TWIP inventory bytes match receipt pins; all 12 current and lag source upper bounds predate exact midnight H14. Values use the same dated TWIP arm, exact 91-day lag, and same within-pair method regime; historical posting/revision authentication remains false.",
+    "Owner feature cutoffs are date-only representations of exact midnight H14. Prepared feature cycle values independently reproduce p-first, target-excluded, one-equal-weight-per-earlier-cycle population-SD z-scores to floating tolerance.",
+    "Prepared F0/G01 supports and outcome-row hashes match at 236/266/294/324 rows. G01 adds only economy.twip_gas_change with Normal(0,0.05), mean zero, and no sign restriction.",
+    "The prior geometry and prior-predictive draws in the plan are consistent with the independent arithmetic. At fixed 0.5 baseline, 95% prior shift radii are approximately 1.23, 0.82, 3.87, and 2.41 share points for 2018/20/22/24. No marginal prior pathology is apparent; graph-level prior prediction is still the appropriate check.",
+    "The zero-gas restriction test compares G01 density at beta_gas=0 with F0 density plus the gas prior density; the implementation also tests the new-coordinate gradient. Static review only; the supplied test suite was not rerun."
+  ],
+  "provenance_note": {
+    "finding": "The frozen preparation plan does not pin the accepted root selection checkpoint (0f3912d0d5eddf89052629cf8202f9f3e281d511357fc89edb1319a52aeb4fd0).",
+    "effect": "The code/data/feature recipe itself is pinned and reproduced, but the link from this plan to the root-selected H0/F0/G01 decision is not byte-bound inside plan.json.",
+    "recommendation": "Carry the checkpoint path/hash in an execution-side lineage receipt or a separate immutable clarification; do not rewrite the sealed preparation plan."
+  },
+  "full_independent_check": {
+    "path": "preparation-review.json",
+    "sha256": "9c768eb660a36c7cef21802ea6123e481c6e448e9c0af1a457fedf97b5defd28"
+  },
+  "no_fit_or_owner_mutation": true,
+  "limitations": [
+    "Retrospective TWIP pages are dated evidence, not original posting logs or no-revision records.",
+    "The effective macro sample remains 8-11 cycles and correlations with F0 context are descriptive only.",
+    "This review covers frozen preparation, not the pending execution runner/plan."
+  ]
+}

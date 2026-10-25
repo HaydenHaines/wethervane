@@ -1,0 +1,40 @@
+{
+  "schema": "g01_independent_implementation_review_v2",
+  "created_at_utc": "2026-10-25T12:13:55Z",
+  "recommendation": "The frozen preparation-v2 and execution-v2 contracts pass this bounded independent review; no scientific/source blocker found. Root may decide whether to proceed under the standing goal after its own resource check. No sampler was launched.",
+  "frozen_plan_pins": {
+    "preparation": {
+      "path": "../gasoline-experiment-v1/prepared-v2/plan.json",
+      "sha256": "ee3cdefc9b3a5f9bc98598acd47ef7db81d0393f32c874396843e587566849ef"
+    },
+    "execution": {
+      "path": "../gasoline-execution-v1/prepared-v2/plan.json",
+      "sha256": "63f6de0e57949857a48d02e5084af8cc9d576b4ffa96985b13afc938fe55b5ab"
+    },
+    "root_selection_checkpoint": {
+      "path": "../checkpoints/gasoline-preparation-root-selection-v1.json",
+      "sha256": "0f3912d0d5eddf89052629cf8202f9f3e281d511357fc89edb1319a52aeb4fd0"
+    }
+  },
+  "checks": {
+    "source_and_cutoff": "PASS: independent checker verified all 32 TWIP source hashes, all 12 exact 91-day contrasts and same-method pairs, and every conservative current/lag availability upper bound before exact midnight H14. The owner input's date-only cutoff equals the exact midnight instant. Original posting/revision logs remain unauthenticated and are explicitly disclosed.",
+    "feature_and_support": "PASS: independently recomputed p-first features and equal-earlier-cycle population-SD scaling match prepared-v2 rows. F0/G01 use identical earlier outcomes, cycles, and race IDs at 236/266/294/324 rows; the 1998/2000 exclusion is explicit. The accepted root-selection checkpoint is now in preparation-v2 source pins.",
+    "prior": "PASS: single Normal(0,0.05) coefficient is centered and sign-unrestricted; prior-predictive checks are outcome-blind and consistent with independent target-z arithmetic. The prior is not plainly problematic marginally, though its weak 8-11-cycle identifiability and correlations with F0 contexts remain material interpretation limits.",
+    "nested_density": "PASS by static code/test review: G01 at beta_gas=0 is checked against F0 density plus the Normal(0,0.05) gas prior density; its analytic gas-gradient check is also specified. No fit was used to evaluate the restriction.",
+    "execution_contract": "PASS: execution-v2 pins preparation-v2, the current runner/scorer/test files, owner model implementations, exact runtime lock and accepted runtime certificate. It contains the 12 chronological H0/F0/G01 jobs, equal sampler budgets, fixed seeds, one-job exclusive output, no automatic numerical retry, continuation hash checks, all-three prediction seals before F0 masks/target score labels, and no promotion/count qualification.",
+    "no_sampler_validation": "PASS: ran the execution CLI's plan validator with the accepted runtime, exact execution-v2 path and SHA. It printed 'Verified execution plan; no sampler called.' No fitting or scoring was run.",
+    "owner_test_suites": "Sol reports 7 preparation tests, 13 synthetic execution tests, and ruff passed after final source freeze. I did not rerun those suites."
+  },
+  "preservation_note": "Execution-v1 had a source-inventory mismatch because runner and test files changed after its initial plan freeze. It remains superseded; execution-v2 pins the final files and its validator passes. This is a resolved provenance/versioning issue, not a model failure.",
+  "remaining_limits": [
+    "A2018/A2022/B2020/B2024 are exposed development benchmarks, not untouched validation.",
+    "Election cycles, not Senate race rows, are the effective national-feature replications; historical sample size is 8-11 cycles by fold.",
+    "EIA's dated archive evidence is not original posting-log or no-revision authentication.",
+    "The approved scope is aggregate ordinary D/(D+R) fundamentals only; no protected-population count, full-stack, or 2026 qualification."
+  ],
+  "independent_artifacts": [
+    {"path": "gasoline-prior-independent-luna-v1.json", "sha256": "0da858a047f3f5ff1038471d133df92a733606396ce21162d96b519ba711570c"},
+    {"path": "preparation-review-v2.json", "sha256": "69b3e51208a666448f276c21b5fb53887891e8953ea8e66cdbe2af26b59e0550"},
+    {"path": "check_prepared_v2.py", "sha256": "84f32a687aeb621cb92131955fc110e26e57ff722c5fee9edce6e56ada2bdfa9"}
+  ]
+}

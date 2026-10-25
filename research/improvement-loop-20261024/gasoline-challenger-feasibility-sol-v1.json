@@ -1,0 +1,275 @@
+{
+  "schema": "gasoline_challenger_feasibility_audit_sol_v1",
+  "created_utc": "2026-10-25T12:04:29Z",
+  "scope": "Preparation audit only; no executable model, fit, rescore, owner-process control, publication, or source admission",
+  "recommendation": {
+    "decision": "prepare_versioned_G01_design_and_adapter",
+    "feasible": true,
+    "execution_authorization_from_this_audit": false,
+    "reason": "A single pooled national gas-change term has complete 2002–2024 dated TWIP rows and the aggregate F-only runner is reusable after a versioned matched-support preparation. Nothing fundamental blocks a retrospective development pilot; the adapter, tests and execution plan are not yet written. This assigned audit does not launch a fit."
+  },
+  "design": {
+    "primary_comparison": "matched F0 versus G01=F0+one national gasoline term; H0 on the same support is an optional descriptive third arm",
+    "root_intended_arms": [
+      "H0",
+      "F0",
+      "G01"
+    ],
+    "root_intended_fit_count": 12,
+    "target": "ordinary U.S. Senate Democratic share D/(D+R), aggregate fundamentals-only",
+    "source_arm": "older_verified_dated_TWIP_issue_not_latest_GDFU",
+    "raw_feature": "ln(national regular retail USD/gallon at printed current Monday observation / printed observation exactly 91 days earlier)",
+    "orientation": "p_t=president_party_asof, +1 Democratic/-1 Republican; u_t=p_t*raw_feature; x_t=(u_t-mean earlier unique cycles)/population SD earlier unique cycles, one equal weight per cycle",
+    "coefficient": "one sign-unrestricted G01 mean coefficient beta~Normal(0,0.05) on D-share logit per training-standardized unit; outcome-blind proposed prior, not inherited qualification",
+    "nested_density": "At beta=0, G01 likelihood and all F0 parameters/priors equal matched-support F0, multiplied by the proper beta prior density; verify in code/tests",
+    "not_in_primary": "No E01 incumbent substitution, state exposure interaction, midterm-specific gas slope, extra national shock, posterior column splice or polling contribution"
+  },
+  "source_and_cutoff": {
+    "twip_cycles": [
+      2002,
+      2004,
+      2006,
+      2008,
+      2010,
+      2012,
+      2014,
+      2016,
+      2018,
+      2020,
+      2022,
+      2024
+    ],
+    "all_twelve_source_upper_bounds_before_exact_midnight_H14": true,
+    "existing_panel_cutoff_convention": "23:59:59 UTC at H14; new join must bind existing Senate exact 00:00 UTC H14 and recheck both source upper bounds",
+    "original_posting_authenticated_rows": 0,
+    "qualification": "Official dated archived TWIP issues support retrospective pre-cutoff proxy; original posting/no-revision logs not authenticated, so no strict original-publication claim",
+    "2004": "Exact reviewed stale-header-year exception is required; raw report/header conflict remains visible",
+    "method_change": "2018-05-14 gasoline sampling break; no selected within-year 91-day pair crosses it",
+    "2026": "No current-2026 gas row in this panel; later prospective use needs its own cutoff-bound source"
+  },
+  "matched_training": {
+    "unavailable_pre2002_gas_cycles": [
+      1998,
+      2000
+    ],
+    "excluded_races_by_cycle": {
+      "1998": 32,
+      "2000": 31
+    },
+    "folds": [
+      {
+        "target_cycle": 2018,
+        "old_training_races": 299,
+        "matched_2002plus_training_races": 236,
+        "lost_training_races": 63,
+        "old_training_cycles": 10,
+        "matched_training_cycles": [
+          2002,
+          2004,
+          2006,
+          2008,
+          2010,
+          2012,
+          2014,
+          2016
+        ],
+        "target_races": 30,
+        "oriented_mean": 0.06517138279346342,
+        "oriented_population_sd": 0.1393466908752723,
+        "target_gas_log_change": 0.004874661463335931,
+        "target_standardized_x": -0.5026746154990993,
+        "target_raw_first_x": -0.4353723690282735,
+        "beta_sd_005_incremental_95pct_logit_abs": 0.04926120711603636
+      },
+      {
+        "target_cycle": 2020,
+        "old_training_races": 329,
+        "matched_2002plus_training_races": 266,
+        "lost_training_races": 63,
+        "old_training_cycles": 11,
+        "matched_training_cycles": [
+          2002,
+          2004,
+          2006,
+          2008,
+          2010,
+          2012,
+          2014,
+          2016,
+          2018
+        ],
+        "target_races": 28,
+        "oriented_mean": 0.05738848898715238,
+        "oriented_population_sd": 0.13320881246087632,
+        "target_gas_log_change": -0.012838323972912638,
+        "target_standardized_x": -0.3344385719775425,
+        "target_raw_first_x": -0.2759897511582447,
+        "beta_sd_005_incremental_95pct_logit_abs": 0.0327743778058486
+      },
+      {
+        "target_cycle": 2022,
+        "old_training_races": 357,
+        "matched_2002plus_training_races": 294,
+        "lost_training_races": 63,
+        "old_training_cycles": 12,
+        "matched_training_cycles": [
+          2002,
+          2004,
+          2006,
+          2008,
+          2010,
+          2012,
+          2014,
+          2016,
+          2018,
+          2020
+        ],
+        "target_races": 30,
+        "oriented_mean": 0.052933472485728404,
+        "oriented_population_sd": 0.1270777458635652,
+        "target_gas_log_change": -0.14833983015865196,
+        "target_standardized_x": -1.5838595599616152,
+        "target_raw_first_x": -0.7852985519767095,
+        "beta_sd_005_incremental_95pct_logit_abs": 0.15521538470470694
+      },
+      {
+        "target_cycle": 2024,
+        "old_training_races": 387,
+        "matched_2002plus_training_races": 324,
+        "lost_training_races": 63,
+        "old_training_cycles": 13,
+        "matched_training_cycles": [
+          2002,
+          2004,
+          2006,
+          2008,
+          2010,
+          2012,
+          2014,
+          2016,
+          2018,
+          2020,
+          2022
+        ],
+        "target_races": 30,
+        "oriented_mean": 0.03463589951805746,
+        "oriented_population_sd": 0.13427098256661457,
+        "target_gas_log_change": -0.09757246223707887,
+        "target_standardized_x": -0.9846383725504136,
+        "target_raw_first_x": -0.32858960346038063,
+        "beta_sd_005_incremental_95pct_logit_abs": 0.0964927873997445
+      }
+    ],
+    "interpretation": "National gas feature has 8/9/10/11 earlier cycle realizations, not 236/266/294/324 independent macro observations. Refit F0 and G01 on identical 2002+ rows; old 1998+ F0 scores/banks/masks are not a matched comparator."
+  },
+  "prior_geometry": {
+    "transform_relation": "x_rawfirst=(s_oriented/s_raw)*x_oriented + mean_oriented/s_raw - (mean_raw/s_raw)*p_t",
+    "consequence": "Raw-first standardization with an independent beta SD changes the implied office/party offsets and raw-gas slope prior even where mean functions span the same terms. Freeze orient-first transformation and check prior predictive behavior/parameter overlap with F0 party/carryover terms.",
+    "target_2022_x_oriented": -1.5838595599616152,
+    "target_2022_x_rawfirst": -0.7852985519767095
+  },
+  "reuse_boundaries": {
+    "reuse": "Owner aggregate component factory H0/F0 laws, label-free ordinary-Senate panel and outcomes, chronological folds, joint four-chain fit/predictive/score/MCSE routines, numerical gates, fixed F0-mask convention, runtime package environment if newly pinned/reviewed",
+    "versioned_changes": "New TWIP source verifier/label-free feature join, exact-midnight H14 check, 2002 start-cycle/admission and outcome filter, G01 provider with one owned mean term, support-matched H0/F0/G01 preparation, arm/job-count/seed/source snapshots and run-plan validation; fresh full joint posterior fits and prediction seals; no reuse of E01 posterior, previous F0 score, old F0 mask or prior sensitivity as scored selection",
+    "before_launch": "Pin source bytes and new plan/runtime code; test historical-support exclusion, source date/units/91-day arithmetic, nested beta-zero density, equal-cycle scaler, prior predictive range, label sealing, plan/runtime checks and failure preservation; independently review these. Launch of a versioned retrospective development experiment is a separate root task, not an approval gate inferred from this audit."
+  },
+  "benchmarks": {
+    "E01_result": "Both 2018 and 2022 headline-CPI arms lost to F0; this rejects that specification, not every gas time-horizon hypothesis",
+    "status": "All A2018/2022 and B2020/2024 target years were exposed as development benchmarks. Earlier target outcomes can train later folds, so no globally unopened holdout or prospective qualification claim.",
+    "score_policy": "F0-to-G01 share CRPS primary on matched folds; report per-cycle and equal-cycle A/B deltas, winner/interval/competitive diagnostics and numerical MCSE. No race-iid inference from common national gas."
+  },
+  "runtime": {
+    "observed_E01_16_job_launch_utc": "2026-10-25T05:18:02.338157+00:00",
+    "terminal_file_mtime_utc": "2026-10-25T05:36:03.603214+00:00",
+    "observed_16_job_wall_seconds_from_launch_to_terminal_file": 1081.265057,
+    "observed_chain_count": 64,
+    "sum_logged_one_chain_seconds": 921,
+    "median_logged_one_chain_seconds": 15.0,
+    "expected_G01_12_job_planning_order": "roughly 10–25 minutes if same runtime/hardware and comparable convergence; not a bound or reason to relax gates",
+    "existing_output_inventory_bytes": 1416906623,
+    "runtime_caveat": "Existing runtime acceptance pins old code/plan; a new plan/source review must bind unchanged packages plus new adapter/runner before execution."
+  },
+  "luna_exchange": {
+    "initial_difference": "Luna initially viewed a state gasoline-exposure interaction as necessary for scientific distinction and proposed E01 versus E01+gas. Sol argued national 13-week gas change is a distinct time-scale/salience measure from CPI YoY, with selected F0 as the relevant incumbent.",
+    "resolved": "Luna agreed primary pooled national G01 versus matched F0, deferred exposure interaction and optional CPI complementarity. Both agree only development-benchmark interpretation and thin cycle-level support.",
+    "remaining_disagreement": "none on preparation feasibility or primary pair"
+  },
+  "pins": {
+    "economic-terminal-root-review-v1.md": {
+      "sha256": "ca8af18306440340e2b7aa231a0d47f25801bb674e41cd6f9ea12563f35eb59f",
+      "bytes": 4704
+    },
+    "economic-experiment-v1/README.md": {
+      "sha256": "a1b60dc1b80a1107ac6937638981f4ef98f54def6000d10813f048fc95210ee1",
+      "bytes": 8081
+    },
+    "economic-experiment-v1/prepare.py": {
+      "sha256": "06849868834bd177a21bf4030c119394c2b84cae0364f12ac54f9fb8450c6695",
+      "bytes": 22074
+    },
+    "economic-experiment-v1/prepared-v1/plan.json": {
+      "sha256": "cfe669f6cef8cec82702b03e9ced060edf022fd434df131483515a054d24aef9",
+      "bytes": 175425
+    },
+    "economic-execution-v1/README.md": {
+      "sha256": "f80d20896cdcdf43a3daca8a7f72b893d2499fe838bcda6f45e3f15191354dee",
+      "bytes": 7779
+    },
+    "economic-execution-v1/runner.py": {
+      "sha256": "8911e85789132721c2c1e79fb6e940fb5e168e1cedfc0d375ca876791afc4378",
+      "bytes": 43444
+    },
+    "economic-execution-v1/scoring.py": {
+      "sha256": "fa7b243f82327bd327bca098aef2d6fe38f5c694ed56e27a35068646dbcea30d",
+      "bytes": 5988
+    },
+    "economic-execution-v1/prepared-v2/plan.json": {
+      "sha256": "e3faefeb89a5bca837bc7f8b01e666112d563b95fe16e909060edf5aa1cbfc50",
+      "bytes": 272375
+    },
+    "economic-execution-v1/runtime/acceptance.json": {
+      "sha256": "956a66375738bb5e2be2e0296e734c8e46ee7c94a90e3e19cc3618b27a63fcac",
+      "bytes": 2633
+    },
+    "economic-execution-v1/attempt-v1/launch.json": {
+      "sha256": "1014fe2cfa46fbe66272abfd1f6efa477b8c2335eb34a09b1c72ebdf0c1af066",
+      "bytes": 656
+    },
+    "economic-execution-v1/attempt-v1/terminal.json": {
+      "sha256": "71162662d87b06b09f7651122198f482ef9714771f9bc75e45ed5f360b570144",
+      "bytes": 434
+    },
+    "economic-execution-v1/attempt-v1/summary.json": {
+      "sha256": "203c598c90cde1dd22597a479e2205f194de23c7a70ba861e5293fcab3a72678",
+      "bytes": 51545
+    },
+    "economic-execution-v1/attempt-v1.log": {
+      "sha256": "9a87f418021c7caeaf33300150071e080cb906649a1b9723416f0e158ab066db",
+      "bytes": 429191
+    },
+    "gasoline-twip-cutoff-v1/README.md": {
+      "sha256": "e1c77524ba0a6cda35aa968b0333d394658c317e31acb64baa1db98fb2317aef",
+      "bytes": 9767
+    },
+    "gasoline-twip-cutoff-v1/panel.json": {
+      "sha256": "9f4627170f846bfa6768e2bda43659a6218c4a577a2daf92989b14bd78ed3902",
+      "bytes": 36046
+    },
+    "gasoline-twip-cutoff-v1/receipt.json": {
+      "sha256": "329ddc83d6f17b8399363f77dbaacc15c0b7f9fded29b1f2d9f859be88c4b397",
+      "bytes": 5067
+    },
+    "gasoline-twip-cutoff-v1/repair-receipt.json": {
+      "sha256": "6f6f5081828537ec6f44e2293f6ad0b70fea1c03d2bacc979355b3d049b8c7a6",
+      "bytes": 1170
+    },
+    "gas-inflation-data-design-sol.md": {
+      "sha256": "93df79a2794576dba3280071dc861084e7cf7dc9051fcef13bd173aa0434e76f",
+      "bytes": 17456
+    },
+    "checkpoints/economic-run-inventory-v1.json": {
+      "sha256": "59be0c275afb20fe3b41e69acc55a9fc383ba2ced3cb1e7f19e33afaf0fe2d91",
+      "bytes": 86060
+    }
+  }
+}

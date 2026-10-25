@@ -1,0 +1,66 @@
+{
+  "checks": {
+    "all_12_current_and_lag_upper_bounds_pre_exact_midnight_H14": true,
+    "all_12_exact_91day_arithmetic_and_same_method_regime": true,
+    "all_32_raw_source_hashes": true,
+    "beta_prior_sd_and_sign_unrestricted": true,
+    "matched_support_and_outcome_hashes_F0_G01": true,
+    "nested_density_equivalence_supplied_point_test_present": true,
+    "no_sampler_run": true,
+    "owner_forecast_cutoffs_equal_exact_midnight_H14": true,
+    "p_first_equal_cycle_scaler_and_csv_feature_values": true
+  },
+  "folds": [
+    {
+      "feature_rows_sha256": "4489c60fe68d0a431c7afb678a5b30d0c1e725e0d261f30ac158cf74568b3481",
+      "matched_F0_G01_rows": 236,
+      "rows": 266,
+      "same_outcome_rows": true,
+      "target": 2018,
+      "target_z": -0.5026746154990993,
+      "training_cycle_count": 8,
+      "training_mean": 0.06517138279346342,
+      "training_population_sd": 0.1393466908752723
+    },
+    {
+      "feature_rows_sha256": "629ea2c3d621d37208a56e7d01bf426018dc3e2b2f3989d1bb5d08a2c911b001",
+      "matched_F0_G01_rows": 266,
+      "rows": 294,
+      "same_outcome_rows": true,
+      "target": 2020,
+      "target_z": -0.3344385719775425,
+      "training_cycle_count": 9,
+      "training_mean": 0.05738848898715238,
+      "training_population_sd": 0.13320881246087632
+    },
+    {
+      "feature_rows_sha256": "ce7d2ec36214152f46b4dd91aa83fb12fa342f105b2b5cd2c2f0f30809755fb7",
+      "matched_F0_G01_rows": 294,
+      "rows": 324,
+      "same_outcome_rows": true,
+      "target": 2022,
+      "target_z": -1.5838595599616156,
+      "training_cycle_count": 10,
+      "training_mean": 0.052933472485728404,
+      "training_population_sd": 0.12707774586356518
+    },
+    {
+      "feature_rows_sha256": "4944b010d801e2681fc846bb2e602b97501ac34553607b5aa9a0f414f6cc02d9",
+      "matched_F0_G01_rows": 324,
+      "rows": 354,
+      "same_outcome_rows": true,
+      "target": 2024,
+      "target_z": -0.9846383725504134,
+      "training_cycle_count": 11,
+      "training_mean": 0.03463589951805746,
+      "training_population_sd": 0.1342709825666146
+    }
+  ],
+  "limitations": [
+    "Density equivalence was reviewed from frozen compiled hashes and supplied-point test source; no fit, sampler, or owner test suite was run.",
+    "TWIP source upper bounds establish dated historical availability under the declared convention, not original posting logs or no-revision provenance.",
+    "Correlations are descriptive on only 8-11 unique earlier cycles."
+  ],
+  "result": "pass",
+  "schema": "independent_g01_preparation_checks_v1"
+}

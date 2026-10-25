@@ -1,0 +1,50 @@
+{
+  "schema": "G01ExecutionRootAcceptanceV1",
+  "utc": "2026-10-25T12:15:32.195520+00:00",
+  "decision": "accept_for_bounded_retrospective_F_only_execution",
+  "preparation": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-experiment-v1/prepared-v2/plan.json",
+    "sha256": "ee3cdefc9b3a5f9bc98598acd47ef7db81d0393f32c874396843e587566849ef",
+    "bytes": 161961
+  },
+  "execution": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/prepared-v2/plan.json",
+    "sha256": "63f6de0e57949857a48d02e5084af8cc9d576b4ffa96985b13afc938fe55b5ab",
+    "bytes": 183895
+  },
+  "independent_review": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-prior-review-luna-v1/implementation-review-v2.json",
+    "sha256": "b487a95e87cb9d7bf51b519aa0041b748ab6f43452dcdcdd80178cd0c7480e48",
+    "bytes": 4334
+  },
+  "root_checks": {
+    "preparation_tests_passed": 7,
+    "execution_tests_passed": 13,
+    "exact_execution_CLI_validation": "exit0 no sampler called",
+    "new_and_inherited_source_pins_verified": true,
+    "diff_review": "Only gasoline source/mean/support and three-arm execution bindings change. Scoring source byte-identical to accepted E01; shared joint predictive construction, numerical gates and source/runtime guards retained.",
+    "prior_predictive": "4096 joint prior draws per fold with shared cycle and existing race scales inspected; G01 distribution comparable to matched F0. Independent scalar prior bounds/standardization agree. No prior tuning.",
+    "initial_test_failure": "Root synthetic roundtrip rejected stale source inventory when runner/test were changed after executionv1 freeze. Confirmed implementation authors finalfitgate guard caused version drift. Oldplan/snapshots preserved and superseded; currentv2suite13pass. Not a scientific fitfailure."
+  },
+  "resources": {
+    "affinity_cpus": 12,
+    "load": [
+      6.18701171875,
+      6.6005859375,
+      6.86767578125
+    ],
+    "memory_available": "54591104 kB",
+    "disk_available_gib": 263.1531524658203,
+    "threads_per_job": 1,
+    "parallel_jobs": 1
+  },
+  "runtime_scope": "Reuse reviewed economic-v1-env package behavior with exact original runtime certificate; new source/plan reviewed here. No dependency rebuild or owner runtime changes.",
+  "limits": [
+    "Exposed retrospective A2018/22 B2020/24 development evidence",
+    "Eight to eleven earlier national cycles; race rows do not multiply macro observations",
+    "Dated EIA archives with original posting/revision provenance unverified",
+    "2004 pinned exception and2018methodbreak retained",
+    "No current2026feature/full-count/full-stack/complementarity qualification",
+    "No automatic retry, promotion or publicdefault change"
+  ]
+}

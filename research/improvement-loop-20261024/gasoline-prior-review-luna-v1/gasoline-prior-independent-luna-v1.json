@@ -1,0 +1,38 @@
+{
+  "schema": "gasoline_prior_independent_audit_v1",
+  "created_at_utc": "2026-10-25T12:08:54Z",
+  "scope": "independent, label-free arithmetic and prior-geometry audit; no model fit, posterior, source change, or prior tuning",
+  "reviewed_selection": {
+    "path": "../checkpoints/gasoline-preparation-root-selection-v1.json",
+    "sha256": "0f3912d0d5eddf89052629cf8202f9f3e281d511357fc89edb1319a52aeb4fd0",
+    "selection": "matched H0/F0/G01, primary G01-F0; one Normal(0,0.05) common coefficient; p-first, unique-earlier-cycle equal-weight population-SD scaling"
+  },
+  "method": {
+    "recomputation": "From retained TWIP panel log_change_13_weeks and owner label-free all-cycles panel, independently formed u_c = president_party_asof_c (+1 D, -1 R) * raw log change. For each target, mean and population SD used only strictly earlier gas-supported even cycles 2002+, one value per cycle. Target z=(u_target-mean)/SD.",
+    "prior_math": "For beta~Normal(0,0.05), the 95% incremental logit interval at the target feature is ±1.96*0.05*abs(z). At fixed base share 0.5, exact logistic transformation gives equal-magnitude share shifts sigmoid(bound)-0.5.",
+    "correlations": "Pearson correlations computed over unique training-cycle rows only between standardized gas feature and F0 context party, party*midterm, and national carryover logit(prior national presidential Democratic share); these are small-N descriptive diagnostics, not race-weighted estimates.",
+    "label_boundary": "Only dated predictors, election context, and the separate TWIP gas panel were read. No Senate outcome labels, fitted coefficients, predictive draws, or scores were read."
+  },
+  "results": [
+    {"target": 2018, "training_cycles": 8, "training_races": 236, "target_z": -0.502675, "95pct_logit_shift": 0.049262, "fixed_0_5_share_shift": 0.012313, "target_raw_gas_within_training_range": true, "target_oriented_gas_within_training_range": true, "corr_party": -0.411, "corr_party_midterm": -0.445, "corr_national": -0.492},
+    {"target": 2020, "training_cycles": 9, "training_races": 266, "target_z": -0.334439, "95pct_logit_shift": 0.032775, "fixed_0_5_share_shift": 0.008193, "target_raw_gas_within_training_range": true, "target_oriented_gas_within_training_range": true, "corr_party": -0.332, "corr_party_midterm": -0.327, "corr_national": -0.484},
+    {"target": 2022, "training_cycles": 10, "training_races": 294, "target_z": -1.583860, "95pct_logit_shift": 0.155218, "fixed_0_5_share_shift": 0.038727, "target_raw_gas_within_training_range": true, "target_oriented_gas_within_training_range": false, "corr_party": -0.289, "corr_party_midterm": -0.330, "corr_national": -0.480},
+    {"target": 2024, "training_cycles": 11, "training_races": 324, "target_z": -0.984638, "95pct_logit_shift": 0.096495, "fixed_0_5_share_shift": 0.024105, "target_raw_gas_within_training_range": true, "target_oriented_gas_within_training_range": true, "corr_party": -0.394, "corr_party_midterm": -0.453, "corr_national": -0.510}
+  ],
+  "assessment": {
+    "prior": "The fixed SD 0.05 prior is not plainly problematic from marginal target geometry alone: its 95% fixed-0.5 shifts range about 0.8 to 3.9 share points across these target features. That does not replace the required graph-level prior-predictive review.",
+    "identifiability": "The feature is materially associated with existing party/midterm and prior-national context in every tiny training-cycle sample (absolute correlations roughly 0.29-0.51). This is a clear collinearity/attribution risk for the one coefficient, not proof that the prior is mis-scaled.",
+    "support": "All four raw target gas changes lie inside prior raw-change training ranges. 2022 is a modest oriented-feature extrapolation: z=-1.584 is just below the prior oriented minimum from the earlier cycles, although its raw gas change is not extreme. The 2022 target remains exposed development evidence, not validation.",
+    "conclusion": "No basis here to change or tune the accepted prior. Retain it for the preregistered comparison only if owner graph-level prior-predictive checks pass; report weak cycle-level identification and context correlations. No separate midterm coefficient."
+  },
+  "reproducibility": {
+    "script": {"path": "recompute.py", "sha256": "5e6a0abc232dd22b073cde6e2ecab17b7d837e20b0159382a27f61ff0bc6abe8"},
+    "full_precision_output": {"path": "recomputed.json", "sha256": "20332b9f03cbb66532c00368c73503aa38faec2b760cf5f7e909ce07ed7463ac"},
+    "command": "python3 recompute.py"
+  },
+  "source_pins": [
+    {"path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/checkpoints/gasoline-preparation-root-selection-v1.json", "sha256": "0f3912d0d5eddf89052629cf8202f9f3e281d511357fc89edb1319a52aeb4fd0"},
+    {"path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-twip-cutoff-v1/panel.json", "sha256": "9f4627170f846bfa6768e2bda43659a6218c4a577a2daf92989b14bd78ed3902"},
+    {"path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/fundamentals-iteration-20261020/panel-sol/features/all-cycles.csv", "sha256": "0a2a1b9c15a83f33406828e7b7e2c1b24230570ed0639c995c410b2bbe9ec786"}
+  ]
+}

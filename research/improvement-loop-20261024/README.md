@@ -6,6 +6,7 @@ This isolated branch records execution of the [standing goal](GOAL.md). It is ba
 
 As of October 25, 2026 UTC:
 
+- The [G01 gasoline comparison](checkpoints/gasoline-actual-launch-v1.json) is running under original session 11060. Independent Luna/Sol review supports one president-oriented 13-week gasoline-change term, with H0/F0/G01 all trained on the same 2002+ support. Seven preparation and thirteen synthetic runner tests pass; the exact frozen execution plan is reviewed. These twelve fresh aggregate fits do not qualify the count stack or a current forecast. The [research selection](checkpoints/gasoline-preparation-root-selection-v1.json) preserves the separate negative CPI result and exposes the limited number of national training cycles. Do not duplicate the run or infer predictive improvement before its reviewed results.
 - All eight canonical roles have research implementations. There is no missing broad layer to rebuild.
 - Fresh verification passed 110 population checks and 31 downstream graph checks. These establish the tested implementation and composition properties, not successful posterior fitting or predictive value.
 - The actual count-stack fit remains under numerical development with the Senate owner. A fitted, matched A/B complementarity audit has not completed. **No weakest layer has been empirically identified and no challenger has been promoted.**

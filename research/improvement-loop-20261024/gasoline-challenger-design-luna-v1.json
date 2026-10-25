@@ -1,0 +1,71 @@
+{
+  "schema": "gasoline_challenger_design_review_v1",
+  "reviewed_at_utc": "2026-10-25T12:02:32Z",
+  "scope": "design review only; no acquisition, fit, model/input/source-admission change, promotion, or publication",
+  "recommendation": "prepare a design-only G01 specification; defer fitting until the blocks below are cleared",
+  "scientific_question": "Does the pre-cutoff 13-week change in national regular-retail gasoline add predictive information to the selected Senate aggregate baseline? This is a national gasoline salience/time-horizon hypothesis, not a causal penalty or a state-exposure claim.",
+  "predeclared_primary_hypothesis": {
+    "feature": "training-standardized log(P_US_regular_retail_TWIP,t / P_US_regular_retail_TWIP,t_minus_13_weeks)",
+    "window": "exact 91-day observation-date lag, from the same latest pre-H14 dated TWIP issue arm",
+    "coefficient": "one common, symmetric, sign-unrestricted coefficient; no midterm-only slope, interaction, asymmetry, alternate window, or CPI-minus-gas contrast",
+    "model_coordinate": "one additive mean term in the ordinary Senate D/R aggregate logit model, senate_aggregate_logit_empirical_mixture_v1, with denominator D_plus_R; preserve F0's candidate incumbency, relative presidential carryover, party and midterm context, structure, and cycle/race terms",
+    "scope_limit": "This aggregate experiment does not qualify the protected-population count graph or full Senate-count forecast."
+  },
+  "matched_comparison": {
+    "primary_arms": [
+      "F0: exact selected relative-context baseline, refit on gas-supported training cycles only",
+      "G01: identical F0 plus the one gasoline feature, jointly refit"
+    ],
+    "training_support_rule": "For every chronological target fold, use the same strictly earlier cycles with an available admitted gasoline feature in both arms; disclose cycles removed from F0. Do not reuse E01 posterior/score results or fit only the gas arm on the full 1998+ panel.",
+    "benchmark_status": "A2018, A2022, B2020, and B2024 were already exposed development benchmarks. Report retrospective cycle-level results truthfully; they are not untouched holdouts.",
+    "cpi_boundary": "E01 is negative versus F0 and is not the selected incumbent. Do not silently treat E01 as baseline. Testing gasoline conditional on CPI would be a separate predeclared 2x2 (F0/E01 by no-gas/gas) and is out of scope here."
+  },
+  "panel_check": {
+    "actual_target_panel": "economic-experiment-v1/prepared-v1/features-through-2018-LABEL-FREE.csv and matched later cutoff snapshots; 2018 target panel has 329 Senate race rows and cycles 1998-2018. Race rows do not multiply national-feature information.",
+    "gas_panel": "gasoline-twip-cutoff-v1/panel.json has 12 supported even cycles, 2002-2024. Training gas-cycle counts at targets 2018/2020/2022/2024 are 8/9/10/11 respectively; the first fold has only four midterm and four presidential cycles, 2002-2016. Matched 2018 F0 therefore loses 1998 and 2000 relative to the existing E01 panel.",
+    "observed_A_B_features": {
+      "2018": 0.004875,
+      "2020": -0.012838,
+      "2022": -0.148340,
+      "2024": -0.097572
+    },
+    "unit_note": "Values are log changes, not percentages or CPI-relative changes; use the panel's full-precision values for any later preparation."
+  },
+  "source_and_cutoff_limits": [
+    "Use only the retained older dated TWIP source arm for this design; it is not the latest-Monday GDFU arm or current revised EIA history.",
+    "The selected TWIP report date and conservative end-of-following-UTC-day availability bound precede the stated H14 cutoff; exact original posting logs and no-revision provenance are unauthenticated. This is not strict original-vintage qualification.",
+    "The 2004 issue has a narrow, byte-pinned stale-header-year exception and corrected gasoline cell; preserve its contradictory header and exception evidence.",
+    "Within-year 13-week pairs do not cross the May 2018 EIA gasoline method break, but the training panel spans pre/post regimes; test regime sensitivity without searching outcomes or silently asserting cross-era equivalence.",
+    "Do not blend TWIP and GDFU realizations, infer state-specific prices from national/PADD data, or label retrieval in 2026 as proof of October 2020/2024 availability."
+  ],
+  "identifiability_and_prior_predictive": {
+    "risks": [
+      "Only eight national gas-cycle training observations inform the first (2018) fold; the coefficient is weakly identified against F0's shared cycle term, party/midterm context, and other persistent election movement.",
+      "The effective replication unit is election cycle, not 329 or more state-race rows. Four A/B evaluation folds do not create four independent gas histories, and two midterm targets cannot identify a stable midterm-specific coefficient.",
+      "Thirteen-week gasoline movement overlaps CPI mechanically and may proxy demand shocks, macro conditions, or cycle-specific news. A standalone gas term is distinguishable by horizon/source, not automatically an independent cause or signal.",
+      "The 2022 target's large decline may dominate apparent gains; inspect leave-one-cycle-out and report gains/losses by cycle, but do not retune on these exposed benchmarks.",
+      "Training-only standardization and a symmetric skeptical prior are needed. The research packet's Normal(0, 0.05) per training SD and 0.025 sensitivity are proposals, not qualified priors for this target. Prior-predictive simulation must show plausible shifts in aggregate logit/share/winner distributions over actual feature support before fitting."
+    ],
+    "minimum_support_for_any_pilot": "Retain all available earlier even-cycle observations and require at least the actual first-fold support of eight cycles spanning four midterms and four presidential elections; do not fit separate tier effects. This is only enough for a strongly regularized descriptive pilot, not stable identification or promotion. If any required source row or matched outcome cycle is absent, defer the entire matched comparison rather than fill or impute it."
+  },
+  "blocking_conditions_before_fit": [
+    "Freeze an owner-reviewed, reproducible G01 design/implementation and feature transform against the exact selected aggregate model coordinate; this review is not that authorization.",
+    "Resolve whether the TWIP dated-source qualification is sufficient for retrospective development use despite unauthenticated original posting/revision logs; do not call it strict-as-of evidence.",
+    "Produce prior-predictive checks in the selected model using only training support and predeclare primary score, numerical tolerance, and cycle-level reporting before any target scoring.",
+    "Prepare exact matched-support F0/G01 fold inputs and disclose the lost 1998/2000 training years; any fit requires separate authorization and equal fitting budgets."
+  ],
+  "outcome_context": "Completed E01 CPI comparison retains F0: E01 worsened both midterm CRPS values and the tighter-prior sensitivity also worsened both midterms. This motivates a new question but does not establish gas value, causal effects, or a weakest layer.",
+  "direct_critique": "official_id_wv_sources_sol agreed on design-only/no-fit status, the matched F0 versus F0+gas primary pair, strict cycle-level interpretation, and treating ACS exposure interaction as a later option rather than the only scientifically distinct gas hypothesis.",
+  "source_pins": [
+    {"path": "gas-inflation-research-luna.md", "sha256": "1f944c53dc3a26262542e30eee4e54cba1416cd43a7c9b072631d7f2ed1911eb"},
+    {"path": "gas-inflation-data-design-sol.md", "sha256": "93df79a2794576dba3280071dc861084e7cf7dc9051fcef13bd173aa0434e76f"},
+    {"path": "economic-terminal-root-review-v1.md", "sha256": "ca8af18306440340e2b7aa231a0d47f25801bb674e41cd6f9ea12563f35eb59f"},
+    {"path": "economic-intake-root-review.md", "sha256": "823196c6c248f5aeb2679226860093ac7846baad1765cd4ad9f21f83d476cc31"},
+    {"path": "gasoline-twip-cutoff-v1/README.md", "sha256": "e1c77524ba0a6cda35aa968b0333d394658c317e31acb64baa1db98fb2317aef"},
+    {"path": "gasoline-twip-review-luna.md", "sha256": "62a6f778b0673db132fac767df812c7f67f6d1f6337f3c19cdece23e4f36a7b9"},
+    {"path": "gasoline-twip-cutoff-v1/panel.json", "sha256": "9f4627170f846bfa6768e2bda43659a6218c4a577a2daf92989b14bd78ed3902"},
+    {"path": "gasoline-twip-cutoff-v1/receipt.json", "sha256": "329ddc83d6f17b8399363f77dbaacc15c0b7f9fded29b1f2d9f859be88c4b397"},
+    {"path": "economic-experiment-v1/prepared-v1/plan.json", "sha256": "cfe669f6cef8cec82702b03e9ced060edf022fd434df131483515a054d24aef9"},
+    {"path": "economic-experiment-v1/prepared-v1/features-through-2018-LABEL-FREE.csv", "sha256": "c42dee95d1955c70b056ea3659f7c031d8d0b292de19e5b082a1d3684fbf5f7c"}
+  ]
+}

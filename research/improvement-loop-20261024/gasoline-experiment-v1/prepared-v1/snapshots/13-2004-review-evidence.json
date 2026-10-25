@@ -1,0 +1,52 @@
+{
+  "schema": "twip_2004_issue_date_review_v1",
+  "status": "admitted_explicit_byte_bound_date_exception",
+  "index": {
+    "url": "https://www.eia.gov/petroleum/weekly/",
+    "file": "raw/index.html",
+    "sha256": "58f8c79895d1e7f9a8834d5bdef40d9032b1ba3a9e145f5b131947cf128d5db8",
+    "archive_link": "https://www.eia.gov/petroleum/weekly/archive/2004/041014/twipprint.html",
+    "listed_release": "2004-10-14",
+    "listed_week_ending": "2004-10-08",
+    "article": "Peak Timing"
+  },
+  "source_header_literal": "Released on October 14, 2003 (Next Release on October 20, 2003)",
+  "retail_observation_literal": "10/11/04",
+  "retail_gasoline_source_value": "199.3",
+  "source_units": "cents_per_gallon",
+  "calendar_corroboration": {
+    "indexed_issue_weekday": "Thursday",
+    "header_2003_date_weekday": "Tuesday",
+    "table_observation_2004_weekday": "Monday",
+    "next_release_2004_weekday": "Wednesday",
+    "next_release_2003_weekday": "Monday"
+  },
+  "lag13_review_candidate": {
+    "schema": "twip_regular_retail_row_v1",
+    "series_id": "US_regular_retail_gasoline_TWIP",
+    "geography": "US",
+    "grade": "regular",
+    "formulations": "national_regular_summary_not_separately_reconstructed",
+    "units": "USD_per_gallon",
+    "value": 1.917,
+    "source_value": "191.7",
+    "source_units": "cents_per_gallon",
+    "observation_date": "2004-07-12",
+    "issue_date": "2004-07-14",
+    "available_upper_bound_utc": "2004-07-15T23:59:59+00:00",
+    "release_time_basis": "date_only_source_header_end_following_UTC_day",
+    "source": {
+      "url": "https://www.eia.gov/petroleum/weekly/archive/2004/040714/twipprint.html",
+      "file": "raw/2004-07-14-review-only.html",
+      "sha256": "a4fd22f6842d7fd108190f0403caf95702e1b6c583ca83af9948aae1ec95f20d",
+      "bytes": 23193,
+      "issue_date": "2004-07-14"
+    },
+    "method_regime": "pre_2018_05_14",
+    "original_posting_log_authenticated": false
+  },
+  "alternate_WPSR_fetch_attempts_file": "supplementary-acquisition.json",
+  "decision": "Admit only exact source/index bytes with preserved stale header, explicit date exception and correct national gasoline column; no original-posting authentication or scientific qualification.",
+  "adjacent_heating_oil_source_value": "189.9",
+  "repair_note": "Prior review evidence manually copied adjacent heating-oil value189.9; raw gasoline is199.3. Source bytes unchanged; regression distinguishes both columns."
+}

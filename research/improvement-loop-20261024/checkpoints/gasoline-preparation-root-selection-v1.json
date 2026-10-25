@@ -1,0 +1,130 @@
+{
+  "schema": "G01AggregatePreparationRootSelectionV1",
+  "utc": "2026-10-25T12:05:54.031810+00:00",
+  "decision": "implement_source_bound_matched_H0_F0_G01_preparation_and_execution_adapter",
+  "reason": "User-requested gasoline hypothesis is distinct from completed CPI YoY specification: 13-week gas movement may add information to F0. Existing dated TWIP archive now supports all target and eight-or-more earlier cycles. Prior CPI negative result preserved; this does not tune its prior or repeat it.",
+  "scope": "Ordinary Senate D/(D+R) aggregate fundamentals-only retrospective development; not protected-population counts, full chamber, full-stack ranking or current2026 qualification.",
+  "arms": [
+    "H0",
+    "F0",
+    "G01"
+  ],
+  "primary_comparison": "G01 minus F0; H0 descriptive simple history reference",
+  "feature": {
+    "raw": "ln(P_US_regular_TWIP_current/P_US_regular_TWIP_exact91daysEarlier)",
+    "orientation": "u=dated_president_party_asof(+1D,-1R)*raw",
+    "standardization": "x=(u-mean_earlier_unique_cycles)/population_SD_earlier_unique_cycles; equal cycle weight; target excluded",
+    "prior": "one beta Normal(0,0.05) added to aggregate Democratic-share logit mean; sign unrestricted",
+    "excluded": [
+      "CPI term",
+      "midterm-specific slope",
+      "state exposure",
+      "alternative windows",
+      "extra national shock",
+      "post-poll bonus"
+    ]
+  },
+  "support": {
+    "start_cycle": 2002,
+    "targets": [
+      2018,
+      2020,
+      2022,
+      2024
+    ],
+    "training_races": [
+      236,
+      266,
+      294,
+      324
+    ],
+    "training_cycles": [
+      8,
+      9,
+      10,
+      11
+    ],
+    "target_races": [
+      30,
+      28,
+      30,
+      30
+    ],
+    "dropped_from_each_old_F0_fold": {
+      "1998": 32,
+      "2000": 31
+    },
+    "common_all_arms": true
+  },
+  "source_policy": {
+    "cutoff": "election_date minus14days at00:00UTC, including source conservative availability upper bounds",
+    "dated_source_arm": "older TWIP; no latest-GDFU substitution",
+    "historical_posting_log_authenticated": false,
+    "retrospective_use_accepted_with_disclosure": true,
+    "preserve_2004_exception": true,
+    "preserve_2018_method_regime_limit": true
+  },
+  "benchmarks": {
+    "A": [
+      2018,
+      2022
+    ],
+    "B": [
+      2020,
+      2024
+    ],
+    "already_exposed_development": true,
+    "earlier_target_outcomes_may_train_later_folds": true,
+    "future_versions_may_learn_from_failures_with_new_explicit_reason": true
+  },
+  "execution_intent": {
+    "fresh_joint_fits": 12,
+    "chains": 4,
+    "warmup": 1500,
+    "retained": 4000,
+    "threads": 1,
+    "target_accept": 0.97,
+    "max_depth": 10,
+    "reuse_posterior_or_scores": false,
+    "fit_now": false,
+    "before_fit": [
+      "review source/pin/admission/scaler invariants and prior predictive checks",
+      "pass nested-density, source mutation, earlier-label, matched-support and runner sealing/failure tests",
+      "pin new execution plan to accepted runtime, inspect all model/source deltas",
+      "check local resources and preserve independent owner runs"
+    ],
+    "numerical_gates": "inherit accepted E01 fit/prediction/score gates unchanged; no automatic retries",
+    "permission": "Standing user goal authorizes preparation/test/execution within ownership; no additional user approval inferred from agents design-only assignment."
+  },
+  "root_checks": {
+    "review_source_pins_verified": true,
+    "TWIP_receipt_files_verified": 32,
+    "all12_exact_midnight_upper_bounds_checked": true,
+    "all12_91day_lags_and_log_values_checked": true,
+    "all4_support_counts_checked": true,
+    "code_or_fit_result_claim": false
+  },
+  "reviews": [
+    {
+      "path": "research/improvement-loop-20261024/gasoline-challenger-design-luna-v1.json",
+      "sha256": "6796bd1f63cec14ba8db208929fb4f87b235f1a5315be95abbc8c184c639f9c8",
+      "bytes": 8832
+    },
+    {
+      "path": "research/improvement-loop-20261024/gasoline-challenger-design-luna-v1-clarification.json",
+      "sha256": "790cbcf904f0cdb3098e1fcfaaa30e7796ab3b089eb7ead960193a04b6bbf2af",
+      "bytes": 4214
+    },
+    {
+      "path": "research/improvement-loop-20261024/gasoline-challenger-feasibility-sol-v1.json",
+      "sha256": "05031789cbf9680a7c2dc505a6c6d68ff10fb78d5e6ed576c585da4c6c8ce765",
+      "bytes": 13276
+    }
+  ],
+  "preservation": {
+    "E01_and_momentum_completed_retain_decisions": true,
+    "owner_inputs_processes_and_models_unchanged": true,
+    "public_default_unchanged": true,
+    "goal_complete": false
+  }
+}

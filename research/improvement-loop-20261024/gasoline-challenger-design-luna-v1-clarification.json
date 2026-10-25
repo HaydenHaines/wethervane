@@ -1,0 +1,44 @@
+{
+  "schema": "gasoline_challenger_design_clarification_v1",
+  "created_at_utc": "2026-10-25T12:04:31Z",
+  "original_review": {
+    "path": "gasoline-challenger-design-luna-v1.json",
+    "sha256": "6796bd1f63cec14ba8db208929fb4f87b235f1a5315be95abbc8c184c639f9c8",
+    "status": "preserved unchanged; this note supplements its design-only recommendation"
+  },
+  "orientation_clarification": {
+    "formula": "raw feature per cycle = president_party_asof (+1 D, -1 R) * ln(P_US_regular_retail_TWIP,current / P_US_regular_retail_TWIP,91_days_prior); then standardize using one equal-weight value per strictly earlier, gas-supported election cycle, population SD (ddof=0), training-only mean/SD",
+    "reason": "This copies E01's p-first orient-then-standardize convention. It makes a single coefficient express the same president-party-oriented salience coordinate when the president's party changes; target remains the Democratic share D/(D+R). The coefficient is sign-unrestricted and this orientation is not a causal sign claim.",
+    "prior_geometry": "Do not standardize raw gasoline change first and multiply by party afterward: that is a different feature and changes intercept/party shifts and target-fold prior-predictive geometry. Any such alternative would be a separately versioned specification.",
+    "direct_critique": "Sol confirmed the E01 transform is the appropriate template. His audit found the 2022 target standardized value is -1.584 under p-first versus -0.785 under raw-first; a Normal(0,0.05) coefficient therefore has different implied prior geometry across those transforms."
+  },
+  "cutoff_clarification": {
+    "owner_cutoff": "The selected economic adapter defines inclusive 00:00 UTC at election day minus fourteen calendar days.",
+    "panel_issue": "TWIP panel cutoff_utc fields encode end-of-H14-day 23:59:59 UTC, which is a looser convention; do not carry that field into a future feature join as the owner cutoff.",
+    "source_evidence": "The conservative TWIP report upper bounds are before exact-midnight H14 for all 12 panel cycles, per the independent Sol source audit. A future implementation must explicitly rebind each value to the owner cutoff and retain the per-row comparison; this does not authenticate original posting logs or revisions."
+  },
+  "authorization_and_development_clarification": {
+    "standing_goal": "The prior phrase 'any fit requires separate authorization' means a separate owner-controlled implementation/run plan and equal matched budgets, not a request for new user permission. The standing improvement goal already authorizes root's implementation, verification, and launch within resource ownership.",
+    "benchmark_reuse": "A2018, A2022, B2020, and B2024 may be reused iteratively as development benchmarks under the applicable verification workflow. No untouched-holdout cycle is a prerequisite. Report all four as exposed development evidence, never as untouched validation.",
+    "future_specification_changes": "The current G01 hypothesis remains frozen for this proposed comparison, but there is no blanket ban on later justified retuning. A materially changed feature, transform, prior, or comparison must receive a new version, explain its rationale, and report exposure/reuse of these same benchmarks. No fit is launched by this clarification."
+  },
+  "confirmed_recommendation": "Prepare G01 as design only; any later execution uses matched-support F0 versus F0+G01, the p-first transform above, one common sign-unrestricted coefficient, exact owner H14 cutoffs, and cycle-level retrospective reporting.",
+  "source_pins": [
+    {
+      "path": "gasoline-challenger-design-luna-v1.json",
+      "sha256": "6796bd1f63cec14ba8db208929fb4f87b235f1a5315be95abbc8c184c639f9c8"
+    },
+    {
+      "path": "economic-experiment-v1/prepare.py",
+      "sha256": "06849868834bd177a21bf4030c119394c2b84cae0364f12ac54f9fb8450c6695"
+    },
+    {
+      "path": "economic-cutoff-adapter-v2/receipt.json",
+      "sha256": "4646bc2ea152f441a1b34388ce4bd5693306a065947c3f0d17a09c1f781ac733"
+    },
+    {
+      "path": "gasoline-twip-cutoff-v1/panel.json",
+      "sha256": "9f4627170f846bfa6768e2bda43659a6218c4a577a2daf92989b14bd78ed3902"
+    }
+  ]
+}
