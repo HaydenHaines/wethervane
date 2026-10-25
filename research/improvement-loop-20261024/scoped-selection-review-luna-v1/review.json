@@ -1,0 +1,131 @@
+{
+  "schema": "IndependentScopedCountSelectionReviewV1",
+  "reviewer": "luna",
+  "date": "2026-10-25",
+  "status": "reviewed_v2_no_material_blocker_for_pending_workflow",
+  "supersedes": {
+    "path": "scoped-selection-review-luna-v1/superseded-review-v1.json",
+    "sha256": "e6727056dcf4f5853f602833fa1e6084cf7c7bda269d7883f66c41864b30d840",
+    "reason": "Correct task-key wording: V2 keys include native output unit, denominator and estimand; basis and universe remain in the full native receipt but are not included in the task key."
+  },
+  "summary": "The final scoped-selection implementation keeps physical count task identity separate from candidate/configuration identity, requires a fresh native reinspection and source-bound journal decision, and applies append-only selection events with CAS. The TX2026 packet remains pending, so no production-domain selection is currently possible.",
+  "decision_boundary": {
+    "included": [
+      "Complete native count result must resolve through the pinned owner application before selection can be considered.",
+      "Independent review and root decision are pinned to the exact candidate, predecessor, task scope and journal checkpoint.",
+      "Bootstrap requires an explicit absent-predecessor decision and leaves empirical status unassessed.",
+      "Promote requires a different complete candidate, matched historical evaluation evidence, target-transfer review and a journal promote decision.",
+      "Retain preserves the exact candidate and empirical status; it cannot create a first selection.",
+      "Rollback is a new append-only event and cannot upgrade the restored candidate's evidence status.",
+      "Public availability remains false; a registry selection is not a website default or publication."
+    ],
+    "excluded": [
+      "M02 H14 conditional D/R aggregate retain is not count-selection evidence.",
+      "The retrospective TX2018 GPU run is not a TX2026 actual-current native count result.",
+      "A synthetic inspector double and its invented comparison files verify software mechanics only."
+    ]
+  },
+  "review_findings": [
+    {
+      "severity": "resolved_before_v2",
+      "finding": "V1 placed `not_applicable_to_count_outputs` in the scoped denominator even though the native output contract declares `declared_event_participants_and_contest_category_universes`. That gave the scope key a misleading denominator identity.",
+      "resolution": "V2 requires one exact native output contract, verifies its unit/denominator/estimand/basis/universe, and derives unit, denominator and estimand into the task scope. Basis and universe remain in the full native receipt but do not feed the task key. V2 tests cover missing, duplicate and altered output semantics. V1 source and its actual pending preparation are explicitly superseded."
+    },
+    {
+      "severity": "none_material_on_v2",
+      "finding": "Transaction, retry and concurrency boundaries are covered: event + command append together under a registry write transaction; the exact source-journal decision is read through an attached read-only database lock; stale competing selections lose CAS; post-commit retry validates the recorded event and original journal checkpoint even after later heads; rollback preserves historical evidence status; resolution reopens native evidence."
+    },
+    {
+      "severity": "scope_limit_not_blocker",
+      "finding": "Typed comparison and terminal/output links are checked as compact metadata. The registry does not reopen raw prediction banks or recompute metric scores; those claims remain under separately pinned numerical, independent and root review evidence. File hashes bind the reviewed bytes but do not create a cryptographic identity system for human reviewers."
+    }
+  ],
+  "final_v2_verification": {
+    "independent_command": "PYTHONPATH=. python3 -m unittest -v test_scoped_selection",
+    "independent_result": {
+      "tests": 19,
+      "passed": 19,
+      "failed": 0,
+      "duration_seconds": 4.446,
+      "evidence_domain": "temporary synthetic software mechanics only"
+    },
+    "author_result": {
+      "tests": 19,
+      "passed": 19,
+      "failed": 0,
+      "duration_seconds": 4.009,
+      "scope": "synthetic temporary registry and journal; no actual registry or scientific journal mutation"
+    },
+    "actual_native_prepare_v2": {
+      "status": "blocked_requires_computation",
+      "candidate_reference": null,
+      "selection_established": false,
+      "denominator": "declared_event_participants_and_contest_category_universes",
+      "output_estimand": "joint candidate/category counts and shared event participants",
+      "journal_and_registry_state": "Root recorded unchanged journal hash/counts; no selection SQLite registry or object store was created.",
+      "interpretation": "This is a pending native metadata preparation, not a completed result, fit, or selection."
+    }
+  },
+  "supersession_record": {
+    "v1_source_sha256": "d2e5141e2cc63b82ab3e9a933f9208949bf6b01bc7295ad50880f9543fc9c204",
+    "v1_test_log": {
+      "path": "scoped-selection-review-luna-v1/pre-fix-tests.log",
+      "sha256": "a56ed49f5a27d21285163e0cbc292b7c88ce7ee929085bae919604fb7d368687",
+      "result": "17 passed; superseded by V2 denominator correction"
+    },
+    "v1_actual_prepare_receipt_sha256": "0ba3fd5b0b0603d90d67fe295add6a7d3a61ad0b7ce810c5ad94891b25d89539",
+    "v1_actual_prepare_note": "Pending preparation under V1 completed without changing journal counts/hash or creating a registry; it is retained for history and is superseded as a source result by the fresh V2 preparation."
+  },
+  "limitations": [
+    "The actual current TX2026 native request still requires computation and has no complete result artifact; the ready-result path and real selection-apply path remain unexercised.",
+    "The positive bootstrap/promotion/rollback tests use a deliberately invented inspector double and temporary synthetic domain. They do not establish native scientific validity or eligibility for actual research selection.",
+    "Future apply requires separately reviewed source-bound authorization and exact native completion evidence. Numerical `passed`, typed metadata and root-selected status do not themselves establish empirical forecast quality.",
+    "SQLite rollback-journal locking is a local coordination contract, not distributed transaction or remote reviewer authentication."
+  ],
+  "pins": [
+    {
+      "path": "research/improvement-loop-20261024/scoped_selection.py",
+      "sha256": "5006cdea38e036bd5b84b94278f83548035e5e2c434f651ef519b6a30f3fed4b"
+    },
+    {
+      "path": "research/improvement-loop-20261024/test_scoped_selection.py",
+      "sha256": "24cde7caaa82442675c9aa079e814faf8d06aebbf0682e842e84ba916fe6cf83"
+    },
+    {
+      "path": "research/improvement-loop-20261024/scoped_selection.md",
+      "sha256": "5bf02fe93435db9af198552c21e3a425aae5cc42b2c61cc33418df6d187e9d19"
+    },
+    {
+      "path": "research/improvement-loop-20261024/native_selection.py",
+      "sha256": "adf9067ed03366c0e88001e9f31c91b76b294c262e222ee53ba7bc2e3cc29286"
+    },
+    {
+      "path": "research/improvement-loop-20261024/scoped-selection-review-luna-v1/pre-fix-tests.log",
+      "sha256": "a56ed49f5a27d21285163e0cbc292b7c88ce7ee929085bae919604fb7d368687"
+    },
+    {
+      "path": "research/improvement-loop-20261024/scoped-selection-review-luna-v1/final-v2-tests.log",
+      "sha256": "7e125d7eaed3ffc0e7274c26b3d6a96f440c16026c6a36cee5d55ab2c62faad4"
+    },
+    {
+      "path": "research/improvement-loop-20261024/scoped-selection-sol-v1/author-tests-v2.log",
+      "sha256": "1998ede3157c31a8f746175ce932ad66f40b86c8ee955eb41eb812952c408c0d"
+    },
+    {
+      "path": "research/improvement-loop-20261024/scoped-selection-sol-v1/author-verification-v2.json",
+      "sha256": "1a6dff1ea72eee5599378babb5183acd87234b0478d00709470389e42ef00b97"
+    },
+    {
+      "path": "research/improvement-loop-20261024/scoped-selection-root-v1/actual-pending-preparation-v2/receipt.json",
+      "sha256": "8861511cd6a2c3773882fb4d1c102a5fdcb522cda1fc7a3d8d866ee2879b7e9d"
+    },
+    {
+      "path": "research/improvement-loop-20261024/scoped-selection-root-v1/execution-v2.json",
+      "sha256": "666c2e02edaf6a9018a97de1712f49822b5981becd1f63f3d85c62f8e2eac596"
+    },
+    {
+      "path": "research/improvement-loop-20261024/scoped-selection-root-v1/invocation-v2.json",
+      "sha256": "4020090a833bebc4ae9294e4134409912cdbeb1da15a2bca422616486fecf350"
+    }
+  ]
+}

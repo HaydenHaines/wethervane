@@ -1,0 +1,55 @@
+{
+  "schema": "ScopedSelectionRootInvocationV2",
+  "startedAt": "2026-10-25T19:49:32.898831+00:00",
+  "command": [
+    "/usr/bin/python3",
+    "-B",
+    "scoped_selection.py",
+    "prepare",
+    "--native-spec",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/native-selection-sol-v1/attempt2-spec.json",
+    "--native-spec-sha256",
+    "a72024df6626224cfaba6e0d2d704d7bc4cfc05a2e81b6df2f5aef405247c233",
+    "--output",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/scoped-selection-root-v1/actual-pending-preparation-v2"
+  ],
+  "cwd": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024",
+  "source": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/scoped_selection.py",
+    "sha256": "5006cdea38e036bd5b84b94278f83548035e5e2c434f651ef519b6a30f3fed4b",
+    "size": 41570
+  },
+  "nativeSource": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/native_selection.py",
+    "sha256": "adf9067ed03366c0e88001e9f31c91b76b294c262e222ee53ba7bc2e3cc29286",
+    "size": 24877
+  },
+  "before": {
+    "journal": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/ledger.sqlite3",
+      "sha256": "bf751df599c6630c922a80ebd4c1597595994263218881c16ca3fdb629d4afeb",
+      "size": 5287936
+    },
+    "counts": {
+      "cycles": 6,
+      "artifacts": 8477,
+      "checkpoints": 52,
+      "commands": 8837
+    },
+    "journalMode": "delete",
+    "sqlitePaths": [
+      ".improvement-ledger/ledger.sqlite3",
+      "research/improvement-loop-20261024/completed-failure-adapter-review-sol-v1/attachment-journal-repaired/ledger.sqlite3",
+      "research/improvement-loop-20261024/completed-failure-adapter-review-sol-v1/attachment-journal/ledger.sqlite3"
+    ],
+    "artifactStoreExists": false
+  },
+  "supersedes": {
+    "invocation": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/scoped-selection-root-v1/invocation-v1.json",
+      "sha256": "7c12bf6da3284b020b6f07ea1104f3b05c58ab0d3cdf811cf1e89db0d86f77dc",
+      "size": 1940
+    },
+    "reason": "Independent review caught incorrect denominator label in selection task scope; v2 derives exact unit, denominator and estimand from the unique native output contract. Earlier pending attempt preserved, no selection was made."
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "schema": "GPUTexasScopeObservationV1",
+  "utc": "2026-10-25T19:22:36.022014+00:00",
+  "owner_thread": "01a173a3-fc75-7233-af2c-69be726131fc",
+  "service_name": "ballotmancy-tx2018-gpu-20261025-v2b.service",
+  "service": {
+    "MainPID": "1710281",
+    "ExecMainStatus": "0",
+    "ActiveState": "active",
+    "SubState": "running"
+  },
+  "process": {
+    "pid": 1710281,
+    "state": "R",
+    "start_ticks": 108846785,
+    "command_sha256": "ac0c63890aba77225b69b4fd9e7101f2a25db617bfd01ecb78affc81ae41bd29",
+    "cpu_allowed": "10-11"
+  },
+  "progress": {
+    "phase": "warmup",
+    "completed": 141,
+    "compute_seconds": 21.414483572822064,
+    "elapsed_seconds": 3012.7653415959794,
+    "mean_acceptance": 0.9787830418454552
+  },
+  "returned_lane_count": 32,
+  "guide": {
+    "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/docs/development/model-runtime.md",
+    "sha256": "9c6439bf974abb5d0793d52190404a1e6436c933555b0ed5dcfa75199a6e4f61",
+    "size": 7701
+  },
+  "gpu_plan": {
+    "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/gpu-backend-implementation-20261025/texas-gpu-production-two-host-cores-v2/plan.json",
+    "sha256": "979899569e52dc57d1e389a7e2e754d7ad9932077fa26433337fdc39e2519975",
+    "size": 56507
+  },
+  "gpu_plan_purpose": "retrospective_proxy",
+  "gpu_plan_cutoff": "2018-10-23T00:00:00Z",
+  "gpu_source_index": {
+    "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/historical-complete-assembly-astra-v1/construction-v2/index.json",
+    "sha256": "c992a4acda66dfc351a4d8f72f6dc0e25ba2a8c9fd29d2298c27da50bd7e9666",
+    "size": 6916
+  },
+  "current_count_application_plan": {
+    "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/partial-affine-completion-root-v1/plan.json",
+    "sha256": "adef60442a7097dc581323f9e361bb2a75441e9292eb92912c2fa1a0900b61b1",
+    "size": 28106
+  },
+  "current_count_application_purpose": "actual_current",
+  "scope_correction": "The active GPU job is the Texas 2018 retrospective study. The existing count-application catalog/native adapter describes Texas 2026 actual_current. The GPU job is not a runtime successor of that catalog configuration. Prior frontend wording that implied direct succession is superseded.",
+  "qualification": "Service liveness and returned warmup transitions only; no posterior/convergence/empirical/publication qualification.",
+  "future_runtime": "Use isolated RX 7800 XT GPU route for compatible large batched work after model-specific parity and measured runtime checks. Texas completion remains with GPU owner; no launch/adoption/restart/signals performed."
+}

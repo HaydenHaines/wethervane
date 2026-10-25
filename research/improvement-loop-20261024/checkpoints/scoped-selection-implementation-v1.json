@@ -1,0 +1,125 @@
+{
+  "schema": "ScopedSelectionImplementationRootV1",
+  "utc": "2026-10-25T19:52:50.766908+00:00",
+  "goalStatus": "active",
+  "status": "reviewed_software_mechanics_actual_native_request_pending",
+  "source": {
+    "native_selection.py": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/native_selection.py",
+      "sha256": "adf9067ed03366c0e88001e9f31c91b76b294c262e222ee53ba7bc2e3cc29286",
+      "size": 24877
+    },
+    "test_native_selection.py": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/test_native_selection.py",
+      "sha256": "ff1cefa7b1281939a21a7eff3dd0a231c72c44289857ca6f5ea3be1db6168c83",
+      "size": 8773
+    },
+    "scoped_selection.py": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/scoped_selection.py",
+      "sha256": "5006cdea38e036bd5b84b94278f83548035e5e2c434f651ef519b6a30f3fed4b",
+      "size": 41570
+    },
+    "test_scoped_selection.py": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/test_scoped_selection.py",
+      "sha256": "24cde7caaa82442675c9aa079e814faf8d06aebbf0682e842e84ba916fe6cf83",
+      "size": 32106
+    },
+    "scoped_selection.md": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/scoped_selection.md",
+      "sha256": "5bf02fe93435db9af198552c21e3a425aae5cc42b2c61cc33418df6d187e9d19",
+      "size": 12670
+    }
+  },
+  "nativeVerification": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/checkpoints/native-selection-root-verification-v1.json",
+    "sha256": "449e35918581ce2fd980439b6578c34d18aa4621e689c596d5925159aff48d38",
+    "size": 3448
+  },
+  "nativeIndependentReview": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/native-selection-review-luna-v1/review.json",
+    "sha256": "aa120039981c2cd6893b6cbf231559fde5560744754fdcae99f847d86828a9ea",
+    "size": 5298
+  },
+  "registryAuthorVerification": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/scoped-selection-sol-v1/author-verification-v2.json",
+    "sha256": "1a6dff1ea72eee5599378babb5183acd87234b0478d00709470389e42ef00b97",
+    "size": 2402
+  },
+  "registryIndependentReview": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/scoped-selection-review-luna-v1/review.json",
+    "sha256": "b8ac57f988e2c9ca5cf735714afa4653b1b77bcbe9bada91e412b4b3fdbaacfe",
+    "size": 8502
+  },
+  "actualPreparation": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/scoped-selection-root-v1/actual-pending-preparation-v2/receipt.json",
+    "sha256": "8861511cd6a2c3773882fb4d1c102a5fdcb522cda1fc7a3d8d866ee2879b7e9d",
+    "size": 15154
+  },
+  "actualExecution": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/scoped-selection-root-v1/execution-v2.json",
+    "sha256": "666c2e02edaf6a9018a97de1712f49822b5981becd1f63f3d85c62f8e2eac596",
+    "size": 2195
+  },
+  "verification": {
+    "nativeAdapterTests": "5 passed, 1 opt-in actual test skipped in author and independent suites; actual native attempt5 is separately preserved.",
+    "scopedRegistryTests": "19 passed in author and independent synthetic suites.",
+    "rootChecks": [
+      "Verified all final independent review/source/test/execution pins.",
+      "Actual source-bound preparation reopens the owner application and returns the same native TX2026 receipt as the independently reviewed adapter.",
+      "Native unit, denominator and estimand are preserved in the task scope.",
+      "Null candidate, no selection, unchanged journal bytes/counts, no selection database and no artifact store."
+    ],
+    "journal": {
+      "journal": {
+        "path": "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/ledger.sqlite3",
+        "sha256": "bf751df599c6630c922a80ebd4c1597595994263218881c16ca3fdb629d4afeb",
+        "size": 5287936
+      },
+      "counts": {
+        "cycles": 6,
+        "artifacts": 8477,
+        "checkpoints": 52,
+        "commands": 8837
+      },
+      "journalMode": "delete",
+      "sqlitePaths": [
+        ".improvement-ledger/ledger.sqlite3",
+        "research/improvement-loop-20261024/completed-failure-adapter-review-sol-v1/attachment-journal-repaired/ledger.sqlite3",
+        "research/improvement-loop-20261024/completed-failure-adapter-review-sol-v1/attachment-journal/ledger.sqlite3"
+      ],
+      "artifactStoreExists": false
+    },
+    "testDomain": "Invented temporary registries/comparisons; actual preparation exercises pending native metadata only."
+  },
+  "implemented": [
+    "Physical-task-scoped complete count references, separate from configuration and observation-support identity.",
+    "Explicit reviewed bootstrap, comparative promotion, exact retention and append-only reversal.",
+    "Journal decision/evidence validation, transactional predecessor/revision CAS, concurrent stale-write rejection and retained losers.",
+    "Payload-bound idempotent replay after commit/output failure and subsequent journal/registry advances.",
+    "Native reopening on selected reference resolution; immutable history and content-addressed evidence.",
+    "Matched A=2018/2022, B=2020/2024 compact score/configuration/terminal/output/input-review mappings and explicit target-transfer review."
+  ],
+  "supersession": {
+    "source": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/scoped-selection-root-v1/superseded-source-v1/scoped_selection.py",
+      "sha256": "d2e5141e2cc63b82ab3e9a933f9208949bf6b01bc7295ad50880f9543fc9c204",
+      "size": 40891
+    },
+    "actualPreparation": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/scoped-selection-root-v1/actual-pending-preparation-v1/receipt.json",
+      "sha256": "0ba3fd5b0b0603d90d67fe295add6a7d3a61ad0b7ce810c5ad94891b25d89539",
+      "size": 15046
+    },
+    "reason": "V1 reported a generic denominator inconsistent with the native count contract. V2 derives the exact native unit/denominator/estimand, with a fresh actual preparation. Both attempts leave scientific state unchanged.",
+    "reviewProse": "Original Luna review overstated basis/universe fields in the task key; corrected review preserves these only in the full native receipt. Prior report remains archived."
+  },
+  "limitations": [
+    "Only the exact TX2026 actual-current owner profile is implemented; TX2018 retrospective GPU needs its own native integration.",
+    "No real complete count result is available, so positive native readiness and actual initialize/apply/resolve are not exercised.",
+    "Typed comparison documents authenticate reviewed metadata; raw result validation, scientific thresholds and adoption remain independently reviewed work.",
+    "No real registry is initialized, no incumbent changes, no model fitting/scoring, no public activation.",
+    "No portable registry migration or installed unattended scientific scheduling service is claimed.",
+    "Full-stack complementarity and empirical weakest-layer ranking remain unqualified."
+  ],
+  "next": "Use owner-issued exact native completion, numerical review and independent scoped baseline authorization before any research bootstrap; prepare matched qualified evidence before a later promotion. Keep public publication separate."
+}

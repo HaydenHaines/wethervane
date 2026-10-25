@@ -1,0 +1,202 @@
+{
+  "attemptHistory": [
+    {
+      "attempt": 1,
+      "failure": "Unpinned default ArviZ 1.0.0 lacked InferenceData",
+      "failureNote": {
+        "bytes": 92,
+        "path": "attempt1-failure.txt",
+        "sha256": "5205bb7fb6f14e701d5d5abe28788cd8e371cff94bfe43575fdcc3dc7a533a88"
+      },
+      "spec": {
+        "bytes": 2608,
+        "path": "attempt1-spec.json",
+        "sha256": "f9c5698fb436c0d67da5832e0b8a478f5c78a9916200caa5bcc5ebf0cfdf9816"
+      }
+    },
+    {
+      "attempt": 2,
+      "failure": "Native runtime inventory mismatch: four single-thread environment variables absent",
+      "failureNote": {
+        "bytes": 91,
+        "path": "attempt2-failure.txt",
+        "sha256": "45d06ca09d0394e6ff827baded11a36466e83e4041bdcd752fd1050d84cf1b01"
+      },
+      "spec": {
+        "bytes": 2815,
+        "path": "attempt2-spec.json",
+        "sha256": "a72024df6626224cfaba6e0d2d704d7bc4cfc05a2e81b6df2f5aef405247c233"
+      }
+    },
+    {
+      "attempt": 3,
+      "failure": "Read-only native source/parent revalidation exceeded 120-second worker timeout because adapter called driver.bound three redundant times; subprocess.run terminated and waited for the child",
+      "failureNote": {
+        "bytes": 232,
+        "path": "attempt3-failure.txt",
+        "sha256": "1f86250e6c8bfb8201b84f7fd266fba3abfab861ddfaf3a460ae7776c33df69c"
+      }
+    },
+    {
+      "attempt": 4,
+      "receipt": {
+        "bytes": 8727,
+        "path": "attempt4-receipt.json",
+        "sha256": "77fd2f4eda08521612b5120fc2f1a4d84d4233ce351c75e91d407cf8403c2151"
+      },
+      "source": {
+        "bytes": 18746,
+        "path": "attempt4-source.py",
+        "sha256": "e31ec3459af3e85553c9bda908c69f6bf04bac733907c055ea2ffc2e7a513f40"
+      },
+      "status": "requires_computation"
+    },
+    {
+      "attempt": 5,
+      "receipt": {
+        "bytes": 17361,
+        "path": "attempt5-receipt.json",
+        "sha256": "3d5486debb801a42350039d5d96d5b94304b47c7b54c19a91fb7f9ae46e11438"
+      },
+      "source": {
+        "bytes": 24877,
+        "path": "attempt5-source.py",
+        "sha256": "adf9067ed03366c0e88001e9f31c91b76b294c262e222ee53ba7bc2e3cc29286"
+      },
+      "spec": {
+        "bytes": 2815,
+        "path": "attempt2-spec.json",
+        "sha256": "a72024df6626224cfaba6e0d2d704d7bc4cfc05a2e81b6df2f5aef405247c233"
+      },
+      "status": "requires_computation",
+      "stderr": {
+        "bytes": 0,
+        "path": "attempt5-stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdout": {
+        "bytes": 387,
+        "path": "attempt5-stdout.log",
+        "sha256": "8c7b2966ac3ac39e38c1de1bc2985930de6cef29d07058b2b1a968a88f3b327c"
+      }
+    }
+  ],
+  "inspectedOwnerCommit": "4d0e5207a8a40c0d5e87d5777a57ef9afa2adb7c",
+  "invocation": {
+    "api": "inspect_count_candidate(spec)",
+    "artifactRef": null,
+    "artifactStoreRoot": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/native-selection-sol-v1/absent-read-only-artifact-store",
+    "nativeExecutionMethodsCalled": [
+      "CompositionApplication.resolve"
+    ],
+    "nativeExecutionMethodsNotCalled": [
+      "store_result",
+      "execution_handoff",
+      "fit",
+      "sample",
+      "publish"
+    ],
+    "python": "python3 -B (lab wrapper) -> pinned owner .venv/bin/python -I -B native_selection.py --native-worker",
+    "spec": "attempt2-spec.json",
+    "storeExistedBeforeAndAfter": false
+  },
+  "limits": [
+    "No artifact reference exists for actual TX2026 count packet; ready branch not exercised on current data",
+    "Native owner source checks and plan/runtime/source reconstruction ran; no empirical comparison or promotion review was supplied",
+    "Local Python interpreter/module pins do not prove every installed-package or external environment input",
+    "The live TX2018 retrospective GPU plan is a different target task/plan and was not inspected or used as this TX2026 result"
+  ],
+  "recordedAt": "2026-10-25T19:22:40.404046+00:00",
+  "result": {
+    "artifact": null,
+    "configurationSha256": "bc3c7e317f9c8b938b1df0cb67eb2cfa948c5c5c5d84264fbabbb38f3662d460",
+    "observationCollectionCount": 38,
+    "observationSupportSha256": "027a174bbfb3c355a1e3923b93abedb34fbc4a809c80e4e3ad934ed4ea1ddde0",
+    "qualification": {
+      "empiricalForecastQualified": false,
+      "independentReviewVerified": false,
+      "publiclyAvailable": false,
+      "selectedResearchIncumbent": false
+    },
+    "requestSha256": "dcb847b48065d5e8f3210b4ffc518a350130f17dd1dd5535a58461d65095afa7",
+    "status": "requires_computation",
+    "taskScopeSha256": "03600b28ed11bfd6d89ce97a95628fd898e4dd6815c0a9ff39cf171e8584005f"
+  },
+  "runtimeMismatchExplanation": "Attempt2 isolated worker environment omitted OPENBLAS_NUM_THREADS, OMP_NUM_THREADS, MKL_NUM_THREADS and NUMEXPR_NUM_THREADS. Owner coordinator.runtime_inventory records each environment value and the exact registered plan records all four as 1. Attempt5 set those four to 1 with the same pinned plan/modules, and owner validate_plan passed. The failed note is observed stderr; this field is the source-backed diagnosis.",
+  "runtimePin": {
+    "pythonExecutable": "/home/hayden/projects/wethervane-redesign-20261006/integration/.venv/bin/python",
+    "pythonSha256": "e50d468e8b0adfb05733f5b87b3cff34829c4a8c1aea50c865aa8bdfe4bb150f",
+    "referenceArviz": {
+      "path": ".redesign-runtime/response-20261007/reference-dependencies/arviz/__init__.py",
+      "sha256": "20e754eee2096c7bab7fefa62b3b6e47862af9f54748bc94fe778be272bcf4a1"
+    },
+    "threadVariables": {
+      "MKL_NUM_THREADS": "1",
+      "NUMEXPR_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1"
+    }
+  },
+  "schema": "NativeSelectionActualPendingSmokeSolV1",
+  "scope": "Read-only actual TX2026 count application inspection; separate TX2018 GPU retrospective run remains owner-controlled.",
+  "separateActiveExecution": "The live TX2018 GPU retrospective_proxy plan 97989956... and service ballotmancy-tx2018-gpu-20261025-v2b are distinct from this TX2026 actual_current plan adef6044...; this adapter neither adopts its results nor touches its process.",
+  "sourcePins": {
+    "application": {
+      "path": "src/forecasting/composition_application_v1.py",
+      "sha256": "0510a10ffdde85136e44aa09702cd9f6838749ec64430b2dc5b62491e25402f1"
+    },
+    "artifacts": {
+      "path": "src/model_stack/artifacts.py",
+      "sha256": "a5d4533ebab5007e8ab05cc5d63ea2abf2eb904f6a7d37d99124890625a4ffce"
+    },
+    "backend": {
+      "path": "research/senate-stack-integration-20261020/count-application-driver-astra-v1/completion_backend.py",
+      "sha256": "c25d116601c5659f961ac648cae2280524a003ef70166844bb0543f07f3374ec"
+    },
+    "banks": {
+      "path": "src/senate_count_stack_v1/banks.py",
+      "sha256": "3b47727fde988ab9be41519a2c02522f60c9d681488eb06081863b47898165b8"
+    },
+    "bundle": {
+      "path": "research/senate-stack-integration-20261020/count-application-driver-astra-v1/bundle.json",
+      "sha256": "c816c32ad1bf4ec6832591c32b47f90c393d5be17393ad69a9a8ede580388a35"
+    },
+    "contracts": {
+      "path": "src/model_stack/contracts.py",
+      "sha256": "2ff6f84315fbef60fb223815f8125f63da0244aa01704b083f4c451fdd2686f8"
+    },
+    "driver": {
+      "path": "research/senate-stack-integration-20261020/count-application-driver-astra-v1/driver.py",
+      "sha256": "e89e82ecd39b213683ee6172be0d74ac31c646df42dd6f00c471958af1d05c88"
+    },
+    "registration": {
+      "path": "research/senate-stack-integration-20261020/count-application-driver-astra-v1/registration.json",
+      "sha256": "256c73e8731bf7b297fb70c5a6a2512a78f5f4b5252f945ab391d99379af6393"
+    },
+    "registry": {
+      "path": "src/forecasting/model_registry_v1.py",
+      "sha256": "a028374c4cc068e5e65aa26d99c26b38a02d6bd6b101eb119a19d6f1a981f1ed"
+    },
+    "request": {
+      "path": "research/senate-stack-integration-20261020/count-application-driver-astra-v1/request.json",
+      "sha256": "77a56140a55a06524f54d8c157c950f978e06e312d6411b0001d21f87f9d40ff"
+    },
+    "runtime_arviz": {
+      "path": ".redesign-runtime/response-20261007/reference-dependencies/arviz/__init__.py",
+      "sha256": "20e754eee2096c7bab7fefa62b3b6e47862af9f54748bc94fe778be272bcf4a1"
+    }
+  },
+  "tests": {
+    "default": {
+      "bytes": 1178,
+      "path": "native-selection-sol-v1/test.log",
+      "sha256": "4aa1282cd5697dedaef362d9d262eb28ac440648c8d87cc64308ca2bae567720"
+    },
+    "result": "5 passed, 1 opt-in actual-source test skipped; actual source separately validated by attempt5",
+    "testSource": {
+      "bytes": 8773,
+      "path": "test_native_selection.py",
+      "sha256": "ff1cefa7b1281939a21a7eff3dd0a231c72c44289857ca6f5ea3be1db6168c83"
+    }
+  }
+}
