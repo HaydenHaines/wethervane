@@ -21,7 +21,7 @@ Use recursive Luna and Sol research rounds to identify overlooked mechanisms, da
 3. Develop a versioned challenger while preserving the incumbent. Jointly refit affected components when required.
 4. Compare incumbent and challenger on matched data, cutoffs, race coverage, forecast horizons and tuning opportunities. Apply the project's refine-model-layer and verify-election-model skills. Evaluate both recent same-context and other-context elections, proper predictive scores, calibration, useful precision, and relevant count or chamber outcomes.
 5. Independently review the implementation and results. Investigate material regressions and distinguish genuine improvement from simulation noise, data advantages or repeated benchmark tuning.
-6. Promote a qualified winner to the layer's active incumbent. If evidence is inconclusive or the challenger underperforms, retain the incumbent. Keep losing models, historical results, presets and saved user configurations available. Promotions must be reversible and must not silently rewrite saved selections.
+6. Promote a qualified winner to the layer's active incumbent. If evidence is inconclusive or the challenger underperforms, retain the incumbent. Keep losing models, historical results and presets available. Promotions must be reversible and preserve the configurations used in earlier research comparisons.
 7. Integrate, test and publish qualified changes, reassess the stack, and select the next weakest layer.
 
 Revise one layer at a time, with explicit interaction experiments where needed. A layer replacement may require a new jointly fitted full configuration; do not splice incompatible fitted components together. Maintain versioned sources, configurations, predictions, comparisons, decisions, negative findings and resumable checkpoints. Reuse prior research and avoid repeating unsuccessful experiments without a new reason.
@@ -32,7 +32,7 @@ Continue autonomously across cycles. Coordinate with the Senate and House owners
 
 The initial inventory uses **implemented in research**. Later promotion means the **selected incumbent for an explicit scientific scope and complete compatible configuration**. Public availability is a separate, tested integration decision. These three meanings must remain visible and must not be inferred from one another.
 
-The user's phrase "without deleting the user" is interpreted here as preserving both the losing model and users' saved configurations. No destructive cleanup is part of this goal.
+Hayden clarified on October 25 that saving user configurations was a typo and is unnecessary. New user-save, bookmark and storage features are outside this goal. Preserve losing models and reproducible research configurations/results; these are separate from users saving a view. This correction supersedes the original attachment's saved-user-configuration requirement and earlier interpretations of "without deleting the user." Existing published features are not being removed as part of this correction.
 
 ## Specifically requested research threads
 
