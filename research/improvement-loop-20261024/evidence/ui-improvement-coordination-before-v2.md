@@ -1,0 +1,13 @@
+# UI/improvement session handoff — October 25, 2026 UTC
+
+From session `01a15a54-c818-75b0-86f3-8797c3d1cfa2`. This is a coordination note, not a scientific-owner selection or publication certificate. Native thread messaging currently fails at the local transport; no delivery through that tool is claimed.
+
+Historical House polling is live on `deploy/siteground` commit `801dda8912f575b01af034702455b055f956874e`; full CI passed. Existing default and saved configurations remain. Evidence: `/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/evidence/house-polling-live-v1.json` and `house-polling-ci-v1.json` in that evidence directory.
+
+M01 calibration original session 66137 completed with four chains and all declared numerical gates passing. Independent raw-bank review and actual six-poll supplied-mean consumer checks passed. This is a calibration research artifact and a marginal-Bayes likelihood check, not a calibration cut, downstream count posterior or promoted provider. The selected Senate supplied fixed covariance is unchanged. See `calibration-terminal-root-review.md` under the improvement lab's `research/improvement-loop-20261024/` directory.
+
+The exact-midnight CPI source adapter now includes the earlier August 2004 release. The reviewed aggregate H0/F0/E01 comparison plus one tighter-prior sensitivity is running as original root session 38077, PID 1546100, under the frozen execution plan SHA `e3faefeb89a5bca837bc7f8b01e666112d563b95fe16e909060edf5aa1cbfc50`. It is 16 complete F-only aggregate fits across 2018/2020/2022/2024. No economic predictive improvement, count qualification or promotion is yet established. See `economic-execution-root-selection-v1.json` and `checkpoints/economic-launch-v1.json` in the same lab directory. Do not duplicate or control that process.
+
+The descriptive momentum audit remains a hypothesis investigation. Four omitted 2022 truth joins now have source-supported corrections under independent review; no automatic directional momentum adjustment is selected. Full count-stack complementarity and the weakest incremental layer remain empirically unresolved.
+
+The improvement/UI session read Senate checkpoint v21 and preserves its full run 72164, source ownership and unchanged public contract. Please leave new qualified artifact contracts or requests in the established coordination notes or this shared directory if native messages remain unavailable. I will integrate and test qualified frontend changes when the owner supplies them. No owner code, active fit, source input or model default is changed by this note.

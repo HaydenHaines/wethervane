@@ -1,0 +1,76 @@
+{
+  "schema": "OwnerProcessAndProgressObservationV3",
+  "utc": "2026-10-25T11:51:10.181101+00:00",
+  "read_only": true,
+  "observations": [
+    {
+      "role": "corrected national A2022 startup",
+      "pid": 1596113,
+      "start_ticks": 105454117,
+      "cmdline_sha256": "2adfc31317b962a51f80c1ea9f0d3887ba9b0226205100073cca9135b6e3c4d9",
+      "matches_observed_identity": true,
+      "state": "R",
+      "user_ticks": 988489,
+      "system_ticks": 1277
+    },
+    {
+      "role": "historical TX2018 full fit",
+      "pid": 1619436,
+      "start_ticks": 106205858,
+      "cmdline_sha256": "cf08d996420578483e5d2be09b417a4f60554949187c06e981f1bd71c31a508e",
+      "matches_observed_identity": true,
+      "state": "S",
+      "user_ticks": 19538,
+      "system_ticks": 798
+    }
+  ],
+  "historical_recent_observation": {
+    "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/historical-full-run-root-v1/attempt1/fit/parent-0-progress.jsonl",
+    "tail_offset": 529236,
+    "observed_file_size": 660308,
+    "last_records_by_chain_in_read_window": [
+      {
+        "chain": 1,
+        "draw_index": 262,
+        "tuning": true,
+        "chain_last": false,
+        "parent_id": "dc1504c1e969713118dd2368e4d67b88fbfb74713d450372cd83de729ff67e27",
+        "utc": "2026-10-25T11:50:54.660145Z",
+        "sampler_draw_returned": true,
+        "scope": "returned_draw_runtime_only_not_a_posterior_checkpoint"
+      },
+      {
+        "chain": 2,
+        "draw_index": 247,
+        "tuning": true,
+        "chain_last": false,
+        "parent_id": "dc1504c1e969713118dd2368e4d67b88fbfb74713d450372cd83de729ff67e27",
+        "utc": "2026-10-25T11:51:04.049038Z",
+        "sampler_draw_returned": true,
+        "scope": "returned_draw_runtime_only_not_a_posterior_checkpoint"
+      },
+      {
+        "chain": 3,
+        "draw_index": 239,
+        "tuning": true,
+        "chain_last": false,
+        "parent_id": "dc1504c1e969713118dd2368e4d67b88fbfb74713d450372cd83de729ff67e27",
+        "utc": "2026-10-25T11:50:47.538047Z",
+        "sampler_draw_returned": true,
+        "scope": "returned_draw_runtime_only_not_a_posterior_checkpoint"
+      },
+      {
+        "chain": 0,
+        "draw_index": 250,
+        "tuning": true,
+        "chain_last": false,
+        "parent_id": "dc1504c1e969713118dd2368e4d67b88fbfb74713d450372cd83de729ff67e27",
+        "utc": "2026-10-25T11:50:40.164452Z",
+        "sampler_draw_returned": true,
+        "scope": "returned_draw_runtime_only_not_a_posterior_checkpoint"
+      }
+    ],
+    "result_files_seen": []
+  },
+  "limits": "Actual process identities were checked at the timestamp. Progress lines are dated returned-transition observations, not retained qualified posterior evidence. No owner tool handle consumed, process controlled, scientific setting changed or forecast qualified."
+}
