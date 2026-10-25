@@ -1,0 +1,13 @@
+{
+  "schema": "MIMTReviewTimestampCorrectionV1",
+  "recorded_utc": "2026-10-25T11:35:46.432202+00:00",
+  "review": {
+    "path": "research/improvement-loop-20261024/mi-mt-source-review-luna-v1.json",
+    "sha256": "912c5894d032453af9687f7fa322884062e61306cb042280ef051c5ab1f40250"
+  },
+  "corrected_field": "reviewed_at_utc",
+  "original_value": "2026-10-25T11:34:00Z",
+  "finding": "Reviewer confirmed this field was manually entered, not read from a clock. The completed review was already present before the root clock returned 2026-10-25 11:32:50 UTC. Do not treat the authored timestamp as authenticated completion time.",
+  "replacement": "Exact original completion time is not established; this correction timestamp records the current root observation only.",
+  "scope": "Original review bytes preserved. The separate source retrieval records and hash checks are unchanged."
+}

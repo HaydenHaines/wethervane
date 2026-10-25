@@ -1,0 +1,128 @@
+{
+  "task": "Official Michigan 2026 general U.S. Senate write-in declaration source follow-up",
+  "scope": "Public read-only official-source retrieval; no source admission or model mutation",
+  "source_chain": [
+    {
+      "from": "raw/mi-sos-elections-browser.html",
+      "anchor_label": "2026 November General Candidate Listing",
+      "to": "https://mi-boe.entellitrak.com/etk-mi-boe-prod/page.request.do?page=page.miboePublicReport&electionType=GEN&electionYear=2026"
+    },
+    {
+      "from": "raw/mi-admin-info.html",
+      "anchor_label": "Election Officials Manual Chapter 4 Write-In Candidates",
+      "to": "https://www.michigan.gov/sos/-/media/Project/Websites/sos/01mcalpine/Write-in-Candidates.pdf?rev=328b1ddcb83c40a8b0f46325e33b12b8&hash=7F9990AD1653D0BA1442DE6458729464"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://www.michigan.gov/sos/elections",
+      "method": "GET",
+      "request_headers": {
+        "User-Agent": "Mozilla/5.0"
+      },
+      "status": 200,
+      "response_date_utc": "2026-10-25T11:20:55+00:00",
+      "raw_path": "raw/mi-sos-elections-browser.html",
+      "raw_bytes": 432011,
+      "raw_sha256": "6e9e064c880817e76af14cf070ee1552fa0b1c4e83082d883ab0fc745d422276",
+      "raw_headers_path": "raw/mi-sos-elections-browser.headers",
+      "raw_headers_sha256": "2e42f6f9c1530fb90a819ce4a1dec940c87858a0c8ee1a43ec90884a816747fe"
+    },
+    {
+      "url": "https://mi-boe.entellitrak.com/etk-mi-boe-prod/page.request.do?electionType=GEN&electionYear=2026&page=page.miboePublicReport",
+      "method": "GET",
+      "request_headers": {
+        "User-Agent": "curl default (no custom User-Agent recorded)"
+      },
+      "status": 200,
+      "response_date_utc": "2026-10-25T11:20:49+00:00",
+      "raw_path": "raw/mi-gen2026.html",
+      "raw_bytes": 1063373,
+      "raw_sha256": "e3551674a96aebc1d295336d857a9b626ab38177823ed5357214a40b038b1938",
+      "raw_headers_path": "raw/mi-gen2026.headers",
+      "raw_headers_sha256": "4e591ff57a3c7f56e5bebf90c73ba517289c61600dbe182b068038ca5e3bfb9d"
+    },
+    {
+      "url": "https://www.michigan.gov/sos/elections/election-results-and-data",
+      "method": "GET",
+      "request_headers": {
+        "User-Agent": "Mozilla/5.0"
+      },
+      "status": 200,
+      "response_date_utc": "2026-10-25T11:21:46+00:00",
+      "raw_path": "raw/mi-results-data.html",
+      "raw_bytes": 424314,
+      "raw_sha256": "468781d51d83f36afcad14a4b403fa859a65bc09fe4fa78c57b4ecc6a7dbfeb1",
+      "raw_headers_path": "raw/mi-results-data.headers",
+      "raw_headers_sha256": "fb7351cb3f865554d119762e94bdd70efab1e056afb863c7470bcbe7f78d36ce"
+    },
+    {
+      "url": "https://www.michigan.gov/sos/elections/admin-info",
+      "method": "GET",
+      "request_headers": {
+        "User-Agent": "Mozilla/5.0"
+      },
+      "status": 200,
+      "response_date_utc": "2026-10-25T11:21:54+00:00",
+      "raw_path": "raw/mi-admin-info.html",
+      "raw_bytes": 499528,
+      "raw_sha256": "04c5f0b7b162d184a4e8d938f8e391fb4c0fa5816ec57ed996ca8901fdb93a41",
+      "raw_headers_path": "raw/mi-admin-info.headers",
+      "raw_headers_sha256": "b87c8de6412b46670587ab85bb409abab9447a28bf35fba81876ee91cd6196ff"
+    },
+    {
+      "url": "https://www.michigan.gov/sos/-/media/Project/Websites/sos/01mcalpine/Write-in-Candidates.pdf?rev=328b1ddcb83c40a8b0f46325e33b12b8&hash=7F9990AD1653D0BA1442DE6458729464",
+      "method": "GET",
+      "request_headers": {
+        "User-Agent": "Mozilla/5.0"
+      },
+      "status": 200,
+      "response_date_utc": "2026-10-25T11:22:01+00:00",
+      "raw_path": "raw/mi-writein-manual.pdf",
+      "raw_bytes": 357522,
+      "raw_sha256": "0be56faa99b5daf01b01c5bc997fc6217213a06c7917891304dc9b1f6252f4df",
+      "raw_headers_path": "raw/mi-writein-manual.headers",
+      "raw_headers_sha256": "2df99621d0286b9e646b76f9a28dd12790a879dffd5268d6ffa149bc1b1c88f0"
+    }
+  ],
+  "derived": {
+    "extraction_path": "extraction.json",
+    "extraction_sha256": "97f079d29d79cac4f5d79a083a851c5e8acdfd1a73264b49595e0dad38dc0e2b",
+    "report_path": "REPORT.md",
+    "report_sha256": "5332a3881c392cb3343044a88c604cd7f3a6c7cd4b06a1830dd4525a4641f493",
+    "candidate_report_senate_rows": 6,
+    "write_in_coverage": "unestablished",
+    "official_manual_publication": "July 2024",
+    "manual_last_modified_header": "Mon, 19 May 2025 15:48:23 GMT",
+    "manual_rule": "Timely Declaration of Intent ordinarily required for write-in federal office; BOE or county clerk notifies local clerks of filed candidates; post-deadline death or disqualification waives declaration requirement for that office."
+  },
+  "prior_context": {
+    "triage": "research/improvement-loop-20261024/remaining-current-source-triage-luna-v1.json plus addendum",
+    "owner_report": "integration/research/senate-stack-integration-20261020/national-declaration-followup-sol-v1/sources/mi-current-state-list.txt",
+    "owner_guide_url": "https://www.michigan.gov/sos/-/media/Project/Websites/sos/Elections/Ballot-Access/FC-GDE-10-Filing-for-Office-US-Senator.pdf",
+    "owner_guide_senate_write_in_general_deadline": "2026-10-23 16:00 local, BOE"
+  },
+  "failed_attempts": [
+    {
+      "url": "https://www.michigan.gov/sos/elections",
+      "method": "GET",
+      "client": "generic curl -f",
+      "response_status": 403,
+      "response_date_utc": "2026-10-25T11:20:48+00:00",
+      "raw_headers_path": "raw/mi-sos-elections.headers",
+      "raw_headers_sha256": "3c7a5a57948c309f10d629fa534aea1441c8ac689a2c501e45719dccbd5b8d08",
+      "body_preserved": false,
+      "resolution": "Repeat public GET with ordinary Mozilla/5.0 User-Agent returned 200; no challenge attempted."
+    },
+    {
+      "url": "https://saginawcountymi.gov/media/ztvczbpg/unofficial-saginaw-county-november-2026-candidate-list.pdf",
+      "method": "HEAD",
+      "response_status": 403,
+      "cf_mitigated": "challenge",
+      "body_or_headers_preserved": false,
+      "stopping_reason": "No challenge solving; indexed list appeared to precede write-in deadline and could not establish current federal declarations."
+    }
+  ],
+  "cutoff_limit": "Response Date values establish retrieval on October 25, 2026. They do not establish source publication by the owner forecast cutoff October 20, 2026.",
+  "conclusion": "No public official post-deadline Michigan U.S. Senate write-in declaration roster or completeness rule located in this bounded pass. Do not infer zero write-ins from ordinary report silence."
+}

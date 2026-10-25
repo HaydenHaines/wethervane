@@ -6,8 +6,11 @@ bytes, not the truth of scientific claims. No scientific output is executed.
 """
 
 import argparse
+import csv
 import hashlib
+import io
 import json
+import math
 import tempfile
 from dataclasses import dataclass
 from pathlib import Path
@@ -269,6 +272,282 @@ def inspect_receipts(root, checkpoint_pin, expected_plan_sha256, declared_scope,
     return bundle.freeze(report)
 
 
+COMPLETED_FAILURE_VERSION = "senate_completed_conditional_failure_adapter_v1"
+COMPLETION_EXECUTION = "share_coordinate_completion_execution_v2"
+COMPLETION_FAILURE_CLASSIFICATION = "COMPLETED_FIRST_CONDITIONAL_SAMPLING_FAILED_NUMERICAL_CONVERGENCE"
+
+
+def inspect_completed_failure(root, terminal_pin, expected_plan_sha256, declared_scope):
+    """Inspect the completed-first-conditional failure contract; never load the pickle."""
+    bundle = Bundle(root)
+    terminal = bundle.document(terminal_pin)
+    require(terminal.get("schema") == "FullActualFitTerminalRootV1", "unsupported terminal schema")
+    require(terminal.get("classification") == COMPLETION_FAILURE_CLASSIFICATION, "unsupported terminal classification")
+    require(
+        type(terminal.get("authoritative_exit_code")) is int and terminal["authoritative_exit_code"] == 1,
+        "unsupported exit code",
+    )
+    require(terminal.get("terminal_confirmed_by_tool_handle") is True, "missing owner terminal observation")
+    require(
+        terminal.get("complete_cut") is False and terminal.get("no_automatic_retry") is True,
+        "contradictory terminal outcome",
+    )
+    require(terminal.get("no_numerical_gates_relaxed") is True, "unsupported gate change")
+    require(terminal.get("resource_budget_exceeded") is False, "unsupported budget failure")
+    require(
+        type(terminal.get("completed_population_conditionals")) is int
+        and terminal["completed_population_conditionals"] == 1
+        and type(terminal.get("numerically_qualified_population_conditionals")) is int
+        and terminal["numerically_qualified_population_conditionals"] == 0,
+        "unsupported conditional counts",
+    )
+    pins = terminal.get("preserved_files")
+    require(isinstance(pins, list) and len(pins) == 8, "unsupported terminal inventory")
+    by_path = {bundle.resolve(pin["path"]): pin for pin in pins}
+    require(len(by_path) == len(pins), "duplicate terminal inventory path")
+    candidates = [path for path in by_path if path.name == "failure.json" and path.parent.name != "fit"]
+    require(len(candidates) == 1, "ambiguous native attempt")
+    attempt = candidates[0].parent
+    require(bundle.resolve(terminal_pin["path"]).parent == attempt.parent, "terminal attempt directory mismatch")
+    names = [
+        "failure.json",
+        "fit/failure.json",
+        "fit/parent-0-result.json",
+        "fit/parent-0-diagnostics.csv",
+        "fit/parent-0-returned-inference.json",
+        "fit/parent-0-returned-inference.pkl",
+        "fit/parent-0-execution.json",
+        "fit/parent-0-sampling-budget.json",
+    ]
+    require(set(by_path) == {attempt / name for name in names}, "native attempt path mismatch")
+    data = {name: bundle.read(by_path[attempt / name]) for name in names}
+    documents = {name: decode(raw) for name, raw in data.items() if name.endswith(".json")}
+    failure, fit, result = (
+        documents[name] for name in ["failure.json", "fit/failure.json", "fit/parent-0-result.json"]
+    )
+    for record in [failure, fit]:
+        require(
+            record.get("status") == "incomplete_preserved_attempt" and record.get("no_automatic_retry") is True,
+            "unsupported failure outcome",
+        )
+    require(
+        failure.get("forecast_qualified") is False and failure.get("publication_authorized") is False,
+        "failure cannot qualify",
+    )
+    require(fit.get("complete_cut") is False and failure.get("error") == fit.get("error"), "failure identity mismatch")
+    require(fit.get("returned_inference_preservation_error") is None, "inference preservation failed")
+    require(failure["plan"]["sha256"] == expected_plan_sha256, "plan binding mismatch")
+    plan = bundle.document(failure["plan"])
+    bundle.read(failure["admission"])
+    require(
+        plan.get("schema") == "actual_TX_role_execution_plan_v2"
+        and plan.get("execution_adapter_version") == COMPLETION_EXECUTION,
+        "unsupported full execution plan",
+    )
+    require(
+        plan.get("forecast_qualified") is False
+        and plan.get("publication_authorized") is False
+        and plan.get("automatic_retry") is False,
+        "unsupported positive or retry plan",
+    )
+    require(set(declared_scope) == set(SCOPE_KEYS), "declared scope keys mismatch")
+    scope = {key: plan[key] for key in SCOPE_KEYS}
+    require(canonical(scope) == canonical(declared_scope), "declared scope mismatch")
+    parents = plan["parent_ids"]
+    masses = plan["parent_masses"]
+    targets = plan["scientific_target_ids"]
+    require(
+        isinstance(parents, list) and len(parents) > 1 and len(set(parents)) == len(parents),
+        "invalid original parent support",
+    )
+    require(
+        len(masses) == len(targets) == len(parents)
+        and all(type(x) in (int, float) and math.isfinite(x) and x > 0 for x in masses)
+        and math.isclose(sum(masses), 1, rel_tol=0, abs_tol=1e-12),
+        "invalid original parent masses",
+    )
+    require(
+        type(terminal.get("required_population_conditionals")) is int
+        and terminal["required_population_conditionals"] == len(parents)
+        and fit.get("required_parent_ids") == parents,
+        "parent support mismatch",
+    )
+    require(
+        fit.get("completed_parents") == [result]
+        and result.get("parent_id") == parents[0]
+        and result.get("scientific_target_id") == targets[0]
+        and result.get("conditional_bank_only") is True,
+        "completed result identity mismatch",
+    )
+    coordinate = plan.get("provider", {}).get("coordinate_version")
+    require(
+        isinstance(coordinate, str) and coordinate and result.get("coordinate_version") == coordinate,
+        "coordinate identity mismatch",
+    )
+    policy = plan["execution_policy"]
+    require(
+        policy.get("mode") == "full_all_parents" and plan.get("complete_cut_expected") is True,
+        "unsupported execution scope",
+    )
+    require(
+        fit["execution_policy"].get("version") == COMPLETION_EXECUTION
+        and fit["execution_policy"].get("policy") == policy,
+        "fit execution policy mismatch",
+    )
+    budget = documents["fit/parent-0-sampling-budget.json"]
+    require(
+        result.get("sampling_budget") == budget
+        and budget.get("version") == COMPLETION_EXECUTION
+        and budget.get("policy") == policy,
+        "sampling budget binding mismatch",
+    )
+    require(
+        budget.get("sampler_returned") is True
+        and budget.get("budget_exceeded") is False
+        and budget.get("error") is None
+        and budget.get("automatic_retry") is False
+        and budget.get("publication_authorized") is False,
+        "unsupported sampling outcome",
+    )
+    settings = plan["settings"]
+    for key in ["chains", "draws", "tune"]:
+        require(type(settings.get(key)) is int and settings[key] > 0, "invalid sampling dimensions")
+    require(
+        terminal.get("chains") == settings["chains"]
+        and terminal.get("retained_per_chain") == settings["draws"]
+        and terminal.get("warmup_per_chain") == settings["tune"],
+        "terminal sampling mismatch",
+    )
+    require(
+        type(budget.get("returned_transitions")) is int
+        and budget["returned_transitions"] == settings["chains"] * (settings["draws"] + settings["tune"]),
+        "returned transitions mismatch",
+    )
+    archive = documents["fit/parent-0-returned-inference.json"]
+    require(
+        result.get("returned_inference_archive") == archive
+        and fit.get("complete_returned_inference_archive") == archive,
+        "archive binding mismatch",
+    )
+    require(
+        archive.get("complete") is True
+        and archive.get("returned_object_available") is True
+        and archive.get("numerical_qualification") is False
+        and archive.get("error") is None
+        and archive.get("format") == "python_pickle_complete_InferenceData_same_pinned_runtime_v1"
+        and archive.get("groups") == ["posterior", "sample_stats"],
+        "unsupported returned archive",
+    )
+    require(
+        archive.get("files")
+        == {"parent-0-returned-inference.pkl": by_path[attempt / "fit/parent-0-returned-inference.pkl"]["sha256"]},
+        "archive file mismatch",
+    )
+    execution = documents["fit/parent-0-execution.json"]
+    require(
+        execution.get("schema") == "conditional_process_observation_v1" and execution.get("error") is None,
+        "unsupported process observation",
+    )
+    require(
+        result.get("execution_observation")
+        == {"file": "parent-0-execution.json", "sha256": by_path[attempt / "fit/parent-0-execution.json"]["sha256"]},
+        "execution observation mismatch",
+    )
+    diagnostics = result["diagnostics"]
+    require(
+        diagnostics.get("passed") is False
+        and diagnostics.get("finite_diagnostics") is True
+        and diagnostics.get("gates") == settings,
+        "unsupported diagnostics",
+    )
+    terminal_diagnostic_keys = {
+        "passed",
+        "finite_diagnostics",
+        "max_rhat",
+        "min_bulk_ess",
+        "min_tail_ess",
+        "divergent",
+        "depth_saturation",
+        "gates",
+    }
+    require(
+        isinstance(terminal.get("diagnostics"), dict) and set(terminal["diagnostics"]) == terminal_diagnostic_keys,
+        "terminal diagnostics keys mismatch",
+    )
+    require(
+        all(terminal["diagnostics"][key] == diagnostics.get(key) for key in terminal_diagnostic_keys),
+        "terminal diagnostics mismatch",
+    )
+    # Preserve declared observation evidence as bytes. These dated records are not
+    # fresh process checks or independent verification of the numerical diagnostics.
+    observation_files = {}
+    if "observer_inventory" in fit:
+        inventory = fit["observer_inventory"]
+        require(inventory.get("complete") is True and inventory.get("errors") == [], "incomplete observer inventory")
+        observation_files.update(inventory["files"])
+    for inventory in [observation_files, fit.get("progress_files", {})]:
+        require(isinstance(inventory, dict), "invalid observation inventory")
+        for name, digest in inventory.items():
+            require(Path(name).name == name and name not in (".", ".."), "invalid observation file name")
+            bundle.read({"path": str(attempt / "fit" / name), "sha256": digest})
+    rows = list(csv.DictReader(io.StringIO(data["fit/parent-0-diagnostics.csv"].decode())))
+    require(
+        rows and len({row.get("") for row in rows}) == len(rows) and all(row.get("") for row in rows),
+        "invalid diagnostic row identities",
+    )
+    values = {key: [float(row[key]) for row in rows] for key in ["r_hat", "ess_bulk", "ess_tail"]}
+    require(all(math.isfinite(x) and x > 0 for column in values.values() for x in column), "invalid diagnostic values")
+    extrema = {
+        "max_rhat": max(values["r_hat"]),
+        "min_bulk_ess": min(values["ess_bulk"]),
+        "min_tail_ess": min(values["ess_tail"]),
+    }
+    require(
+        all(math.isclose(value, diagnostics[key], rel_tol=1e-12, abs_tol=1e-12) for key, value in extrema.items()),
+        "diagnostic extrema mismatch",
+    )
+    require(
+        extrema["max_rhat"] > settings["max_rhat"]
+        or extrema["min_bulk_ess"] < settings["min_ess"]
+        or extrema["min_tail_ess"] < settings["min_ess"],
+        "no recorded convergence failure",
+    )
+    report = dict(
+        schema=COMPLETED_FAILURE_VERSION,
+        terminal=terminal_pin,
+        plan=failure["plan"],
+        scope=scope,
+        verification_scope="Terminal/native failure/result/CSV/archive bytes and internal bindings; "
+        "CSV extrema checked, diagnostics not recomputed from draws; transitive scientific ancestry not replayed.",
+        owner_observation={
+            "issued_utc": terminal["issued_utc"],
+            "reported_exit_code": 1,
+            "is_liveness": False,
+            "tool_handle_independently_polled": False,
+        },
+        dimensions={
+            "execution": "first_conditional_sampling_returned",
+            "mathematical_check": "not_established",
+            "numerical_fit": "failed",
+            "complete_population_mixture": "incomplete",
+            "prediction_precision": "not_established",
+            "empirical_evaluation": "not_established",
+            "publication": "not_authorized",
+        },
+        completed_population_conditionals=1,
+        required_population_conditionals=len(parents),
+        original_parent_masses=masses,
+        numerical_diagnostics=diagnostics,
+        csv_rows=len(rows),
+        error=failure["error"],
+        qualification=False,
+        recommendation=None,
+        automatic_retry=False,
+        verified_artifacts=bundle.artifacts,
+    )
+    return bundle.freeze(report)
+
+
 HOUSE_REVIEW_SHA = "70f371b56d63909c847d0aa539efb28a5c4a538c3ed2e33052ea4f0a28eea9ee"
 
 
@@ -394,8 +673,13 @@ def main():
     request = decode(Path(args.request).read_bytes())
     require(request.pop("schema", None) == "run_receipt_request_v1", "unsupported request schema")
     kind = request.pop("kind", None)
-    require(kind in ("senate_failed", "house_historical"), "unsupported receipt adapter")
-    function = inspect_receipts if kind == "senate_failed" else inspect_house
+    adapters = {
+        "senate_failed": inspect_receipts,
+        "house_historical": inspect_house,
+        "senate_completed_failure": inspect_completed_failure,
+    }
+    require(kind in adapters, "unsupported receipt adapter")
+    function = adapters[kind]
     report, bundle = function(args.source_root, **request)
     if args.journal_root:
         ledger = Ledger(args.journal_root)

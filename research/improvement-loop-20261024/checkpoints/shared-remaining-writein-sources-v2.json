@@ -1,0 +1,48 @@
+{
+  "schema": "UIRemainingWriteInSourceHandoffV2",
+  "utc": "2026-10-25T11:31:51.034309+00:00",
+  "MI": {
+    "acquisition": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/mi-writein-source-acquisition-sol-v1/receipt.json",
+      "sha256": "1bb8df005aa7ec469aab42b37bf5b9fb61cf3f29311711866edd9ff48d337f31"
+    },
+    "review": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/mi-mt-source-review-luna-v1.json",
+      "sha256": "912c5894d032453af9687f7fa322884062e61306cb042280ef051c5ab1f40250"
+    },
+    "finding": "Original GEN2026 report and linked BOE manual acquired. Six ordinary Senate entries; declaration coverage remains unspecified. Manual explains BOE/county notification and a post-deadline death/disqualification waiver. No complete 2026 declaration roster acquired.",
+    "next_evidence": "Official BOE or county notification/receipt records with explicit coverage."
+  },
+  "MT": {
+    "acquisition": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/mt-writein-source-acquisition-sol-v1/receipt.json",
+      "sha256": "d2ceb525f388e6e64144a67972fd7517842bf4aa94a935f588ebbd62cc95132e"
+    },
+    "review": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/mi-mt-source-review-luna-v1.json",
+      "sha256": "912c5894d032453af9687f7fa322884062e61306cb042280ef051c5ab1f40250"
+    },
+    "finding": "Original official page shows Jami Dee Woodman with FILED and Filing Date Aug7. A WRITE-IN label is present in a separate display cell. This does not establish when her legally operative declaration was received or an exception/qualification decision.",
+    "correction": "Do not characterize the display as proof of a legally late filing. The captured page is one of three (272 items total); five visible Senate rows are not independently proved exhaustive.",
+    "next_evidence": "Official declaration receipt or candidate-specific qualification/exception decision; any complete-roster claim also needs pagination or office-scoped coverage."
+  },
+  "TN": {
+    "acquisition": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/tn-writein-source-acquisition-luna-v1/receipt.json",
+      "sha256": "11e19f3bc8f36bbbda1c72dce4193b1ec706a2f734d07387a29eadfa5c0c92eb"
+    },
+    "review": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/tn-writein-source-review-sol-v1/receipt.json",
+      "sha256": "c42b2fa092d9a583ac99a0e412bb54ae4d717f8f1b0aa857405a1dc0a03ed54a"
+    },
+    "finding": "Current SOS-hosted blank SS-3072 matches the county-hosted form exactly. Official county guidance corroborates that general-election certificates and countable write-in votes can be county-specific. No named 2026 Senate filing set acquired.",
+    "model_implication": "Preserve geographic applicability if a candidate has timely filings in only some counties; do not collapse this into statewide all-or-none countability. Full statewide source coverage requires consolidated or county-complete records. This is a support-design implication, not a new model selection or admission.",
+    "next_evidence": "An official named certificate/receipt consolidation with county coverage; ordinary candidate pages and blank forms cannot supply it."
+  },
+  "common_limits": [
+    "October25 retrieval does not prove October20 forecast-cutoff availability.",
+    "All three settings remain for owner admission review; no zero-filing inference, source admission or model/default change.",
+    "Failed retrievals are not evidence of missing candidates."
+  ],
+  "delivery": "Identical files placed in Senate and House docs/development; native list_threads transport still failed at 127.0.0.1:40059/mcp this turn. No read acknowledgment claimed."
+}

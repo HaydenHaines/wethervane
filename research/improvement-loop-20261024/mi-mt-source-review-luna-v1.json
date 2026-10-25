@@ -1,0 +1,193 @@
+{
+  "schema": "MIMTSourcePacketIndependentReviewLunaV1",
+  "reviewed_at_utc": "2026-10-25T11:34:00Z",
+  "scope": "Independent local audit of Sol's MI/MT write-in source acquisition receipts and preserved original bytes. No author corrections, owner/model/source-admission/input changes, tests, fits, or new network search.",
+  "receipt_files": [
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/mi-writein-source-acquisition-sol-v1/receipt.json",
+      "source_chain_audit": "SOS elections page links to the 2026 GEN candidate report and the Election Officials Manual chapter; URLs and retrieved source bytes are pinned."
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/mt-writein-source-acquisition-sol-v1/receipt.json",
+      "source_chain_audit": "Direct official MT filing-portal response with Federal General 2026 heading; election ID is declared client-derived in the receipt."
+    }
+  ],
+  "hash_audit": {
+    "result": "All declared, extant SHA-256 pins and declared body/header byte lengths verified against local bytes.",
+    "michigan": [
+      {
+        "path": "raw/mi-sos-elections-browser.html",
+        "sha256": "6e9e064c880817e76af14cf070ee1552fa0b1c4e83082d883ab0fc745d422276",
+        "bytes": 432011,
+        "match": true
+      },
+      {
+        "path": "raw/mi-sos-elections-browser.headers",
+        "sha256": "2e42f6f9c1530fb90a819ce4a1dec940c87858a0c8ee1a43ec90884a816747fe",
+        "bytes": 741,
+        "match": true
+      },
+      {
+        "path": "raw/mi-gen2026.html",
+        "sha256": "e3551674a96aebc1d295336d857a9b626ab38177823ed5357214a40b038b1938",
+        "bytes": 1063373,
+        "match": true
+      },
+      {
+        "path": "raw/mi-gen2026.headers",
+        "sha256": "4e591ff57a3c7f56e5bebf90c73ba517289c61600dbe182b068038ca5e3bfb9d",
+        "bytes": 698,
+        "match": true
+      },
+      {
+        "path": "raw/mi-results-data.html",
+        "sha256": "468781d51d83f36afcad14a4b403fa859a65bc09fe4fa78c57b4ecc6a7dbfeb1",
+        "bytes": 424314,
+        "match": true
+      },
+      {
+        "path": "raw/mi-results-data.headers",
+        "sha256": "fb7351cb3f865554d119762e94bdd70efab1e056afb863c7470bcbe7f78d36ce",
+        "bytes": 741,
+        "match": true
+      },
+      {
+        "path": "raw/mi-admin-info.html",
+        "sha256": "04c5f0b7b162d184a4e8d938f8e391fb4c0fa5816ec57ed996ca8901fdb93a41",
+        "bytes": 499528,
+        "match": true
+      },
+      {
+        "path": "raw/mi-admin-info.headers",
+        "sha256": "b87c8de6412b46670587ab85bb409abab9447a28bf35fba81876ee91cd6196ff",
+        "bytes": 741,
+        "match": true
+      },
+      {
+        "path": "raw/mi-writein-manual.pdf",
+        "sha256": "0be56faa99b5daf01b01c5bc997fc6217213a06c7917891304dc9b1f6252f4df",
+        "bytes": 357522,
+        "match": true
+      },
+      {
+        "path": "raw/mi-writein-manual.headers",
+        "sha256": "2df99621d0286b9e646b76f9a28dd12790a879dffd5268d6ffa149bc1b1c88f0",
+        "bytes": 835,
+        "match": true
+      },
+      {
+        "path": "raw/mi-sos-elections.headers",
+        "sha256": "3c7a5a57948c309f10d629fa534aea1441c8ac689a2c501e45719dccbd5b8d08",
+        "bytes": 208,
+        "match": true
+      },
+      {
+        "path": "extraction.json",
+        "sha256": "97f079d29d79cac4f5d79a083a851c5e8acdfd1a73264b49595e0dad38dc0e2b",
+        "match": true
+      },
+      {
+        "path": "REPORT.md",
+        "sha256": "5332a3881c392cb3343044a88c604cd7f3a6c7cd4b06a1830dd4525a4641f493",
+        "match": true
+      }
+    ],
+    "montana": [
+      {
+        "path": "raw/mt-candidate-list.html",
+        "sha256": "7ece7e148712f1c6034ba467fbe9b744ae0a243de773a5f3c7f64e12fd9d048b",
+        "bytes": 168382,
+        "match": true
+      },
+      {
+        "path": "raw/mt-candidate-list.headers",
+        "sha256": "88ec6db8571090f5a821dfc0aadf81fc9ffc60994c22d401c9de135631403632",
+        "bytes": 394,
+        "match": true
+      },
+      {
+        "path": "extract.py",
+        "sha256": "b9cd7ff17343fb58db2c735e1d839a96377f767349c11e2a3f5d679db3e96f53",
+        "match": true
+      },
+      {
+        "path": "extraction.json",
+        "sha256": "2bbc81b78f2579a362e0b819584a47c64436315a2565e2525bdb45c4fe86ddc8",
+        "match": true
+      },
+      {
+        "path": "search-observation.json",
+        "sha256": "71c21e3c77fdbffca1465624cfdeab48ba65e57db69459cc96b8ebccc6efd9f7",
+        "match": true
+      },
+      {
+        "path": "REPORT.md",
+        "sha256": "a3a55d5dc83fb6011081cc4c7ade616c83a18dd4c4e568451866b5c7efb50a8f",
+        "match": true
+      }
+    ],
+    "montana_dependencies": [
+      {
+        "path": "national-MT-source-review-root-v1/primary-law-calendar-capture.json",
+        "sha256": "c7ccb7f311230caa12cae1d7b11504a74906576226681b15ea408df4ba98352a",
+        "match": true,
+        "limitation": "Rendered/indexed legal source capture, not original statute/calendar bytes."
+      },
+      {
+        "path": "national-MT-source-semantics-astra-v1/DECISION.md",
+        "sha256": "d9b3b6b277ca4e8196dd5795b959ec9747a8cc0c682559f89a850ed0ab29b31a",
+        "match": true
+      },
+      {
+        "path": "national-MT-source-review-root-v1/selection.json",
+        "sha256": "8b220a8b2dbbeda66a6d0df2a7ce880881dbb4961a73e4b7423b90519c74629d",
+        "match": true
+      }
+    ]
+  },
+  "michigan_review": {
+    "source_scope": "The raw official report itself is headed “Michigan Department of State | Official Candidate Listing | All State and Judicial Offices | General Election | Tuesday, November 3, 2026”; its U.S. Senate section contains six candidate entries with party and filing method.",
+    "extracted_rows_verification": {
+      "rows": 6,
+      "names_and_methods": [
+        "El-Sayed, Abdul — Democratic Party, Petitions",
+        "Rogers, Mike — Republican Party, Petitions",
+        "Christensen, Lydia — Libertarian Party, Convention",
+        "Long, Tim — U.S. Taxpayers Party, Convention",
+        "Marsh, Douglas P. — Green Party, Convention",
+        "Kristy, Walter P. — Natural Law Party, Convention"
+      ],
+      "comparison": "All six extracted rows match the names, parties, filing methods, and U.S. Senate section in raw/mi-gen2026.html.",
+      "report_literal_case_insensitive_search": "The extraction reports zero occurrences of “write” and “declaration”; direct search of the complete saved report HTML also returns no such term."
+    },
+    "coverage_assessment": "The six rows document the ordinary statewide Senate candidate listing. Their row/table structure has no declaration-of-intent field or explicit write-in-coverage language. Official page labeling `All State and Judicial Offices` describes office scope, not the declaration type or inclusion of write-ins. The report therefore does not establish complete write-in coverage or zero write-in declarations.",
+    "primary_manual_check": {
+      "raw_path": "raw/mi-writein-manual.pdf",
+      "evidence": "The original July 2024 Michigan Bureau of Elections manual, chapter 4, says a public-office write-in candidate generally must file a Declaration of Intent with the appropriate election official by 4 p.m. on the second Friday preceding the election; BOE/county clerk notify local clerks of timely filed write-in candidates. It states that if a candidate dies or is otherwise disqualified after the deadline, the declaration requirement is waived for that office.",
+      "provenance": "PDF is linked from the official Michigan SOS admin-info page; PDF bytes and response headers match receipt pins. The manual file itself displays July 2024; HTTP Last-Modified is 2025-05-19. It does not enumerate 2026 filed candidates.",
+      "consequence": "The manual supports the rule and explains a potential exception; it is not a post-deadline named declaration roster. A separate official BOE or county filing/notification record is still needed for support closure."
+    },
+    "concrete_correction_or_limit": "Keep the six ordinary listed candidates separate from write-in eligibility. Do not describe the candidate report as a qualified write-in roster, or infer zero from its silence. The disclosed deadline and exception do not fill that roster gap."
+  },
+  "montana_review": {
+    "raw_source_scope": "Raw portal HTML heading reads FEDERAL GENERAL 2026. The table header explicitly labels the timestamp column `Filing Date`; it labels the left and hidden right status columns `Status`.",
+    "visible_senate_rows": 5,
+    "row_match": "All five extracted rows match raw table rows for UNITED STATES SENATOR, REGULAR, term length 6, District Type Statewide / District STATE. In Jami Dee Woodman's row, both status cells display FILED and the `Filing Date` cell displays 8/7/2026 2:30:07 PM. Raw row also contains literal WRITE-IN in the separate Email/Web Address column; the safe extraction properly omits that contact/display column.",
+    "key_semantics": "The UI provides a displayed `Filing Date` and `FILED` status only. It gives no field definition tying that date to receipt of the legally operative declaration, no linked detail/adjudication for this row, and no certification/qualification status. Treat `FILED` as portal status, not qualified/certified or timely/legal receipt.",
+    "date_rule_relation": "The packet's pinned current MCA 13-10-211/calendar capture states ordinary write-in filing by 5 p.m. on the 90th day before the election, Aug. 5 for Nov. 3, 2026, subject to statutory exceptions. The displayed Aug. 7 timestamp is later than that ordinary date, but field semantics/time zone and any exception/adjudication are unverified. Do not conclude timely/late legal receipt or countability from the display alone.",
+    "pagination_limit": "Raw portal HTML says page size 100 and 272 total items across 3 pages. The five Senate rows are visible at rows 0–4 on the downloaded page; the packet did not retrieve pages 2–3 or a Senate-only total. The receipt accurately says five rows visible; the report's phrasing could be misread as exhaustive. Do not characterize the five as a complete portal-wide Senate roster without a dedicated scope proof.",
+    "concrete_correction_or_limit": "Add the page-count limitation to any downstream description of roster completeness. The named Jami Dee Woodman write-in marker is present in a contact/display cell, but that does not establish legal countability. The portal's date and status remain procedural leads only."
+  },
+  "temporal_and_privacy_limits": {
+    "source_retrieval": "Both source packets record retrieval on 2026-10-25, after the owner forecast cutoff 2026-10-20; they do not prove source availability/content at that cutoff.",
+    "derived_privacy": "MT extraction omits raw contact and mailing-address columns as declared. This review deliberately reproduces none of those values.",
+    "failed_requests": "The failed Michigan Saginaw HEAD request preserved no response body/headers and was not independently verifiable; it is not candidate evidence. Michigan's generic SOS 403 headers are hashed and match, but no error body was preserved.",
+    "no_zero_inference": "Neither an ordinary roster's silence (MI) nor the portal view (MT) establishes zero filings, statewide completeness, or legal qualification."
+  },
+  "reviewer_conclusion": "The hash pins are sound and the extractions match the preserved response content for the fields reviewed. MI stays held for lack of official 2026 write-in declaration coverage. MT is a valid original-portal FILED lead naming a write-in candidate, but the displayed Filing Date, FILED label, and paginated view do not resolve receipt semantics, exceptions, certification, or complete roster coverage.",
+  "explicit_non_actions": [
+    "No network searches or source retries were performed.",
+    "No source admission, owner input, model, candidate identity, fit, scorer, or runtime changes.",
+    "No contact/address values copied into this review."
+  ]
+}

@@ -1,0 +1,84 @@
+{
+  "schema": "TNWriteInCertificateSourceAcquisitionLunaV1",
+  "acquired_at_utc": "2026-10-25T11:22:36Z",
+  "task_scope": "Focused source acquisition only for Tennessee 2026 general-election U.S. Senate write-in certificates. No source admission, candidate/model/input changes, guessed IDs, outreach, or inference from absent names.",
+  "prior_evidence_reviewed": [
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/remaining-current-source-triage-luna-v1.json",
+      "hash": "reviewed locally",
+      "relevant_prior_conclusion": "TN unclear: Nashville official rule but no named roster; accessible ordinary candidate lists do not establish qualified-write-in coverage."
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/remaining-current-source-triage-luna-v1-addendum.json",
+      "relevant": "Owner forecast cutoff 2026-10-20; Oct 25 retrieval cannot establish cutoff-time availability."
+    },
+    {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-declaration-followup-sol-v1/sources/tn-writein-rule.txt",
+      "sha256": "ced7da7a3818949945063df4be489d57d48c77ae0caf73eed03732dd9561f53d",
+      "relevant": "Nashville official rule states timely certificate requirement and bars same-office primary losers; no named roster."
+    }
+  ],
+  "outcome": {
+    "classification": "OFFICIAL_CERTIFICATE_SCOPE_SOURCE_ACQUIRED; ACTUAL_2026_FILED_CERTIFICATE_OR_COMPLETE_ROSTER_NOT_LOCATED",
+    "finding": "Acquired an official Sumner County Election Commission-hosted Tennessee Certificate of Write-In Candidacy (state form SS-3072). The form provides materially relevant filing/geographic scope: for general-election Governor, U.S. Senate, and U.S. House, a certificate must be filed in each county comprising the office's district; the special central-Coordinator route stated on this form is for those offices in primary elections. It is a blank form, not a 2026 candidate certificate or roster, so it names no candidate and cannot establish any candidate's eligibility or nonexistence.",
+    "statewide_scope_requirement": "For 2026 general-election U.S. Senate, the form's county-per-district rule applies across Tennessee's 95 counties. To establish a statewide named qualified write-in menu, obtain an official consolidated certificate roster explicitly covering all 95 counties or county filing/receipt records with completeness scope. A certificate filed in fewer than all counties can still support counting only in counties where timely filed, so statewide totals cannot be presumed from one county.",
+    "deadline": "The form states noon prevailing time on the 50th day before the election. For Nov. 3, 2026, that date was Sep. 14, 2026. Deadline passage does not establish zero filings.",
+    "no_absence_inference": "No named candidate is inferred from the blank form, generic ballot write-in slots, or absence from ordinary printed candidate lists."
+  },
+  "sources": [
+    {
+      "title": "Sumner County Elections, Certificate of Write-In Candidacy (SS-3072, RDA 451, Revised 7/2016)",
+      "url": "https://www.votesumnertn.org/uploads/files/8e5265e431b246a7d7a253b8d55da839ecf0cb1e.pdf",
+      "authority_scope": "Official county election commission-hosted statewide form; filing venue directions distinguish primary from general and expressly state county-per-district scope for general U.S. Senate.",
+      "retrieved_at_utc": "2026-10-25T11:21:59Z",
+      "server_http": "HTTP/2 200; content-type application/pdf; content-length 88178; Last-Modified Fri, 24 Jun 2022 22:43:22 GMT; ETag \"62b63e0a-15872\"",
+      "raw_path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/tn-writein-source-acquisition-luna-v1/raw/sumner-tn-ss3072-blank.pdf",
+      "headers_path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/tn-writein-source-acquisition-luna-v1/raw/sumner-tn-ss3072.headers.txt",
+      "sha256": "86d3b10c1bed02b40e6731beac134ec30c2eed2451b93f696930ec2384550b8e",
+      "bytes": 88178,
+      "content_note": "One-page blank certificate form. No completed applicant identity/address/contact fields."
+    },
+    {
+      "title": "Tennessee Secretary of State, 2026 Candidate Lists",
+      "url": "https://sos.tn.gov/elections/2026-candidate-lists",
+      "authority_scope": "Explicit official state election candidate-list page; not itself a write-in certificate list unless declared scope says so.",
+      "retrieval_attempt_utc": "2026-10-25T11:21:20Z",
+      "retrieval_method": "Direct shell HTTPS GET with curl -L --max-time 20; response headers and response body preserved.",
+      "server_http": "HTTP/2 403, server CloudFront, content-type text/html, content-length 919",
+      "raw_path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/tn-writein-source-acquisition-luna-v1/raw/tn-candidate-list-page.html",
+      "headers_path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/tn-writein-source-acquisition-luna-v1/raw/tn-candidate-list-page.headers.txt",
+      "sha256": "9b384a78e4e7688e59b5998885e635661cd988d67f1c2dac5d389c7998d5510b",
+      "bytes": 919,
+      "result": "No page content or certificate list retrieved. 403 is an access failure, not evidence that the page/list is absent or that no write-in candidates filed."
+    },
+    {
+      "title": "Tennessee Secretary of State search index, Write-In Candidacy Form result",
+      "url": "https://sos.tn.gov/search",
+      "source_result": "Official indexed page says the write-in form must be filed with the appropriate election office by noon, prevailing time, on the 50th day before the election.",
+      "retrieved_via": "Web search result; the SOS page itself showed anti-bot/JavaScript check when opened. Used only as a locator/metadata, not for candidate evidence."
+    }
+  ],
+  "excluded_sources": [
+    {
+      "title": "SOS 2026 ballot candidate lists / ordinary printed candidate roster",
+      "reason": "Not a certified write-in filing roster and does not show county certificate receipts or explicit certificate coverage; excluded as a repeat/insufficient source."
+    },
+    {
+      "title": "Shelby County candidate petitions issued/filed PDF for Aug. 20 deadline",
+      "url": "https://www.electionsshelbytn.gov/wp-content/uploads/2026/08/Nov-Petitions-Issued-and-Filed-to-be-Certified.pdf",
+      "reason": "Official local source but its retrieved contents are pre-election ordinary/municipal petitions and do not enumerate general U.S. Senate write-in certificates; not treated as evidence about such filings."
+    }
+  ],
+  "temporal_limits": {
+    "owner_forecast_cutoff": "2026-10-20",
+    "retrieval_date": "2026-10-25",
+    "statement": "No Oct. 25 retrieval proves what was public or known by the Oct. 20 cutoff. The form's HTTP Last-Modified metadata is 2022 but does not alone establish when this copy was publicly available or an Oct. 20 roster."
+  },
+  "next_evidence_needed": "An official Tennessee Coordinator/county consolidation expressly scoped to 2026 General U.S. Senate write-in certificates and all 95 counties, or the underlying county records proving certificate filing/receipt completeness. No such roster was accessible in this bounded pass.",
+  "limits": [
+    "No actual completed 2026 certificate or complete statewide filed-certificate roster was obtained.",
+    "No candidate names or addresses/contacts from any inferred or secondary source are included.",
+    "The official SOS candidate-list endpoint returned 403; the error is not evidence of list contents.",
+    "No contact, speculative crawling, guessed endpoint/IDs, admission, owner/model/input change, or test/fit work."
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "native": {
+    "terminal_sha256": "32b7c1de3904fefed9be105cb11fe68f4fd1e97dc183c710fec623868cca1fb3",
+    "plan_sha256": "adef60442a7097dc581323f9e361bb2a75441e9292eb92912c2fa1a0900b61b1",
+    "terminal_inventory_pins_match": true,
+    "parent_count": 8,
+    "parent_masses": [
+      0.125,
+      0.125,
+      0.125,
+      0.125,
+      0.125,
+      0.125,
+      0.125,
+      0.125
+    ],
+    "completed_result_count": 1,
+    "fit_completed_result_matches_file": true,
+    "csv_rows": 1376,
+    "csv_extrema": {
+      "max_rhat": 1.3208674745084075,
+      "min_bulk_ess": 9.879545388653126,
+      "min_tail_ess": 11.409113169190775
+    },
+    "terminal_exit_code": 1,
+    "terminal_budget_exceeded": false
+  },
+  "synthetic": {
+    "baseline_inert_archive": {
+      "accepted": true,
+      "terminal_sha256": "9f68c6b28b2c151c29f31571122fe757c4e22a07d5949cfaba39cd435cb761ce",
+      "pins": 14,
+      "qualification": false,
+      "numerical_fit": "failed"
+    },
+    "different_terminal_directory": {
+      "accepted": false,
+      "terminal_sha256": "9f68c6b28b2c151c29f31571122fe757c4e22a07d5949cfaba39cd435cb761ce",
+      "exception": "ReceiptError",
+      "reason": "terminal attempt directory mismatch"
+    },
+    "contradictory_preservation_error": {
+      "accepted": false,
+      "terminal_sha256": "ed94b4ce79d2de9d72f639c60a7a6e09f5a1645939dae3457934c8211745cb04",
+      "exception": "ReceiptError",
+      "reason": "inference preservation failed"
+    },
+    "omitted_terminal_diagnostics": {
+      "accepted": false,
+      "terminal_sha256": "bcdf19f1557f170806574587f9c93edc71b3594a03b1711eece630961d483206",
+      "exception": "ReceiptError",
+      "reason": "terminal diagnostics keys mismatch"
+    },
+    "result_coordinate_mismatch": {
+      "accepted": false,
+      "terminal_sha256": "620bed2c0c48c388aba888f2f396ed4e8960e86a74fcf931e521bf2d0503f492",
+      "exception": "ReceiptError",
+      "reason": "coordinate identity mismatch"
+    }
+  }
+}
