@@ -1,0 +1,41 @@
+{
+  "schema": "LocalExperimentQueueRootVerificationV1",
+  "issued_utc": "2026-10-25T18:01:38.849115+00:00",
+  "scope": "Source review and exact author/independent evidence authentication; no additional scientific or synthetic jobs launched by root",
+  "author": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/evidence/experiment-queue-author-verification-sol-v3.json",
+    "sha256": "e1775d6ef5df5b0974eaf992a19ac72025dac8e9357c276269805944125d15fe",
+    "size": 4022
+  },
+  "independent_review": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/evidence/experiment-queue-review-luna-v2.json",
+    "sha256": "664c63dccb2bfc0ed109cddfcec9c78220ee13837224eacb8335f2b78580aad2",
+    "size": 3532
+  },
+  "review_relative_pin_root": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024",
+  "verified_reference_count": 11,
+  "verified_references": {
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/experiment_queue.py": "836418d56fcec48ca6fdf8d98a8fe2e843dd1b9a413573b46f7ed9f365f08a76",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/test_experiment_queue.py": "411814bb4f3b81230c7cfe4f2589e01f94fb241d0994bb20b62151a8618fb82a",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/experiment_queue.md": "59e0df5626c9ee42facdbeb6425dfde4403ce2dd14a0b207016db5bc392a9b3b",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/execution.py": "ce02f4c4b9be397b299c2219092fdd355db1695798af07c4974bc63cb6bbbc93",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/ledger.py": "d65cea890ecf9b456f8b9625d173f15dac1e7fa94bb618d3407e26f368ee220a",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/run_receipts.py": "a7e78b822207109e0257adce9abb6493c53a0d93158177131ade76c0d874e73e",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/evidence/experiment-queue-tests-sol-v3.log": "eb764e296aeb502f6e4388ea4b2cf122192afa1f5db834032aa44dc787fedf56",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/evidence/experiment-queue-author-verification-sol-v1.json": "ea022dac856afd7b3206e1d26ff416844fed0dcf0b773e417116e85e428bea55",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/evidence/experiment-queue-author-verification-sol-v3.json": "e1775d6ef5df5b0974eaf992a19ac72025dac8e9357c276269805944125d15fe",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/evidence/experiment-queue-review-luna-v1.log": "dabe47d439b089584c42cae85db13a7e567d69f2fa549590dd55755c90061185",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/evidence/experiment-queue-review-luna-v1.json": "3480c4320d272c43b7b6f5e1e456863d7c6c7047a620a38be743fdfd380bdee8"
+  },
+  "root_findings_resolved": [
+    "Cached receipt roles match exact declared paths and minimum byte gates",
+    "Effective bound spec is re-derived from pinned plan and explicit dependency records",
+    "Crash after prelaunch deferral result and before release reconciles without invented executor terminal or launch",
+    "Missing admission receipt with retained reservation freezes new dispatch and reports unknown capacity"
+  ],
+  "review_metadata_correction": "Luna v1 had correct author-v3 SHA but stale byte size3322; v2 corrects to4022 and preserves v1. All current pins authenticated.",
+  "final_review": "No material unresolved gap found within documented cooperating local execution domain",
+  "qualification": "unassessed",
+  "executor_source_unchanged": true,
+  "root_repeated_final_suite": false
+}

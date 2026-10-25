@@ -1,0 +1,58 @@
+{
+  "schema": "PersistentExperimentQueueImplementationV1",
+  "issued_utc": "2026-10-25T18:01:38.849350+00:00",
+  "status": "implemented_independently_reviewed",
+  "sources": {
+    "experiment_queue.py": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/experiment_queue.py",
+      "sha256": "836418d56fcec48ca6fdf8d98a8fe2e843dd1b9a413573b46f7ed9f365f08a76",
+      "size": 35244
+    },
+    "test_experiment_queue.py": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/test_experiment_queue.py",
+      "sha256": "411814bb4f3b81230c7cfe4f2589e01f94fb241d0994bb20b62151a8618fb82a",
+      "size": 31771
+    },
+    "experiment_queue.md": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/experiment_queue.md",
+      "sha256": "59e0df5626c9ee42facdbeb6425dfde4403ce2dd14a0b207016db5bc392a9b3b",
+      "size": 11023
+    }
+  },
+  "author_verification": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/evidence/experiment-queue-author-verification-sol-v3.json",
+    "sha256": "e1775d6ef5df5b0974eaf992a19ac72025dac8e9357c276269805944125d15fe",
+    "size": 4022
+  },
+  "independent_verification": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/evidence/experiment-queue-review-luna-v2.json",
+    "sha256": "664c63dccb2bfc0ed109cddfcec9c78220ee13837224eacb8335f2b78580aad2",
+    "size": 3532
+  },
+  "root_verification": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/evidence/experiment-queue-root-verification-v1.json",
+    "sha256": "d33b029764f074f4ab08f0392314538f82403aa28b482224b96302998a879860",
+    "size": 3910
+  },
+  "checks": {
+    "author_subprocess_cases_passed": 23,
+    "independent_subprocess_cases_passed": 23,
+    "scientific_runs": 0
+  },
+  "behavior": [
+    "Fixed immutable DAG plans with exact native receipt roles and consumer path/SHA arguments",
+    "Dedicated cooperating executor substore, capacity1 or2, global dispatcher lock and durable reservations before prepare/launch",
+    "Reconciliation binds plan, effective spec, reservation, result, release and executor terminal; uncertain/corrupt capacity remains occupied",
+    "Never-launched preflight failures defer/release without inventing executor terminals; resumption requires new pinned plan and exact original effective spec",
+    "Launched retries require new attempt/output and explicit predecessor evidence/reason",
+    "Bounded worker may run through separate detached controller executor"
+  ],
+  "limits": [
+    "Not an installed unattended service or autonomous research, scientific validation, model promotion or publication pipeline",
+    "Capacity covers only cooperating queue clients in its dedicated worker substore; current owner jobs remain outside the domain",
+    "Native receipt metadata is not scientific qualification; downstream native consumers authenticate scientific transitive evidence",
+    "No adoption of existing owner PIDs, automatic retry, changed-spec prelaunch resume, or portable executable-store restore"
+  ],
+  "qualification": "unassessed",
+  "raw_scientific_backup_chain_changed": false
+}
