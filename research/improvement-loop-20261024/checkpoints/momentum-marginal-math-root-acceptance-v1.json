@@ -1,0 +1,45 @@
+{
+  "schema": "MomentumMarginalArithmeticRootAcceptanceV1",
+  "issued_utc": "2026-10-25T07:47:44.136683+00:00",
+  "selected": "momentum-marginal-math-root-v2/marginal.py",
+  "source_sha256": "299d6c2121e962a542a9ba18262658085e160046a3cdbe8a643508afd8e1bcee",
+  "disposition": "accepted_supplied_Gaussian_marginal_arithmetic_only",
+  "references": [
+    {
+      "path": "momentum-marginal-math-root-v1/artifact-manifest.json",
+      "sha256": "ad58a67d3e204abc6fd02fa23e85205a44a01a681cf12f29f5adda8223993b94"
+    },
+    {
+      "path": "momentum-marginal-math-review-sol-v1/artifact-manifest.json",
+      "sha256": "7c462f9ac104a47efd2d07b82c2c2196d27d5f1c00e2bb7d7d8538cc237a007e"
+    },
+    {
+      "path": "momentum-marginal-math-root-v2/artifact-manifest.json",
+      "sha256": "2bfa468bca013c7bfa7d6e80395ba7534947026ff35209fd2d51fed1b40f28c8"
+    },
+    {
+      "path": "momentum-marginal-math-review-sol-v2/artifact-manifest.json",
+      "sha256": "c935747ae3b1b0d582913b08f3e1926613957c1ca06fbac5293a2e0beb132771"
+    }
+  ],
+  "author_tests": 8,
+  "independent_tests": 14,
+  "root_verification": "Read independent v2 source-delta report and verified all4manifest artifact hash inventories; earlier direct source implementation/tests retained.",
+  "preserved_failures": [
+    "V1 linear normalized-weight underflow discarded rare-tail-dominating components.",
+    "V1 complementary-tail roundoff could produce positive log probability rejected by its scorer.",
+    "V1 nonfinite zero-width integrand could return NaN with zero estimated error."
+  ],
+  "record_correction": "The original Sol inference draft used correct -2*SF*(F_t-F), equivalent to implemented +2*SF*(SF_t-SF). Root misread it and incorrectly claimed a sign defect in v1 verification; v2 and both independent reviewers explicitly correct this. Original bytes and user-facing correction retained.",
+  "scope_exclusions": [
+    "No actual target probabilities, labels or scores examined.",
+    "No MCMC convergence, source admission or forecast promotion proven.",
+    "No continuous-density quantile influence applied to archived empirical F0."
+  ],
+  "runtime": {
+    "numpy": "2.4.4",
+    "scipy": "1.17.1",
+    "threads": "single BLAS/OMP"
+  },
+  "forecast_design": "checkpoints/momentum-forecast-design-v1.json"
+}

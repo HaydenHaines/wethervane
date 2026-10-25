@@ -1,0 +1,53 @@
+{
+  "schema": "MomentumMarginalMathSuppliedVerificationV1",
+  "issued_utc": "2026-10-25T07:31:44.839402+00:00",
+  "scope": "Supplied Gaussian conditional logit mixture arithmetic only; no target arrays, numeric outcomes, forecasts, sampler runs or source admission.",
+  "status": "author_tests_passed_independent_review_pending",
+  "functions": [
+    "stable separate log CDF and survival",
+    "mixture quantiles with share bracket tolerance 1e-10",
+    "share mean and component means by deterministic integration",
+    "share CRPS and centered mixture-weight influence",
+    "standard WIS with 50/80/95 intervals",
+    "unclipped winner Brier and negative log scores"
+  ],
+  "tests": {
+    "count": 5,
+    "result": "test-results-v2.txt",
+    "seconds": 0.158,
+    "independent_oracles": [
+      "single Gaussian transformed quantiles and density finite difference",
+      "normal-domain expected-share quadrature",
+      "uniform-share CRPS integral identity",
+      "finite mixture-weight CRPS perturbation",
+      "seven pinball-loss WIS identity",
+      "immutable copied vectors and invalid inputs"
+    ]
+  },
+  "draft_correction": {
+    "source": "../momentum-inference-contract-sol-v1.md",
+    "source_sha256": "036273e2520f2bb97a4cd89235d9a361f82dcdd75bb60f9fff2a1737c42c4c06",
+    "issue": "Upper CRPS integral mixture influence sign",
+    "correct": "+2*SF*(SF_t-SF), equivalently -2*SF*(F_t-F)",
+    "draft": "-2*SF*(SF_t-SF)",
+    "independent_analytic_confirmation": "house_full_coverage_audit; separate contract review forthcoming"
+  },
+  "deterministic_tolerances": {
+    "initial_epsabs": 1e-09,
+    "initial_epsrel": 1e-08,
+    "initial_limit": 200,
+    "retry_epsabs": 1e-10,
+    "retry_epsrel": 1e-09,
+    "retry_limit": 400,
+    "max_estimated_error": 1e-08,
+    "max_retry_difference": 2e-08,
+    "CRPS_total_error": 1e-08
+  },
+  "limits": [
+    "Quadrature error estimates are not proof or Monte Carlo uncertainty.",
+    "No mixture MCMC diagnostics, scoring-mask handling, actual label reader or promotion logic.",
+    "No Student-t missing-race mixture implemented.",
+    "Caller must retain chain/draw coordinates and supply qualified weights.",
+    "Metric-specific forecast gates and overall execution contract remain to be selected."
+  ]
+}

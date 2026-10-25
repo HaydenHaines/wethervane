@@ -1,0 +1,98 @@
+{
+  "schema": "MomentumTargetPreparationRootSelectionV1",
+  "recorded_utc": "2026-10-25T07:04:14.524901+00:00",
+  "stage": "prepare_H14_target_poll_and_feature_inputs_only",
+  "references": [
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-preflight-coverage-luna-v1/authoritative-index-v2.json",
+      "sha256": "1fb3dd6905da7bfab2bd351dc486a3f525cc9f49c2da0bce9029d0f4d0c0c7da"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-preflight-coverage-luna-v1/artifact-correction-manifest-v2.json",
+      "sha256": "2ed7cefbb8078bbba1a59a717a8e98ef56e7627dabb7a0574a1a6aa45081b715"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-coverage-review-sol-v1/receipt.json",
+      "sha256": "c52c786ea2c7c626ba02372e4b2f5dd7212d13385e224dcad5fcaf744fce0562"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-preflight-bank-compatibility-sol-v1/compatibility.json",
+      "sha256": "53337fcbd640c1ece9c31f4c2c44cf107bbdcd60bc5bee912716109a3806ba05"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/checkpoints/momentum-bank-root-review-v1.json",
+      "sha256": "17e30d3faed050d1dd96f6c6f8f7f00d302f5bfe2ea7b6f4a71739ea776496b2"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-execution-design-review-sol-v1.md",
+      "sha256": "de600466ee990e2eea7c553867b5b618206ceb16bfe43b4947691c40d9130566"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-calibration-execution-sol-v2/attempt-root-v2/summary.json",
+      "sha256": "2bdbea1cfa7dd3749c56980a9a96496f6e3d89c375ea0e958c6f93a2ba29d131"
+    }
+  ],
+  "target_cycles": [
+    2018,
+    2020,
+    2022,
+    2024
+  ],
+  "horizon_days": 14,
+  "cutoff": "Election date minus14days at midnightUTC, exact reviewed native availability operator before question/sample selection",
+  "additional_availability_lag_days": 0,
+  "population_priority": "Native helper LV thenRV thenadults, explicitly distinct from descriptive LV/RV-onlyaudit",
+  "target_operators": [
+    "native_full_series",
+    "latest_per_race_pollster"
+  ],
+  "expected_observations": {
+    "2018": {
+      "native_full_series": 202,
+      "latest_per_race_pollster": 170,
+      "polled_races": 25
+    },
+    "2020": {
+      "native_full_series": 190,
+      "latest_per_race_pollster": 134,
+      "polled_races": 22
+    },
+    "2022": {
+      "native_full_series": 220,
+      "latest_per_race_pollster": 171,
+      "polled_races": 23
+    },
+    "2024": {
+      "native_full_series": 351,
+      "latest_per_race_pollster": 226,
+      "polled_races": 27
+    }
+  },
+  "source_admission": "Exactly the already-reviewed native preflight event roster and source rows. Reconstruct matched ID sets and exclusions. Proposed four-event identity expansion is a separate later intake, not part of this initial packet.",
+  "time_coordinate": "Reviewed field-end days beforeElection; no interval averaging or daily expansion of rollingpolls.",
+  "target_features": "Exact admitted F0 H14 target offsets/design and event axes from completed compatibility packet; no H30/H7 refresh or change.",
+  "outputs": [
+    "Full ordered observation/race/pollster/cycle/day/share coordinates for bothoperators, metadata/rawline provenance and complete helper-output selection/exclusion ledgers",
+    "Exact F0 target feature design/offset/ordered event identifiers with sourcepins; preservefullbank targets separately fromcommonpolledmask",
+    "Label identity metadata only for scoremask; do not parse numeric target outcomes or forecast scores",
+    "An externalSHA-bound exclusive prepared manifest, native coverage/ID reconciliation and meaningful deterministic source/selection tests"
+  ],
+  "prohibited": [
+    "No historical optimizer or sampler calls",
+    "No forecast Gibbs or Gaussian forecast generation",
+    "No targetnumeric outcome parsing or scoring",
+    "No originalbank resampling/thinning/refit",
+    "No new poll acquisition or event admission",
+    "No owner/frozenartifact modification"
+  ],
+  "scientific_limits": [
+    "Conditional empiricalBayes aggregate workingmodel, not fullcount qualification",
+    "Retrospective roster/publication proxies; strict_asof_qualified:false",
+    "Unknown respondentoverlap and longfieldperiods stay explicit",
+    "Calibrationv2gates pass but finalindependent resultreview is pending; no forecast readiness inferred"
+  ],
+  "prospective_comparison": "Primary full-series M01versusM02 onmatchedIDs; latestM01 as separatelynamed data-selection anchor; F-only and explicitlyspecified polls-only references required. Exact inference/score gates remain to be frozen separately beforeforecasts.",
+  "output_directory": "momentum-target-preparation-sol-v1",
+  "forecast_execution_authorized": false,
+  "goal_status": "active"
+}

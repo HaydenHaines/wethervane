@@ -1,0 +1,73 @@
+{
+  "schema": "MomentumMarginalMathSuppliedVerificationV2",
+  "issued_utc": "2026-10-25T07:37:27.487592+00:00",
+  "scope": "Supplied Gaussian conditional logit mixture arithmetic only; no target arrays, numeric outcomes, forecasts, sampler runs or source admission.",
+  "status": "author_tests_passed_independent_delta_review_pending",
+  "functions": [
+    "stable separate log CDF and survival",
+    "mixture quantiles with share bracket tolerance 1e-10",
+    "share mean and component means by deterministic integration",
+    "share CRPS and centered mixture-weight influence",
+    "standard WIS with 50/80/95 intervals",
+    "unclipped winner Brier and negative log scores"
+  ],
+  "tests": {
+    "count": 8,
+    "result": "test-results-v1.txt",
+    "seconds": 0.214,
+    "independent_oracles": [
+      "single Gaussian transformed quantiles and density finite difference",
+      "normal-domain expected-share quadrature",
+      "uniform-share CRPS integral identity",
+      "finite mixture-weight CRPS perturbation",
+      "seven pinball-loss WIS identity",
+      "immutable copied vectors and invalid inputs",
+      "tiny raw-weight dominating tail in log domain",
+      "complementary log-tail roundoff",
+      "zero-width nonfinite rejection and fixed two-attempt quadrature cap"
+    ]
+  },
+  "deterministic_tolerances": {
+    "initial_epsabs": 1e-09,
+    "initial_epsrel": 1e-08,
+    "initial_limit": 200,
+    "retry_epsabs": 1e-10,
+    "retry_epsrel": 1e-09,
+    "retry_limit": 400,
+    "max_estimated_error": 1e-08,
+    "max_retry_difference": 2e-08,
+    "CRPS_total_error": 1e-08
+  },
+  "limits": [
+    "Quadrature error estimates are not proof or Monte Carlo uncertainty.",
+    "No mixture MCMC diagnostics, scoring-mask handling, actual label reader or promotion logic.",
+    "No Student-t missing-race mixture implemented.",
+    "Caller must retain chain/draw coordinates and supply qualified weights.",
+    "Metric-specific forecast gates and overall execution contract remain to be selected."
+  ],
+  "predecessor": {
+    "path": "../momentum-marginal-math-root-v1/artifact-manifest.json",
+    "sha256": "ad58a67d3e204abc6fd02fa23e85205a44a01a681cf12f29f5adda8223993b94",
+    "disposition": "three independently detected numerical boundary defects; original bytes preserved"
+  },
+  "corrections": [
+    {
+      "issue": "Normalized linear weights underflowed and lost a rare-tail-dominating component",
+      "repair": "Authoritative normalized logweights formed from raw logweights/logsumexp; both log tails and log density use them."
+    },
+    {
+      "issue": "Floating-point normalized log-win could be slightly positive and rejected by winner_scores",
+      "repair": "Normalize independently computed logCDF and logSF together using logaddexp, only when absolute normalization error <=1e-12. No probability floor or rare-tail subtraction."
+    },
+    {
+      "issue": "Nonfinite zero-width integrand returned NaN with zero estimated error",
+      "repair": "Validate finite endpoint and finite ordered bounds before returning typed zero. Invalid integrand raises ArithmeticError."
+    }
+  ],
+  "record_correction": {
+    "incorrect_root_v1_claim": "The proposal used an incorrect negative SF-difference CRPS influence.",
+    "verified_actual_text": "-2*SF(x)*(F_t(x)-F(x))",
+    "conclusion": "The original proposal was correct and equivalent to implemented +2*SF*(SF_t-SF). Root misread it. Proposal SHA remains036273e2520f2bb97a4cd89235d9a361f82dcdd75bb60f9fff2a1737c42c4c06.",
+    "preservation": "Original proposal and v1 mistaken verification record retained; this explicit correction supersedes the mistaken assertion. User commentary corrected."
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "recorder_only": true,
+  "cycle": "m02-momentum-forecast-20261025",
+  "binding": {
+    "hypothesis": "Does a symmetric persistent race trend improve matched conditional predictive forecasts beyond the five-component Brownian baseline?",
+    "incumbent_config": {
+      "arm": "FS5",
+      "calibration_summary_sha256": "2bdbea1cfa7dd3749c56980a9a96496f6e3d89c375ea0e958c6f93a2ba29d131",
+      "design_sha256": "45707d4a933ded2f7d4bffcbaab0fb6fb9a4ab7b1d62ad4494a27422b7d75678",
+      "law": "original complete16000-row F0 empirical prior plus accepted five-component total poll-error covariance",
+      "prepared_plan_sha256": "e1c2a96cd4bbd95b3c004733d2c6787339b3ce41a97e7c3cfb5d8489c6ff3d84"
+    },
+    "scope": {
+      "A": [
+        2018,
+        2022
+      ],
+      "B": [
+        2020,
+        2024
+      ],
+      "aggregate_comparator_only": true,
+      "common_polled_races": [
+        25,
+        22,
+        23,
+        27
+      ],
+      "horizon_days": 14,
+      "strict_asof_qualified": false
+    },
+    "target_layer": "measurement_and_temporal_dependence_aggregate_comparison"
+  },
+  "checkpoints": [
+    {
+      "revision": 0,
+      "status": "research",
+      "note": "Cycle recorded",
+      "outcome": "success",
+      "recommendation": null,
+      "recorded_at": "2026-10-25T07:50:23.235030+00:00",
+      "references": {}
+    },
+    {
+      "revision": 1,
+      "status": "developing",
+      "note": "Exact H14 inputs independently accepted and mathematical helper v2 accepted; observer author parity passes. Scientific design frozen; adapter, collector and independent sampler/runner verification remain pending. No target forecasts or numeric target labels.",
+      "outcome": "success",
+      "recommendation": null,
+      "recorded_at": "2026-10-25T07:50:23.236410+00:00",
+      "references": {
+        "evaluation": "21aee4421699d31939247b5eca94a00eb3c8b6c44804a85fc0b833ad07b2b1bf",
+        "plan": "45707d4a933ded2f7d4bffcbaab0fb6fb9a4ab7b1d62ad4494a27422b7d75678",
+        "review": "51f59909026e937b76d7954491f9597b83b0755fe2651dec3b6dded612e0a60e"
+      }
+    }
+  ]
+}

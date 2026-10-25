@@ -1,0 +1,43 @@
+{
+  "schema": "MomentumObservedSamplerRootAcceptanceV1",
+  "issued_utc": "2026-10-25T07:52:50.792729+00:00",
+  "disposition": "accepted_observation_only_synthetic_parity",
+  "references": [
+    {
+      "path": "momentum-observed-sampler-sol-v1/MANIFEST.json",
+      "sha256": "5e8608c4d1de978e8119a8cd1b4dded46ffe6253c4ff973f53e20d2bf98402c2"
+    },
+    {
+      "path": "momentum-observed-sampler-review-sol-v1/receipt.json",
+      "sha256": "fdf8a83e20245db289458d0d5b4a32c6f9318487de3585dea1f512319db1f54b"
+    },
+    {
+      "path": "momentum-inference-contract-review-sol-v1.md",
+      "sha256": "9c48a92824f9f66ad4272c6a8c8170f80d502517c3d637e1a4c4df41f139c7eb"
+    },
+    {
+      "path": "checkpoints/momentum-forecast-design-v1.json",
+      "sha256": "45707d4a933ded2f7d4bffcbaab0fb6fb9a4ab7b1d62ad4494a27422b7d75678"
+    }
+  ],
+  "independent_tests": 18,
+  "independent_extra_oracles": {
+    "mean_max_abs_error": 5.56e-17,
+    "variance_max_abs_error": 1.05e-17,
+    "row_density_max_abs_error": 2.78e-16
+  },
+  "exact_original_output_and_rng_identity": true,
+  "pre_vs_post_conditioning_phases_distinct": true,
+  "producer_source_reconstructed_in_memory_byte_exact": true,
+  "root_read": [
+    "REPORT.md",
+    "build_observed.py",
+    "independent REPORT.md"
+  ],
+  "acceptance_limits": [
+    "Synthetic supplied-data implementation only; no convergence or historical forecast qualification.",
+    "Collector, adapter, actual runner and runtime binding still require validation.",
+    "Callback exceptions propagate; trusted code with external references is not sandboxed."
+  ],
+  "actual_target_chain_executed": false
+}
