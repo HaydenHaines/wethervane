@@ -1,0 +1,197 @@
+{
+  "schema": "BallotmancyEvaluationScoreboardUXLunaV1",
+  "issued_local_date": "2026-10-25",
+  "scope": "Compact UX research for a one-page customizable model-stack view and historical forecast-quality scoreboard; no code, data, model, fit, or scorer work.",
+  "authoritative_semantics_and_readiness": {
+    "named_pair": "The pair-share target is the first named candidate's votes divided by the combined votes of the two named candidates. It is conditional on this pair and is not all-candidate share, legal winner probability, or chamber control.",
+    "pair_leading_probability": "Chance the first named candidate leads within that named pair's share target. It is not the chance of winning the office; a third candidate can win.",
+    "intervals": "Show interval coverage and interval width together. Coverage alone rewards overly broad ranges; width alone can reward ranges that miss. Use the accepted adapter's named-pair uncertainty scope.",
+    "joint_energy": "One empirical score for the whole named-pair share vector. Do not attribute parts of this score to individual pairs or present component contributions.",
+    "participation": "Forecast administrative reports of participation/cast-counted measures, not independently established exact physical-participant truth. The 2018 original participating-voter report differs from later cast-and-counted reports; Delaware is missing, Texas has an internal published-total versus mode-subtotal discrepancy, and report-error transfer is uncalibrated. Preserve these definition, revision, completeness, and source limits in any display.",
+    "readiness": "Accepted evaluation interfaces have synthetic/source/reader evidence only. There is no actual qualified posterior test, new empirical forecast score, or forecast adoption. Current full count run is still in progress; checkpoint records no completed posterior. No real browser export is available.",
+    "historical_sample": "Derive cycle and row counts from the supplied result. When a scope contains N cycles, describe N historical cycle cases; race/pair rows are coverage within those cases, not independent national elections or replications.",
+    "comparison_rule": "For a score delta, require the same scored target, event/race roster, cutoff, observed outcomes, and metric scope. Inputs may differ intentionally (for example F vs FP or component-enabled comparisons): show those differences as explicit information-match labels and describe resulting deltas as descriptive, not causal or algorithm-only gain. A mismatch in scored target/event roster/cutoff/outcomes/scope blocks a direct delta.",
+    "report_source_acceptance": "The later v32 checkpoint and historical-2018-report-acceptance-root-v1.json supersede the earlier acceptance metadata: 203 historical source reports are accepted, comprising 50 sourced 2018 labels plus 51 each in 2020/2022/2024; DE2018 is absent. 2018 report definition differs from later cast-and-counted reports; the TX published total conflicts with its internal mode subtotal and accepted candidate-vote total. This source/profile acceptance is not an actual posterior or empirical forecast score."
+  },
+  "recommended_hierarchy": [
+    {
+      "rank": 1,
+      "section": "Forecast setup and model stacks",
+      "content": "Keep the existing one-page flow and existing election-year control. Show the selected stack ingredients as concise rows (model, data/input coverage, assumptions), and make the same evaluation view usable for other Senate and House results as those are prepared. Derive available cycle/session choices and coverage from supplied results; label unsupported/unprepared selections without implying they have forecasts. Do not add a new session-selection product concept or hardcode cycle/row counts."
+    },
+    {
+      "rank": 2,
+      "section": "Evaluation status and scope strip",
+      "content": "Immediately under the chosen stack, show a short status and scope line with separate fields for run/execution status, experimental/qualification status, information matching, numerical precision, cycle(s), cutoff, and scored coverage. These dimensions can coexist; for example a completed experimental run can still be unmatched and precision-limited. Render only dimensions supported by supplied metadata."
+    },
+    {
+      "rank": 3,
+      "section": "Compact forecast-quality scoreboard",
+      "content": "Use a small set of existing cards below the status: (a) named-pair share range quality with coverage and width adjacent; (b) pair-leading probability quality; (c) one whole-vector energy score; (d) administrative report-total error only when source/definition coverage is qualified. Each card shows status, value or reason, denominator/scope, a one-sentence interpretation, and direction (lower/higher is better) only when meaningful. Never collapse the four into a single composite grade."
+    },
+    {
+      "rank": 4,
+      "section": "Cycle and scope breakdown",
+      "content": "Progressively disclose the supplied cycle-by-cycle table and exact comparison coverage. Each row identifies cycle, cutoff, included races/pairs, observed coverage, and metric status. Derive every count from the result. Describe the aggregate as N historical cycle cases when that is the supplied scope; race/pair rows show coverage within those cycles, not independent national elections. Show exclusions and missing observations. For intentional input differences, label the difference and make clear that delta is descriptive, not causal."
+    },
+    {
+      "rank": 5,
+      "section": "Technical evidence and definitions",
+      "content": "Use existing details/summary disclosure for methods, source and calculation notes, matching keys, and numerical checks. Keep identifiers/hashes and lengthy method details out of the default view; include plain-language explanations next to every displayed statistic, not only in this panel."
+    }
+  ],
+  "plain_language_copy": {
+    "overview_empty": "Forecast-quality results are not available yet. The evaluation interface is prepared, but no qualified full-count forecast has been scored.",
+    "pair_share": "Pair share is one named candidate's share of the votes cast for these two named candidates. Other candidates are outside this calculation.",
+    "pair_leading": "Chance this candidate receives more votes than the other named candidate. A different candidate can still win the election.",
+    "range_coverage": "Range coverage: the share of observed results that fell inside the forecast range. Range width: how many percentage points the range spans. Read these together: wide ranges cover more outcomes but are less specific.",
+    "joint_energy": "Whole-vector score: compares the predicted shares for all named pairs with the results as one combined set. Lower is better. This score does not show which pair mattered most.",
+    "participation": "Report-total error compares predicted administrative reports of participation or cast-counted measures with recorded totals. It does not establish the exact number of people who physically participated. Definitions, revisions, and report coverage can differ; for example, the 2018 report measure differs from later cast-and-counted reports.",
+    "matched": "Same-scope comparison: both forecasts score the same target, event roster, information cutoff, and observed outcomes. Their inputs can still differ; read the information-match label before interpreting the score difference.",
+    "unmatched": "Different scored target, event roster, cutoff, outcomes, or metric scope: a direct score difference is unavailable. If only model inputs differ, a displayed difference is descriptive and does not isolate a causal effect.",
+    "experimental": "Experimental research result. It has not been qualified as a real-world forecast and is not a public forecast recommendation.",
+    "coverage": "Scored coverage: results with both a usable forecast and a matching recorded outcome, out of all expected results. Missing results are not zero.",
+    "historical_cases": "This comparison covers {cycle_count} historical cycles. The cycles are the historical cases; race or pair rows show coverage within them, not independent tests."
+  },
+  "state_model": {
+    "purpose": "Metric availability is a dimension of its own and can coexist with any run, qualification, information-match, scope-match, or precision state.",
+    "values": [
+      {
+        "state": "available",
+        "copy": "Available for stated scope",
+        "rule": "Show only supplied, owner-qualified value with its denominator and metric definition."
+      },
+      {
+        "state": "partial",
+        "copy": "Partial coverage",
+        "rule": "Show covered count out of the supplied expected count and explain what is missing; do not silently average a successful subset."
+      },
+      {
+        "state": "unavailable",
+        "copy": "Not available",
+        "rule": "Give the specific missing forecast, observation, binding, or adapter output; missing is not zero."
+      }
+    ]
+  },
+  "progressive_disclosure": {
+    "default": "Status dimensions (run, research qualification, information matching, scope matching, numerical precision), selected stack composition, concise score cards or clear unavailable states, coverage, and one-line plain-language descriptions.",
+    "expand": "Cycle-by-cycle details, interval examples, selected comparison, exclusions/missing outcomes, input differences, definitions, and source coverage.",
+    "deep_detail": "Methods, precision and numerical diagnostics, identity/source records, version identifiers, and provenance hashes in nested details or a compact evidence panel."
+  },
+  "accessibility_and_mobile": [
+    "At narrow widths, stack cards in one column and preserve reading order; keep page-level content within the viewport at 320 CSS pixels. If a genuinely two-dimensional data table needs scrolling, constrain scrolling to a labeled table region so it does not make surrounding prose scroll sideways.",
+    "Use semantic section headings and real table headers for cycle/coverage rows; maintain a logical heading order and visible keyboard focus for existing election-year/stack controls and disclosures.",
+    "Do not rely on party color or red/green alone. Pair color with names, text labels, symbols, and adequate contrast. Existing SVG seat ranges should retain a complete textual equivalent; any new chart needs a concise finding in text and accessible underlying values.",
+    "Keep metric names and numeric units adjacent; do not place a score and its explanation on separate views. Ensure expandable details work by keyboard and announce their summary text clearly."
+  ],
+  "extension_of_prepared_private_renderer": {
+    "reuse": "Use the existing one-page scoreboard/card and details patterns in HistoricalScoreboard and HouseGroupScoreboard, and the per-pair layout and status handling from CandidatePairComparisonPreview as layout references. Continue to keep the future evidence renderer private and isolated until a qualified export and owner contract exist.",
+    "adapter_boundary": "Consume the accepted historical-evaluation adapter outputs through a separately versioned read-only view model. Do not treat the invented CandidatePairComparisonDraft, its validator, or declared hashes as an owner-approved real result schema.",
+    "composition": "Add a national evaluation section within the existing page flow: overview cards first, supplied cycle breakdown under details, with existing election-year and model-stack context preserved. Reuse the existing missing-data and details patterns, but represent run, qualification, information match, scope match, numerical precision, and metric availability as independent dimensions.",
+    "guardrails": "Do not expose a public route/API, live inputs, default model selection, or real results until the completed qualified forecast and owner-approved export semantics exist. Keep participation as administrative report measures with definition/source limits; keep joint energy as a whole-vector metric. Permit intentional input comparisons such as F vs FP when target/event roster/cutoff/outcomes/scope match; label their score deltas descriptive rather than causal."
+  },
+  "limitations": [
+    "This is bounded UX research based on the named source files and owner acceptance/checkpoint metadata; it is not an audit of all frontend code or a proposal to qualify any forecast.",
+    "No empirical score values, thresholds, precision cutoffs, status transitions, or source coverage should be invented by the UI. Owner-provided qualified result metadata must supply them.",
+    "Do not hardcode cycle, pair, or race counts. Derive them from each supplied result; explain that race/pair rows are not independent national elections."
+  ],
+  "source_pins": [
+    {
+      "publisher": "Office for National Statistics Service Manual",
+      "title": "Structuring content",
+      "url": "https://service-manual.ons.gov.uk/content/writing-for-users/structuring-content",
+      "used_for": "Frontload important information, use short scannable sections and descriptive headings, and keep the top user needs prominent."
+    },
+    {
+      "publisher": "GOV.UK Publishing Guidance",
+      "title": "Create a clear structure for your content",
+      "url": "https://guidance.publishing.service.gov.uk/writing-to-gov-uk-standards/writing-guidelines/clear-structure/",
+      "used_for": "Descriptive, frontloaded headings; avoid unexplained technical terms in headings; avoid footnotes for important information."
+    },
+    {
+      "publisher": "U.S. Web Design System",
+      "title": "Data visualizations",
+      "url": "https://designsystem.digital.gov/components/data-visualizations/",
+      "used_for": "Keep visualizations simple, focus on a small number of concepts, state the intended message in plain text, and provide equivalent accessible information."
+    },
+    {
+      "publisher": "W3C WAI",
+      "title": "Understanding WCAG 2.2 Success Criterion 1.4.10: Reflow",
+      "url": "https://www.w3.org/WAI/WCAG22/Understanding/reflow.html",
+      "used_for": "Reflow content to 320 CSS pixel width without loss of information/functionality or two-dimensional scrolling except where essential."
+    },
+    {
+      "publisher": "W3C WAI",
+      "title": "Understanding WCAG 2.2 Success Criterion 1.4.1: Use of Color",
+      "url": "https://www.w3.org/WAI/WCAG22/Understanding/use-of-color.html",
+      "used_for": "Do not use color as the only visual means of conveying information."
+    },
+    {
+      "publisher": "W3C WAI",
+      "title": "Understanding WCAG 2.2 Success Criterion 1.4.3: Contrast (Minimum)",
+      "url": "https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum",
+      "used_for": "Maintain readable text contrast for users with low vision or impaired contrast perception."
+    }
+  ],
+  "evidence_paths": [
+    "/home/hayden/projects/ballotmancy-count-comparison-prep-20261025/components/HistoricalScoreboard.tsx",
+    "/home/hayden/projects/ballotmancy-count-comparison-prep-20261025/components/HouseGroupScoreboard.tsx",
+    "/home/hayden/projects/ballotmancy-count-comparison-prep-20261025/components/CandidatePairComparisonPreview.tsx",
+    "/home/hayden/projects/ballotmancy-count-comparison-prep-20261025/lib/scoreboard.ts",
+    "/home/hayden/projects/ballotmancy-count-comparison-prep-20261025/docs/frontend-candidate-pair-preparation-20261025.md",
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/historical-evaluation-adapters-acceptance-root-v1.json",
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/checkpoint-root-v32.json",
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/historical-2018-report-acceptance-root-v1.json"
+  ],
+  "status_dimensions": {
+    "run_execution": {
+      "values": [
+        "preparing",
+        "running",
+        "complete",
+        "not reported"
+      ],
+      "meaning": "Whether execution has started or finished; does not establish scientific qualification."
+    },
+    "research_qualification": {
+      "values": [
+        "experimental",
+        "qualified for stated scope",
+        "not assessed"
+      ],
+      "meaning": "Whether evidence supports treating the result as an empirical forecast score."
+    },
+    "information_matching": {
+      "values": [
+        "same information",
+        "different inputs: descriptive comparison",
+        "not assessed"
+      ],
+      "meaning": "Whether input information differs. Different inputs can be intentionally compared; label deltas descriptive and do not imply causality."
+    },
+    "scope_match": {
+      "values": [
+        "matched",
+        "unmatched",
+        "not assessed"
+      ],
+      "meaning": "Whether scored target, event roster, cutoff, observed outcomes, and metric scope match. Unmatched scope withholds direct score deltas."
+    },
+    "numerical_precision": {
+      "values": [
+        "adequate under owner rule",
+        "limited",
+        "not reported"
+      ],
+      "meaning": "Whether the numerical estimate meets its supplied precision rule; show alongside other dimensions, not as a replacement for them."
+    },
+    "metric_availability": {
+      "values": [
+        "available",
+        "unavailable",
+        "partial coverage"
+      ],
+      "meaning": "Whether the needed forecast/observation/adapter value exists. Give the specific reason; missing is not zero."
+    }
+  }
+}

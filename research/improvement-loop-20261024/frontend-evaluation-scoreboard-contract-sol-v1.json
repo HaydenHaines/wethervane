@@ -1,0 +1,631 @@
+{
+  "schema": "FrontendEvaluationScoreboardContractSolV1",
+  "issued_utc": "2026-10-25T10:26:11.259890+00:00",
+  "disposition": "RENDERER_CONTRACT_READINESS_ONLY_NO_REAL_BROWSER_EXPORT_OR_FORECAST_QUALIFICATION",
+  "scope": {
+    "owner_root": "/home/hayden/projects/wethervane-redesign-20261006/integration",
+    "lab_research_head": "1e9d79edaa13e47c125e38e94ebc6ad6c220b186",
+    "private_frontend_root": "/home/hayden/projects/ballotmancy-count-comparison-prep-20261025",
+    "private_frontend_commit": "7bcee9a6ce16cfb2886d422695921cc171293041",
+    "method": "Static source/README/acceptance inspection only. No owner module imports/functions, tests, runtime variants, process observations/control or frontend edits. Only this report created.",
+    "data_boundary": "No numeric label/source-value packets, prediction/posterior banks or supplied-result files opened. Numbers in acceptance/README/profile prose were not recomputed.",
+    "verification_scope": "Direct bindings among inspected metadata/code/docs verified; no recursive data/posterior replay. Prior v3 pair/chamber audit retained without repetition."
+  },
+  "current_evidence": {
+    "checkpoint_schema": "SenateStackIntegrationCheckpointV32",
+    "checkpoint_issued_utc": "2026-10-25T10:12:00.927006+00:00",
+    "acceptance": "Implemented evaluation interfaces accepted using bounded synthetic/source/supplied-reader checks only.",
+    "actual_qualified_posterior_test": false,
+    "new_empirical_forecast_score": false,
+    "forecast_adoption": false,
+    "run_state": "No completed actual posterior/forecast at checkpoint issuance. Startup/constructor/progress is separate from qualification."
+  },
+  "interfaces": {
+    "named_pair_uncertainty": {
+      "source": "research/senate-stack-integration-20261020/historical-mixed-uncertainty-astra-v1/audit.py",
+      "request": {
+        "schema": "HistoricalMixedUncertaintyRequestV1",
+        "keys": [
+          "schema",
+          "cycle",
+          "comparison"
+        ],
+        "comparison": "Accepted source/count/label/pair request: corrected A2022 V2, other registered cycles V1."
+      },
+      "response_schema": "HistoricalMixedPairUsefulUncertaintyV1",
+      "top_fields": [
+        "cycle",
+        "tier",
+        "context_identity",
+        "scope",
+        "posterior_admitted",
+        "forecast_adoption_qualified",
+        "design",
+        "rows",
+        "summary",
+        "near50_race_ids_by_arm",
+        "outside_bound_pair_contest_ids",
+        "omitted_identity_bindings",
+        "legal_winner_or_chamber_comparison",
+        "information_sets_matched",
+        "common_rows",
+        "weights",
+        "request",
+        "forecast_time_design_sha256",
+        "comparison_scope",
+        "limits"
+      ],
+      "design_schema": "MixedPairUncertaintyForecastTimeDesignV1",
+      "design_fields": [
+        "ordered_pairs",
+        "F_probability_by_race",
+        "competitive_ids",
+        "competitive_band",
+        "near50_band",
+        "narrow_absolute_margin_pp",
+        "large_absolute_margin_pp",
+        "interval_levels",
+        "target_labels_used",
+        "pair_event_not_legal_winner"
+      ],
+      "row_fields": [
+        "race_id",
+        "contest_id",
+        "ordered_endpoints",
+        "estimand",
+        "observed_pair_share",
+        "competitive_common_F",
+        "arms"
+      ],
+      "arms": [
+        "count",
+        "F",
+        "FP"
+      ],
+      "arm_fields": [
+        "status",
+        "undefined_mass",
+        "summary",
+        "score",
+        "uniform_share_reference",
+        "shape",
+        "pair_leading",
+        "legal_winner_probability"
+      ],
+      "states": {
+        "scored": "Complete defined distribution and observed pair share.",
+        "label_missing": "Defined summary, shape and leading probability remain; score null.",
+        "undefined_predictive_mass": "Positive missing mass withholds full summary, score, shape and leading probability; no reweighting."
+      },
+      "summary_fields": [
+        "mean",
+        "median",
+        "intervals[{level,lower,upper,width}]"
+      ],
+      "score_fields": [
+        "crps",
+        "weighted_interval_score",
+        "observed",
+        "mean",
+        "median",
+        "mean_signed_error",
+        "mean_absolute_error",
+        "median_signed_error",
+        "median_absolute_error",
+        "intervals[{level,lower,upper,width,covered,interval_score}]"
+      ],
+      "pair_leading_fields": [
+        "event",
+        "probability",
+        "tie_probability",
+        "score"
+      ],
+      "binary_score_fields": [
+        "probability",
+        "observed",
+        "brier",
+        "negative_log_score",
+        "negative_log_score_infinite",
+        "always_half",
+        "brier_improvement_over_half",
+        "log_score_improvement_over_half"
+      ],
+      "shape_fields": [
+        "expected_signed_margin_pp",
+        "median_signed_margin_pp",
+        "mean_absolute_margin_pp",
+        "prob_absolute_margin_le_2pp",
+        "prob_absolute_margin_ge_10pp",
+        "prob_first_margin_ge_10pp",
+        "prob_second_margin_ge_10pp",
+        "near50",
+        "near50_does_not_imply_narrow",
+        "margin_intervals_pp"
+      ],
+      "subsets": [
+        "all_bound",
+        "competitive_common_F"
+      ],
+      "subset_fields": [
+        "bound_races",
+        "scored_races",
+        "omitted[{race_id,status,undefined_mass}]",
+        "full_subset_mean",
+        "full_subset_skill",
+        "available_case_mean",
+        "available_case_is_not_complete_subset",
+        "infinite_log_scores"
+      ],
+      "aggregation": "equal_cycles(reports) carries expected/provided/missing_cycles, complete_cycles and equal-cycle means. Incomplete complete-tier summaries remain null. Skill uses ratios/differences of same-set aggregate losses, never averages of race-relative ratios.",
+      "semantics": [
+        "Share = first/(first+second) on exact ordered named endpoints, not all-candidate share. Signed pair margin = 200*share-100 percentage points.",
+        "Leading event is strictly share>.5, ties false with separate tie probability; legal_winner_probability=null. Never relabel as legal winner, ranked final winner or chamber event.",
+        "Common competitive subset frozen from F leading probability inclusive [.2,.8] before labels. Near50 [.4,.6] does not imply narrow: retain <=2pp and >=10pp margin probabilities.",
+        "Intervals are weighted empirical inverse-CDF central 50/80/95% ranges. Display coverage alongside width and nominal level. Coverage is retrospective frequency, not confidence in a forecast or numerical result.",
+        "Uniform[0,1] reference is the same pair-share target; always-.5 reference is the same pair-leading event. Neither is a count/legal-winner reference.",
+        "Null log loss with infinite flag/count is infinite empirical loss, not missing observation, zero or a clipped finite loss.",
+        "Native share CRPS/WIS/absolute error/width units are share fractions; explicit x100 yields percentage points. Pair-margin fields are already percentage points. Binary Brier and natural-log losses are dimensionless, not points."
+      ]
+    },
+    "joint_energy": {
+      "source": "research/senate-stack-integration-20261020/historical-mixed-joint-score-sol-v1/score.py",
+      "entrypoints": [
+        "evaluate_saved(cycle,store,counts_pin,labels_pin=None,block_size=256,include_baselines=True)",
+        "run(request)",
+        "equal_cycle_means(results)"
+      ],
+      "request": {
+        "schema": "HistoricalMixedJointEnergyRequestV1",
+        "keys": [
+          "schema",
+          "cycle",
+          "store",
+          "counts",
+          "labels",
+          "block_size",
+          "include_baselines"
+        ]
+      },
+      "response_schema": "HistoricalMixedJointPairEnergyV1",
+      "top_fields": [
+        "cycle",
+        "context_identity",
+        "pairs",
+        "labels",
+        "count_artifact",
+        "scope",
+        "posterior_admitted",
+        "arms",
+        "race_ids",
+        "qualification",
+        "forecast_qualified"
+      ],
+      "arms": [
+        "count_model",
+        "F",
+        "FP"
+      ],
+      "optional_arms": "include_baselines=false omits F/FP; render not requested, never zero energy.",
+      "arm_fields": [
+        "status",
+        "energy",
+        "rows",
+        "races",
+        "weight_sum",
+        "undefined_predictive_mass",
+        "undefined_observed_coordinates",
+        "weights_renormalized",
+        "all_ordered_pairs_including_diagonal",
+        "original_chain_draw_axes (baseline only)"
+      ],
+      "states": [
+        "scored",
+        "withheld"
+      ],
+      "formula": "(sum_i w_i ||x_i-y||_2 - .5 sum_i,j w_i*w_j ||x_i-x_j||_2)/sqrt(races)",
+      "semantics": [
+        "Proper whole ordered named-pair share-vector score, lower is better; native share-fraction units with fixed sqrt(races) scaling. Optional x100 conversion must be explicit. Not a scalar-race loss or sum of component effects.",
+        "Retains complete common parent/chain/draw rows and actual original weights, all ordered pairs and diagonal; no independent column shuffle, race drop or reweighting.",
+        "Any undefined required observed coordinate or positive-weight predictive vector withholds whole score.",
+        "Same-vector/outcome differences can be descriptively compared despite different inputs, but do not identify polling/population/component effects, exhaustively diagnose dependence or certify precision.",
+        "No full-size archived baseline energy in accepted evidence. Equal-cycle means require both registered tier cycles and every arm score; no missing-cycle substitution."
+      ]
+    },
+    "named_administrative_reports": {
+      "source": "research/senate-stack-integration-20261020/historical-participation-prediction-astra-v2/report.py",
+      "entrypoints": [
+        "predict(context_pin,store,counts_pin,output)",
+        "read_prediction(pin,store)",
+        "score(prediction_pin,store,source_packet_pin,levels=(.5,.8,.95))"
+      ],
+      "request_schema": "HistoricalNamedReportRequestV1",
+      "predict_keys": [
+        "schema",
+        "action",
+        "store",
+        "context",
+        "counts"
+      ],
+      "score_keys": [
+        "schema",
+        "action",
+        "store",
+        "prediction",
+        "source_packet"
+      ],
+      "prediction_schema": "HistoricalNamedReportPredictionV1",
+      "prediction_fields": [
+        "version",
+        "seed",
+        "selection",
+        "context",
+        "context_identity",
+        "count_artifact",
+        "cut_reference",
+        "scope",
+        "posterior_admitted",
+        "forecast_qualified",
+        "roster",
+        "rows",
+        "weights",
+        "event_presence_source",
+        "uncertainty",
+        "labels_read"
+      ],
+      "roster_fields": [
+        "event_id",
+        "state",
+        "date",
+        "release_id",
+        "report_name",
+        "source_label_available"
+      ],
+      "row_fields": [
+        "parent_id",
+        "joint_draw_id",
+        "scientific_target_id",
+        "release_effects",
+        "state_effect_source",
+        "reports",
+        "chain",
+        "draw",
+        "bank"
+      ],
+      "report_fields": [
+        "count",
+        "conditional_mean",
+        "event_present",
+        "state_effect",
+        "release_id"
+      ],
+      "score_schema": "HistoricalNamedReportScoresV1",
+      "score_top_fields": [
+        "prediction",
+        "source_packet",
+        "context_identity",
+        "scope",
+        "posterior_admitted",
+        "reports",
+        "missing_source_table",
+        "empirical_qualification"
+      ],
+      "score_event_fields": [
+        "report_name",
+        "metric",
+        "negative_log_predictive_density",
+        "infinite_negative_log_predictive_density",
+        "density"
+      ],
+      "metric_fields": [
+        "status",
+        "undefined_mass",
+        "summary",
+        "score"
+      ],
+      "source_packet_schema": "HistoricalNamedParticipationScoringSourcesV1",
+      "projection_source_fields": [
+        "cycle",
+        "context",
+        "context_identity",
+        "source",
+        "source_metadata",
+        "reports",
+        "bound_reports",
+        "unlabelled_prediction_events",
+        "scoring_only",
+        "fit_inputs_changed",
+        "raw_source_qualifications_preserved"
+      ],
+      "source_report_fields": [
+        "id",
+        "release_id",
+        "report_name",
+        "estimand",
+        "state_fips",
+        "event_date",
+        "source_row",
+        "source",
+        "source_variance",
+        "variance_qualification",
+        "physicalevent_id (bound_reports)"
+      ],
+      "current_coverage_from_acceptance": {
+        "observed_reports": 203,
+        "by_cycle": {
+          "2018": 50,
+          "2020": 51,
+          "2022": 51,
+          "2024": 51
+        },
+        "2018_source_panel": 51,
+        "missing_2018_general_state": "DE",
+        "conditional_runoffs": "Unlabelled, not zero/no-event evidence.",
+        "rendering": "Snapshot counts only. Derive cycle labels, expected event roster, observed/scored/omitted totals from authenticated selected manifests, never hardcode."
+      },
+      "effect_semantics": [
+        "One fresh Normal(0,.03) release effect per common row shared across target states/events; never reuse training release.",
+        "A2018/B2020 state_effect_source=fresh_normal_prior (per-state Normal(0,.05)); A2022/B2024=same_row_posterior. Same native/count row, original parents and masses retained.",
+        "Mean is expected event intensity*exp(release+state-(.03^2+.05^2)/2), NB alpha100. Never substitute realized physical participants, candidate sums or posterior means.",
+        "Inactive event: count/mean null and event_present=false. Active zero report is different. Hypothetical runoff predictions do not assert published runoff reports."
+      ],
+      "profile_quality": [
+        "2018 release_id=EAVS2018_state_briefs_F1a_snapshot: reported participating voters across modes; rejected provisional participation only when credited in voter history, varying reporting bases.",
+        "Later profile is counted-ballot voter report; cross-year definition equivalence is unvalidated. Keep 2018 profile distinct in shared reports.",
+        "Delaware general and Mississippi runoff lack 2018 labels; preserve full source/prediction roster, not only scored keys.",
+        "Individual 2018 brief publication/revision and within-state completeness remain unknown; do not substitute general dataset release dates.",
+        "Texas published F1a disagrees with its own mode subtotal and accepted Senate vote total. Preserve original observation and discrepancy flags without replacing it.",
+        "Source variance null is unknown, not zero. Error scales and definition transfer are uncalibrated working assumptions.",
+        "These are reported administrative totals, not exact physical-participant truth, eligible population, contest marks or all valid votes."
+      ],
+      "score_semantics": [
+        "CRPS/WIS/absolute error/width in report-count units, not share points. Negative natural-log predictive probability is dimensionless.",
+        "Log score uses weighted conditional NB100 mixture over latent/effect rows, not simulated exact-match frequencies. Extra effect/noise simulation error remains.",
+        "Positive undefined event mass withholds score without reweighting; zero predictive probability retains null loss plus infinite flag.",
+        "Output reports contains only labelled bound events. missing_source_table=false means at least one label, not complete source coverage. No aggregate report skill/cross-cycle score or precision certificate supplied."
+      ]
+    }
+  },
+  "unified_browser_requirements": {
+    "orthogonal_statuses": [
+      "experimental/research",
+      "source/input admission and holds",
+      "execution: supplied/synthetic versus actual conditional posterior",
+      "numerical/posterior checks",
+      "empirical score availability and source",
+      "public-use/adoption",
+      "scored-target/outcome match",
+      "training/input-information match",
+      "metric-specific simulation precision"
+    ],
+    "matching_policy": "Permit explicitly descriptive deltas when metric, ordered target, denominator, event/date, observed source/view, subset and aggregation match. Different information does not automatically hide comparisons; disclose it. Component attribution needs separately selected matched-ablation evidence. Incompatible/missing target/outcome withholds its comparison.",
+    "bindings": [
+      "Authenticate result/request/source/registry/reader pins server-side before DTO projection; browser declarations do not authenticate artifacts.",
+      "Carry dynamic cycle/tier, literal cutoff/horizon/date, context, count/report artifact, pair-spec/design hash, ordered endpoint IDs and verified display names, estimand/denominator and source label view; corrected A2022 uses accepted V2.",
+      "Metric ID, native units, display scale, direction, quantile/interval convention, exact ordered subset and weighting. Do not collapse report counts, pair losses, legal-winner losses and vector energy into one unlabelled ranking."
+    ],
+    "coverage_missingness": [
+      "Dynamic expected/bound/predicted/observed/scored/matched totals by arm/subset, omitted IDs/reasons, outside-roster identities and missing cycles. No hardcoded 97, 113 or four-cycle assumption.",
+      "Missing, undefined, unavailable, infinite and not-requested stay distinct. Tiny positive undefined mass must not display as 0%; no successful-row reweighting or missing-as-zero.",
+      "Partial available-case means are explicitly partial. Comparative aggregate deltas need identical scored ID sets/outcomes/weights; complete-subset/equal-cycle summaries remain withheld if required cells absent."
+    ],
+    "plain_language": [
+      "CRPS is full-distribution error; WIS is range error balancing width with misses. Lower losses are better; name units. Explain mean/median and coverage numerator/denominator with nominal interval level.",
+      "Near-even leading probability may describe a wide or bimodal forecast. Prediction ranges are possible outcomes, not calculation error bars.",
+      "Reported administrative totals retain exact profile definition and source limitations; they do not directly validate physical turnout."
+    ],
+    "precision": "Require authenticated metric-specific precision evidence or label unavailable. No race-iid error bars, cross-cycle significance, empirical calibration or qualification inferred from accepted tests or energy.",
+    "report_metadata_join": "Score output alone lacks complete expected/missing source roster, profile/revision/TX flags and explicit retained/prior effect summary. Project selected configuration, profile acceptance, source quality and prediction provenance alongside scores."
+  },
+  "private_pair_preview_boundary": {
+    "commit": "7bcee9a6ce16cfb2886d422695921cc171293041",
+    "compatible": "Explicit denominator, unknown mass, unavailable scores, dynamic coverage and differing-input caution remain sound.",
+    "not_real_adapter": "Invented-fixture-only candidate_marks/H14/three-arm parser; do not feed real research JSON directly or relax it into a universal scorer parser.",
+    "missing_sections": [
+      "pair-leading/tie/Brier/log/infinite and margin-shape diagnostics",
+      "coverage-width/competitive/partial-complete/equal-cycle summaries",
+      "whole-vector energy and distinct units/status",
+      "report profile/event roster/effect provenance",
+      "orthogonal actual-run/empirical/precision status and authenticated export"
+    ],
+    "integration": "Separate future reviewed projection and private renderer extension. Leave CountView/ElectionOutcomePreview, old fixture parser and public defaults untouched. No owner-frozen browser contract established."
+  },
+  "safe_followups": [
+    "Specify a versioned renderer projection of accepted outputs with bindings, units, masks and orthogonal statuses; no new discretionary scorer/runtime variant.",
+    "Once assigned, use invented fixtures for missing/infinite/undefined/event absence and matched-outcome/different-input comparisons.",
+    "When qualified saved results exist, bind exact root-selected outputs/precision evidence server-side. Rendering never triggers fits, report draws, energy recomputation or qualification."
+  ],
+  "source_pins": [
+    {
+      "root": "senate_owner",
+      "path": "AGENTS.md",
+      "sha256": "0a27fc2d01b021422362b278f8a7253ff8b9c2d8297a92625290338d45297fbd",
+      "bytes": 3649
+    },
+    {
+      "root": "senate_owner",
+      "path": "src/forecasting/count_scoring.py",
+      "sha256": "9443224f79e157586fba24200ee377f6fd7821e808ddea32d8d9dc994b718075",
+      "bytes": 15814
+    },
+    {
+      "root": "senate_owner",
+      "path": "research/senate-stack-integration-20261020/checkpoint-root-v32.json",
+      "sha256": "2a70b30d2e55aebdd16026c6ce7a3f2584ef92207b08d241b25017d44cd32f37",
+      "bytes": 19882
+    },
+    {
+      "root": "senate_owner",
+      "path": "research/senate-stack-integration-20261020/historical-evaluation-adapters-acceptance-root-v1.json",
+      "sha256": "d363e4306d92f6767273d99ba1122faa1128bbdb2af795b91712c5439d6ee611",
+      "bytes": 4428
+    },
+    {
+      "root": "senate_owner",
+      "path": "research/senate-stack-integration-20261020/historical-2018-report-acceptance-root-v1.json",
+      "sha256": "950997ec65a6e6f6b9a9a384662ed49fd1755f02445f020c3167febfa7a2ecdb",
+      "bytes": 3230
+    },
+    {
+      "root": "senate_owner",
+      "path": "research/senate-stack-integration-20261020/historical-evaluation-completion-selection-root-v1.json",
+      "sha256": "1e085f1106141d7b80f6a07a0f3659644849f133c3b719f7d75637d7935efb45",
+      "bytes": 5979
+    },
+    {
+      "root": "senate_owner",
+      "path": "research/senate-stack-integration-20261020/historical-2018-report-profile-selection-root-v1.json",
+      "sha256": "8ce622d139cbede1c6b79f4cfa64dee7723e517b7c1780a2016e411768a032ef",
+      "bytes": 3492
+    },
+    {
+      "root": "senate_owner",
+      "path": "research/senate-stack-integration-20261020/historical-mixed-uncertainty-astra-v1/receipt-v1.json",
+      "sha256": "c985beba87f54053a8c67f906a07f1b1bf7837efc33afa44110e71c8b357fcff",
+      "bytes": 10935
+    },
+    {
+      "root": "senate_owner",
+      "path": "research/senate-stack-integration-20261020/historical-mixed-uncertainty-astra-v1/README.md",
+      "sha256": "ab888433bd60498ea5497937b3af8b535bd8ea0a69dff663d59c4c614ce80161",
+      "bytes": 5213
+    },
+    {
+      "root": "senate_owner",
+      "path": "research/senate-stack-integration-20261020/historical-mixed-uncertainty-astra-v1/audit.py",
+      "sha256": "4928c06c4fcd256a2ad9144df9fce1b58b6e45f30ef630b0317258bea5fd180b",
+      "bytes": 13693
+    },
+    {
+      "root": "senate_owner",
+      "path": "research/senate-stack-integration-20261020/historical-mixed-uncertainty-astra-v1/dependencies.json",
+      "sha256": "77c55486a09844b3ce0dd6bf0a53e45b1900325d56e9c4d145fcce3b2a3fc3d4",
+      "bytes": 4679
+    },
+    {
+      "root": "senate_owner",
+      "path": "research/senate-stack-integration-20261020/historical-mixed-joint-score-sol-v1/receipt.json",
+      "sha256": "5d48ac43538083c4e4b9cb0c56f26bc48f9e8b00c68f1e3ba2893c680f7dbe51",
+      "bytes": 2445
+    },
+    {
+      "root": "senate_owner",
+      "path": "research/senate-stack-integration-20261020/historical-mixed-joint-score-sol-v1/README.md",
+      "sha256": "04893e95ba717f43c2b42e945dd6ac52d5f23502833790ff5470ab79f1e9ff58",
+      "bytes": 4636
+    },
+    {
+      "root": "senate_owner",
+      "path": "research/senate-stack-integration-20261020/historical-mixed-joint-score-sol-v1/score.py",
+      "sha256": "96a5dda4a5c82ae677643010ff7d972e7d1dcf4071f0c8807ec074ce61a0a5e0",
+      "bytes": 12156
+    },
+    {
+      "root": "senate_owner",
+      "path": "research/senate-stack-integration-20261020/historical-participation-prediction-astra-v1/README.md",
+      "sha256": "7ea3dc74d9cdb2c89acc18f20997f01d5507a239605428ba41e57501ef1b82e9",
+      "bytes": 5399
+    },
+    {
+      "root": "senate_owner",
+      "path": "research/senate-stack-integration-20261020/historical-participation-prediction-astra-v2/receipt-v2.json",
+      "sha256": "ca87e9d534abafdc6a75c628a2a3e6eb7a85bcc025ed751557224d46047d6b35",
+      "bytes": 3581
+    },
+    {
+      "root": "senate_owner",
+      "path": "research/senate-stack-integration-20261020/historical-participation-prediction-astra-v2/README.md",
+      "sha256": "30ae7d244d8de0320e3f5087e0ccea6746023bd5caf87cbd3ed98798ee80243d",
+      "bytes": 2764
+    },
+    {
+      "root": "senate_owner",
+      "path": "research/senate-stack-integration-20261020/historical-participation-prediction-astra-v2/report.py",
+      "sha256": "e73b51d34ff69a66c2af2c3209f358fa520087ec2e196951c60a0df0de15b563",
+      "bytes": 11204
+    },
+    {
+      "root": "senate_owner",
+      "path": "research/senate-stack-integration-20261020/historical-participation-prediction-astra-v2/configuration.json",
+      "sha256": "21eab8a315f1bc20252fe8366823e1411ff0089f8aab81c77a9645448e0222b8",
+      "bytes": 3872
+    },
+    {
+      "root": "senate_owner",
+      "path": "research/senate-stack-integration-20261020/historical-participation-profile-review-astra-v2/review-receipt-v2.json",
+      "sha256": "9e502e3f51f922b7c94b5d6995440f794bf9520aca2e278353b61608064e19c3",
+      "bytes": 1821
+    },
+    {
+      "root": "senate_owner",
+      "path": "research/senate-stack-integration-20261020/historical-participation-profile-review-astra-v2/REVIEW.md",
+      "sha256": "49ebd05acee473c3a6950ac7cc036f02fd6ba7e0391c561c6feae0f062d23fe2",
+      "bytes": 2280
+    },
+    {
+      "root": "senate_owner",
+      "path": "research/senate-stack-integration-20261020/historical-participation-evaluation-astra-v1/README.md",
+      "sha256": "070d6e7868908068ecb93d04265294d93992dba596033b8ba7e6fddbc38943f5",
+      "bytes": 2920
+    },
+    {
+      "root": "senate_owner",
+      "path": "research/senate-stack-integration-20261020/historical-participation-evaluation-astra-v1/prepare_sources.py",
+      "sha256": "cbb667e8c249e16cbe609c7cbff880f24120f586dadba91ecc9a485fe927f630",
+      "bytes": 4042
+    },
+    {
+      "root": "senate_owner",
+      "path": "research/senate-stack-integration-20261020/eavs-2018-quantity-review-astra-v1/review-receipt-v1.json",
+      "sha256": "fca1164144f388fff455735e16032228e1aa444a82deabe55fe9982c5af8501d",
+      "bytes": 1040
+    },
+    {
+      "root": "senate_owner",
+      "path": "research/senate-stack-integration-20261020/eavs-2018-quantity-review-astra-v1/REVIEW.md",
+      "sha256": "d95256bc4d9c27fcc71575995e4decac4a655b6e45bd3f09d46f005c0f5e271f",
+      "bytes": 5363
+    },
+    {
+      "root": "senate_owner",
+      "path": "research/senate-stack-integration-20261020/complete-count-evaluation-astra-v1/evaluate.py",
+      "sha256": "f74b0d2111184137919c8c930e182548bd018690f819b7cad604e97f6a7374a8",
+      "bytes": 16536
+    },
+    {
+      "root": "senate_owner",
+      "path": "research/senate-stack-integration-20261020/mixed-count-evaluation-astra-v3/evaluate.py",
+      "sha256": "58f9b14c4b91c32fe8235ea62fcd11304e52637f03061980a734630da465af7f",
+      "bytes": 11624
+    },
+    {
+      "root": "private_frontend",
+      "path": "lib/candidate-pair-comparison-view.ts",
+      "sha256": "4df0217d985637ce4dbfe546bb01835ebc6f647aa4ee6db54a83bd9bb03929fe",
+      "bytes": 13439
+    },
+    {
+      "root": "private_frontend",
+      "path": "components/CandidatePairComparisonPreview.tsx",
+      "sha256": "8eb432b2c7ff32f7eaaddbba10d4e34258f28d52cde589019b4fcd100fb98ba8",
+      "bytes": 9617
+    },
+    {
+      "root": "lab",
+      "path": "frontend-national-output-readiness-sol-v3.json",
+      "sha256": "7f623409817720acef25b5fdce128e4556b5aa97b5ed13b0f53e11cfa081006f",
+      "bytes": 13345
+    }
+  ],
+  "verification": {
+    "inspected_source_pin_count": 30,
+    "matching_direct_reference_occurrences": 34,
+    "referenced_files_checked": 23,
+    "method": "Exact path/SHA comparisons for references to files in source_pins; all matched. No transitive data replay or numeric evaluation."
+  },
+  "changes_since_readiness_v3": [
+    "Accepted useful-uncertainty output adds same-pair leading events, margin shape, coverage-width, competitive and equal-cycle summaries.",
+    "Accepted energy output adds complete-vector scoring with original joint-row dependence, separate from race losses and component attribution.",
+    "Accepted report prediction/scoring profile now connects 203 sourced administrative reports, including 50 original 2018 participating-voter reports; the earlier missing-2018 statement in predecessor selection/README is superseded only by explicit V2 profile acceptance.",
+    "No real browser export or public/empirical qualification follows; existing pair/chamber identities and private preview are not reimplemented."
+  ]
+}

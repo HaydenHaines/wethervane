@@ -1,0 +1,9 @@
+# Final-source addendum
+
+Accepted final six-file inventory from the producer final receipt. This addendum supersedes only the source pin inventory of the original acceptance; the original review report and receipt remain unchanged.
+
+The sole model change adds actual observed-value matching before descriptive deltas. Independent synthetic checks changed only a recorded pair share (still with the same strictly-leading event and valid interval coverage) or report count while retaining identical declaration strings. All five pair/vector metrics and three report metrics withhold the delta. A ninth assertion confirms genuinely matched observations with intentionally different inputs still allow the descriptive subtraction. This is consistency validation, not source authentication or a scorer.
+
+The final focused suite passes 16 tests, with one optional export skipped. Nine independent addendum assertions pass. Final component keeps score value and unit in the same nowrap group, including tiny scientific notation and infinite loss. I inspected the authenticated 320-pixel tiny/infinite card screenshots: units remain adjacent and explanatory text remains readable within the cards. Producer measurements for all eight cards at 320, 390 and 1440 pixels report bounded value/unit groups and no page overflow; I independently verified those measurement records and all source/artifact hashes. These supplied visual receipts do not constitute general browser or assistive-technology certification.
+
+The new repository usage document accurately records parent props, private isolation, dynamic coverage, metric units and unavailable states, descriptive comparison boundaries, report profiles/effect provenance, sequential local checks, and the future real-adapter boundary. No new public route, parser, default, scientific input or scorer is introduced. No author file was edited by this reviewer. No prior scientific work was rerun.

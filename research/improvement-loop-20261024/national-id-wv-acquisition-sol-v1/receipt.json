@@ -1,0 +1,447 @@
+{
+  "schema": "NationalIDWVPublicSourceAcquisitionReceiptV1",
+  "created_utc": "2026-10-25T10:39:04.703920+00:00",
+  "source_request": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-source-network-request-root-v2.json",
+  "reference_period": "November 3, 2026 General Election",
+  "representation": "original bytes, not rendered or rewritten",
+  "sources": [
+    {
+      "path": "research/improvement-loop-20261024/national-id-wv-acquisition-sol-v1/raw/id-search.html",
+      "url": "https://run.voteidaho.gov/search",
+      "method": "GET",
+      "request_body": null,
+      "retrieved_utc": "2026-10-25T10:30:59.024369+00:00",
+      "content_type": "text/html",
+      "bytes": 15665,
+      "sha256": "2658ebd6037b8bf19449bbd781c2366f1ca7b31434ddd35cfa72cedf083da853",
+      "representation": "original response bytes copied from national-source-acquisition-ui-v1/raw/id-search.html",
+      "copied_utc": "2026-10-25T10:38:02.912138+00:00",
+      "original_acquisition_receipt": "research/improvement-loop-20261024/national-source-acquisition-ui-v1/initial-acquisition.json"
+    },
+    {
+      "path": "research/improvement-loop-20261024/national-id-wv-acquisition-sol-v1/raw/id-main-RNYKUVZB.js",
+      "url": "https://run.voteidaho.gov/main-RNYKUVZB.js",
+      "method": "GET",
+      "request_body": null,
+      "retrieved_utc": "2026-10-25T10:35:47.224177+00:00",
+      "content_type": "text/javascript",
+      "bytes": 532511,
+      "sha256": "2c305a345f68572399c582652c7d9e51f7ea8dc1ad1c8eb794c16fc2ffc18116",
+      "representation": "original response bytes"
+    },
+    {
+      "path": "research/improvement-loop-20261024/national-id-wv-acquisition-sol-v1/raw/id-polyfills-5CFQRCPP.js",
+      "url": "https://run.voteidaho.gov/polyfills-5CFQRCPP.js",
+      "method": "GET",
+      "request_body": null,
+      "retrieved_utc": "2026-10-25T10:38:02.909078+00:00",
+      "content_type": "text/javascript",
+      "bytes": 34585,
+      "sha256": "15c6f58707b9b19116fde3a3f6a0ce9cf83427d64a91e95cb91fe1056c3da616",
+      "representation": "original response bytes"
+    },
+    {
+      "path": "research/improvement-loop-20261024/national-id-wv-acquisition-sol-v1/raw/id-chunk-XI6W74XM.js",
+      "url": "https://run.voteidaho.gov/chunk-XI6W74XM.js",
+      "method": "GET",
+      "request_body": null,
+      "retrieved_utc": "2026-10-25T10:35:59.995469+00:00",
+      "content_type": "text/javascript",
+      "bytes": 655403,
+      "sha256": "440cc1920c004b17aaac584578bd8f022713656eef47796dd0a6fe2fa67298a6",
+      "representation": "original response bytes"
+    },
+    {
+      "path": "research/improvement-loop-20261024/national-id-wv-acquisition-sol-v1/raw/id-chunk-ESIFXB25.js",
+      "url": "https://run.voteidaho.gov/chunk-ESIFXB25.js",
+      "method": "GET",
+      "request_body": null,
+      "retrieved_utc": "2026-10-25T10:36:22.663402+00:00",
+      "content_type": "text/javascript",
+      "bytes": 1003,
+      "sha256": "91bca7954d1a3f6ac296cbc0e5e1debcb8cfa0ff04e7fc5a02f57ecc25df252b",
+      "representation": "original response bytes"
+    },
+    {
+      "path": "research/improvement-loop-20261024/national-id-wv-acquisition-sol-v1/raw/id-chunk-A4QHVFF7.js",
+      "url": "https://run.voteidaho.gov/chunk-A4QHVFF7.js",
+      "method": "GET",
+      "request_body": null,
+      "retrieved_utc": "2026-10-25T10:36:22.762987+00:00",
+      "content_type": "text/javascript",
+      "bytes": 648909,
+      "sha256": "4a4ebcfe932430149628a31bc069a712c9d37acf58c4c83a5b47f11b5f48c8b3",
+      "representation": "original response bytes"
+    },
+    {
+      "path": "research/improvement-loop-20261024/national-id-wv-acquisition-sol-v1/raw/id-chunk-KE6XWGPW.js",
+      "url": "https://run.voteidaho.gov/chunk-KE6XWGPW.js",
+      "method": "GET",
+      "request_body": null,
+      "retrieved_utc": "2026-10-25T10:36:30.427273+00:00",
+      "content_type": "text/javascript",
+      "bytes": 50012,
+      "sha256": "8b5a8441eed75021ec07930bb76fd297cde1944cbbfef2a49371be78cc7489b4",
+      "representation": "original response bytes"
+    },
+    {
+      "path": "research/improvement-loop-20261024/national-id-wv-acquisition-sol-v1/raw/id-elections.json",
+      "url": "https://api-run.voteidaho.gov/api/PublicLookup/GetAllElections",
+      "method": "POST",
+      "request_body": {
+        "isFutureElections": false
+      },
+      "retrieved_utc": "2026-10-25T10:36:34.740755+00:00",
+      "content_type": "application/json",
+      "bytes": 487,
+      "sha256": "7eeb7f7f40a7be7c88aafe522cd38375324ed24b5816cdf51e2984ca7a4850d4",
+      "representation": "original response bytes"
+    },
+    {
+      "path": "research/improvement-loop-20261024/national-id-wv-acquisition-sol-v1/raw/id-district-types.json",
+      "url": "https://api-run.voteidaho.gov/api/Filing/GetAllDistrictTypes",
+      "method": "POST",
+      "request_body": {
+        "isSearch": true
+      },
+      "retrieved_utc": "2026-10-25T10:36:38.324269+00:00",
+      "content_type": "application/json",
+      "bytes": 736,
+      "sha256": "3da50af7c38d38ac0cea6725443a36d96995239b5489d0c1186f9943af11ae8b",
+      "representation": "original response bytes"
+    },
+    {
+      "path": "research/improvement-loop-20261024/national-id-wv-acquisition-sol-v1/raw/id-federal-offices.json",
+      "url": "https://api-run.voteidaho.gov/api/FiledCandidates/GetOffices",
+      "method": "POST",
+      "request_body": {
+        "districtTypeGuid": "1bfee852-8227-4b78-b6ca-c3918564d450",
+        "electionGuid": "1e38d17c-a176-47b8-91d1-368ba38ccdec"
+      },
+      "retrieved_utc": "2026-10-25T10:36:42.538209+00:00",
+      "content_type": "application/json",
+      "bytes": 268,
+      "sha256": "c29f6e68ddf278067bf06006912a4f4b7a1ddf1c4cf2a9fa67bc6f0fd4a0df31",
+      "representation": "original response bytes"
+    },
+    {
+      "path": "research/improvement-loop-20261024/national-id-wv-acquisition-sol-v1/raw/id-senate-page-1.json",
+      "url": "https://api-run.voteidaho.gov/api/FiledCandidates/SearchCandidates",
+      "method": "POST",
+      "request_body": {
+        "candidateName": null,
+        "electionGuid": "1e38d17c-a176-47b8-91d1-368ba38ccdec",
+        "districtTypeGuid": "1bfee852-8227-4b78-b6ca-c3918564d450",
+        "districtNumber": null,
+        "countyGuid": null,
+        "officeGuid": "298003d8-7882-4bf2-a021-d45e845602d3",
+        "district": null,
+        "seat": null,
+        "partyGuid": null,
+        "filingStatusGuids": null,
+        "pageNumber": 1,
+        "pageSize": 50,
+        "sortBy": null,
+        "sortType": "asc"
+      },
+      "retrieved_utc": "2026-10-25T10:36:48.883765+00:00",
+      "content_type": "application/json",
+      "bytes": 2521,
+      "sha256": "2291b46ef2c0ec3cee1f05d1dae5f5eae830b95ab304d4c3502106eb89178458",
+      "representation": "original response bytes"
+    },
+    {
+      "path": "research/improvement-loop-20261024/national-id-wv-acquisition-sol-v1/raw/wv-candidates-browser.html",
+      "url": "https://candidates.wvsos.gov/",
+      "method": "GET",
+      "request_body": null,
+      "retrieved_utc": "2026-10-25T10:37:16.813116+00:00",
+      "content_type": "text/html",
+      "bytes": 766,
+      "sha256": "b0e285b089cfcabcac33fb4cbbee78d678c1d5c4c3b1f828eaede4d73a54c5cb",
+      "representation": "original response bytes"
+    },
+    {
+      "path": "research/improvement-loop-20261024/national-id-wv-acquisition-sol-v1/raw/wv-index-B3N0BJsK.js",
+      "url": "https://candidates.wvsos.gov/assets/index-B3N0BJsK.js",
+      "method": "GET",
+      "request_body": null,
+      "retrieved_utc": "2026-10-25T10:37:23.367356+00:00",
+      "content_type": "text/javascript",
+      "bytes": 1421098,
+      "sha256": "65f47853c245beadfc82e8ea7a22f4b416e80cf9b550b002544405a3b64eb696",
+      "representation": "original response bytes"
+    },
+    {
+      "path": "research/improvement-loop-20261024/national-id-wv-acquisition-sol-v1/raw/wv-writein-page-0.json",
+      "url": "https://candidates.wvsos.gov/candidate-web-api/candidates",
+      "method": "POST",
+      "request_body": {
+        "page": 0,
+        "size": 10,
+        "candidateType": "W"
+      },
+      "retrieved_utc": "2026-10-25T10:37:41.202046+00:00",
+      "content_type": "application/json",
+      "bytes": 13760,
+      "sha256": "d84695879b9015c71a4d6bac476df539bb56d88d08ea916ce3b7d83bc081d2e0",
+      "representation": "original response bytes"
+    },
+    {
+      "path": "research/improvement-loop-20261024/national-id-wv-acquisition-sol-v1/raw/wv-writein-page-1.json",
+      "url": "https://candidates.wvsos.gov/candidate-web-api/candidates",
+      "method": "POST",
+      "request_body": {
+        "page": 1,
+        "size": 10,
+        "candidateType": "W"
+      },
+      "retrieved_utc": "2026-10-25T10:37:51.235213+00:00",
+      "content_type": "application/json",
+      "bytes": 6691,
+      "sha256": "0010b20787b730b10fcbd8ebc9d21585f332bd0fc25b0c17fe1061c55cf7ce89",
+      "representation": "original response bytes"
+    },
+    {
+      "path": "research/improvement-loop-20261024/national-id-wv-acquisition-sol-v1/raw/wv-news.html",
+      "url": "https://sos.wv.gov/article/secretary-warner-issues-information-write-candidate-procedures-election-night-and-canvass",
+      "method": "GET",
+      "request_body": null,
+      "retrieved_utc": "2026-10-25T10:38:02.707237+00:00",
+      "content_type": "text/html",
+      "bytes": 104955,
+      "sha256": "e4e138acf0c50acf575ba730d2860fccaa2a5de6c5dbd165b6ecda3ec992773b",
+      "representation": "original response bytes"
+    },
+    {
+      "path": "research/improvement-loop-20261024/national-id-wv-acquisition-sol-v1/raw/wv-elections.html",
+      "url": "https://sos.wv.gov/elections",
+      "method": "GET",
+      "request_body": null,
+      "retrieved_utc": "2026-10-25T10:38:02.793239+00:00",
+      "content_type": "text/html",
+      "bytes": 120131,
+      "sha256": "ba55169513d24fd2bbe49d0553ddfa1e2b5df2803e8ab07233656235bee026d8",
+      "representation": "original response bytes"
+    },
+    {
+      "path": "research/improvement-loop-20261024/national-id-wv-acquisition-sol-v1/raw/wv-intermediate.der",
+      "url": "http://crt.sectigo.com/EntrustDVTLSIssuingRSACA2.crt",
+      "method": "GET",
+      "request_body": null,
+      "retrieved_utc": "2026-10-25T10:37:07.303813+00:00",
+      "content_type": "application/octet-stream",
+      "bytes": 1593,
+      "sha256": "ec37df849995a53089c98bd12ecac77406a2b41478779e5cb82c5f166e7df83c",
+      "representation": "original response bytes"
+    }
+  ],
+  "client_contract": {
+    "ID": "Official public Angular client: PublicLookup/GetAllElections {isFutureElections:false}; Filing/GetAllDistrictTypes {isSearch:true}; FiledCandidates/GetOffices {districtTypeGuid,electionGuid}; FiledCandidates/SearchCandidates with candidateName/electionGuid/districtTypeGuid/districtNumber/countyGuid/officeGuid/district/seat/partyGuid/filingStatusGuids/pageNumber/pageSize/sortBy/sortType. Exact request body is recorded in sources and request_files; filingStatusGuids=null is an unfiltered status request. UI maps filingStatusCode W to Withdrawn.",
+    "WV": "Official public React client: POST /candidate-web-api/candidates with {page,size,candidateType}. W means Write-In Candidates, default size 10, zero-based page; two exact request bodies are recorded in sources and request_files. No CMS endpoint used."
+  },
+  "tls_note": "WV portal omitted issuing intermediate in TLS handshake; intermediate obtained from leaf AIA and verified against system CA store with openssl verify. Curl used verified intermediate plus system CA bundle; no verification bypass.",
+  "findings": {
+    "ID": {
+      "election": "November 03, 2026 - 2026 GENERAL",
+      "election_guid": "1e38d17c-a176-47b8-91d1-368ba38ccdec",
+      "district_type": "Federal",
+      "district_type_guid": "1bfee852-8227-4b78-b6ca-c3918564d450",
+      "office": "United States Senator",
+      "office_guid": "298003d8-7882-4bf2-a021-d45e845602d3",
+      "page_number": 1,
+      "page_size": 50,
+      "candidates_found": 5,
+      "is_final_list": true,
+      "candidates": [
+        {
+          "name": "David Roth",
+          "party": "Democratic",
+          "filing_status": "Withdrawn",
+          "filing_status_code": "W",
+          "is_write_in": false
+        },
+        {
+          "name": "Natalie M Fleming",
+          "party": "Independent",
+          "filing_status": "Approved",
+          "filing_status_code": "A",
+          "is_write_in": false
+        },
+        {
+          "name": "Todd Achilles",
+          "party": "Independent",
+          "filing_status": "Approved",
+          "filing_status_code": "A",
+          "is_write_in": false
+        },
+        {
+          "name": "Matt Loesby",
+          "party": "Libertarian",
+          "filing_status": "Approved",
+          "filing_status_code": "A",
+          "is_write_in": false
+        },
+        {
+          "name": "Jim Risch",
+          "party": "Republican",
+          "filing_status": "Approved",
+          "filing_status_code": "A",
+          "is_write_in": false
+        }
+      ]
+    },
+    "WV": {
+      "unfiltered_write_in_total_elements": 15,
+      "total_pages": 2,
+      "general_federal_and_legislative_write_ins": 8,
+      "general_us_senate": {
+        "ballot_name": "RIO PHILLIPS",
+        "first_name": "CHRISTOPHER",
+        "middle_name": "MICHAEL",
+        "last_name": "PHILLIPS",
+        "office": "U.S. SENATE",
+        "election": "11/03/2026 - GENERAL 2026",
+        "candidate_type": "W",
+        "filing_date": "06/05/2026"
+      },
+      "certification_basis": "October 19 SOS release says eight certified write-in candidates: one statewide federal and seven legislative, viewable on Candidate Listing; the eight corresponding general federal/legislative W rows include exactly one U.S. Senate.",
+      "general_2026_records_in_unfiltered_write_in_list": 12
+    }
+  },
+  "limits": [
+    "ID isFinalList is a portal flag at retrieval time before Election Day.",
+    "WV API W means write-in; certification is linked through SOS release, not a separate API status field.",
+    "Raw API responses include public contact/address fields; derived findings exclude them."
+  ],
+  "mutations": "No model, admission, owner, running job, external contact, or pre-existing source mutation.",
+  "request_files": [
+    {
+      "path": "research/improvement-loop-20261024/national-id-wv-acquisition-sol-v1/id-senate-page-1-request.json",
+      "bytes": 357,
+      "sha256": "fd4a51a277d63ed2d13f9a64b82cd2da338bf766d68480fd85b9fa14c7147e88",
+      "recorded_utc": "2026-10-25T10:36:48.444600+00:00"
+    },
+    {
+      "path": "research/improvement-loop-20261024/national-id-wv-acquisition-sol-v1/wv-writein-page-0-request.json",
+      "bytes": 41,
+      "sha256": "41deef37a5e65b95b2b007a65b59b47c8e90d1a451fad660a2468bdd2972c598",
+      "recorded_utc": "2026-10-25T10:37:40.923750+00:00"
+    },
+    {
+      "path": "research/improvement-loop-20261024/national-id-wv-acquisition-sol-v1/wv-writein-page-1-request.json",
+      "bytes": 41,
+      "sha256": "2a83ac12d4ddd24f4d3447f4571cf1cf0809a0b03b47282ebe1c97a70e7d18d0",
+      "recorded_utc": "2026-10-25T10:37:50.948974+00:00"
+    }
+  ],
+  "response_header_files": [
+    {
+      "path": "research/improvement-loop-20261024/national-id-wv-acquisition-sol-v1/raw/id-district-types.headers",
+      "bytes": 1004,
+      "sha256": "73f2e49c85fbfcf9c08f9822aa5662249abd5b56f013350c94906d8c8be29078",
+      "recorded_utc": "2026-10-25T10:36:38.323340+00:00"
+    },
+    {
+      "path": "research/improvement-loop-20261024/national-id-wv-acquisition-sol-v1/raw/id-elections.headers",
+      "bytes": 1004,
+      "sha256": "cb5c1955f0b45c29f817e585891ad05cdd3da4c5b4e1ec60cd89c3b4dd467d90",
+      "recorded_utc": "2026-10-25T10:36:34.740259+00:00"
+    },
+    {
+      "path": "research/improvement-loop-20261024/national-id-wv-acquisition-sol-v1/raw/id-federal-offices.headers",
+      "bytes": 1004,
+      "sha256": "5fc0fdc7e3a1cb1dfeb2f32b8455d1c4f04fe2ba374a012a0e0f03da99f9d841",
+      "recorded_utc": "2026-10-25T10:36:42.536435+00:00"
+    },
+    {
+      "path": "research/improvement-loop-20261024/national-id-wv-acquisition-sol-v1/raw/id-polyfills.headers",
+      "bytes": 368,
+      "sha256": "df62e672264d85f4b80a638bac451058eb83a8c9bf1ebf79a5adbbd55e66953c",
+      "recorded_utc": "2026-10-25T10:38:02.908242+00:00"
+    },
+    {
+      "path": "research/improvement-loop-20261024/national-id-wv-acquisition-sol-v1/raw/id-senate-page-1.headers",
+      "bytes": 1004,
+      "sha256": "b2123b75f5d65c10cabb7e29d559ca12ae9fef197dd4a8aa3dd0e3ae3153615b",
+      "recorded_utc": "2026-10-25T10:36:48.881579+00:00"
+    },
+    {
+      "path": "research/improvement-loop-20261024/national-id-wv-acquisition-sol-v1/raw/wv-candidates-browser.headers",
+      "bytes": 307,
+      "sha256": "3388947fadaec0e2bb7290fb8b40c1c5339763ecd2444d7617b485ff9e8a6205",
+      "recorded_utc": "2026-10-25T10:37:16.812209+00:00"
+    },
+    {
+      "path": "research/improvement-loop-20261024/national-id-wv-acquisition-sol-v1/raw/wv-candidates-home.headers",
+      "bytes": 215,
+      "sha256": "f3e9e3510dfd2e454b45d7ecfd08c99bd8a2a5f2c9a3399918190151e997f979",
+      "recorded_utc": "2026-10-25T10:37:13.038124+00:00"
+    },
+    {
+      "path": "research/improvement-loop-20261024/national-id-wv-acquisition-sol-v1/raw/wv-elections.headers",
+      "bytes": 947,
+      "sha256": "b4bb34de4bc865cadb20c2abdc672a695602d84368182549543c229a406d1e3e",
+      "recorded_utc": "2026-10-25T10:38:02.774239+00:00"
+    },
+    {
+      "path": "research/improvement-loop-20261024/national-id-wv-acquisition-sol-v1/raw/wv-index-script.headers",
+      "bytes": 423,
+      "sha256": "ce17e495024f7409cfc2f60dfd58baec27129480b27bc08b8c170411dd92a2d1",
+      "recorded_utc": "2026-10-25T10:37:21.640317+00:00"
+    },
+    {
+      "path": "research/improvement-loop-20261024/national-id-wv-acquisition-sol-v1/raw/wv-news.headers",
+      "bytes": 947,
+      "sha256": "f2decd979d1c87ba969f554d5fb6676321b75ba3289a18fd6729c30c49493241",
+      "recorded_utc": "2026-10-25T10:38:02.689237+00:00"
+    },
+    {
+      "path": "research/improvement-loop-20261024/national-id-wv-acquisition-sol-v1/raw/wv-writein-page-0.headers",
+      "bytes": 270,
+      "sha256": "ad315378697be8123ceea09259bcdfc1497e779be2509a683be6bf883df759a5",
+      "recorded_utc": "2026-10-25T10:37:41.200756+00:00"
+    },
+    {
+      "path": "research/improvement-loop-20261024/national-id-wv-acquisition-sol-v1/raw/wv-writein-page-1.headers",
+      "bytes": 270,
+      "sha256": "ce34dda243fd1418dba28dde854468f01bef70265c2a2587ca68fd3e3e1b9732",
+      "recorded_utc": "2026-10-25T10:37:51.233981+00:00"
+    }
+  ],
+  "tls_artifacts": [
+    {
+      "path": "research/improvement-loop-20261024/national-id-wv-acquisition-sol-v1/raw/wv-leaf.pem",
+      "bytes": 4398,
+      "sha256": "a6f55a305928369c4f52d311af4cb91c7d02596bd9cbf16ea9a343ebcca71d2d",
+      "recorded_utc": "2026-10-25T10:37:07.142991+00:00"
+    },
+    {
+      "path": "research/improvement-loop-20261024/national-id-wv-acquisition-sol-v1/raw/wv-intermediate.pem",
+      "bytes": 2212,
+      "sha256": "fd39b2a18c7b2f828c8c61f539f86c356eaa26259a428e54014cbf140278b68b",
+      "recorded_utc": "2026-10-25T10:37:07.322098+00:00"
+    },
+    {
+      "path": "research/improvement-loop-20261024/national-id-wv-acquisition-sol-v1/raw/wv-ca-bundle.pem",
+      "bytes": 182956,
+      "sha256": "2d03dd6ad4017227c4430898d44d1003326938d0864e589e876181cd24398295",
+      "recorded_utc": "2026-10-25T10:37:12.696116+00:00"
+    }
+  ],
+  "source_record_status_observations": {
+    "ID": "The scoped API response reports 5 matching candidates, pageNumber 1, pageSize 50, isFinalList true. The request set filingStatusGuids null, preserving all returned status categories; four Approved and one Withdrawn, all isWriteIn false. totalCandidates 592 is portal-wide and is not a scoped Senate count.",
+    "WV": "The official candidate API uses candidateType W for write-ins. Its unfiltered two pages contain 15 records, of which 12 are November 2026 general-election records and 8 are the federal/legislative records described in the SOS release. Exactly one of those has U.S. SENATE officeName and ballot name RIO PHILLIPS. The API row itself has no separate certification-status field."
+  },
+  "support_admission": {
+    "performed": false,
+    "decision": "No model/source support admission or owner state change was performed by this acquisition. Source records and scope are provided for independent review."
+  },
+  "tls_verification": {
+    "command": "openssl verify -CAfile /etc/ssl/certs/ca-certificates.crt -untrusted research/improvement-loop-20261024/national-id-wv-acquisition-sol-v1/raw/wv-intermediate.pem research/improvement-loop-20261024/national-id-wv-acquisition-sol-v1/raw/wv-leaf.pem",
+    "exit_code": 0,
+    "output": "research/improvement-loop-20261024/national-id-wv-acquisition-sol-v1/raw/wv-leaf.pem: OK",
+    "output_file": "research/improvement-loop-20261024/national-id-wv-acquisition-sol-v1/wv-tls-verification.txt",
+    "output_sha256": "8980afb385b9a756e19f00549876d83347846ba29eabbdf31d9d6c2b1b7b90af"
+  }
+}

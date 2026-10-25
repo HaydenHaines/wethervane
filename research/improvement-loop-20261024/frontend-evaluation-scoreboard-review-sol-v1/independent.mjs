@@ -1,0 +1,18 @@
+import assert from 'node:assert/strict';
+import {evaluationScoreboardReadiness as ready,compareSuppliedMetric as compare} from '/home/hayden/projects/ballotmancy-count-comparison-prep-20261025/lib/evaluation-scoreboard-view.ts';
+import {completeFixture} from '/home/hayden/projects/ballotmancy-count-comparison-prep-20261025/tests/fixtures/evaluation-scoreboard.mjs';
+let checks=0;const bad=mutate=>{const d=completeFixture();mutate(d,d.cycles[0],d.cycles[0].models.count);assert.equal(ready(d).valid,false);checks++;};
+const d=completeFixture(); assert.equal(ready(d).valid,true);checks++;
+let c=compare(d,d.cycles[0],'count','poll','pair_crps');assert.equal(c.informationMatch,'different');assert.equal(c.scopeMatch,'matched');assert.equal(c.delta,0);checks++;
+bad((d,c,r)=>r.energy.orderedPairIds.reverse());
+bad((d,c,r)=>{r.pairs[c.pairRoster[0].id].leading.logLossInfinite=true;});
+bad((d,c,r)=>{r.metrics.pair_crps.value=null;r.metrics.pair_crps.infinite=true;});
+bad((d,c,r)=>{r.reports[c.reportRoster[0].id].undefinedMass=Number.MIN_VALUE;});
+bad((d,c,r)=>{const p=r.pairs[c.pairRoster[0].id];Object.assign(p,{state:'undefined_mass',undefinedMass:Number.MIN_VALUE,crps:null,wis:null,leading:null,intervals:[]});delete p.shape;});
+bad((d,c,r)=>{r.metrics.pair_crps.binding.orderedRosterIds.reverse();});
+const changed=completeFixture();changed.cycles[0].models.poll.metrics.pair_crps.binding.outcomeView='other';assert.equal(compare(changed,changed.cycles[0],'count','poll','pair_crps').delta,null);checks++;
+bad((d,c,r)=>{r.metrics.vector_energy.value=.123;});
+bad((d,c,r)=>{const p=r.pairs[c.pairRoster[0].id];p.leading.observed=false;});
+bad((d,c,r)=>{r.pairs[c.pairRoster[0].id].intervals[0].covered=false;});
+bad((d,c,r)=>{d.status.evidence='qualified_for_scope';});
+console.log(JSON.stringify({checks,scope:'Synthetic supplied view consistency only; no scoring or authentication.'},null,2));

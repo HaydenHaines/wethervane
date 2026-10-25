@@ -1,0 +1,71 @@
+{
+  "schema": "NMOfficialBallotVisualReviewV1",
+  "utc": "2026-10-25T10:36:21.165514+00:00",
+  "retrieval": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/national-source-acquisition-ui-v1/initial-acquisition.json",
+    "sha256": "d61e993599ce3b91dc4976483121faced6565bf726a5b1bafb9dc9c05be8c82b",
+    "bytes": 2371
+  },
+  "original_documents": [
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/national-source-acquisition-ui-v1/raw/nm-sample.pdf",
+      "sha256": "436a119c6dcc0753ab6dd1035af030c585a80790b2818d6c92c206a8747ae179",
+      "bytes": 74475
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/national-source-acquisition-ui-v1/raw/nm-master.pdf",
+      "sha256": "424899bd085291589ada4c0f591c8f43c353a05fc4d1cc97bd3b940331906890",
+      "bytes": 149413
+    }
+  ],
+  "visual_inspection": [
+    {
+      "render": {
+        "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/national-source-acquisition-ui-v1/nm-sample-page1.png",
+        "sha256": "7d0e27f562919644ebdbc8c7e071775ca8a8738e4fd26312286464b26f4557e3",
+        "bytes": 634511
+      },
+      "pdf_page": 1,
+      "render_command": "pdftoppm -f 1 -singlefile -scale-to 1800 -png",
+      "inspected_by": "root via view_image",
+      "visible_header": "SAMPLE BALLOT - BALOTA DE MUESTRA; November 3, 2026; Santa Fe County; Ballot Style 01 SANT_PCT001",
+      "visible_senate_block": [
+        "UNITED STATES SENATOR",
+        "VOTE FOR ONE",
+        "BEN R LUJAN — DEMOCRATIC PARTY",
+        "LARRY E MARKER — REPUBLICAN PARTY"
+      ],
+      "write_in_observation": "No write-in line is visible in the complete Senate block on this sample page. The block ends immediately before UNITED STATES REPRESENTATIVE. This is a visual observation, not inferred from text extraction."
+    },
+    {
+      "render": {
+        "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/national-source-acquisition-ui-v1/nm-master-page1.png",
+        "sha256": "a0897e9580bdb8a9ecf1249b3cafa898ef1e672b362cf5a6e2f86a8b93fa2902",
+        "bytes": 224356
+      },
+      "pdf_page": 1,
+      "render_command": "pdftoppm -f 1 -singlefile -scale-to 1800 -png",
+      "inspected_by": "root via view_image",
+      "visible_senate_row": {
+        "race": "UNITED STATES SENATOR",
+        "candidates": [
+          "BEN R LUJAN (D)",
+          "LARRY E MARKER (R)"
+        ],
+        "ballot_style": "ALL",
+        "precincts": "ALL"
+      },
+      "scope": "Santa Fe County 2026 general election master ballot list; ALL applies within this county document, not a statewide declaration."
+    }
+  ],
+  "text_extraction": {
+    "sample": "pdftotext output has an unusable character encoding; no absence finding relies on extracted text.",
+    "master": "Readable text agrees with the visually inspected first-page Senate row."
+  },
+  "limits": [
+    "County sources alone do not establish statewide complete candidate support or qualified-write-in rules.",
+    "No model data or source admission changed.",
+    "The owner must reconcile statewide certification and election rules before admission."
+  ],
+  "source_admitted": false
+}
