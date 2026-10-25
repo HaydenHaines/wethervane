@@ -28,6 +28,7 @@ export default function HouseLiveControls({ view, catalog, expanded, onExpandedC
   children?: ReactNode;
 }) {
   const [selected, setSelected] = useState<HouseLiveConfiguration>({ ...view.run.configuration });
+  const [shareNotice, setShareNotice] = useState("");
   useEffect(() => setSelected({ ...view.run.configuration }), [view.run.id]);
   const resolution = resolveHouseLiveSelection(catalog, selected);
   const displayed = resolution.state === "ready" && resolution.entry.id === view.run.id &&
@@ -51,6 +52,14 @@ export default function HouseLiveControls({ view, catalog, expanded, onExpandedC
   };
   const defaultChoice = catalog.entries.find(item => item.id === catalog.defaultId);
   const draftIsDefault = !!defaultChoice && sameHouseLiveConfiguration(selected, defaultChoice.configuration);
+  async function share() {
+    try {
+      await navigator.clipboard.writeText(location.href);
+      setShareNotice("Link copied. It restores this model, selected district, and comparison.");
+    } catch {
+      setShareNotice("Copy the address in your browser to share this view.");
+    }
+  }
 
   return <>
     <details className="control-card house-configuration" open={expanded}
@@ -62,7 +71,9 @@ export default function HouseLiveControls({ view, catalog, expanded, onExpandedC
       <div className="stack-actions">
         <button type="button" disabled={busy || (view.run.id === catalog.defaultId && draftIsDefault)}
           onClick={reset}>Reset to published default</button>
+        <button type="button" disabled={busy} onClick={() => void share()}>Share view ↗</button>
       </div>
+      {shareNotice && <p className="small" role="status" aria-live="polite">{shareNotice}</p>}
       <p className="small" role="status" aria-live="polite">
         {displayed ? "These choices match the result now displayed." : resolution.state === "ready"
           ? `Saved choice: ${resolution.entry.label}. The displayed forecast changes only after verification.`

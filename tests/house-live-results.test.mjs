@@ -285,6 +285,14 @@ createRoot(document.getElementById('root')).render(React.createElement('div',{cl
   const browser = await chromium.launch({ headless: true });
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 }, reducedMotion: "reduce" });
   const pageErrors = [], requests = [];
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, "clipboard", { configurable: true, value: {
+      writeText: async value => {
+        if (globalThis.denyClipboard) throw Error("Invented clipboard denial");
+        globalThis.copiedViewUrl = value;
+      },
+    } });
+  });
   let failedId = null, delayedId = null, releaseDelayed = null;
   page.on("pageerror", error => pageErrors.push(error.message));
   await page.route("http://house-ui.test/**", async route => {
@@ -391,6 +399,31 @@ createRoot(document.getElementById('root')).render(React.createElement('div',{cl
     await page.getByRole("button", { name: "Load current default" }).click();
     await expect(page.locator(".hero > div > p")).toContainText(primary.view.run.label);
     await expect(compareSelect).toHaveValue("");
+    // Share the displayed non-default result and restore its complete selection.
+    await builder.locator("summary").first().click();
+    await base.selectOption("recent_calendar_history");
+    await expect(page.locator(".hero > div > p")).toContainText(alternative.label);
+    await compareSelect.selectOption(baseline.id);
+    await expect(comparePanel.getByRole("table")).toHaveCount(3);
+    await page.locator('.house-ribbon-cell[data-district="AL-03"]').click();
+    await page.getByRole("button", { name: "Share view" }).click();
+    await expect(page.getByRole("status").filter({ hasText: "Link copied." })).toBeVisible();
+    const sharedUrl = await page.evaluate(() => globalThis.copiedViewUrl);
+    assert.equal(sharedUrl, page.url());
+    const shared = new URL(sharedUrl);
+    assert.equal(shared.searchParams.get("chamber"), "house");
+    assert.equal(shared.searchParams.get("edition"), "current");
+    assert.equal(shared.searchParams.get("run"), alternative.id);
+    assert.equal(shared.searchParams.get("race"), "2026:AL-03:house:regular");
+    assert.equal(shared.searchParams.get("compare"), baseline.id);
+    await page.evaluate(() => { globalThis.denyClipboard = true; });
+    await page.getByRole("button", { name: "Share view" }).click();
+    await expect(page.getByRole("status").filter({ hasText: "Copy the address in your browser" })).toBeVisible();
+    await page.goto(sharedUrl);
+    await expect(page.locator(".hero > div > p")).toContainText(alternative.label);
+    await expect(page.locator("#house-live-detail-title")).toHaveText("AL-03");
+    await expect(compareSelect).toHaveValue(baseline.id);
+    await expect(comparePanel.getByRole("table")).toHaveCount(3);
     assert.ok(requests.every(id => publications.has(id)));
     assert.equal(await page.evaluate(() => localStorage.length), 0);
     assert.deepEqual(pageErrors, []);
