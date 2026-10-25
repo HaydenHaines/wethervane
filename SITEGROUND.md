@@ -11,6 +11,22 @@ notes later in this guide describe its earlier preparation. Current 2026 House
 integration and the population/community/count research stack remain separate
 workstreams; availability comes from reviewed publication artifacts.
 
+## Checking a current House candidate offline
+
+Before the complete House collection is ready, check an individual native result
+with `scripts/check_house_live_candidate.mjs`. Run it with Node's
+`--experimental-strip-types` flag and provide `--source-root`, `--result`,
+`--result-sha256` and `--seat-quantile-convention` (`inverse_cdf` or `linear`, as
+declared by the exporter). The offline decoder also requires Python 3.
+
+The check authenticates the result and its local evidence, binds the prediction
+receipt and plan, and reconciles every simulated election with the reported race
+probabilities and chamber distribution. It uses the same evidence resolver and
+archive checker as `scripts/import_house_live.mjs`, including combined runs.
+Its report preserves the candidate's original qualification and explicitly records
+`publicationAdmission: false`. Publishing still requires the complete sixteen-run
+collection, scientific and operator reviews, and the full importer checks.
+
 ## SiteGround configuration
 
 Use GrowBig's **Websites → Node.js Projects → New Project** flow and import

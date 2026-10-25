@@ -1,0 +1,197 @@
+{
+  "schema": "FrontendCombinedHouseCandidateValidationV1",
+  "issued_utc": "2026-10-25T17:03:12.124544+00:00",
+  "status": "actual_combined_candidate_consistency_verified_not_publication",
+  "frontend_parent_commit": "53e1bf324302c18489f38ea851cddb8357ccace1",
+  "native_result": {
+    "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-20261025/adapter-check-v5/result.json",
+    "sha256": "8db4a5a8df489f412d5aad06415903b4c053ffc5bb08bfbc9eb288ac8f590b29"
+  },
+  "offline_check": {
+    "schema": "HouseLiveCandidateVerificationV1",
+    "publicationAdmission": false,
+    "notice": "Offline joint-row consistency verification only; this does not admit the candidate for publication.",
+    "result": {
+      "id": "house-current-fundamentals",
+      "sha256": "8db4a5a8df489f412d5aad06415903b4c053ffc5bb08bfbc9eb288ac8f590b29"
+    },
+    "qualification": {
+      "input_status": "reviewed_bounded_current_inputs",
+      "numerical_status": "passed",
+      "publication_status": "not_reviewed",
+      "forecast_skill": "unobserved_2026",
+      "limitations": [
+        "Current aggregate forecast comparison; no observed 2026 outcomes or demonstrated 2026 accuracy.",
+        "Conditional shares describe only the two named principal contenders. Group win probabilities are separate, and pooled probabilities are never assigned to individual members.",
+        "Alaska and CA-06 use declared independent-candidate predictor proxies. Independent and other-party winners remain unassigned for the 218-seat party-majority calculation.",
+        "Ranked-choice and runoff contests use ultimate-winner approximations. Ballot transfers, runoff rounds, turnout and candidate vote counts are not simulated.",
+        "The roster includes captured printed candidates and documented declared write-ins. Some districts rely on secondary sources; later filings and legal changes require a new release.",
+        "Polling uses a dated reviewed question subset with an approximate ingestion-date availability rule. It is not an exhaustive polling census or a direct audit of every questionnaire.",
+        "Historical posterior banks and calibrated polling-error scales are finite. Predictive simulation precision does not establish empirical calibration or integrate polling covariance-estimation uncertainty.",
+        "The historical House benchmark found polling gains in many comparisons and material 2020 losses. Failed historical chamber precision remains part of that evidence.",
+        "A House-specific tipping statistic is not qualified. The race list and ribbon must not be described as tipping probabilities."
+      ],
+      "evidence": [
+        {
+          "path": "evidence/admission-v1.json",
+          "sha256": "1a64a1c2f040c9a427f3a5ff84d645776b436cee9ea1d19276d02d9af0974978"
+        },
+        {
+          "path": "evidence/input-review-v1.json",
+          "sha256": "8b31e0faa5544c1ba04404e8b9420e23ce9726c467cb9c939b70d8695a24c465"
+        },
+        {
+          "path": "evidence/bank-index-v1.json",
+          "sha256": "92e2991ecf7c87e5708cd5e1730075513809710d689a47c4df3ab22fc3439e18"
+        },
+        {
+          "path": "evidence/presentation-review-v1.json",
+          "sha256": "fb2afa46a85fbf68b0d4dc26aaec54b8efdd7454f029e337b15837242d46b4b5"
+        },
+        {
+          "path": "evidence/house-current-fundamentals/diagnostics.json",
+          "sha256": "38f65a6114e2a627e6f4d88248dcd27fb4f67ce66d28fe86d8e7b8b0b8416f0a"
+        },
+        {
+          "path": "evidence/house-current-fundamentals/receipt.json",
+          "sha256": "776c89837ce67ea88669042072a3d367ad8ff0485b6a83241046581f94d04b13"
+        },
+        {
+          "path": "evidence/house-current-fundamentals/plan.json",
+          "sha256": "ba95539614a5158212f5ce66c02fc14b3f5114e4cadcbad63cc738fd1f16eb18"
+        },
+        {
+          "path": "evidence/house-current-fundamentals/binding-review.json",
+          "sha256": "6c6af75458fe19b55639d9ffadb40de515b0ab225feb679bdfe457537625b91c"
+        },
+        {
+          "path": "evidence/polling-disclosure-v1.json",
+          "sha256": "a4641cfbae395ee8e11208911ee30d6b8fa3e5a9439bbc565e9e71c58ea4d9d3"
+        }
+      ]
+    },
+    "predictionEvidence": {
+      "kind": "combined",
+      "planSha256": "ba95539614a5158212f5ce66c02fc14b3f5114e4cadcbad63cc738fd1f16eb18",
+      "receiptSha256": "776c89837ce67ea88669042072a3d367ad8ff0485b6a83241046581f94d04b13"
+    },
+    "jointArchive": {
+      "rowsChecked": 2000000,
+      "raceCount": 435,
+      "chamberChecked": true,
+      "artifactSha256": "7e5f346b4ebb7988abc28d012f120d2ee9b00f6a7bca9508f7e3f510d143f511",
+      "archiveFormat": "house_live_npz_combined_chain_major_v1",
+      "seatQuantileConvention": "inverse_cdf",
+      "combinedPlanSha256": "ba95539614a5158212f5ce66c02fc14b3f5114e4cadcbad63cc738fd1f16eb18"
+    }
+  },
+  "report": {
+    "path": "/tmp/ballotmancy-house-combined-candidate-v1.json",
+    "sha256": "a067625f981f253184a225d75666426f34ba43a0714ef0210d4e2c26ad3332ff"
+  },
+  "runtime_sources": {
+    "checked_at": "2026-10-25T17:00:14.325052+00:00",
+    "sources": [
+      {
+        "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/scripts/check_house_live_candidate.mjs",
+        "sha256": "5c4bd36860f6e50182616c6643f5108b6f5fb70378b5ac5c74468a8719cb1da1"
+      },
+      {
+        "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/scripts/house_live_evidence.mjs",
+        "sha256": "a2a53ff264b508f7f6e4f39252834fbc4db569ec412df86d493fd93297d9f443"
+      },
+      {
+        "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/scripts/import_house_live.mjs",
+        "sha256": "e9e4dcbde02f1882f49ec5396c229100eb8d1d566a3dfeb37df7b5db9c95eab5"
+      },
+      {
+        "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/lib/house-live-joint-archive.ts",
+        "sha256": "93d58f9a9149bfae4e1f5dfab51fef6d69d85b3ffceb118cfac3cb05734193a4"
+      },
+      {
+        "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/lib/house-live-joint-check.ts",
+        "sha256": "7d64e2d6dad5fb37f470a51316a57002bad47dd34800f1c7b93ca765dfacf022"
+      },
+      {
+        "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/scripts/decode_house_live_joint.py",
+        "sha256": "bd716573139006fda9dbb3710e8203af2bfc2aca9c28608f61d5be3258dc558e"
+      }
+    ]
+  },
+  "runtime_source_fingerprints_unchanged_at_completion": true,
+  "implementation_and_tests": [
+    {
+      "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/scripts/check_house_live_candidate.mjs",
+      "sha256": "5c4bd36860f6e50182616c6643f5108b6f5fb70378b5ac5c74468a8719cb1da1"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/scripts/house_live_evidence.mjs",
+      "sha256": "a2a53ff264b508f7f6e4f39252834fbc4db569ec412df86d493fd93297d9f443"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/scripts/import_house_live.mjs",
+      "sha256": "e9e4dcbde02f1882f49ec5396c229100eb8d1d566a3dfeb37df7b5db9c95eab5"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/tests/house-live-candidate.test.mjs",
+      "sha256": "68b06c52b5f2bfa8d8ecc3c7dc87c24716b294e8105523adec508103cdeebda5"
+    }
+  ],
+  "evidence": {
+    "local_native_evidence_count": 9,
+    "all_local_evidence_bytes_authenticated": true,
+    "backend_binding_review": {
+      "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-20261025/reviews-v2/combined-current-fundamentals/binding-review.json",
+      "sha256": "6c6af75458fe19b55639d9ffadb40de515b0ab225feb679bdfe457537625b91c"
+    },
+    "backend_independent_audit": {
+      "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-20261025/reviews-v2/combined-current-fundamentals/independent-audit.json",
+      "sha256": "e469cdaed88a6863567e0904a6f78c7d34d6ec0798870e71237c369fb708759d"
+    },
+    "root_scope": "Authenticated explicit native result/evidence, same importer receipt/local-plan resolution, exact combined11 NPZ decoding, all 2M winner rows and all435 race probabilities; complete chamber PMFs, expectations, inverse-CDF quantiles and majority frequencies reconciled. Root did not repeat backend conditional-share or seeded-categorical reconstruction audits."
+  },
+  "validation": {
+    "candidate_tests": {
+      "passed": 7,
+      "failed": 0,
+      "reported_by": "house_live_import_sol",
+      "tool_session": 54931,
+      "saved_tap": false,
+      "scope": "Original/combined checks, unchanged qualification and sources, CLI, native-reviewed non-admission, altered hashes, absent/ambiguous evidence and configuration/lineage mismatches."
+    },
+    "full_importer_tests": {
+      "passed": 21,
+      "failed": 0,
+      "log": {
+        "path": "/tmp/ballotmancy-house-live-import-refactor-test-20261025.log",
+        "sha256": "b9d29f2f4ecf95c7fbd1fc80d8cad0ad80930462cd7f2a9f30f48b6d9198250a"
+      }
+    },
+    "independent_source_review": {
+      "reviewer": "house_live_contract_sol",
+      "finding": "No material acceptance regression; candidate cannot publish or stage, and all16/operator publication gates retained. Exact five-output/source-run proof remains separately pinned backend review scope."
+    },
+    "actual_combined_cli_exit_code": 0,
+    "application_browser_build_rerun": false,
+    "application_validation_scope": "Only offline scripts and documentation changed; previous app validation remains in polling preparation receipt. No actual candidate UI rendering or complete collection import has occurred."
+  },
+  "documentation": {
+    "coordinator_commit": "a2c9aef31b11e7e0d0abe5095f32c177494a6f42",
+    "integrated_commit": "53e1bf324302c18489f38ea851cddb8357ccace1",
+    "relative_links_checked": 9,
+    "missing_links": 0,
+    "senate_registry_by_year": {
+      "2026": 16,
+      "2022": 16,
+      "2018": 16
+    },
+    "offline_candidate_usage_added": "SITEGROUND.md"
+  },
+  "publication": {
+    "native_status": "not_reviewed",
+    "collection_imported": false,
+    "deployed": false,
+    "next": "Review the final all16 collection and numerical review scope, import with explicit polling receipt/ledger pins, verify real rendered views, and release qualified data."
+  },
+  "goal_correction": "Saving user configurations is unnecessary and out of scope. Preserve model versions and reproducible research configurations/results."
+}

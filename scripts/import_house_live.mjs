@@ -14,6 +14,7 @@ import { parseHouseLivePublicationQualification } from "../lib/house-live-native
 import { buildHouseLivePollingCollection } from "../lib/house-live-polling.ts";
 import { houseLiveConfigurationKey, houseLivePin, parseHouseLiveResult } from "../lib/house-live-result.ts";
 import { loadHouseLiveSitePublication, parseHouseLiveSiteReview, readHouseLiveAvailability } from "../lib/house-live-server.ts";
+import { readHouseLivePredictionEvidence, resolveHouseLivePredictionPlan } from "./house_live_evidence.mjs";
 
 const require = (condition, message) => { if (!condition) throw Error(message); };
 const digest = bytes => createHash("sha256").update(bytes).digest("hex");
@@ -26,53 +27,6 @@ const safePath = path => typeof path === "string" && /^[A-Za-z0-9][A-Za-z0-9._/-
   path.split("/").every(part => part && part !== "." && part !== "..");
 const plainText = value => typeof value === "string" && value.length > 0 && value.length <= 4000 &&
   value === value.trim() && !/[\u0000-\u001f\u007f]/.test(value);
-const positiveInteger = value => Number.isSafeInteger(value) && value > 0;
-const nonnegativeInteger = value => Number.isSafeInteger(value) && value >= 0;
-const predictionConfigurationMatches = (value, result) => value && typeof value === "object" &&
-  Object.keys(value).length === 4 && ["id", "base", "polling", "uncertainty"].every(key =>
-    value[key] === (key === "id" ? result.id : result.configuration[key]));
-
-/** Resolve only explicitly local evidence pins; receipt-internal research paths are never followed. */
-function resolvePredictionPlan(result, documents) {
-  const receipts = documents.filter(document => document.value?.schema === "HouseLivePredictionReceiptV1");
-  const plans = documents.filter(document => ["HouseLivePredictionPlanV1", "HouseLiveCombinedPredictionPlanV1"]
-    .includes(document.value?.schema));
-  if (!receipts.length && !plans.length) return undefined;
-  require(receipts.length === 1 && plans.length === 1,
-    `Result ${result.id} has a missing or ambiguous local prediction receipt/plan mapping.`);
-  const receipt = receipts[0].value;
-  require(receipt.status === "passed" && predictionConfigurationMatches(receipt.configuration, result) &&
-    houseLivePin(receipt.plan) && Array.isArray(receipt.outputs) && receipt.outputs.every(houseLivePin) &&
-    receipt.outputs.filter(pin => pin.sha256 === result.joint_draws.sha256).length === 1,
-  `Result ${result.id} prediction receipt does not bind its reviewed configuration and joint archive.`);
-  const matches = plans.filter(document => document.pin.sha256 === receipt.plan.sha256);
-  require(matches.length === 1, `Result ${result.id} prediction receipt has no unique authenticated local plan.`);
-  const { pin, value: plan } = matches[0];
-  require(predictionConfigurationMatches(plan.configuration, result) && plan.pilot === false &&
-    positiveInteger(plan.settings?.chains) && positiveInteger(plan.settings?.draws) &&
-    plan.settings.chains === result.joint_draws.chain_count &&
-    plan.settings.chains * plan.settings.draws === result.joint_draws.count,
-  `Result ${result.id} prediction plan configuration or chain/draw counts disagree with its native result.`);
-  if (plan.schema === "HouseLivePredictionPlanV1") return undefined;
-  require(Array.isArray(plan.source_runs) && plan.source_runs.length >= 2 &&
-    nonnegativeInteger(plan.settings.warmup_per_source), `Result ${result.id} has invalid combined prediction lineage.`);
-  let rows = 0, chains = 0;
-  const seeds = new Set();
-  for (const source of plan.source_runs) {
-    const settings = source?.settings;
-    require(houseLivePin(source?.receipt) && houseLivePin(source?.plan) &&
-      positiveInteger(settings?.chains) && settings.draws === plan.settings.draws &&
-      settings.warmup === plan.settings.warmup_per_source && nonnegativeInteger(settings.seed) &&
-      !seeds.has(settings.seed) && source.joint_draw_offset === rows && source.predictive_chain_offset === chains,
-    `Result ${result.id} has inconsistent combined source chain/draw lineage.`);
-    seeds.add(settings.seed);
-    rows += settings.chains * settings.draws;
-    chains += settings.chains;
-  }
-  require(rows === result.joint_draws.count && chains === result.joint_draws.chain_count,
-    `Result ${result.id} combined source lengths disagree with its native result.`);
-  return { path: pin.path, sha256: pin.sha256 };
-}
 
 /** Capture and hash the actual copied bytes, independently of any earlier read. */
 async function readSafePinnedBytes(root, pin) {
@@ -202,21 +156,19 @@ export async function importHouseLive({ sourceRoot, catalog: catalogPin, reviewR
   for (const result of results) require(!files.has(result.joint_draws.path),
     "A staged artifact path conflicts with a raw joint archive.");
 
-  const evidenceFiles = new Map(), evidenceByResult = new Map(), combinedPlans = new Map();
+  const evidenceValues = new Map(), stagedEvidence = new Set(), evidenceByResult = new Map(), combinedPlans = new Map();
   for (const result of results) {
-    const documents = [];
-    for (const pin of result.qualification.evidence) {
+    const documents = await readHouseLivePredictionEvidence(root, result, evidenceValues);
+    for (const { pin } of documents) {
       const key = `${pin.path}:${pin.sha256}`;
-      let file = evidenceFiles.get(key);
-      if (!file) {
-        file = await json(root, pin);
-        stage(pin.path, file.bytes);
-        evidenceFiles.set(key, file);
+      if (!stagedEvidence.has(key)) {
+        stage(pin.path, await readSafePinnedBytes(root, pin));
+        stagedEvidence.add(key);
       }
-      documents.push({ pin, value: file.value });
     }
     evidenceByResult.set(result.id, documents);
-    combinedPlans.set(result.id, resolvePredictionPlan(result, documents));
+    const binding = resolveHouseLivePredictionPlan(result, documents);
+    combinedPlans.set(result.id, binding?.kind === "combined" ? binding.plan : undefined);
   }
   for (const result of results) require(!files.has(result.joint_draws.path),
     "A staged evidence path conflicts with a raw joint archive.");
