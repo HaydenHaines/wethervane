@@ -63,6 +63,7 @@ def configuration(root):
 
 
 def dispatcher(root):
+    root = Path(root).resolve()
     config = configuration(root)
     descriptor = os.open(Path(root) / "dispatcher.lock", os.O_CREAT | os.O_RDWR, 0o600)
     try:
@@ -148,6 +149,7 @@ def validate_plan(plan):
 
 
 def entries(root, problems=None):
+    root = Path(root).resolve()
     for directory in sorted((Path(root) / "queues").iterdir()):
         if directory.is_dir() and (directory / "receipt.json").is_file():
             try:
@@ -165,6 +167,7 @@ def entries(root, problems=None):
 
 
 def enqueue(root, plan, expected_sha256):
+    root = Path(root).resolve()
     jobs = validate_plan(plan)
     require(digest(plan) == expected_sha256, "queue plan digest mismatch")
     config, descriptor = dispatcher(root)
@@ -289,6 +292,7 @@ def verify_binding(directory, job, verify_dependency_bytes=True):
 
 
 def validate_resume(root, job, references, config, admitting_queue):
+    root = Path(root).resolve()
     proof, spec = job["resume_prelaunch"], job["execution_spec"]
     source = Path(root).resolve() / "queues" / proof["queue_id"] / "jobs" / proof["job_id"]
     require(references and any(old_dir / "jobs" / old_job["id"] == source for old_dir, old_job in references), "resume must name an existing queued deferral")
@@ -396,6 +400,7 @@ def defer_unlaunched(directory, job, config, error):
 
 
 def tick(root):
+    root = Path(root).resolve()
     config, descriptor = dispatcher(root)
     try:
         problems = []
@@ -495,6 +500,7 @@ def tick(root):
 
 
 def status(root, verify_config=True):
+    root = Path(root).resolve()
     config = configuration(root) if verify_config else document(Path(root) / "store.json")
     queues, reserved, problems = {}, 0, []
     for directory, plan in entries(root, problems):
@@ -525,6 +531,7 @@ def status(root, verify_config=True):
 
 
 def work(root, output, poll_seconds, max_runtime):
+    root = Path(root).resolve()
     require(0 < poll_seconds <= 60 and 0 < max_runtime <= 604800, "invalid worker bounds")
     output = Path(output).resolve()
     output.mkdir(parents=True, exist_ok=False)

@@ -1,0 +1,420 @@
+"""Application resolution for registered scientific composition drivers.
+
+This boundary never performs inference or interprets model coefficients. Drivers
+own graph compilation and numerical output validation. The same application
+workflow supports future targets without pretending their kernels already exist.
+There is no scheduler or HTTP endpoint here; requires_computation is an explicit
+handoff to an execution service, not a claim that a job has started.
+"""
+
+import json
+from pathlib import Path
+from typing import Literal, Protocol
+
+from pydantic import AwareDatetime, Field, JsonValue, model_validator
+
+from src.forecasting.model_registry_v1 import ModelCatalog, PortContract, SourcePin
+from src.model_stack.artifacts import ArtifactRef, ArtifactStore, digest
+from src.model_stack.contracts import Digest, Name, Record, Role, unique
+
+ROLES = (
+    "population",
+    "community",
+    "fundamentals",
+    "environment",
+    "measurement",
+    "participation",
+    "choice",
+    "counts_rules",
+)
+RESULT_KIND = "composition-application-result-v1"
+
+
+class ComponentOffer(Record):
+    provider_id: Name
+    version: Name
+    role: Role
+    label: Name
+    availability: Literal["available", "unbuilt", "unavailable"]
+    target_ids: tuple[Name, ...]
+    sources: tuple[SourcePin, ...] = ()
+    inputs: tuple[PortContract, ...] = ()
+    outputs: tuple[PortContract, ...] = ()
+    default_instance_id: Name | None = None
+    # Declarative option metadata for catalog-driven clients. Scientific drivers
+    # still validate options and cross-component compatibility before preparation.
+    # An empty schema advertises no editor; it does not authorize arbitrary code.
+    options_schema: dict[str, JsonValue] = Field(default_factory=dict)
+    limitations: tuple[Name, ...] = ()
+
+    @model_validator(mode="after")
+    def implemented_sources(self):
+        unique(self.target_ids, "provider targets")
+        unique([p.path for p in self.sources], "provider source paths")
+        digest(self.options_schema)
+        if self.availability == "available" and not (self.sources and self.target_ids and self.outputs):
+            raise ValueError("An available implementation needs sources, targets and output contracts")
+        if self.availability != "available" and not self.limitations:
+            raise ValueError("Unavailable implementations need an explanation")
+        return self
+
+
+class ComponentChoice(Record):
+    instance_id: Name
+    provider_id: Name
+    version: Name
+    options: dict[str, JsonValue] = Field(default_factory=dict)
+
+
+class CompositionRequest(Record):
+    schema_version: Literal["composition-request-v1"] = "composition-request-v1"
+    target_id: Name
+    selections: tuple[ComponentChoice, ...] = Field(min_length=1)
+    data_bundle: SourcePin
+    information_cutoff: AwareDatetime
+    output_contract_id: Name
+    context: dict[str, JsonValue] = Field(default_factory=dict)
+
+    @model_validator(mode="after")
+    def validate_choices(self):
+        unique([x.instance_id for x in self.selections], "component instances")
+        digest(self.model_dump(mode="json"))  # Reject nonfinite JSON values.
+        return self
+
+    @property
+    def request_sha256(self):
+        value = self.model_dump(mode="json")
+        value["selections"] = sorted(value["selections"], key=lambda row: row["instance_id"])
+        return digest(value)
+
+
+class PreparedConfiguration(Record):
+    schema_version: Literal["composition-prepared-v1"] = "composition-prepared-v1"
+    request: CompositionRequest
+    driver_id: Name
+    driver_version: Name
+    law_sha256: Digest
+    graph_sha256: Digest
+    support_id: Name
+    scientific_plan: SourcePin
+    dependencies: tuple[SourcePin, ...] = Field(min_length=1)
+    outputs: tuple[PortContract, ...] = Field(min_length=1)
+    required_work: Name
+
+    @model_validator(mode="after")
+    def validate_dependencies(self):
+        unique([p.path for p in self.dependencies], "dependency paths")
+        unique([p.port for p in self.outputs], "output ports")
+        if self.request.output_contract_id not in {p.contract_id for p in self.outputs}:
+            raise ValueError("Requested output contract is not supplied")
+        return self
+
+    @property
+    def configuration_sha256(self):
+        value = self.model_dump(mode="json")
+        value["request"] = self.request.request_sha256
+        value["dependencies"] = sorted(value["dependencies"], key=lambda p: p["path"])
+        value["outputs"] = sorted(value["outputs"], key=lambda p: p["port"])
+        return digest(value)
+
+
+class ResultRecord(Record):
+    schema_version: Literal["composition-result-v1"] = "composition-result-v1"
+    configuration_sha256: Digest
+    numerical_status: Literal["passed", "diagnostic_failure", "failed_error"]
+    evidence_status: Literal["unassessed", "synthetic", "retrospective", "prospective"]
+    evidence: tuple[SourcePin, ...] = ()
+    summary_file: Name
+    limitations: tuple[Name, ...] = ()
+
+    @model_validator(mode="after")
+    def evidence_required(self):
+        if self.evidence_status != "unassessed" and not self.evidence:
+            raise ValueError("An evidence claim needs source-bound review evidence")
+        return self
+
+
+class Resolution(Record):
+    schema_version: Literal["composition-resolution-v1"] = "composition-resolution-v1"
+    request_sha256: Digest
+    status: Literal["ready", "requires_computation", "incompatible", "failed"]
+    reason: Name
+    configuration: PreparedConfiguration | None = None
+    artifact: ArtifactRef | None = None
+    record: ResultRecord | None = None
+    summary: JsonValue | None = None
+
+    @model_validator(mode="after")
+    def lifecycle(self):
+        if self.status == "ready" and (
+            self.configuration is None
+            or self.artifact is None
+            or self.record is None
+            or self.record.numerical_status != "passed"
+            or self.summary is None
+        ):
+            raise ValueError("Ready requires a passing identified result")
+        if self.status == "requires_computation" and (
+            self.configuration is None or any(x is not None for x in (self.artifact, self.record, self.summary))
+        ):
+            raise ValueError("Pending computation cannot display a saved result")
+        if self.status == "incompatible" and any(
+            x is not None for x in (self.configuration, self.artifact, self.record, self.summary)
+        ):
+            raise ValueError("Incompatible requests cannot display a previous result")
+        return self
+
+
+class CompositionDriver(Protocol):
+    """A registered backend owns scientific compatibility and array validation."""
+
+    driver_id: str
+    version: str
+    target_ids: tuple[str, ...]
+    sources: tuple[SourcePin, ...]
+
+    def prepare(
+        self, request: CompositionRequest, components: tuple[ComponentOffer, ...], root: Path
+    ) -> PreparedConfiguration: ...
+
+    def validate_result(
+        self, configuration: PreparedConfiguration, record: ResultRecord, files: dict[str, bytes], root: Path
+    ) -> None: ...
+
+
+class CompositionApplication:
+    def __init__(
+        self, root, store: ArtifactStore, components=(), drivers=(), preserved_catalog: ModelCatalog | None = None
+    ):
+        self.root = Path(root).resolve()
+        self.store = store
+        self._components = {}
+        self._drivers = {}
+        self._driver_bindings = {}
+        self._cache = {}
+        self.preserved_catalog = preserved_catalog
+        for component in components:
+            self.register_component(component)
+        for driver in drivers:
+            self.register_driver(driver)
+
+    def register_component(self, offer: ComponentOffer):
+        offer = ComponentOffer.model_validate_json(offer.model_dump_json())
+        key = (offer.provider_id, offer.version)
+        if key in self._components:
+            raise ValueError("Provider/version already registered")
+        self._components[key] = offer
+
+    def register_driver(self, driver: CompositionDriver):
+        if not driver.driver_id or not driver.version or not driver.sources or not driver.target_ids:
+            raise ValueError("Driver identity, sources and target declarations required")
+        unique(driver.target_ids, "driver targets")
+        unique([source.path for source in driver.sources], "driver source paths")
+        if any(target in self._drivers for target in driver.target_ids):
+            raise ValueError("Target already has a registered composition driver")
+        for source in driver.sources:
+            source.verify(self.root)
+        for target in driver.target_ids:
+            self._drivers[target] = driver
+            self._driver_bindings[target] = self._driver_signature(driver)
+
+    @staticmethod
+    def _driver_signature(driver):
+        return digest(
+            {
+                "driver_id": driver.driver_id,
+                "version": driver.version,
+                "target_ids": sorted(driver.target_ids),
+                "sources": sorted([p.model_dump(mode="json") for p in driver.sources], key=lambda p: p["path"]),
+            }
+        )
+
+    def catalog(self):
+        """Describe every architectural role; absent providers remain absent."""
+        return {
+            "schema_version": "composition-catalog-v1",
+            "roles": [
+                {
+                    "role": role,
+                    "providers": [c.model_dump(mode="json") for c in self._components.values() if c.role == role],
+                }
+                for role in ROLES
+            ],
+            "executable_targets": sorted(self._drivers),
+            "saved_presets": []
+            if self.preserved_catalog is None
+            else [p.model_dump(mode="json") for p in self.preserved_catalog.preserved_forecasts],
+            "default_preset_id": None if self.preserved_catalog is None else self.preserved_catalog.default_preset_id,
+            "scheduler_available": False,
+        }
+
+    def _prepare(self, request):
+        request = CompositionRequest.model_validate_json(request.model_dump_json())
+        expected_request_sha256 = request.request_sha256
+        offers = []
+        for choice in sorted(request.selections, key=lambda row: row.instance_id):
+            offer = self._components.get((choice.provider_id, choice.version))
+            if offer is None:
+                raise ValueError(f"Unknown provider/version: {choice.provider_id}/{choice.version}")
+            if offer.availability != "available":
+                raise ValueError(f"{offer.label} is {offer.availability}: {'; '.join(offer.limitations)}")
+            if request.target_id not in offer.target_ids:
+                raise ValueError(f"{offer.label} does not support target {request.target_id}")
+            offers.append(offer)
+        driver = self._drivers.get(request.target_id)
+        if driver is None:
+            raise ValueError(f"No executable composition driver for target {request.target_id}")
+        if self._driver_signature(driver) != self._driver_bindings[request.target_id]:
+            raise ValueError("Registered driver identity, targets or sources changed; register a new catalog version")
+        required = [request.data_bundle, *driver.sources, *[p for c in offers for p in c.sources]]
+        for source in required:
+            source.verify(self.root)
+        expected_offers = digest([offer.model_dump(mode="json") for offer in offers])
+        copied_offers = tuple(ComponentOffer.model_validate_json(offer.model_dump_json()) for offer in offers)
+        prepared = driver.prepare(request, copied_offers, self.root)
+        if digest([offer.model_dump(mode="json") for offer in copied_offers]) != expected_offers:
+            raise ValueError("Driver mutated registered component declarations during preparation")
+        if self._driver_signature(driver) != self._driver_bindings[request.target_id]:
+            raise ValueError("Registered driver changed during preparation")
+        prepared = PreparedConfiguration.model_validate_json(prepared.model_dump_json())
+        if (
+            prepared.request.request_sha256 != expected_request_sha256
+            or request.request_sha256 != expected_request_sha256
+            or prepared.driver_id != driver.driver_id
+            or prepared.driver_version != driver.version
+        ):
+            raise ValueError("Driver changed the requested configuration or identity")
+        dependency_pairs = {(p.path, p.sha256) for p in prepared.dependencies}
+        if not {(p.path, p.sha256) for p in required + [prepared.scientific_plan]} <= dependency_pairs:
+            raise ValueError("Prepared configuration omitted source/data/plan dependencies")
+        for source in prepared.dependencies:
+            source.verify(self.root)
+        return prepared, driver
+
+    def resolve(self, request: CompositionRequest):
+        request = CompositionRequest.model_validate(request)
+        try:
+            prepared, driver = self._prepare(request)
+        except (ValueError, OSError) as exc:
+            return Resolution(request_sha256=request.request_sha256, status="incompatible", reason=str(exc))
+        ref = self._cache.get(prepared.configuration_sha256)
+        if ref is None:
+            return Resolution(
+                request_sha256=request.request_sha256,
+                status="requires_computation",
+                reason=prepared.required_work,
+                configuration=prepared,
+            )
+        try:
+            record, summary = self._load(prepared, driver, ref)
+            return Resolution(
+                request_sha256=request.request_sha256,
+                configuration=prepared,
+                artifact=ref,
+                record=record,
+                summary=summary,
+                status="ready" if record.numerical_status == "passed" else "failed",
+                reason="Verified saved joint result"
+                if record.numerical_status == "passed"
+                else "Saved computation did not pass numerical checks",
+            )
+        except (ValueError, OSError, KeyError) as exc:
+            return Resolution(
+                request_sha256=request.request_sha256,
+                status="failed",
+                reason=f"Saved result rejected: {exc}",
+                configuration=prepared,
+                artifact=ref,
+            )
+
+    def _load(self, prepared, driver, ref):
+        if ref.kind != RESULT_KIND:
+            raise ValueError("Wrong result artifact kind")
+        metadata, files = self.store.read(ref)
+        saved = PreparedConfiguration.model_validate(metadata["configuration"])
+        record = ResultRecord.model_validate(metadata["record"])
+        if (
+            saved.configuration_sha256 != prepared.configuration_sha256
+            or record.configuration_sha256 != prepared.configuration_sha256
+        ):
+            raise ValueError("Saved result belongs to another configuration")
+        for source in record.evidence:
+            source.verify(self.root)
+        if record.summary_file not in files:
+            raise ValueError("Missing result summary")
+        if record.numerical_status == "passed":
+            self._validate_result(driver, prepared, record, files)
+        summary = json.loads(files[record.summary_file])
+        digest(summary)
+        return record, summary
+
+    def _validate_result(self, driver, prepared, record, files):
+        # Validators may parse private copies, but must not change the identified
+        # configuration or the bytes that will be stored/displayed. Pydantic's
+        # frozen flag alone does not protect nested context/options dictionaries.
+        expected_driver = self._driver_bindings[prepared.request.target_id]
+        if self._driver_signature(driver) != expected_driver:
+            raise ValueError("Registered driver changed before result validation")
+        copied_configuration = PreparedConfiguration.model_validate_json(prepared.model_dump_json())
+        copied_record = ResultRecord.model_validate_json(record.model_dump_json())
+        copied_files = dict(files)
+        driver.validate_result(copied_configuration, copied_record, copied_files, self.root)
+        if self._driver_signature(driver) != expected_driver:
+            raise ValueError("Registered driver changed during result validation")
+        if (
+            copied_configuration.model_dump(mode="json") != prepared.model_dump(mode="json")
+            or copied_record.model_dump(mode="json") != record.model_dump(mode="json")
+            or copied_files != files
+        ):
+            raise ValueError("Result validator mutated its inputs")
+
+    def store_result(self, prepared: PreparedConfiguration, record: ResultRecord, files: dict[str, bytes]):
+        """Called by an execution adapter, never by trusting browser summaries."""
+        prepared = PreparedConfiguration.model_validate_json(prepared.model_dump_json())
+        record = ResultRecord.model_validate_json(record.model_dump_json())
+        verified, driver = self._prepare(prepared.request)
+        if (
+            verified.configuration_sha256 != prepared.configuration_sha256
+            or record.configuration_sha256 != prepared.configuration_sha256
+        ):
+            raise ValueError("Execution configuration differs from resolved request")
+        for source in record.evidence:
+            source.verify(self.root)
+        if record.summary_file not in files:
+            raise ValueError("Missing result summary")
+        digest(json.loads(files[record.summary_file]))
+        if record.numerical_status == "passed":
+            self._validate_result(driver, prepared, record, files)
+        ref = self.store.put(
+            RESULT_KIND,
+            {"configuration": prepared.model_dump(mode="json"), "record": record.model_dump(mode="json")},
+            files,
+        )
+        self.remember(prepared.request, ref)
+        return ref
+
+    def remember(self, request: CompositionRequest, ref: ArtifactRef):
+        """Explicitly select a verified immutable attempt; no best-score search."""
+        prepared, driver = self._prepare(request)
+        self._load(prepared, driver, ref)
+        self._cache[prepared.configuration_sha256] = ref
+
+    def saved_preset(self, preset_id: str):
+        if self.preserved_catalog is None:
+            raise ValueError("No preserved catalog registered")
+        candidates = [p for p in self.preserved_catalog.preserved_forecasts if p.preset_id == preset_id]
+        if len(candidates) != 1:
+            raise ValueError("Unknown preserved preset")
+        preset = candidates[0]
+        for source in (preset.forecast, *preset.supporting_files):
+            source.verify(self.root)
+        return {
+            "schema_version": "preserved-composition-view-v1",
+            "status": "ready",
+            "preset": preset.model_dump(mode="json"),
+            "forecast": json.loads((self.root / preset.forecast.path).read_bytes()),
+            "interpretation": (
+                "Preserved research artifact with its original target, evidence and limitations; "
+                "not a newly compiled configuration"
+            ),
+        }

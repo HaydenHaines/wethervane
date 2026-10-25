@@ -1,0 +1,1213 @@
+{
+  "schema_version": "composition-catalog-v1",
+  "roles": [
+    {
+      "role": "population",
+      "providers": [
+        {
+          "provider_id": "protected_full_parent_exposure_v1",
+          "version": "1",
+          "role": "population",
+          "label": "protected_full_parent_exposure_v1",
+          "availability": "available",
+          "target_ids": [
+            "population_cut_v1"
+          ],
+          "sources": [
+            {
+              "path": "research/senate-stack-integration-20261020/count-application-driver-astra-v1/driver.py",
+              "sha256": "e89e82ecd39b213683ee6172be0d74ac31c646df42dd6f00c471958af1d05c88"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/count-application-driver-astra-v1/bundle.json",
+              "sha256": "c816c32ad1bf4ec6832591c32b47f90c393d5be17393ad69a9a8ede580388a35"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/count-application-driver-astra-v1/registration.json",
+              "sha256": "256c73e8731bf7b297fb70c5a6a2512a78f5f4b5252f945ab391d99379af6393"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/partial-affine-completion-root-v1/plan.json",
+              "sha256": "adef60442a7097dc581323f9e361bb2a75441e9292eb92912c2fa1a0900b61b1"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/completion-execution-root-v2/runner.py",
+              "sha256": "d0ce1c956bfca37dd37ad6cda8fa105a3baa2c32dc1fb9bf4c7933611beaa953"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/share-coordinate-output-sol-v1/audit.py",
+              "sha256": "edf4d64dbc12583afbd89439a5fd26dc197ba9ebaf4c5c8cf68f1cd27375434f"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/completion-output-sol-v1/completion_boundary.py",
+              "sha256": "4abfe8af24e3e15e4aa9763ba0242f3881b80b887f124abf041c9363912ff3a4"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/completion-output-sol-v1/audit.py",
+              "sha256": "d16558c64588245fb5068a0ec6610f47c31969f734c055e85a47d8b25c732da7"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/modular-execution-sol-v2/provider.py",
+              "sha256": "0496465c9628378061adcbae1d52a423fe15a34b6144e71616bc2ef0e4417739"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/modular-execution-sol-v2/baseline-prepared-v1/selection.json",
+              "sha256": "0c5b7458dc0f3edcb891c2933666278775dbf27104389454d1e504dbd097a6a8"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/count-application-driver-astra-v1/completion_backend.py",
+              "sha256": "c25d116601c5659f961ac648cae2280524a003ef70166844bb0543f07f3374ec"
+            },
+            {
+              "path": "src/forecasting/composition_application_v1.py",
+              "sha256": "0510a10ffdde85136e44aa09702cd9f6838749ec64430b2dc5b62491e25402f1"
+            },
+            {
+              "path": "src/forecasting/model_registry_v1.py",
+              "sha256": "a028374c4cc068e5e65aa26d99c26b38a02d6bd6b101eb119a19d6f1a981f1ed"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/modular-partial-affine-numerical-astra-v1/receipt-v1.json",
+              "sha256": "a654a4d0ef3fc87ea982856603eed3d8ac2077f3c479e28c3440760f89d76c23"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/completion-output-sol-v1/implementation-receipt-v1.json",
+              "sha256": "27877ceb4f29d450dea8b740e0f85a69d39ed6dbe33492e61839bce5c4508548"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/completion-output-review-astra-v1/review-v1.json",
+              "sha256": "183e3cf60aafb2afc08dae695a0684cfbd90e56be8056c01d83d856357959aaf"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/modular-execution-sol-v2/implementation-receipt-v1.json",
+              "sha256": "17fbae092d0e9824ca75deb3f831241ca2ed5bdadcbc5a2b07ca7b541a0303b0"
+            }
+          ],
+          "inputs": [],
+          "outputs": [
+            {
+              "port": "exposure",
+              "contract_id": "compiler_symbolic_df84a6ba7a9bfeff1d513dc4069fe02b6c00ed5225d961f97d01ff4629ce6a42",
+              "estimand": "exposure",
+              "unit": "persons",
+              "denominator": "not_a_ratio",
+              "basis": "{\"axes\": [\"event\", \"demographic\"], \"contest_map\": false, \"time\": \"event_date\"}",
+              "universe": "citizen_adult_exposure"
+            }
+          ],
+          "default_instance_id": "population",
+          "options_schema": {
+            "type": "object",
+            "additionalProperties": false
+          },
+          "limitations": [
+            "Numerical completion does not establish forecast skill or upstream integration precision",
+            "No publication authority; whole population parents retain original masses",
+            "Only explicitly registered scientific composition and execution variants are supported"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "community",
+      "providers": [
+        {
+          "provider_id": "demographic_profile_drift_v1",
+          "version": "1",
+          "role": "community",
+          "label": "demographic_profile_drift_v1",
+          "availability": "available",
+          "target_ids": [
+            "population_cut_v1"
+          ],
+          "sources": [
+            {
+              "path": "research/senate-stack-integration-20261020/count-application-driver-astra-v1/driver.py",
+              "sha256": "e89e82ecd39b213683ee6172be0d74ac31c646df42dd6f00c471958af1d05c88"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/count-application-driver-astra-v1/bundle.json",
+              "sha256": "c816c32ad1bf4ec6832591c32b47f90c393d5be17393ad69a9a8ede580388a35"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/count-application-driver-astra-v1/registration.json",
+              "sha256": "256c73e8731bf7b297fb70c5a6a2512a78f5f4b5252f945ab391d99379af6393"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/partial-affine-completion-root-v1/plan.json",
+              "sha256": "adef60442a7097dc581323f9e361bb2a75441e9292eb92912c2fa1a0900b61b1"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/completion-execution-root-v2/runner.py",
+              "sha256": "d0ce1c956bfca37dd37ad6cda8fa105a3baa2c32dc1fb9bf4c7933611beaa953"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/share-coordinate-output-sol-v1/audit.py",
+              "sha256": "edf4d64dbc12583afbd89439a5fd26dc197ba9ebaf4c5c8cf68f1cd27375434f"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/completion-output-sol-v1/completion_boundary.py",
+              "sha256": "4abfe8af24e3e15e4aa9763ba0242f3881b80b887f124abf041c9363912ff3a4"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/completion-output-sol-v1/audit.py",
+              "sha256": "d16558c64588245fb5068a0ec6610f47c31969f734c055e85a47d8b25c732da7"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/modular-execution-sol-v2/provider.py",
+              "sha256": "0496465c9628378061adcbae1d52a423fe15a34b6144e71616bc2ef0e4417739"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/modular-execution-sol-v2/baseline-prepared-v1/selection.json",
+              "sha256": "0c5b7458dc0f3edcb891c2933666278775dbf27104389454d1e504dbd097a6a8"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/count-application-driver-astra-v1/completion_backend.py",
+              "sha256": "c25d116601c5659f961ac648cae2280524a003ef70166844bb0543f07f3374ec"
+            },
+            {
+              "path": "src/forecasting/composition_application_v1.py",
+              "sha256": "0510a10ffdde85136e44aa09702cd9f6838749ec64430b2dc5b62491e25402f1"
+            },
+            {
+              "path": "src/forecasting/model_registry_v1.py",
+              "sha256": "a028374c4cc068e5e65aa26d99c26b38a02d6bd6b101eb119a19d6f1a981f1ed"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/modular-partial-affine-numerical-astra-v1/receipt-v1.json",
+              "sha256": "a654a4d0ef3fc87ea982856603eed3d8ac2077f3c479e28c3440760f89d76c23"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/completion-output-sol-v1/implementation-receipt-v1.json",
+              "sha256": "27877ceb4f29d450dea8b740e0f85a69d39ed6dbe33492e61839bce5c4508548"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/completion-output-review-astra-v1/review-v1.json",
+              "sha256": "183e3cf60aafb2afc08dae695a0684cfbd90e56be8056c01d83d856357959aaf"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/modular-execution-sol-v2/implementation-receipt-v1.json",
+              "sha256": "17fbae092d0e9824ca75deb3f831241ca2ed5bdadcbc5a2b07ca7b541a0303b0"
+            }
+          ],
+          "inputs": [],
+          "outputs": [
+            {
+              "port": "community_logits",
+              "contract_id": "compiler_symbolic_42b34cb632c402207afe217920b1000791e1bb065b675f8d403dabcf29956a55",
+              "estimand": "community_logits",
+              "unit": "log_relative_weight",
+              "denominator": "not_a_ratio",
+              "basis": "{\"axes\": [\"state\", \"demographic\", \"community\"], \"contest_map\": false, \"time\": \"first_community_date\"}",
+              "universe": "citizen_adult_profile"
+            },
+            {
+              "port": "community_temporal",
+              "contract_id": "compiler_symbolic_efe15cca8107f509060f3cfbb46fd75c2fc93b897d2fd8ab86fd87a34b0b4525",
+              "estimand": "community_temporal",
+              "unit": "log_relative_weight",
+              "denominator": "not_a_ratio",
+              "basis": "{\"axes\": [\"date\", \"community\"], \"contest_map\": false, \"time\": \"named_community_dates\"}",
+              "universe": "citizen_adult_profile"
+            },
+            {
+              "port": "community",
+              "contract_id": "compiler_symbolic_58b06422ded3f292e1d3f080d04185b188176633486d758bc601660b75abc834",
+              "estimand": "community",
+              "unit": "probability",
+              "denominator": "cell_population",
+              "basis": "{\"axes\": [\"event\", \"demographic\", \"community\"], \"contest_map\": false, \"time\": \"event_date\"}",
+              "universe": "citizen_adult_profile"
+            }
+          ],
+          "default_instance_id": "community",
+          "options_schema": {
+            "type": "object",
+            "additionalProperties": false
+          },
+          "limitations": [
+            "Numerical completion does not establish forecast skill or upstream integration precision",
+            "No publication authority; whole population parents retain original masses",
+            "Only explicitly registered scientific composition and execution variants are supported"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "fundamentals",
+      "providers": [
+        {
+          "provider_id": "lean_carryover_context_incumbency_v1",
+          "version": "1",
+          "role": "fundamentals",
+          "label": "lean_carryover_context_incumbency_v1",
+          "availability": "available",
+          "target_ids": [
+            "population_cut_v1"
+          ],
+          "sources": [
+            {
+              "path": "research/senate-stack-integration-20261020/count-application-driver-astra-v1/driver.py",
+              "sha256": "e89e82ecd39b213683ee6172be0d74ac31c646df42dd6f00c471958af1d05c88"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/count-application-driver-astra-v1/bundle.json",
+              "sha256": "c816c32ad1bf4ec6832591c32b47f90c393d5be17393ad69a9a8ede580388a35"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/count-application-driver-astra-v1/registration.json",
+              "sha256": "256c73e8731bf7b297fb70c5a6a2512a78f5f4b5252f945ab391d99379af6393"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/partial-affine-completion-root-v1/plan.json",
+              "sha256": "adef60442a7097dc581323f9e361bb2a75441e9292eb92912c2fa1a0900b61b1"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/completion-execution-root-v2/runner.py",
+              "sha256": "d0ce1c956bfca37dd37ad6cda8fa105a3baa2c32dc1fb9bf4c7933611beaa953"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/share-coordinate-output-sol-v1/audit.py",
+              "sha256": "edf4d64dbc12583afbd89439a5fd26dc197ba9ebaf4c5c8cf68f1cd27375434f"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/completion-output-sol-v1/completion_boundary.py",
+              "sha256": "4abfe8af24e3e15e4aa9763ba0242f3881b80b887f124abf041c9363912ff3a4"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/completion-output-sol-v1/audit.py",
+              "sha256": "d16558c64588245fb5068a0ec6610f47c31969f734c055e85a47d8b25c732da7"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/modular-execution-sol-v2/provider.py",
+              "sha256": "0496465c9628378061adcbae1d52a423fe15a34b6144e71616bc2ef0e4417739"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/modular-execution-sol-v2/baseline-prepared-v1/selection.json",
+              "sha256": "0c5b7458dc0f3edcb891c2933666278775dbf27104389454d1e504dbd097a6a8"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/count-application-driver-astra-v1/completion_backend.py",
+              "sha256": "c25d116601c5659f961ac648cae2280524a003ef70166844bb0543f07f3374ec"
+            },
+            {
+              "path": "src/forecasting/composition_application_v1.py",
+              "sha256": "0510a10ffdde85136e44aa09702cd9f6838749ec64430b2dc5b62491e25402f1"
+            },
+            {
+              "path": "src/forecasting/model_registry_v1.py",
+              "sha256": "a028374c4cc068e5e65aa26d99c26b38a02d6bd6b101eb119a19d6f1a981f1ed"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/modular-partial-affine-numerical-astra-v1/receipt-v1.json",
+              "sha256": "a654a4d0ef3fc87ea982856603eed3d8ac2077f3c479e28c3440760f89d76c23"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/completion-output-sol-v1/implementation-receipt-v1.json",
+              "sha256": "27877ceb4f29d450dea8b740e0f85a69d39ed6dbe33492e61839bce5c4508548"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/completion-output-review-astra-v1/review-v1.json",
+              "sha256": "183e3cf60aafb2afc08dae695a0684cfbd90e56be8056c01d83d856357959aaf"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/modular-execution-sol-v2/implementation-receipt-v1.json",
+              "sha256": "17fbae092d0e9824ca75deb3f831241ca2ed5bdadcbc5a2b07ca7b541a0303b0"
+            }
+          ],
+          "inputs": [],
+          "outputs": [
+            {
+              "port": "structural_choice",
+              "contract_id": "compiler_symbolic_ce465a6daf54cda21be420229f291eb2e897357cc0edb069f131514081b4141b",
+              "estimand": "structural_choice",
+              "unit": "logit_shift",
+              "denominator": "not_a_ratio",
+              "basis": "{\"axes\": [], \"contest_map\": true, \"time\": \"event_covariates\"}",
+              "universe": "DR_choice"
+            },
+            {
+              "port": "incumbency",
+              "contract_id": "compiler_symbolic_7f7ba22292162c672d92a0a9021833bf69c981d55164771fe974375fb9a2dd4a",
+              "estimand": "incumbency",
+              "unit": "candidate_utility",
+              "denominator": "not_a_ratio",
+              "basis": "{\"axes\": [], \"contest_map\": false, \"time\": \"event_covariates\"}",
+              "universe": "named_candidates"
+            }
+          ],
+          "default_instance_id": "fundamentals",
+          "options_schema": {
+            "type": "object",
+            "additionalProperties": false
+          },
+          "limitations": [
+            "Numerical completion does not establish forecast skill or upstream integration precision",
+            "No publication authority; whole population parents retain original masses",
+            "Only explicitly registered scientific composition and execution variants are supported"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "environment",
+      "providers": [
+        {
+          "provider_id": "separated_lkj2_cycle_student5_race_v1",
+          "version": "1",
+          "role": "environment",
+          "label": "separated_lkj2_cycle_student5_race_v1",
+          "availability": "available",
+          "target_ids": [
+            "population_cut_v1"
+          ],
+          "sources": [
+            {
+              "path": "research/senate-stack-integration-20261020/count-application-driver-astra-v1/driver.py",
+              "sha256": "e89e82ecd39b213683ee6172be0d74ac31c646df42dd6f00c471958af1d05c88"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/count-application-driver-astra-v1/bundle.json",
+              "sha256": "c816c32ad1bf4ec6832591c32b47f90c393d5be17393ad69a9a8ede580388a35"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/count-application-driver-astra-v1/registration.json",
+              "sha256": "256c73e8731bf7b297fb70c5a6a2512a78f5f4b5252f945ab391d99379af6393"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/partial-affine-completion-root-v1/plan.json",
+              "sha256": "adef60442a7097dc581323f9e361bb2a75441e9292eb92912c2fa1a0900b61b1"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/completion-execution-root-v2/runner.py",
+              "sha256": "d0ce1c956bfca37dd37ad6cda8fa105a3baa2c32dc1fb9bf4c7933611beaa953"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/share-coordinate-output-sol-v1/audit.py",
+              "sha256": "edf4d64dbc12583afbd89439a5fd26dc197ba9ebaf4c5c8cf68f1cd27375434f"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/completion-output-sol-v1/completion_boundary.py",
+              "sha256": "4abfe8af24e3e15e4aa9763ba0242f3881b80b887f124abf041c9363912ff3a4"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/completion-output-sol-v1/audit.py",
+              "sha256": "d16558c64588245fb5068a0ec6610f47c31969f734c055e85a47d8b25c732da7"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/modular-execution-sol-v2/provider.py",
+              "sha256": "0496465c9628378061adcbae1d52a423fe15a34b6144e71616bc2ef0e4417739"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/modular-execution-sol-v2/baseline-prepared-v1/selection.json",
+              "sha256": "0c5b7458dc0f3edcb891c2933666278775dbf27104389454d1e504dbd097a6a8"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/count-application-driver-astra-v1/completion_backend.py",
+              "sha256": "c25d116601c5659f961ac648cae2280524a003ef70166844bb0543f07f3374ec"
+            },
+            {
+              "path": "src/forecasting/composition_application_v1.py",
+              "sha256": "0510a10ffdde85136e44aa09702cd9f6838749ec64430b2dc5b62491e25402f1"
+            },
+            {
+              "path": "src/forecasting/model_registry_v1.py",
+              "sha256": "a028374c4cc068e5e65aa26d99c26b38a02d6bd6b101eb119a19d6f1a981f1ed"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/modular-partial-affine-numerical-astra-v1/receipt-v1.json",
+              "sha256": "a654a4d0ef3fc87ea982856603eed3d8ac2077f3c479e28c3440760f89d76c23"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/completion-output-sol-v1/implementation-receipt-v1.json",
+              "sha256": "27877ceb4f29d450dea8b740e0f85a69d39ed6dbe33492e61839bce5c4508548"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/completion-output-review-astra-v1/review-v1.json",
+              "sha256": "183e3cf60aafb2afc08dae695a0684cfbd90e56be8056c01d83d856357959aaf"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/modular-execution-sol-v2/implementation-receipt-v1.json",
+              "sha256": "17fbae092d0e9824ca75deb3f831241ca2ed5bdadcbc5a2b07ca7b541a0303b0"
+            }
+          ],
+          "inputs": [],
+          "outputs": [
+            {
+              "port": "cycle_effect",
+              "contract_id": "compiler_symbolic_187e31e2db18024828d34b239ebbac7858055acef897cd3bcb08ee9634cdb8e9",
+              "estimand": "cycle_effect",
+              "unit": "logit_shift",
+              "denominator": "not_a_ratio",
+              "basis": "{\"axes\": [\"cycle\", \"behavior2\"], \"contest_map\": false, \"time\": \"cycle\"}",
+              "universe": "turnout_and_DR_choice"
+            },
+            {
+              "port": "race_effect",
+              "contract_id": "compiler_symbolic_4e65cc7113fc5310a57e508ad54c3d14f1c63fe0772ab466e87e89bcf029e328",
+              "estimand": "race_effect",
+              "unit": "logit_shift",
+              "denominator": "not_a_ratio",
+              "basis": "{\"axes\": [\"contest\"], \"contest_map\": false, \"time\": \"final_contest_outcome\"}",
+              "universe": "DR_choice"
+            }
+          ],
+          "default_instance_id": "environment",
+          "options_schema": {
+            "type": "object",
+            "additionalProperties": false
+          },
+          "limitations": [
+            "Numerical completion does not establish forecast skill or upstream integration precision",
+            "No publication authority; whole population parents retain original masses",
+            "Only explicitly registered scientific composition and execution variants are supported"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "measurement",
+      "providers": [
+        {
+          "provider_id": "joint_CES_F1a_final_pair_total_error_v1",
+          "version": "1",
+          "role": "measurement",
+          "label": "joint_CES_F1a_final_pair_total_error_v1",
+          "availability": "available",
+          "target_ids": [
+            "population_cut_v1"
+          ],
+          "sources": [
+            {
+              "path": "research/senate-stack-integration-20261020/count-application-driver-astra-v1/driver.py",
+              "sha256": "e89e82ecd39b213683ee6172be0d74ac31c646df42dd6f00c471958af1d05c88"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/count-application-driver-astra-v1/bundle.json",
+              "sha256": "c816c32ad1bf4ec6832591c32b47f90c393d5be17393ad69a9a8ede580388a35"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/count-application-driver-astra-v1/registration.json",
+              "sha256": "256c73e8731bf7b297fb70c5a6a2512a78f5f4b5252f945ab391d99379af6393"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/partial-affine-completion-root-v1/plan.json",
+              "sha256": "adef60442a7097dc581323f9e361bb2a75441e9292eb92912c2fa1a0900b61b1"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/completion-execution-root-v2/runner.py",
+              "sha256": "d0ce1c956bfca37dd37ad6cda8fa105a3baa2c32dc1fb9bf4c7933611beaa953"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/share-coordinate-output-sol-v1/audit.py",
+              "sha256": "edf4d64dbc12583afbd89439a5fd26dc197ba9ebaf4c5c8cf68f1cd27375434f"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/completion-output-sol-v1/completion_boundary.py",
+              "sha256": "4abfe8af24e3e15e4aa9763ba0242f3881b80b887f124abf041c9363912ff3a4"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/completion-output-sol-v1/audit.py",
+              "sha256": "d16558c64588245fb5068a0ec6610f47c31969f734c055e85a47d8b25c732da7"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/modular-execution-sol-v2/provider.py",
+              "sha256": "0496465c9628378061adcbae1d52a423fe15a34b6144e71616bc2ef0e4417739"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/modular-execution-sol-v2/baseline-prepared-v1/selection.json",
+              "sha256": "0c5b7458dc0f3edcb891c2933666278775dbf27104389454d1e504dbd097a6a8"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/count-application-driver-astra-v1/completion_backend.py",
+              "sha256": "c25d116601c5659f961ac648cae2280524a003ef70166844bb0543f07f3374ec"
+            },
+            {
+              "path": "src/forecasting/composition_application_v1.py",
+              "sha256": "0510a10ffdde85136e44aa09702cd9f6838749ec64430b2dc5b62491e25402f1"
+            },
+            {
+              "path": "src/forecasting/model_registry_v1.py",
+              "sha256": "a028374c4cc068e5e65aa26d99c26b38a02d6bd6b101eb119a19d6f1a981f1ed"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/modular-partial-affine-numerical-astra-v1/receipt-v1.json",
+              "sha256": "a654a4d0ef3fc87ea982856603eed3d8ac2077f3c479e28c3440760f89d76c23"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/completion-output-sol-v1/implementation-receipt-v1.json",
+              "sha256": "27877ceb4f29d450dea8b740e0f85a69d39ed6dbe33492e61839bce5c4508548"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/completion-output-review-astra-v1/review-v1.json",
+              "sha256": "183e3cf60aafb2afc08dae695a0684cfbd90e56be8056c01d83d856357959aaf"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/modular-execution-sol-v2/implementation-receipt-v1.json",
+              "sha256": "17fbae092d0e9824ca75deb3f831241ca2ed5bdadcbc5a2b07ca7b541a0303b0"
+            }
+          ],
+          "inputs": [
+            {
+              "port": "community_logits",
+              "contract_id": "compiler_symbolic_42b34cb632c402207afe217920b1000791e1bb065b675f8d403dabcf29956a55",
+              "estimand": "community_logits",
+              "unit": "log_relative_weight",
+              "denominator": "not_a_ratio",
+              "basis": "{\"axes\": [\"state\", \"demographic\", \"community\"], \"contest_map\": false, \"time\": \"first_community_date\"}",
+              "universe": "citizen_adult_profile"
+            },
+            {
+              "port": "community_temporal",
+              "contract_id": "compiler_symbolic_efe15cca8107f509060f3cfbb46fd75c2fc93b897d2fd8ab86fd87a34b0b4525",
+              "estimand": "community_temporal",
+              "unit": "log_relative_weight",
+              "denominator": "not_a_ratio",
+              "basis": "{\"axes\": [\"date\", \"community\"], \"contest_map\": false, \"time\": \"named_community_dates\"}",
+              "universe": "citizen_adult_profile"
+            },
+            {
+              "port": "turnout_logit",
+              "contract_id": "compiler_symbolic_83c64f3dc794a88f1d132ff2ae6f9c69bb98ffd6133333822f77f2a8c2ebd97b",
+              "estimand": "turnout_logit",
+              "unit": "logit",
+              "denominator": "not_a_ratio",
+              "basis": "{\"axes\": [\"event\", \"demographic\", \"community\"], \"contest_map\": false, \"time\": \"event_date\"}",
+              "universe": "standardized_citizen_adult_propensity"
+            },
+            {
+              "port": "candidate_utilities",
+              "contract_id": "compiler_symbolic_8c496896cc94b1fe5c8742a1ea7f639e3af179d8bd438b9dfd843d96c952c49f",
+              "estimand": "candidate_utilities",
+              "unit": "candidate_utility",
+              "denominator": "not_a_ratio",
+              "basis": "{\"axes\": [\"demographic\", \"community\", \"candidate\"], \"contest_map\": true, \"time\": \"final_contest_outcome\"}",
+              "universe": "named_candidates"
+            },
+            {
+              "port": "political_axes",
+              "contract_id": "compiler_symbolic_b2f7c0e9f677a39dcfb1c72bcb01e2da77869a10672873239fd4909a3c937c4c",
+              "estimand": "political_axes",
+              "unit": "contrast",
+              "denominator": "not_a_ratio",
+              "basis": "{\"axes\": [\"candidate\"], \"contest_map\": true, \"time\": \"contest_roster\"}",
+              "universe": "named_candidates"
+            },
+            {
+              "port": "response_logits",
+              "contract_id": "compiler_symbolic_3b00ca0294279c0faba6354d5527cc698efd6f3189c48182eaf8fa9dac13666c",
+              "estimand": "response_logits",
+              "unit": "logit",
+              "denominator": "not_a_ratio",
+              "basis": "{\"axes\": [], \"contest_map\": true, \"time\": \"event_date\"}",
+              "universe": "contest_valid_candidate_response"
+            },
+            {
+              "port": "event_intensity",
+              "contract_id": "compiler_symbolic_c4017dd37bf37c1057c15a1cbf0680622ee42f8104444c611dcef7fa8f7b6cf2",
+              "estimand": "event_intensity",
+              "unit": "expected_participants",
+              "denominator": "not_a_ratio",
+              "basis": "{\"axes\": [\"event\"], \"contest_map\": false, \"time\": \"event_date\"}",
+              "universe": "event_participants"
+            },
+            {
+              "port": "category_rates",
+              "contract_id": "compiler_symbolic_237e4146de8aa74968fd22e9492dcf9addf95d4e62b75b96b7c2eddf3992788d",
+              "estimand": "category_rates",
+              "unit": "expected_counts",
+              "denominator": "not_a_ratio",
+              "basis": "{\"axes\": [\"category\"], \"contest_map\": true, \"time\": \"final_contest_outcome\"}",
+              "universe": "candidate_and_noncandidate_options"
+            }
+          ],
+          "outputs": [
+            {
+              "port": "owned_observation_factors",
+              "contract_id": "compiler_owned_joint_observation_factors_v1",
+              "estimand": "owned admitted joint observation log density",
+              "unit": "log_density",
+              "denominator": "not_a_ratio",
+              "basis": "compiler_declared_factor_ownership",
+              "universe": "admitted_observations"
+            }
+          ],
+          "default_instance_id": "measurement",
+          "options_schema": {
+            "type": "object",
+            "additionalProperties": false
+          },
+          "limitations": [
+            "Numerical completion does not establish forecast skill or upstream integration precision",
+            "No publication authority; whole population parents retain original masses",
+            "Only explicitly registered scientific composition and execution variants are supported"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "participation",
+      "providers": [
+        {
+          "provider_id": "profile_turnout_response_observed_total_gamma_v1",
+          "version": "1",
+          "role": "participation",
+          "label": "profile_turnout_response_observed_total_gamma_v1",
+          "availability": "available",
+          "target_ids": [
+            "population_cut_v1"
+          ],
+          "sources": [
+            {
+              "path": "research/senate-stack-integration-20261020/count-application-driver-astra-v1/driver.py",
+              "sha256": "e89e82ecd39b213683ee6172be0d74ac31c646df42dd6f00c471958af1d05c88"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/count-application-driver-astra-v1/bundle.json",
+              "sha256": "c816c32ad1bf4ec6832591c32b47f90c393d5be17393ad69a9a8ede580388a35"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/count-application-driver-astra-v1/registration.json",
+              "sha256": "256c73e8731bf7b297fb70c5a6a2512a78f5f4b5252f945ab391d99379af6393"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/partial-affine-completion-root-v1/plan.json",
+              "sha256": "adef60442a7097dc581323f9e361bb2a75441e9292eb92912c2fa1a0900b61b1"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/completion-execution-root-v2/runner.py",
+              "sha256": "d0ce1c956bfca37dd37ad6cda8fa105a3baa2c32dc1fb9bf4c7933611beaa953"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/share-coordinate-output-sol-v1/audit.py",
+              "sha256": "edf4d64dbc12583afbd89439a5fd26dc197ba9ebaf4c5c8cf68f1cd27375434f"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/completion-output-sol-v1/completion_boundary.py",
+              "sha256": "4abfe8af24e3e15e4aa9763ba0242f3881b80b887f124abf041c9363912ff3a4"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/completion-output-sol-v1/audit.py",
+              "sha256": "d16558c64588245fb5068a0ec6610f47c31969f734c055e85a47d8b25c732da7"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/modular-execution-sol-v2/provider.py",
+              "sha256": "0496465c9628378061adcbae1d52a423fe15a34b6144e71616bc2ef0e4417739"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/modular-execution-sol-v2/baseline-prepared-v1/selection.json",
+              "sha256": "0c5b7458dc0f3edcb891c2933666278775dbf27104389454d1e504dbd097a6a8"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/count-application-driver-astra-v1/completion_backend.py",
+              "sha256": "c25d116601c5659f961ac648cae2280524a003ef70166844bb0543f07f3374ec"
+            },
+            {
+              "path": "src/forecasting/composition_application_v1.py",
+              "sha256": "0510a10ffdde85136e44aa09702cd9f6838749ec64430b2dc5b62491e25402f1"
+            },
+            {
+              "path": "src/forecasting/model_registry_v1.py",
+              "sha256": "a028374c4cc068e5e65aa26d99c26b38a02d6bd6b101eb119a19d6f1a981f1ed"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/modular-partial-affine-numerical-astra-v1/receipt-v1.json",
+              "sha256": "a654a4d0ef3fc87ea982856603eed3d8ac2077f3c479e28c3440760f89d76c23"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/completion-output-sol-v1/implementation-receipt-v1.json",
+              "sha256": "27877ceb4f29d450dea8b740e0f85a69d39ed6dbe33492e61839bce5c4508548"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/completion-output-review-astra-v1/review-v1.json",
+              "sha256": "183e3cf60aafb2afc08dae695a0684cfbd90e56be8056c01d83d856357959aaf"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/modular-execution-sol-v2/implementation-receipt-v1.json",
+              "sha256": "17fbae092d0e9824ca75deb3f831241ca2ed5bdadcbc5a2b07ca7b541a0303b0"
+            }
+          ],
+          "inputs": [
+            {
+              "port": "exposure",
+              "contract_id": "compiler_symbolic_df84a6ba7a9bfeff1d513dc4069fe02b6c00ed5225d961f97d01ff4629ce6a42",
+              "estimand": "exposure",
+              "unit": "persons",
+              "denominator": "not_a_ratio",
+              "basis": "{\"axes\": [\"event\", \"demographic\"], \"contest_map\": false, \"time\": \"event_date\"}",
+              "universe": "citizen_adult_exposure"
+            },
+            {
+              "port": "community",
+              "contract_id": "compiler_symbolic_58b06422ded3f292e1d3f080d04185b188176633486d758bc601660b75abc834",
+              "estimand": "community",
+              "unit": "probability",
+              "denominator": "cell_population",
+              "basis": "{\"axes\": [\"event\", \"demographic\", \"community\"], \"contest_map\": false, \"time\": \"event_date\"}",
+              "universe": "citizen_adult_profile"
+            },
+            {
+              "port": "cycle_effect",
+              "contract_id": "compiler_symbolic_187e31e2db18024828d34b239ebbac7858055acef897cd3bcb08ee9634cdb8e9",
+              "estimand": "cycle_effect",
+              "unit": "logit_shift",
+              "denominator": "not_a_ratio",
+              "basis": "{\"axes\": [\"cycle\", \"behavior2\"], \"contest_map\": false, \"time\": \"cycle\"}",
+              "universe": "turnout_and_DR_choice"
+            },
+            {
+              "port": "cell_intensity",
+              "contract_id": "compiler_symbolic_f93724ceba658792ae9686143309c285bd108f86356da71452d92b47b13458da",
+              "estimand": "cell_intensity",
+              "unit": "expected_participants_before_G",
+              "denominator": "not_a_ratio",
+              "basis": "{\"axes\": [\"event\", \"demographic\", \"community\"], \"contest_map\": false, \"time\": \"event_date\"}",
+              "universe": "event_participants"
+            },
+            {
+              "port": "event_gamma_shape",
+              "contract_id": "compiler_symbolic_379bd73de7df2ca4d5212ef26f0bb33d6275eb2c00fdf35ed5976c865e81d122",
+              "estimand": "event_gamma_shape",
+              "unit": "gamma_shape",
+              "denominator": "not_a_ratio",
+              "basis": "{\"axes\": [], \"contest_map\": false, \"time\": \"all_events\"}",
+              "universe": "event_frailty"
+            },
+            {
+              "port": "base_category_rates",
+              "contract_id": "compiler_symbolic_73606641a3a1465221abd0a0731010cbe1bc55f6067acc4b912046233fd0c951",
+              "estimand": "base_category_rates",
+              "unit": "expected_counts_before_G",
+              "denominator": "not_a_ratio",
+              "basis": "{\"axes\": [\"category\"], \"contest_map\": true, \"time\": \"final_contest_outcome\"}",
+              "universe": "candidate_and_noncandidate_options"
+            }
+          ],
+          "outputs": [
+            {
+              "port": "turnout_logit",
+              "contract_id": "compiler_symbolic_83c64f3dc794a88f1d132ff2ae6f9c69bb98ffd6133333822f77f2a8c2ebd97b",
+              "estimand": "turnout_logit",
+              "unit": "logit",
+              "denominator": "not_a_ratio",
+              "basis": "{\"axes\": [\"event\", \"demographic\", \"community\"], \"contest_map\": false, \"time\": \"event_date\"}",
+              "universe": "standardized_citizen_adult_propensity"
+            },
+            {
+              "port": "propensity",
+              "contract_id": "compiler_symbolic_cf73618ccf184ea60dd968bc3521d5d6a82146f6cc44a558b7b693e1152dfcc9",
+              "estimand": "propensity",
+              "unit": "probability",
+              "denominator": "cell_profile_exposure",
+              "basis": "{\"axes\": [\"event\", \"demographic\", \"community\"], \"contest_map\": false, \"time\": \"event_date\"}",
+              "universe": "standardized_citizen_adult_propensity"
+            },
+            {
+              "port": "cell_intensity",
+              "contract_id": "compiler_symbolic_f93724ceba658792ae9686143309c285bd108f86356da71452d92b47b13458da",
+              "estimand": "cell_intensity",
+              "unit": "expected_participants_before_G",
+              "denominator": "not_a_ratio",
+              "basis": "{\"axes\": [\"event\", \"demographic\", \"community\"], \"contest_map\": false, \"time\": \"event_date\"}",
+              "universe": "event_participants"
+            },
+            {
+              "port": "event_gamma_shape",
+              "contract_id": "compiler_symbolic_379bd73de7df2ca4d5212ef26f0bb33d6275eb2c00fdf35ed5976c865e81d122",
+              "estimand": "event_gamma_shape",
+              "unit": "gamma_shape",
+              "denominator": "not_a_ratio",
+              "basis": "{\"axes\": [], \"contest_map\": false, \"time\": \"all_events\"}",
+              "universe": "event_frailty"
+            },
+            {
+              "port": "response_logits",
+              "contract_id": "compiler_symbolic_3b00ca0294279c0faba6354d5527cc698efd6f3189c48182eaf8fa9dac13666c",
+              "estimand": "response_logits",
+              "unit": "logit",
+              "denominator": "not_a_ratio",
+              "basis": "{\"axes\": [], \"contest_map\": true, \"time\": \"event_date\"}",
+              "universe": "contest_valid_candidate_response"
+            },
+            {
+              "port": "response",
+              "contract_id": "compiler_symbolic_2d73e347c2d3640521534d5063af78996f1c5a9e0d475feb67f2c7c37d68ef5a",
+              "estimand": "response",
+              "unit": "probability",
+              "denominator": "event_participants",
+              "basis": "{\"axes\": [], \"contest_map\": true, \"time\": \"event_date\"}",
+              "universe": "contest_valid_candidate_response"
+            },
+            {
+              "port": "eventG",
+              "contract_id": "compiler_symbolic_7612c030c8275cb5eacadce0efc05341511de3f6260881c38c35595d66b2b86b",
+              "estimand": "eventG",
+              "unit": "positive_multiplier",
+              "denominator": "not_a_ratio",
+              "basis": "{\"axes\": [\"event\"], \"contest_map\": false, \"time\": \"event_date\"}",
+              "universe": "shared_event_frailty"
+            },
+            {
+              "port": "event_intensity",
+              "contract_id": "compiler_symbolic_c4017dd37bf37c1057c15a1cbf0680622ee42f8104444c611dcef7fa8f7b6cf2",
+              "estimand": "event_intensity",
+              "unit": "expected_participants",
+              "denominator": "not_a_ratio",
+              "basis": "{\"axes\": [\"event\"], \"contest_map\": false, \"time\": \"event_date\"}",
+              "universe": "event_participants"
+            }
+          ],
+          "default_instance_id": "participation",
+          "options_schema": {
+            "type": "object",
+            "additionalProperties": false
+          },
+          "limitations": [
+            "Numerical completion does not establish forecast skill or upstream integration precision",
+            "No publication authority; whole population parents retain original masses",
+            "Only explicitly registered scientific composition and execution variants are supported"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "choice",
+      "providers": [
+        {
+          "provider_id": "candidate_TX_ballot_role_profile_choice_v1",
+          "version": "1",
+          "role": "choice",
+          "label": "candidate_TX_ballot_role_profile_choice_v1",
+          "availability": "available",
+          "target_ids": [
+            "population_cut_v1"
+          ],
+          "sources": [
+            {
+              "path": "research/senate-stack-integration-20261020/count-application-driver-astra-v1/driver.py",
+              "sha256": "e89e82ecd39b213683ee6172be0d74ac31c646df42dd6f00c471958af1d05c88"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/count-application-driver-astra-v1/bundle.json",
+              "sha256": "c816c32ad1bf4ec6832591c32b47f90c393d5be17393ad69a9a8ede580388a35"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/count-application-driver-astra-v1/registration.json",
+              "sha256": "256c73e8731bf7b297fb70c5a6a2512a78f5f4b5252f945ab391d99379af6393"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/partial-affine-completion-root-v1/plan.json",
+              "sha256": "adef60442a7097dc581323f9e361bb2a75441e9292eb92912c2fa1a0900b61b1"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/completion-execution-root-v2/runner.py",
+              "sha256": "d0ce1c956bfca37dd37ad6cda8fa105a3baa2c32dc1fb9bf4c7933611beaa953"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/share-coordinate-output-sol-v1/audit.py",
+              "sha256": "edf4d64dbc12583afbd89439a5fd26dc197ba9ebaf4c5c8cf68f1cd27375434f"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/completion-output-sol-v1/completion_boundary.py",
+              "sha256": "4abfe8af24e3e15e4aa9763ba0242f3881b80b887f124abf041c9363912ff3a4"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/completion-output-sol-v1/audit.py",
+              "sha256": "d16558c64588245fb5068a0ec6610f47c31969f734c055e85a47d8b25c732da7"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/modular-execution-sol-v2/provider.py",
+              "sha256": "0496465c9628378061adcbae1d52a423fe15a34b6144e71616bc2ef0e4417739"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/modular-execution-sol-v2/baseline-prepared-v1/selection.json",
+              "sha256": "0c5b7458dc0f3edcb891c2933666278775dbf27104389454d1e504dbd097a6a8"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/count-application-driver-astra-v1/completion_backend.py",
+              "sha256": "c25d116601c5659f961ac648cae2280524a003ef70166844bb0543f07f3374ec"
+            },
+            {
+              "path": "src/forecasting/composition_application_v1.py",
+              "sha256": "0510a10ffdde85136e44aa09702cd9f6838749ec64430b2dc5b62491e25402f1"
+            },
+            {
+              "path": "src/forecasting/model_registry_v1.py",
+              "sha256": "a028374c4cc068e5e65aa26d99c26b38a02d6bd6b101eb119a19d6f1a981f1ed"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/modular-partial-affine-numerical-astra-v1/receipt-v1.json",
+              "sha256": "a654a4d0ef3fc87ea982856603eed3d8ac2077f3c479e28c3440760f89d76c23"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/completion-output-sol-v1/implementation-receipt-v1.json",
+              "sha256": "27877ceb4f29d450dea8b740e0f85a69d39ed6dbe33492e61839bce5c4508548"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/completion-output-review-astra-v1/review-v1.json",
+              "sha256": "183e3cf60aafb2afc08dae695a0684cfbd90e56be8056c01d83d856357959aaf"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/modular-execution-sol-v2/implementation-receipt-v1.json",
+              "sha256": "17fbae092d0e9824ca75deb3f831241ca2ed5bdadcbc5a2b07ca7b541a0303b0"
+            }
+          ],
+          "inputs": [
+            {
+              "port": "structural_choice",
+              "contract_id": "compiler_symbolic_ce465a6daf54cda21be420229f291eb2e897357cc0edb069f131514081b4141b",
+              "estimand": "structural_choice",
+              "unit": "logit_shift",
+              "denominator": "not_a_ratio",
+              "basis": "{\"axes\": [], \"contest_map\": true, \"time\": \"event_covariates\"}",
+              "universe": "DR_choice"
+            },
+            {
+              "port": "incumbency",
+              "contract_id": "compiler_symbolic_7f7ba22292162c672d92a0a9021833bf69c981d55164771fe974375fb9a2dd4a",
+              "estimand": "incumbency",
+              "unit": "candidate_utility",
+              "denominator": "not_a_ratio",
+              "basis": "{\"axes\": [], \"contest_map\": false, \"time\": \"event_covariates\"}",
+              "universe": "named_candidates"
+            },
+            {
+              "port": "cycle_effect",
+              "contract_id": "compiler_symbolic_187e31e2db18024828d34b239ebbac7858055acef897cd3bcb08ee9634cdb8e9",
+              "estimand": "cycle_effect",
+              "unit": "logit_shift",
+              "denominator": "not_a_ratio",
+              "basis": "{\"axes\": [\"cycle\", \"behavior2\"], \"contest_map\": false, \"time\": \"cycle\"}",
+              "universe": "turnout_and_DR_choice"
+            },
+            {
+              "port": "race_effect",
+              "contract_id": "compiler_symbolic_4e65cc7113fc5310a57e508ad54c3d14f1c63fe0772ab466e87e89bcf029e328",
+              "estimand": "race_effect",
+              "unit": "logit_shift",
+              "denominator": "not_a_ratio",
+              "basis": "{\"axes\": [\"contest\"], \"contest_map\": false, \"time\": \"final_contest_outcome\"}",
+              "universe": "DR_choice"
+            }
+          ],
+          "outputs": [
+            {
+              "port": "candidate_utilities",
+              "contract_id": "compiler_symbolic_8c496896cc94b1fe5c8742a1ea7f639e3af179d8bd438b9dfd843d96c952c49f",
+              "estimand": "candidate_utilities",
+              "unit": "candidate_utility",
+              "denominator": "not_a_ratio",
+              "basis": "{\"axes\": [\"demographic\", \"community\", \"candidate\"], \"contest_map\": true, \"time\": \"final_contest_outcome\"}",
+              "universe": "named_candidates"
+            },
+            {
+              "port": "candidate_probability",
+              "contract_id": "compiler_symbolic_65712a338bd17b1e24d353342593c611ef949658a0dfbeae08e9313c01581c5a",
+              "estimand": "candidate_probability",
+              "unit": "probability",
+              "denominator": "candidate_response",
+              "basis": "{\"axes\": [\"demographic\", \"community\", \"candidate\"], \"contest_map\": true, \"time\": \"final_contest_outcome\"}",
+              "universe": "named_candidates"
+            },
+            {
+              "port": "political_axes",
+              "contract_id": "compiler_symbolic_b2f7c0e9f677a39dcfb1c72bcb01e2da77869a10672873239fd4909a3c937c4c",
+              "estimand": "political_axes",
+              "unit": "contrast",
+              "denominator": "not_a_ratio",
+              "basis": "{\"axes\": [\"candidate\"], \"contest_map\": true, \"time\": \"contest_roster\"}",
+              "universe": "named_candidates"
+            }
+          ],
+          "default_instance_id": "choice",
+          "options_schema": {
+            "type": "object",
+            "additionalProperties": false
+          },
+          "limitations": [
+            "Numerical completion does not establish forecast skill or upstream integration precision",
+            "No publication authority; whole population parents retain original masses",
+            "Only explicitly registered scientific composition and execution variants are supported"
+          ]
+        }
+      ]
+    },
+    {
+      "role": "counts_rules",
+      "providers": [
+        {
+          "provider_id": "single_mark_category_allocation_poisson_v1",
+          "version": "1",
+          "role": "counts_rules",
+          "label": "single_mark_category_allocation_poisson_v1",
+          "availability": "available",
+          "target_ids": [
+            "population_cut_v1"
+          ],
+          "sources": [
+            {
+              "path": "research/senate-stack-integration-20261020/count-application-driver-astra-v1/driver.py",
+              "sha256": "e89e82ecd39b213683ee6172be0d74ac31c646df42dd6f00c471958af1d05c88"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/count-application-driver-astra-v1/bundle.json",
+              "sha256": "c816c32ad1bf4ec6832591c32b47f90c393d5be17393ad69a9a8ede580388a35"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/count-application-driver-astra-v1/registration.json",
+              "sha256": "256c73e8731bf7b297fb70c5a6a2512a78f5f4b5252f945ab391d99379af6393"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/partial-affine-completion-root-v1/plan.json",
+              "sha256": "adef60442a7097dc581323f9e361bb2a75441e9292eb92912c2fa1a0900b61b1"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/completion-execution-root-v2/runner.py",
+              "sha256": "d0ce1c956bfca37dd37ad6cda8fa105a3baa2c32dc1fb9bf4c7933611beaa953"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/share-coordinate-output-sol-v1/audit.py",
+              "sha256": "edf4d64dbc12583afbd89439a5fd26dc197ba9ebaf4c5c8cf68f1cd27375434f"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/completion-output-sol-v1/completion_boundary.py",
+              "sha256": "4abfe8af24e3e15e4aa9763ba0242f3881b80b887f124abf041c9363912ff3a4"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/completion-output-sol-v1/audit.py",
+              "sha256": "d16558c64588245fb5068a0ec6610f47c31969f734c055e85a47d8b25c732da7"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/modular-execution-sol-v2/provider.py",
+              "sha256": "0496465c9628378061adcbae1d52a423fe15a34b6144e71616bc2ef0e4417739"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/modular-execution-sol-v2/baseline-prepared-v1/selection.json",
+              "sha256": "0c5b7458dc0f3edcb891c2933666278775dbf27104389454d1e504dbd097a6a8"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/count-application-driver-astra-v1/completion_backend.py",
+              "sha256": "c25d116601c5659f961ac648cae2280524a003ef70166844bb0543f07f3374ec"
+            },
+            {
+              "path": "src/forecasting/composition_application_v1.py",
+              "sha256": "0510a10ffdde85136e44aa09702cd9f6838749ec64430b2dc5b62491e25402f1"
+            },
+            {
+              "path": "src/forecasting/model_registry_v1.py",
+              "sha256": "a028374c4cc068e5e65aa26d99c26b38a02d6bd6b101eb119a19d6f1a981f1ed"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/modular-partial-affine-numerical-astra-v1/receipt-v1.json",
+              "sha256": "a654a4d0ef3fc87ea982856603eed3d8ac2077f3c479e28c3440760f89d76c23"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/completion-output-sol-v1/implementation-receipt-v1.json",
+              "sha256": "27877ceb4f29d450dea8b740e0f85a69d39ed6dbe33492e61839bce5c4508548"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/completion-output-review-astra-v1/review-v1.json",
+              "sha256": "183e3cf60aafb2afc08dae695a0684cfbd90e56be8056c01d83d856357959aaf"
+            },
+            {
+              "path": "research/senate-stack-integration-20261020/modular-execution-sol-v2/implementation-receipt-v1.json",
+              "sha256": "17fbae092d0e9824ca75deb3f831241ca2ed5bdadcbc5a2b07ca7b541a0303b0"
+            }
+          ],
+          "inputs": [
+            {
+              "port": "cell_intensity",
+              "contract_id": "compiler_symbolic_f93724ceba658792ae9686143309c285bd108f86356da71452d92b47b13458da",
+              "estimand": "cell_intensity",
+              "unit": "expected_participants_before_G",
+              "denominator": "not_a_ratio",
+              "basis": "{\"axes\": [\"event\", \"demographic\", \"community\"], \"contest_map\": false, \"time\": \"event_date\"}",
+              "universe": "event_participants"
+            },
+            {
+              "port": "candidate_probability",
+              "contract_id": "compiler_symbolic_65712a338bd17b1e24d353342593c611ef949658a0dfbeae08e9313c01581c5a",
+              "estimand": "candidate_probability",
+              "unit": "probability",
+              "denominator": "candidate_response",
+              "basis": "{\"axes\": [\"demographic\", \"community\", \"candidate\"], \"contest_map\": true, \"time\": \"final_contest_outcome\"}",
+              "universe": "named_candidates"
+            },
+            {
+              "port": "response",
+              "contract_id": "compiler_symbolic_2d73e347c2d3640521534d5063af78996f1c5a9e0d475feb67f2c7c37d68ef5a",
+              "estimand": "response",
+              "unit": "probability",
+              "denominator": "event_participants",
+              "basis": "{\"axes\": [], \"contest_map\": true, \"time\": \"event_date\"}",
+              "universe": "contest_valid_candidate_response"
+            },
+            {
+              "port": "eventG",
+              "contract_id": "compiler_symbolic_7612c030c8275cb5eacadce0efc05341511de3f6260881c38c35595d66b2b86b",
+              "estimand": "eventG",
+              "unit": "positive_multiplier",
+              "denominator": "not_a_ratio",
+              "basis": "{\"axes\": [\"event\"], \"contest_map\": false, \"time\": \"event_date\"}",
+              "universe": "shared_event_frailty"
+            },
+            {
+              "port": "base_category_rates",
+              "contract_id": "compiler_symbolic_73606641a3a1465221abd0a0731010cbe1bc55f6067acc4b912046233fd0c951",
+              "estimand": "base_category_rates",
+              "unit": "expected_counts_before_G",
+              "denominator": "not_a_ratio",
+              "basis": "{\"axes\": [\"category\"], \"contest_map\": true, \"time\": \"final_contest_outcome\"}",
+              "universe": "candidate_and_noncandidate_options"
+            }
+          ],
+          "outputs": [
+            {
+              "port": "category_probability",
+              "contract_id": "compiler_symbolic_1a81761ee803e80eef514a6c302436a59c5dd557d6d40c3ab6b5f52be906f8b0",
+              "estimand": "category_probability",
+              "unit": "probability",
+              "denominator": "event_participants",
+              "basis": "{\"axes\": [\"demographic\", \"community\", \"category\"], \"contest_map\": true, \"time\": \"final_contest_outcome\"}",
+              "universe": "candidate_and_noncandidate_options"
+            },
+            {
+              "port": "base_category_rates",
+              "contract_id": "compiler_symbolic_73606641a3a1465221abd0a0731010cbe1bc55f6067acc4b912046233fd0c951",
+              "estimand": "base_category_rates",
+              "unit": "expected_counts_before_G",
+              "denominator": "not_a_ratio",
+              "basis": "{\"axes\": [\"category\"], \"contest_map\": true, \"time\": \"final_contest_outcome\"}",
+              "universe": "candidate_and_noncandidate_options"
+            },
+            {
+              "port": "category_rates",
+              "contract_id": "compiler_symbolic_237e4146de8aa74968fd22e9492dcf9addf95d4e62b75b96b7c2eddf3992788d",
+              "estimand": "category_rates",
+              "unit": "expected_counts",
+              "denominator": "not_a_ratio",
+              "basis": "{\"axes\": [\"category\"], \"contest_map\": true, \"time\": \"final_contest_outcome\"}",
+              "universe": "candidate_and_noncandidate_options"
+            }
+          ],
+          "default_instance_id": "counts_rules",
+          "options_schema": {
+            "type": "object",
+            "additionalProperties": false
+          },
+          "limitations": [
+            "Numerical completion does not establish forecast skill or upstream integration precision",
+            "No publication authority; whole population parents retain original masses",
+            "Only explicitly registered scientific composition and execution variants are supported"
+          ]
+        }
+      ]
+    }
+  ],
+  "executable_targets": [
+    "population_cut_v1"
+  ],
+  "saved_presets": [],
+  "default_preset_id": null,
+  "scheduler_available": false
+}

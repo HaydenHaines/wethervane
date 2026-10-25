@@ -1,0 +1,243 @@
+"""Native website export; publication requires a separate numerical review.
+
+The large joint archive stays in the research packet. The website owner
+authenticates and stages a compact display publication from these exact bytes.
+"""
+from __future__ import annotations
+
+import json
+import os
+import shutil
+from pathlib import Path
+
+import numpy as np
+import pandas as pd
+
+from intake import BASE, now, sha, write
+from forecast import configurations, verify
+
+PARTIES = "DRO"
+SHARE_QUANTILES = dict(p025=.025, p05=.05, p10=.10, p50=.50, p90=.90, p95=.95, p975=.975)
+SEAT_QUANTILES = dict(p05=.05, p10=.10, p50=.50, p90=.90, p95=.95)
+LABELS = dict(fundamentals="Fundamentals", recent_calendar_history="Recent calendar history",
+              house_history_refreshed_v1="Refreshed House history",
+              house_presidential_slope_v1="Learned presidential slope",
+              house_relative_lean_v1="Relative district and national lean",
+              house_relative_context_v1="Relative lean with presidential context")
+LIMITATIONS = [
+    "Current aggregate forecast comparison; no observed 2026 outcomes or demonstrated 2026 accuracy.",
+    "Conditional shares describe only the two named principal contenders. Group win probabilities are separate, and pooled probabilities are never assigned to individual members.",
+    "Alaska and CA-06 use declared independent-candidate predictor proxies. Independent and other-party winners remain unassigned for the 218-seat party-majority calculation.",
+    "Ranked-choice and runoff contests use ultimate-winner approximations. Ballot transfers, runoff rounds, turnout and candidate vote counts are not simulated.",
+    "The roster includes captured printed candidates and documented declared write-ins. Some districts rely on secondary sources; later filings and legal changes require a new release.",
+    "Polling uses a dated reviewed question subset with an approximate ingestion-date availability rule. It is not an exhaustive polling census or a direct audit of every questionnaire.",
+    "Historical posterior banks and calibrated polling-error scales are finite. Predictive simulation precision does not establish empirical calibration or integrate polling covariance-estimation uncertainty.",
+    "The historical House benchmark found polling gains in many comparisons and material 2020 losses. Failed historical chamber precision remains part of that evidence.",
+    "A House-specific tipping statistic is not qualified. The race list and ribbon must not be described as tipping probabilities.",
+]
+
+
+def artifact(root, path):
+    return dict(path=str(path.relative_to(root)), sha256=sha(path))
+
+
+def retain(source, destination):
+    """Link immutable evidence in the same filesystem without duplicating GB."""
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    if destination.exists():
+        if sha(destination) != sha(source):
+            raise ValueError("Existing export artifact differs")
+        return
+    try:
+        os.link(source, destination)
+    except OSError:
+        shutil.copyfile(source, destination)
+
+
+def label(configuration):
+    if configuration["uncertainty"] != "standard":
+        return {"cycle-low": "Polling error: common-cycle SD × 0.5",
+                "cycle-high": "Polling error: common-cycle SD × 2",
+                "error-low": "Polling error: all SDs × 2/3",
+                "error-high": "Polling error: all SDs × 1.5"}[configuration["uncertainty"]]
+    if configuration["base"] == "fundamentals":
+        return "Standard polling" if configuration["polling"] == "standard" else "Fundamentals"
+    return LABELS[configuration["base"]] + (" · with polls" if configuration["polling"] == "standard" else " · without polls")
+
+
+def summarize(source, root, *, reviewed):
+    receipt = json.loads((source / "receipt.json").read_text())
+    verify(receipt["outputs"] + [receipt["plan"]])
+    if receipt["status"] not in {"passed", "diagnostic_failure", "pilot_not_for_publication"}:
+        raise ValueError("Unknown prediction status")
+    config = receipt["configuration"]
+    config_id = config["id"]
+    configuration = {k: config[k] for k in ("base", "polling", "uncertainty")}
+    diagnostic = json.loads((source / "diagnostics.json").read_text())
+    if reviewed and (receipt["status"] != "passed" or not diagnostic["race_passed"] or not diagnostic["chamber_passed"]):
+        raise ValueError("Both race and chamber gates required for this publication")
+    for filename in ["joint-draws.npz", "diagnostics.json", "receipt.json", "plan.json", "polls.csv"]:
+        retain(source / filename, root / "evidence" / config_id / filename)
+    joint_pin = artifact(root, root / "evidence" / config_id / "joint-draws.npz")
+    diag_pin = artifact(root, root / "evidence" / config_id / "diagnostics.json")
+    support = {r["race_id"]:r for r in json.loads((BASE / "panel-v1/support.json").read_text())["races"]}
+    presentation = json.loads((BASE / "presentation-review-v1.json").read_text())
+    verify([presentation["input_pin"]])
+    if presentation["status"] != "reviewed":
+        raise ValueError("Reviewed presentation corrections required")
+    corrections = {c["candidate_id"]: c for c in presentation["corrections"]}
+    with np.load(source / "joint-draws.npz", allow_pickle=False) as archive:
+        winners, seats, ids = archive["winner_codes"], archive["seat_counts"], archive["race_ids"].tolist()
+        chain_count = len(np.unique(archive["predictive_chain"]))
+    with np.load(source / "conditional-shares.npz", allow_pickle=False) as archive:
+        shares, core_ids = archive["shares"], archive["race_ids"].tolist()
+    if len(ids) != 435 or set(ids) != set(support) or winners.shape != (len(shares), 435):
+        raise ValueError("Prediction/support alignment failure")
+    polls = pd.read_csv(source / "polls.csv")
+    pair_index = {rid:j for j,rid in enumerate(core_ids)}
+    races = []
+    for i, rid in enumerate(ids):
+        original = support[rid]
+        race = {k: original[k] for k in ("race_id", "district_key", "state", "district_number", "map_vintage", "rule_family", "method")}
+        candidates = [{k: c[k] for k in ("candidate_id", "name", "party_label", "aggregation_party", "ballot_status", "incumbent")}
+                      | dict(source_ids=sorted(set(c["source_ids"]))) for c in original["candidates"]]
+        for candidate in candidates:
+            correction = corrections.get(candidate["candidate_id"])
+            if correction:
+                if correction["field"] != "party_label" or candidate["party_label"] != correction["original"]:
+                    raise ValueError("Presentation correction binding changed")
+                candidate["party_label"] = correction["replacement"]
+        outcomes = []
+        for code, group in enumerate(PARTIES):
+            members = [c for c in candidates if c["aggregation_party"] == group]
+            if not members:
+                if (winners[:, i] == code).any():
+                    raise ValueError("Winner outside admitted support")
+                continue
+            outcomes.append(dict(outcome_id=group, party=group, kind="candidate" if len(members) == 1 else "group",
+                label=members[0]["name"] if len(members) == 1 else {"D":"Democratic candidates", "R":"Republican candidates", "O":"Other candidates and write-ins"}[group],
+                member_candidate_ids=[m["candidate_id"] for m in members], p_win=float(np.mean(winners[:, i] == code))))
+        pair = None
+        if rid in pair_index:
+            x = shares[:, pair_index[rid]]
+            q = np.quantile(x, list(SHARE_QUANTILES.values()), method="linear")
+            pair = dict(**original["principal_pair"], denominator="Share of votes for the two named principal contenders",
+                mean=float(x.mean()), quantiles=dict(zip(SHARE_QUANTILES, map(float, q))),
+                p_first_exceeds_half=float(np.mean(x > .5)), p_margin_within_2pp=float(np.mean(np.abs(2*x-1) <= .02)),
+                p_first_margin_at_least_10pp=float(np.mean(2*x-1 >= .10)), p_second_margin_at_least_10pp=float(np.mean(2*x-1 <= -.10)),
+                qualifications=["Share is conditional on votes for the two named principals; it is not an unconditional group-win probability."] + original["qualifications"])
+        selected = polls[polls.race_id.eq(rid)]
+        notes = ["Probabilities are conditional on the captured candidate/group support; later roster changes need a new release."] + original["qualifications"]
+        if any(c["ballot_status"] == "declared_writein" for c in candidates):
+            notes.append("Documented write-ins are retained. The aggregate law does not estimate a separate write-in ballot-access effect.")
+        if selected.nominal_n.isna().any():
+            notes.append("Some selected polls omit sample size. No sample size is imputed; the historical total-error model does not add a nominal-N sampling term.")
+        race.update(candidates=candidates, outcomes=outcomes, conditional_shares=pair,
+                    poll_count=len(selected), poll_source_ids=selected.observation_id.tolist(),
+                    source_ids=sorted(set(original["source_ids"]) | ({"nyt-house-discovery"} if len(selected) else set())),
+                    qualifications=notes)
+        races.append(race)
+    chamber = None
+    if diagnostic["chamber_passed"]:
+        distributions = {}
+        for j, group in enumerate(PARTIES):
+            counts = np.bincount(seats[:, j], minlength=436)
+            pmf = counts / len(seats)
+            q = np.quantile(seats[:, j], list(SEAT_QUANTILES.values()), method="inverted_cdf")
+            distributions[group] = dict(expected=float(seats[:, j].mean()), pmf=pmf.tolist(),
+                                         quantiles=dict(zip(SEAT_QUANTILES, map(int, q))))
+        chamber = dict(total_seats=435, threshold=218, retained_seats=dict(D=0, R=0, O=0),
+            scenario_id="party_majority_others_unassigned",
+            description="At least 218 seats for a party. Other and independent winners remain unassigned. Unresolved means neither party reaches 218; it does not predict Speaker negotiations.",
+            seats=distributions, majority=dict(D=float(np.mean(seats[:,0]>=218)), R=float(np.mean(seats[:,1]>=218)), unresolved=float(np.mean((seats[:,:2]<218).all(axis=1)))),
+            precision=dict(passed=True, max_seat_mean_mcse=diagnostic["max_seat_mean_mcse"], max_control_mcse=diagnostic["max_control_mcse"], evidence=diag_pin),
+            joint_draws_sha256=joint_pin["sha256"])
+    admission = json.loads((BASE / "admission-v1.json").read_text())
+    policy = json.loads((BASE / "source-policy-v1.json").read_text())
+    evidence = [artifact(root, root / "evidence" / n) for n in ("admission-v1.json", "input-review-v1.json", "bank-index-v1.json", "presentation-review-v1.json")]
+    evidence += [diag_pin, artifact(root, root / "evidence" / config_id / "receipt.json"),
+                 artifact(root, root / "evidence" / config_id / "plan.json")]
+    binding_review = root / "evidence" / config_id / "binding-review.json"
+    if reviewed and not binding_review.is_file():
+        raise ValueError("Exact receipt/plan/raw-output binding review required")
+    if binding_review.is_file():
+        evidence.append(artifact(root, binding_review))
+    poll_disclosure = root / "evidence/polling-disclosure-v1.json"
+    if reviewed and not poll_disclosure.is_file():
+        raise ValueError("Pinned current polling disclosure required")
+    if poll_disclosure.is_file():
+        evidence.append(artifact(root, poll_disclosure))
+    return dict(schema="HouseLiveForecastResultV1", id=config_id, cycle=2026, configuration=configuration,
+        issued_at=now(), forecast_cutoff=admission["forecast_cutoff"], election_date="2026-11-03",
+        source_cutoffs=[dict(role="Nonpoll inputs", at=admission["forecast_cutoff"]), dict(role="Poll selection", at=policy["polling_cutoff"])],
+        strict_as_of=False, map_vintage="house_election_map_2026",
+        geography=dict(**artifact(root, root / "geography/house-2026.geojson"), feature_count=435, map_vintage="house_election_map_2026",
+                       source_receipt=artifact(root, root / "geography/receipt.json")), races=races,
+        joint_draws=dict(**joint_pin, count=len(winners), chain_count=chain_count, ordered_race_ids=ids,
+                         columns=list(PARTIES), winner_encoding=dict(D=0,R=1,O=2),
+                         identity_semantics="Each row is one coherent election across 435 districts. Saved predictive chain/draw IDs retain ordering; group and principal draws share the standardized national-cycle factor."),
+        chamber=chamber, tipping=None,
+        qualification=dict(input_status="reviewed_bounded_current_inputs", numerical_status="passed" if diagnostic["race_passed"] and diagnostic["chamber_passed"] else "incomplete",
+                           publication_status="reviewed" if reviewed else "not_reviewed", forecast_skill="unobserved_2026",
+                           limitations=LIMITATIONS + ([] if diagnostic["chamber_passed"] else ["The current chamber forecast is withheld because its simulation precision checks failed."]), evidence=evidence),
+        provenance=json.loads((BASE / "provenance-v1.json").read_text())["sources"],
+        historical_evidence=[dict(label="Historical House benchmarks", url="https://ballotmancy.com/?chamber=house&edition=historical&year=2022",
+            qualification="The 2018 and 2022 midterms and the 2020 and 2024 presidential cycles provide retrospective evidence. Polling improved many comparisons but worsened 2020 fundamentals comparisons; historical chamber precision failed. No accuracy score for the current 2026 forecast is claimed.")])
+
+
+def export(selection, destination, review_path=None):
+    chosen = json.loads(selection.read_text())["runs"]
+    reviewed = review_path is not None
+    if reviewed:
+        review = json.loads(review_path.read_text())
+        if review["status"] != "passed" or review["selection_sha256"] != sha(selection):
+            raise ValueError("Passing independent review of this exact selected collection required")
+        verify(review["input_pins"])
+    destination.mkdir(exist_ok=False)
+    for filename in ("admission-v1.json", "input-review-v1.json", "bank-index-v1.json", "source-policy-v1.json", "presentation-review-v1.json", "polling-disclosure-v1.json"):
+        retain(BASE / filename, destination / "evidence" / filename)
+    retain(BASE / "geography-v2/house-2026.geojson", destination / "geography/house-2026.geojson")
+    retain(BASE / "geography-v2/receipt.json", destination / "geography/receipt.json")
+    if reviewed:
+        retain(review_path, destination / "evidence/numerical-review.json")
+    entries = []
+    (destination / "results").mkdir()
+    for item in chosen:
+        source = BASE / item["directory"]
+        if sha(source / "receipt.json") != item["receipt_sha256"]:
+            raise ValueError("Selected prediction receipt changed")
+        if reviewed:
+            binding = BASE / item["binding_review"]["path"]
+            if sha(binding) != item["binding_review"]["sha256"]:
+                raise ValueError("Selected exact binding review changed")
+            retain(binding, destination / "evidence" / json.loads((source / "receipt.json").read_text())["configuration"]["id"] / "binding-review.json")
+        result = summarize(source, destination, reviewed=reviewed)
+        path = destination / "results" / (result["id"] + ".json")
+        write(path, result)
+        entries.append(dict(id=result["id"], label=label(result["configuration"]), configuration=result["configuration"], result=artifact(destination, path)))
+        print(json.dumps(dict(exported=result["id"], reviewed=reviewed)), flush=True)
+    if len(entries) != 16 or {e["id"] for e in entries} != {c["id"] for c in configurations()}:
+        raise ValueError("Complete exact16-configuration collection required")
+    qualification = dict(schema="HouseLivePublicationQualificationV1", status="reviewed" if reviewed else "not_reviewed",
+                         numerical_review=artifact(destination, destination / "evidence/numerical-review.json") if reviewed else None,
+                         seat_quantile_convention="inverse_cdf", share_quantile_convention="linear", limitations=LIMITATIONS)
+    write(destination / "qualification.json", qualification)
+    write(destination / "catalog.json", dict(schema="HouseLiveForecastCatalogV1", cycle=2026, default_id="house-current-polling",
+          entries=entries, source_policy=artifact(destination, destination / "evidence/source-policy-v1.json"),
+          qualification=artifact(destination, destination / "qualification.json")))
+    write(destination / "export-receipt.json", dict(schema="HouseLiveNativeExportV1", issued_at=now(),
+          status="reviewed_scientific_packet" if reviewed else "draft_not_for_publication", catalog=artifact(destination,destination/"catalog.json"),
+          source_sha256=sha(__file__), selection_sha256=sha(selection),
+          encoding="NumPy NPZ joint-draws.npz: winner_codes[draw,435] int8, D0/R1/O2; race_ids; seat_counts; predictive_chain; predictive_draw; common joint_draw_id.",
+          seat_quantile_convention="inverse_cdf", share_quantile_convention="linear",
+          publication="Website owner must verify native pins, reconcile decoded joint rows and run its own deployment review."))
+
+
+if __name__ == "__main__":
+    import argparse
+    p=argparse.ArgumentParser()
+    p.add_argument("selection", type=Path)
+    p.add_argument("destination", type=Path)
+    p.add_argument("--review", type=Path)
+    a=p.parse_args()
+    export(a.selection,a.destination,a.review)

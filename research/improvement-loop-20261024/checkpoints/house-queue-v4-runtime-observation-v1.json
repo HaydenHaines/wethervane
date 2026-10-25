@@ -1,0 +1,61 @@
+{
+  "schema": "HouseQueueV4RuntimeObservationV1",
+  "observed_utc": "2026-10-25T18:15:02.308851+00:00",
+  "boot_id": "7dae237c-aeb3-4b99-83d6-9d98006b42e2",
+  "processes": [
+    {
+      "pid": 1693086,
+      "absent": true
+    },
+    {
+      "pid": 1703446,
+      "state": "S",
+      "start_ticks": 108629446,
+      "command_sha256": "1a7022f19379ced0cc4f18468f8e228cf74b3b46b7d4ae0e9e0f16cf43aec676",
+      "command": "/home/hayden/projects/ballotmancy-house-benchmark/.venv/bin/python /home/hayden/projects/ballotmancy-house-benchmark/research/house-live-20261025/run_queue.py /home/hayden/projects/ballotmancy-house-benchmark/research/house-live-20261025/queue-plan-v4.json /home/hayden/projects/ballotmancy-house-benchmark/research/house-live-20261025/queue-v4 "
+    },
+    {
+      "pid": 1700081,
+      "absent": true
+    },
+    {
+      "pid": 1703145,
+      "state": "R",
+      "start_ticks": 108622884,
+      "command_sha256": "b6ae53d79621d0a3b52228db2c74a8c521826592a7cd5fb76dc64ecb139b63f2",
+      "command": "/home/hayden/projects/ballotmancy-house-benchmark/.venv/bin/python research/house-live-20261025/forecast.py house-current-comparison-house_relative_lean_v1-fp predictions-v1/house-current-comparison-house_relative_lean_v1-fp --draws 250000 --warmup 5000 --seed 2026102519 "
+    },
+    {
+      "pid": 1704723,
+      "state": "R",
+      "start_ticks": 108682554,
+      "command_sha256": "b1ed1b71c28be09061b1275d1f1a23bad5b748cd1fd2c1f7861c53b70ad437e4",
+      "command": "/home/hayden/projects/ballotmancy-house-benchmark/.venv/bin/python research/house-live-20261025/forecast.py house-current-comparison-house_relative_lean_v1-f predictions-v2/house-current-comparison-house_relative_lean_v1-f --draws 250000 --warmup 0 --seed 2026102602 "
+    }
+  ],
+  "native_pins": {
+    "queue-v3/interruption.json": {
+      "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-20261025/queue-v3/interruption.json",
+      "sha256": "52873d28fd20c2cdf73fe76ba01c06eb27362a4cbc77d914e9bbec16b0173d91",
+      "size": 612
+    },
+    "queue-v4/pid.json": {
+      "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-20261025/queue-v4/pid.json",
+      "sha256": "604166e1498f50e4f058856882c47467af59bda86819d297e5a3cf0f3d9bf164",
+      "size": 73
+    },
+    "queue-v4/plan.json": {
+      "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-20261025/queue-v4/plan.json",
+      "sha256": "829e73f2ccfd8d4afc64bd0773a9fe2fcd61cb76156b3ad5c1fc344582ccb8f0",
+      "size": 5559
+    },
+    "predictions-v1/house-current-comparison-house_presidential_slope_v1-fp/receipt.json": {
+      "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-20261025/predictions-v1/house-current-comparison-house_presidential_slope_v1-fp/receipt.json",
+      "sha256": "7df9cfd8e68f1364b902f5551ced0ea69fdaf0e20cafc5a524872779038df658",
+      "size": 1769
+    }
+  },
+  "native_report": "Owner intentionally replaced only queue-v3 supervisor with queue-v4; live forecast processes preserved. Relative-lean fundamentals precision extension scheduled after native chamber seat-mean MCSE gate failure. Presidential-slope polling receipt now reports passed.",
+  "scope": "Dated process identities and native metadata only; no raw scientific revalidation or final catalog/publication qualification. No process signalled/adopted/restarted.",
+  "catalog_paths": []
+}

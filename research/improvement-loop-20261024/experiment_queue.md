@@ -10,7 +10,9 @@ comparison is adopted, restarted or repeated.
 ## Execution domain
 
 `initialize(store, capacity)` creates an immutable local store with capacity one
-or two. All cooperating queue clients use one dispatcher lock and the dedicated
+or two. Public APIs and CLI commands canonicalize the store root, so relative and
+absolute paths to the same store share its admission and receipt identities.
+All cooperating queue clients use one dispatcher lock and the dedicated
 `store/executions` executor substore. **Direct external `execution.launch()` into
 that substore is not an admitted path.** Other executor stores and existing owner
 jobs are outside this capacity claim. Select capacity with their resource use in

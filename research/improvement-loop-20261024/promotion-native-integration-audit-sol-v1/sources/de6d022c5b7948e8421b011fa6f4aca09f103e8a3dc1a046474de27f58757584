@@ -1,0 +1,80 @@
+{
+  "acceptance": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/checkpoints/momentum-forecast-results-root-acceptance-v1.json",
+    "sha256": "f6b1a20f93e1d6a0df5fd4ba134af8ac08a1f95be76aea62917938e4ba7a5f1a"
+  },
+  "challenger": "FS6 full-series persistent-slope aggregate model with jointly calibrated earlier-only scales",
+  "decision": "retain",
+  "experiment": "m02-momentum-forecast-20261025",
+  "followup": [
+    "Do not repeat this exact experiment or tune to these revealed outcomes without a new scientific reason and a predeclared comparison.",
+    "Retain momentum as an experimental hypothesis. Reopening needs broader held-out cycles/independent poll-window controls or an independently motivated versioned challenger, with affected components jointly refitted.",
+    "Continue owner-coordinated complete-count fitting and matched full-stack A/B/interactions before ranking weakest layers or claiming all8 complementarity.",
+    "Keep frontend comparison preparation available; integrate only an owner-frozen qualified browser projection."
+  ],
+  "incumbent_comparator": "FS5 full-series no-persistent-slope aggregate model",
+  "preservation": {
+    "challenger_and_all_predictions_preserved": true,
+    "incumbent_retained": true,
+    "losing_models_deleted": false,
+    "new_active_layer_promotion": false,
+    "public_default_changed": false,
+    "saved_configurations_deleted_or_rebound": false
+  },
+  "primary_common_crps": [
+    {
+      "FS5": 0.018523039114782414,
+      "FS5_qualified": true,
+      "FS6": 0.018891928936539938,
+      "FS6_minus_FS5": 0.00036888982175752386,
+      "FS6_qualified": true,
+      "cycles": [
+        2018,
+        2022
+      ],
+      "difference_numerically_resolved": true,
+      "difference_three_mcse": 4.439900034181607e-05,
+      "mask": "common",
+      "metric": "crps",
+      "relative_loss_change_percent": 1.9915188834381357,
+      "tier": "A"
+    },
+    {
+      "FS5": 0.018945608397325293,
+      "FS5_qualified": true,
+      "FS6": 0.018710546811625827,
+      "FS6_minus_FS5": -0.0002350615856994663,
+      "FS6_qualified": true,
+      "cycles": [
+        2020,
+        2024
+      ],
+      "difference_numerically_resolved": true,
+      "difference_three_mcse": 6.528130513869254e-05,
+      "mask": "common",
+      "metric": "crps",
+      "relative_loss_change_percent": -1.2407180638899507,
+      "tier": "B"
+    }
+  ],
+  "reasons": [
+    "A-common CRPS worsens1.9915%; all four A-common proper losses worsen. B-common CRPS improves1.2407%, and all four B-common losses improve. Separate B benefit does not satisfy the A comparison.",
+    "Three cycle CRPS gains are small; the2018 loss is5.415%.2022 Brier/NLL regressions remain visible despite improved CRPS/WIS.",
+    "Small A-competitive share-score gains accompany probability-score regressions. B-competitive share-score differences are numerically unresolved. The primary mask is not replaced by a favorable subset.",
+    "Saved-row investigation localizes2018 loss primarily to NM/DE and2022 probability losses primarily to NV/PA. All original race weights and offsets remain; this is not causal attribution or permission to remove races.",
+    "Small retrospective cycle coverage and conditional bank/MAP uncertainty do not support a general claim that rising candidates outperform polls, or a current-election deployment benefit."
+  ],
+  "schema": "MomentumForecastDecisionV1",
+  "scope": "Fixed H14 conditional D/R historical comparison on97 common-polled race-events; A2018/2022 and B2020/2024 remain separate equal-cycle summaries. This is not a whole-stack layer ranking or operational model registry action.",
+  "standing_goal_complete": false,
+  "unresolved_limits": [
+    "Conditional numerical error only; not electoral generalization confidence intervals.",
+    "Inherited bank and scale uncertainty separate; no full-count or chamber qualification.",
+    "Near-even2022 mask empty: A near-even summary unavailable; no cycle drop.",
+    "2020LP5 MA two interval-display precision flags remain separate from score qualification.",
+    "Archived F0 WIS has source-chain dispersion only on11nonempty masks;9additional F0 subset Brier/NLL precision limits remain unqualified.",
+    "No score-informed resampling or parameter changes.",
+    "Independent review/decision is recorded separately; this summary alone does not promote a model."
+  ],
+  "utc": "2026-10-25T10:12:26.321356+00:00"
+}

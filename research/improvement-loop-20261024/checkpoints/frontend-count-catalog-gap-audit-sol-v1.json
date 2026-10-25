@@ -1,0 +1,159 @@
+{
+  "date": "2026-10-25",
+  "findings": {
+    "conceptual_vs_selectable": "MODEL_SLICES names all eight scientific roles. The deployed Senate and House forecast adapters expose only base/electoral history, polling and uncertainty selections. Current House choice and counts/rules are fixed within each complete aggregate result; population, community and participation are unavailable there. A conceptual role is not evidence that the corresponding count provider can be selected.",
+    "count_source_state": "The owner catalog offers eight research providers for population_cut_v1, including choice candidate_TX_ballot_role_profile_choice_v1. It advertises executable_targets but has saved_presets=[], default_preset_id=null and scheduler_available=false. Its prepared example resolves requires_computation; the package records no actual passing saved count result and exposes no HTTP/UI. Provider availability describes implemented preparation, not an executed fit, saved result, forecast qualification or public release.",
+    "house_exact_saved_boundary": "HouseLiveCatalog requires exactly 16 2026 aggregate result configurations; HouseLiveControls maps only base, polling and uncertainty and loads an exact saved run ID. Its results and maps are projections of authenticated saved HouseLiveView values, so a count provider ID without an exact count result cannot change charts.",
+    "no_provider_id_integration": "No reference to candidate_TX_ballot_role_profile_choice_v1 or population_cut_v1 was found in inspected UI lib/components/app/scripts/public data paths. The provider ID currently belongs to the native research catalog only.",
+    "seven_instance_study_incompatibility": "The component-study server authenticates exactly two historical 2018 aggregate result packets and its resolver requires seven known instances. canonicalStudySelections likewise requires exactly seven providers/selections; result validation is fixed to the 2018 senate_aggregate_logit_empirical_mixture_v1 contract. componentStudySlices uses hard-coded seven legacy instance copy and would dereference missing copy for new count instance IDs. This route cannot directly accept the count driver catalog.",
+    "three_slot_gate": "The public configurations catalog reads static Senate capabilities.json and the resolve API reads that plus registry.json. The generic resolver explicitly restricts requires_computation metadata to base, polling and uncertainty; ready requires an exact saved, hash-identified configuration. Inserting eight count roles into that existing catalog would not create a valid count forecast."
+  },
+  "inspected_commits": {
+    "count_owner_integration": "4d0e5207a8a40c0d5e87d5777a57ef9afa2adb7c",
+    "improvement_lab": "2177fc4fca09d384de0e1cb6b8933656cb9a0486",
+    "site_feature_house_live_20261025": "ede3ad8f0d823eb39889ddc16e23c4e2783a764c"
+  },
+  "next_implementation_contract": [
+    "Obtain an owner-authenticated, versioned count catalog handoff for target population_cut_v1 with eight role offers, provider IDs/versions, default instance IDs, option schemas, source fingerprints, target/output contract and explicit limitations. Preserve native request/configuration identities; do not invent UI options or substitute aggregate provider IDs.",
+    "Build a private metadata-only adapter/view using existing MODEL_SLICES and ModelSliceControls for presentation. Display implemented research status separately from execution eligibility, prepared request status, exact saved-result status, and public availability. A prepared selection without a saved result resolves requires_computation; no site scheduling, fit launch, or silent slot coercion.",
+    "Use a separate target-specific resolver and server-authenticated catalog rather than widening the three-slot Senate resolver, seven-instance historical component study, or exact-16 House aggregate catalog. Keep source paths and execution bindings server-side.",
+    "Enable count results-driven charts only after the owner supplies an exact verified full count ResultRecord and joint artifact plus target-specific browser projection, validation, and separate publication review. Preserve parent/draw/weight and denominator identity; never splice independently fitted components or reuse House aggregate charts as count outputs."
+  ],
+  "not_performed": [
+    "No code edits outside this checkpoint",
+    "No user configuration saving or bookmarks",
+    "No model fits or jobs",
+    "No public exposure of unqualified count output"
+  ],
+  "schema": "FrontendCountCatalogGapAuditSolV1",
+  "scope": "Read-only frontend/native catalog integration audit. No UI route, resolver, default, fit or publication changed.",
+  "source_pins": {
+    "count_catalog": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/count-application-driver-astra-v1/catalog.json",
+      "relevant_lines": "874-884, 1207-1212; eight role offers throughout roles array",
+      "sha256": "4b94b8a9e3be9bfc8db638a8d72fad6ec7b720c9fce35aaba3285b0056471f18",
+      "size": 61412
+    },
+    "count_driver_readme": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/count-application-driver-astra-v1/README.md",
+      "relevant_lines": "3-9, 31-43",
+      "sha256": "5e100f932f2764c1d9fc7eafde0c7c708b9daf285297776ffa47295a28bf2fd3",
+      "size": 7761
+    },
+    "prior_count_snapshot": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/checkpoints/bootstrap-export-v20.json",
+      "relevant_lines": "historical bootstrap inventory; not current fitted result",
+      "sha256": "c8bd55d75a42635f01d95b9fcabf195b59232b58d13552047f18c7215605be1e",
+      "size": 19278
+    },
+    "prior_promotion_audit": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/checkpoints/promotion-native-integration-audit-sol-v1.json",
+      "relevant_lines": "observed_boundaries.count_research; source_pins",
+      "sha256": "8e329d14f22dcf06a28b8887fbf24df0bf47232b7fb37e306fe1796c1ba0ef6a",
+      "size": 11197
+    },
+    "ui_component_study_api": {
+      "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/app/api/component-studies/route.ts",
+      "relevant_lines": "13-38",
+      "sha256": "53dffaa95c86ca0c4f57bd85323488cf3e1a100e2fe647f7e79a406a986bf4a1",
+      "size": 2361
+    },
+    "ui_component_study_contract": {
+      "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/lib/component-study.ts",
+      "relevant_lines": "48-59, 148-174, 177-185",
+      "sha256": "e8e36a99853e534b045d01bff1be7b5a72eb095fc39c748af3d514410e63d450",
+      "size": 12749
+    },
+    "ui_component_study_server": {
+      "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/lib/component-study-server.ts",
+      "relevant_lines": "30-77",
+      "sha256": "f6491d697cf7ff060991a37c76893c4fcf2b2a3edb80dd268243458dd392bd4e",
+      "size": 7387
+    },
+    "ui_component_study_view": {
+      "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/lib/component-study-view.ts",
+      "relevant_lines": "6-46",
+      "sha256": "7cdaa67356dd90c4dae335f1bab789c3e3c7ab569e2b828a9fe5627c2c0ba328",
+      "size": 8904
+    },
+    "ui_conceptual_roles": {
+      "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/lib/model-slices.ts",
+      "relevant_lines": "4-13, 37-62",
+      "sha256": "11f7394e705420ce28cdc2539d568270e66dd2bf223460b56dbbe057ec96b77b",
+      "size": 4588
+    },
+    "ui_house_catalog": {
+      "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/lib/house-live-catalog.ts",
+      "relevant_lines": "11-50",
+      "sha256": "54746cc69c2def6f736770a2d325c1a82def38a145788671112275a020858080",
+      "size": 2760
+    },
+    "ui_house_controls": {
+      "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/components/HouseLiveControls.tsx",
+      "relevant_lines": "11-13, 30-43, 55-84",
+      "sha256": "9668e4d76a559863bd968dda8229c0e7b682b96d49b74ccfecd6a4feabb9e7f6",
+      "size": 5605
+    },
+    "ui_house_results": {
+      "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/components/HouseLiveResults.tsx",
+      "relevant_lines": "131-149, 190-235",
+      "sha256": "5dd8734cd125fd2c1fc36ce9072b8867cd90b94982500215e3332c8fab0fd5a8",
+      "size": 19494
+    },
+    "ui_house_selection": {
+      "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/lib/house-live-selection.ts",
+      "relevant_lines": "9-31",
+      "sha256": "aa6d919aa533f1c6e0b792062a0813cf0e6b3705c8ad7a80a49731dc02183621",
+      "size": 2496
+    },
+    "ui_house_slices": {
+      "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/lib/house-live-model-slices.ts",
+      "relevant_lines": "23-75",
+      "sha256": "0c175752fad89ed978f7aeffe9f8db76628cc8a20d2f008461ab6d08cf238a7e",
+      "size": 6542
+    },
+    "ui_senate_capabilities": {
+      "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/public/data/explorer/capabilities.json",
+      "relevant_lines": "id/sourceCatalog/defaultPresetId/execution/slots/saved",
+      "sha256": "ababdd36b455822a43c99d70e43a770d249d5e4d229f6ee8899e4e5420aaf416",
+      "size": 83410
+    },
+    "ui_senate_catalog_api": {
+      "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/app/api/configurations/catalog/route.ts",
+      "relevant_lines": "8-19",
+      "sha256": "5fb94d9dcf02df2885abbd4e768967707bfa6c046c94b87b8914519be0944ea2",
+      "size": 945
+    },
+    "ui_senate_resolve_api": {
+      "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/app/api/configurations/resolve/route.ts",
+      "relevant_lines": "67-95, 146-169",
+      "sha256": "bfdf19d3c86373f240f4859d2b4058a4475c2737a4dae7ba8d8c707a7e79db39",
+      "size": 7976
+    },
+    "ui_senate_resolver": {
+      "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/lib/composition-resolver.ts",
+      "relevant_lines": "95-182",
+      "sha256": "6bf76eec5cca85fdf1bb18794b990485805f9ab3f179628e3de6853c5a385ea2",
+      "size": 7959
+    },
+    "ui_senate_types": {
+      "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/lib/composition-types.ts",
+      "relevant_lines": "5-12, 80-106",
+      "sha256": "afd0645981ea009d99d9536f8b0c1fb9f49fbd34b618d4b4eaf60195f21d2b37",
+      "size": 2936
+    },
+    "ui_shared_controls": {
+      "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/components/ModelSliceControls.tsx",
+      "relevant_lines": "6-68",
+      "sha256": "9624d89c5840f4458036383bc61ec2c66d5d322bb89fb959aa39ffe615f24afc",
+      "size": 5004
+    }
+  },
+  "state_distinctions": {
+    "execution_eligible": "Requires exact owner driver registration, prepared configuration, plan/source pins and authorized external handoff; catalog availability alone does not establish a launchable or completed run.",
+    "implemented_in_research": "Versioned provider offer exists in the source-pinned native count catalog.",
+    "publicly_available": "Requires a separately reviewed site release and target-specific projection; research metadata or numerical readiness does not authorize publication.",
+    "saved_result": "Requires an authenticated complete ResultRecord/artifact tied to exact target, configuration, graph, law and common draw identity; the inspected count package records no actual passing saved count result.",
+    "selected_research_incumbent": "Would require a separately scoped, review-bound whole-configuration pointer; none is inferred from a provider offer or site default."
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "schema": "ComparisonBridgeActualQueuePathFailureV1",
+  "recorded_at": "2026-10-25T18:34:02.977663+00:00",
+  "status": "terminal_controller_deadline_no_native_job_started",
+  "tool_session": 41317,
+  "controller_exit_code": 0,
+  "worker_receipt": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/comparison-bridge-sol-v1/actual-worker-root-v2/receipt.json",
+    "sha256": "ae2dbda463df3a039488e5ca353a8f524ddd1947f51f3415c4abeb45e9e72caa",
+    "size": 732
+  },
+  "source_snapshot": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/comparison-bridge-root-v1/queue-source-before-relative-path-fix.py",
+    "sha256": "836418d56fcec48ca6fdf8d98a8fe2e843dd1b9a413573b46f7ed9f365f08a76",
+    "size": 35244
+  },
+  "admission": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/comparison-bridge-sol-v1/actual-queue-store-v2/queues/m02-reviewed-comparison-bridge-v2/receipt.json",
+    "sha256": "d5e3933ea498dce73a7c09aa39b406f5b92a71b5a522e7540d8888099e8c2879",
+    "size": 661
+  },
+  "plan": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/comparison-bridge-sol-v1/actual-queue-plan-v2.json",
+    "sha256": "1d08f8f05a9f0119271f5364608b6172d430faae4ac4196ad9e5bec57496f5ab",
+    "size": 6008
+  },
+  "store_configuration": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/comparison-bridge-sol-v1/actual-queue-store-v2/store.json",
+    "sha256": "04a39708f4135f4a8ea10bc599688a4728b04ae5b65d577cdf1d423f5537af30",
+    "size": 1196
+  },
+  "cause": "Absolute store admission followed by relative-root work/status constructed a relative expected plan path; stored canonical absolute plan pin failed identity comparison. Queue quarantined before preparing any job.",
+  "actual_command": "python3 -B research/improvement-loop-20261024/experiment_queue.py --root research/improvement-loop-20261024/comparison-bridge-sol-v1/actual-queue-store-v2 work --output research/improvement-loop-20261024/comparison-bridge-sol-v1/actual-worker-root-v2 --poll-seconds .05 --max-runtime 60",
+  "journal_database_unchanged": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/ledger.sqlite3",
+    "sha256": "bf751df599c6630c922a80ebd4c1597595994263218881c16ca3fdb629d4afeb",
+    "size": 5287936
+  },
+  "execution_attempts_created": false,
+  "models_fitted_or_rescored": false,
+  "next": "Preserve v2 and do not restart it. Repair root canonicalization, independently review regression and issue a fresh v3 queue/store/output recipe. Bridge/scientific inputs unchanged."
+}

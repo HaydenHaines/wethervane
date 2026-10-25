@@ -1,6 +1,7 @@
 """Real invented subprocess DAGs test durable dispatch; no scientific jobs."""
 
 import copy
+import contextlib
 import json
 import os
 import signal
@@ -550,6 +551,35 @@ class QueueTests(unittest.TestCase):
         self.assertEqual(state["unknown_reservations"], 1)
         self.assertEqual(state["partial_admissions"], ["first"])
         self.assertFalse((self.root / "executions/attempts/must-wait").exists())
+
+    def test_relative_root_cli_and_api_execute_same_absolutely_admitted_dag(self):
+        self.admit([self.job("producer"), self.job("consumer", producer="producer")])
+        command = [sys.executable, "-B", str(Path(queue.__file__).resolve()), "--root", "queue"]
+        def cli(*arguments):
+            process = subprocess.run([*command, *arguments], cwd=self.base, capture_output=True, text=True, timeout=15)
+            self.assertEqual(process.returncode, 0, process.stderr)
+            return json.loads(process.stdout)
+        self.assertEqual(cli("initialize", "--capacity", "2"), executor.pin(self.root / "store.json"))
+        before = cli("status")
+        self.assertEqual(before["quarantined_admissions"], [])
+        self.assertEqual(before["partial_admissions"], [])
+        cli("tick")
+        state = cli("work", "--output", "relative-worker", "--poll-seconds", ".02", "--max-runtime", "8")
+        self.assertTrue(state["all_jobs_recorded"])
+        self.assertEqual(state["reserved"], 0)
+        self.assertEqual((self.base / "output-consumer/data.txt").read_text(), "seed:consumed")
+        # Also exercise relative API admission/dispatch and CLI admission retry.
+        plan = dict(schema="LocalExperimentQueuePlanV1", queue_id="relative-api", jobs=[self.job("api-job")])
+        plan_path = self.base / "relative-api-plan.json"
+        executor.publish(plan_path, plan)
+        with contextlib.chdir(self.base):
+            admitted = queue.enqueue("queue", plan, queue.digest(plan))
+            self.assertEqual(queue.status("queue")["quarantined_admissions"], [])
+            queue.tick(Path("queue"))
+            state = queue.work("queue", "relative-api-worker", .02, 8)
+        self.assertTrue(state["all_jobs_recorded"])
+        self.assertEqual(cli("enqueue", "--plan", str(plan_path), "--sha256", queue.digest(plan)), admitted)
+        self.assertEqual(cli("status")["quarantined_admissions"], [])
 
 
 if __name__ == "__main__":

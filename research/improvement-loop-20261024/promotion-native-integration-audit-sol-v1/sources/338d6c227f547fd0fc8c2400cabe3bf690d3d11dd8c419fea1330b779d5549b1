@@ -1,0 +1,311 @@
+# Configuration for the legacy county/type/share pipeline and its comparators.
+# These values do not select the redesigned count stack. See docs/ARCHITECTURE.md
+# and research/model-stack-operational-specification-20261009.md for current work.
+model:
+  id: county_multiyear_logodds_v1
+  description: "County-level multi-year model \u2014 log-odds shifts, total vote share"
+geography:
+  # All 50 states + DC. Restrict this list for faster local testing (e.g. FL/GA/AL only).
+  states:
+  - AL
+  - AK
+  - AZ
+  - AR
+  - CA
+  - CO
+  - CT
+  - DE
+  - DC
+  - FL
+  - GA
+  - HI
+  - ID
+  - IL
+  - IN
+  - IA
+  - KS
+  - KY
+  - LA
+  - ME
+  - MD
+  - MA
+  - MI
+  - MN
+  - MS
+  - MO
+  - MT
+  - NE
+  - NV
+  - NH
+  - NJ
+  - NM
+  - NY
+  - NC
+  - ND
+  - OH
+  - OK
+  - OR
+  - PA
+  - RI
+  - SC
+  - SD
+  - TN
+  - TX
+  - UT
+  - VT
+  - VA
+  - WA
+  - WV
+  - WI
+  - WY
+  state_fips:
+    AL: '01'
+    AK: '02'
+    AZ: '04'
+    AR: '05'
+    CA: '06'
+    CO: '08'
+    CT: '09'
+    DE: '10'
+    DC: '11'
+    FL: '12'
+    GA: '13'
+    HI: '15'
+    ID: '16'
+    IL: '17'
+    IN: '18'
+    IA: '19'
+    KS: '20'
+    KY: '21'
+    LA: '22'
+    ME: '23'
+    MD: '24'
+    MA: '25'
+    MI: '26'
+    MN: '27'
+    MS: '28'
+    MO: '29'
+    MT: '30'
+    NE: '31'
+    NV: '32'
+    NH: '33'
+    NJ: '34'
+    NM: '35'
+    NY: '36'
+    NC: '37'
+    ND: '38'
+    OH: '39'
+    OK: '40'
+    OR: '41'
+    PA: '42'
+    RI: '44'
+    SC: '45'
+    SD: '46'
+    TN: '47'
+    TX: '48'
+    UT: '49'
+    VT: '50'
+    VA: '51'
+    WA: '53'
+    WV: '54'
+    WI: '55'
+    WY: '56'
+  al_fips_prefix: '01'
+election:
+  vote_share_type: total
+  shift_type: logodds
+  logodds_epsilon: 0.01
+  presidential_years:
+  - 2000
+  - 2004
+  - 2008
+  - 2012
+  - 2016
+  - 2020
+  - 2024
+  governor_years:
+  - 1994
+  - 1998
+  - 2002
+  - 2006
+  - 2010
+  - 2014
+  - 2018
+  senate_years:
+  - 2002
+  - 2004
+  - 2006
+  - 2008
+  - 2010
+  - 2012
+  - 2014
+  - 2016
+  - 2018
+  - 2020
+  - 2022
+  - 2024
+  senate_pairs:
+  - - 2002
+    - 2008
+  - - 2004
+    - 2010
+  - - 2006
+    - 2012
+  - - 2008
+    - 2014
+  - - 2010
+    - 2016
+  - - 2012
+    - 2018
+  - - 2014
+    - 2020
+  - - 2016
+    - 2022
+  - - 2018
+    - 2024
+  presidential_pairs:
+  - - 2000
+    - 2004
+  - - 2004
+    - 2008
+  - - 2008
+    - 2012
+  - - 2012
+    - 2016
+  - - 2016
+    - 2020
+  governor_pairs:
+  - - 1994
+    - 1998
+  - - 1998
+    - 2002
+  - - 2002
+    - 2006
+  - - 2006
+    - 2010
+  - - 2010
+    - 2014
+  - - 2014
+    - 2018
+  - - 2018
+    - 2022
+  holdout_pairs:
+    presidential:
+    - - 2020
+      - 2024
+  uncontested_policy: drop
+clustering:
+  algorithm: ward_hac
+  spatial_constraint: queen_contiguity
+  layer1_assignment: hard
+  layer2_assignment: soft
+  k: 5
+  k_candidates:
+  - 5
+  - 7
+  - 10
+  - 12
+  - 15
+  - 20
+  - 25
+  - 30
+  min_community_size: 8
+types:
+  # Legacy NMF config (retained for comparison)
+  legacy_algorithm: nmf
+  legacy_j: 7
+  # Type-primary config selected by this legacy pipeline
+  algorithm: kmeans
+  fallback_algorithms:
+  - archetypal_analysis
+  - semi_nmf
+  j: 100
+  j_candidates:
+  - 30
+  - 40
+  - 50
+  - 60
+  - 70
+  - 80
+  - 90
+  - 100
+  - 120
+  - 150
+  super_type_count_candidates:
+  - 5
+  lambda_shrinkage: 0.75
+  # covariance_max_rank: 18  # Available but inactive — observed comovement is ~3-dimensional (not 18), and shrinkage already reduces effective rank to ~2. Activate after adding features that genuinely predict electoral comovement.
+  covariance_acceptance_threshold: 0.4
+  holdout_r_minimum: 0.85
+  holdout_r_target: 0.90
+  temperature: 10.0
+  presidential_weight: 8.0
+  # PCA WHITENING (legacy selection) — retrospective experiment in scripts/experiment_pca_whitening_ridge.py
+  # PCA(n=15, whiten=True) before KMeans improves Ridge+demo LOO r from 0.695 → 0.717 (+0.022).
+  # NOTE: plain PCA (whiten=False) does NOT help and can hurt — see exp_pca_clustering.py (issue #93).
+  # Whitening is what matters: it equalizes PCA component scales so KMeans treats all
+  # components equally by distance, rather than letting high-variance components dominate.
+  pca_components: 15
+  pca_whiten: true
+census:
+  decennial_years:
+  - 2000
+  - 2010
+  - 2020
+  interpolation: true
+  api_urls:
+    sf1_2000: "https://api.census.gov/data/2000/dec/sf1"
+    sf3_2000: "https://api.census.gov/data/2000/dec/sf3"
+    sf1_2010: "https://api.census.gov/data/2010/dec/sf1"
+    acs5_2010: "https://api.census.gov/data/2010/acs/acs5"
+    dhc_2020: "https://api.census.gov/data/2020/dec/dhc"
+    acs5_2020: "https://api.census.gov/data/2020/acs/acs5"
+  cpi_adjustments:
+    '1999': 166.6
+    '2010': 218.1
+    '2020': 258.8
+validation:
+  holdout_k_values:
+  - 5
+  - 7
+  - 10
+  - 15
+  - 20
+  baseline_3cycle:
+    k5: 0.983
+    k7: 0.964
+    k10: 0.941
+    k15: 0.934
+    k20: 0.932
+data:
+  presidential_files:
+    '00': medsl_county_presidential_2000.parquet
+    '04': medsl_county_presidential_2004.parquet
+    08: medsl_county_presidential_2008.parquet
+    '12': medsl_county_presidential_2012.parquet
+    '16': medsl_county_presidential_2016.parquet
+    '20': medsl_county_presidential_2020.parquet
+    '24': medsl_county_presidential_2024.parquet
+  governor_files:
+    '94': algara_county_governor_1994.parquet
+    '98': algara_county_governor_1998.parquet
+    '02': algara_county_governor_2002.parquet
+    '06': algara_county_governor_2006.parquet
+    '10': algara_county_governor_2010.parquet
+    '14': algara_county_governor_2014.parquet
+    '18': algara_county_governor_2018.parquet
+    '22': medsl_county_2022_governor.parquet
+  senate_files:
+    '02': medsl_county_senate_2002.parquet
+    '04': medsl_county_senate_2004.parquet
+    '06': medsl_county_senate_2006.parquet
+    08: medsl_county_senate_2008.parquet
+    '10': medsl_county_senate_2010.parquet
+    '12': medsl_county_senate_2012.parquet
+    '14': medsl_county_senate_2014.parquet
+    '16': medsl_county_senate_2016.parquet
+    '18': medsl_county_senate_2018.parquet
+    '20': medsl_county_senate_2020.parquet
+    '22': medsl_county_senate_2022.parquet
+    '24': medsl_county_senate_2024.parquet
+  spine_file: medsl_county_presidential_2024.parquet

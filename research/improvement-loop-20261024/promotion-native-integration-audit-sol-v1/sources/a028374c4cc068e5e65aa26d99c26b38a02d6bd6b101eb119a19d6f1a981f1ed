@@ -1,0 +1,490 @@
+"""Frozen catalog and compatibility resolver for the aggregate Senate pilot.
+
+This is a configuration/artifact boundary, not an inference engine or an API/UI
+deployment. The population/community/count stack has broader model slots and a
+different probability target. Declared draw identity does not prove that supplied
+arrays have the declared joint law; numerical adapters must establish that.
+"""
+
+from pathlib import Path
+from typing import Literal
+
+from pydantic import AwareDatetime, Field, model_validator
+
+from src.model_stack.artifacts import ArtifactRef, ArtifactStore, byte_digest, canonical, digest
+from src.model_stack.contracts import Digest, Graph, Name, Quantity, Record, Role, unique
+
+PILOT_TARGET = "senate_aggregate_logit_empirical_mixture_v1"
+DEFAULT_PRESET_ID = "best_guess_polling_20261020_v2"
+HISTORY_PRESET_ID = "basic_electoral_history_v5_20261020"
+# Observed bytes of the two completed, reviewed runs. Reissuing either run needs
+# a new preset identity rather than silently rebuilding these historical pins.
+PRESERVED_FORECAST_SHA256 = (
+    (DEFAULT_PRESET_ID, "3212cb2f504cda5cc6f475742b74433f76dfd7d46581d75e212264be39acba4d"),
+    (HISTORY_PRESET_ID, "c02bdc63a0df27824578c07d6e2b752b831ae4bbd858cabc432ee00fbbf94136"),
+)
+BROADER_MODEL_SLOTS = (
+    "population", "community", "fundamentals", "environment", "measurement", "participation", "choice", "counts_rules"
+)
+Slot = Literal["fundamentals", "poll_likelihood"]
+
+
+class SourcePin(Record):
+    path: Name
+    sha256: Digest
+
+    @model_validator(mode="after")
+    def relative_path(self):
+        if Path(self.path).is_absolute() or ".." in Path(self.path).parts:
+            raise ValueError("Source paths must be relative to the supplied repository root")
+        return self
+
+    def verify(self, root):
+        path = Path(root) / self.path
+        if not path.is_file():
+            raise ValueError(f"Missing pinned file: {self.path}")
+        if byte_digest(path.read_bytes()) != self.sha256:
+            raise ValueError(f"Pinned file changed: {self.path}")
+
+
+def pin_file(root, relative_path):
+    """Read actual bytes; missing implementation files never get placeholder hashes."""
+    path = Path(root) / relative_path
+    if not path.is_file():
+        raise ValueError(f"Missing file required for catalog snapshot: {relative_path}")
+    return SourcePin(path=str(relative_path), sha256=byte_digest(path.read_bytes()))
+
+
+class PortContract(Record):
+    port: Name
+    contract_id: Name
+    estimand: Name
+    unit: Name
+    denominator: Name
+    basis: Name
+    universe: Name
+
+    def require_quantity(self, quantity: Quantity):
+        for key in ("port", "estimand", "unit", "denominator", "basis", "universe"):
+            if getattr(quantity, key) != getattr(self, key):
+                raise ValueError(f"Incompatible {key} on contract {self.contract_id}")
+
+
+class ImplementationRecord(Record):
+    implementation_id: Name
+    version: Name
+    role: Role
+    target_ids: tuple[Name, ...] = Field(min_length=1)
+    sources: tuple[SourcePin, ...] = Field(min_length=1)
+    inputs: tuple[PortContract, ...]
+    outputs: tuple[PortContract, ...] = Field(min_length=1)
+    coefficient_names: tuple[Name, ...] = ()
+    scale_names: tuple[Name, ...] = ()
+    feature_evidence_ids: tuple[Name, ...] = ()
+    capability_flags: tuple[Name, ...] = Field(min_length=1)
+    status: Literal["preserved", "experimental"]
+    limitations: tuple[Name, ...] = Field(min_length=1)
+
+    @model_validator(mode="after")
+    def identities(self):
+        for name in ("target_ids", "coefficient_names", "scale_names", "feature_evidence_ids", "capability_flags"):
+            unique(getattr(self, name), name)
+        unique([p.path for p in self.sources], "implementation source paths")
+        unique([p.port for p in self.inputs], "implementation input ports")
+        unique([p.port for p in self.outputs], "implementation output ports")
+        return self
+
+    @property
+    def implementation_sha256(self):
+        return digest([p.model_dump(mode="json") for p in self.sources])
+
+
+class PreservedForecast(Record):
+    """An existing run, not a newly invented resolved preset for a legacy artifact."""
+
+    preset_id: Name
+    label: Name
+    forecast: SourcePin
+    supporting_files: tuple[SourcePin, ...] = Field(min_length=1)
+    implementation_id: Name
+    target_id: Name
+    limitations: tuple[Name, ...] = Field(min_length=1)
+
+    @model_validator(mode="after")
+    def files(self):
+        unique([self.forecast.path, *(p.path for p in self.supporting_files)], "preserved artifact paths")
+        return self
+
+
+class ModelCatalog(Record):
+    schema_version: Literal["aggregate-model-catalog-v1"] = "aggregate-model-catalog-v1"
+    catalog_id: Name
+    scope: Literal["aggregate_senate_comparison_v1"] = "aggregate_senate_comparison_v1"
+    implementations: tuple[ImplementationRecord, ...] = Field(min_length=1)
+    preserved_forecasts: tuple[PreservedForecast, ...] = Field(min_length=1)
+    default_preset_id: Name = DEFAULT_PRESET_ID
+
+    @model_validator(mode="after")
+    def identities(self):
+        ids = [r.implementation_id for r in self.implementations]
+        unique(ids, "implementation IDs")
+        unique([p.preset_id for p in self.preserved_forecasts], "preserved preset IDs")
+        if self.default_preset_id != DEFAULT_PRESET_ID:
+            raise ValueError("This pilot catalog preserves the completed standard polling default")
+        if not {DEFAULT_PRESET_ID, HISTORY_PRESET_ID} <= {p.preset_id for p in self.preserved_forecasts}:
+            raise ValueError("Both completed polling and original electoral history must stay selectable")
+        if any(p.implementation_id not in ids for p in self.preserved_forecasts):
+            raise ValueError("Preserved forecast refers to an unknown implementation")
+        return self
+
+    @property
+    def catalog_sha256(self):
+        return digest(self.model_dump(mode="json"))
+
+    def implementation(self, implementation_id):
+        for record in self.implementations:
+            if record.implementation_id == implementation_id:
+                return record
+        raise ValueError(f"Unknown implementation: {implementation_id}")
+
+    def verify_files(self, root):
+        """Validate a snapshot before use, without silently updating any old pin."""
+        for record in self.implementations:
+            for source in record.sources:
+                source.verify(root)
+        for forecast in self.preserved_forecasts:
+            for source in (forecast.forecast, *forecast.supporting_files):
+                source.verify(root)
+
+
+class ObservationIdentity(Record):
+    observation_id: Name
+    dependence_id: Name
+
+
+class DataBinding(Record):
+    bundle_id: Name
+    bundle_sha256: Digest
+    cutoff: AwareDatetime
+    support_id: Name
+    support_sha256: Digest
+    candidate_vintage_id: Name
+    geography_version: Name
+    quantity_support_ids: tuple[Name, ...] = Field(min_length=1)
+    poll_batch_sha256: Digest | None = None
+    calibration_sha256: Digest | None = None
+    observations: tuple[ObservationIdentity, ...] = ()
+
+    @model_validator(mode="after")
+    def identities(self):
+        unique(self.quantity_support_ids, "quantity support IDs")
+        unique([o.observation_id for o in self.observations], "data observation IDs")
+        if (self.poll_batch_sha256 is None) != (self.calibration_sha256 is None):
+            raise ValueError("Poll batch and calibration identities must be supplied together")
+        return self
+
+
+class DrawBinding(Record):
+    draw_source_sha256: Digest
+    draw_ids_sha256: Digest
+    weights_sha256: Digest
+    seed_policy_id: Name
+    seed: int = Field(ge=0)
+    posterior_row_policy: Literal["whole_joint_empirical_rows_v1"] = "whole_joint_empirical_rows_v1"
+    residual_factor_id: Name
+    residual_transform: Literal["cycle_shock_over_cycle_scale_v1"] = "cycle_shock_over_cycle_scale_v1"
+
+
+class ModelSelection(Record):
+    slot: Slot
+    implementation_id: Name
+    component_id: Name
+    data: DataBinding
+    draws: DrawBinding
+    posterior_bank_sha256: Digest
+    frozen_observation_ids: tuple[Name, ...] = ()
+
+    @model_validator(mode="after")
+    def observations(self):
+        unique(self.frozen_observation_ids, "frozen observation IDs")
+        return self
+
+
+class PromotionReview(Record):
+    review: SourcePin
+    reviewer: Name
+    disposition: Literal["approved"]
+    matched_evaluation_cycles: tuple[int, ...]
+    candidate_configuration_sha256: Digest
+    evidence: tuple[SourcePin, ...] = Field(min_length=1)
+
+    @model_validator(mode="after")
+    def cycles(self):
+        unique(self.matched_evaluation_cycles, "reviewed cycles")
+        unique([p.path for p in self.evidence], "review evidence paths")
+        if not {2018, 2022, 2020, 2024} <= set(self.matched_evaluation_cycles):
+            raise ValueError("Default promotion requires reviewed evidence for both A and both B cycles")
+        return self
+
+
+class PresetRequest(Record):
+    preset_id: Name
+    version: Name
+    purpose: Literal["custom", "candidate_best_guess"] = "custom"
+    target_id: Literal["senate_aggregate_logit_empirical_mixture_v1"] = PILOT_TARGET
+    mode: Literal["fundamentals", "fundamentals_polling"]
+    selections: tuple[ModelSelection, ...] = Field(min_length=1)
+    data: DataBinding
+    draws: DrawBinding
+    law_definition_sha256: Digest
+    caucus_scenario_id: Name
+    vp_scenario_id: Name
+    scenario_sha256: Digest
+    promotion_review: PromotionReview | None = None
+
+    @model_validator(mode="after")
+    def slots(self):
+        unique([s.slot for s in self.selections], "model slots")
+        unique([s.component_id for s in self.selections], "selected component IDs")
+        required = {"fundamentals"}
+        if self.mode == "fundamentals_polling":
+            required.add("poll_likelihood")
+            if self.data.poll_batch_sha256 is None:
+                raise ValueError("Polling preset requires poll batch and calibration hashes")
+        if {s.slot for s in self.selections} != required:
+            raise ValueError(f"Missing or unsupported model slots: expected {sorted(required)}")
+        if self.preset_id in (DEFAULT_PRESET_ID, HISTORY_PRESET_ID):
+            raise ValueError("New configurations cannot reuse preserved preset IDs")
+        if self.purpose == "candidate_best_guess" and self.promotion_review is None:
+            raise ValueError("Default promotion requires reviewed empirical evidence")
+        if (self.promotion_review is not None
+                and self.promotion_review.candidate_configuration_sha256 != self.configuration_sha256):
+            raise ValueError("Promotion evidence does not review this exact candidate configuration")
+        return self
+
+    @property
+    def configuration_sha256(self):
+        return digest(self.model_dump(mode="json", exclude={"promotion_review"}))
+
+
+class ResolvedPreset(Record):
+    schema_version: Literal["aggregate-resolved-preset-v1"] = "aggregate-resolved-preset-v1"
+    catalog_sha256: Digest
+    request: PresetRequest
+    implementations: tuple[ImplementationRecord, ...]
+    graph: Graph
+
+    @model_validator(mode="after")
+    def compatibility(self):
+        _validate_compatibility(self.request, self.implementations, self.graph)
+        return self
+
+    @property
+    def preset_sha256(self):
+        return digest(self.model_dump(mode="json"))
+
+
+def _validate_compatibility(request, implementations, graph):
+    """Use Graph's factor/latent ownership checks; add pilot-specific bindings."""
+    Graph.model_validate(graph)
+    records = {r.implementation_id: r for r in implementations}
+    unique([r.implementation_id for r in implementations], "resolved implementations")
+    if set(records) != {s.implementation_id for s in request.selections}:
+        raise ValueError("Resolved implementation set differs from selected model slots")
+    components = {c.component_id: c for c in graph.components}
+    if set(components) != {s.component_id for s in request.selections}:
+        raise ValueError("Every Graph component must be an explicit selected model slot")
+    if graph.fixtures:
+        raise ValueError("This bounded pilot uses pinned data inputs, not unbound Graph fixtures")
+    if len(graph.blocks) != 1 or graph.blocks[0].feedback_policy != "joint_within_block":
+        raise ValueError("Pilot components require one jointly conditioned inference block")
+    if any(b.target != "conditional_law" or b.target_definition_sha256 != request.law_definition_sha256
+           for b in graph.blocks):
+        raise ValueError("Graph must pin this aggregate conditional law, not population_cut_v1")
+    if request.draws.residual_factor_id not in {s.state_id for s in graph.latents}:
+        raise ValueError("Shared residual factor must identify an owned Graph latent")
+    observations = {o.observation_id: o.dependence_id for o in request.data.observations}
+    ownership = {}
+    dependence_owners = {}
+
+    def consume(observation_id, owner):
+        if observation_id not in observations:
+            raise ValueError("Observation missing from the pinned data dependence ledger")
+        if observation_id in ownership:
+            raise ValueError("Duplicate evidence in frozen conditioning and/or likelihood factors")
+        ownership[observation_id] = owner
+        group = observations[observation_id]
+        if group in dependence_owners and dependence_owners[group] != owner:
+            raise ValueError("Unhandled dependence: shared observations need one joint owner")
+        dependence_owners[group] = owner
+
+    for selection in request.selections:
+        record = records[selection.implementation_id]
+        component = components[selection.component_id]
+        if selection.data != request.data:
+            raise ValueError("Data bundle, cutoff, support or candidate vintage mismatch")
+        if selection.draws != request.draws:
+            raise ValueError("Shared draw, weight, seed or residual factor identity mismatch")
+        expected_role = "fundamentals" if selection.slot == "fundamentals" else "measurement"
+        if record.role != expected_role or component.role != record.role:
+            raise ValueError("Selected model role does not implement its required slot")
+        if request.target_id not in record.target_ids:
+            raise ValueError("Incompatible probability target")
+        if (component.statistical_model_version != record.implementation_id
+                or component.implementation_version != record.version
+                or component.implementation_sha256 != record.implementation_sha256):
+            raise ValueError("Graph implementation/version/source hash differs from catalog")
+        for expected, actual in ((record.inputs, component.inputs), (record.outputs, component.outputs)):
+            if len(expected) != len(actual):
+                raise ValueError("Input/output contract port count mismatch")
+            actual_ports = {q.port: q for q in actual}
+            for port in expected:
+                if port.port not in actual_ports:
+                    raise ValueError("Missing declared input/output contract port")
+                q = actual_ports[port.port]
+                port.require_quantity(q)
+                if q.support not in request.data.quantity_support_ids or q.geography != request.data.geography_version:
+                    raise ValueError("Quantity support/geography is outside the pinned data binding")
+        for observation_id in selection.frozen_observation_ids:
+            consume(observation_id, f"frozen:{selection.component_id}")
+        for observation_id in set(record.feature_evidence_ids).intersection(observations):
+            if observation_id not in selection.frozen_observation_ids:
+                consume(observation_id, f"frozen:{selection.component_id}")
+    for factor in graph.factors:
+        for observation_id in factor.observation_ids:
+            consume(observation_id, f"factor:{factor.factor_id}")
+        expected_groups = {observations[o] for o in factor.observation_ids}
+        if set(factor.sample_dependence_ids) != expected_groups:
+            raise ValueError("Likelihood must explicitly own every declared dependence group")
+    if set(ownership) != set(observations):
+        raise ValueError("Pinned observation ledger contains unowned evidence")
+
+
+def resolve_preset(catalog: ModelCatalog, request: PresetRequest, graph: Graph, repository_root) -> ResolvedPreset:
+    catalog = ModelCatalog.model_validate(catalog)
+    request = PresetRequest.model_validate(request)
+    records = tuple(catalog.implementation(s.implementation_id) for s in request.selections)
+    for record in records:
+        for source in record.sources:
+            source.verify(repository_root)
+    if request.promotion_review is not None:
+        request.promotion_review.review.verify(repository_root)
+        for source in request.promotion_review.evidence:
+            source.verify(repository_root)
+    return ResolvedPreset(catalog_sha256=catalog.catalog_sha256, request=request, implementations=records, graph=graph)
+
+
+def bind_artifact(store: ArtifactStore, preset: ResolvedPreset, files: dict[str, bytes]) -> ArtifactRef:
+    """Save exact output bytes and a self-contained resolved preset, exclusively."""
+    preset = ResolvedPreset.model_validate(preset)
+    if "resolved-preset.json" in files:
+        raise ValueError("Reserved resolved preset filename")
+    return store.put(
+        "aggregate-forecast-preset-v1",
+        {"preset_sha256": preset.preset_sha256, "catalog_sha256": preset.catalog_sha256},
+        {**files, "resolved-preset.json": canonical(preset.model_dump(mode="json"))},
+    )
+
+
+def read_bound_artifact(store: ArtifactStore, ref: ArtifactRef):
+    if ref.kind != "aggregate-forecast-preset-v1":
+        raise ValueError("Not an aggregate forecast preset artifact")
+    metadata, files = store.read(ref)
+    preset = ResolvedPreset.model_validate_json(files.pop("resolved-preset.json"))
+    if metadata != {"preset_sha256": preset.preset_sha256, "catalog_sha256": preset.catalog_sha256}:
+        raise ValueError("Resolved preset identity differs from the bound artifact")
+    return preset, files
+
+
+def bind_catalog(store: ArtifactStore, catalog: ModelCatalog) -> ArtifactRef:
+    catalog = ModelCatalog.model_validate(catalog)
+    return store.put("aggregate-model-catalog-v1", {"catalog_sha256": catalog.catalog_sha256},
+                     {"catalog.json": canonical(catalog.model_dump(mode="json"))})
+
+
+def read_catalog(store: ArtifactStore, ref: ArtifactRef) -> ModelCatalog:
+    if ref.kind != "aggregate-model-catalog-v1":
+        raise ValueError("Not an aggregate model catalog artifact")
+    metadata, files = store.read(ref)
+    if set(files) != {"catalog.json"}:
+        raise ValueError("Unexpected catalog artifact files")
+    catalog = ModelCatalog.model_validate_json(files["catalog.json"])
+    if metadata != {"catalog_sha256": catalog.catalog_sha256}:
+        raise ValueError("Catalog identity differs from its bound artifact")
+    return catalog
+
+
+def snapshot_catalog(root, catalog_id="fundamentals-pilot-20261020-v1") -> ModelCatalog:
+    """Create a new snapshot once files are stable; serialize it before use.
+
+    This explicit builder reads current bytes. Loading an existing snapshot must
+    instead use ModelCatalog.model_validate_json and verify_files; rebuilding a
+    catalog is a new configuration, never a way to repair a changed old pin.
+    """
+    import json
+
+    from src.forecasting.fundamentals_v1 import IMPLEMENTATION_NAMES
+
+    core = PortContract(port="logit", contract_id="empirical_linear_fundamentals_joint_v1",
+                        estimand="democratic_two_party_logit",
+                        unit="logit", denominator="D_plus_R", basis="named_DR_nominees_v1",
+                        universe="ordinary_DR_contests")
+    baseline_sources = (pin_file(root, "src/forecasting/baseline_v5.py"),)
+    legacy_receipt = json.loads((Path(root) / "research/national-senate-forecast-20261020/forecast-v1/receipt.json")
+                                .read_bytes())
+    if baseline_sources[0].sha256 != legacy_receipt["baseline_code_sha256"]:
+        raise ValueError("Preserved electoral-history implementation changed from its completed-run receipt")
+    refreshed_sources = (*baseline_sources, pin_file(root, "src/forecasting/fundamentals_v1.py"))
+    common = dict(role="fundamentals", target_ids=(PILOT_TARGET,), inputs=(), outputs=(core,),
+                  scale_names=("tau_cycle", "tau_race"), capability_flags=("aggregate_logit_prior",),
+                  feature_evidence_ids=("strictly_previous_presidential_results", "nominee_incumbency"),
+                  limitations=("Aggregate comparison; no participation or candidate vote counts",))
+    implementations = [ImplementationRecord(
+        implementation_id="senate_history_v5", version="v5", sources=baseline_sources,
+        coefficient_names=("office", "signed_incumbency"), status="preserved", **common,
+    )]
+    for name, coefficients in IMPLEMENTATION_NAMES.items():
+        implementations.append(ImplementationRecord(
+            implementation_id=name, version="v1", sources=refreshed_sources,
+            coefficient_names=coefficients, status="experimental", **common,
+        ))
+    implementations.append(ImplementationRecord(
+        implementation_id="senate_polling_basis_v1", version="v1", role="measurement", target_ids=(PILOT_TARGET,),
+        sources=(pin_file(root, "src/forecasting/polling_v1.py"),
+                 pin_file(root, "src/forecasting/polling_basis_v1.py")),
+        inputs=(core.model_copy(update={"port": "prior_logit"}),), outputs=(core,),
+        capability_flags=("fixed_gaussian_poll_likelihood", "aligned_shared_cycle_shock"), status="experimental",
+        limitations=("Fixed empirical calibration comparator; not the complete count stack",),
+    ))
+    preserved = []
+    for preset_id, label, directory, files in (
+        (DEFAULT_PRESET_ID, "Standard polling forecast (completed)",
+         "research/polling-layer-implementation-20261020/forecast-v2",
+         ("input-receipt.json", "run-specification.json", "joint-draws.npz", "chamber-draws.npz",
+          "admitted-observations.json", "poll-likelihood.npz")),
+        (HISTORY_PRESET_ID, "Basic electoral history v5",
+         "research/national-senate-forecast-20261020/forecast-v1",
+         ("receipt.json", "joint-draws.npz")),
+    ):
+        forecast = pin_file(root, f"{directory}/forecast.json")
+        if forecast.sha256 != dict(PRESERVED_FORECAST_SHA256)[preset_id]:
+            raise ValueError(f"Completed preserved forecast changed: {preset_id}")
+        target = json.loads((Path(root) / forecast.path).read_bytes())["target_id"]
+        extra = ()
+        if preset_id == HISTORY_PRESET_ID:
+            extra = tuple(pin_file(root, f"research/national-senate-forecast-20261020/{name}")
+                          for name in ("inputs-frozen-root-v1.json", "selection-root-v1.json"))
+        if preset_id == DEFAULT_PRESET_ID:
+            receipt = json.loads((Path(root) / directory / "input-receipt.json").read_bytes())
+            extra = tuple(pin_file(root, f"{directory}/{row['snapshot']}") for row in receipt["files"])
+            for source, row in zip(extra, receipt["files"], strict=True):
+                if source.sha256 != row["sha256"]:
+                    raise ValueError("Completed polling source snapshot changed from its input receipt")
+        preserved.append(PreservedForecast(
+            preset_id=preset_id, label=label, forecast=forecast,
+            supporting_files=(*tuple(pin_file(root, f"{directory}/{name}") for name in files), *extra),
+            implementation_id="senate_history_v5", target_id=target,
+            limitations=("Saved aggregate principal-pair forecast; configurable UI and full count stack unavailable",),
+        ))
+    return ModelCatalog(catalog_id=catalog_id, implementations=tuple(implementations),
+                        preserved_forecasts=tuple(preserved))

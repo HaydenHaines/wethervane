@@ -1,0 +1,51 @@
+# Scientific count application driver
+
+This package connects the existing `CompositionApplication` request/configuration/result lifecycle to the actual `population_cut_v1` count stack. It does not run inference, expose HTTP/UI, or replace the aggregate application target. No existing source, live plan, parent bank or fit was modified.
+
+`driver.py` supplies `CountDriver`, typed data/plan/saved-result contracts, eight-role offers, exact request resolution, immutable result-envelope validation and an external execution handoff. `completion_backend.py` registers the reviewed TX eight-role baseline with its **explicit existing fixed partial-affine completion executor**. The scientific composition is resolved through `ModularTXProvider`; its per-parent targets must equal the exact fixed execution plan. This is a named execution variant, not a fallback from an unsupported modular configuration. The source-bound modular numerical/startup proof is reused as evidence, but the original modular provider's execution eligibility remains unchanged.
+
+## Actual prepared example
+
+`bundle.json`, `registration.json`, `request.json`, `resolution.json` and `catalog.json` are actual source-bound metadata. The existing fullrun plan is retained byte-for-byte, including provider identity, source pins, settings, all eight original parents/masses and target IDs. The prepared configuration is `bc3c7e317f9c8b938b1df0cb67eb2cfa948c5c5c5d84264fbabbb38f3662d460` and resolves to **requires_computation**. This means no verified saved result is registered with this application; it is neither an instruction to start a duplicate fit nor a readiness claim. The active full fit was not inspected or touched.
+
+To load the already prepared interface, place this research directory on Python's import path and use:
+
+```python
+from pathlib import Path
+from completion_backend import CompletionBackend
+from driver import application, SavedLocator
+from src.forecasting.model_registry_v1 import pin_file
+from src.model_stack.artifacts import ArtifactStore
+
+root = Path('/path/to/integration')
+base = Path('research/senate-stack-integration-20261020/count-application-driver-astra-v1')
+backend = CompletionBackend(root, pin_file(root, base / 'registration.json'))
+app, driver = application(root, ArtifactStore(root / 'NEW-application-results'),
+                          backend, pin_file(root, base / 'bundle.json'))
+request = driver.request()
+resolution = app.resolve(request)
+```
+
+Do not rerun `prepare_baseline.py` against its existing exclusive-write files. It is the recorded preparation script, not the normal loader.
+
+## Execution and saved results
+
+`driver.execution_handoff(configuration, admission_pin)` verifies unchanged configuration and uses the existing coordinator authorization boundary. It returns the pinned runner and exact `execute(plan_pin, admission_pin, fresh_output)` handoff; it starts no job and creates no admission or lease. The existing runner remains responsible for permission, fresh output, active lease/concurrency, all-parent inference and conditional diagnostics. Never use this handoff to duplicate or replace the active fit. An existing active/exhausted admission is not permission for another job.
+
+A caller explicitly selects a terminal attempt via `SavedLocator(attempt_directory, terminal_receipt, admission)`. `driver.saved_payload(locator)` authenticates the exact terminal plan/admission and invokes the unchanged full completion auditor, including every original physical/computational bank, strict diagnostics, affine inversion, cut normalization and joint-count conservation/identity checks. It returns a two-file result envelope only for `complete_full_cut_and_counts_audited`, all original passing parents and complete affine/count checks. No saved PASS report or browser summary is trusted. Future actual saved-result validation may construct the reader's per-parent models, but does not fit or compile gradients.
+
+Use that envelope with `ResultRecord(numerical_status='passed', evidence_status='unassessed', ...)` and the existing `app.store_result` method. `app.remember(request, artifact_ref)` explicitly registers a saved immutable result in a reopened application. The application artifact references the authenticated terminal receipt and joint prediction-set `ArtifactRef`; the reader revalidates the linked count/cut/conditional artifact trees on every result load. The summary preserves scientific target IDs, parent IDs/masses and the original parent/chain/draw identity shared by all contests. “Ready” here means numerically verified research counts, never publication or empirical forecast qualification.
+
+Incomplete/failed attempts cannot produce a passed envelope. Keep them unregistered as numerical results (`requires_computation`) or preserve a `diagnostic_failure`/`failed_error` `ResultRecord` and its pinned failure evidence through the existing application lifecycle; these resolve to `failed`, never `ready`. This driver does not automatically poll attempts, choose a best run, restart work or turn a partial parent prefix into a result. Existing reader statuses and source failures remain explicit. There is no actual passing count result in this package.
+
+## Future implementations
+
+`CountBackend` is the explicit trusted scientific registration boundary: source-pinned `bind`, complete saved-result validation and authorized external handoff. New eight-role compositions, other scopes, national/historical execution, or an eligible modular executor need their own versioned backend registration, exact plan/source/target binding and reviewed complete-output validator. Register that backend with a new bundle and driver instance. The framework does not execute arbitrary request-supplied entrypoints. Unknown providers, changed component options, incomplete roles, mismatched cutoffs or execution registrations are incompatible; no shape-based fallback is provided. `ComponentOffer.available` describes implemented preparation interfaces, not inference eligibility or qualification. Future laws cannot inherit current numeric readiness from constructor success.
+
+## Validation and limits
+
+Seven lifecycle tests passed using actual typed `freeze_bank -> assemble_cut -> predict_cut` artifacts constructed from explicitly SYNTHETIC deterministic supplied states. They are not posterior draws. Original unequal masses .3/.7 demonstrate mass preservation; complete chain/draw and shared-event counts are checked. Tests cover pending→stored→reopened typed results, source mutations, missing roles/options, partial parent support/masses, unqualified output, forged summary, exact-plan mismatch and failure never becoming ready. An additional fresh synthetic artifact corruption check rejects changed count bytes. Synthetic application results retain `scope=synthetic_lifecycle`, evidence/limitations and no execution route.
+
+Actual validation is metadata preparation only. The existing all-parent reader is integrated but cannot be positively exercised on a completed actual bank until one exists. Full statistical validity, eight-parent integration precision, empirical forecasting quality, additional model implementations and publication remain separate obligations. `registration.json` binds the exact current runtime/review sources; a change requires a new registration and configuration instead of silently accepting stale results.
+
+The preliminary metadata under `preliminary-metadata-attempt1` predates the final role-specific port catalog. It is retained historical evidence, not the current configuration. Each final role offer carries its real compiler symbolic inputs/outputs; measurement has an explicitly named owned observation-factor contribution rather than an invented tensor output.

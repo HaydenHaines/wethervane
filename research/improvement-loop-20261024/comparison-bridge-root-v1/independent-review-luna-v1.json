@@ -1,0 +1,76 @@
+{
+  "schema": "IndependentMomentumComparisonBridgeReviewV1",
+  "reviewer": "Luna",
+  "reviewed_at": "2026-10-25",
+  "disposition": "accepted_for_scoped_metadata_validation_and_journal_reconciliation",
+  "pins": {
+    "source": {
+      "path": "research/improvement-loop-20261024/comparison_bridge.py",
+      "sha256": "0933ffadd708949bfae4ba88c244ce0e071248516d7ad1a36e2f2ccc51cf4295"
+    },
+    "tests": {
+      "path": "research/improvement-loop-20261024/test_comparison_bridge.py",
+      "sha256": "cef6320d48966e860a2623f01de74f56dee6322dd4720b4664e4191b48c44e69"
+    },
+    "docs": {
+      "path": "research/improvement-loop-20261024/comparison_bridge.md",
+      "sha256": "0ed50d42e21fb88ebe149de4d77b3da2446e66f293907f9f4046d0a3735ce75f"
+    },
+    "actual_request": {
+      "path": "research/improvement-loop-20261024/comparison-bridge-sol-v1/actual-request-v1.json",
+      "sha256": "7dfca16557563258548a9394e03e3ff1af6047248bef12ef6eb650efb6b39822"
+    },
+    "author_test_log": {
+      "path": "research/improvement-loop-20261024/comparison-bridge-sol-v1/author-tests-v1.log",
+      "sha256": "467d87070b3bf74110cf7b6eee0c2c8b9ac05355f934394c28b3dbb24171454c"
+    },
+    "actual_journal_database_after_review": {
+      "path": ".improvement-ledger/ledger.sqlite3",
+      "sha256": "bf751df599c6630c922a80ebd4c1597595994263218881c16ca3fdb629d4afeb",
+      "size": 5287936
+    }
+  },
+  "independent_verification": {
+    "test_command": "python3 -B -m unittest discover -s research/improvement-loop-20261024 -p test_comparison_bridge.py -v",
+    "result": "passed",
+    "tests": 16,
+    "elapsed_seconds": 15.866,
+    "actual_metadata": "79 JSON metadata pins and 360 score/status cells checked; raw score tensors and outcome files were guarded against reads",
+    "actual_journal": "No-op reconciliation passed while Ledger construction was forbidden; database bytes and complete M02 history matched before and after",
+    "temporary_journal": "Record-once, read-only retry, compare-and-swap, corrupted object rejection, and commit-before-output retry were exercised only against temporary ledgers",
+    "models_or_fits_run": false,
+    "actual_journal_mutated": false
+  },
+  "review_findings_and_resolutions": [
+    {
+      "finding": "Reconciliation originally trusted the request embedded in the comparison receipt without an independent request pin.",
+      "resolution": "Reconciliation now accepts the separately pinned request and compares its verified pin to the embedded request before reconstructing the receipt."
+    },
+    {
+      "finding": "The already-decided path could accept failure outcome or extra reference roles.",
+      "resolution": "It now requires success, retain, exact evaluation/review references, matching revision, and verified registered artifact bytes. Regression tests cover failure and extra-reference rejection."
+    },
+    {
+      "finding": "The initial native graph checks did not bind frozen selected terminals, attempts, common-race support, or all prelabel gates.",
+      "resolution": "The bridge now checks all 12 selected terminal pins and attempts, each fold's common support against the frozen mask, the journal support vector, core/bulk/bank/tail gates, and label-access metadata without reading raw outcomes."
+    },
+    {
+      "finding": "The score report could accept incomplete arm/metric/status rosters and risk conflating numerical precision with scientific qualification.",
+      "resolution": "The bridge enforces the five score arms and four metrics across cycle/tier masks, validates cell statuses and values, and labels the result only as conditional numerical precision. It preserves the LP5/2020 interval-display limitation and unresolved/empty cells."
+    },
+    {
+      "finding": "Post-commit output failure must not duplicate a journal checkpoint.",
+      "resolution": "A temporary-ledger fault-injection test retries with the same command ID, pinned request and comparison in a fresh executor attempt/output directory; the bridge returns the recorded command through a read-only snapshot. The partial earlier output remains preserved."
+    },
+    {
+      "finding": "Native empty-mask cells and equal-cycle summaries must remain unavailable when a constituent score is null.",
+      "resolution": "The bridge now requires empty_binary_or_race_mask cells to have null value, zero count and false precision, and requires missing-cycle nulls to propagate as metric_unresolved at tier level. Tests reject a numeric zero in the empty 2022 near-even cycle and in A near-even tier."
+    }
+  ],
+  "scope_and_limitations": {
+    "verified": "Metadata bytes, explicit source links, native selection/mask/arm/cycle bindings, score-status structure, request/receipt equality, exact M02 journal binding and idempotent journal behavior.",
+    "not_verified": "Raw prediction tensors, outcome source contents, numerical score recomputation, model fit correctness, bank revalidation, or independent scientific review itself.",
+    "interpretation": "This is a metadata and evidence-reconciliation bridge. The prior independent review, root acceptance and retain decision remain separately pinned claims; this bridge does not create scientific qualification, full-count qualification, promotion, a publication authorization, or an active model change.",
+    "actual_queue_launch": false
+  }
+}

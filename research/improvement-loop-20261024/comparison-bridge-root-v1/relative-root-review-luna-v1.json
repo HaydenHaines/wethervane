@@ -1,0 +1,54 @@
+{
+  "schema": "IndependentExperimentQueueRelativeRootReviewV1",
+  "reviewer": "Luna",
+  "reviewed_at": "2026-10-25",
+  "disposition": "accepted_for_relative_cli_and_api_root_normalization",
+  "pins": {
+    "queue_source": {
+      "path": "research/improvement-loop-20261024/experiment_queue.py",
+      "sha256": "6995febe73a5c1c2a317849416a58cc25130b9bbda44161f6a7624b321a8415f"
+    },
+    "queue_tests": {
+      "path": "research/improvement-loop-20261024/test_experiment_queue.py",
+      "sha256": "8e3bc176f52567eaf3dfd371b234437cd49fa5bd38cd24cffb11a2610131f831"
+    },
+    "queue_docs": {
+      "path": "research/improvement-loop-20261024/experiment_queue.md",
+      "sha256": "683e3beb0ec97a8881e442eea232c9e4af06c14598debeb4b5ae898d48dcf220"
+    },
+    "author_full_suite_log": {
+      "path": "research/improvement-loop-20261024/comparison-bridge-sol-v1/queue-relative-root-tests-v1.log",
+      "sha256": "1006824b7723432ba52ce23bf402ef2176c9c24ff5077b0aba217e357823fad6"
+    },
+    "author_verification": {
+      "path": "research/improvement-loop-20261024/comparison-bridge-sol-v1/author-verification-v3.json",
+      "sha256": "0bb4ea8fd2bc7f3ebb84164559069826df6f468b27639b00731a596114e3dcab"
+    },
+    "independent_focused_test_log": {
+      "path": "research/improvement-loop-20261024/comparison-bridge-root-v1/relative-root-review-luna-v1.log",
+      "sha256": "631f819a8f6f550c7276febafaf80bcb0b5d7238a1fbbabbeb8449a81ead800d"
+    },
+    "v3_actual_plan": {
+      "path": "research/improvement-loop-20261024/comparison-bridge-sol-v1/actual-queue-plan-v3.json",
+      "sha256": "27cd19cbb0542dac39f56e1098b9d4c5f64d0006ffa167f09c6294eecbcad868"
+    },
+    "v3_actual_invocation": {
+      "path": "research/improvement-loop-20261024/comparison-bridge-sol-v1/actual-invocation-v3.json",
+      "sha256": "44244137f685d4b4bfa24c0f394cd157ff5ac0b303677817c822079b596e6e40"
+    },
+    "preserved_v2_failure": {
+      "path": "research/improvement-loop-20261024/comparison-bridge-root-v1/actual-v2-path-failure.json",
+      "sha256": "358ed40524ac5654930563e52ba50dd43db18a3971dca78f5df7e2b97a3f38eb"
+    }
+  },
+  "review": {
+    "change": "Queue public operations consistently resolve the store root before comparing persisted plan paths, writing pins, globbing reservations or producing worker receipts.",
+    "coverage": "The new regression admits a DAG by absolute path, then exercises CLI initialize/status/tick/work with a relative --root. It also exercises relative API enqueue/tick/status/work and CLI enqueue idempotency against the same store.",
+    "independent_test": "The focused relative-root regression passed 1/1 in 1.385 seconds.",
+    "author_suite": "The full synthetic queue suite passed 24/24 in 12.147 seconds.",
+    "v3_recipe": "The fresh v3 plan and invocation pin the final queue source SHA. Both queued job specifications also include that exact experiment_queue.py input pin. The dedicated v3 store, worker output, and both v3 job output directories did not exist at review time.",
+    "prior_failure": "The v2 timeout/quarantine evidence remains present and unchanged; its store is separate from the fresh v3 recipe.",
+    "actual_queue_launched_by_reviewer": false,
+    "scientific_jobs_launched": false
+  }
+}

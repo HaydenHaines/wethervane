@@ -1,0 +1,234 @@
+"""Run all live Senate-comparable laws on the current House panel.
+
+Frozen historical banks are reused; no 2026 outcome is read. A prediction
+receipt is not publication approval. Each attempt has an exclusive directory.
+"""
+from __future__ import annotations
+
+import hashlib
+import json
+import shutil
+import sys
+import time
+from pathlib import Path
+
+import numpy as np
+import pandas as pd
+
+from current_panel import pin
+from intake import BASE, now, sha, write
+
+ROOT = BASE.parents[1]
+sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT / "research/house-full-roster-20261022"))
+from winner_v2 import design, log_probabilities, PARAMETERS
+from complete import gate_probabilities, draw_winners
+sys.path.pop(0)
+from src.forecasting.fundamentals_v1 import FundamentalsPosteriorV1, FundamentalsPriorsV1, to_empirical_basis_v1
+from src.forecasting.polling_basis_v1 import sample_poll_posterior
+from src.forecasting.polling_v1 import GaussianPollLikelihood
+from src.forecasting.poll_covariance_v1 import PollCoordinates, build_poll_likelihood
+from src.forecasting.response_v5_reuse import correlated_mcse
+from src.forecasting.poll_diagnostics_v1 import effective_sample_sizes
+
+BASES = ("fundamentals", "recent_calendar_history", "house_history_refreshed_v1",
+         "house_presidential_slope_v1", "house_relative_lean_v1", "house_relative_context_v1")
+
+
+def configurations():
+    rows = []
+    for base in BASES:
+        for polling in ("none", "standard"):
+            suffix = "fundamentals" if polling == "none" else "polling"
+            name = "house-current-" + suffix if base == "fundamentals" else f"house-current-comparison-{base}-{'f' if polling == 'none' else 'fp'}"
+            rows.append(dict(id=name, base=base, polling=polling, uncertainty="standard"))
+    rows += [dict(id="house-current-" + u, base="fundamentals", polling="standard", uncertainty=u)
+             for u in ("cycle-low", "cycle-high", "error-low", "error-high")]
+    return rows
+
+
+def verify(pins):
+    for item in pins:
+        if sha(ROOT / item["path"]) != item["sha256"]:
+            raise ValueError("Changed input: " + item["path"])
+
+
+def load_prior(base, features):
+    fit = BASE / ("fits-v3" if base == "house_relative_context_v1" else "fits-v2") / base
+    receipt_path = fit / ("review-receipt.json" if base == "house_relative_context_v1" else "receipt.json")
+    receipt = json.loads(receipt_path.read_text())
+    if receipt["status"] != "passed":
+        raise ValueError("Passing fitted-bank receipt required")
+    verify(receipt["outputs"] + [receipt["plan"]])
+    plan = json.loads((fit / "plan.json").read_text())
+    if plan["target_cycle"] != 2026 or max(plan["training_cycles"]) >= 2026:
+        raise ValueError("Strictly earlier fitted bank required")
+    with np.load(fit / "posterior.npz", allow_pickle=False) as saved:
+        arrays = {key: saved[key] for key in ("beta", "tau_cycle", "tau_race", "cycle_z")}
+    posterior = FundamentalsPosteriorV1(arrays, 2026, tuple(plan["training_cycles"]), plan["implementation_id"],
+                 tuple(plan["coefficient_names"]), priors=FundamentalsPriorsV1(**plan["priors"]),
+                 source_identity=sha(fit / "posterior.npz"))
+    return to_empirical_basis_v1(features, posterior), [pin(receipt_path), pin(fit / "plan.json"), pin(fit / "posterior.npz")]
+
+
+def error_scales(uncertainty):
+    scales = json.loads((BASE / "calibration-v2/error-scales.json").read_text())["standard_deviations"]
+    if uncertainty in {"cycle-low", "cycle-high"}:
+        scales["cycle"] *= .5 if uncertainty == "cycle-low" else 2
+    elif uncertainty in {"error-low", "error-high"}:
+        scales = {k: v * (2 / 3 if uncertainty == "error-low" else 1.5) for k, v in scales.items()}
+    elif uncertainty != "standard":
+        raise ValueError("Unknown polling-error scenario")
+    return scales
+
+
+def diagnostic_coordinates(kind, values, names, batch=100):
+    records = []
+    for start in range(0, values.shape[-1], 24):
+        a = values[..., start:start + 24].astype(float)
+        nonconstant = np.ptp(a, axis=(0, 1)) > 0
+        active = a[..., nonconstant]
+        if not nonconstant.any():
+            continue
+        basic = correlated_mcse(active, batch_length=batch)
+        effective = effective_sample_sizes(active)
+        kept = np.asarray(names)[start:start + 24][nonconstant]
+        for j, name in enumerate(kept):
+            records.append(dict(kind=kind, coordinate=str(name), rhat=float(basic["rank_rhat"][j]),
+                                mcse=float(basic["mcse"][j]), bulk=float(effective["bulk"][j]),
+                                tail=float(effective["tail"][j])))
+    return records
+
+
+def diagnostics(core, winners, seats):
+    records = diagnostic_coordinates("share", core["shares"], core["race_ids"])
+    for name in ("coefficients", "tau_cycle", "tau_race", "shared_cycle", "shared_cycle_z"):
+        a = core[name]
+        if a.ndim == 2:
+            a = a[..., None]
+        records += diagnostic_coordinates(name, a, [str(i) for i in range(a.shape[-1])])
+    for j, group in enumerate("DRO"):
+        records += diagnostic_coordinates("winner_" + group, winners == j, [str(i) for i in range(435)])
+    seat_records = diagnostic_coordinates("seats", seats, list("DRO"))
+    control = np.stack([seats[..., 0] >= 218, seats[..., 1] >= 218,
+                        (seats[..., :2] < 218).all(axis=-1)], axis=-1)
+    control_records = diagnostic_coordinates("majority", control, ["D", "R", "unresolved"])
+    maximum = lambda rs, key, default=0.: max((r[key] for r in rs), default=default)
+    minimum = lambda rs, key: min(r[key] for r in rs)
+    max_rhat = maximum(records, "rhat", 1.)
+    min_bulk, min_tail = minimum(records, "bulk"), minimum(records, "tail")
+    max_win = maximum([r for r in records if r["kind"].startswith("winner_")], "mcse")
+    max_seat, max_control = maximum(seat_records, "mcse"), maximum(control_records, "mcse")
+    race_pass = max_rhat <= 1.01 and min_bulk >= 1000 and min_tail >= 1000 and max_win <= .005
+    chamber_pass = max_seat <= .03 and max_control <= .005 and maximum(seat_records + control_records, "rhat", 1.) <= 1.01
+    return dict(race_passed=race_pass, chamber_passed=chamber_pass, max_rhat=max_rhat,
+                min_bulk_ess=min_bulk, min_tail_ess=min_tail, max_win_mcse=max_win,
+                max_seat_mean_mcse=max_seat, max_control_mcse=max_control,
+                coordinates=records + seat_records + control_records,
+                conditional_on_saved_empirical_banks=True,
+                qualification="Predictive simulation error conditional on finite historical banks and plug-in polling scales. Additional future draws do not increase training-bank ESS or establish empirical forecast skill.")
+
+
+def run(config_id, destination, *, draws, warmup, seed, pilot=False):
+    started = time.monotonic()
+    config = next(c for c in configurations() if c["id"] == config_id)
+    destination.mkdir(parents=True, exist_ok=False)
+    shutil.copyfile(__file__, destination / "run-source.py")
+    panel = BASE / "panel-v1"
+    features = pd.read_csv(panel / "features.csv").sort_values("race_id").reset_index(drop=True)
+    groups = pd.read_csv(panel / "groups.csv")
+    support = {r["race_id"]: r for r in json.loads((panel / "support.json").read_text())["races"]}
+    prior, pins = load_prior(config["base"], features[features.eligible].copy())
+    polls = pd.read_csv(BASE / "polls-v3/selected.csv")
+    scales = error_scales(config["uncertainty"])
+    if config["polling"] == "none":
+        polls = polls.iloc[:0]
+        likelihood = GaussianPollLikelihood(np.array([], int), np.array([]), np.zeros((0, 0)), ())
+    else:
+        coordinates = PollCoordinates(tuple(polls.observation_id), tuple(polls.race_id), tuple(polls.cycle.astype(str)),
+                                      tuple(polls.pollster_key), polls.days_to_election.to_numpy(float))
+        likelihood = build_poll_likelihood(prior.race_ids, coordinates, polls.first_share.to_numpy(), scales)
+    group_fit = BASE / "group-fit-v1"
+    group_receipt = json.loads((group_fit / "receipt.json").read_text())
+    if group_receipt["status"] != "passed":
+        raise ValueError("Passing categorical parameter bank required")
+    verify(group_receipt["outputs"] + [group_receipt["plan"]])
+    with np.load(group_fit / "posterior.npz", allow_pickle=False) as saved:
+        if tuple(saved["parameter_names"]) != PARAMETERS:
+            raise ValueError("Categorical bank parameter identity changed")
+        bank = saved["parameters"].reshape(-1, 7)
+    inputs = pins + [pin(panel / n) for n in ("features.csv", "groups.csv", "support.json", "receipt.json")]
+    inputs += [pin(BASE / n) for n in ("polls-v3/selected.csv", "polls-v3/receipt.json", "calibration-v2/error-scales.json", "group-fit-v1/receipt.json", "group-fit-v1/posterior.npz")]
+    inputs += [pin(ROOT / n) for n in ("src/forecasting/fundamentals_v1.py", "src/forecasting/polling_basis_v1.py", "src/forecasting/polling_v1.py", "src/forecasting/poll_covariance_v1.py", "research/house-full-roster-20261022/winner_v2.py", "research/house-full-roster-20261022/complete.py")]
+    if not pilot:
+        admission = json.loads((BASE / "admission-v1.json").read_text())
+        if admission["status"] != "admitted_for_current_aggregate_comparison":
+            raise ValueError("Current input admission required")
+        verify(admission["input_pins"])
+        inputs.append(pin(BASE / "admission-v1.json"))
+    plan = dict(schema="HouseLivePredictionPlanV1", issued_at=now(), configuration=config,
+                settings=dict(chains=4, draws=draws, warmup=warmup, seed=seed), pilot=pilot,
+                polling_error_scales=scales, inputs=inputs, source=pin(destination / "run-source.py"),
+                exact_electoral_rule_simulation=False, source_2026_outcomes_loaded=False,
+                group_completion="Frozen House winner law, loading factor1, independent fitted bank coupled to core standardized shared cycle. Explicit role-to-party permutation for AK00 and CA06.")
+    write(destination / "plan.json", plan)
+    polls.to_csv(destination / "polls.csv", index=False)
+    print(json.dumps(dict(status="sampling", config=config_id, **plan["settings"])), flush=True)
+    core = sample_poll_posterior(prior, likelihood, **plan["settings"])
+    print(json.dumps(dict(status="completing_435", elapsed=time.monotonic() - started)), flush=True)
+    shape = (4, draws)
+    size = 4 * draws
+    matrix, loading, present = design(features, groups)
+    index = np.random.default_rng(seed + 1).integers(len(bank), size=size)
+    parameters = bank[index]
+    z = core["shared_cycle_z"].reshape(size)
+    core_index = {rid: i for i, rid in enumerate(core["race_ids"])}
+    core_wins = core["first_wins"].reshape(size, -1)
+    winners = np.empty((size, 435), np.int8)
+    conditional_means = np.empty((435, 3))
+    for j, row in enumerate(features.itertuples()):
+        p = np.exp(log_probabilities(matrix[j:j+1], loading[j:j+1], present[j:j+1], parameters, z)[:, 0])
+        p = gate_probabilities(p, core_wins[:, core_index[row.race_id]] if row.race_id in core_index else None)
+        keyed = int.from_bytes(hashlib.sha256(f"{seed}:group:{row.race_id}".encode()).digest()[:8], "big")
+        chosen_role = draw_winners(p, np.random.default_rng(keyed).random(size))
+        permutation = support[row.race_id]["role_to_actual_party"]
+        actual_codes = np.array(["DRO".index(permutation[role]) for role in "DRO"])
+        winners[:, j] = actual_codes[chosen_role]
+        conditional_means[j, actual_codes] = p.mean(axis=0)
+    seats = np.stack([(winners == j).sum(axis=1) for j in range(3)], axis=-1).astype(np.int16)
+    if not (seats.sum(axis=1) == 435).all():
+        raise ValueError("Joint chamber conservation failed")
+    print(json.dumps(dict(status="diagnosing", elapsed=time.monotonic() - started)), flush=True)
+    diagnostic = diagnostics(core, winners.reshape(*shape, 435), seats.reshape(*shape, 3))
+    write(destination / "diagnostics.json", diagnostic)
+    np.savez_compressed(destination / "joint-draws.npz", winner_codes=winners, seat_counts=seats,
+                        race_ids=features.race_id.to_numpy(str), categorical_bank_index=index,
+                        core_posterior_index=core["posterior_index"].reshape(size), national_z=z,
+                        joint_draw_id=np.arange(size), predictive_chain=np.repeat(np.arange(4), draws),
+                        predictive_draw=np.tile(np.arange(draws), 4))
+    np.savez_compressed(destination / "conditional-shares.npz", shares=core["shares"].reshape(size, -1),
+                        race_ids=np.array(core["race_ids"]), joint_draw_id=np.arange(size),
+                        shared_cycle=core["shared_cycle"].reshape(size),
+                        coefficients=core["coefficients"].reshape(size, -1),
+                        tau_cycle=core["tau_cycle"].reshape(size), tau_race=core["tau_race"].reshape(size))
+    np.save(destination / "conditional-group-probability-means.npy", conditional_means)
+    verify(inputs)
+    value = dict(schema="HouseLivePredictionReceiptV1", issued_at=now(), configuration=config,
+                 status="pilot_not_for_publication" if pilot else "passed" if diagnostic["race_passed"] and diagnostic["chamber_passed"] else "diagnostic_failure",
+                 plan=pin(destination / "plan.json"), elapsed_seconds=time.monotonic() - started,
+                 outputs=[pin(destination / n) for n in ["diagnostics.json", "joint-draws.npz", "conditional-shares.npz", "conditional-group-probability-means.npy", "polls.csv"]])
+    write(destination / "receipt.json", value)
+    print(json.dumps(dict(status=value["status"], elapsed=value["elapsed_seconds"], **{k:v for k,v in diagnostic.items() if k != "coordinates"})), flush=True)
+
+
+if __name__ == "__main__":
+    import argparse
+    p = argparse.ArgumentParser()
+    p.add_argument("config", choices=[c["id"] for c in configurations()])
+    p.add_argument("destination")
+    p.add_argument("--draws", type=int, default=100000)
+    p.add_argument("--warmup", type=int, default=3000)
+    p.add_argument("--seed", type=int, default=2026102501)
+    p.add_argument("--pilot", action="store_true")
+    a = p.parse_args()
+    run(a.config, BASE / a.destination, draws=a.draws, warmup=a.warmup, seed=a.seed, pilot=a.pilot)

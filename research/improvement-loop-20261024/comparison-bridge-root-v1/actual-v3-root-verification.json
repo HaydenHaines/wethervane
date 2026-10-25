@@ -1,0 +1,128 @@
+{
+  "schema": "ActualMomentumComparisonQueueRootVerificationV1",
+  "recorded_at": "2026-10-25T18:37:47.886621+00:00",
+  "status": "passed",
+  "actual_tool_session": 66801,
+  "controller_exit_code": 0,
+  "recipe": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/comparison-bridge-sol-v1/actual-invocation-v3.json",
+    "sha256": "44244137f685d4b4bfa24c0f394cd157ff5ac0b303677817c822079b596e6e40",
+    "size": 1720
+  },
+  "queue_plan": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/comparison-bridge-sol-v1/actual-queue-plan-v3.json",
+    "sha256": "27cd19cbb0542dac39f56e1098b9d4c5f64d0006ffa167f09c6294eecbcad868",
+    "size": 6418
+  },
+  "queue_source": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/experiment_queue.py",
+    "sha256": "6995febe73a5c1c2a317849416a58cc25130b9bbda44161f6a7624b321a8415f",
+    "size": 35468
+  },
+  "bridge_source": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/comparison_bridge.py",
+    "sha256": "0933ffadd708949bfae4ba88c244ce0e071248516d7ad1a36e2f2ccc51cf4295",
+    "size": 29611
+  },
+  "independent_bridge_review": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/comparison-bridge-root-v1/independent-review-luna-v2.json",
+    "sha256": "f13037b7d77235b5812e07b4aeeec6477cef721ff868d7dd1f4735cf2ca9236f",
+    "size": 6411
+  },
+  "independent_queue_fix_review": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/comparison-bridge-root-v1/relative-root-review-luna-v1.json",
+    "sha256": "58abe2a2adbff65c023cf5d207a68d2b8d57fc4030db76af5f6e19165f27ce41",
+    "size": 3248
+  },
+  "retained_previous_failure": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/comparison-bridge-root-v1/actual-v2-path-failure.json",
+    "sha256": "358ed40524ac5654930563e52ba50dd43db18a3971dca78f5df7e2b97a3f38eb",
+    "size": 2738
+  },
+  "worker_receipt": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/comparison-bridge-sol-v1/actual-worker-root-v3/receipt.json",
+    "sha256": "01d0fd36f38aa7f46d9d3dacf9bb427a2a2d9fbbbc2fb02849a75553b6c9d411",
+    "size": 836
+  },
+  "validation_receipt": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/comparison-bridge-sol-v1/actual-root-v3/validation/receipt.json",
+    "sha256": "5b260a9ae6601843520ff457b33630d42611b46548a391bf8fbc1b4043765b13",
+    "size": 458587
+  },
+  "reconciliation_receipt": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/comparison-bridge-sol-v1/actual-root-v3/reconciliation/receipt.json",
+    "sha256": "9776442f7d6f6177bac9ee92c92db9a3a0aff0cf0fdd2fa8fa4812e5eb7a46f7",
+    "size": 794
+  },
+  "queue_final_state": {
+    "schema": "LocalExperimentQueueObservationV1",
+    "capacity": 1,
+    "reserved": 0,
+    "queues": {
+      "m02-reviewed-comparison-bridge-v3": {
+        "validate": {
+          "outcome": "accepted_execution",
+          "error": null,
+          "qualification": "unassessed"
+        },
+        "reconcile": {
+          "outcome": "accepted_execution",
+          "error": null,
+          "qualification": "unassessed"
+        }
+      }
+    },
+    "all_jobs_recorded": true,
+    "partial_admissions": [],
+    "quarantined_admissions": [],
+    "unknown_reservations": 0,
+    "qualification": "unassessed"
+  },
+  "execution": {
+    "validate": {
+      "terminal": {
+        "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/comparison-bridge-sol-v1/actual-queue-store-v3/executions/attempts/m02-bridge-validate-v3/terminal.json",
+        "sha256": "31395f266e2fadc54d12b8ad7fd96d088bc2f0172376a15b2cea11ff052c37b1",
+        "size": 3589
+      },
+      "process_outcome": "returned",
+      "return_code": 0,
+      "native_outputs": "metadata_verified_science_unassessed",
+      "cleanup_verified": true,
+      "all_owned_processes_gone": true
+    },
+    "reconcile": {
+      "terminal": {
+        "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/comparison-bridge-sol-v1/actual-queue-store-v3/executions/attempts/m02-bridge-reconcile-v3/terminal.json",
+        "sha256": "6ad52c25bf333616750930319a9de6037a64c1282cd7d2ba3b4037ca76d8c563",
+        "size": 3601
+      },
+      "process_outcome": "returned",
+      "return_code": 0,
+      "native_outputs": "metadata_verified_science_unassessed",
+      "cleanup_verified": true,
+      "all_owned_processes_gone": true
+    }
+  },
+  "metadata_documents_verified": 79,
+  "metric_cells_with_original_uncertainty": 360,
+  "journal_before": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/comparison-bridge-root-v1/pre-journal.json",
+    "sha256": "20ffe337830d283a1e8e3315ff1dae22f9bd235ea2cddf41324ddfdf4e4110b2",
+    "size": 7360
+  },
+  "journal_after": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/ledger.sqlite3",
+    "sha256": "bf751df599c6630c922a80ebd4c1597595994263218881c16ca3fdb629d4afeb",
+    "size": 5287936
+  },
+  "journal_table_counts": {
+    "cycles": 6,
+    "artifacts": 8477,
+    "checkpoints": 52,
+    "commands": 8837
+  },
+  "complete_original_m02_binding_and_history_unchanged": true,
+  "recommendation": "retain_FS5_within_existing_M02_scope",
+  "scope": "Real completed experimental evidence through two queued metadata/reconciliation commands. No fitting, rescoring, tensor/outcome read, registry promotion or public release. Exact current M02 decided revision7 recognized without writing to journal."
+}
