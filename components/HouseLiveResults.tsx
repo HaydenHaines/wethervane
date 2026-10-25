@@ -44,6 +44,7 @@ export interface HouseLiveResultsProps {
 function candidatePartyLabel(race: HouseLiveRaceView, outcomeId: string, party: string): string {
   if (party !== "O") return `${partyName(party)} (${party})`;
   const outcome = race.outcomes.find((item) => item.id === outcomeId);
+  if (outcome?.kind === "group") return "Other (O)";
   const independent = outcome?.members.map((member) => race.candidates.find((candidate) => candidate.id === member.id)?.partyLabel)
     .find((label) => label && /independent/i.test(label));
   return independent ? `${independent} · Other (O)` : "Other (O)";
