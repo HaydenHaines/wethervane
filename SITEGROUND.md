@@ -1,8 +1,15 @@
 # Ballotmancy on SiteGround
 
-The `deploy/siteground` branch adds the deployable Senate visualization at the
-repository root. The earlier Python application and `web/` directory remain in
+The `deploy/siteground` branch contains the deployable congressional visualization
+at the repository root, including Senate forecasts and historical House research.
+The earlier Python application and `web/` directory remain in
 the repository, but this deployment builds the new root application.
+
+The [historical House polling release](docs/development/frontend-house-polling-release-20261025.md)
+records the October 25 House collection and validation. The dated House planning
+notes later in this guide describe its earlier preparation. Current 2026 House
+integration and the population/community/count research stack remain separate
+workstreams; availability comes from reviewed publication artifacts.
 
 ## SiteGround configuration
 
@@ -110,10 +117,12 @@ frequencies remain joint-result statistics: they cannot be recovered from
 marginal race leans alone. Seat charts render the supplied probability mass
 functions and actual totals, with comparison overlays from the default result.
 
-The initial catalog contains 38 configurations:
+The checked-in [Senate registry](public/data/explorer/registry.json) contains 48
+configurations at this documentation update:
 
-- **2026:** fundamentals, standard polling, lower/higher polling error, and
-  lower/higher cycle error (six saved runs, October 20 evidence).
+- **2026:** sixteen saved runs: the preserved history and standard-polling
+  presets, four polling-uncertainty sensitivity runs, and five alternative
+  base models each with and without polling. Each result records its own cutoffs.
 - **2018 and 2022:** W, F, FP, and FP persistent-error arms at common-shock
   loadings 0, 0.5, 1, and 2 (16 configurations per year). Only the complete
   35-contest forecast at 14 days before election day is supported.
@@ -275,14 +284,15 @@ and the multi-metric verification approach described by
 Historical reconstruction scores are descriptive; they do not validate the new
 experimental bases or imply strict as-of testing.
 
-## Cross-session coordination and the future House view
+## Cross-session coordination
 
 The user has assigned complementary roles and authorized direct collaboration:
 
 | Responsibility | Local session | Worktree |
 | --- | --- | --- |
 | UI/UX, frontend adapters, validation and deployment | `01a15a54-c818-75b0-86f3-8797c3d1cfa2` | `/home/hayden/projects/ballotmancy-siteground` |
-| Senate modeling and shared standard methodology | `01a11695-7d58-7eb2-b2ce-e9c6c14fc007` | `/home/hayden/projects/wethervane-redesign-20261006/integration` |
+| Ongoing coordination, frontend stewardship and model handoffs | `01a11695-7d58-7eb2-b2ce-e9c6c14fc007` | `/home/hayden/projects/wethervane-redesign-20261006/integration` |
+| Runtime/backend selection and transferred Texas training | `01a173a3-fc75-7233-af2c-69be726131fc` | Shared integration research directory; isolated GPU environment |
 | House modeling framework and benchmarks | `01a15ae1-4e5d-7711-bec6-113673b68a1d` | `/home/hayden/projects/ballotmancy-house-benchmark` |
 
 Share interface changes, frozen outputs, validation evidence, blockers and
@@ -291,6 +301,14 @@ scope; coordinate changes to shared scientific contracts before integration.
 The frontend can read both sessions and relay Senate handoffs if that session's
 outgoing messaging tool remains blocked by its approval configuration. House
 has acknowledged direct communication and is contacting Senate about methodology.
+
+### Historical House planning notes — October 20, 2026
+
+Chamber navigation and historical House results have since been implemented.
+The following paragraphs preserve the original planning context; the October 25
+release note above governs the historical collection's available features.
+Current House development is owned by the frontend session in
+`/home/hayden/projects/ballotmancy-house-live-ui-20261025`.
 
 User requirement recorded October 20, 2026: once the House forecast is live, add
 a chamber selector at the top of this same page. The proposed UI is two tabs,
@@ -430,9 +448,10 @@ To activate a real publication:
 
 All fixture probabilities and rectangles live under `tests/fixtures/house.mjs`.
 They are software-test data only and are neither referenced by the public
-publication manifest nor served by a preview route. No House result is currently
-admitted. No new environment variables, hosting services, or user credentials are
-needed for this preparation.
+publication manifest nor served by a preview route. This records the initial
+fixture-only preparation. Historical House results were subsequently integrated;
+see the October 25 release note above. No new environment variables, hosting
+services, or user credentials were needed for that preparation.
 
 ### Race navigation and chamber color refinements
 

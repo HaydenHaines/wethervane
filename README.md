@@ -1,9 +1,28 @@
 # Ballotmancy
 
-**SiteGround release branch:** The deployable Senate forecast visualization is
-at the repository root. See [SITEGROUND.md](SITEGROUND.md) for setup, data scope,
-and validation. The historical application described below remains in `web/`
-and `api/`; SiteGround should build the root `package.json`.
+This release branch contains the congressional forecast application at the
+repository root. SiteGround builds the root [package.json](package.json).
+Read [SITEGROUND.md](SITEGROUND.md) for setup, data contracts and release checks.
+
+The application displays saved Senate forecasts and historical House research.
+Model controls select supported, complete results with their original uncertainty
+and source identity. The [Senate registry](public/data/explorer/registry.json)
+defines the available Senate runs; the [historical House polling release](docs/development/frontend-house-polling-release-20261025.md)
+describes the reviewed House collection and its limitations. Current 2026 House
+integration is a separate workstream.
+
+The population/community/count stack remains a separate research workstream.
+Changes to its statistical behavior follow the scientific integration worktree's
+`docs/README.md`, `docs/development/model-implementation.md` and selected operational
+specification. This release branch's [March architecture](docs/ARCHITECTURE.md)
+is an archived prototype design.
+
+## Historical prototype description
+
+The remaining sections record the original county/tract prototype, including its
+architecture, reported metrics and operational status. Those historical claims
+do not establish the performance or availability of the current application.
+Its earlier application code remains in `web/` and `api/`.
 
 A political modeling platform that discovers electoral types directly from how counties shift across elections, estimates how those types covary using demographic profiles, and propagates polling signals through the covariance structure to produce county-level predictions. The key insight is that beneath the noise of individual elections lies a structural landscape of communities that move together politically -- communities that cross administrative boundaries, persist across decades, and can be discovered purely from spatially correlated electoral shifts.
 
