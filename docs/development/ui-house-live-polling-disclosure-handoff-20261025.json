@@ -1,0 +1,55 @@
+{
+  "schema": "HouseLivePollingFrontendHandoffV1",
+  "issued_utc": "2026-10-25T16:46:43.929849+00:00",
+  "frontend_owner_thread": "01a15a54-c818-75b0-86f3-8797c3d1cfa2",
+  "status": "polling_ui_and_pinned_import_path_implemented_final_checks_running",
+  "frontend_worktree": "/home/hayden/projects/ballotmancy-house-live-ui-20261025",
+  "native_disclosure_received": {
+    "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-20261025/adapter-check-v4/evidence/polling-disclosure-v1.json",
+    "sha256": "a4641cfbae395ee8e11208911ee30d6b8fa3e5a9439bbc565e9e71c58ea4d9d3"
+  },
+  "schema_distinction": "Backend owns HouseLivePollingDisclosureV1. The separately derived website collection is named HouseLiveSitePollingDisclosureV1 to avoid collision; browser projection HouseLivePollingRunV1. Native bytes/evidence stay unchanged.",
+  "input_path": "Offline importer optional polling:{directory,receipt:Pin,ledger:Pin}. Inputs use explicit safe roots/pins, not guessed research paths. Native source policy and one shared input admission are authenticated through catalog/results. Admission hashes bind selection receipt, ledger, policy; receipt binds ledger and exact reviewed selector implementation SHA. All16 result hashes and every selected native poll_source_id are checked.",
+  "site_output": "Only minimal derived website sidecar staged under its SHA name; raw ledger/selection receipt kept offline. Source pins/paths do not enter browser projection. Native evidence including backend disclosure preserved unchanged.",
+  "display_fields": {
+    "selected": [
+      "pollster",
+      "fieldwork dates",
+      "approximate availability",
+      "population group",
+      "reported sample size or missing",
+      "citation URLs"
+    ],
+    "excluded_current_district": [
+      "pollster",
+      "reported end date or unknown",
+      "first-failing selection reason"
+    ],
+    "excluded_without_current_district": "Reason/count only; unused pollster/date information stripped. No toplines, candidate percentages, publisher name lists or raw source arrays in browser disclosure."
+  },
+  "interaction": "Visible polling-on/off status; collapsed methods/districtdetails/source-exclusion totals; details follow selecteddistrict andmodel; first10district exclusions expand onrequest; mobile districtselection preserves focus withoutsidebar jump.",
+  "semantics": [
+    "Counts are question-district records, not independent surveys.",
+    "Zero selected district inputs, polling switched off, and unavailable details remain distinct.",
+    "Global source inventory includes other offices/cycles/non-district records; never call all1461exclusions currentHousepollqualityrejections.",
+    "MissingN remainsmissing; no additional Nweight; approximate availability/correlatederror/conditionalpair denominator explained."
+  ],
+  "validation_so_far": "Liveunit127passed and complete browser suite7passed plus productionbuild/TypeScript. Final rerun underway after native/website schema name separation, small source-link wording and touch-target improvements. No actual all16 import/publication.",
+  "backend_linkage_followup": {
+    "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/docs/development/house-live-backend-binding-followup-20261025.json",
+    "sha256": "e3e0553eed126418ba331247460046575575a0dc6b6fb625a9afb23a5c679972"
+  },
+  "default_export_continuity": {
+    "old_result": {
+      "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-20261025/adapter-check-v3/result.json",
+      "sha256": "7a5a4ae1cf973492c3114dfcc6dd5cb3c603c2db897095a5241fd8b88f180c16"
+    },
+    "new_result": {
+      "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-20261025/adapter-check-v4/result.json",
+      "sha256": "3bde7bdca60ad9266de41bb5ce06e8e7362044cae77d12d4d798c9d45b00747b"
+    },
+    "root_comparison": "Only issued_at and qualification changed. joint_draws, all435races and chamber summaries are exactlyequal. Existing 1M-row reconciliation remains samejoint/summaryevidence; new native evidence now includeslocalplan/bindingreview/disclosure. Publication remainsnot_reviewed."
+  },
+  "remaining": "Final all16 native scientific reviews, qualified combined output, exact operator publication review and actual rendered-data integration still required. Upcoming actual release should supply polling flags; optional absence exists for backward compatibility, not a reason to omit the requested explanations.",
+  "transport": "Shared handoff to House and Senate coordinator; no direct-tool delivery/read acknowledgment claimed."
+}

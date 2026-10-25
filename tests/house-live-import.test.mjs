@@ -10,6 +10,7 @@ import { importHouseLive } from "../scripts/import_house_live.mjs";
 import { loadHouseLiveSitePublication, readHouseLiveAvailability } from "../lib/house-live-server.ts";
 import { makeHouseLiveCatalog, makeHouseLiveResult, SYNTHETIC_CONFIGURATIONS } from "./fixtures/house-live-fixtures.mjs";
 import { makeHouseLiveCombinedPlan } from "./fixtures/house-live-combined-plan.mjs";
+import { HOUSE_LIVE_POLL_SELECTION_IMPLEMENTATION_SHA256 } from "../lib/house-live-polling.ts";
 
 // Independent invented receipt construction: no fixture below asserts real review.
 const digest = bytes => createHash("sha256").update(bytes).digest("hex");
@@ -33,7 +34,8 @@ function geometry(results) {
   }) };
 }
 async function fixture(t, { mutateResults, mutateCatalog, mutateReview, mutateGeography, mutateQualification,
-  predictionPlan, mutatePredictionPlan, mutatePredictionReceipt } = {}) {
+  predictionPlan, mutatePredictionPlan, mutatePredictionReceipt, pollingBundle,
+  mutatePollingLedger, mutatePollingSelection, mutatePollingAdmission } = {}) {
   const base = await mkdtemp(join(tmpdir(), "house-live-offline-import-"));
   t.after(() => rm(base, { recursive: true, force: true }));
   const sourceRoot = join(base, "native"), reviewRoot = join(base, "operator");
@@ -52,7 +54,50 @@ async function fixture(t, { mutateResults, mutateCatalog, mutateReview, mutateGe
   mutateGeography?.(geo);
   const geographyPin = await put(sourceRoot, results[0].geography.path, geo);
   const sourceReceipt = await put(sourceRoot, results[0].geography.source_receipt.path, { invented: true, source: "grid only" });
-  catalog.source_policy = await put(sourceRoot, catalog.source_policy.path, Buffer.from("invented opaque source policy\n\0"));
+  let pollingInputs;
+  if (pollingBundle) {
+    const directory = join(base, "offline-polling");
+    await mkdir(directory);
+    const forecastAt = results[0].forecast_cutoff;
+    const sourcePolicy = { schema: "HouseLiveSourcePolicyV1", forecast_cutoff: forecastAt,
+      polling_cutoff: forecastAt, strict_as_of: true };
+    catalog.source_policy = await put(sourceRoot, catalog.source_policy.path, sourcePolicy);
+    const sourceSha256 = digest("invented polling source bytes"), sourceId = "synthetic-poll-source";
+    const race = results[0].races[0], observationId = "invented:selected:AL-01";
+    const ledger = [{ status: "selected", reason: "", poll_id: "invented-poll", question_id: "invented-question",
+      district_key: race.district_key, race_id: race.race_id, observation_id: observationId,
+      source_id: sourceId, source_sha256: sourceSha256, pollster: "Invented Pollster",
+      start_date: "2026-10-15", field_end: "2026-10-17", available_date: "2026-10-19T00:00:00Z",
+      population: "LV", sample_size_status: "not_reported_not_imputed", nominal_n: null,
+      source_url: "https://example.invalid/poll", source_urls: ["https://example.invalid/poll"],
+      first_candidate_id: race.candidates[0].candidate_id, second_candidate_id: race.candidates[2].candidate_id,
+      publisher_names: ["Raw response option never staged"], private_raw_marker: "raw-ledger-only" },
+    { status: "excluded", reason: "hypothetical_question", poll_id: "invented-excluded-poll", question_id: "invented-excluded-question",
+      district_key: race.district_key, pollster: "Invented Excluded Pollster", end_date: "10/10/26",
+      source_id: sourceId, source_sha256: sourceSha256, publisher_names: ["Raw hypothetical menu"] }];
+    mutatePollingLedger?.(ledger);
+    const ledgerPin = await put(directory, "private-ledger.json", ledger);
+    const selection = { schema: "HouseLivePollSelectionV1", forecast_cutoff: forecastAt, observations: 1, races: 1,
+      outputs: [{ path: "research/polls-v3/ledger.json", sha256: ledgerPin.sha256 }],
+      input_pins: [{ path: "research/reviewed-selector.py", sha256: HOUSE_LIVE_POLL_SELECTION_IMPLEMENTATION_SHA256 }] };
+    mutatePollingSelection?.(selection);
+    const receiptPin = await put(directory, "private-receipt.json", selection);
+    const admission = { schema: "HouseLiveAggregateInputAdmissionV1", status: "admitted_for_current_aggregate_comparison",
+      forecast_cutoff: forecastAt, input_pins: [
+        { path: "research/source-policy-v1.json", sha256: catalog.source_policy.sha256 },
+        { path: "research/polls-v3/receipt.json", sha256: receiptPin.sha256 },
+        { path: "research/polls-v3/ledger.json", sha256: ledgerPin.sha256 }] };
+    mutatePollingAdmission?.(admission);
+    const admissionPin = await put(sourceRoot, "evidence/admission-v1.json", admission);
+    for (const result of results) {
+      result.source_cutoffs = [{ role: "structural", at: forecastAt }, { role: "poll", at: forecastAt }];
+      result.provenance.push({ id: sourceId, label: "Invented poll source", url: "https://example.invalid/poll",
+        retrieved_at: "2026-10-19T00:00:00Z", sha256: sourceSha256, role: "polling" });
+      if (result.configuration.polling === "standard") Object.assign(result.races[0],
+        { poll_count: 1, poll_source_ids: [observationId], source_ids: [...result.races[0].source_ids, sourceId] });
+    }
+    pollingInputs = { directory, receipt: receiptPin, ledger: ledgerPin, admission: admissionPin };
+  } else catalog.source_policy = await put(sourceRoot, catalog.source_policy.path, Buffer.from("invented opaque source policy\n\0"));
   const numericalReview = await put(sourceRoot, "synthetic/numerical-review.json",
     { invented: true, note: "Opaque invented numerical-review bytes; no real scientific review." });
   const qualification = { schema: "HouseLivePublicationQualificationV1", status: "reviewed",
@@ -69,7 +114,7 @@ async function fixture(t, { mutateResults, mutateCatalog, mutateReview, mutateGe
     result.geography.source_receipt = { ...sourceReceipt };
     Object.assign(result.joint_draws, { path: jointPath, sha256: jointSha });
     result.chamber.joint_draws_sha256 = jointSha;
-    result.qualification.evidence = [genericEvidence];
+    result.qualification.evidence = [genericEvidence, ...(pollingInputs ? [pollingInputs.admission] : [])];
     if (predictionPlan) {
       const plan = makeHouseLiveCombinedPlan(result);
       if (predictionPlan === "original") {
@@ -111,10 +156,11 @@ async function fixture(t, { mutateResults, mutateCatalog, mutateReview, mutateGe
   const reviewPin = await put(reviewRoot, "decisions/release.json", review);
   await writeFile(join(sourceRoot, "private/conditional-shares.npz"), "must never be copied");
   await writeFile(join(sourceRoot, "private/training-bank.npz"), "must never be copied");
-  return { base, catalog, results, review, geographyPin, qualification, genericEvidence, predictionEvidence,
+  return { base, catalog, results, review, geographyPin, qualification, genericEvidence, predictionEvidence, pollingInputs,
     options: { sourceRoot, catalog: catalogPin, reviewRoot, review: reviewPin,
       geographySource: { name: "Invented grid", url: "https://example.invalid/grid", note: "Synthetic geometry only." },
-      outputDirectory: join(base, "new-release") } };
+      outputDirectory: join(base, "new-release"), ...(pollingInputs ? { polling: { directory: pollingInputs.directory,
+        receipt: pollingInputs.receipt, ledger: pollingInputs.ledger } } : {}) } };
 }
 async function absent(path) { await assert.rejects(lstat(path), { code: "ENOENT" }); }
 
@@ -191,6 +237,7 @@ test("imports all 16 invented native results byte for byte; site loads every cho
   for (const entry of site.catalog.entries) {
     const publication = await loadHouseLiveSitePublication(options.outputDirectory, entry.id);
     assert.equal(publication.view.run.id, entry.id);
+    assert.equal(publication.polling, null);
     assert.equal(publication.view.races.length, 435);
     assert.deepEqual(publication.publicationReview.limitations, site.review.limitations);
   }
@@ -198,6 +245,77 @@ test("imports all 16 invented native results byte for byte; site loads every cho
   assert.equal(paths.filter(path => path.endsWith(".npz")).length, 0);
   assert.equal(paths.includes("private"), false);
   assert.equal(paths.filter(path => /\.(?:geo)?json$/.test(path)).length, 25);
+});
+
+test("explicit polling inputs publish only a minimal derived sidecar and distinguish polling-on from baseline", async t => {
+  const site = await fixture(t, { pollingBundle: true });
+  await importHouseLive(site.options);
+  const manifest = JSON.parse(await readFile(join(site.options.outputDirectory, "publication.json")));
+  assert.match(manifest.pollingDisclosure.path, /^polling-disclosure-[a-f0-9]{64}\.json$/);
+  const publication = await loadHouseLiveSitePublication(site.options.outputDirectory);
+  assert.equal(publication.polling.modelUsesSelectedQuestions, true);
+  assert.equal(publication.polling.usedQuestions.length, 1);
+  assert.equal(publication.polling.usedQuestions[0].sampleSize, null);
+  assert.deepEqual(publication.polling.usedQuestions[0].sourceUrls, ["https://example.invalid/poll"]);
+  assert.equal(publication.polling.excluded[0].reason, "hypothetical_question");
+  const baselineEntry = site.catalog.entries.find(entry => entry.configuration.polling === "none");
+  const baseline = await loadHouseLiveSitePublication(site.options.outputDirectory, baselineEntry.id);
+  assert.equal(baseline.polling.modelUsesSelectedQuestions, false);
+  assert.deepEqual(baseline.polling.usedQuestions, []);
+  assert.equal(baseline.polling.selectedPoolQuestionCount, 1);
+  const sidecar = await readFile(join(site.options.outputDirectory, manifest.pollingDisclosure.path), "utf8");
+  assert.equal(sidecar.includes("publisher_names"), false);
+  assert.equal(sidecar.includes("private_raw_marker"), false);
+  const paths = await readdir(site.options.outputDirectory, { recursive: true });
+  assert.equal(paths.some(path => /private-(?:ledger|receipt)\.json|\.csv$|\.npz$/.test(path)), false);
+  assert.deepEqual(await readHouseLiveAvailability(site.options.outputDirectory), { available: true });
+});
+
+test("polling receipt and ledger bytes must match their explicit pins and remain present", async t => {
+  for (const artifact of ["receipt", "ledger"]) {
+    const site = await fixture(t, { pollingBundle: true });
+    await appendFile(join(site.pollingInputs.directory, site.pollingInputs[artifact].path), " ");
+    await assert.rejects(importHouseLive(site.options), /fingerprint mismatch/);
+    await absent(site.options.outputDirectory);
+  }
+  const missing = await fixture(t, { pollingBundle: true });
+  await rm(join(missing.pollingInputs.directory, missing.pollingInputs.ledger.path));
+  await assert.rejects(importHouseLive(missing.options), { code: "ENOENT" });
+  await absent(missing.options.outputDirectory);
+});
+
+test("polling disclosure rejects wrong ledger IDs, missing sample metadata, wrong admission pins and baseline usage", async t => {
+  const options = [
+    { mutatePollingLedger: ledger => { ledger[0].observation_id = "invented:wrong-row"; } },
+    { mutatePollingLedger: ledger => { delete ledger[0].nominal_n; } },
+    { mutatePollingAdmission: admission => { admission.input_pins[2].sha256 = "a".repeat(64); } },
+    { mutatePollingSelection: selection => { selection.input_pins[0].sha256 = "a".repeat(64); } },
+    { mutateResults: results => {
+      const baseline = results.find(result => result.configuration.polling === "none");
+      baseline.races[0].poll_count = 1;
+      baseline.races[0].poll_source_ids = ["invented:selected:AL-01"];
+    } },
+  ];
+  for (const mutations of options) {
+    const site = await fixture(t, { pollingBundle: true, ...mutations });
+    await assert.rejects(importHouseLive(site.options), /polling disclosure|reviewed identity/);
+    await absent(site.options.outputDirectory);
+  }
+});
+
+test("polling bundle is explicit and complete, and its input directory cannot become the output", async t => {
+  const site = await fixture(t, { pollingBundle: true });
+  await assert.rejects(importHouseLive({ ...site.options, polling: { directory: site.pollingInputs.directory } }),
+    /directory, receipt pin, and ledger pin are required together/);
+  const insideInputs = join(site.pollingInputs.directory, "new-release");
+  await assert.rejects(importHouseLive({ ...site.options, outputDirectory: insideInputs }), /outside the read-only polling input/);
+  await absent(insideInputs);
+  const cli = spawnSync(process.execPath, ["--experimental-strip-types",
+    fileURLToPath(new URL("../scripts/import_house_live.mjs", import.meta.url)), "--polling-root", site.pollingInputs.directory],
+  { encoding: "utf8" });
+  assert.notEqual(cli.status, 0);
+  assert.match(cli.stderr, /Polling options require/);
+  await absent(site.options.outputDirectory);
 });
 
 test("combined archives use the authenticated local plan selected by receipt SHA and retain its exact evidence bytes", async t => {

@@ -5,6 +5,7 @@ import { HOUSE_LIVE_EXPECTED_DISTRICT_KEYS, houseLiveConfigurationKey, parseHous
 import type { ExplorerOutcome, ExplorerRace, ExplorerScenario } from "./explorer-types";
 import { HOUSE_LIVE_ALLOWED_CONFIGURATION_KEYS } from "./house-live-catalog.ts";
 import type { HouseLiveCatalogView, HouseLiveRaceView, HouseLiveView } from "./house-live-view.ts";
+import { parseHouseLivePollingRun, type HouseLivePollingRun } from "./house-live-polling.ts";
 
 export interface HouseLivePublication {
   schema: "HouseLivePublicationV1";
@@ -14,6 +15,8 @@ export interface HouseLivePublication {
   geography: DistrictGeography | null;
   /** Website-owned operator review, separate from native model qualifications. */
   publicationReview?: { limitations: string[] };
+  /** Exact selected-result polling facts; null/absence means the details are unpublished. */
+  polling?: HouseLivePollingRun | null;
 }
 
 const expectedConfigurations = new Set<string>(HOUSE_LIVE_ALLOWED_CONFIGURATION_KEYS);
@@ -291,6 +294,26 @@ export function parseHouseLivePublication(value: unknown): HouseLivePublication 
       !Array.isArray(review.limitations) || !review.limitations.every(text)) return null;
     publicationReview = { limitations: [...review.limitations] };
   }
+  let polling: HouseLivePublication["polling"];
+  if ("polling" in value) {
+    if (value.polling === null) polling = null;
+    else {
+      polling = parseHouseLivePollingRun(value.polling);
+      if (!polling || polling.runId !== view.run.id || polling.resultSha256 !== view.run.resultSha256 ||
+        polling.modelUsesSelectedQuestions !== (view.run.configuration.polling === "standard") ||
+        Date.parse(polling.cutoffs.forecastAt) !== Date.parse(view.run.cutoffAt) ||
+        !view.run.sourceCutoffs.some(row => Date.parse(row.at) === Date.parse(polling!.cutoffs.pollingAt)) ||
+        !view.qualification.evidenceHashes.includes(polling.bindings.admissionSha256)) return null;
+      const sources = new Map(view.sources.map(source => [source.id, source.sha256]));
+      const raceCounts = new Map<string, number>();
+      for (const question of polling.usedQuestions) {
+        if (!view.races.some(race => race.id === question.raceId) || sources.get(question.sourceId) !== question.sourceSha256) return null;
+        raceCounts.set(question.raceId, (raceCounts.get(question.raceId) ?? 0) + 1);
+      }
+      if (view.races.some(race => race.pollCount !== (raceCounts.get(race.id) ?? 0))) return null;
+    }
+  }
   return { schema: "HouseLivePublicationV1", status: "available", catalog, view, geography,
-    ...(publicationReview ? { publicationReview } : {}) };
+    ...(publicationReview ? { publicationReview } : {}),
+    ...("polling" in value ? { polling } : {}) };
 }

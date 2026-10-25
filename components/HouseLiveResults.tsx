@@ -20,12 +20,15 @@ import RaceListToggle from "./RaceListToggle";
 import HouseLiveControls from "./HouseLiveControls";
 import { houseLiveStatusLabel as statusLabel, houseLiveCutoffRole } from "../lib/house-live-copy";
 import HouseGroupRibbon from "./HouseGroupRibbon";
+import HouseLivePollingPolicy from "./HouseLivePollingPolicy";
+import type { HouseLivePollingRun } from "../lib/house-live-polling";
 
 export interface HouseLiveResultsProps {
   view: HouseLiveView;
   catalog: HouseLiveCatalogView;
   geography: DistrictGeography | null;
   publicationLimitations?: readonly string[];
+  polling?: HouseLivePollingRun | null;
   builderExpanded: boolean;
   onBuilderExpandedChange: (expanded: boolean) => void;
   busy?: boolean;
@@ -46,7 +49,7 @@ function candidatePartyLabel(race: HouseLiveRaceView, outcomeId: string, party: 
   return independent ? `${independent} · Other (O)` : "Other (O)";
 }
 
-function HouseLiveRaceDetail({ race, detailRef }: { race: HouseLiveRaceView; detailRef: RefObject<HTMLElement | null> }) {
+function HouseLiveRaceDetail({ race, detailRef, pollingEnabled }: { race: HouseLiveRaceView; detailRef: RefObject<HTMLElement | null>; pollingEnabled: boolean }) {
   const rule = ({
     plurality: "Plurality: the candidate with the most votes wins; the forecast reports that candidate’s group.",
     ranked_choice: "Ranked choice: voters rank candidates; the winner’s group is the forecast outcome.",
@@ -62,6 +65,7 @@ function HouseLiveRaceDetail({ race, detailRef }: { race: HouseLiveRaceView; det
     <div className="eyebrow">District in focus · {raceRating(race)}</div>
     <h2 id="house-live-detail-title" tabIndex={-1}>{race.district.districtKey}</h2>
     <p className="small">{STATE_NAMES[race.state] || race.state} · {race.electionLabel}</p>
+    <p className="detail-note">{pollingEnabled ? `${race.pollCount} selected local poll-question ${race.pollCount === 1 ? "result" : "results"}` : "Polling is switched off for this model"}. <a href="#house-live-polling">Why these polls?</a></p>
     <p className="detail-note">{rule} {method}</p>
     <h3 className="detail-label">Chance of winning</h3>
     <p className="detail-note">These are chances of each modeled candidate or group winning, not vote shares. A group probability is not allocated among its members.</p>
@@ -125,7 +129,7 @@ function HouseLiveChamberControl({ scenario }: { scenario: NonNullable<HouseLive
 
 export default function HouseLiveResults({ view, catalog, geography, builderExpanded, onBuilderExpandedChange,
   busy = false, error = "", onSelect, onRetry, onHistorical,
-  selectedRaceId, onRaceSelect, comparisonTools, publicationLimitations = [] }: HouseLiveResultsProps) {
+  selectedRaceId, onRaceSelect, comparisonTools, publicationLimitations = [], polling }: HouseLiveResultsProps) {
   const sorted = useMemo(() => [...view.races].sort(competitiveOrder), [view.races]);
   const ribbonRaces = useMemo<GroupRibbonRace[]>(() => view.races.map((race) => ({
     id: race.id,
@@ -147,10 +151,10 @@ export default function HouseLiveResults({ view, catalog, geography, builderExpa
   }, [view.run.id, view.races, selectedId, sorted]);
   useEffect(() => { detail.current?.scrollTo({ top: 0 }); }, [selected?.id]);
   useEffect(() => { setExpanded(false); setQuery(""); }, [view.run.id]);
-  function selectRace(id: string) {
+  function selectRace(id: string, focusDetail = true) {
     setSelectedId(id);
     onRaceSelect?.(id);
-    if (window.matchMedia("(max-width: 800px)").matches)
+    if (focusDetail && window.matchMedia("(max-width: 800px)").matches)
       requestAnimationFrame(() => {
         document.getElementById("house-live-detail-title")?.focus({ preventScroll: true });
         document.getElementById("house-live-race-detail")?.scrollIntoView({
@@ -216,8 +220,10 @@ export default function HouseLiveResults({ view, catalog, geography, builderExpa
           {!shown.length && <p>No matching districts. Try another district, state, or candidate.</p>}
         </section>
       </div>
-      <HouseLiveRaceDetail race={selected} detailRef={detail} />
+      <HouseLiveRaceDetail race={selected} detailRef={detail} pollingEnabled={view.run.configuration.polling === "standard"} />
     </div>
+
+    <HouseLivePollingPolicy polling={polling} view={view} selected={selected} onRaceSelect={id => selectRace(id, false)} />
 
     <section className="methodology" id="methodology" aria-labelledby="live-evidence-title">
       <div><div className="eyebrow">Current run evidence</div><h2 id="live-evidence-title">Inputs, computation, and review.</h2></div>

@@ -1,0 +1,99 @@
+{
+  "schema": "HouseLivePollingUiPreparationV1",
+  "issued_utc": "2026-10-25T16:49:09.381140+00:00",
+  "base_commit": "667a878c1adc8b132d80789145a910ec2d18e875",
+  "status": "implemented_and_tested_private_frontend_not_current_publication",
+  "implemented": [
+    "Poll panel distinguishes enabled polling, disabled polling, and unavailable details. Counts mean question results for districts. Methods and district details start collapsed; source links and reported or missing sample sizes are visible on expansion.",
+    "The map, race detail and polling picker share district selection. The mobile polling picker retains focus without jumping to the sidebar. Model changes replace the associated polling facts. District exclusions initially show ten records, with an expansion button.",
+    "Plain language explains the 100-day fieldwork-end window, question/sample/pollster deduplication, estimated availability, conditional two-candidate shares, shared errors and the absence of an additional sample-size weight.",
+    "The website collection uses HouseLiveSitePollingDisclosureV1, distinct from backend HouseLivePollingDisclosureV1. The browser parser binds run and result hashes, cutoffs, admission evidence, source identity, district counts and safe URLs, and returns independent copies.",
+    "The offline importer accepts an explicit polling directory and receipt/ledger pins. It derives the website artifact from authenticated native policy, admission and all 16 result identities. Raw receipt and ledger files stay offline; native evidence remains unchanged.",
+    "The reviewed selector implementation hash identifies the explained ruleset. Exact question IDs and candidate pairs must match the native forecast. One bare-domain KOB citation receives a narrowly checked https prefix in the derived output; the original record is unchanged.",
+    "For exclusions without a current district, unused pollster names and dates stay offline. The browser receives no raw poll percentages, respondent identities, publisher-name lists or source filesystem paths."
+  ],
+  "verification": [
+    {
+      "command": "npm run test:house-live",
+      "log": "/tmp/ballotmancy-live-house-unit-v7-final.log",
+      "exit_code": 0,
+      "passed": 127,
+      "skipped": 4,
+      "note": "Optional browser cases run separately."
+    },
+    {
+      "command": "npm run test:house-live-browser",
+      "log": "/tmp/ballotmancy-live-house-browser-v7.log",
+      "exit_code": 0,
+      "passed": 7,
+      "note": "Three static rendering checks and four browser cases: model and district changes, expanded exclusions, polling disabled, retained errors, history and mobile layout."
+    },
+    {
+      "command": "BALLOTMANCY_LIVE_HOUSE_BROWSER=1 node --experimental-strip-types --test --test-name-pattern=\"browser polling:\" tests/house-live-results.test.mjs",
+      "log": "/tmp/ballotmancy-live-house-polling-browser-v3.log",
+      "exit_code": 0,
+      "passed": 1,
+      "note": "Final focused rerun after larger touch targets, source-link wording and the native/website schema distinction."
+    },
+    {
+      "command": "npm run build",
+      "log": "/tmp/ballotmancy-live-house-build-v7-final.log",
+      "exit_code": 0,
+      "note": "Includes final TypeScript checks. API traces contain no NPZ files, raw polling records or offline helpers."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0
+    }
+  ],
+  "visual_review": {
+    "directory": "/tmp/ballotmancy-house-polling-ui-20261025",
+    "files": [
+      "polling-desktop.png",
+      "polling-mobile.png"
+    ],
+    "review": "Root inspected final desktop (1440×900) and mobile (390×844) screenshots. Summary, method columns, source cards and 44-pixel controls fit their viewports. Screenshots use invented test data, not current forecasts."
+  },
+  "ux_review": {
+    "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/docs/development/house-live-polling-ux-review-20261025.json",
+    "sha256": "48d9e5f4dd486c8e627d3990b5042bef5bb1fdca15c2a64fd5d96a051d74c8cb"
+  },
+  "native_metadata_parity": {
+    "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/docs/development/house-live-native-polling-parity-20261025.json",
+    "sha256": "00242f35133d643d7f24a97c164e0f1504956f6b8e805b319a4e93335e7079d8"
+  },
+  "backend_binding_followup": {
+    "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/docs/development/house-live-backend-binding-followup-20261025.json",
+    "sha256": "e3e0553eed126418ba331247460046575575a0dc6b6fb625a9afb23a5c679972"
+  },
+  "coordination": {
+    "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/docs/development/ui-house-live-polling-disclosure-handoff-20261025.json",
+    "sha256": "efeee1291599dc3bf5743b36afe201c1f08bb27efc53fc4df99392e1ea8a3321"
+  },
+  "actual_source_scope": "Root matched all 167 native disclosure question IDs and 15 metadata fields to the source ledger, every default forecast district’s question IDs, all 1,461 first-failure exclusions and 1,628 inventory groups, 98 districts and 27 missing sample sizes. This checks metadata and selection identity, not questionnaire truth or predictive skill. Sol separately tested the pure builder using real source records and an invented 16-run scaffold; that was not a real release.",
+  "backend_state": "The new prediction_binding helper and version-two combiner/audit close the exact receipt-to-source linkage gap for three inspected completed runs. Focused fixture tests passed 13, with one full-combination test deselected. Both original fundamentals attempts still fail chamber diagnostics; the polling model passes. The combined output lacked a terminal receipt at the last inspection. Adapter v4 includes local plan, binding review and polling disclosure but remains not_reviewed. Its race/chamber summaries and raw joint pin exactly match the previously checked v3 export.",
+  "remaining": [
+    "No current House release was imported or deployed. All 16 qualified native results, the catalog, numerical review and completed combined output remain prerequisites for the actual release.",
+    "The actual release should supply all five polling CLI flags: --polling-root, --polling-receipt, --polling-receipt-sha256, --polling-ledger and --polling-ledger-sha256. Optional absence supports existing releases with explicit unavailable text; it does not satisfy the requested explanations.",
+    "The backend polling disclosure is preserved as native evidence. The website artifact derives from the same pinned ledger and admission; the offline ledger supplies district-specific exclusion reasons beyond the backend’s global totals.",
+    "Only derived selection facts and citations enter the browser. Raw third-party source datasets remain offline.",
+    "The standing goal still requires qualified full-stack complementarity, weakest-layer identification and continuing model improvements. No scientific model run or promotion occurred here. Saving user configurations remains outside scope."
+  ],
+  "source_fingerprints": {
+    "app/globals.css": "7e645701177fff010775261cd9e5240dc4e2d2d039a4ff2bb67912985e7d5d36",
+    "components/HouseLivePollingPolicy.tsx": "8ff33015bb2ae86fb2632e79a79ccb2b5eb27d57741ed6cd978eb344356a7697",
+    "components/HouseLiveResults.tsx": "149403e87a637d969361633fc8247a3cb98febfe17fd09fd34780bee9b791c57",
+    "components/HouseLiveWorkspace.tsx": "f7a15f4b39266fe6bdbb5924938de475f5ba322683c7661b29e9d496b6eb462c",
+    "lib/house-live-polling.ts": "8b9865390a27b06a4b8d96c7ce62b09da23d4a89937eb0947b124bf34470b038",
+    "lib/house-live-publication.ts": "876c8e9608d4a8fbb7113d4f99dd3ff91db84e2a8255c1a7816f78a41af446c4",
+    "lib/house-live-server.ts": "b56bd9d6bcc720ddcbfdd4e876b5821b8fc01a0a919a3499c8cf9903265d48c5",
+    "lib/house-live-copy.ts": "1b71f50eaee64fc85fa1490ee09d70a35effb753d634d55aef57960dd3740d3f",
+    "scripts/import_house_live.mjs": "bdd2a7605ebbe11d5e854c3bf7c84bcbf4cddfd56f516a59e1762fbcdd9d1f6c",
+    "tests/fixtures/house-live-polling-publication.mjs": "f348d292e1f952ef96aa6cb8a9742242b218a89d8906aa6758c848833a0ecb28",
+    "tests/house-live-polling.test.mjs": "c749fd70bae8b991c2fa291d981a2bd1a8ae8f977372cd055dedcab15e702a33",
+    "tests/house-live-publication.test.mjs": "c51ae3e67d3ae0dae2332670c266ec43ba09a08c18c85a1b35621abbb83d2890",
+    "tests/house-live-results.test.mjs": "110e6693ece61ace6e630900d31ef3196754913bdcad4917c17888158d666d34",
+    "tests/house-live-import.test.mjs": "dcb8ab140969a0b297429b884a748d7eb149fdd8fecd8e3257e504387495ae93",
+    "tests/house-live-server.test.mjs": "f34e86636f3927b080c3a97687e5fc44396dfb0cfebbdbe6be7a9c104396b297"
+  }
+}

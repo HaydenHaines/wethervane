@@ -3,6 +3,12 @@ export function houseLiveStatusLabel(value: string, kind: "input" | "numerical" 
   const normalized = value.toLowerCase().replaceAll("-", "_");
   if (kind === "input" && ["strict_asof", "strict_as_of"].includes(normalized))
     return "Inputs checked against the stated cutoff dates";
+  if (kind === "input" && normalized === "reviewed_bounded_current_inputs")
+    return "Inputs reviewed for this forecast’s stated scope";
+  if (kind === "publication" && normalized === "not_reviewed")
+    return "Not yet reviewed for publication";
+  if (kind === "numerical" && normalized === "incomplete")
+    return "Calculation checks are incomplete or have not all passed";
   if (normalized === "reviewed")
     return kind === "publication" ? "Reviewed for publication" : "Reviewed";
   if (normalized === "passed")

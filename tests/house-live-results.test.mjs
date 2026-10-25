@@ -12,6 +12,7 @@ import { parseHouseLiveResult } from "../lib/house-live-result.ts";
 import { parseHouseLiveCatalog } from "../lib/house-live-catalog.ts";
 import { houseLiveView, houseLiveCatalogView } from "../lib/house-live-view.ts";
 import { makeHouseLivePublication } from "./fixtures/house-live-publication.mjs";
+import { withInventedPolling } from "./fixtures/house-live-polling-publication.mjs";
 import { makeHousePublication, fixtureSha256 } from "./fixtures/house.mjs";
 import { parseHousePublicationWithCatalog } from "../lib/house-catalog.ts";
 
@@ -87,6 +88,25 @@ test("Other leaders stay out of the D/R path; a missing chamber never creates co
   const missing = render({ view: { ...view, chamber: null, chamberPrecision: null } });
   assert.match(missing, /House control distribution is unavailable/);
   assert.doesNotMatch(missing, /id="house-live-control-title"/);
+});
+
+test("polling display separates included questions, zero local inputs, disabled polling, and unpublished details", () => {
+  const included = withInventedPolling(makeHouseLivePublication());
+  const html = render({ view: included.view, polling: included.polling, selectedRaceId: "2026:AL-01:house:regular" });
+  assert.match(html, /3 selected poll-question results/);
+  assert.match(html, /2 of 435 districts/);
+  assert.match(html, /Sample size not reported/);
+  assert.match(html, /See all 12 records/);
+  assert.match(html, /not a count of independent surveys/);
+  assert.doesNotMatch(html, /167|1,461|1,628|admitted observations|covariance|logit/);
+  const zero = render({ view: included.view, polling: included.polling, selectedRaceId: "2026:AL-03:house:regular" });
+  assert.match(zero, /No eligible local poll question was selected/);
+  assert.match(zero, /does not mean no poll was conducted/);
+  const off = withInventedPolling(makeHouseLivePublication({ base: "fundamentals", polling: "none", uncertainty: "standard" }));
+  const disabled = render({ view: off.view, polling: off.polling });
+  assert.match(disabled, /Polling is switched off/);
+  assert.doesNotMatch(disabled, /aria-label="Included poll questions/);
+  assert.match(render(), /selection details have not been published/);
 });
 
 function inventedGeography() {
@@ -479,5 +499,83 @@ test("browser House router: publication availability, edition links, failures, h
     assert.equal(requests.group, 0);
     assert.equal(await page.evaluate(() => localStorage.length), 0);
     assert.deepEqual(pageErrors, []);
+  } finally { await browser.close(); }
+});
+
+test("browser polling: source details follow district/model changes without mobile focus jumps", {
+  skip: !process.env.BALLOTMANCY_LIVE_HOUSE_BROWSER, timeout: 120000,
+}, async () => {
+  const html = await buildRouterPreview();
+  const publications = new Map(nativeCatalog.entries.map(entry => {
+    const value = withInventedPolling(makeHouseLivePublication(entry.configuration));
+    return [value.view.run.id, value];
+  }));
+  const primary = publications.get(catalog.defaultId);
+  const { chromium, expect } = await import("@playwright/test");
+  const browser = await chromium.launch({ headless: true });
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 }, reducedMotion: "reduce" });
+  const errors = [];
+  page.on("pageerror", error => errors.push(error.message));
+  await page.route("http://house-polling.test/**", route => {
+    const url = new URL(route.request().url());
+    if (url.pathname === "/") return route.fulfill({ contentType: "text/html", body: html });
+    if (url.pathname === "/api/chambers/house/live/availability")
+      return route.fulfill({ json: { schema: "HouseLiveAvailabilityV1", available: true } });
+    if (url.pathname === "/api/chambers/house/live")
+      return route.fulfill({ json: publications.get(url.searchParams.get("run") ?? primary.view.run.id) });
+    return route.fulfill({ status: 404 });
+  });
+  try {
+    await page.goto("http://house-polling.test/?chamber=house&edition=current&race=2026%3AAL-01%3Ahouse%3Aregular");
+    const panel = page.getByRole("region", { name: "Which polls are included?", exact: true });
+    await expect(panel).toContainText("3 selected poll-question results");
+    await expect(panel.locator("details[open]")).toHaveCount(0);
+    await panel.getByText("How polls are chosen", { exact: true }).click();
+    await expect(panel).toContainText("The original publication time is not verified");
+    await panel.getByText("Poll details for AL-01", { exact: true }).click();
+    const included = panel.getByRole("list", { name: "Included poll questions for AL-01" });
+    await expect(included.getByRole("listitem")).toHaveCount(2);
+    await expect(included).toContainText("Sample size not reported");
+    await expect(included.getByRole("link", { name: "Poll source" }).first())
+      .toHaveAttribute("href", "https://example.invalid/invented-poll-0");
+    await panel.getByText("12 source question records left out for AL-01", { exact: true }).click();
+    const excluded = panel.getByRole("list", { name: "Excluded source questions for AL-01" });
+    await expect(excluded.getByRole("listitem")).toHaveCount(10);
+    await panel.getByRole("button", { name: "See all 12 records" }).click();
+    await expect(excluded.getByRole("listitem")).toHaveCount(12);
+    await panel.getByRole("heading", { name: "Which polls are included?" }).scrollIntoViewIfNeeded();
+    if (process.env.BALLOTMANCY_LIVE_HOUSE_SCREENSHOT_DIR) {
+      mkdirSync(process.env.BALLOTMANCY_LIVE_HOUSE_SCREENSHOT_DIR, { recursive: true });
+      await page.screenshot({ path: join(process.env.BALLOTMANCY_LIVE_HOUSE_SCREENSHOT_DIR, "polling-desktop.png") });
+    }
+    await page.setViewportSize({ width: 390, height: 844 });
+    const district = panel.getByLabel("District to inspect");
+    await district.focus();
+    await district.selectOption("2026:AL-03:house:regular");
+    await expect(district).toBeFocused();
+    await expect(panel).toContainText("No eligible local poll question was selected for AL-03");
+    await expect(page.locator("#house-live-detail-title")).toHaveText("AL-03");
+    await expect(page.locator("#house-live-detail-title")).not.toBeFocused();
+    await district.selectOption("2026:AL-01:house:regular");
+    await panel.getByText("12 source question records left out for AL-01", { exact: true }).click();
+    await expect(excluded.getByRole("listitem")).toHaveCount(10);
+    await panel.getByText("Why 14 source question records were left out", { exact: true }).click();
+    await expect(panel.getByRole("table")).toContainText("A different election or contest");
+    assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
+    if (process.env.BALLOTMANCY_LIVE_HOUSE_SCREENSHOT_DIR) {
+      await district.scrollIntoViewIfNeeded();
+      await page.screenshot({ path: join(process.env.BALLOTMANCY_LIVE_HOUSE_SCREENSHOT_DIR, "polling-mobile.png") });
+    }
+    await page.setViewportSize({ width: 1440, height: 900 });
+    const builder = page.locator("details.house-configuration");
+    await builder.locator("summary").first().click();
+    await page.getByRole("checkbox", { name: "Include current polling evidence" }).uncheck();
+    await expect(panel).toContainText("Polling is switched off");
+    await expect(panel.getByRole("list", { name: /^Included poll questions/ })).toHaveCount(0);
+    await expect(panel).toContainText("They are not used by this model");
+    await page.getByRole("checkbox", { name: "Include current polling evidence" }).check();
+    await expect(panel).toContainText("3 selected poll-question results");
+    assert.equal(await page.evaluate(() => localStorage.length), 0);
+    assert.deepEqual(errors, []);
   } finally { await browser.close(); }
 });

@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { parseHouseLivePublication } from "../lib/house-live-publication.ts";
 import { makeHouseLivePublication } from "./fixtures/house-live-publication.mjs";
+import { withInventedPolling } from "./fixtures/house-live-polling-publication.mjs";
 
 function publication() {
   return makeHouseLivePublication();
@@ -44,6 +45,37 @@ test("preserves optional website publication notes separately from native limita
   assert.deepEqual(output.view.qualification.limitations, nativeLimitations);
   output.publicationReview.limitations.push("Display-only mutation.");
   assert.equal(input.publicationReview.limitations.length, 2);
+});
+
+test("polling disclosure is tied to the selected result, source identities, per-race counts, and cutoff", () => {
+  const good = withInventedPolling(publication());
+  const parsed = parseHouseLivePublication(good);
+  assert.ok(parsed);
+  assert.equal(parsed.polling.usedQuestions.length, 3);
+  parsed.polling.usedQuestions[0].sourceUrls.push("https://example.invalid/changed");
+  assert.equal(good.polling.usedQuestions[0].sourceUrls.length, 1);
+  const absent = publication(); absent.polling = null;
+  assert.equal(parseHouseLivePublication(absent).polling, null);
+  for (const change of [
+    value => { value.polling.runId = "different-model"; },
+    value => { value.polling.resultSha256 = "0".repeat(64); },
+    value => { value.polling.cutoffs.forecastAt = "2026-10-21T00:00:00Z"; },
+    value => { value.polling.cutoffs.pollingAt = "2026-10-19T12:00:00Z"; },
+    value => { value.polling.bindings.admissionSha256 = "0".repeat(64); },
+    value => { value.polling.usedQuestions[0].sourceSha256 = "0".repeat(64); },
+    value => { value.view.races.find(race => race.seatId === "AL-01").pollCount = 1; },
+    value => { value.polling.usedQuestions[0].raceId = "2026:AK-00:house:regular"; },
+    value => { value.polling.usedQuestions[0].sourceUrls = ["javascript:alert(1)"]; },
+    value => { value.polling.privateSourcePath = "/private/ledger.json"; },
+  ]) {
+    const bad = structuredClone(good); change(bad);
+    assert.equal(parseHouseLivePublication(bad), null);
+  }
+  const off = withInventedPolling(makeHouseLivePublication({ base: "fundamentals", polling: "none", uncertainty: "standard" }));
+  assert.ok(parseHouseLivePublication(off));
+  assert.equal(off.polling.usedQuestions.length, 0);
+  off.polling.modelUsesSelectedQuestions = true;
+  assert.equal(parseHouseLivePublication(off), null);
 });
 
 test("rejects malformed or embellished website publication notes", () => {

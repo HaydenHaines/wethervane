@@ -11,6 +11,7 @@ import { parseHouseLiveCatalog } from "../lib/house-live-catalog.ts";
 import { validateHouseLiveCollection } from "../lib/house-live-collection.ts";
 import { checkHouseLiveJointArchive } from "../lib/house-live-joint-archive.ts";
 import { parseHouseLivePublicationQualification } from "../lib/house-live-native-qualification.ts";
+import { buildHouseLivePollingCollection } from "../lib/house-live-polling.ts";
 import { houseLiveConfigurationKey, houseLivePin, parseHouseLiveResult } from "../lib/house-live-result.ts";
 import { loadHouseLiveSitePublication, parseHouseLiveSiteReview, readHouseLiveAvailability } from "../lib/house-live-server.ts";
 
@@ -104,7 +105,7 @@ async function installNoReplace(parent, staging, output, pythonExecutable) {
 }
 
 export async function importHouseLive({ sourceRoot, catalog: catalogPin, reviewRoot, review: reviewPin,
-  geographySource, outputDirectory, pythonExecutable } = {}) {
+  geographySource, outputDirectory, pythonExecutable, polling } = {}) {
   require([sourceRoot, reviewRoot, outputDirectory].every(value => typeof value === "string" && value.length > 0),
     "Explicit source root, review root, and output directory are required.");
   require(geographySource && plainText(geographySource.name) && plainText(geographySource.url) &&
@@ -116,6 +117,13 @@ export async function importHouseLive({ sourceRoot, catalog: catalogPin, reviewR
   const output = resolve(outputDirectory), parent = dirname(output);
   require((await realpath(parent)) === parent, "Live House output parent must not traverse symlinks.");
   require(!inside(root, output) && !inside(operatorRoot, output), "Live House output must be outside both read-only source roots.");
+  let pollingRoot;
+  if (polling !== undefined) {
+    require(polling && typeof polling.directory === "string" && polling.directory.length > 0 &&
+      houseLivePin(polling.receipt) && houseLivePin(polling.ledger), "An explicit polling directory, receipt pin, and ledger pin are required together.");
+    pollingRoot = await realpath(polling.directory);
+    require(!inside(pollingRoot, output), "Live House output must be outside the read-only polling input directory.");
+  }
   await assertAbsent(output);
 
   const files = new Map();
@@ -124,6 +132,8 @@ export async function importHouseLive({ sourceRoot, catalog: catalogPin, reviewR
     require(safePath(path) && path !== "publication.json" && !path.startsWith("publication.json/"),
       "Staged native artifact conflicts with the publication manifest.");
     require(!/\.npz$/i.test(path), "Raw NPZ archives must never be staged for the site.");
+    if (polling) require(![polling.receipt.sha256, polling.ledger.sha256].includes(digest(bytes)),
+      "Raw polling selection receipts and ledgers must remain offline.");
     require(path !== reservedReviewPath, "Native artifact conflicts with the operator review path.");
     const existing = files.get(path);
     require(!existing || existing.equals(bytes), "Conflicting staged artifact paths.");
@@ -192,7 +202,7 @@ export async function importHouseLive({ sourceRoot, catalog: catalogPin, reviewR
   for (const result of results) require(!files.has(result.joint_draws.path),
     "A staged artifact path conflicts with a raw joint archive.");
 
-  const evidenceFiles = new Map(), combinedPlans = new Map();
+  const evidenceFiles = new Map(), evidenceByResult = new Map(), combinedPlans = new Map();
   for (const result of results) {
     const documents = [];
     for (const pin of result.qualification.evidence) {
@@ -205,10 +215,37 @@ export async function importHouseLive({ sourceRoot, catalog: catalogPin, reviewR
       }
       documents.push({ pin, value: file.value });
     }
+    evidenceByResult.set(result.id, documents);
     combinedPlans.set(result.id, resolvePredictionPlan(result, documents));
   }
   for (const result of results) require(!files.has(result.joint_draws.path),
     "A staged evidence path conflicts with a raw joint archive.");
+
+  let pollingDisclosure;
+  if (pollingRoot) {
+    const admissions = results.map(result => {
+      const documents = evidenceByResult.get(result.id).filter(document =>
+        document.value?.schema === "HouseLiveAggregateInputAdmissionV1");
+      require(documents.length === 1, `Result ${result.id} must identify one authenticated polling input admission.`);
+      return documents[0];
+    });
+    require(admissions.every(document => document.pin.sha256 === admissions[0].pin.sha256),
+      "Live House polling disclosure requires the same reviewed input admission for all 16 results.");
+    const sourcePolicy = await json(root, catalog.source_policy);
+    const [selection, ledger] = await Promise.all([json(pollingRoot, polling.receipt), json(pollingRoot, polling.ledger)]);
+    const disclosure = buildHouseLivePollingCollection({ catalog, catalogSha256: catalogPin.sha256,
+      results: results.map(result => ({ result,
+        resultSha256: catalog.entries.find(entry => entry.id === result.id).result.sha256 })),
+      sourcePolicy: sourcePolicy.value, sourcePolicySha256: catalog.source_policy.sha256,
+      admission: admissions[0].value, admissionSha256: admissions[0].pin.sha256,
+      selection: selection.value, selectionSha256: polling.receipt.sha256,
+      ledger: ledger.value, ledgerSha256: polling.ledger.sha256 });
+    require(disclosure, "Live House polling disclosure inputs did not pass validation.");
+    const bytes = bytesOf(disclosure), sha256 = digest(bytes);
+    pollingDisclosure = { path: `polling-disclosure-${sha256}.json`, sha256 };
+    require(!files.has(pollingDisclosure.path), "Native artifact conflicts with the derived polling disclosure path.");
+    stage(pollingDisclosure.path, bytes);
+  }
 
   let jointRowsChecked = 0;
   // Check each native result independently, even when multiple runs share an archive.
@@ -231,6 +268,7 @@ export async function importHouseLive({ sourceRoot, catalog: catalogPin, reviewR
       ...(geographySource.note === undefined ? {} : { sourceNote: geographySource.note }) },
     results: catalog.entries.map(entry => ({ id: entry.id,
       artifact: { path: entry.result.path, sha256: entry.result.sha256 } })),
+    ...(pollingDisclosure ? { pollingDisclosure } : {}),
   };
   const staging = await mkdtemp(join(parent, ".house-live-import-"));
   try {
@@ -256,6 +294,8 @@ async function main() {
     "--review-root": "reviewRoot", "--review": "reviewPath", "--review-sha256": "reviewSha256",
     "--geography-source-name": "geographyName", "--geography-source-url": "geographyUrl",
     "--geography-source-note": "geographyNote", "--output-dir": "outputDirectory", "--python": "pythonExecutable",
+    "--polling-root": "pollingRoot", "--polling-receipt": "pollingReceipt", "--polling-receipt-sha256": "pollingReceiptSha256",
+    "--polling-ledger": "pollingLedger", "--polling-ledger-sha256": "pollingLedgerSha256",
   };
   const args = process.argv.slice(2);
   for (let index = 0; index < args.length; index += 2) {
@@ -263,9 +303,16 @@ async function main() {
     require(name && args[index + 1] && options[name] === undefined, "Expected explicit, nonrepeated offline importer options.");
     options[name] = args[index + 1];
   }
+  const pollingOptions = ["pollingRoot", "pollingReceipt", "pollingReceiptSha256", "pollingLedger", "pollingLedgerSha256"];
+  const pollingOptionCount = pollingOptions.filter(name => options[name] !== undefined).length;
+  require(pollingOptionCount === 0 || pollingOptionCount === pollingOptions.length,
+    "Polling options require --polling-root, --polling-receipt, --polling-receipt-sha256, --polling-ledger, and --polling-ledger-sha256 together.");
   console.log(JSON.stringify(await importHouseLive({ ...options,
     catalog: { path: options.catalogPath, sha256: options.catalogSha256 },
     review: { path: options.reviewPath, sha256: options.reviewSha256 },
+    ...(pollingOptionCount ? { polling: { directory: options.pollingRoot,
+      receipt: { path: options.pollingReceipt, sha256: options.pollingReceiptSha256 },
+      ledger: { path: options.pollingLedger, sha256: options.pollingLedgerSha256 } } } : {}),
     geographySource: { name: options.geographyName, url: options.geographyUrl,
       ...(options.geographyNote === undefined ? {} : { note: options.geographyNote }) },
   })));

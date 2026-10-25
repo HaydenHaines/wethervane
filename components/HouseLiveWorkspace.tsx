@@ -124,6 +124,7 @@ export default function HouseLiveWorkspace({ onHistorical, onReturn }: { onHisto
     </div> : <p role="status">Loading the current House forecast…</p>}
   </main>;
   return <HouseLiveResults view={publication.view} catalog={publication.catalog} geography={publication.geography}
+    polling={publication.polling}
     publicationLimitations={publication.publicationReview?.limitations}
     builderExpanded={builderExpanded} onBuilderExpandedChange={setBuilderExpanded} busy={busy} error={error}
     onSelect={chooseModel} onRetry={retry} onHistorical={onHistorical} selectedRaceId={raceId} onRaceSelect={selectRace}

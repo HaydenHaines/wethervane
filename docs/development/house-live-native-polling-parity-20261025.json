@@ -1,0 +1,44 @@
+{
+  "schema": "HouseLiveNativePollingMetadataParityV1",
+  "issued_utc": "2026-10-25T16:47:19.310156+00:00",
+  "status": "metadata_and_selection_identity_reconciled_not_publication",
+  "native_disclosure": {
+    "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-20261025/adapter-check-v4/evidence/polling-disclosure-v1.json",
+    "sha256": "a4641cfbae395ee8e11208911ee30d6b8fa3e5a9439bbc565e9e71c58ea4d9d3"
+  },
+  "native_result": {
+    "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-20261025/adapter-check-v4/result.json",
+    "sha256": "3bde7bdca60ad9266de41bb5ce06e8e7362044cae77d12d4d798c9d45b00747b"
+  },
+  "source_ledger": {
+    "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-20261025/polls-v3/ledger.json",
+    "sha256": "67eedef5f40f3b233a0e1f557cface5e430e6f64cef3fa59d380f725ea6c3c73"
+  },
+  "observations": 167,
+  "districts": 98,
+  "missing_sample_sizes": 27,
+  "excluded_question_groups": 1461,
+  "checked_fields": [
+    "race_id",
+    "district_key",
+    "source_id",
+    "source_sha256",
+    "pollster",
+    "population",
+    "nominal_n",
+    "sample_size_status",
+    "start_date",
+    "field_end",
+    "available_date",
+    "first_candidate_id",
+    "second_candidate_id",
+    "source_urls"
+  ],
+  "checks": [
+    "Exact selected observation ID set and metadata against pinned ledger",
+    "Exact selected IDs in every current default district result",
+    "All first-failure exclusion totals and broad source denominator",
+    "Native admission/source-policy and ledger/receipt hash references"
+  ],
+  "limits": "No poll percentages reviewed by this check; no original questionnaire or predictive-skill validation; all16 finalresult binding remains pending; native publication_status is not_reviewed."
+}

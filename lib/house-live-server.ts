@@ -5,11 +5,12 @@ import type { DistrictGeography } from "./district-geography";
 import { readPinnedHouseLiveJson, verifyPinnedHouseLiveArtifact,
   type HouseLiveArtifactPin } from "./house-live-artifacts.ts";
 import { parseHouseLiveCatalog } from "./house-live-catalog.ts";
-import { parseHouseLiveResult, houseLiveConfigurationKey } from "./house-live-result.ts";
+import { parseHouseLiveResult, houseLiveConfigurationKey, houseLivePin } from "./house-live-result.ts";
 import { houseLiveCatalogView, houseLiveView } from "./house-live-view.ts";
 import { parseHouseLivePublication, type HouseLivePublication } from "./house-live-publication.ts";
 import { houseLiveRunId } from "./house-live-navigation.ts";
 import { parseHouseLivePublicationQualification } from "./house-live-native-qualification.ts";
+import { parseHouseLivePollingCollection, projectHouseLivePollingRun, type HouseLivePollingRun } from "./house-live-polling.ts";
 
 export interface HouseLiveSiteManifestV1 {
   schema: "HouseLiveSiteManifestV1";
@@ -19,6 +20,7 @@ export interface HouseLiveSiteManifestV1 {
   review: HouseLiveArtifactPin;
   sourcePolicy: HouseLiveArtifactPin;
   qualification: HouseLiveArtifactPin;
+  pollingDisclosure?: HouseLiveArtifactPin;
   geography: {
     artifact: HouseLiveArtifactPin;
     sourceReceipt: HouseLiveArtifactPin;
@@ -71,9 +73,10 @@ const pin = (value: unknown): value is HouseLiveArtifactPin =>
 
 function parseManifest(value: unknown): HouseLiveSiteManifestV1 {
   if (!object(value) || !exactKeys(value, ["schema", "status", "cycle", "catalog", "review",
-    "sourcePolicy", "qualification", "geography", "results"]) ||
+    "sourcePolicy", "qualification", "geography", "results", ...(value.pollingDisclosure === undefined ? [] : ["pollingDisclosure"])]) ||
     value.schema !== "HouseLiveSiteManifestV1" || value.status !== "available" || value.cycle !== 2026 ||
     !pin(value.catalog) || !pin(value.review) || !pin(value.sourcePolicy) || !pin(value.qualification) ||
+    !(value.pollingDisclosure === undefined || pin(value.pollingDisclosure)) ||
     !object(value.geography) ||
     !exactKeys(value.geography, ["artifact", "sourceReceipt", "sourceName", "sourceUrl", ...(value.geography.sourceNote === undefined ? [] : ["sourceNote"])]) ||
     !pin(value.geography.artifact) || !pin(value.geography.sourceReceipt) ||
@@ -168,7 +171,8 @@ async function loadStaged(directory: string, runId?: string | null): Promise<{
   // Runtime checks authenticate staged bytes. The checked-in operator review
   // records prior importer checks of raw joint rows and all-run roster identity;
   // neither this loader nor matching booleans re-establish those findings.
-  await verifyPinnedHouseLiveArtifact(directory, manifest.sourcePolicy);
+  const sourcePolicy = manifest.pollingDisclosure ? await readPinnedHouseLiveJson(directory, manifest.sourcePolicy) : null;
+  if (!manifest.pollingDisclosure) await verifyPinnedHouseLiveArtifact(directory, manifest.sourcePolicy);
   const qualification = parseHouseLivePublicationQualification(await readPinnedHouseLiveJson(directory, manifest.qualification));
   if (!qualification || qualification.seat_quantile_convention !== review.seat_quantile_convention)
     throw Error("Native House qualification is unreviewed or disagrees with the reviewed export convention.");
@@ -184,6 +188,40 @@ async function loadStaged(directory: string, runId?: string | null): Promise<{
     native.qualification.publication_status !== "reviewed" ||
     qualification.limitations.some(note => !native.qualification.limitations.includes(note)))
     throw Error("Selected native live House result does not match its reviewed release.");
+  let polling: HouseLivePollingRun | null = null;
+  if (manifest.pollingDisclosure) {
+    const disclosure = parseHouseLivePollingCollection(await readPinnedHouseLiveJson(directory, manifest.pollingDisclosure));
+    if (!disclosure || disclosure.bindings.catalogSha256 !== manifest.catalog.sha256 ||
+      disclosure.bindings.sourcePolicySha256 !== manifest.sourcePolicy.sha256 ||
+      !object(sourcePolicy) || sourcePolicy.schema !== "HouseLiveSourcePolicyV1" ||
+      disclosure.cutoffs.forecastAt !== sourcePolicy.forecast_cutoff ||
+      disclosure.cutoffs.pollingAt !== sourcePolicy.polling_cutoff ||
+      Date.parse(disclosure.cutoffs.forecastAt) !== Date.parse(native.forecast_cutoff) ||
+      disclosure.runs.some(run => !catalog.entries.some(row => row.id === run.id &&
+        row.result.sha256 === run.resultSha256 && row.configuration.polling === run.polling)))
+      throw Error("Live House polling disclosure does not bind its catalog, source policy, or native cutoffs.");
+    const admissions: { artifact: HouseLiveArtifactPin; value: Record<string, unknown> }[] = [];
+    for (const artifact of native.qualification.evidence) {
+      const value = await readPinnedHouseLiveJson(directory, artifact);
+      if (object(value) && value.schema === "HouseLiveAggregateInputAdmissionV1") admissions.push({ artifact, value });
+    }
+    const admission = admissions[0];
+    if (admissions.length !== 1 || admission.artifact.sha256 !== disclosure.bindings.admissionSha256 ||
+      admission.value.status !== "admitted_for_current_aggregate_comparison" ||
+      typeof admission.value.forecast_cutoff !== "string" ||
+      Date.parse(admission.value.forecast_cutoff) !== Date.parse(disclosure.cutoffs.forecastAt) ||
+      !Array.isArray(admission.value.input_pins) || !admission.value.input_pins.every(houseLivePin) ||
+      ![disclosure.bindings.sourcePolicySha256, disclosure.bindings.selectionSha256, disclosure.bindings.ledgerSha256]
+        .every(sha256 => (admission.value.input_pins as { sha256: string }[]).filter(row => row.sha256 === sha256).length === 1))
+      throw Error("Live House polling disclosure does not bind its authenticated native input admission.");
+    polling = projectHouseLivePollingRun(disclosure, native.id, staged.artifact.sha256);
+    const observations = new Map(native.races.flatMap(race => race.poll_source_ids.map(id => [id, race.race_id] as const)));
+    if (!polling || observations.size !== native.races.reduce((sum, race) => sum + race.poll_source_ids.length, 0) ||
+      polling.modelUsesSelectedQuestions !== (native.configuration.polling === "standard") ||
+      polling.usedQuestions.length !== observations.size || polling.usedQuestions.some(question =>
+        observations.get(question.observationId) !== question.raceId))
+      throw Error("Live House polling disclosure questions do not match the selected native result.");
+  }
   const geography: DistrictGeography = {
     metadata: { cycle: 2026, mapVintage: native.map_vintage, admission: "verified",
       sourceSha256: manifest.geography.artifact.sha256,
@@ -193,7 +231,7 @@ async function loadStaged(directory: string, runId?: string | null): Promise<{
     geojson: geojson as DistrictGeography["geojson"],
   };
   const projected = { schema: "HouseLivePublicationV1", status: "available",
-    catalog: houseLiveCatalogView(catalog), view: houseLiveView(native, entry), geography,
+    catalog: houseLiveCatalogView(catalog), view: houseLiveView(native, entry), geography, polling,
     publicationReview: { limitations: [...review.limitations] } };
   const publication = parseHouseLivePublication(projected);
   if (!publication || !publication.geography)
