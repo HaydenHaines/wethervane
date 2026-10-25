@@ -1,0 +1,91 @@
+{
+  "schema": "DisjointTXTotalPollErrorScalesV1",
+  "standard_deviations": {
+    "independent": 0.0847687005894485,
+    "cycle": 0.06839268161086566,
+    "race": 0.06524804280672113,
+    "house": 0.07182302049841491,
+    "movement": 0.08177676896487782
+  },
+  "regularization": {
+    "log_scale_medians": {
+      "independent": 0.1,
+      "cycle": 0.06,
+      "race": 0.06,
+      "house": 0.03,
+      "movement": 0.05
+    },
+    "log_scale_sd": 0.7
+  },
+  "conditional_parameter_estimates": true,
+  "objective": -1125.1396985008114,
+  "gradient_max": 7.741511021591707e-05,
+  "attempts": [
+    {
+      "success": true,
+      "message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+      "objective": -1125.139698499886,
+      "iterations": 20,
+      "gradient_max": 0.0005228868820717492
+    },
+    {
+      "success": true,
+      "message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+      "objective": -1125.1396985008114,
+      "iterations": 16,
+      "gradient_max": 7.741511021591707e-05
+    },
+    {
+      "success": true,
+      "message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH",
+      "objective": -1125.1396985008025,
+      "iterations": 19,
+      "gradient_max": 6.360516448977727e-05
+    }
+  ],
+  "training_cycles": [
+    "2012",
+    "2016",
+    "2018",
+    "2020"
+  ],
+  "training_observations": 1483,
+  "units": "principal-contender log odds; movement per sqrt(30 days)",
+  "qualification": "Regularized historical working-error fit; covariance uncertainty not integrated",
+  "completed_utc": "2026-10-20T21:37:08.460982+00:00",
+  "route": {
+    "path": "research/senate-stack-integration-20261020/actual-source-review-astra-v1/disjoint-calibration-route.json",
+    "sha256": "f745bebf7f268a7b67c4fad010346c2efd42dd4258ad611ae59adde1d9f26361"
+  },
+  "selected_training": {
+    "path": "research/senate-stack-integration-20261020/tx-disjoint-calibration-sol-v1/attempt-v1/selected-disjoint-training.csv",
+    "sha256": "151a14846e850ff0b4537897a29faa772a5a5e0a81f8cd92f41fcdec202dcb61"
+  },
+  "excluded_training": {
+    "path": "research/senate-stack-integration-20261020/tx-disjoint-calibration-sol-v1/attempt-v1/excluded-original-rows.csv",
+    "sha256": "df7e7e85b32ec7f42751e5154b32b010c1255d408d1845ece2800b6efdd386e4"
+  },
+  "training_races": 105,
+  "downstream_event_overlap": [],
+  "excluded_event_keys": [
+    "2020:TX:senate:regular",
+    "2024:TX:senate:regular"
+  ],
+  "same_cycle_other_state_dependence_not_jointly_modeled": true,
+  "recomputed_objective": -1125.1396985008114,
+  "analytic_gradient": [
+    7.741511021591707e-05,
+    -3.152044405985155e-06,
+    5.151962269051014e-06,
+    3.282476665167344e-05,
+    3.9032452308074284e-05
+  ],
+  "finite_difference_gradient": [
+    7.739799912087619e-05,
+    -3.1491254048887636e-06,
+    5.172751116333529e-06,
+    3.283275873400271e-05,
+    3.9051428757375106e-05
+  ],
+  "gradient_difference_max": 2.0788847282515732e-08
+}

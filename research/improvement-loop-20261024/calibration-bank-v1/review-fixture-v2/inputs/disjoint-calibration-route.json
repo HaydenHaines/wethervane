@@ -1,0 +1,61 @@
+{
+  "schema": "DisjointTXPilotCalibrationRouteV1",
+  "status": "recommended_not_executed",
+  "input": {
+    "path": "research/polling-layer-implementation-20261020/calibration-v1/selected-training-polls.csv",
+    "sha256": "2cfe745917c250bd128fd3664357abaefa3e74fadd54b12f24d4cb914ef70a79"
+  },
+  "excluded_row_ledger": {
+    "path": "research/senate-stack-integration-20261020/actual-source-review-astra-v1/excluded-calibration-observations.csv",
+    "sha256": "0dbcd883c5499e382cbd0d0d46467e31323c77e72543cc119db72dd6131bd08f"
+  },
+  "exclusion_rule": "state==TX AND cycle in {2020,2024}; prohibit all downstream-observed race/event outcome IDs independently of spelling",
+  "excluded_count": 31,
+  "excluded_race_ids": [
+    "2020:TX:senate:regular"
+  ],
+  "remaining_count": 1483,
+  "remaining_races": 105,
+  "remaining_per_cycle": {
+    "2012": 467,
+    "2016": 463,
+    "2018": 288,
+    "2020": 265
+  },
+  "estimator": {
+    "path": "src/forecasting/poll_covariance_v1.py",
+    "sha256": "9ae130b3f314d75a5255c7c92fab502ec596a7cca2960090706fa203b133e05d",
+    "functions": [
+      "PollCoordinates",
+      "fit_error_scales",
+      "error_covariance"
+    ],
+    "residual": "logit(dem_share)-logit(actual_dem_share)",
+    "regularizer_medians": {
+      "independent": 0.1,
+      "cycle": 0.06,
+      "race": 0.06,
+      "house": 0.03,
+      "movement": 0.05
+    },
+    "regularizer_log_sd": 0.7,
+    "optimizer_starts": [
+      0.5,
+      1,
+      2
+    ]
+  },
+  "checks_required": [
+    "exact removed row IDs and remaining input hashes",
+    "zero overlap by canonical state/event/contest outcome identity with all actual downstream observed counts",
+    "new estimator convergence and finite scales/objective/gradient diagnostics",
+    "new six-poll covariance positive definite and independently reconstructed from unchanged target coordinates",
+    "exact same six values/IDs and no extra sampling/Brownian/house variance",
+    "new source ownership and calibration lineage; old R never advertised as disjoint"
+  ],
+  "future_limits": [
+    "Conditional fixed-scale empirical Bayes remains; calibration uncertainty omitted",
+    "Same-cycle different-state shocks may be dependent; event disjointness is not full joint inference",
+    "For national actual training, choose truly separate calibration events or jointly own historical polling/returns in a new model"
+  ]
+}

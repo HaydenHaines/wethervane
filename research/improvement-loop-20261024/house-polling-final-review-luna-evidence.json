@@ -1,0 +1,113 @@
+{
+  "reviewer": "Luna",
+  "review_date": "2026-10-24",
+  "scope": "Read-only independent integrity and score reproduction review; no fits or owner-source edits.",
+  "pins": {
+    "catalog": {
+      "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-polling-benchmark-20261024/frontend-results-v1/catalog.json",
+      "sha256": "9b35f2a63c895cf6b01de9ac3542b2f7abcb68a555aabdc73fedcb5d55683b0c"
+    },
+    "output_audit_review": {
+      "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-polling-benchmark-20261024/output-audit-v2/review.json",
+      "sha256": "86e537ae80784dd937e4c90dc6655afe3f0de1b6cb737ce3c5bd89011282b1e9"
+    },
+    "recursive_pins_checked": 327,
+    "missing_or_hash_mismatches": 0
+  },
+  "matched_F_FP_pairs": {
+    "pair_count": 16,
+    "cycles": [2018, 2020, 2022, 2024],
+    "configuration_ids": [
+      "senate_history_v1",
+      "senate_presidential_slope_v1",
+      "senate_relative_lean_v1",
+      "senate_relative_context_v1"
+    ],
+    "race_ids_per_packet": 435,
+    "checks": [
+      "same race IDs",
+      "same group IDs",
+      "same member IDs and kinds",
+      "same rule family, nominal cutoff, comparison key, support mode, score eligibility, and share-reference availability",
+      "same outcome status, group/member outcome, source basis, and unavailable reason"
+    ],
+    "mismatches": 0,
+    "2018_NC09": "Unavailable outcome retained in both F and FP; excluded from scored outcomes."
+  },
+  "group_score_mask_counts": {
+    "2018": {"all435_groups": 434, "polled_groups": 115, "unpolled_groups": 319, "noncore_groups": 63},
+    "2020": {"all435_groups": 435, "polled_groups": 82, "unpolled_groups": 353, "noncore_groups": 52},
+    "2022": {"all435_groups": 435, "polled_groups": 65, "unpolled_groups": 370, "noncore_groups": 62},
+    "2024": {"all435_groups": 435, "polled_groups": 75, "unpolled_groups": 360, "noncore_groups": 60}
+  },
+  "independent_FP_categorical_brier": {
+    "formula": "mean over observed rows of sum over D/R/O groups (p_g - 1[y=g])^2",
+    "comparison": "Recomputed from group_win_probabilities and observed_result.group_id; compared with each packet race_scores[subset=all435_groups] and group-cycle-scores.csv.",
+    "maximum_absolute_difference": "< 1e-16",
+    "values": {
+      "2018": {
+        "senate_history_v1": 0.0793762721126152,
+        "senate_presidential_slope_v1": 0.084230822468858,
+        "senate_relative_lean_v1": 0.0844718397839861,
+        "senate_relative_context_v1": 0.0781728903434619
+      },
+      "2020": {
+        "senate_history_v1": 0.0570130699195402,
+        "senate_presidential_slope_v1": 0.0565842481652298,
+        "senate_relative_lean_v1": 0.0567066266752873,
+        "senate_relative_context_v1": 0.0533612308721264
+      },
+      "2022": {
+        "senate_history_v1": 0.0546121746853448,
+        "senate_presidential_slope_v1": 0.0526365148958333,
+        "senate_relative_lean_v1": 0.0526848984123563,
+        "senate_relative_context_v1": 0.0543923055862068
+      },
+      "2024": {
+        "senate_history_v1": 0.0330994700086206,
+        "senate_presidential_slope_v1": 0.0330053785244252,
+        "senate_relative_lean_v1": 0.0330086213915229,
+        "senate_relative_context_v1": 0.0325798798311781
+      }
+    }
+  },
+  "mask_crosswalk": {
+    "all435_groups": "Same rows as original F public all_scored; original F packet recalculations matched exports.",
+    "noncore_groups": "Same rows as original F newly_included; counts and recalculated scores match.",
+    "competitive_F_probability_0_1_to_0_9": "Not equivalent to old public competitive mask, which is prior presidential Democratic share 45%-55%.",
+    "polled_groups_and_unpolled_groups": "New poll-availability masks; use F recomputed on those exact rows for F/FP comparisons.",
+    "all_original_share_eligible": "Original F share roster.",
+    "same_polled_races_F_P_FP": "New matched polling subset."
+  },
+  "2020_relative_context_F_to_FP": {
+    "all_435_group_brier": {"F": 0.0498772, "FP": 0.0533612, "direction": "worse"},
+    "polled_82_group_brier": {"F": 0.157304, "FP": 0.196103, "direction": "worse"},
+    "unpolled_353_group_brier": {"F": 0.024923, "FP": 0.020203, "direction": "better"},
+    "original_383_share_eligible": {
+      "share_CRPS": {"F": 0.0213182, "FP": 0.0240597, "direction": "worse"},
+      "share_Brier": {"F": 0.0256751, "FP": 0.0288408, "direction": "worse"},
+      "80pct_coverage": {"F": 0.9347, "FP": 0.7911, "direction": "lower"}
+    },
+    "same_82_polled_races": {
+      "share_CRPS": {"F": 0.0246296, "FP": 0.0174785, "direction": "better"},
+      "share_Brier": {"F": 0.0786115, "FP": 0.0980521, "direction": "worse"},
+      "point_call_accuracy": {"F": 0.9146341, "FP": 0.8658537, "direction": "worse"},
+      "log_loss": {"F": 0.30680, "FP": 0.30904, "direction": "slightly worse"},
+      "80pct_coverage": {"F": 0.9512, "FP": 0.8415, "direction": "lower"}
+    },
+    "interpretation": "Metric- and mask-specific mixed results; not a single helps/hurts conclusion and not a causal explanation."
+  },
+  "identity_review": {
+    "unique_race_party_display_aliases": 7,
+    "member_identity_or_group_mapping_changes": 0,
+    "winner_display_spelling_divergence_cases": ["2018 WA-03 R", "2020 NH-02 D", "2022 WY-00 R"],
+    "severity": "Presentation inconsistency only; documented aliases preserve member IDs and outcomes."
+  },
+  "scope": {
+    "catalog_status": "reviewed_experimental_research",
+    "current2026": false,
+    "public_chamber_control_qualified": false,
+    "website_activation_requested": false,
+    "publication_scope": "Retrospective actual-race historical comparison only; no 2026 forecast, chamber-control, or activation qualification."
+  }
+}

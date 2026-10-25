@@ -1,0 +1,148 @@
+{
+  "title": "EIA archived weekly retail gasoline release evidence",
+  "as_of": "2026-10-24",
+  "series": "U.S. regular gasoline, all formulations, retail price, dollars per gallon; EIA-878; Monday price observation",
+  "cycle_cutoffs": [
+    {
+      "cycle": 2018,
+      "cutoff_date": "2018-10-23",
+      "latest_price_date": "2018-10-22",
+      "latest_price_usd_per_gallon": "2.841",
+      "lag13_date": "2018-07-23",
+      "lag13_price_usd_per_gallon": "2.831",
+      "change_usd_per_gallon": "0.010",
+      "pct_change": 0.3532,
+      "log_change_pct": 0.3526,
+      "twip_release_dates": [
+        "2018-10-24",
+        "2018-07-25"
+      ],
+      "archive_files": [
+        "twip-2018.html",
+        "twip-lag13-2018.html"
+      ],
+      "strict_asof_qualified": false,
+      "historical_schedule_proxy": true,
+      "proxy_assumptions": [
+        "The Monday Gasoline and Diesel Fuel Update was posted at its stated usual time for each week.",
+        "The exact Monday value shown in the Wednesday archived summary is the same value posted Monday.",
+        "No revision or correction occurred between the Monday posting and the later archive summary."
+      ]
+    },
+    {
+      "cycle": 2020,
+      "cutoff_date": "2020-10-20",
+      "latest_price_date": "2020-10-19",
+      "latest_price_usd_per_gallon": "2.150",
+      "lag13_date": "2020-07-20",
+      "lag13_price_usd_per_gallon": "2.186",
+      "change_usd_per_gallon": "-0.036",
+      "pct_change": -1.6468,
+      "log_change_pct": -1.6606,
+      "twip_release_dates": [
+        "2020-10-21",
+        "2020-07-22"
+      ],
+      "archive_files": [
+        "twip-2020.html",
+        "twip-lag13-2020.html"
+      ],
+      "strict_asof_qualified": false,
+      "historical_schedule_proxy": true,
+      "proxy_assumptions": [
+        "The Monday Gasoline and Diesel Fuel Update was posted at its stated usual time for each week.",
+        "The exact Monday value shown in the Wednesday archived summary is the same value posted Monday.",
+        "No revision or correction occurred between the Monday posting and the later archive summary."
+      ]
+    },
+    {
+      "cycle": 2022,
+      "cutoff_date": "2022-10-25",
+      "latest_price_date": "2022-10-24",
+      "latest_price_usd_per_gallon": "3.769",
+      "lag13_date": "2022-07-25",
+      "lag13_price_usd_per_gallon": "4.330",
+      "change_usd_per_gallon": "-0.561",
+      "pct_change": -12.9561,
+      "log_change_pct": -13.8758,
+      "twip_release_dates": [
+        "2022-10-26",
+        "2022-07-27"
+      ],
+      "archive_files": [
+        "twip-2022.html",
+        "twip-lag13-2022.html"
+      ],
+      "strict_asof_qualified": false,
+      "historical_schedule_proxy": true,
+      "proxy_assumptions": [
+        "The Monday Gasoline and Diesel Fuel Update was posted at its stated usual time for each week.",
+        "The exact Monday value shown in the Wednesday archived summary is the same value posted Monday.",
+        "No revision or correction occurred between the Monday posting and the later archive summary."
+      ]
+    },
+    {
+      "cycle": 2024,
+      "cutoff_date": "2024-10-22",
+      "latest_price_date": "2024-10-21",
+      "latest_price_usd_per_gallon": "3.144",
+      "lag13_date": "2024-07-22",
+      "lag13_price_usd_per_gallon": "3.471",
+      "change_usd_per_gallon": "-0.327",
+      "pct_change": -9.4209,
+      "log_change_pct": -9.8947,
+      "twip_release_dates": [
+        "2024-10-23",
+        "2024-07-24"
+      ],
+      "archive_files": [
+        "twip-2024.html",
+        "twip-lag13-2024.html"
+      ],
+      "strict_asof_qualified": false,
+      "historical_schedule_proxy": true,
+      "proxy_assumptions": [
+        "The Monday Gasoline and Diesel Fuel Update was posted at its stated usual time for each week.",
+        "The exact Monday value shown in the Wednesday archived summary is the same value posted Monday.",
+        "No revision or correction occurred between the Monday posting and the later archive summary."
+      ]
+    }
+  ],
+  "calculation": "13-week absolute change = p(t)-p(t-13 weeks); pct = 100*(p_t/p_tminus13-1); log_change_pct = 100*ln(p_t/p_tminus13). Values rounded from source prices, which are published to $0.001/gal.",
+  "source_urls": {
+    "2018": "https://www.eia.gov/petroleum/weekly/archive/2018/181024/includes/analysis_print.php",
+    "2018_lag13": "https://www.eia.gov/petroleum/weekly/archive/2018/180725/includes/analysis_print.php",
+    "2020": "https://www.eia.gov/petroleum/weekly/archive/2020/201021/includes/analysis_print.php",
+    "2020_lag13": "https://www.eia.gov/petroleum/weekly/archive/2020/200722/includes/analysis_print.php",
+    "2022": "https://www.eia.gov/petroleum/weekly/archive/2022/221026/includes/analysis_print.php",
+    "2022_lag13": "https://www.eia.gov/petroleum/weekly/archive/2022/220727/includes/analysis_print.php",
+    "2024": "https://www.eia.gov/petroleum/weekly/archive/2024/241023/includes/hometables_print.php",
+    "2024_lag13": "https://www.eia.gov/petroleum/weekly/archive/2024/240724/includes/hometables_print.php",
+    "methodology": "https://www.eia.gov/petroleum/gasdiesel/gas_proc-methods.php",
+    "publication_change_notice": "https://www.eia.gov/petroleum/gasdiesel/notice.php?fs=e&s=cl",
+    "pre2025_schedule": "https://www.eia.gov/petroleum/supply/weekly/pdf/appendixb.pdf",
+    "eia_2022_monday_schedule": "https://www.eia.gov/TodayinEnergy/detail.php?id=54439",
+    "eia_2025_schedule_change": "https://www.eia.gov/petroleum/gasdiesel/notice.php?fs=e&s=cl",
+    "eia_methodology_break": "https://www.eia.gov/petroleum/gasdiesel/gas_proc-methods.php"
+  },
+  "sha256": {
+    "eia-2022-gdfu-schedule.html": "93bdb5aa79ef6bd676b841cde6b80b4d0fda2b482ea00e88ff245aa6d60bd1b9",
+    "eia-2025-release-change.html": "f60790cfe66e325baaa8da5287dc158809603e0ff643fda7d123700624e0029e",
+    "twip-2018.html": "d8bbe372d3ecc5de6eeaf174974d48503834015c8cc7f69cdd34f47955244fd0",
+    "twip-2020.html": "5a6e005a0e57573d179cefcb646d8b22dd58f87e3f571c565b48bf5f7c83ea68",
+    "twip-2022.html": "2043f84527c8c59dae699b0c02ecae56d41ce15f0473d217384b24f861e66a18",
+    "twip-2024.html": "06c6386dfb15e603854d56316c2797d00dbdda8e8b9632db7384291365c90396",
+    "twip-lag13-2018.html": "6c1442e5c43f068d0e4f25f5a188bbc5400461d459baa1f9f8b1c4bb25871cb4",
+    "twip-lag13-2020.html": "0342414480aa50c42f080cb7587f359c1dd6b2f468a5fff0accefa9f8de1c6f1",
+    "twip-lag13-2022.html": "53b6062a607e5fa9fe19ead8f8a11a85e8f26d3b3ffadc4394a44a98250d1d06",
+    "twip-lag13-2024.html": "6c0579b98c0788350941143ce6dd1327b7fc67159f43077081afd431af2196ef"
+  },
+  "availability_caveat": "The EIA TWIP archive preserves the exact Monday observation date and price in a later-week Wednesday summary, after each Tuesday H14 cutoff. The pre-April-2025 historical schedule indicates a normal Monday ~5 p.m. ET release, but the later summary does not prove the exact values/bytes had been publicly posted by Tuesday or that no revision occurred in between. Treat historical availability as a schedule proxy under the listed assumptions only. strict_asof_qualified is false; historical_schedule_proxy is true. No original timestamped Monday GDFU capture or posting log was recovered. The publication schedule changed beginning week of April 7, 2025.",
+  "strict_asof_qualified": false,
+  "historical_schedule_proxy": true,
+  "proxy_assumptions": [
+    "The Monday Gasoline and Diesel Fuel Update was posted at its stated usual time for each week.",
+    "The exact Monday value shown in the Wednesday archived summary is the same value posted Monday.",
+    "No revision or correction occurred between the Monday posting and the later archive summary."
+  ]
+}
