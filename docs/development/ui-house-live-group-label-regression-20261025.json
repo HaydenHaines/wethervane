@@ -1,0 +1,34 @@
+{
+  "schema": "HouseLiveGroupLabelRegressionIntegrationV1",
+  "issued_utc": "2026-10-25T18:05:14.771410+00:00",
+  "status": "reviewed_regression_integrated",
+  "base_frontend_commit": "0d7453973deb5b40e3a939d012ab7cf7b4c064ea",
+  "test": {
+    "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/tests/house-live-results.test.mjs",
+    "sha256": "9d73f7e8cb4ea98045b7562f93cc243ab72e51cf07ea3076252f57997459d4b0",
+    "size": 40077
+  },
+  "unchanged_component": {
+    "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/components/HouseLiveResults.tsx",
+    "sha256": "5dd8734cd125fd2c1fc36ce9072b8867cd90b94982500215e3332c8fab0fd5a8",
+    "size": 19494
+  },
+  "owner_validation": {
+    "path": "/home/hayden/projects/ballotmancy-house-benchmark/docs/development/house-live-mixed-other-label-fix-20261025.json",
+    "sha256": "1ce897c293c3f3866f3574a5804ce8d4256c81773269c70a917da0f1a4ace81e",
+    "size": 3220
+  },
+  "patch": {
+    "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/coordination-frontend-20261025/house-group-label-regression-only.patch",
+    "sha256": "3746e63c12afddc0a067a6cd6c797a964d1eedbfd3f7b905cd21d4b0df66b20a",
+    "size": 2077
+  },
+  "validation": "Exact test/component bytes match independently tested owner candidate. Authenticated logs show regression failing before fix,8 rendering/browser tests passing after, and typecheck success. Root applied only the regression patch; unchanged tests were not repeated.",
+  "assertions": [
+    "Mixed Other group keeps group affiliation label",
+    "Each member retains its own affiliation",
+    "Combined probability and50percent fixture unchanged",
+    "Singleton Independent label retained"
+  ],
+  "publication": "Synthetic rendering/browser evidence only. Final actual-data browser checks await qualified complete House collection. No deployment."
+}

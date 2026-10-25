@@ -90,6 +90,29 @@ test("Other leaders stay out of the D/R path; a missing chamber never creates co
   assert.doesNotMatch(missing, /id="house-live-control-title"/);
 });
 
+test("mixed Other groups retain member affiliations without adopting one member's party label", () => {
+  const grouped = structuredClone(view);
+  const race = grouped.races.find(item => item.district.districtKey === "AL-02");
+  const outcome = race.outcomes.find(item => item.party === "O");
+  const independent = race.candidates.find(item => item.id === outcome.members[0].id);
+  const libertarian = { ...independent, id: "invented-libertarian", name: "Invented Libertarian", partyLabel: "Libertarian" };
+  race.candidates.push(libertarian);
+  outcome.kind = "group";
+  outcome.name = "Other candidates";
+  outcome.members.push({ ...outcome.members[0], id: libertarian.id, name: libertarian.name });
+
+  const html = render({ view: grouped, selectedRaceId: race.id });
+  assert.match(html, /class="party-label">Other \(O\) · Group outcome<\/span>/);
+  assert.doesNotMatch(html, /class="party-label">Independent · Other \(O\) · Group outcome/);
+  assert.match(html, /Invented AL-02-I1 · Independent/);
+  assert.match(html, /Invented Libertarian · Libertarian/);
+  assert.match(html, /Combined probability for Invented AL-02-I1; Invented Libertarian/);
+  assert.match(html, /class="candidate-prob"[^>]*>50\.0%<\/strong>/);
+
+  const singleton = render({ selectedRaceId: race.id });
+  assert.match(singleton, /class="party-label">Independent · Other \(O\)<\/span>/);
+});
+
 test("polling display separates included questions, zero local inputs, disabled polling, and unpublished details", () => {
   const included = withInventedPolling(makeHouseLivePublication());
   const html = render({ view: included.view, polling: included.polling, selectedRaceId: "2026:AL-01:house:regular" });
