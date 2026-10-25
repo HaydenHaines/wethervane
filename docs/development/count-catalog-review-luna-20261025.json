@@ -1,0 +1,122 @@
+{
+  "schema": "IndependentCountCatalogReviewV1",
+  "reviewer": "luna",
+  "date": "2026-10-25",
+  "status": "reviewed_with_scope_limits",
+  "summary": "The private preview accurately describes the single authenticated Texas count-model preparation packet. It keeps setup, execution/result, empirical evidence, and public-site availability as separate states. I found no material UI or metadata cross-binding issue in the reviewed snapshot.",
+  "scope": {
+    "state": "Texas",
+    "state_fips": "48",
+    "training_elections": [2020, 2024],
+    "prediction_cycle": 2026,
+    "prediction_election_date": "2026-11-03",
+    "prediction_contest_ids": ["contest_tx2026_regular"],
+    "information_cutoff": "2026-10-20T22:13:33Z",
+    "configuration_sha256": "bc3c7e317f9c8b938b1df0cb67eb2cfa948c5c5c5d84264fbabbb38f3662d460",
+    "required_role_count": 8,
+    "selection_mode": "one linked required setup; roles are not independently selectable"
+  },
+  "review_findings": [
+    {
+      "severity": "none_material",
+      "finding": "Visible wording distinguishes a recorded preparation from a completed count forecast, empirical forecast accuracy, and public availability. It says the catalog cannot schedule a calculation and does not imply current job activity.",
+      "evidence": [
+        "The UI has separate Recorded setup, Calculation results, Testing & evidence, and Site availability cards.",
+        "The eight roles are presented as one linked setup, and the page has no selection, run, save, chart, or fetch controls.",
+        "The stale/unavailable path renders a validation failure message instead of inventing model components or results."
+      ]
+    },
+    {
+      "severity": "none_material",
+      "finding": "The native scope and preparation hashes are bound into the staged metadata. Server validation and the offline importer verify the recorded native links and source plan/problem scope; the browser DTO is path-free and the browser parser remains structural validation rather than an authentication boundary.",
+      "evidence": [
+        "Root metadata verification reports passed_metadata_only and native_bytes_preserved=true.",
+        "The staged six-file set has pinned raw-byte hashes and the source plan/problem are checked without being copied into the runtime stage."
+      ]
+    }
+  ],
+  "limitations": [
+    "This packet records one Texas fixed-roster conditional setup for the regular 2026 contest, with 2020 and 2024 as specified earlier elections. It is not a general role-selection catalog; another setup requires a new authenticated native catalog/resolution.",
+    "The preparation status is requires_computation. No completed count forecast, current execution/liveness result, registered count result, or empirical accuracy evaluation is supplied by this packet.",
+    "The reviewed scope authenticates the listed metadata and plan/problem relation. It does not claim independent revalidation of the complete transitive runtime/source closure or scientific quality of a future result.",
+    "The preview is not connected to a production route. This review does not establish a public release, and no user-configuration storage was added."
+  ],
+  "verification": {
+    "independent_test_command": "node --experimental-strip-types --test tests/count-catalog.test.mjs tests/count-catalog-view.test.mjs tests/count-catalog-preview.test.mjs",
+    "independent_test_result": {
+      "tests": 18,
+      "passed": 15,
+      "failed": 0,
+      "skipped": 3,
+      "note": "The three skipped cases require opt-in importer/browser environment variables; those paths have separate pinned author evidence."
+    },
+    "pinned_author_browser_result": {
+      "tests_passed": 13,
+      "tests_failed": 0,
+      "browser_viewports": [375, 1440],
+      "checks": [
+        "Actual source-bound metadata render",
+        "Keyboard access to component details",
+        "No horizontal overflow at mobile or desktop viewport",
+        "No input, select, button, SVG, or canvas elements"
+      ]
+    },
+    "typecheck": "Full TypeScript check passed after parser narrowing fixes.",
+    "production_build": "Root reports production build passed. The catalog remains a private preview with no public route added.",
+    "metadata_import": "Root metadata verification reports passed_metadata_only; no model fit or scientific job was started."
+  },
+  "pins": [
+    {
+      "path": "lib/count-catalog.ts",
+      "sha256": "f6b77ecffba8cde8324ab4bee973d606effbdf69cde87dc49ccd955cec852e71"
+    },
+    {
+      "path": "lib/count-catalog-server.ts",
+      "sha256": "5c1b30c1b8d6097c422568db8ae5cf9f84eb1730fa018f643fd13388a80ea34a"
+    },
+    {
+      "path": "scripts/import_count_catalog.mjs",
+      "sha256": "e636d003f845d7ddbf74b2c54c7835ebd64720ca216f61625d413d9afa2e7859"
+    },
+    {
+      "path": "lib/count-catalog-view.ts",
+      "sha256": "aca251cdd01cbe20e447799b34eb82ee7ad9f557d1eb431167f78fd7492af98a"
+    },
+    {
+      "path": "components/CountCatalogPreview.tsx",
+      "sha256": "152776c4f08bfa0b5635e20aee8e90863109480afc1aa1b59b6f83c4fd5c9ccd"
+    },
+    {
+      "path": "tests/count-catalog.test.mjs",
+      "sha256": "e0372c9496d7304413eb4183e2349ba181d868c8bc6c17aecc85e9865489a784"
+    },
+    {
+      "path": "tests/count-catalog-view.test.mjs",
+      "sha256": "d792c9ffaaea0f31c7fdd22c2471c823b4682e833c15ec8ddc2fac6cf8cfbf32"
+    },
+    {
+      "path": "tests/count-catalog-preview.test.mjs",
+      "sha256": "e95d9948fc08ce2e2a85d1ac51c31a63e3d2f0b154a677c84b3aad9d82e6b41e"
+    },
+    {
+      "path": "docs/development/count-catalog-verification-20261025/root-metadata.json",
+      "sha256": "1e32e2e4de452a2fdc4aecd3f81fbad6ea578a0633c3b36dd895f86bc8b96576"
+    },
+    {
+      "path": "docs/development/count-catalog-verification-20261025/typecheck-after-fix.log",
+      "sha256": "d5f9a064d7d11dd381d5f5dafe415d18b32b3af9442c158a40f2a25fddfe0001"
+    },
+    {
+      "path": "docs/development/count-catalog-verification-20261025/build.log",
+      "sha256": "01e88ca04a532bf8f7aecbfd57ecc2950597aab71735447bd6fb6237d904a99d"
+    },
+    {
+      "path": "docs/development/count-catalog-verification-20261025/view-verification.json",
+      "sha256": "588ac4f9041aa4ed8c82999c5d791275ca1b9561b0ae627f27a6eabaa17045ef"
+    },
+    {
+      "path": "docs/development/count-catalog-verification-20261025/view-tests.log",
+      "sha256": "cb7c7b1dc890ecc047c7e3ac394b2aa04d44bdc7f350318df0fe4e141ad9d8dc"
+    }
+  ]
+}
