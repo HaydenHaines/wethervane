@@ -1,0 +1,126 @@
+{
+  "schema": "E01AggregateTerminalDecisionV1",
+  "recorded_utc": "2026-10-25T05:39:14.959571+00:00",
+  "original_exec_session": 38077,
+  "exit_code": 0,
+  "fit_jobs": 16,
+  "declared_numeric_gates_pass": true,
+  "independent_review_receipt_entries_root_verified": [
+    "economic-2018-output-review-luna-v1/REPORT.md",
+    "economic-2018-output-review-luna-v1/independent-verification.json",
+    "economic-2018-output-review-luna-v1/prediction-composition.json",
+    "economic-2018-output-review-luna-v1/recheck-prediction-composition.py",
+    "economic-2018-output-review-luna-v1/review_2018_economic.py",
+    "economic-results-review-sol-v1/REVIEW.md",
+    "economic-results-review-sol-v1/recompute.py",
+    "economic-results-review-sol-v1/recomputation.json",
+    "economic-results-review-sol-v1/check_diagnostics.py",
+    "economic-results-review-sol-v1/diagnostics.json"
+  ],
+  "decision": "retain",
+  "retained_control": "F0 relative-context aggregate fundamentals within this experiment",
+  "challengers_retained": [
+    "E01",
+    "E01_sd025"
+  ],
+  "reason": "Both variants worsen both A midterm cycles on primary CRPS with no useful B transfer gain; negative result independently verified.",
+  "primary_A_CRPS_delta": 0.0013975078923245884,
+  "primary_A_CRPS_numerical_mcse": 6.794832094786261e-05,
+  "sensitivity_A_CRPS_delta": 0.00035492265302176224,
+  "sensitivity_A_CRPS_numerical_mcse": 5.5112402511205095e-05,
+  "prospective_evidence": false,
+  "full_count_qualification": false,
+  "promotion": false,
+  "forecast_changed": false,
+  "predictive_diagnostic_independent_limit": "Stored predictive ArviZ gates passed; independent reviewers did not recompute every predictive ESS calculation. All parameter diagnostics and all score MCSE were independently recomputed.",
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "e411e8bed03d34df2f81c51023d366b4a36961daa301bbb7695a45ee2ccc8877",
+      "bytes": 16307
+    },
+    {
+      "path": "checkpoints/economic-export-v4.json",
+      "sha256": "45369b72295a0b0eb4007dc66c389417c2b9f4fe68e724f3f1ab9c16266a71ce",
+      "bytes": 32703
+    },
+    {
+      "path": "checkpoints/economic-run-inventory-v1.json",
+      "sha256": "59be0c275afb20fe3b41e69acc55a9fc383ba2ced3cb1e7f19e33afaf0fe2d91",
+      "bytes": 86060
+    },
+    {
+      "path": "economic-2018-output-review-luna-v1/REPORT.md",
+      "sha256": "b90edd259c82caec73c1d6457c4580f6d240826f104d3a74a5a39a560cd60578",
+      "bytes": 5160
+    },
+    {
+      "path": "economic-2018-output-review-luna-v1/independent-verification.json",
+      "sha256": "8d3d3a4f80783b458e1889ce72f810d5e9c5cffad24774c2fbba665ccb22f848",
+      "bytes": 83296
+    },
+    {
+      "path": "economic-2018-output-review-luna-v1/prediction-composition.json",
+      "sha256": "91308dbc75718c903539856655658207b626f6c9eec68a3385a7e825b818332c",
+      "bytes": 2031
+    },
+    {
+      "path": "economic-2018-output-review-luna-v1/receipt.json",
+      "sha256": "157e2b987895c867a44a34afa22500bdeb72313f6c47c17bf3dda092335d39b7",
+      "bytes": 1185
+    },
+    {
+      "path": "economic-2018-output-review-luna-v1/recheck-prediction-composition.py",
+      "sha256": "ba07d7935fd47cbf47761835d624fef687dd0bf3adaa0c7deb73f760863e185a",
+      "bytes": 2774
+    },
+    {
+      "path": "economic-2018-output-review-luna-v1/review_2018_economic.py",
+      "sha256": "2a78b0610c657f807d81aad01f56014fdea94124e8e9fb11df5392ab8c7f3189",
+      "bytes": 11420
+    },
+    {
+      "path": "economic-results-review-sol-v1/REVIEW.md",
+      "sha256": "5c2a1ef266a0232603a2eb2592293cad12402c16aaea60a67f548cbc7cc235a6",
+      "bytes": 8987
+    },
+    {
+      "path": "economic-results-review-sol-v1/check_diagnostics.py",
+      "sha256": "6375fbc7e0c18398d6c4191d57698de12612a4f1185efebe09b098a559fa6145",
+      "bytes": 2653
+    },
+    {
+      "path": "economic-results-review-sol-v1/diagnostics.json",
+      "sha256": "f4e2784c254486533b0502a97f05389111a2d16bee99fe41e8b607f2637a4c90",
+      "bytes": 16527
+    },
+    {
+      "path": "economic-results-review-sol-v1/receipt.json",
+      "sha256": "cc55ff5d38ead2819ac1516ce6ac60996e755d321b5ed0132f3ff6ce9fe7ffb8",
+      "bytes": 1314
+    },
+    {
+      "path": "economic-results-review-sol-v1/recomputation.json",
+      "sha256": "ea2f2f5cb8dd4ae422bf3f8c8c547420ce9ff8cdb07c333fbb142dd5c9291098",
+      "bytes": 91437
+    },
+    {
+      "path": "economic-results-review-sol-v1/recompute.py",
+      "sha256": "5193ef9403e6bd172aad935ae8bf1c02034cf2d227add1bf724af109ac96a3c1",
+      "bytes": 10608
+    },
+    {
+      "path": "economic-terminal-root-review-v1.md",
+      "sha256": "ca8af18306440340e2b7aa231a0d47f25801bb674e41cd6f9ea12563f35eb59f",
+      "bytes": 4704
+    },
+    {
+      "path": "priority-research-root-review.md",
+      "sha256": "27a9c0d9dbec7a4f54ad61cca259c7ac63a498c9857a9122df8c3fe4fef74f68",
+      "bytes": 10518
+    }
+  ],
+  "run_inventory": "checkpoints/economic-run-inventory-v1.json",
+  "goal_status": "active",
+  "consecutive_blocked_continuations": 0
+}

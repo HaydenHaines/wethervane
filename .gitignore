@@ -4,6 +4,12 @@
 # Local resumable experiment journal; versioned exports live under research/.
 /.improvement-ledger/
 
+# E01 actual posterior/prediction arrays and transition journals are retained
+# locally and in the content-addressed journal backup; Git tracks their manifest.
+/research/improvement-loop-20261024/economic-execution-v1/attempt-v1/**/*.nc
+/research/improvement-loop-20261024/economic-execution-v1/attempt-v1/**/*.npz
+/research/improvement-loop-20261024/economic-execution-v1/attempt-v1/**/*.jsonl
+
 # Data directory (large files, not versioned)
 data/raw/
 data/assembled/
