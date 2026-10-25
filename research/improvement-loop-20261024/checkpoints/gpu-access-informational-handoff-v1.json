@@ -1,0 +1,31 @@
+{
+  "schema": "GPUAccessInformationalHandoffV1",
+  "received_utc": "2026-10-25T15:23:42.835373+00:00",
+  "source_thread": "01a173a3-fc75-7233-af2c-69be726131fc",
+  "source_session": "Check GPU access",
+  "authority": "Informational handoff reported by that session at Hayden's explicit request; root has not repeated the device check.",
+  "reported_machine": "ERWIN-UBUNTU",
+  "reported_device": "AMD Radeon RX 7800 XT",
+  "reported_vram_gib": 16,
+  "reported_architecture": "gfx1101",
+  "reported_checks": [
+    "rocminfo succeeded",
+    "rocm-smi succeeded",
+    "libamdhip64.so.6 via Python ctypes: device count1, malloc, memset, synchronize, verified device-to-host copy, free"
+  ],
+  "reported_access": {
+    "devices": [
+      "/dev/kfd",
+      "/dev/dri/renderD128"
+    ],
+    "groups": [
+      "render",
+      "video"
+    ],
+    "HSA_OVERRIDE_GFX_VERSION": "11.0.1",
+    "sandbox": "disabled in reporting session"
+  },
+  "reported_runtime_limit": "Default /usr/bin/python3 in reporting session has no torch, tensorflow or jax; framework availability and compatibility need separate validation.",
+  "relevance": "Candidate for owner-led performance evaluation of future model jobs, with the actual framework/environment, numerical checks and comparable scientific target. Basic HIP access does not establish that an existing sampler can use this GPU or will run faster.",
+  "actions_taken_here": "Forwarded the report through established shared coordination files. No active fit environment, inputs, backend, process or sampling settings were changed."
+}
