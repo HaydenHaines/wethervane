@@ -338,8 +338,10 @@ for (const chamber of ["senate", "house"] as const) {
       await expect(panel.locator(".night-predictions .night-input-notice")).toContainText("excludes two polls");
       await expect(panel.locator(".night-predictions .night-input-notice a")).toHaveCount(3);
       await panel.getByLabel("Find a race or candidate").fill("Schmidt");
-      await expect(panel.locator(".night-predictions .night-race")).toHaveCount(1);
-      await expect(panel.locator(".night-predictions .night-input-notice")).toContainText("NY-21 is under review");
+      const ny21 = panel.locator('.night-predictions .night-race[data-scorecard-race="2026:NY-21:house:regular"]');
+      await expect(ny21).toHaveCount(1);
+      await expect(ny21.locator(".night-input-notice")).toContainText("NY-21 is under review");
+      await expect(panel.locator(".night-predictions .night-race").filter({ hasText: "Derek Schmidt" })).toHaveCount(1);
       await panel.locator(".night-method > summary").click();
       await expect(panel.locator(".night-method .night-input-notice")).toContainText("October 25 estimates");
       await expect(panel.locator(".night-method")).toContainText("Source capture notes");
