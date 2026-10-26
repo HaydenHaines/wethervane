@@ -4,6 +4,7 @@ import { validateExplorerBundle } from "./explorer-state.ts";
 import { loadHouseLive } from "./house-live-client.ts";
 import { toHouseElectionNightForecast, toSenateElectionNightForecast, type ElectionNightForecast } from "./election-night-forecast.ts";
 import { matchElectionNightReference, type ElectionNightReference } from "./election-night-reference.ts";
+import { matchElectionNightCoreReference, supportsElectionNightCoreReference, type ElectionNightCoreReference } from "./election-night-core-reference.ts";
 
 export interface ElectionNightChoice { id: string; label: string; resultSha256: string }
 export interface ElectionNightLoaded {
@@ -12,6 +13,8 @@ export interface ElectionNightLoaded {
   choices: ElectionNightChoice[];
   reference: ElectionNightReference | null;
   referenceError: string | null;
+  primaryReference: ElectionNightCoreReference | null;
+  primaryReferenceError: string | null;
 }
 export interface ElectionNightReferencePublication {
   schemaVersion: number; href: string; sha256: string;
@@ -25,13 +28,13 @@ export interface ElectionNightRequest {
 
 /** Independent read-only selection. Never rewrites the visitor's forecast URL/settings. */
 export async function loadElectionNightForecast(request: ElectionNightRequest, signal: AbortSignal,
-  publication?: ElectionNightReferencePublication): Promise<ElectionNightLoaded> {
+  publication?: ElectionNightReferencePublication, primaryPublication?: ElectionNightReferencePublication): Promise<ElectionNightLoaded> {
   if (request.expectedResultSha256 && (!request.runId || !/^[a-f0-9]{64}$/.test(request.expectedResultSha256)))
     throw Error("The selected scorecard forecast reference is invalid.");
   if (request.chamber === "house") {
     const house = await loadHouseLive(request, signal);
-    return attachReference({ forecast: toHouseElectionNightForecast(house.view), defaultRunId: house.catalog.defaultId,
-      choices: house.catalog.entries.map(entry => ({ id: entry.id, label: entry.label, resultSha256: entry.resultSha256 })) }, signal, publication);
+    return attachReferences({ forecast: toHouseElectionNightForecast(house.view), defaultRunId: house.catalog.defaultId,
+      choices: house.catalog.entries.map(entry => ({ id: entry.id, label: entry.label, resultSha256: entry.resultSha256 })) }, signal, publication, primaryPublication);
   }
   const response = await fetch("/data/explorer/registry.json", { signal, cache: "no-store" });
   if (!response.ok) throw Error("The published Senate model list could not be loaded.");
@@ -51,13 +54,20 @@ export async function loadElectionNightForecast(request: ElectionNightRequest, s
   if (request.expectedResultSha256 && request.expectedResultSha256 !== entry.sha256)
     throw Error("The forecast edition changed. Close and reopen the scorecard to load the new edition.");
   const bundle = await loadSenateBundle(entry, signal);
-  return attachReference({ forecast: toSenateElectionNightForecast(bundle, entry), defaultRunId,
-    choices: entries.map(run => ({ id: run.id, label: run.label, resultSha256: run.sha256 })) }, signal, publication);
+  return attachReferences({ forecast: toSenateElectionNightForecast(bundle, entry), defaultRunId,
+    choices: entries.map(run => ({ id: run.id, label: run.label, resultSha256: run.sha256 })) }, signal, publication, primaryPublication);
 }
 
 /** The build pins reference bytes; a missing or invalid optional reference never replaces the forecast. */
-async function attachReference(value: Omit<ElectionNightLoaded, "reference" | "referenceError">,
-  signal: AbortSignal, publication?: ElectionNightReferencePublication): Promise<ElectionNightLoaded> {
+type ForecastOnly = Pick<ElectionNightLoaded, "forecast" | "defaultRunId" | "choices">;
+async function attachReferences(value: ForecastOnly, signal: AbortSignal, publication?: ElectionNightReferencePublication,
+  primaryPublication?: ElectionNightReferencePublication): Promise<ElectionNightLoaded> {
+  const [full, primary] = await Promise.all([attachReference(value, signal, publication), attachPrimaryReference(value.forecast, signal, primaryPublication)]);
+  return { ...full, ...primary };
+}
+
+async function attachReference(value: ForecastOnly,
+  signal: AbortSignal, publication?: ElectionNightReferencePublication): Promise<Omit<ElectionNightLoaded, "primaryReference" | "primaryReferenceError">> {
   if (!publication) return { ...value, reference: null, referenceError: null };
   let timeout: ReturnType<typeof setTimeout> | undefined;
   let forwardAbort: (() => void) | undefined;
@@ -93,6 +103,43 @@ async function attachReference(value: Omit<ElectionNightLoaded, "reference" | "r
   } finally {
     clearTimeout(timeout);
     if (forwardAbort) signal.removeEventListener("abort", forwardAbort);
+  }
+}
+
+/** Independent optional fixed32 attachment: a failed35 fetch never borrows or suppresses this reference. */
+async function attachPrimaryReference(forecast: ElectionNightForecast, signal: AbortSignal,
+  publication?: ElectionNightReferencePublication): Promise<Pick<ElectionNightLoaded, "primaryReference" | "primaryReferenceError">> {
+  const absent = { primaryReference: null, primaryReferenceError: null };
+  if (!publication || !supportsElectionNightCoreReference(forecast)) return absent;
+  let timeout: ReturnType<typeof setTimeout> | undefined;
+  let forwardAbort: (() => void) | undefined;
+  try {
+    signal.throwIfAborted();
+    if (publication.schemaVersion !== 1 || publication.href !== "/data/election-night/core-references.json" ||
+      !/^[a-f0-9]{64}$/.test(publication.sha256) || !Array.isArray(publication.editions) ||
+      publication.editions.some(e => e.chamber !== "senate" || typeof e.runId !== "string" || !/^[a-zA-Z0-9_-]+$/.test(e.runId) ||
+        typeof e.resultSha256 !== "string" || !/^[a-f0-9]{64}$/.test(e.resultSha256))) throw Error("Invalid primary-reference publication.");
+    const editions = publication.editions.filter(e => e.chamber === forecast.chamber && e.runId === forecast.run.id && e.resultSha256 === forecast.run.artifactSha256);
+    if (editions.length === 0) return absent;
+    if (editions.length !== 1) throw Error("Ambiguous primary-reference publication.");
+    const controller = new AbortController();
+    forwardAbort = () => controller.abort(signal.reason);
+    signal.addEventListener("abort", forwardAbort, { once: true });
+    timeout = setTimeout(() => controller.abort(new DOMException("Primary reference request timed out.", "TimeoutError")), 8000);
+    const response = await fetch(publication.href, { signal: controller.signal, cache: "no-store" });
+    if (!response.ok || !globalThis.crypto?.subtle) throw Error("Primary reference unavailable.");
+    const bytes = await response.arrayBuffer();
+    const digest = Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256", bytes)), byte => byte.toString(16).padStart(2,"0")).join("");
+    signal.throwIfAborted(); controller.signal.throwIfAborted();
+    if (digest !== publication.sha256) throw Error("Primary reference bytes changed.");
+    const primaryReference = matchElectionNightCoreReference(forecast, JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(bytes)));
+    if (!primaryReference) throw Error("Primary reference does not match this forecast.");
+    return { primaryReference, primaryReferenceError: null };
+  } catch {
+    signal.throwIfAborted();
+    return { primaryReference: null, primaryReferenceError: "The 32-race expected-error reference could not be verified. The forecast remains available." };
+  } finally {
+    clearTimeout(timeout); if (forwardAbort) signal.removeEventListener("abort", forwardAbort);
   }
 }
 

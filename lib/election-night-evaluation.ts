@@ -24,6 +24,7 @@ export interface EvaluationWinnerTarget {
 }
 export interface EvaluationMarginTarget {
   estimand: "named_pair_margin"; eventId: string; roundId: string; ruleFamily: string | null;
+  resultRuleId?: string;
   firstCandidateId: string; secondCandidateId: string; denominator: string;
   units: "percentage_points"; orientation: "first_minus_second";
   pointRule: "mean" | "median"; minimumStatus: "final" | "certified";
@@ -43,6 +44,7 @@ export interface EvaluationWinnerObservation {
 }
 export interface EvaluationMarginObservation {
   status: EvaluationResultStatus; estimand: string; eventId: string; roundId: string; ruleFamily: string | null;
+  resultRuleId?: string;
   firstCandidateId: string; secondCandidateId: string; denominator: string;
   units: string; orientation: string; marginPp: number | null; reason: string | null;
 }
@@ -55,6 +57,7 @@ export interface VerifiedElectionNightOutcome {
 export type ElectionNightLogLoss = { status: "finite"; value: number } | { status: "infinite"; value: null };
 export interface WinnerEvaluationScore {
   estimand: WinnerEstimand; eventId: string; roundId: string; ruleFamily: string | null;
+  resultRuleId?: string;
   outcomeId: string; kind: "candidate" | "group"; candidateId: string | null; modalPickCorrect: boolean;
   /** Unnormalized multicategory Brier: sum_k (p_k - indicator_k)^2, range 0–2. Binary two-class sum is twice binary one-event Brier. */
   brierSum: number; logLoss: ElectionNightLogLoss;
@@ -77,6 +80,7 @@ export interface HousePartyWinnerDetail extends HousePartyWinnerProjection {
 }
 export interface MarginEvaluationScore {
   estimand: "named_pair_margin"; eventId: string; roundId: string; ruleFamily: string | null;
+  resultRuleId?: string;
   firstCandidateId: string; secondCandidateId: string; denominator: string; units: "percentage_points";
   orientation: "first_minus_second"; pointRule: "mean" | "median";
   predictedMarginPp: number; observedMarginPp: number;
@@ -216,6 +220,7 @@ function housePartyWinnerScore(race: ElectionNightRace, target: EvaluationWinner
   const modalGroup = groups.filter(group => group.winProbability === maximum).map(group => group.id).sort()[0];
   return { status: "scored", reason: null, resultStatus: truth.status, provisional: false,
     score: { estimand: target.estimand, eventId: target.eventId, roundId: target.roundId, ruleFamily: target.ruleFamily,
+      resultRuleId: target.resultRuleId,
       outcomeId: truth.outcomeId, kind: "group", candidateId: truth.candidateId, modalPickCorrect: modalGroup === truth.outcomeId,
       brierSum, logLoss: categoricalLogLoss(groups, truth.outcomeId),
       housePartyWinner: { ...projection, interpretationSha256: HOUSE_PARTY_WINNER_INTERPRETATION_SHA256,
@@ -237,12 +242,15 @@ function winnerScore(forecast: ElectionNightForecast, race: ElectionNightRace, t
     return blocked("mismatched", "Senate conditional winner target requires its exact two named candidate outcomes.", observed?.status ?? null);
   if (!target || target.estimand !== expectedEstimand || !text(target.eventId) || !text(target.roundId) ||
     target.ruleFamily !== race.ruleFamily || !sameIds(target.outcomeIds, race.outcomes.map(o => o.id)) ||
+    (target.resultRuleId !== undefined && !text(target.resultRuleId)) ||
     !["called", "final", "certified"].includes(target.minimumStatus))
     return blocked("mismatched", "Protocol winner target does not match the frozen listed outcome space/rule.", observed?.status ?? null);
   // Target identities are checked even for partial results; no finality is inferred from an event ID.
   if (observed && (observed.estimand !== target.estimand || observed.eventId !== target.eventId ||
-    observed.roundId !== target.roundId || observed.ruleFamily !== target.ruleFamily))
-    return blocked("mismatched", "Observed winner target, event, round or rule differs from the protocol.", observed.status);
+    observed.roundId !== target.roundId || observed.ruleFamily !== target.ruleFamily ||
+    ((target.resultRuleId !== undefined || observed.resultRuleId !== undefined) &&
+      observed.resultRuleId !== target.resultRuleId)))
+    return blocked("mismatched", "Observed winner target, event, round or result rule differs from the protocol.", observed.status);
   const unavailable = availability<WinnerEvaluationScore>(observed, target.minimumStatus);
   if (unavailable) return unavailable;
   const truth = observed!;
@@ -256,6 +264,7 @@ function winnerScore(forecast: ElectionNightForecast, race: ElectionNightRace, t
   const modalId = race.outcomes.filter(o => o.winProbability === maximum).map(o => o.id).sort()[0];
   return { status: "scored", reason: null, resultStatus: truth.status, provisional: truth.status === "called",
     score: { estimand: target.estimand, eventId: target.eventId, roundId: target.roundId, ruleFamily: target.ruleFamily,
+      ...(target.resultRuleId === undefined ? {} : { resultRuleId: target.resultRuleId }),
       outcomeId: outcome.id, kind: outcome.kind, candidateId: truth.candidateId, modalPickCorrect: modalId === outcome.id,
       brierSum: multicategoryBrier(race.outcomes, outcome.id), logLoss: categoricalLogLoss(race.outcomes, outcome.id) } };
 }
@@ -265,12 +274,15 @@ function marginScore(race: ElectionNightRace, target: EvaluationMarginTarget | n
   if (!pair) return blocked("unsupported", "The frozen forecast has no named-pair margin distribution.", observed?.status ?? null);
   if (!target) return blocked("unsupported", "No admitted pair-margin evaluation target is specified in this protocol.", observed?.status ?? null);
   if (target.estimand !== "named_pair_margin" || !text(target.eventId) || !text(target.roundId) || target.ruleFamily !== race.ruleFamily ||
+    (target.resultRuleId !== undefined && !text(target.resultRuleId)) ||
     target.firstCandidateId !== pair.firstCandidateId || target.secondCandidateId !== pair.secondCandidateId || target.denominator !== pair.denominator ||
     target.units !== pair.units || target.orientation !== pair.orientation || !["mean", "median"].includes(target.pointRule) ||
     !["final", "certified"].includes(target.minimumStatus))
     return blocked("mismatched", "Protocol margin target does not match the frozen named pair, denominator, orientation, units or rule.", observed?.status ?? null);
   if (observed && (observed.estimand !== target.estimand || observed.eventId !== target.eventId || observed.roundId !== target.roundId ||
-    observed.ruleFamily !== target.ruleFamily || observed.firstCandidateId !== target.firstCandidateId || observed.secondCandidateId !== target.secondCandidateId ||
+    observed.ruleFamily !== target.ruleFamily ||
+    ((target.resultRuleId !== undefined || observed.resultRuleId !== undefined) && observed.resultRuleId !== target.resultRuleId) ||
+    observed.firstCandidateId !== target.firstCandidateId || observed.secondCandidateId !== target.secondCandidateId ||
     observed.denominator !== target.denominator || observed.units !== target.units || observed.orientation !== target.orientation))
     return blocked("mismatched", "Observed margin target, round, named candidates, denominator, orientation, units or rule differs from the protocol.", observed.status);
   // A winner call cannot authorize a margin score, even when a number is present.
@@ -284,6 +296,7 @@ function marginScore(race: ElectionNightRace, target: EvaluationMarginTarget | n
   const signedErrorPp = truth.marginPp - point;
   return { status: "scored", reason: null, resultStatus: truth.status, provisional: false,
     score: { estimand: "named_pair_margin", eventId: target.eventId, roundId: target.roundId, ruleFamily: target.ruleFamily,
+      ...(target.resultRuleId === undefined ? {} : { resultRuleId: target.resultRuleId }),
       firstCandidateId: target.firstCandidateId, secondCandidateId: target.secondCandidateId, denominator: target.denominator,
       units: "percentage_points", orientation: "first_minus_second", pointRule: target.pointRule,
       predictedMarginPp: point, observedMarginPp: truth.marginPp, signedErrorPp, absoluteErrorPp: Math.abs(signedErrorPp),

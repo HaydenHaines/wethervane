@@ -40,10 +40,10 @@ const near = (a, b) => assert.ok(Math.abs(a - b) < 1e-10, `${a} vs ${b}`);
 function freeze(v) { if (v && typeof v === "object") { Object.freeze(v); Object.values(v).forEach(freeze); } return v; }
 function assertCoverage(c) { assert.equal(c.total, c.final + c.provisional + c.pending + c.mismatched); }
 
-test("exported editorial table, tolerance and V2 earlier-benchmark exception are immutable", () => {
+test("exported editorial table, tolerance and V3 earlier-benchmark exception are immutable", () => {
   assert.deepEqual(policy.bands.map(b => [b.grade, b.minimumSkill]), [["A", 0.2], ["B", 0.1], ["C", 0], ["D", -0.1], ["F", null]]);
   assert.equal(policy.equalityTolerance, 1e-12);
-  assert.equal(policy.decisionSha256, "edb82165b1e6fc76335912108b887b40ded71f0c0de76f3262dcdf39f3e0b79e");
+  assert.equal(policy.decisionSha256, "0d338b95faaa0fd393361e56bd59fae5d8b4f17d50a5b3c326393984c6faf67a");
   assert.ok(Object.isFrozen(policy)); assert.ok(Object.isFrozen(policy.bands)); assert.ok(Object.isFrozen(policy.bands[0]));
   assert.ok(Object.isFrozen(policy.earlierBenchmark.model));
   assert.throws(() => policy.bands[0].minimumSkill = 0);
@@ -161,11 +161,13 @@ test("contract, forecast, metric, event, cohort and result revisions must bind e
   for (const value of [null, {}, { verified: true, approved: true, locked: true }]) assert.equal(gradeElectionNightRubric(value).overall.grade, null);
 });
 
-function earlierFixture() {
+function earlierFixture(primary = false) {
   const f = fixture({ count: 35 }), e = policy.earlierBenchmark;
   f.contract.id = e.comparisonContractId; f.contract.comparisonMode = "explicit_earlier_benchmark";
   f.contract.label = "October 20 basic history (earlier issued)"; f.contract.comparisonReview.sha256 = e.reviewSha256;
-  f.contract.earlierBenchmarkPins = { mappingSha256: e.mappingSha256, freezeManifestSha256: e.freezeManifestSha256 };
+  f.contract.earlierBenchmarkPins = { mappingSha256: e.mappingSha256, freezeManifestSha256: e.freezeManifestSha256,
+    resultMappingSha256: e.resultMappingSha256, resultPolicyFreezeSha256: e.resultPolicyFreezeSha256 };
+  f.contract.resultPolicy.sha256 = e.resultPolicySha256;
   Object.assign(f.contract.model, e.model); Object.assign(f.contract.baseline, e.baseline);
   // Real pinned forecast/pair identities, but INVENTED admitted operator, results and losses.
   // The native mapping itself does not admit any official result or assign a real grade.
@@ -180,14 +182,24 @@ function earlierFixture() {
       for (const [loss, forecast] of [[row.model,f.contract.model],[row.baseline,f.contract.baseline]]) {
         loss.target = structuredClone(target); loss.forecastSha256 = forecast.resultSha256;
         loss.result.recordId = `INVENTED-result-${p.race_id}`;
+        loss.result.resultPolicySha256 = e.resultPolicySha256;
         if (target.outcomeIds) loss.observedValue = p.first_candidate_id;
       }
     }
   });
+  f.contract.displayRaceIds = pairs.map(p => p.race_id);
+  f.contract.ungradedDisplayRaceIds = primary ? [...e.conditionalRaceIds] : [];
+  if (primary) {
+    f.contract.id = e.primaryComparisonContractId;
+    const core = row => !e.conditionalRaceIds.includes(row.raceId);
+    f.contract.winnerCohort = f.contract.winnerCohort.filter(core);
+    f.contract.intervalCohort = f.contract.intervalCohort.filter(core);
+    f.winnerRows = f.winnerRows.filter(core); f.intervalRows = f.intervalRows.filter(core);
+  }
   f.modelForecast = structuredClone(f.contract.model); f.baselineForecast = structuredClone(f.contract.baseline);
   return f;
 }
-test("only the explicit V2 earlier Senate benchmark is allowed and never described as matched-horizon or causal polling skill", () => {
+test("only the explicit V3 earlier Senate benchmark is allowed and never described as matched-horizon or causal polling skill", () => {
   const f = earlierFixture(), result = gradeElectionNightRubric(f);
   assert.equal(result.overall.grade, "C"); assert.equal(result.comparison.matchedHorizon, false);
   assert.match(result.comparison.explanation, /different information and lead times/); assert.match(result.comparison.explanation, /does not isolate/);
@@ -229,4 +241,28 @@ test("malformed JSON candidates fail closed without exceptions or numeric letter
     f => f.contract.winnerCohort[0].outcomeIds = ["D", null],
   ];
   for (const change of changes) { const f = fixture(); change(f); let r; assert.doesNotThrow(() => r = gradeElectionNightRubric(f)); assert.equal(r.overall.grade, null); }
+});
+
+
+test("V3 primary grades only the predeclared 32 pairs while retaining all 35 display identities", () => {
+  const input = earlierFixture(true), result = gradeElectionNightRubric(input);
+  assert.equal(input.contract.displayRaceIds.length, 35);
+  assert.deepEqual(input.contract.ungradedDisplayRaceIds, ["2026:AK:senate:regular", "2026:GA:senate:regular", "2026:ME:senate:regular"]);
+  assert.equal(result.winner.coverage.total, 32); assert.equal(result.interval.coverage.total, 32);
+  assert.equal(result.overall.grade, "C");
+  for (const mutate of [
+    f => f.contract.displayRaceIds.pop(),
+    f => f.contract.ungradedDisplayRaceIds.pop(),
+    f => f.contract.earlierBenchmarkPins.resultMappingSha256 = hash("a"),
+    f => f.contract.earlierBenchmarkPins.resultPolicyFreezeSha256 = hash("a"),
+    f => f.contract.resultPolicy.sha256 = hash("a"),
+    f => f.contract.winnerCohort.pop(),
+    f => f.contract.id = policy.earlierBenchmark.comparisonContractId,
+  ]) { const f = earlierFixture(true); mutate(f); assert.equal(gradeElectionNightRubric(f).overall.grade, null, String(mutate)); }
+  const missing = earlierFixture(true); missing.winnerRows.pop();
+  const pending = gradeElectionNightRubric(missing);
+  assert.equal(pending.winner.coverage.total, 32); assert.equal(pending.winner.coverage.pending, 1);
+  assert.equal(pending.overall.grade, null);
+  const oldPolicy = earlierFixture(true); oldPolicy.contract.rubricDecisionSha256 = "edb82165b1e6fc76335912108b887b40ded71f0c0de76f3262dcdf39f3e0b79e";
+  assert.equal(gradeElectionNightRubric(oldPolicy).overall.grade, null);
 });

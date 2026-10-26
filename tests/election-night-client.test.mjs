@@ -11,14 +11,16 @@ const entry = registry.runs.find(run => run.id === registry.defaults["2026"]);
 const bytes = readFileSync(new URL(`public${entry.href}`, root));
 const referencePublication = JSON.parse(readFileSync(new URL("data/election-night-reference-publication.json", root)));
 const referenceBytes = readFileSync(new URL(`public${referencePublication.href}`, root));
+const corePublication = JSON.parse(readFileSync(new URL("data/election-night-core-reference-publication.json", root)));
+const coreBytes = readFileSync(new URL(`public${corePublication.href}`, root));
 const originalFetch = globalThis.fetch;
 afterEach(() => { globalThis.fetch = originalFetch; });
-function serve(list = registry, result = bytes, reference = referenceBytes) {
+function serve(list = registry, result = bytes, reference = referenceBytes, core = coreBytes) {
   const calls = [];
   globalThis.fetch = async (url, options) => {
     calls.push({ url, options });
     assert.ok(options.signal instanceof AbortSignal);
-    return new Response(url === "/data/explorer/registry.json" ? JSON.stringify(list) : url === referencePublication.href ? reference : result);
+    return new Response(url === "/data/explorer/registry.json" ? JSON.stringify(list) : url === referencePublication.href ? reference : url === corePublication.href ? core : result);
   };
   return calls;
 }
@@ -165,4 +167,77 @@ test("an optional reference deadline preserves the verified forecast instead of 
   assert.equal(value.forecast.run.artifactSha256, entry.sha256);
   assert.equal(value.reference, null);
   assert.match(value.referenceError, /could not be verified/);
+});
+
+
+test("qualified fixed32 and existing35 references attach independently to the actual FP edition", async () => {
+  const calls = serve();
+  const loaded = await loadElectionNightForecast({ chamber: "senate", runId: null }, new AbortController().signal, referencePublication, corePublication);
+  assert.equal(loaded.forecast.races.length, 35); assert.equal(loaded.reference.perRace.length, 35); assert.equal(loaded.primaryReference.perRace.length, 32);
+  assert.equal(loaded.referenceError, null); assert.equal(loaded.primaryReferenceError, null);
+  assert.equal(loaded.primaryReference.summary.meanAbsoluteMarginError.mean, 5.725521323266725);
+  assert.equal(loaded.reference.summary.meanAbsoluteMarginError.mean, 5.621801760616599);
+  assert.deepEqual(calls.map(c=>c.url), ["/data/explorer/registry.json",entry.href,referencePublication.href,corePublication.href]);
+  assert.notEqual(calls[2].options.signal,calls[3].options.signal);
+});
+
+test("fixed32 F reference preserves its October20 edition; ineligible saved choices have no error or fetch", async () => {
+  for(const id of ["current-fundamentals","current-cycle-low"]){
+    const e=registry.runs.find(e=>e.id===id), calls=serve(registry,readFileSync(new URL(`public${e.href}`,root)));
+    const loaded=await loadElectionNightForecast({chamber:"senate",runId:id},new AbortController().signal,referencePublication,corePublication);
+    assert.equal(loaded.reference,null);assert.equal(loaded.referenceError,null);assert.equal(loaded.primaryReferenceError,null);
+    if(id==="current-fundamentals"){
+      assert.equal(loaded.primaryReference.forecastCutoffAt,"2026-10-20T15:21:23Z");assert.equal(loaded.primaryReference.drawIdentity.rowCount,100000);
+      assert.deepEqual(calls.map(c=>c.url),["/data/explorer/registry.json",e.href,corePublication.href]);
+    }else{assert.equal(loaded.primaryReference,null);assert.equal(calls.length,2);}
+  }
+});
+
+test("fixed32 verification failures and fresh retry cannot suppress or substitute the existing35 reference", async () => {
+  serve(registry,bytes,referenceBytes,Buffer.concat([coreBytes,Buffer.from(" ")]));
+  let loaded=await loadElectionNightForecast({chamber:"senate",runId:null},new AbortController().signal,referencePublication,corePublication);
+  assert.ok(loaded.reference);assert.equal(loaded.referenceError,null);assert.equal(loaded.primaryReference,null);assert.match(loaded.primaryReferenceError,/32-race.*could not be verified/);
+  serve(registry,bytes,Buffer.from("invalid35"),coreBytes);
+  loaded=await loadElectionNightForecast({chamber:"senate",runId:null},new AbortController().signal,referencePublication,corePublication);
+  assert.equal(loaded.reference,null);assert.match(loaded.referenceError,/could not be verified/);assert.ok(loaded.primaryReference);assert.equal(loaded.primaryReferenceError,null);
+  serve();loaded=await loadElectionNightForecast({chamber:"senate",runId:null},new AbortController().signal,referencePublication,corePublication);
+  assert.ok(loaded.reference);assert.ok(loaded.primaryReference);assert.equal(loaded.referenceError,null);assert.equal(loaded.primaryReferenceError,null);
+});
+
+test("authenticated fixed32 bytes with a changed candidate mapping remain a visible optional verification failure", async () => {
+  const changed=JSON.parse(coreBytes);changed.entries[1].reference.cohort[0].first_candidate.id="INVENTED wrong candidate";
+  const body=Buffer.from(JSON.stringify(changed));serve(registry,bytes,referenceBytes,body);
+  const loaded=await loadElectionNightForecast({chamber:"senate",runId:null},new AbortController().signal,referencePublication,
+    {...corePublication,sha256:createHash("sha256").update(body).digest("hex")});
+  assert.ok(loaded.reference);assert.equal(loaded.primaryReference,null);assert.match(loaded.primaryReferenceError,/could not be verified/);
+});
+
+test("fixed32 publication paths and duplicate editions cannot cause arbitrary fetches", async () => {
+  for(const p of [{...corePublication,href:"https://example.invalid/core.json"},{...corePublication,editions:[...corePublication.editions,corePublication.editions[1]]}]){
+    const calls=serve();const loaded=await loadElectionNightForecast({chamber:"senate",runId:null},new AbortController().signal,undefined,p);
+    assert.equal(loaded.primaryReference,null);assert.match(loaded.primaryReferenceError,/could not be verified/);assert.equal(calls.length,2);
+  }
+  const calls=serve();const loaded=await loadElectionNightForecast({chamber:"senate",runId:null},new AbortController().signal,undefined,{...corePublication,editions:[]});
+  assert.equal(loaded.primaryReference,null);assert.equal(loaded.primaryReferenceError,null);assert.equal(calls.length,2);
+});
+
+test("fixed32 has its own eight-second abort deadline and the authenticated forecast survives timeout", async t => {
+  t.mock.timers.enable({apis:["setTimeout"]});serve();const regular=globalThis.fetch, parent=new AbortController();
+  globalThis.fetch=async(url,options)=>{
+    if(url===corePublication.href){assert.notEqual(options.signal,parent.signal);t.mock.timers.tick(8000);options.signal.throwIfAborted();}
+    return regular(url,options);
+  };
+  const loaded=await loadElectionNightForecast({chamber:"senate",runId:null},parent.signal,undefined,corePublication);
+  assert.equal(parent.signal.aborted,false);assert.equal(loaded.forecast.run.artifactSha256,entry.sha256);
+  assert.equal(loaded.primaryReference,null);assert.match(loaded.primaryReferenceError,/could not be verified/);assert.equal(loaded.referenceError,null);
+});
+
+test("cancellation during fixed32 fetch or digest never fulfills a stale result", async () => {
+  const controller=new AbortController();serve();const regular=globalThis.fetch;
+  globalThis.fetch=async(url,options)=>{if(url===corePublication.href){controller.abort();options.signal.throwIfAborted();}return regular(url,options);};
+  await assert.rejects(loadElectionNightForecast({chamber:"senate",runId:null},controller.signal,undefined,corePublication),{name:"AbortError"});
+  serve();const duringDigest=new AbortController(),originalDigest=crypto.subtle.digest;let digests=0;
+  crypto.subtle.digest=async function(...args){const result=await originalDigest.apply(this,args);if(++digests===2)duringDigest.abort();return result;};
+  try{await assert.rejects(loadElectionNightForecast({chamber:"senate",runId:null},duringDigest.signal,undefined,corePublication),{name:"AbortError"});assert.equal(digests,2);}
+  finally{crypto.subtle.digest=originalDigest;}
 });

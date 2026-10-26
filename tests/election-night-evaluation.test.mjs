@@ -288,6 +288,33 @@ test("a Senate proxy is never silently scored as full-ballot truth", () => {
   assert.equal(evaluate(f).rows[0].winner.status, "mismatched");
 });
 
+test("an explicit result-rule ID must match for Senate pair lead and every named-pair margin", () => {
+  const f = fixture(), race = f.forecast.races[0], r = race.outcomes[2];
+  f.forecast.chamber = f.protocol.forecast.chamber = "senate";
+  race.outcomes = [race.outcomes[0], r]; r.winProbability = 0.4;
+  race.pair.secondCandidateId = r.members[0].id; race.pair.secondCandidateName = r.name;
+  race.pair.winnerRelationship = "same_event";
+  f.protocol.races[0].winner.estimand = f.records[0].winner.estimand = "conditional_principal_pair_winner";
+  f.protocol.races[0].winner.outcomeIds = race.outcomes.map(outcome => outcome.id);
+  f.protocol.races[0].margin.secondCandidateId = f.records[0].margin.secondCandidateId = r.members[0].id;
+  f.protocol.races[0].winner.resultRuleId = f.records[0].winner.resultRuleId = "INVENTED-certified-pair-rule";
+  f.protocol.races[0].margin.resultRuleId = f.records[0].margin.resultRuleId = "INVENTED-certified-pair-rule";
+  let result = evaluate(f);
+  assert.equal(result.rows[0].winner.status, "scored");
+  assert.equal(result.rows[0].margin.status, "scored");
+  assert.equal(result.rows[0].winner.score.resultRuleId, "INVENTED-certified-pair-rule");
+  assert.equal(result.rows[0].margin.score.resultRuleId, "INVENTED-certified-pair-rule");
+  f.records[0].winner.resultRuleId = "INVENTED-other-counting-rule";
+  result = evaluate(f); assert.equal(result.rows[0].winner.status, "mismatched"); assert.equal(result.rows[0].margin.status, "scored");
+  f.records[0].winner.resultRuleId = "INVENTED-certified-pair-rule";
+  f.records[0].margin.resultRuleId = "INVENTED-other-counting-rule";
+  result = evaluate(f); assert.equal(result.rows[0].winner.status, "scored"); assert.equal(result.rows[0].margin.status, "mismatched");
+  delete f.protocol.races[0].margin.resultRuleId;
+  assert.equal(evaluate(f).rows[0].margin.status, "mismatched", "an observation cannot add an undeclared rule ID");
+  delete f.protocol.races[0].winner.resultRuleId;
+  assert.equal(evaluate(f).rows[0].winner.status, "mismatched", "an observation cannot add an undeclared rule ID");
+});
+
 test("event, round, target, named candidates, denominator, scale and finality require explicit matches", () => {
   const changes = [
     ["eventId", "INVENTED-other-event"], ["roundId", "INVENTED-first-round"], ["estimand", "full_ballot_margin"],

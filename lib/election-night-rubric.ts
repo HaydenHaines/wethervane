@@ -45,6 +45,12 @@ const earlierPrincipalPairs: readonly (readonly string[])[] = Object.freeze([
 ]);
 const earlierBenchmark = Object.freeze({
   comparisonContractId: "senate2026_conditional_principal_pair_F20261020_FP20261026_comparison_v1",
+  primaryComparisonContractId: "senate2026_plurality_core32_F20261020_FP20261026_comparison_v1",
+  primaryCohortSize: 32,
+  conditionalRaceIds: Object.freeze(["2026:AK:senate:regular", "2026:GA:senate:regular", "2026:ME:senate:regular"]),
+  resultPolicySha256: "efe1bf193e2959284b73ea833af0a136f6c592001a2faf50505e3258e25cf0cd",
+  resultMappingSha256: "244e9db017957d0a5361f5f1b7a2498f066c43d9b94a59f1277e8cff91b6afa3",
+  resultPolicyFreezeSha256: "c890eda18924215ebe049af38725bb1389998b25f77f1ab91d84a4234d71a7d8",
   reviewSha256: "901b1c869b2ce7c5302ad57cef7805eff860324c78821033052b743c69cd5f9e",
   mappingSha256: "9024069ac0f397c2d379663d653d384e32532548ef26772035eda61ce55265e0",
   freezeManifestSha256: "3abe88f2434279b3cd70849e4fd9158fb50bcbc91c513781843832fade8a706e",
@@ -63,8 +69,8 @@ const earlierBenchmark = Object.freeze({
   gradeMeaning: "Descriptive performance of these forecasts as issued; no causal layer skill, calibration or challenger-promotion claim.",
 });
 export const ELECTION_NIGHT_RUBRIC = Object.freeze({
-  id: "ElectionNightRubricEditorialDecisionV2",
-  decisionSha256: "edb82165b1e6fc76335912108b887b40ded71f0c0de76f3262dcdf39f3e0b79e",
+  id: "ElectionNightRubricEditorialDecisionV3",
+  decisionSha256: "0d338b95faaa0fd393361e56bd59fae5d8b4f17d50a5b3c326393984c6faf67a",
   bands: Object.freeze([
     Object.freeze({ grade: "A", minimumSkill: 0.2 }), Object.freeze({ grade: "B", minimumSkill: 0.1 }),
     Object.freeze({ grade: "C", minimumSkill: 0 }), Object.freeze({ grade: "D", minimumSkill: -0.1 }),
@@ -100,7 +106,10 @@ export interface ElectionNightRubricContract {
   comparisonMode: "matched_horizon" | "explicit_earlier_benchmark"; label: string;
   model: RubricForecastBinding; baseline: RubricForecastBinding;
   comparisonReview: RubricReference; cohortDefinition: RubricReference; resultPolicy: RubricReference;
-  earlierBenchmarkPins: { mappingSha256: string; freezeManifestSha256: string } | null;
+  earlierBenchmarkPins: { mappingSha256: string; freezeManifestSha256: string;
+    resultMappingSha256?: string; resultPolicyFreezeSha256?: string } | null;
+  /** Earlier Senate comparisons retain all 35 displayed races even for the predeclared 32-race primary grade. */
+  displayRaceIds?: string[]; ungradedDisplayRaceIds?: string[];
   houseMappingReviewSha256: string | null;
   winnerCohort: RubricWinnerTarget[]; intervalCohort: RubricIntervalTarget[];
   /** Every winner race outside the predeclared margin cohort is retained here. */
@@ -187,14 +196,20 @@ function validate(input: ElectionNightRubricInput): void {
     "A matched-horizon comparison requires the same information cutoff and horizon.");
   else {
     const e = ELECTION_NIGHT_RUBRIC.earlierBenchmark;
-    requireValue(c.comparisonMode === "explicit_earlier_benchmark" && c.model.chamber === "senate" && c.id === e.comparisonContractId &&
+    const primary = c.id === e.primaryComparisonContractId;
+    const expectedPairs = earlierPrincipalPairs.filter(row => !primary || !e.conditionalRaceIds.includes(row[0]));
+    requireValue(c.comparisonMode === "explicit_earlier_benchmark" && c.model.chamber === "senate" && (c.id === e.comparisonContractId || primary) &&
       c.comparisonReview.sha256 === e.reviewSha256 && c.earlierBenchmarkPins?.mappingSha256 === e.mappingSha256 &&
       c.earlierBenchmarkPins?.freezeManifestSha256 === e.freezeManifestSha256 &&
+      c.resultPolicy.sha256 === e.resultPolicySha256 && c.earlierBenchmarkPins.resultMappingSha256 === e.resultMappingSha256 &&
+      c.earlierBenchmarkPins.resultPolicyFreezeSha256 === e.resultPolicyFreezeSha256 &&
       Object.entries(e.model).every(([k, v]) => c.model[k as keyof RubricForecastBinding] === v) &&
       Object.entries(e.baseline).every(([k, v]) => c.baseline[k as keyof RubricForecastBinding] === v) &&
-      c.winnerCohort.length === e.cohortSize && c.intervalCohort.length === e.cohortSize &&
-      same(c.winnerCohort.map(t => [t.raceId, t.firstCandidateId, t.secondCandidateId, t.denominator]), earlierPrincipalPairs),
-      "Earlier benchmarking is authorized only for the exact reviewed October 20/26 Senate comparison.");
+      c.winnerCohort.length === expectedPairs.length && c.intervalCohort.length === expectedPairs.length &&
+      same(c.winnerCohort.map(t => [t.raceId, t.firstCandidateId, t.secondCandidateId, t.denominator]), expectedPairs) &&
+      same(c.displayRaceIds, earlierPrincipalPairs.map(row => row[0])) &&
+      same(c.ungradedDisplayRaceIds, primary ? e.conditionalRaceIds : []),
+      "Earlier benchmarking requires the reviewed October 20/26 editions, result policy and exact declared 32-race primary or 35-race supplementary scope.");
   }
   requireValue(c.model.chamber !== "house" || c.houseMappingReviewSha256 === ELECTION_NIGHT_RUBRIC.houseMappingReviewSha256,
     "House grading requires the explicit reviewed fixed D/R/O party-winner mapping.");
