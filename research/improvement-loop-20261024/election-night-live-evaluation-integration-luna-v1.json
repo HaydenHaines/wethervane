@@ -1,0 +1,61 @@
+{
+  "schema": "ElectionNightLiveEvaluationIntegrationAuditLunaV1",
+  "reviewDate": "2026-10-26",
+  "status": "read_only_contract_audit_no_admission_or_grade",
+  "scope": "Determine the remaining browser/server boundary for displaying an authenticated fixed evaluation alongside the automatically refreshed published forecast. No code changes, result ingestion/admission, lock creation, score or grade issuance, build, or deployment.",
+  "worktree": "/home/hayden/projects/ballotmancy-election-night-guide-20261026",
+  "sourcePins": [
+    {"path":"components/ElectionNightGuide.tsx","sha256":"545a1122082afcca2c626896a72a329f72ed740e7c36888a800295010306ac3d"},
+    {"path":"components/ElectionNightRubric.tsx","sha256":"6fd66c84f8aca6853f08eeda45ac497f6a5b468139c301471b343ba2e0a1e673"},
+    {"path":"lib/election-night-client.ts","sha256":"653a83d78079c6607df485dfd68945ff17443be9c8db011d742608ab218087a5"},
+    {"path":"lib/election-night-artifacts.ts","sha256":"4241a78694d377354d15e6e2b948fe6a24e2f09a712938bdf9a53c5fc4b918c7"},
+    {"path":"lib/election-night-scoring.ts","sha256":"981bb5c318d6f67e7dfdfbcec156a56eba48208e5c1b2d61cee80f5268a3d859"},
+    {"path":"lib/election-night-rubric.ts","sha256":"252f742e93e7105a95ffca9646a608ea268f49b2e5feb15be8b3d90c00c31260"},
+    {"path":"lib/election-night-senate-admission.ts","sha256":"056f5856f7c53dcbec61199d8eb51b9f006cd50db3f34869a28c8e06a9c711a4"},
+    {"path":"tests/election-night-artifacts.test.mjs","sha256":"1d2c5b2c8b3da12a048bbae7e5fb59832ca972f93285f2544c7dfd32bd977f46"},
+    {"path":"tests/election-night-scoring.test.mjs","sha256":"ed325c914ddbbcbef5c4d9a785d97e210caa5b3aeefe74058555c76982a07f62"},
+    {"path":"tests/election-night-rubric.test.mjs","sha256":"f5e52735bd7d29f5e89978aa46cac335c6f4754d3c22ab8d01030eeebe0512b3"},
+    {"path":"tests/site/election-night.spec.ts","sha256":"5cfa5f98c7b1b0a0ab44c658283467e8acea4f5d7b5792437b41ceea367b7c2d"}
+  ],
+  "present": [
+    "The browser guide already follows the published forecast catalog and exact forecast SHA on a timer/focus event; expected-error references are separately pinned to the exact forecast edition.",
+    "The Node-only artifact store authenticates an evaluation lock against explicit trusted publication and admission pins. The lock binds model and baseline source/projection/protocol, comparison, cohort, rubric, result policy, reviews and projection review.",
+    "The Node-only ledger loader authenticates the lock-bound explicit chosen head and full oldest-to-head revision chain; it preserves superseded records and exposes only records at that explicit head for scoring. Corrections create a new revision; time does not select the head.",
+    "buildElectionNightScoring(lock, ledger) binds one selected result head to both locked model and baseline, emits full evaluation rows plus fixed rubric cohorts, and retains display-only races. gradeElectionNightRubric(input) is a separate pure call that withholds letters until the declared cohort is complete and defined; partial/provisional/unresolved data can remain visible without a final letter.",
+    "Synthetic unit tests cover authenticated empty ledgers, partial/called/provisional cases, revisions/corrections, target mismatches, cohort coverage, and rubric gating. The browser tests currently assert the no-lock/no-results preparation copy and exact current forecast/reference refresh behavior."
+  ],
+  "gaps": [
+    "There is no election-night evaluation API route in app/api. The artifact store and scoring bridge are Node-only and are not called from the browser or a server route.",
+    "There is no browser-safe response schema/client for a lock, selected result head, evaluation rows, rubric output or provenance. The existing ElectionNightLoaded type contains only forecast catalog/forecast and expected-error references.",
+    "The existing scorecard has fixed copy: 'Awaiting verified result', 'verified election results have not been added', and 'the final ... edition and grading rules have not yet been locked'. It cannot distinguish no admitted lock, a locked forecast with an empty ledger, partial admitted results, a complete score but incomplete grade cohort, or unavailable/failed verification.",
+    "No production evaluation lock/result-ledger publication is present under public/data/election-night; the published reference indexes explicitly say evaluationLock=false and observedResultsConsumed=false. No actual election result was admitted or consumed in this audit.",
+    "The server trust-root handoff is not yet defined: request parameters must never choose arbitrary store paths, lock pins, trusted publication/admission pins, or a ledger head. The service needs server-owned configured pins and must load the one approved immutable head."
+  ],
+  "recommendedServerContract": {
+    "route": "Add a Node-runtime, read-only GET route for the independently admitted scorecard evaluation. Keep forecast fetching on the existing path; route failures must not block forecast display.",
+    "trust": "Resolve a fixed server-configured artifact-store root and trusted publication/admission pin set. Do not accept filesystem paths or trust pins from the browser. Authenticate the exact lock and ledger, pass their loaded values to buildElectionNightScoring, then pass rubricInput to gradeElectionNightRubric. Route returns an unavailable/error state rather than substituting stale or self-claimed data.",
+    "responseMinimum": [
+      "schema/version and status: unavailable, lock_not_admitted, locked_no_results, partial_results, complete_score_not_gradeable, or graded; distinguish verification failure from a genuinely empty admitted ledger.",
+      "lock identity/hash/frozenAt; exact locked model and baseline run ID, result SHA, cutoff and issue time; comparison/cohort/result-policy/rubric decision IDs and hashes; displayed versus graded race IDs.",
+      "ledger hash and explicit chosenHeadSha256 (null only for authenticated empty history), selected revision IDs/hashes, admitted record count, and per-race result/source provenance needed for traceability.",
+      "per-race model and baseline winner/margin scoring statuses, values, finality and reasons; fixed-cohort coverage counts; rubric component completeness/raw paired scores/grades and overall grade exactly as returned by the grader. Never derive a letter in client code.",
+      "current published standard forecast identity (run ID and result SHA at minimum), plus a computed sameAsLockedModel boolean based on the exact locked model source SHA. This comparison must use the current standard catalog pointer, not the visitor's alternative-model selector."
+    ]
+  },
+  "recommendedUIContract": {
+    "separatePanels": "Keep the automatically refreshed 'Current forecast' and the immutable 'Evaluation snapshot' visibly distinct. The locked evaluation always scores its frozen model against its frozen baseline on the same admitted results; selecting another forecast stack changes neither locked arm.",
+    "sameOrChanged": "If current standard result SHA equals the lock's model SHA, label that the current standard matches the evaluated forecast. If it differs, state that a newer current forecast is published while evaluation remains on the older locked edition; show both cutoffs/issue times. Never silently retarget the lock.",
+    "states": [
+      "No lock admitted: say the evaluation has not been locked; show current predictions and the planned rubric, with no results or grade.",
+      "Authenticated lock, empty head: identify the frozen model/baseline/cohort; say no results have been admitted yet and show 0/N coverage, no scores/letters.",
+      "Partial head: show all locked races and per-target statuses/provenance; report scored/final/provisional/pending/mismatched counts. Show only explicitly labeled partial raw scores if the rubric result permits them; no component or overall letter before exact cohort completeness.",
+      "Complete scored head: display the exact rubric result only when the server grader returns status=graded; show component and overall grade, fixed denominators, raw paired model/reference scores, head and lock hashes, and results/source trace links. A pending/unavailable state must not be styled as zero or a grade."
+    ],
+    "refresh": "Recheck the evaluation endpoint on open/focus and with bounded refresh, independently of the current forecast refresh. A new selected ledger head can update the result view; a correction remains traceable in the previous immutable revision."
+  },
+  "nextSafeStep": "Build only a server-side, synthetic-fixture-backed read-only API adapter and response schema around the existing Node loaders/scorer/grader; add tests for no lock, authenticated empty head, partial results, complete eligible fixture, invalid trust roots, changed current SHA, and correction to a new explicit head. Keep actual results and production trust pins absent until independently admitted. Then wire a separate evaluation panel to that API while retaining existing current-forecast refresh and existing no-lock behavior.",
+  "limitations": [
+    "This audit establishes code/test interfaces and missing integration only. It does not verify a real lock, actual result ledger, result-source admission, or production grade.",
+    "A complete rubric result is still conditional on the exact lock's result policy, forecast mapping, cohort and rubric decision; API availability must not be treated as scientific admission by itself."
+  ]
+}

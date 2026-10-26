@@ -1,0 +1,43 @@
+{
+  "schema": "QueueScaleAdmissionProbeV1",
+  "requested": 1000,
+  "admitted": 354,
+  "deadlineSeconds": 20.0,
+  "stoppedAtDeadline": true,
+  "steps": [
+    {
+      "admitted": 1,
+      "cumulativeSeconds": 0.022000984055921435,
+      "lastAdmissionSeconds": 0.013387482147663832,
+      "statusSeconds": 0.0012134008575230837
+    },
+    {
+      "admitted": 10,
+      "cumulativeSeconds": 0.19425608217716217,
+      "lastAdmissionSeconds": 0.01258031208999455,
+      "statusSeconds": 0.0031404648907482624
+    },
+    {
+      "admitted": 100,
+      "cumulativeSeconds": 3.026500126114115,
+      "lastAdmissionSeconds": 0.032627150882035494,
+      "statusSeconds": 0.035148672061041
+    },
+    {
+      "admitted": 250,
+      "cumulativeSeconds": 11.113568485016003,
+      "lastAdmissionSeconds": 0.06924352492205799,
+      "statusSeconds": 0.08818832389079034
+    }
+  ],
+  "identicalReadmissionPreservedReceipt": true,
+  "launchedAttempts": 0,
+  "scienceQualification": "unassessed",
+  "scope": "Fresh local synthetic pending plans only; no scientific jobs, completed cycles, parallel clients, crash recovery, model comparisons, or deployment were tested.",
+  "sourceHashes": {
+    "experiment_queue.py": "6995febe73a5c1c2a317849416a58cc25130b9bbda44161f6a7624b321a8415f",
+    "execution.py": "ce02f4c4b9be397b299c2219092fdd355db1695798af07c4974bc63cb6bbbc93",
+    "test_experiment_queue.py": "8e3bc176f52567eaf3dfd371b234437cd49fa5bd38cd24cffb11a2610131f831",
+    "benchmark.py": "d5a79b955426f67e471ed94526a97b640e1e1c123509189d0b21d47e684e86aa"
+  }
+}

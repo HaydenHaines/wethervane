@@ -1,0 +1,85 @@
+{
+  "schema": "ContinuousImprovementCheckpointV43",
+  "recordedAtUtc": "2026-10-26T19:26:07.702354+00:00",
+  "previous": {
+    "path": "research/improvement-loop-20261024/checkpoints/continuation-v42.json",
+    "sha256": "7a31e378dc621bde8fc6d66844b88f4e61bb8eb0f360c2776c7d3eb270d5de77"
+  },
+  "goal": "active; continuing cycles, no supported weakest-layer ranking",
+  "frontend": {
+    "branch": "feature/election-night-guide-20261026",
+    "commit": "be60f01",
+    "publication": "private; scorecard remains queued behind qualified House release",
+    "capabilities": [
+      "Current published forecast refreshes automatically, including revised same-ID editions.",
+      "Authenticated server-selected result-ledger heads update separately, with no grade for incomplete or unverified cohorts.",
+      "Frozen forecast snapshot and current predictions remain visibly distinct; House group winners and candidate-pair margins are separate."
+    ],
+    "limitations": [
+      "No actual evaluation lock, verified election result feed or 2026 grade was admitted; this is not live election-night reporting.",
+      "External pre-result timestamp and source admission remain separate requirements.",
+      "House corrected collection and reference publication still need owner qualification."
+    ],
+    "verification": {
+      "electionNightSuite": "154 passed before one additional synthetic test",
+      "evaluationFinal": "11 focused tests passed including additional synthetic House case",
+      "browser": "20 desktop/mobile passed",
+      "houseLive": "153 passed, 4 optional browser checks skipped",
+      "typescript": "passed nonincremental",
+      "productionBuild": "passed",
+      "independentReview": {
+        "path": "research/improvement-loop-20261024/election-night-evaluation-runtime-review-sol-v1.json",
+        "sha256": "d67704605cf9e253e6d5af97e034de0723595bc470bcec604993868f7600f08e"
+      }
+    },
+    "evidence": [
+      {
+        "path": "research/improvement-loop-20261024/election-night-result-runtime-v1/root-election-night-suite.log",
+        "sha256": "3755040102080a7b799d5d30969efdf652ea76a9d5540c005084c486c66bc534"
+      },
+      {
+        "path": "research/improvement-loop-20261024/election-night-result-runtime-v1/root-evaluation-final.log",
+        "sha256": "eb7abe73507f2f353e8c272134adc46ad373de2ff6c41dc81bf32738cc5b3ab4"
+      },
+      {
+        "path": "research/improvement-loop-20261024/election-night-result-runtime-v1/root-browser.log",
+        "sha256": "894e8dfb95a72d343c75456138f3aa1f221e92b40b24417fcd133ba2b00bd892"
+      },
+      {
+        "path": "research/improvement-loop-20261024/election-night-result-runtime-v1/root-build.log",
+        "sha256": "74bcf7aa63982df230a16db7f86c40e2cfd3a4ac0db7838885fa91c767c86e8b"
+      },
+      {
+        "path": "research/improvement-loop-20261024/house-comparison-adapter-v1/root-house-live-suite.log",
+        "sha256": "e8dbc50a36ea304d424cc6fffe7ca25eec4aa167a52d80a32e60a87178b82d9f"
+      }
+    ]
+  },
+  "scientific": {
+    "status": "All eight research roles exist; supplied-state and compilation checks do not establish incremental predictive benefit. No qualified matched full-stack comparison identifies a weakest layer; no model was promoted.",
+    "m01": "Supplied-state prototype authorized and in progress in isolation; no fit, sampling, historical evaluation or promotion. Owner confirms no overlapping count-binding work.",
+    "coherenceAudit": {
+      "path": "research/improvement-loop-20261024/coherence-next-action-sol-v1.json",
+      "sha256": "1c5422e5e7cb827a19295b97a55ea1df9a1bcf956f4087eecd493e6be550e01d"
+    },
+    "m01Spec": {
+      "path": "research/improvement-loop-20261024/m01-count-measurement-prototype-spec-v1/specification.json",
+      "sha256": "29226e6a6938f7a7730c9843833bdbaf3768d6f89d13dd735222faa20069c94c"
+    },
+    "communityHandoff": {
+      "path": "research/improvement-loop-20261024/house-community-transfer-owner-handoff-v1.json",
+      "sha256": "619c71d9ecbe9dbc5ffa3e36cbfd87444b524524539603abd7d7319702116a63"
+    },
+    "queueProbe": {
+      "path": "research/improvement-loop-20261024/queue-scale-admission-v1/result.json",
+      "sha256": "fb17c8569b3659a5f10f92e1255b4451f0e8f4b6d09aa18864bdb8a6b63404b3"
+    },
+    "queueScope": "354 synthetic pending admissions in 20 seconds; 0 jobs launched, no claim of completed cycles or thousand-cycle throughput."
+  },
+  "next": [
+    "Finish and independently review the supplied-state M01 prototype and preserve all versions.",
+    "Coordinate the qualified corrected House release and integrate only supported evidence.",
+    "Complete verified pre-result lock and actual result-source publication before any real grade.",
+    "Improve queue scalability without weakening immutable history, tamper detection or crash recovery."
+  ]
+}

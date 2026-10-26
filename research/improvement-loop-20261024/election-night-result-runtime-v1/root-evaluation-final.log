@@ -1,0 +1,80 @@
+TAP version 13
+# (node:1863575) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/election-night-evaluation-server.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /home/hayden/projects/ballotmancy-election-night-guide-20261026/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: missing publication config is an explicit no-lock state, and route accepts only a chamber selector
+ok 1 - missing publication config is an explicit no-lock state, and route accepts only a chamber selector
+  ---
+  duration_ms: 31.593742
+  type: 'test'
+  ...
+# Subtest: malformed or corrupted server trust configuration is unavailable without leaking filesystem details
+ok 2 - malformed or corrupted server trust configuration is unavailable without leaking filesystem details
+  ---
+  duration_ms: 75.779391
+  type: 'test'
+  ...
+# Subtest: an authenticated empty ledger is locked but has no results, scores or grade
+ok 3 - an authenticated empty ledger is locked but has no results, scores or grade
+  ---
+  duration_ms: 87.903643
+  type: 'test'
+  ...
+# Subtest: native House null target/law identities survive the authenticated lock and view boundary
+ok 4 - native House null target/law identities survive the authenticated lock and view boundary
+  ---
+  duration_ms: 50.660708
+  type: 'test'
+  ...
+# Subtest: House group winner stays distinct from candidate-pair margin in a scored synthetic result
+ok 5 - House group winner stays distinct from candidate-pair margin in a scored synthetic result
+  ---
+  duration_ms: 54.649656
+  type: 'test'
+  ...
+# Subtest: certified Senate race outside the fixed scoring cohort remains visible and cannot enter grade denominators
+ok 6 - certified Senate race outside the fixed scoring cohort remains visible and cannot enter grade denominators
+  ---
+  duration_ms: 59.949959
+  type: 'test'
+  ...
+# Subtest: partial certified results stay paired to both forecasts while absent rows stay pending and no letter leaks
+ok 7 - partial certified results stay paired to both forecasts while absent rows stay pending and no letter leaks
+  ---
+  duration_ms: 52.036846
+  type: 'test'
+  ...
+# Subtest: called provisional observations are labeled separately from scoring losses
+ok 8 - called provisional observations are labeled separately from scoring losses
+  ---
+  duration_ms: 48.237978
+  type: 'test'
+  ...
+# Subtest: complete fixed synthetic cohort grades only through the frozen grader and correction selects a new immutable head
+ok 9 - complete fixed synthetic cohort grades only through the frozen grader and correction selects a new immutable head
+  ---
+  duration_ms: 82.266642
+  type: 'test'
+  ...
+# Subtest: browser parser rejects fabricated grades, incomplete coverage, numeric dates and policy substitution
+ok 10 - browser parser rejects fabricated grades, incomplete coverage, numeric dates and policy substitution
+  ---
+  duration_ms: 43.375103
+  type: 'test'
+  ...
+# Subtest: shared browser fixture set is valid and contains only invented no-lock, pending, partial and graded states
+ok 11 - shared browser fixture set is valid and contains only invented no-lock, pending, partial and graded states
+  ---
+  duration_ms: 115.240599
+  type: 'test'
+  ...
+1..11
+# tests 11
+# suites 0
+# pass 11
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 883.899443

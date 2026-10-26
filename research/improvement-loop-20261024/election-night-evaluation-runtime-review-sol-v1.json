@@ -1,0 +1,31 @@
+{
+  "schema": "ElectionNightEvaluationRuntimeIndependentReviewV1",
+  "status": "supported_for_private_preparation",
+  "sourcePins": {
+    "serverSha256": "7b3ec3490ba565708027460bece1155e95b8c9ea8d782abae8f2dfe7d541c96d",
+    "viewParserSha256": "e7f26fdfc99a7df3922e3db2f03c5814444456f402ba4b5c808a00acfc195ebb",
+    "routeSha256": "5a3a2a5e76d42d064ccbf2319e7d9d088b819cdea655e1eeb512b627f0fcd0ca",
+    "serverTestsSha256": "ee894366143469a42fc7cdc844d2749f87298fd83e2227e4fc69cc58938b393f",
+    "fixtureBuilderSha256": "11eff3def74bc9be06fb21a24ce15c1d4f5f7f8b167ba84b6d2fe7e3f9ea65f6",
+    "viewFixturesSha256": "5ca1f93efb75b42c63fff11e50a649109dd8bbb999cbb6bd61c00c8f06b7233c",
+    "artifactLoaderSha256": "6dc9f9d0e25d802d6e3633c7f31f0265c40339a1b4d57173345b4d404a413319",
+    "evaluationComponentSha256": "a5fec5f4c0aadc911101adff8064e0bb42c50f2a11058f595298f2c47e2558f9",
+    "evaluationHookSha256": "fe1947a37e230eb0154108e8ddf9297afe05e7dc28ffb800c98e7757417359d9",
+    "guideSha256": "e50c59548526c9c56ec6d1a9e5c99aa1387ca23adf8a68d997ff16c955690bb5",
+    "rubricComponentSha256": "7b3d2a9b1f5add8ffa81e10df6c654818501809bd7d7e12ceac83376f61bd3cd"
+  },
+  "findings": [
+    "The route accepts one Senate/House selector only, sends no-store responses, and never accepts client-selected lock paths or hashes. The fixed server publication config chooses exact lock and ledger subject/publication/admission pins. The artifact store rehashes bytes, rejects unsafe paths and symlinks, verifies independent admissions, and uses only the explicit complete ledger head.",
+    "Missing publication config is a distinct lock_not_configured state. Malformed config, corrupt lock/ledger pins, and scoring failures become unavailable without source paths or a fabricated no-lock claim. A selected empty ledger yields pending rows and no grade. Corrected revision tests show a new head and source revision, not timestamp-based selection.",
+    "The result view whitelists source metadata and hash provenance, not raw source text. Called/provisional observations can be visible while losses remain null under certified-minimum protocols. Partial scores are labeled as available-row diagnostics; an overall letter is exposed only when the locked grader reports complete eligible cohorts.",
+    "The excluded Senate display race remains in the forecast/result table with display_only diagnostics but no rubric loss and outside-primary-grade labeling. Scored denominator stays the declared cohort. Current issued House scoring requires 435 party winners, 412 supported named pairs and 23 predeclared pair exclusions; House native target/law IDs remain explicitly null. Group winners are shown separately from candidate-pair margins.",
+    "The UI compares the current result SHA with the locked model SHA and identifies a different edition. Refresh follows the server-selected head on focus/visibility or the visible 60-second interval; stale or failed refresh clears the prior evaluation view. Per-race cards distinguish reported locked races from unreported ones."
+  ],
+  "verification": {
+    "independentFocusedServerTests": "10/10 passed; election-night-evaluation-runtime-review-sol-tests.log",
+    "diffCheck": "passed",
+    "actualPublicationConfig": "absent; no real 2026 result feed, admitted lock, or grade was exposed"
+  },
+  "materialBlockers": [],
+  "limits": "The frozen-at timestamp is checked to follow both forecast issue times, but this code alone cannot prove an external pre-result timestamp; independent lock admission and witnessed release evidence remain required. Source URLs and permission still depend on the separately admitted source/result policy. The tests use invented election observations; no real result or public evaluation was claimed."
+}

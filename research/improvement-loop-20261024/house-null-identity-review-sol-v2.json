@@ -1,0 +1,14 @@
+{
+  "schema": "HouseNullIdentityIndependentReviewV2",
+  "supersedes": "house-null-identity-review-sol-v1.json",
+  "status": "supported_with_scope",
+  "reviewedPins": {
+    "rubricSha256": "9012bcfd6bb504d9830fdb049233dce3d8a1de3c4f203480b5e6fd94ccb8af0d",
+    "rubricTestsSha256": "24eb9cd9cdb9573713217e0c064a0610aac4bcc12a5b9812ec044e918bc1c721",
+    "artifactLoaderSha256": "24c3b4d5352944bfa40e3650aa53643155afa1093c3abb070a387de3e9047ca7"
+  },
+  "finding": "The added text(issuedAt)/text(cutoffAt) checks require nonempty strings before Date.parse, so a coercible numeric timestamp cannot enter a House or Senate binding. The new numericDate regression changes the invented House fixture's model issuedAt to 0 and requires not_graded. Earlier null/null House-only, contract/manifest equality, source/projection authentication, full protocol cohort, and actual House projection findings remain as in V1.",
+  "verification": "Focused rubric tests passed 13/13; house-null-identity-review-sol-v2-tests.log.",
+  "materialBlockers": [],
+  "limits": "This is a narrow code/test delta review. No actual House evaluation lock, official results, or public grade is admitted."
+}

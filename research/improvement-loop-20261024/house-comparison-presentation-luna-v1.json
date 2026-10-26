@@ -1,0 +1,60 @@
+{
+  "schema": "HouseComparisonPresentationReviewLunaV1",
+  "reviewDate": "2026-10-26",
+  "status": "private_design_recommendation_not_publication_approval",
+  "scope": "Independent read-only review of the seven-case Cook rating handoff and current House comparison interfaces. No frontend edits, data export, excerpt publication, or forecast/outcome claims.",
+  "handoffPins": {
+    "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-disagreement-20261026/comparison-handoff-v2.json",
+    "sha256": "89a34b5ba9cfdcc861b57bf5a74365f4950ac950aa9d05659009940f6cdf869a",
+    "reviewPath": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-disagreement-20261026/comparison-handoff-root-review-v1.json",
+    "reviewSha256": "918f57f55d3f6ba651e819aa87a96b12f087344080861a83cef3077e526e0cb3",
+    "comparisonReceiptSha256": "0f29ad1e53164e7ad55178802b1c18a581f067a69b76fb4de6e8ac7988407c3f",
+    "oldForecastPacketSha256": "3931ca8b0d59c76cce3e5f20c1d8c500d1fe66138c483235d6c78c7981ee882f",
+    "edition": "Old qualified Oct. 25, 2026 release-v6 self-comparison; corrected forecast is absent and model deltas are zero.",
+    "cookSnapshot": "Oct. 23, 2026 17:26 UTC (1:26 PM EDT)",
+    "cookSourceUrl": "https://www.270towin.com/2026-house-election/cook-political-report-2026-house-ratings",
+    "publicationQualified": false
+  },
+  "reviewedFrontendPins": [
+    {"path":"/home/hayden/projects/ballotmancy-election-night-guide-20261026/components/HouseLiveComparison.tsx","sha256":"f5c98c1796e47a921df9098e17c05d81c99db5c0566d12ec62aa40b55cf87326"},
+    {"path":"/home/hayden/projects/ballotmancy-election-night-guide-20261026/components/HouseComparisonControls.tsx","sha256":"f5e3af65cd95d0a6eeeecf6d46d7f35456a7294bfdca971f836a423287cd24cf"},
+    {"path":"/home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/house-live-comparison.ts","sha256":"9fbba0856e641034a90f66a1dd58aea430d81d91ef8f93311c949ed47a97acc4"},
+    {"path":"/home/hayden/projects/ballotmancy-election-night-guide-20261026/components/HouseLiveResults.tsx","sha256":"fb84143177d125ab952c9176d2413faa79a570761a678e4bc9f78fbd9b46770b"}
+  ],
+  "recommendation": {
+    "entry": "Use a separate, clearly dated 'How this forecast compares with Cook ratings' view. Do not blend ordinal ratings into the existing model-to-model delta tables.",
+    "firstView": [
+      "Show the exact two editions above the cases: Cook snapshot date/time and the forecast's election cutoff and issued-at time. Label the forecast as the audited Oct. 25 release, not the corrected or current edition.",
+      "Present seven cases as a compact responsive list. For each, show district; Cook's exact category and favored party as text; and separate D, R, and O model winner chances on a 0–100% scale. State once that Cook categories are ordered qualitative ratings and do not have assigned numeric probabilities.",
+      "If showing the named-candidate pair share, use the two verified candidate names and the denominator ('share among these two candidates') in a separate row/column. Never present that share as a party-win chance. If the two identities cannot be confirmed for the exact forecast edition, show 'not available' rather than zero.",
+      "Use a short 'Where they differ' summary based on category/direction only, then let a reader expand each case for its three party probabilities and the pair-share definition. Avoid a single composite score or a chart that places rating labels on the probability axis."
+    ],
+    "tradeTerms": [
+      "Cook's 'Lean R', 'Solid D', etc. describe an ordinal rating category/favored side; they are not calibrated win probabilities and the gaps between categories are not numeric quantities.",
+      "The model values are probabilities for mutually exclusive D/R/O winner groups. A probability assigned to party O is not the candidate-pair share and does not identify which individual candidate wins.",
+      "The pair-share denominator includes only the two named principal candidates. It can differ from a party's probability because other candidates, rules, and the model's group aggregation are handled separately.",
+      "A mismatch means the rating and model describe the race differently at their stated snapshots. It is not an observed error, proof that either source is right, or evidence that one model input caused a change."
+    ],
+    "currentHandoffHandling": [
+      "Treat all seven cases as private research preparation. The handoff explicitly says publicationQualified=false and requires source-policy review for selected Cook excerpts; do not copy the full 435 by 16 rating dataset to the site.",
+      "This handoff is a same-packet self-comparison, so model deltas are exactly zero. Do not label it a before/after comparison or imply a corrected-model effect. If the screen includes edition deltas, show 'not applicable: same forecast packet' rather than a row of apparent zero-change signals.",
+      "Do not carry over the NY-21 / IA-01 / WI-03 source findings as current unresolved defects. They are tied to the audited Oct. 25 baseline and the handoff explicitly says current candidate and poll changes must be checked before making that claim.",
+      "Before a future public version, require exact forecast/catalog hashes, current candidate identities and rating snapshot, approved source/citation wording, and an explicit missing-value presentation. Null or unmatched items stay 'not available'; zero remains a real probability only when the source reports zero."
+    ],
+    "designBasis": "Cleveland and McGill's graphical-perception experiments motivate using aligned common scales for quantitative values. Applying that evidence here is a design inference: retain probability values on their own numeric scale and render ratings as labeled categories, instead of implying a numeric mapping between the two.",
+    "unresolved": [
+      "The handoff records stable internal principal candidate IDs but omits candidate names in each case. Confirm public name/identity binding against the exact current forecast before showing pair share.",
+      "Public excerpt rights/source attribution for the seven selected Cook labels remain unreviewed; the provided source is a 270toWin page with a dated snapshot, not a publication qualification.",
+      "The current comparison component compares two model forecasts and deliberately says their differences are not accuracy scores. It does not yet provide a Cook-rating comparison. Keep those concepts visually and semantically separate."
+    ]
+  },
+  "evidenceSources": [
+    {
+      "type": "primary visualization experiment",
+      "citation": "William S. Cleveland and Robert McGill, 'Graphical Perception: Theory, Experimentation, and Application to the Development of Graphical Methods,' Journal of the American Statistical Association 79(387), 531–554 (1984).",
+      "url": "https://doi.org/10.1080/01621459.1984.10478080",
+      "accessibleCopy": "https://faculty.washington.edu/aragon/classes/hcde511/s12/readings/cleveland84.pdf",
+      "use": "Supports the limited quantitative-display rationale above; it does not validate this specific UI or any polling/election claim."
+    }
+  ]
+}

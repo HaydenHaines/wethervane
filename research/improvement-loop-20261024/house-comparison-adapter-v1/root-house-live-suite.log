@@ -1,0 +1,1044 @@
+
+> ballotmancy-site@0.1.0 test:house-live
+> node --experimental-strip-types --test tests/house-live-*.test.mjs tests/house-ny21-notice.test.mjs tests/house-context-comparison.test.mjs
+
+TAP version 13
+# (node:1855665) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/house-context-comparison.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /home/hayden/projects/ballotmancy-election-night-guide-20261026/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: offline importer keeps selected ordinal excerpts private and binds both exact editions
+ok 1 - offline importer keeps selected ordinal excerpts private and binds both exact editions
+  ---
+  duration_ms: 237.586645
+  type: 'test'
+  ...
+# Subtest: approval roots cannot contain site inputs or escape through a symlink
+ok 2 - approval roots cannot contain site inputs or escape through a symlink
+  ---
+  duration_ms: 7.917845
+  type: 'test'
+  ...
+# Subtest: distinct current and baseline editions require independently mapped baseline run IDs
+ok 3 - distinct current and baseline editions require independently mapped baseline run IDs
+  ---
+  duration_ms: 104.979668
+  type: 'test'
+  ...
+# Subtest: offline import rejects missing source permission, stale approval and mixed publication/result
+ok 4 - offline import rejects missing source permission, stale approval and mixed publication/result
+  ---
+  duration_ms: 89.244328
+  type: 'test'
+  ...
+# Subtest: changed ordered pair or candidate support suppresses numerical comparisons
+ok 5 - changed ordered pair or candidate support suppresses numerical comparisons
+  ---
+  duration_ms: 60.439238
+  type: 'test'
+  ...
+# Subtest: inapplicable pair remains null and D/O candidate groups remain distinct
+ok 6 - inapplicable pair remains null and D/O candidate groups remain distinct
+  ---
+  duration_ms: 49.302217
+  type: 'test'
+  ...
+# Subtest: local old-release handoff projects seven private cases with synthetic test approvals only
+ok 7 - local old-release handoff projects seven private cases with synthetic test approvals only
+  ---
+  duration_ms: 131.238045
+  type: 'test'
+  ...
+# (node:1855666) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/hayden/projects/ballotmancy-election-night-guide-20261026/app/api/chambers/house/live/route.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /home/hayden/projects/ballotmancy-election-night-guide-20261026/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: live API distinguishes absent publication, invalid selection and broken release without leaking file details
+ok 8 - live API distinguishes absent publication, invalid selection and broken release without leaking file details
+  ---
+  duration_ms: 151.161937
+  type: 'test'
+  ...
+# (node:1855672) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/house-live-artifacts.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /home/hayden/projects/ballotmancy-election-night-guide-20261026/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: reads authenticated nested JSON bytes without admitting them as a forecast
+ok 9 - reads authenticated nested JSON bytes without admitting them as a forecast
+  ---
+  duration_ms: 35.088409
+  type: 'test'
+  ...
+# Subtest: reads a pinned GeoJSON companion using the backend map filename
+ok 10 - reads a pinned GeoJSON companion using the backend map filename
+  ---
+  duration_ms: 5.336496
+  type: 'test'
+  ...
+# Subtest: changed artifact bytes invalidate the reviewed digest
+ok 11 - changed artifact bytes invalidate the reviewed digest
+  ---
+  duration_ms: 11.761914
+  type: 'test'
+  ...
+# Subtest: rejects path traversal, absolute paths and ambiguous components
+ok 12 - rejects path traversal, absolute paths and ambiguous components
+  ---
+  duration_ms: 3.298256
+  type: 'test'
+  ...
+# Subtest: rejects symlink escapes even when the target has the expected digest
+ok 13 - rejects symlink escapes even when the target has the expected digest
+  ---
+  duration_ms: 8.548259
+  type: 'test'
+  ...
+# Subtest: streams a binary artifact and detects a changed binary
+ok 14 - streams a binary artifact and detects a changed binary
+  ---
+  duration_ms: 4.557732
+  type: 'test'
+  ...
+# Subtest: a matching digest does not make malformed JSON or a directory an artifact
+ok 15 - a matching digest does not make malformed JSON or a directory an artifact
+  ---
+  duration_ms: 11.324005
+  type: 'test'
+  ...
+# (node:1855673) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/house-live-artifacts.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /home/hayden/projects/ballotmancy-election-night-guide-20261026/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: offline original verification binds explicit local evidence without changing native qualification or source files
+ok 16 - offline original verification binds explicit local evidence without changing native qualification or source files
+  ---
+  duration_ms: 411.27895
+  type: 'test'
+  ...
+# Subtest: offline combined verification binds explicit local evidence without changing native qualification or source files
+ok 17 - offline combined verification binds explicit local evidence without changing native qualification or source files
+  ---
+  duration_ms: 290.980441
+  type: 'test'
+  ...
+# Subtest: candidate CLI requires explicit pins and reports combined checks without publication admission
+ok 18 - candidate CLI requires explicit pins and reports combined checks without publication admission
+  ---
+  duration_ms: 774.668118
+  type: 'test'
+  ...
+# Subtest: a native reviewed string never turns a single candidate consistency check into publication admission
+ok 19 - a native reviewed string never turns a single candidate consistency check into publication admission
+  ---
+  duration_ms: 210.332953
+  type: 'test'
+  ...
+# Subtest: candidate, local receipt, local plan, and raw archive bytes must match their explicit pins
+ok 20 - candidate, local receipt, local plan, and raw archive bytes must match their explicit pins
+  ---
+  duration_ms: 450.232631
+  type: 'test'
+  ...
+# Subtest: candidate verification requires one receipt and plan pair, including for original archives
+ok 21 - candidate verification requires one receipt and plan pair, including for original archives
+  ---
+  duration_ms: 580.111102
+  type: 'test'
+  ...
+# Subtest: candidate evidence must bind the native configuration, plan hash, joint hash, and chain counts
+ok 22 - candidate evidence must bind the native configuration, plan hash, joint hash, and chain counts
+  ---
+  duration_ms: 608.658947
+  type: 'test'
+  ...
+# (node:1855679) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/house-live-client.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /home/hayden/projects/ballotmancy-election-night-guide-20261026/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: default and explicit model loading preserve the requested identity and abort signal
+ok 23 - default and explicit model loading preserve the requested identity and abort signal
+  ---
+  duration_ms: 146.777072
+  type: 'test'
+  ...
+# Subtest: selection failures never fall back to another result or the historical endpoint
+ok 24 - selection failures never fall back to another result or the historical endpoint
+  ---
+  duration_ms: 98.463828
+  type: 'test'
+  ...
+# Subtest: invalid requests never cause a fetch
+ok 25 - invalid requests never cause a fetch
+  ---
+  duration_ms: 0.993782
+  type: 'test'
+  ...
+# Subtest: availability distinguishes an unpublished edition from a failed or malformed release
+ok 26 - availability distinguishes an unpublished edition from a failed or malformed release
+  ---
+  duration_ms: 2.726343
+  type: 'test'
+  ...
+# (node:1855685) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/house-live-collection.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /home/hayden/projects/ballotmancy-election-night-guide-20261026/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: all 16 parsed results share the current roster, candidate identity, source pins, and map artifacts
+ok 27 - all 16 parsed results share the current roster, candidate identity, source pins, and map artifacts
+  ---
+  duration_ms: 652.100601
+  type: 'test'
+  ...
+# Subtest: catalog and result ordering are ignored while each run's own joint race order is preserved
+ok 28 - catalog and result ordering are ignored while each run's own joint race order is preserved
+  ---
+  duration_ms: 656.678592
+  type: 'test'
+  ...
+# Subtest: model-specific probabilities, pair shares, qualifications, methods, and polling inputs may vary
+ok 29 - model-specific probabilities, pair shares, qualifications, methods, and polling inputs may vary
+  ---
+  duration_ms: 568.321424
+  type: 'test'
+  ...
+# Subtest: collection rejects missing, extra, or duplicate parsed results
+ok 30 - collection rejects missing, extra, or duplicate parsed results
+  ---
+  duration_ms: 289.503716
+  type: 'test'
+  ...
+# Subtest: each result ID and exact model configuration must match its catalog entry
+ok 31 - each result ID and exact model configuration must match its catalog entry
+  ---
+  duration_ms: 593.402372
+  type: 'test'
+  ...
+# Subtest: collection rejects cross-run candidate roster drift in every identity field
+ok 32 - collection rejects cross-run candidate roster drift in every identity field
+  ---
+  duration_ms: 1395.598739
+  type: 'test'
+  ...
+# Subtest: candidate source IDs must remain stable and their referenced provenance pins must identify the same source
+ok 33 - candidate source IDs must remain stable and their referenced provenance pins must identify the same source
+  ---
+  duration_ms: 216.31345
+  type: 'test'
+  ...
+# Subtest: collection rejects outcome support, outcome kind, rule, and race identity drift
+ok 34 - collection rejects outcome support, outcome kind, rule, and race identity drift
+  ---
+  duration_ms: 872.280251
+  type: 'test'
+  ...
+# Subtest: map vintage, geography pin, and source receipt pin must remain identical across runs
+ok 35 - map vintage, geography pin, and source receipt pin must remain identical across runs
+  ---
+  duration_ms: 1079.835168
+  type: 'test'
+  ...
+# (node:1855697) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/house-live-comparison.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /home/hayden/projects/ballotmancy-election-night-guide-20261026/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: same current roster compares each D/R/O group chance and keeps run evidence separate
+ok 36 - same current roster compares each D/R/O group chance and keeps run evidence separate
+  ---
+  duration_ms: 52.305144
+  type: 'test'
+  ...
+# Subtest: different result identity, election, cutoff, and geography are required
+ok 37 - different result identity, election, cutoff, and geography are required
+  ---
+  duration_ms: 96.416291
+  type: 'test'
+  ...
+# Subtest: 435 race identities, candidate groups, membership, and rules must match
+ok 38 - 435 race identities, candidate groups, membership, and rules must match
+  ---
+  duration_ms: 327.755184
+  type: 'test'
+  ...
+# Subtest: chamber comparison is withheld when either result or its scenario is incompatible
+ok 39 - chamber comparison is withheld when either result or its scenario is incompatible
+  ---
+  duration_ms: 199.648609
+  type: 'test'
+  ...
+# Subtest: different joint hashes with equal marginals do not imply paired draws or a covariance result
+ok 40 - different joint hashes with equal marginals do not imply paired draws or a covariance result
+  ---
+  duration_ms: 28.312818
+  type: 'test'
+  ...
+# (node:1855699) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/house-live-edition.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /home/hayden/projects/ballotmancy-election-night-guide-20261026/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: explicit edition intent is stable regardless of current publication availability
+ok 41 - explicit edition intent is stable regardless of current publication availability
+  ---
+  duration_ms: 4.76249
+  type: 'test'
+  ...
+# Subtest: bare House route waits for valid availability and treats API errors as errors, not unavailable
+ok 42 - bare House route waits for valid availability and treats API errors as errors, not unavailable
+  ---
+  duration_ms: 1.206505
+  type: 'test'
+  ...
+# Subtest: published group IDs and legacy House IDs remain historical without edition parameters
+ok 43 - published group IDs and legacy House IDs remain historical without edition parameters
+  ---
+  duration_ms: 5.503302
+  type: 'test'
+  ...
+# Subtest: explicit 2026 year selects current; supported historical years and actual view stay historical
+ok 44 - explicit 2026 year selects current; supported historical years and actual view stay historical
+  ---
+  duration_ms: 0.248611
+  type: 'test'
+  ...
+# Subtest: conflicting, repeated, unknown, and unsupported edition/year/view combinations fail explicitly
+ok 45 - conflicting, repeated, unknown, and unsupported edition/year/view combinations fail explicitly
+  ---
+  duration_ms: 0.450363
+  type: 'test'
+  ...
+# Subtest: current selection preserves generated run, district, and comparison choices
+ok 46 - current selection preserves generated run, district, and comparison choices
+  ---
+  duration_ms: 0.277465
+  type: 'test'
+  ...
+# Subtest: race-only and comparison-only links do not infer an edition or year
+ok 47 - race-only and comparison-only links do not infer an edition or year
+  ---
+  duration_ms: 0.188697
+  type: 'test'
+  ...
+# (node:1855701) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/house-live-historical-selection.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /home/hayden/projects/ballotmancy-election-night-guide-20261026/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: year-only historical links carry the catalog default model family into the requested year
+ok 48 - year-only historical links carry the catalog default model family into the requested year
+  ---
+  duration_ms: 1.057753
+  type: 'test'
+  ...
+# Subtest: missing or unsupported historical years return no run instead of the global default
+ok 49 - missing or unsupported historical years return no run instead of the global default
+  ---
+  duration_ms: 1.276898
+  type: 'test'
+  ...
+# (node:1855707) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/house-live-server.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /home/hayden/projects/ballotmancy-election-night-guide-20261026/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: atomic installer never replaces an existing empty directory, nonempty directory, or symlink
+ok 50 - atomic installer never replaces an existing empty directory, nonempty directory, or symlink
+  ---
+  duration_ms: 261.769853
+  type: 'test'
+  ...
+# Subtest: atomic installer has no mutation fallback on unsupported platforms or syscalls
+ok 51 - atomic installer has no mutation fallback on unsupported platforms or syscalls
+  ---
+  duration_ms: 676.855662
+  type: 'test'
+  ...
+# Subtest: imports all 16 invented native results byte for byte; site loads every choice without raw archives
+ok 52 - imports all 16 invented native results byte for byte; site loads every choice without raw archives
+  ---
+  duration_ms: 3425.513779
+  type: 'test'
+  ...
+# Subtest: explicit polling inputs publish only a minimal derived sidecar and distinguish polling-on from baseline
+ok 53 - explicit polling inputs publish only a minimal derived sidecar and distinguish polling-on from baseline
+  ---
+  duration_ms: 1896.208945
+  type: 'test'
+  ...
+# Subtest: polling receipt and ledger bytes must match their explicit pins and remain present
+ok 54 - polling receipt and ledger bytes must match their explicit pins and remain present
+  ---
+  duration_ms: 854.630881
+  type: 'test'
+  ...
+# Subtest: polling disclosure rejects wrong ledger IDs, missing sample metadata, wrong admission pins and baseline usage
+ok 55 - polling disclosure rejects wrong ledger IDs, missing sample metadata, wrong admission pins and baseline usage
+  ---
+  duration_ms: 1303.9606
+  type: 'test'
+  ...
+# Subtest: polling bundle is explicit and complete, and its input directory cannot become the output
+ok 56 - polling bundle is explicit and complete, and its input directory cannot become the output
+  ---
+  duration_ms: 249.100045
+  type: 'test'
+  ...
+# Subtest: combined archives use the authenticated local plan selected by receipt SHA and retain its exact evidence bytes
+ok 57 - combined archives use the authenticated local plan selected by receipt SHA and retain its exact evidence bytes
+  ---
+  duration_ms: 1861.429869
+  type: 'test'
+  ...
+# Subtest: original nine-member archives still accept an explicit authenticated original receipt and local plan
+ok 58 - original nine-member archives still accept an explicit authenticated original receipt and local plan
+  ---
+  duration_ms: 1572.299021
+  type: 'test'
+  ...
+# Subtest: prediction receipt and local plan mappings cannot be missing or ambiguous
+ok 59 - prediction receipt and local plan mappings cannot be missing or ambiguous
+  ---
+  duration_ms: 1753.77136
+  type: 'test'
+  ...
+# Subtest: combined receipt must bind the native configuration, passing status, original plan SHA and joint artifact SHA
+ok 60 - combined receipt must bind the native configuration, passing status, original plan SHA and joint artifact SHA
+  ---
+  duration_ms: 1624.128679
+  type: 'test'
+  ...
+# Subtest: combined plan bytes, configuration, chain counts and source layout are authenticated before raw checks
+ok 61 - combined plan bytes, configuration, chain counts and source layout are authenticated before raw checks
+  ---
+  duration_ms: 2271.791088
+  type: 'test'
+  ...
+# Subtest: combined raw arrays cannot be admitted as an original archive when explicit prediction evidence is absent
+ok 62 - combined raw arrays cannot be admitted as an original archive when explicit prediction evidence is absent
+  ---
+  duration_ms: 385.007664
+  type: 'test'
+  ...
+# Subtest: changed source bytes and changed operator-review bytes prevent a destination
+ok 63 - changed source bytes and changed operator-review bytes prevent a destination
+  ---
+  duration_ms: 306.965617
+  type: 'test'
+  ...
+# Subtest: review must bind source policy, every result identity, joint identity, and explicit export convention
+ok 64 - review must bind source policy, every result identity, joint identity, and explicit export convention
+  ---
+  duration_ms: 1142.933148
+  type: 'test'
+  ...
+# Subtest: native qualification must be reviewed, state valid conventions, and match the operator review
+ok 65 - native qualification must be reviewed, state valid conventions, and match the operator review
+  ---
+  duration_ms: 1236.121974
+  type: 'test'
+  ...
+# Subtest: native catalog/configuration and cross-model candidate roster must match before staging
+ok 66 - native catalog/configuration and cross-model candidate roster must match before staging
+  ---
+  duration_ms: 901.746399
+  type: 'test'
+  ...
+# Subtest: review booleans cannot admit wrong raw calculations or a guessed quantile convention
+ok 67 - review booleans cannot admit wrong raw calculations or a guessed quantile convention
+  ---
+  duration_ms: 1463.799933
+  type: 'test'
+  ...
+# Subtest: invalid staged geography fails selected-response validation and cleans temporary staging
+ok 68 - invalid staged geography fails selected-response validation and cleans temporary staging
+  ---
+  duration_ms: 1149.272456
+  type: 'test'
+  ...
+# Subtest: existing destination and symlink output parent are untouched
+ok 69 - existing destination and symlink output parent are untouched
+  ---
+  duration_ms: 130.031738
+  type: 'test'
+  ...
+# Subtest: native publication manifest, review and file-parent collisions are rejected
+ok 70 - native publication manifest, review and file-parent collisions are rejected
+  ---
+  duration_ms: 609.928202
+  type: 'test'
+  ...
+# (node:1855709) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/house-live-joint-archive.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /home/hayden/projects/ballotmancy-election-night-guide-20261026/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: authenticated NPZ rows feed the existing whole-chamber numerical checker
+ok 71 - authenticated NPZ rows feed the existing whole-chamber numerical checker
+  ---
+  duration_ms: 253.9957
+  type: 'test'
+  ...
+# Subtest: archive bytes and declared race identities must match before a check can succeed
+ok 72 - archive bytes and declared race identities must match before a check can succeed
+  ---
+  duration_ms: 518.695622
+  type: 'test'
+  ...
+# Subtest: a helper that emits complete valid rows but exits unsuccessfully is never accepted
+ok 73 - a helper that emits complete valid rows but exits unsuccessfully is never accepted
+  ---
+  duration_ms: 149.077459
+  type: 'test'
+  ...
+# Subtest: missing interpreter and cancellation are explicit failures
+ok 74 - missing interpreter and cancellation are explicit failures
+  ---
+  duration_ms: 173.480273
+  type: 'test'
+  ...
+# Subtest: combined archives require explicit authenticated source layout and retain the same numerical checks
+ok 75 - combined archives require explicit authenticated source layout and retain the same numerical checks
+  ---
+  duration_ms: 516.546854
+  type: 'test'
+  ...
+# Subtest: an authentic plan for a different configuration or source layout cannot authorize these rows
+ok 76 - an authentic plan for a different configuration or source layout cannot authorize these rows
+  ---
+  duration_ms: 299.761131
+  type: 'test'
+  ...
+# (node:1855764) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/house-live-result.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /home/hayden/projects/ballotmancy-election-night-guide-20261026/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: checks every invented joint row against races and full chamber summaries
+ok 77 - checks every invented joint row against races and full chamber summaries
+  ---
+  duration_ms: 33.075187
+  type: 'test'
+  ...
+# Subtest: rejects missing, extra, malformed, and out-of-support rows without filtering
+ok 78 - rejects missing, extra, malformed, and out-of-support rows without filtering
+  ---
+  duration_ms: 33.452441
+  type: 'test'
+  ...
+# Subtest: rejects a different row coupling even when all race winner marginals agree
+ok 79 - rejects a different row coupling even when all race winner marginals agree
+  ---
+  duration_ms: 12.682268
+  type: 'test'
+  ...
+# Subtest: detects mismatched race, seat mean, quantile, and control summaries
+ok 80 - detects mismatched race, seat mean, quantile, and control summaries
+  ---
+  duration_ms: 78.50996
+  type: 'test'
+  ...
+# Subtest: with an unqualified chamber, still checks all rows and race frequencies
+ok 81 - with an unqualified chamber, still checks all rows and race frequencies
+  ---
+  duration_ms: 36.091589
+  type: 'test'
+  ...
+# Subtest: seat quantiles require the explicitly reviewed empirical convention
+ok 82 - seat quantiles require the explicitly reviewed empirical convention
+  ---
+  duration_ms: 84.267083
+  type: 'test'
+  ...
+# (node:1855775) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/house-live-navigation.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /home/hayden/projects/ballotmancy-election-night-guide-20261026/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: current model, district and comparison links roundtrip without a saved-view feature
+ok 83 - current model, district and comparison links roundtrip without a saved-view feature
+  ---
+  duration_ms: 86.407907
+  type: 'test'
+  ...
+# Subtest: ambiguous, historical or actual-winner selections cannot be silently treated as current
+ok 84 - ambiguous, historical or actual-winner selections cannot be silently treated as current
+  ---
+  duration_ms: 0.703171
+  type: 'test'
+  ...
+# Subtest: generated links use only districts and comparison models in the displayed collection
+ok 85 - generated links use only districts and comparison models in the displayed collection
+  ---
+  duration_ms: 17.584421
+  type: 'test'
+  ...
+# (node:1855776) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/house-live-polling.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /home/hayden/projects/ballotmancy-election-night-guide-20261026/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: invented collection binds all 16 runs and keeps polling-off use separate from the selected pool
+ok 86 - invented collection binds all 16 runs and keeps polling-off use separate from the selected pool
+  ---
+  duration_ms: 194.594287
+  type: 'test'
+  ...
+# Subtest: strict parsers reject unsafe links, raw fields, inconsistent counts and invented reasons
+ok 87 - strict parsers reject unsafe links, raw fields, inconsistent counts and invented reasons
+  ---
+  duration_ms: 141.546608
+  type: 'test'
+  ...
+# Subtest: builder fails closed on ledger, receipt, selector, native IDs and candidate-pair drift
+ok 88 - builder fails closed on ledger, receipt, selector, native IDs and candidate-pair drift
+  ---
+  duration_ms: 819.538201
+  type: 'test'
+  ...
+# Subtest: only absolute web URLs and narrowly normalized bare domains enter disclosure
+ok 89 - only absolute web URLs and narrowly normalized bare domains enter disclosure
+  ---
+  duration_ms: 586.153595
+  type: 'test'
+  ...
+# Subtest: authenticated hashes bind copied artifacts without fixed local basenames
+ok 90 - authenticated hashes bind copied artifacts without fixed local basenames
+  ---
+  duration_ms: 82.690958
+  type: 'test'
+  ...
+# Subtest: non-district exclusions disclose their selection reason without exporting unused poll metadata
+ok 91 - non-district exclusions disclose their selection reason without exporting unused poll metadata
+  ---
+  duration_ms: 86.179535
+  type: 'test'
+  ...
+# (node:1855787) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/house-live-publication.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /home/hayden/projects/ballotmancy-election-night-guide-20261026/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: accepts a complete 435-district selected result and preserves only the public response shape
+ok 92 - accepts a complete 435-district selected result and preserves only the public response shape
+  ---
+  duration_ms: 58.838436
+  type: 'test'
+  ...
+# Subtest: browser publication copies only validated optional source capture notes
+ok 93 - browser publication copies only validated optional source capture notes
+  ---
+  duration_ms: 395.970209
+  type: 'test'
+  ...
+# Subtest: preserves optional website publication notes separately from native limitations
+ok 94 - preserves optional website publication notes separately from native limitations
+  ---
+  duration_ms: 46.941997
+  type: 'test'
+  ...
+# Subtest: polling disclosure is tied to the selected result, source identities, per-race counts, and cutoff
+ok 95 - polling disclosure is tied to the selected result, source identities, per-race counts, and cutoff
+  ---
+  duration_ms: 651.975095
+  type: 'test'
+  ...
+# Subtest: rejects malformed or embellished website publication notes
+ok 96 - rejects malformed or embellished website publication notes
+  ---
+  duration_ms: 131.046463
+  type: 'test'
+  ...
+# Subtest: requires all 16 exact allowed configurations and selected id/config/result digest binding
+ok 97 - requires all 16 exact allowed configurations and selected id/config/result digest binding
+  ---
+  duration_ms: 156.315346
+  type: 'test'
+  ...
+# Subtest: rejects wrong cycle, dates, cutoff order, map identity, missing current districts, and observed outcomes
+ok 98 - rejects wrong cycle, dates, cutoff order, map identity, missing current districts, and observed outcomes
+  ---
+  duration_ms: 146.435256
+  type: 'test'
+  ...
+# Subtest: rejects malformed outcome probability simplex and candidate/group membership
+ok 99 - rejects malformed outcome probability simplex and candidate/group membership
+  ---
+  duration_ms: 140.959566
+  type: 'test'
+  ...
+# Subtest: preserves a singleton group outcome without relabeling it as an individual candidate chance
+ok 100 - preserves a singleton group outcome without relabeling it as an individual candidate chance
+  ---
+  duration_ms: 15.415573
+  type: 'test'
+  ...
+# Subtest: keeps conditional two-candidate shares separate from winner chances and checks named candidates
+ok 101 - keeps conditional two-candidate shares separate from winner chances and checks named candidates
+  ---
+  duration_ms: 47.634319
+  type: 'test'
+  ...
+# Subtest: accepts unavailable chamber only with null precision and an explanatory limitation; tipping stays null
+ok 102 - accepts unavailable chamber only with null precision and an explanatory limitation; tipping stays null
+  ---
+  duration_ms: 43.593707
+  type: 'test'
+  ...
+# Subtest: accepts finite fractional seat quantiles from the native linear four-row example
+ok 103 - accepts finite fractional seat quantiles from the native linear four-row example
+  ---
+  duration_ms: 17.539266
+  type: 'test'
+  ...
+# Subtest: source cutoffs and candidate source URLs stay bound to the projected provenance
+ok 104 - source cutoffs and candidate source URLs stay bound to the projected provenance
+  ---
+  duration_ms: 71.657383
+  type: 'test'
+  ...
+# Subtest: joins optional geography to all 435 districts and drops unknown feature fields
+ok 105 - joins optional geography to all 435 districts and drops unknown feature fields
+  ---
+  duration_ms: 66.234914
+  type: 'test'
+  ...
+# Subtest: does not authenticate or imply review from status strings and rejects observation-bearing response branches
+ok 106 - does not authenticate or imply review from status strings and rejects observation-bearing response branches
+  ---
+  duration_ms: 39.416957
+  type: 'test'
+  ...
+# (node:1855815) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/house-live-catalog.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /home/hayden/projects/ballotmancy-election-night-guide-20261026/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: synthetic live result covers the 435 current districts and keeps outcomes distinct from conditional shares
+ok 107 - synthetic live result covers the 435 current districts and keeps outcomes distinct from conditional shares
+  ---
+  duration_ms: 34.443869
+  type: 'test'
+  ...
+# Subtest: optional source capture metadata is validated without requiring it in older fixtures
+ok 108 - optional source capture metadata is validated without requiring it in older fixtures
+  ---
+  duration_ms: 187.874733
+  type: 'test'
+  ...
+# Subtest: live catalog contains exactly the 16 explicitly allowed saved configurations
+ok 109 - live catalog contains exactly the 16 explicitly allowed saved configurations
+  ---
+  duration_ms: 4.813686
+  type: 'test'
+  ...
+# Subtest: result must have the complete current roster, matching map identity, and no transplanted TX-23 incumbent
+ok 110 - result must have the complete current roster, matching map identity, and no transplanted TX-23 incumbent
+  ---
+  duration_ms: 103.686559
+  type: 'test'
+  ...
+# Subtest: candidate membership, outcome support, and group-vs-candidate kinds are checked
+ok 111 - candidate membership, outcome support, and group-vs-candidate kinds are checked
+  ---
+  duration_ms: 34.764576
+  type: 'test'
+  ...
+# Subtest: nonfinite probabilities, non-simplex outcomes, unordered shares, and late cutoffs fail closed
+ok 112 - nonfinite probabilities, non-simplex outcomes, unordered shares, and late cutoffs fail closed
+  ---
+  duration_ms: 17.412325
+  type: 'test'
+  ...
+# Subtest: an election-day forecast cutoff is valid when issue time is later and every source is earlier
+ok 113 - an election-day forecast cutoff is valid when issue time is later and every source is earlier
+  ---
+  duration_ms: 14.579771
+  type: 'test'
+  ...
+# Subtest: impossible calendar dates are rejected in issue, forecast-cutoff, and source-cutoff timestamps
+ok 114 - impossible calendar dates are rejected in issue, forecast-cutoff, and source-cutoff timestamps
+  ---
+  duration_ms: 0.71292
+  type: 'test'
+  ...
+# Subtest: poll count must match the number of distinct poll source IDs
+ok 115 - poll count must match the number of distinct poll source IDs
+  ---
+  duration_ms: 2.735972
+  type: 'test'
+  ...
+# Subtest: a current forecast cannot claim a known 2026 observed result
+ok 116 - a current forecast cannot claim a known 2026 observed result
+  ---
+  duration_ms: 4.764363
+  type: 'test'
+  ...
+# Subtest: joint-draw roster order and seat PMF summaries must remain internally coherent
+ok 117 - joint-draw roster order and seat PMF summaries must remain internally coherent
+  ---
+  duration_ms: 95.65504
+  type: 'test'
+  ...
+# Subtest: unqualified chamber and tipping statistics stay absent rather than being inferred
+ok 118 - unqualified chamber and tipping statistics stay absent rather than being inferred
+  ---
+  duration_ms: 29.141948
+  type: 'test'
+  ...
+# (node:1855828) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/house-live-result.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /home/hayden/projects/ballotmancy-election-night-guide-20261026/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: all sixteen saved configurations use the same complete result-driven renderer
+ok 119 - all sixteen saved configurations use the same complete result-driven renderer
+  ---
+  duration_ms: 626.726462
+  type: 'test'
+  ...
+# Subtest: source capture notes appear only for nonempty limitations and keep each source link
+ok 120 - source capture notes appear only for nonempty limitations and keep each source link
+  ---
+  duration_ms: 42.777201
+  type: 'test'
+  ...
+# Subtest: NY-21 notice is visible for the pinned release, detailed only in NY-21 focus, and absent for replacement bytes
+ok 121 - NY-21 notice is visible for the pinned release, detailed only in NY-21 focus, and absent for replacement bytes
+  ---
+  duration_ms: 76.812596
+  type: 'test'
+  ...
+# Subtest: Other leaders stay out of the D/R path; a missing chamber never creates control numbers
+ok 122 - Other leaders stay out of the D/R path; a missing chamber never creates control numbers
+  ---
+  duration_ms: 38.195453
+  type: 'test'
+  ...
+# Subtest: mixed Other groups retain member affiliations without adopting one member's party label
+ok 123 - mixed Other groups retain member affiliations without adopting one member's party label
+  ---
+  duration_ms: 47.221107
+  type: 'test'
+  ...
+# Subtest: polling display separates included questions, zero local inputs, disabled polling, and unpublished details
+ok 124 - polling display separates included questions, zero local inputs, disabled polling, and unpublished details
+  ---
+  duration_ms: 135.933799
+  type: 'test'
+  ...
+# Subtest: browser: instant selection, retained failures, drafts, ribbon, sidebar, and mobile
+ok 125 - browser: instant selection, retained failures, drafts, ribbon, sidebar, and mobile # SKIP
+  ---
+  duration_ms: 0.219005
+  type: 'test'
+  ...
+# Subtest: browser workspace: verified requests, comparisons, failure recovery, navigation and mobile tables
+ok 126 - browser workspace: verified requests, comparisons, failure recovery, navigation and mobile tables # SKIP
+  ---
+  duration_ms: 0.113054
+  type: 'test'
+  ...
+# Subtest: browser House router: publication availability, edition links, failures, history, and mobile navigation
+ok 127 - browser House router: publication availability, edition links, failures, history, and mobile navigation # SKIP
+  ---
+  duration_ms: 0.317581
+  type: 'test'
+  ...
+# Subtest: browser polling: source details follow district/model changes without mobile focus jumps
+ok 128 - browser polling: source details follow district/model changes without mobile focus jumps # SKIP
+  ---
+  duration_ms: 0.384779
+  type: 'test'
+  ...
+# (node:1855846) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/house-live-artifacts.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /home/hayden/projects/ballotmancy-election-night-guide-20261026/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: explicit V2 offline candidate path authenticates segmented children and preserves raw winner NPZ/public qualification
+ok 129 - explicit V2 offline candidate path authenticates segmented children and preserves raw winner NPZ/public qualification
+  ---
+  duration_ms: 470.545367
+  type: 'test'
+  ...
+# Subtest: V2 requires an explicit root, exact storage review and matching versioned receipt
+ok 130 - V2 requires an explicit root, exact storage review and matching versioned receipt
+  ---
+  duration_ms: 271.138927
+  type: 'test'
+  ...
+# Subtest: manifest or child corruption cannot pass the actual V2 checker and cannot confer publication admission
+ok 131 - manifest or child corruption cannot pass the actual V2 checker and cannot confer publication admission
+  ---
+  duration_ms: 723.613975
+  type: 'test'
+  ...
+# Subtest: the existing CLI accepts an explicit V2 storage root without staging or publication
+ok 132 - the existing CLI accepts an explicit V2 storage root without staging or publication
+  ---
+  duration_ms: 433.006679
+  type: 'test'
+  ...
+# (node:1855855) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/house-live-view.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /home/hayden/projects/ballotmancy-election-night-guide-20261026/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: all 16 exact saved House choices resolve to their own run
+ok 133 - all 16 exact saved House choices resolve to their own run
+  ---
+  duration_ms: 5.51821
+  type: 'test'
+  ...
+# Subtest: changing one control never silently changes another to manufacture a saved result
+ok 134 - changing one control never silently changes another to manufacture a saved result
+  ---
+  duration_ms: 0.394968
+  type: 'test'
+  ...
+# Subtest: missing or ambiguous catalog bindings cannot become ready
+ok 135 - missing or ambiguous catalog bindings cannot become ready
+  ---
+  duration_ms: 0.205098
+  type: 'test'
+  ...
+# Subtest: eight roles remain visible with exact settings and honest disconnected roles
+ok 136 - eight roles remain visible with exact settings and honest disconnected roles
+  ---
+  duration_ms: 0.884314
+  type: 'test'
+  ...
+# (node:1855869) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/house-live-server.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /home/hayden/projects/ballotmancy-election-night-guide-20261026/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: loads only a reviewed selected result as a safe browser DTO and reports complete availability
+ok 137 - loads only a reviewed selected result as a safe browser DTO and reports complete availability
+  ---
+  duration_ms: 419.885909
+  type: 'test'
+  ...
+# Subtest: site review field is emitted even when operator notes are empty
+ok 138 - site review field is emitted even when operator notes are empty
+  ---
+  duration_ms: 203.274306
+  type: 'test'
+  ...
+# Subtest: authenticated polling sidecar projects exact selected questions and keeps baseline polling usage empty
+ok 139 - authenticated polling sidecar projects exact selected questions and keeps baseline polling usage empty
+  ---
+  duration_ms: 556.285963
+  type: 'test'
+  ...
+# Subtest: sidecar catalog, source-policy, admission, selection and ledger identities must bind
+ok 140 - sidecar catalog, source-policy, admission, selection and ledger identities must bind
+  ---
+  duration_ms: 1098.519705
+  type: 'test'
+  ...
+# Subtest: selected native observation IDs are checked even when changed sidecar bytes have a new valid pin
+ok 141 - selected native observation IDs are checked even when changed sidecar bytes have a new valid pin
+  ---
+  duration_ms: 295.968179
+  type: 'test'
+  ...
+# Subtest: an advertised polling sidecar or admission that is missing or altered is a broken release
+ok 142 - an advertised polling sidecar or admission that is missing or altered is a broken release
+  ---
+  duration_ms: 545.284931
+  type: 'test'
+  ...
+# Subtest: absence alone means unpublished; bad selections have a distinct error
+ok 143 - absence alone means unpublished; bad selections have a distinct error
+  ---
+  duration_ms: 76.300617
+  type: 'test'
+  ...
+# Subtest: review decision, check gates, selected publication status, and joint binding are required
+ok 144 - review decision, check gates, selected publication status, and joint binding are required
+  ---
+  duration_ms: 305.432302
+  type: 'test'
+  ...
+# Subtest: all 16 catalog, manifest, and review result fingerprints must bind
+ok 145 - all 16 catalog, manifest, and review result fingerprints must bind
+  ---
+  duration_ms: 77.842327
+  type: 'test'
+  ...
+# Subtest: existing release with missing or altered artifacts fails readiness, including nondefault results
+ok 146 - existing release with missing or altered artifacts fails readiness, including nondefault results
+  ---
+  duration_ms: 384.004833
+  type: 'test'
+  ...
+# Subtest: rejects path traversal and an escaped fixed publication manifest
+ok 147 - rejects path traversal and an escaped fixed publication manifest
+  ---
+  duration_ms: 175.005032
+  type: 'test'
+  ...
+# (node:1855909) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/house-live-view.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /home/hayden/projects/ballotmancy-election-night-guide-20261026/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: projection preserves grouped outcomes without allocating their probabilities to member candidates
+ok 148 - projection preserves grouped outcomes without allocating their probabilities to member candidates
+  ---
+  duration_ms: 10.32322
+  type: 'test'
+  ...
+# Subtest: projection retains independent O identity and keeps conditional pair evidence separate from group win probability
+ok 149 - projection retains independent O identity and keeps conditional pair evidence separate from group win probability
+  ---
+  duration_ms: 6.79563
+  type: 'test'
+  ...
+# Subtest: native O seat distribution projects to unassigned U, with no O caucus added
+ok 150 - native O seat distribution projects to unassigned U, with no O caucus added
+  ---
+  duration_ms: 6.170936
+  type: 'test'
+  ...
+# Subtest: unqualified chamber and tipping stay unavailable in the projected view
+ok 151 - unqualified chamber and tipping stay unavailable in the projected view
+  ---
+  duration_ms: 3.883975
+  type: 'test'
+  ...
+# Subtest: projection exposes only approved source and artifact metadata, not native paths or private fields
+ok 152 - projection exposes only approved source and artifact metadata, not native paths or private fields
+  ---
+  duration_ms: 28.141183
+  type: 'test'
+  ...
+# Subtest: projection copies optional capture notes and keeps native source details private
+ok 153 - projection copies optional capture notes and keeps native source details private
+  ---
+  duration_ms: 3.782704
+  type: 'test'
+  ...
+# Subtest: projection rejects a mismatched run, mismatched configuration, or unreviewed publication status
+ok 154 - projection rejects a mismatched run, mismatched configuration, or unreviewed publication status
+  ---
+  duration_ms: 21.661441
+  type: 'test'
+  ...
+# Subtest: projection copies data and does not mutate or share mutable nested structures with the native result
+ok 155 - projection copies data and does not mutate or share mutable nested structures with the native result
+  ---
+  duration_ms: 15.215094
+  type: 'test'
+  ...
+# (node:1855916) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/house-ny21-notice.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /home/hayden/projects/ballotmancy-election-night-guide-20261026/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: the website erratum binds to exactly the sixteen published result identities
+ok 156 - the website erratum binds to exactly the sixteen published result identities
+  ---
+  duration_ms: 1.959191
+  type: 'test'
+  ...
+# Subtest: replacement result hash, different run ID, or missing NY-21 never inherits the notice
+ok 157 - replacement result hash, different run ID, or missing NY-21 never inherits the notice
+  ---
+  duration_ms: 0.206942
+  type: 'test'
+  ...
+1..157
+# tests 157
+# suites 0
+# pass 153
+# fail 0
+# cancelled 0
+# skipped 4
+# todo 0
+# duration_ms 25598.859965

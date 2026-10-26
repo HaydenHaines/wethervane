@@ -1,0 +1,17 @@
+{
+  "schema": "HouseNullIdentityIndependentReviewV1",
+  "status": "supported_with_scope",
+  "reviewedPins": {
+    "rubricSha256": "20625b5268e4ac13b986f4b0337d915cac13c94644f274ca8a68195b0bfb96b2",
+    "artifactLoaderSha256": "24c3b4d5352944bfa40e3650aa53643155afa1093c3abb070a387de3e9047ca7",
+    "rubricTestsSha256": "78a6ab056e575b29a795a0141e96a54fcae2830d680356257318e7c311f9fcd2",
+    "scoringTestsSha256": "4dce8776b37c2e44eae1a5ff32ba08385def2b5ef5bce42bf8c00b8e853f5252"
+  },
+  "findings": [
+    "The added validator admits both targetId/lawId explicitly null only for House. Senate nulls, mixed null/string IDs, and omitted fields fail. Existing nonempty string identities still work for generic synthetic or future explicitly defined contracts.",
+    "Artifact loading now uses the same binding validator as the rubric, then still requires exact model/baseline contract equality, source/result SHA, projection source/review SHA, native SHA, forecast run/date/null identities, ordered protocol rows, cohort subset and explicit exclusions.",
+    "The focused test authenticates an invented House lock through the store and scores it; its one-race actual-looking House variant is rejected by the existing 435-winner/412-pair guard. The separate published House V1 metadata test hashes and parses the real current result and confirms its normalized targetId/lawId are null with 435/412 scope. It does not admit real observations or a grade."
+  ],
+  "materialBlockers": [],
+  "limits": "Review is of the narrow null-identity change and its data path. No actual 2026 result ledger, independently admitted House evaluation lock, or public grade was established. Parent reported 39/39 focused tests; this review inspected the code and tests without rerunning that suite."
+}

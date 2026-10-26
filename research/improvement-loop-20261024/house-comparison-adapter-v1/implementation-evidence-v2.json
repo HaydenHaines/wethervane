@@ -1,0 +1,26 @@
+{
+  "schema": "HouseContextComparisonAdapterImplementationEvidenceV2",
+  "status": "private_preparation_only",
+  "supersedes": "implementation-evidence.json",
+  "sourcePins": {
+    "ownerHandoffSha256": "89a34b5ba9cfdcc861b57bf5a74365f4950ac950aa9d05659009940f6cdf869a",
+    "ownerHandoffReviewSha256": "918f57f55d3f6ba651e819aa87a96b12f087344080861a83cef3077e526e0cb3",
+    "adapterSha256": "daf901269ff5ed2f27fdb187adeb03d37ab6183c781fd4a3038db2207f999837",
+    "offlineImporterSha256": "1c7a56aab55ed98c01bf59f0b0105d52390324a4093d196e9cf8115a402af34b",
+    "focusedTestsSha256": "84931abc0339bec34caa2db471ffa1ebd98018a5bb9b5df9d8522a628c7b7da5"
+  },
+  "files": [
+    "lib/house-context-comparison.ts",
+    "scripts/import_house_context_comparison.mjs",
+    "tests/house-context-comparison.test.mjs"
+  ],
+  "contract": "Offline import requires caller-pinned owner handoff and review; separate, nonoverlapping operator and source-policy trust roots; exact current and baseline publication, catalog, ready-packet, result, issue/cutoff, map and geography identities. Source policy selects no more than seven exact handoff districts for private preparation; no whole-dataset import or public activation path exists. Non-self comparisons with no owner baseline_model_id require explicit approved baselineModelByDistrict keys in the operator approval.",
+  "semantics": "Native D/R/O winner groups retain candidate members; absent group and inapplicable named pair stay null. Named pairs preserve order, denomination, and candidate affiliations. Changed pair or candidate support suppresses pair delta; changed candidate or group support suppresses group deltas. Cook labels are validated ordinal categories only, never probabilities. Differences are descriptive, never accuracy or causal effects.",
+  "verification": {
+    "focusedTests": "7/7 passed; focused-tests.log. Includes exact old seven-case handoff compatibility with visibly invented disposable approvals, a distinct current-polling versus fundamentals baseline with operator-reviewed mapping, stale/mixed identity, malformed source pins and duplicate cases, nested/symlink trust roots, D/O and grouped R, changed pair/support, and null pair.",
+    "scopedTypecheck": "npx tsc --noEmit --module nodenext --moduleResolution nodenext --target es2022 --allowImportingTsExtensions --skipLibCheck lib/house-context-comparison.ts passed",
+    "diffCheck": "passed",
+    "globalTypecheck": "Pending clean rerun; concurrent unrelated in-flight lib/election-night-evaluation-view.ts syntax error prevented a meaningful project-wide result."
+  },
+  "limits": "The producer's old-release self-comparison is not a corrected-16 comparison. Invented test approvals are not source permission or operator admission. No site UI/public files, real approval, public source license decision, actual election result, grade, or deployment was created."
+}

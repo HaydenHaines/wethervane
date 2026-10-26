@@ -1,0 +1,26 @@
+{
+  "schema": "HouseContextComparisonAdapterImplementationEvidenceV1",
+  "status": "private_preparation_only",
+  "sourcePins": {
+    "ownerHandoffSha256": "89a34b5ba9cfdcc861b57bf5a74365f4950ac950aa9d05659009940f6cdf869a",
+    "ownerHandoffReviewSha256": "918f57f55d3f6ba651e819aa87a96b12f087344080861a83cef3077e526e0cb3",
+    "adapterSha256": "416ff081d1f8f40517c3721117a93c7b06ddf2c7b5c8c04d4f5d3526f7a4bfa6",
+    "offlineImporterSha256": "16a2458f77cae23be3712b3eb3056f5efdc98cb1d71796e0b10ecddffa492119",
+    "focusedTestsSha256": "3c69a38c628930e9efd779e071cdcd82abbe9d1c41e3475f34bc7e1c26d00863"
+  },
+  "files": [
+    "lib/house-context-comparison.ts",
+    "scripts/import_house_context_comparison.mjs",
+    "tests/house-context-comparison.test.mjs"
+  ],
+  "contract": "The importer takes explicit owner, current-site, baseline-site, operator-approval, and source-policy roots with caller-trusted exact file pins. It validates the source handoff/review/receipt and both publication, catalog, ready-packet and native result identities, then writes selected cases only to a new directory outside website and producer roots. The resulting manifest is private and explicitly not publication qualified. The pure matcher attaches only to exact current and baseline publication/result/date/map identities.",
+  "semantics": "D/R/O remain native winner groups with member candidate IDs; unsupported groups are null, not invented candidates. Named pairs retain ordered candidate IDs and their conditional denominator; pair or candidate changes suppress pair deltas. Candidate support or group changes suppress winner-group deltas. Cook categories stay ordinal text without invented probabilities. Baseline source findings remain dated to the audited baseline and no difference is labeled accuracy or a causal effect.",
+  "verification": {
+    "focusedTests": "5/5 passed; focused-tests.log",
+    "oldHandoffProbe": "The exact seven-case old-release handoff projected successfully against published old House bytes using visibly invented temporary operator and source-policy approvals. Temporary output and approvals were deleted after the test. This is compatibility evidence only, not actual authorization.",
+    "negativeChecks": "Stale/mixed publication-result identities, missing source-policy permission, changed ordered pair, candidate-record change, inapplicable pair and D/O vs grouped R semantics.",
+    "diffCheck": "passed",
+    "typecheck": "Initially passed before the final narrow category/guard edits. Later global reruns were blocked by concurrent unrelated in-flight lib/election-night-evaluation-view.ts syntax at line 91; pending clean rerun."
+  },
+  "limits": "This is the old-release self-comparison; no corrected 16-run edition, real independent approval, source license/permission decision, public catalog, site UI attachment, or observed-election evaluation is included. The full 435x16 external ratings table was not copied."
+}

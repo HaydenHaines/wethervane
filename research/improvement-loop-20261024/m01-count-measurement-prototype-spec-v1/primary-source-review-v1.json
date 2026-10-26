@@ -1,0 +1,45 @@
+{
+  "schema": "M01PrototypePrimarySourceReviewV1",
+  "reviewedAt": "2026-10-26T19:14:14.816179+00:00",
+  "method": "Primary documents opened through web tool; claims checked in cited passages. No secondary summaries or literature coefficients imported.",
+  "sources": [
+    {
+      "id": "GGH2024",
+      "title": "Grappling With Uncertainty in Forecasting the2024 U.S. Presidential Election",
+      "authors": "Gelman, Goodrich and Han",
+      "url": "https://hdsr.mitpress.mit.edu/pub/yoa73r1m/release/1",
+      "doi": "10.1162/99608f92.a919e3fa",
+      "location": "Appendix B, paragraphs on nonsampling error and correlation matrices; web extract lines204\u2013208",
+      "checkedClaim": "Their2024 forecast conditions on an estimated state correlation matrix; they discuss jointly estimating correlations and limited information. This motivates a question rather than proving predictive benefit from integrating covariance.",
+      "relevance": "Existing Ballotmancy kernels already model shared errors. M01 tests uncertainty integration within that law, not invention of correlation.",
+      "byteSnapshot": "Shell download403; primary web-tool text inspected; this record pins the bounded research note, not original HTML bytes."
+    },
+    {
+      "id": "SM2018",
+      "title": "Disentangling Bias and Variance in Election Polls",
+      "authors": "Shirani-Mehr, Rothschild, Goel and Gelman",
+      "url": "https://sites.stat.columbia.edu/gelman/research/published/polling-errors.pdf",
+      "doi": "10.1080/01621459.2018.1448823",
+      "location": "Abstract and introduction, PDF page1; web extract lines15\u201328,78\u2013107",
+      "checkedClaim": "Reported sampling margins omit other survey errors; historical polls in a given election share error components. These historical estimates are not new uncertainty scales for this prototype.",
+      "relevance": "Supports auditing total-error ownership; adding another MOE term to the existing fitted total-error covariance would double-count error already represented.",
+      "byteSnapshot": {
+        "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-count-measurement-prototype-spec-v1/primary-sources/shirani-mehr-2018.pdf",
+        "sha256": "982f7cfdc5e7264eeec3be7541821d65c8e714ba326b10b3eb1703260b919001"
+      }
+    },
+    {
+      "id": "TV2024",
+      "title": "Bias and excess variance in election polling: a not-so-hidden Markov model",
+      "authors": "Tierney and Volfovsky",
+      "url": "https://academic.oup.com/jrsssa/article/188/2/566/7720791",
+      "doi": "10.1093/jrsssa/qnae066",
+      "publishedOnline": "2024-07-25",
+      "location": "Abstract and introduction; web extract lines66\u201386",
+      "checkedClaim": "Their time-varying preference model addresses sensitivity to the poll inclusion window and conflation of preference change with error. It does not establish one universal lag or require replacing the existing movement kernel.",
+      "relevance": "Time support, fieldwork/publication age and movement ownership stay explicit; trend/momentum changes are outside this one-component prototype.",
+      "byteSnapshot": "Shell download403; primary web-tool text inspected; this record pins the bounded research note, not original HTML bytes."
+    }
+  ],
+  "newEmpiricalBallotmancyEvidence": false
+}
