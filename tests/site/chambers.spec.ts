@@ -1,18 +1,27 @@
 import { expect, test, type Page } from "@playwright/test";
-import { makeHousePublication } from "../fixtures/house.mjs";
+import { makeHousePublication, fixtureSha256 } from "../fixtures/house.mjs";
 
 const housePreparation = /The House,\s*in preparation\./;
 const houseReady = /The House,\s*in perspective\./;
 const districtId = (key: string) => `2022:${key}:house:regular`;
+const historicalApi = /\/api\/chambers\/house(?:\?.*)?$/;
+const unpublishedAvailability = { schema: "HouseLiveAvailabilityV1", available: false };
 
 async function stubHouse(page: Page, publication = makeHousePublication()) {
-  await page.route("**/api/chambers/house*", (route) =>
+  // Keep synthetic URLs recognizable as historical after the edition router sees Back/Forward.
+  publication.result.run.id = `fixture-house-${publication.result.races.length}-${publication.result.run.year}-h14`;
+  publication.resultSha256 = fixtureSha256(publication.result);
+  await page.route("**/api/chambers/house/live/availability", route =>
+    route.fulfill({ json: unpublishedAvailability }));
+  await page.route(historicalApi, (route) =>
     route.fulfill({ json: publication }),
   );
 }
 
 async function stubPreparingHouse(page: Page) {
-  await page.route("**/api/chambers/house*", (route) =>
+  await page.route("**/api/chambers/house/live/availability", route =>
+    route.fulfill({ json: unpublishedAvailability }));
+  await page.route(historicalApi, (route) =>
     route.fulfill({ json: { schemaVersion: 1, status: "preparing" } }),
   );
 }
@@ -434,7 +443,9 @@ test("a mismatched map vintage never colors districts and leaves race exploratio
 for (const failure of ["server error", "invalid result"] as const) {
   test(`a House ${failure} offers a working retry`, async ({ page }) => {
     let attempts = 0;
-    await page.route("**/api/chambers/house", async (route) => {
+    await page.route("**/api/chambers/house/live/availability", route =>
+      route.fulfill({ json: unpublishedAvailability }));
+    await page.route(historicalApi, async (route) => {
       attempts++;
       if (attempts === 1) {
         if (failure === "server error")

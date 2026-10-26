@@ -1,9 +1,8 @@
 "use client";
 
 import { useEffect, useId, useMemo, useRef, useState } from "react";
-import { geoAlbersUsa, geoArea, geoPath } from "d3-geo";
+import { geoAlbersUsa, geoPath } from "d3-geo";
 import type {
-  DistrictFeature,
   DistrictFeatureCollection,
   DistrictGeography,
   DistrictGeographyIdentity,
@@ -13,6 +12,7 @@ import {
   joinDistrictGeography,
   parseDistrictKey,
 } from "../lib/district-geography";
+import { districtForProjection } from "../lib/district-projection";
 import {
   COLORS,
   STATE_NAMES,
@@ -31,29 +31,6 @@ export interface DistrictMapProps {
   onSelect: (raceId: string) => void;
   initialState?: string;
   mapView?: "forecast" | "actual";
-}
-
-/** Normalize display winding without changing the admitted source feature or its identity. */
-function forProjection(feature: DistrictFeature): DistrictFeature {
-  if (geoArea(feature) <= 2 * Math.PI) return feature;
-  const geometry = feature.geometry;
-  return {
-    ...feature,
-    geometry:
-      geometry.type === "Polygon"
-        ? {
-            ...geometry,
-            coordinates: geometry.coordinates.map((ring) =>
-              [...ring].reverse(),
-            ),
-          }
-        : {
-            ...geometry,
-            coordinates: geometry.coordinates.map((polygon) =>
-              polygon.map((ring) => [...ring].reverse()),
-            ),
-          },
-  };
 }
 
 function districtLabel(key: string): string {
@@ -107,7 +84,7 @@ export default function DistrictMap({
     () => ({
       type: "FeatureCollection",
       features: [...visible.map((match) => match.feature), ...unmatched].map(
-        forProjection,
+        districtForProjection,
       ),
     }),
     [visible, unmatched],

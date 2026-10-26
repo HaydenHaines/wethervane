@@ -169,6 +169,7 @@ export default function HouseLiveResults({ view, catalog, geography, builderExpa
     `${race.district.districtKey} ${STATE_NAMES[race.state] || race.state} ${race.candidates.map((candidate) => `${candidate.name} ${candidate.partyLabel || ""}`).join(" ")} ${race.outcomes.map((outcome) => outcome.name).join(" ")}`
       .toLowerCase().includes(query.trim().toLowerCase())).sort(competitiveOrder), [view.races, query]);
   const visible = expanded ? shown : shown.slice(0, 10);
+  const sourceCaptureNotes = view.sources.filter(source => source.limitations?.length);
 
   if (!selected) return <main className="load-page"><p role="status">No verified current House races are available.</p><button onClick={onHistorical}>Explore historical House research</button></main>;
   return <main>
@@ -230,7 +231,16 @@ export default function HouseLiveResults({ view, catalog, geography, builderExpa
     <section className="methodology" id="methodology" aria-labelledby="live-evidence-title">
       <div><div className="eyebrow">Current run evidence</div><h2 id="live-evidence-title">Inputs, computation, and review.</h2></div>
       <div className="method-content">
-        <div><h3>Input status</h3><p>{statusLabel(view.qualification.inputStatus, "input")}. Source cutoffs are listed above.</p></div>
+        <div><h3>Input status</h3><p>{statusLabel(view.qualification.inputStatus, "input")}. Source cutoffs are listed above.</p>
+          {sourceCaptureNotes.length > 0 && <details className="edition-inputs">
+            <summary>Source capture notes ({sourceCaptureNotes.length})</summary>
+            <p>These notes explain what we could verify. When an original document could not be downloaded, we reviewed captured text; its saved file fingerprint identifies that text rather than the original document.</p>
+            <ul>{sourceCaptureNotes.map(source => <li key={source.id}>
+              <a href={source.url} target="_blank" rel="noreferrer">{source.label}</a>
+              <ul>{source.limitations!.map((limitation, index) => <li key={index}>{limitation}</li>)}</ul>
+            </li>)}</ul>
+          </details>}
+        </div>
         <div><h3>Numerical checks</h3><p>{statusLabel(view.qualification.numericalStatus, "numerical")}. {view.chamberPrecision ? `${view.jointDraws.count.toLocaleString()} simulated elections across ${view.jointDraws.chainCount} independent sampling runs. The largest estimated standard errors are ${view.chamberPrecision.maxSeatMeanMcse.toFixed(2)} seats for average seats and ${(view.chamberPrecision.maxControlMcse * 100).toFixed(1)} percentage points for control chances. Standard error measures variation from a finite simulation; it is separate from uncertainty about the election.` : "A qualified chamber summary is unavailable for this run."}</p></div>
         <div><h3>Publication review and forecast skill</h3><p>{statusLabel(view.qualification.publicationStatus, "publication")}. Forecast skill: {statusLabel(view.qualification.forecastSkill, "skill")}. Numerical checks do not by themselves establish forecast accuracy.</p></div>
       </div>

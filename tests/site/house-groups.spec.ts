@@ -84,7 +84,7 @@ test("group comparisons and exact saved pairs restore together, leaving legacy s
 test("failed new selections preserve prior forecast and retries recover; invalid comparisons explain why", async ({ page }) => {
   let fail=true;
   await page.route("**/api/chambers/house/groups?*", route=>fail?route.fulfill({status:503,body:"unavailable"}):route.continue());
-  await page.goto("/?chamber=house"); await openBuilder(page);
+  await page.goto("/?chamber=house&edition=historical"); await openBuilder(page);
   await page.getByLabel("Winner outcome set",{exact:true}).selectOption("full435");
   await expect(page.locator(".compare-banner[role=alert]")).toContainText("Unable to change House models");
   await expect(map(page).locator("path[data-forecast=available]")).toHaveCount(375);
@@ -92,10 +92,14 @@ test("failed new selections preserve prior forecast and retries recover; invalid
   fail=false; await page.getByRole("button",{name:"Try selection again",exact:true}).click();
   await expect(map(page).locator("path[data-forecast=available]")).toHaveCount(435);
   await page.goto(`/?chamber=house&run=${run()}&compare=${run(2018,"relative_lean")}`);
-  await expect(page.locator(".compare-banner[role=alert]")).toContainText("same election year");
-  await expect(map(page).locator("path[data-forecast=available]")).toHaveCount(435);
-  await page.getByRole("button",{name:"Remove comparison",exact:true}).click();
-  await expect(page.locator(".compare-banner[role=alert]")).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "This House link could not be opened", exact: true })).toBeVisible();
+  await expect(page.locator(".error-box [role=alert]")).toContainText("different historical House year");
+  await expect(map(page)).toHaveCount(0);
+  await expect(page).toHaveURL(new RegExp(`compare=${run(2018,"relative_lean")}`));
+  await page.getByRole("button", { name: "Explore historical House research", exact: true }).click();
+  await expect(map(page).locator("path[data-forecast=available]")).toHaveCount(375);
+  await expect(page).not.toHaveURL(/compare=/);
+  await expect(page.locator(".error-box")).toHaveCount(0);
 });
 
 test("same-party and Other outcomes stay grouped; responsive map/ribbon selection and ten-row list work", async ({ page }) => {

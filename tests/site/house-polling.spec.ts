@@ -10,7 +10,7 @@ async function openBuilder(page: Page) {
 }
 
 test("published default remains unchanged and exposes the all-district polling builder", async ({ page }) => {
-  await page.goto("/?chamber=house");
+  await page.goto("/?chamber=house&edition=historical");
   await expect(map(page).locator("path[data-forecast=available]")).toHaveCount(375);
   await expect(builder(page)).not.toHaveAttribute("open", "");
   await openBuilder(page);

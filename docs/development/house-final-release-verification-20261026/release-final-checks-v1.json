@@ -1,0 +1,65 @@
+{
+  "schema": "HouseFinalReleaseChecksV1",
+  "startedAt": "2026-10-26T14:07:08.793816+00:00",
+  "status": "passed",
+  "steps": [
+    {
+      "command": [
+        "node",
+        "--experimental-strip-types",
+        "--test",
+        "tests/district-projection.test.mjs",
+        "tests/house-live-results.test.mjs"
+      ],
+      "environment": {
+        "BALLOTMANCY_LIVE_HOUSE_RELEASE": "1"
+      },
+      "returnCode": 0,
+      "elapsedSeconds": 1.4153196669649333,
+      "logSha256": "aee2269442d48a5111573da47a0024be99b3487f4a07266b15671d41ccb71614"
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "environment": {
+        "BALLOTMANCY_LIVE_HOUSE_RELEASE": "1"
+      },
+      "returnCode": 0,
+      "elapsedSeconds": 8.068343700142577,
+      "logSha256": "e160dca5b40e67eecd6653139e51b4d823a5cc76376bc05cd30fefdb741c45f5"
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "typecheck"
+      ],
+      "environment": {
+        "BALLOTMANCY_LIVE_HOUSE_RELEASE": "1"
+      },
+      "returnCode": 0,
+      "elapsedSeconds": 1.6464393381029367,
+      "logSha256": "d5f9a064d7d11dd381d5f5dafe415d18b32b3af9442c158a40f2a25fddfe0001"
+    },
+    {
+      "command": [
+        "npx",
+        "playwright",
+        "test",
+        "--config=playwright.site.config.ts",
+        "tests/site/house-live-release.spec.ts",
+        "tests/site/house-geography.spec.ts"
+      ],
+      "environment": {
+        "BALLOTMANCY_LIVE_HOUSE_RELEASE": "1"
+      },
+      "returnCode": 0,
+      "elapsedSeconds": 187.32981078117155,
+      "logSha256": "47cb17e8ea8441126312263294a656e0194117320680140b01416f8a0950c7dd"
+    }
+  ],
+  "finishedAt": "2026-10-26T14:10:27.254912+00:00"
+}

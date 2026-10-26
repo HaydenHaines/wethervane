@@ -104,6 +104,19 @@ test("projection exposes only approved source and artifact metadata, not native 
   assert.equal(view.run.resultSha256, entry.result.sha256);
 });
 
+test("projection copies optional capture notes and keeps native source details private", () => {
+  const { result, entry } = selection();
+  result.provenance[0].capture_kind = "rendered_primary_source";
+  result.provenance[0].limitations = ["Invented captured text, not original PDF bytes."];
+  result.provenance[0].privateCapturePath = "/private/original.pdf";
+  const view = houseLiveView(result, entry);
+  assert.deepEqual(view.sources[0].limitations, result.provenance[0].limitations);
+  assert.equal(view.sources[0].capture_kind, "rendered_primary_source");
+  assert.equal("privateCapturePath" in view.sources[0], false);
+  view.sources[0].limitations.push("Display-only note.");
+  assert.equal(result.provenance[0].limitations.length, 1);
+});
+
 test("projection rejects a mismatched run, mismatched configuration, or unreviewed publication status", () => {
   const { result, entry } = selection();
   assert.throws(() => houseLiveView(result, { ...entry, id: "another-run" }), /does not match/);

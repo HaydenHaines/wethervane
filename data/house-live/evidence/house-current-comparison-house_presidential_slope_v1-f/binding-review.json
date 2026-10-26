@@ -1,0 +1,54 @@
+{
+  "schema": "HouseLivePredictionBindingReviewV1",
+  "issued_at": "2026-10-25T17:42:33.145733+00:00",
+  "status": "exact_receipt_plan_and_outputs_bound",
+  "configuration": {
+    "id": "house-current-comparison-house_presidential_slope_v1-f",
+    "base": "house_presidential_slope_v1",
+    "polling": "none",
+    "uncertainty": "standard"
+  },
+  "prediction_receipt": {
+    "path": "research/house-live-20261025/predictions-v1/house-current-comparison-house_presidential_slope_v1-f/receipt.json",
+    "sha256": "ab8feb1a2a1ba66fe21c63f066cd7a2549d8ca938fd1771189e44addb24cfa21"
+  },
+  "input_pins": [
+    {
+      "path": "research/house-live-20261025/predictions-v1/house-current-comparison-house_presidential_slope_v1-f/receipt.json",
+      "sha256": "ab8feb1a2a1ba66fe21c63f066cd7a2549d8ca938fd1771189e44addb24cfa21"
+    },
+    {
+      "path": "research/house-live-20261025/predictions-v1/house-current-comparison-house_presidential_slope_v1-f/plan.json",
+      "sha256": "c1eeca16f20c7aa28806102ddf55574465477b5544bce50f144eaee8f4e35706"
+    },
+    {
+      "path": "research/house-live-20261025/predictions-v1/house-current-comparison-house_presidential_slope_v1-f/run-source.py",
+      "sha256": "7e8d894797480cbe8d1e12ebdea40b4a53be079c6460f1b0b56d4f71d6099c6f"
+    },
+    {
+      "path": "research/house-live-20261025/predictions-v1/house-current-comparison-house_presidential_slope_v1-f/diagnostics.json",
+      "sha256": "a672a2a356fa4b6bd1ac15de5013d034c9de7ef08168014a9d478a1fbc56008e"
+    },
+    {
+      "path": "research/house-live-20261025/predictions-v1/house-current-comparison-house_presidential_slope_v1-f/joint-draws.npz",
+      "sha256": "b1df1ec1f3c290a35f7f0e56f8d4da9c302219c46e04b285385941cf2a7c27d7"
+    },
+    {
+      "path": "research/house-live-20261025/predictions-v1/house-current-comparison-house_presidential_slope_v1-f/conditional-shares.npz",
+      "sha256": "aa5f2f20caa621dde47e2a264daa411ebd10325f3c66bca4c5edac4ed95ef1f7"
+    },
+    {
+      "path": "research/house-live-20261025/predictions-v1/house-current-comparison-house_presidential_slope_v1-f/conditional-group-probability-means.npy",
+      "sha256": "57d8174b24015f45dbfb6ed73b13709ebed9d6b86566b359dcbfa033b77d2ae6"
+    },
+    {
+      "path": "research/house-live-20261025/predictions-v1/house-current-comparison-house_presidential_slope_v1-f/polls.csv",
+      "sha256": "464761963f6bc9a2931ee49bde0dc86a06f8a8d24198595a9d1bf4564e8a2010"
+    }
+  ],
+  "review_source": {
+    "path": "research/house-live-20261025/prediction_binding.py",
+    "sha256": "6a48697b9687d7ed29e8e1f1979ee74953dbb439fb8cc89c5481aa906be85f74"
+  },
+  "scope": "Exact root-relative receipt.plan equality, saved driver identity, receipt/plan configuration agreement, complete exact raw-output membership and digests, status/diagnostic agreement; recursively checked original sources for combined runs. Arithmetic and simulation qualification remain separate."
+}

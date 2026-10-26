@@ -1,0 +1,44 @@
+{
+  "schema": "HouseLiveInputReviewV1",
+  "issued_at": "2026-10-25T15:48:30.658333+00:00",
+  "status": "reviewed_with_explicit_scope",
+  "roster_findings": [
+    "MI four DISQ rows removed; FL06 Gist Withdrew excluded; KY04 Gallrein replaces Massie; DE Lee Murphy withdrawn and Scott Walker provisional excluded; TX23 Gonzales excluded; OH09 Althaus restored from local general voter guide; TN04 Clay Faircloth retained from independently corroborated general lists.",
+    "Official CO08 Dave Wood supersedes secondary Dan Wood; official LA06 Banks field supersedes secondary Chris Johnson. Nickname/spelling differences retain source names. NY12 Karen Ortiz is the literal independent ballot-line label in the official certification.",
+    "AK official sample-ballot rendering capturedOctober8 reused with explicit age/transport limitations and current national list corroboration. MA/NY/IA rendered official text hashes are not original PDF/HTTP hashes."
+  ],
+  "proxy_review": [
+    "AK00 first principal Hill O, second Begich R. The entire O group occupies the first proxy role and Hafner D the minor role; no invented within-O probability allocation. Empirical transfer to this independent matchup is unqualified.",
+    "CA06 Pan D/Kiley O uses the prior Republican-side role for Kiley and his incumbent flag; actual affiliation staysO. Same-party contests have no invented pair share. LA runoff and AK/ME RCV are explicit ultimate-winner approximations.",
+    "Other competitive independents, including WI06 Thurow, retain O. The fitted categorical law has no candidate-specific strength or write-in access term."
+  ],
+  "geography_review": {
+    "receipt": {
+      "path": "research/house-live-20261025/geography-v2/receipt.json",
+      "sha256": "d0a044e2399aaaadda1567885de81c279ec6b75b2d3802d93b253a4738d05cc6"
+    },
+    "visual": {
+      "path": "research/house-live-20261025/geography-v2/map-review.png",
+      "sha256": "5513ac70ff33b2e476f294394df2d13d4b44be00c04b52c1d7841e5bb4f98bf2"
+    },
+    "exact_district_count": 435,
+    "missouri_geometry_sha256": "72ed1b73f230903153e9b315cc1ed00b3e3efab1ee1fca66be7fc5a9b549f218"
+  },
+  "test_evidence": {
+    "command": ".venv/bin/python -m pytest research/house-live-20261025/test_current_roster.py research/house-live-20261025/test_live_inputs.py -q",
+    "result": "21 passed in3.31s",
+    "test_pins": [
+      {
+        "path": "research/house-live-20261025/test_current_roster.py",
+        "sha256": "c2d02c98ee312edc46b2bab4556dcc3fceac40b19f1ca0d322040047ea7b71a9"
+      },
+      {
+        "path": "research/house-live-20261025/test_live_inputs.py",
+        "sha256": "e51886c2084e9f02221d57c48b5aa5f7c517f6e70c5cc9cb637ead640e28e095"
+      }
+    ]
+  },
+  "historical_evidence": "Preserved house-polling-benchmark-20261024 results-v2 and review: A2018/22 and B2020/24; negative2020 polling transfer and failed historical chamber precision remain. No2026 actual outcomes or exact new-current skill scores.",
+  "prediction_admission_only": true,
+  "website_publication_admitted": false
+}

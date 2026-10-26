@@ -1,0 +1,23 @@
+{
+  "schema": "HouseFinalActualBrowserExecutionV2",
+  "startedAt": "2026-10-26T13:57:57.834625+00:00",
+  "command": [
+    "npx",
+    "playwright",
+    "test",
+    "--config=playwright.site.config.ts",
+    "tests/site/house-live-release.spec.ts",
+    "--grep",
+    "availability and all 16 API"
+  ],
+  "environment": {
+    "BALLOTMANCY_LIVE_HOUSE_RELEASE": "1"
+  },
+  "sourceSha256": "3aefd932b643f23d1c343c2fa990268b56645ad7b60108582a1835c24820ee5d",
+  "scope": "Rerun the two failed all16 API cases after comparing exact six-field public provenance projection. All24 unchanged actual browser/Senate/layout cases already passed; product code unchanged. Four native source capture caveats retained in native files and recorded as a transparency follow-up.",
+  "status": "passed",
+  "returnCode": 0,
+  "elapsedSeconds": 40.12320318585262,
+  "finishedAt": "2026-10-26T13:58:37.957986+00:00",
+  "logSha256": "80ab82c9ae14dbea74e4e8c37d08833dafa3f06544bc31776831a8b919697cda"
+}

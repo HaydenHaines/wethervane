@@ -1,0 +1,161 @@
+{
+  "schema": "HouseFrontendPublicationDecisionV1",
+  "issuedAt": "2026-10-26T14:11:17.242860+00:00",
+  "decision": "publish_exact_dated_experimental_2026_house_release",
+  "catalogSha256": "b602e1d3202df89eb058a71dcbc564b60755a01fc22902e2a39b2690e1df2368",
+  "operatorReviewSha256": "61d69366a068b30ee1fcc5bc193420e9a7391aab15784e036b746e16545363c3",
+  "manifest": {
+    "path": "data/house-live/publication.json",
+    "sha256": "f1c1dc575edfcce7553fcfb086c3072d727c4727a4589aa05bb1ff2a70282402",
+    "size": 5740
+  },
+  "import": {
+    "path": "docs/development/house-final-release-verification-20261026/import-execution-v1.json",
+    "sha256": "bcf7e45aba9966a179b82b0e90884ebc14e419563532568e369e89d1a6c3c587",
+    "size": 2186
+  },
+  "jointRowsVerified": 26000000,
+  "models": 16,
+  "districtsPerModel": 435,
+  "frozenForecastCutoff": "2026-10-25T15:48:30.658333+00:00",
+  "validation": {
+    "finalChecks": {
+      "path": "docs/development/house-final-release-verification-20261026/release-final-checks-v1.json",
+      "sha256": "bb71fa9b467e8931e275811cb9b2b6e942398211b858b58b706a61af250100d1",
+      "size": 1724
+    },
+    "currentAndHistoricalGeographyBrowserCases": 12,
+    "earlierActualBrowserAndSenateLayoutCases": 26,
+    "earlierHistoricalCases": 32,
+    "earlierLegacyFixtureCases": 42,
+    "originalTestFailuresPreserved": true,
+    "originalProjectionVisualFailurePreserved": true,
+    "finalSourceAndGeometryFixReviewed": true,
+    "historicalFilesUnchanged": 92,
+    "rawArchivesOrRawPollingLedgerPublished": false
+  },
+  "sources": [
+    {
+      "path": ".github/workflows/siteground-web.yml",
+      "sha256": "46e4dfa9b1871ec8e69279191895607957cd712243dc6cc62551246f3a7f122d",
+      "size": 1629
+    },
+    {
+      "path": "components/DistrictMap.tsx",
+      "sha256": "61d6c9052fe1294c0cecc841d54050022f82a776331a711c0c2b3b39be0406a2",
+      "size": 12750
+    },
+    {
+      "path": "components/HouseLiveResults.tsx",
+      "sha256": "7ca22453db186e798ff37c198c10c21dc8e5db3869da5be9a2fbc2461c4f5bd4",
+      "size": 20339
+    },
+    {
+      "path": "lib/house-live-publication.ts",
+      "sha256": "42388e7042bc7570b23785535b79ff815a16e8c5117d3728909c9e3bc309756d",
+      "size": 27382
+    },
+    {
+      "path": "lib/house-live-result.ts",
+      "sha256": "27d071b9eee2d0bb52ab0755c41b0b3ca0fa218727a7726ecda5e4ee23ddf5ad",
+      "size": 19229
+    },
+    {
+      "path": "lib/house-live-view.ts",
+      "sha256": "49d9b429d001cba9a8a36f9caf2d495ae9295b8446c2b25cdf431b8d972387f8",
+      "size": 8773
+    },
+    {
+      "path": "package.json",
+      "sha256": "99de706d4243303b9bbe11d8a6fae499e1a9e68297e89ac51ce4bf3aee94441e",
+      "size": 3632
+    },
+    {
+      "path": "tests/house-live-publication.test.mjs",
+      "sha256": "a3e481e75bd2fb7a46fec7c2e98066dd091d1d1275192788223474206baa8988",
+      "size": 15033
+    },
+    {
+      "path": "tests/house-live-result.test.mjs",
+      "sha256": "f2969333bd43b6d898210cde05f04d83982e3c117aeecf33cc0a9cd2edceae2a",
+      "size": 9946
+    },
+    {
+      "path": "tests/house-live-results.test.mjs",
+      "sha256": "20482d9a891d7b46e202d747b1bdc92a2479dba02021ddce51f81cc4daea8386",
+      "size": 47606
+    },
+    {
+      "path": "tests/house-live-view.test.mjs",
+      "sha256": "baccce3fdf4a7b76b408e3543b1d0006d96c8e0cd8fd01364f6362142f4b991d",
+      "size": 7691
+    },
+    {
+      "path": "tests/site/chambers.spec.ts",
+      "sha256": "cc80e13c71075f6ad9d6fcb76c5461f5c8345fd824ae92983bb9066bd096350d",
+      "size": 17620
+    },
+    {
+      "path": "tests/site/house-geography.spec.ts",
+      "sha256": "b0cdad9ae76270864182ec862949650809964c895e9668bd4bd8893c3aca3a15",
+      "size": 3817
+    },
+    {
+      "path": "tests/site/house-groups.spec.ts",
+      "sha256": "e8f6092513ea5cf2c525784bcd20c3be3e52385baeaa33bbbc7745a7b1d608d3",
+      "size": 11816
+    },
+    {
+      "path": "tests/site/house-polling.spec.ts",
+      "sha256": "c22d1fe8faa149c5255690393631a228b140f7ee397d7c40f7360b51fa700d24",
+      "size": 6607
+    },
+    {
+      "path": "tests/site/house-release.spec.ts",
+      "sha256": "08819d7a534014fc0d5ad4f5773f309bc50179c578860061665607ced5f94e23",
+      "size": 11200
+    },
+    {
+      "path": "tests/site/house-selection.spec.ts",
+      "sha256": "2bd8870a7495778063a0dc0603e2eaec58ab908fd8c6bd7a225c449a8b1f1865",
+      "size": 22513
+    },
+    {
+      "path": "tests/site/layout.spec.ts",
+      "sha256": "71ab59e487016c25674e21f7262aaa32b586a44db99cd85c6b3a1fb59c2274b3",
+      "size": 5214
+    },
+    {
+      "path": "lib/district-projection.ts",
+      "sha256": "ad0439e6e039e013164cea8f39c151817052519289bb4acf33dfa4d88c552dac",
+      "size": 1178
+    },
+    {
+      "path": "tests/district-projection.test.mjs",
+      "sha256": "c128d948ef614f2e4fa26f87109f2effbbed9251f5c5fdcde44276b25abd83c4",
+      "size": 4317
+    },
+    {
+      "path": "tests/site/house-live-release.spec.ts",
+      "sha256": "0053f580f99b62f14142cbcae044e939753e92f0fad3e03f3c212ba705b931ab",
+      "size": 30211
+    }
+  ],
+  "mapCorrection": {
+    "path": "docs/development/house-final-release-verification-20261026/map-correction-review.json",
+    "sha256": "2e7e1273bca214e965629d994a73c104be40615d7b351147f5558deda5e56740",
+    "size": 3961
+  },
+  "sourceCaptureResolution": {
+    "path": "docs/development/house-final-release-verification-20261026/source-capture-followup.json",
+    "sha256": "40ea95abf69375ccf847e775142f40db2e313686eff1910d7c8a72715b04b3dd",
+    "size": 2928
+  },
+  "limits": [
+    "2026 forecast skill remains unobserved; this is an experimental aggregate model.",
+    "Native candidate/group, conditional-share, count/rule approximations, dated inputs and negative historical evidence remain unchanged and visible.",
+    "No qualified House tipping statistic, new count-stack result or scorecard is invented.",
+    "Release branch deployment and served-site checks remain to be completed."
+  ],
+  "authorization": "Standing user authorization to integrate, test and publish qualified frontend releases; House owner final packet admitted for frontend review."
+}

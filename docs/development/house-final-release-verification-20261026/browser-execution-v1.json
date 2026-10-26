@@ -1,0 +1,47 @@
+{
+  "schema": "HouseFinalActualBrowserExecutionV1",
+  "startedAt": "2026-10-26T13:54:29.474484+00:00",
+  "command": [
+    "npx",
+    "playwright",
+    "test",
+    "--config=playwright.site.config.ts",
+    "tests/site/house-live-release.spec.ts",
+    "tests/site/senate.spec.ts",
+    "tests/site/layout.spec.ts"
+  ],
+  "environment": {
+    "BALLOTMANCY_LIVE_HOUSE_RELEASE": "1"
+  },
+  "sources": [
+    {
+      "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/tests/site/house-live-release.spec.ts",
+      "sha256": "29305e97c7628173d961dcc5596e7f5f79d736279c7ae5c37f63c4e217180794",
+      "size": 28515
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/tests/site/senate.spec.ts",
+      "sha256": "79e78be27b26be59ecd8dd637e76aa17d8c9b906290b97614f70e01756db4ce0",
+      "size": 15352
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/tests/site/layout.spec.ts",
+      "sha256": "71ab59e487016c25674e21f7262aaa32b586a44db99cd85c6b3a1fb59c2274b3",
+      "size": 5214
+    }
+  ],
+  "publication": {
+    "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/data/house-live/publication.json",
+    "sha256": "f1c1dc575edfcce7553fcfb086c3072d727c4727a4589aa05bb1ff2a70282402",
+    "size": 5740
+  },
+  "status": "failed",
+  "returnCode": 1,
+  "elapsedSeconds": 157.70603474904783,
+  "finishedAt": "2026-10-26T13:57:07.180809+00:00",
+  "log": {
+    "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/docs/development/house-final-release-verification-20261026/browser-attempt1.log",
+    "sha256": "8ac1476b086507c1d217a37d409f15cf37adcf974366253324218ab0b28ed8b4",
+    "size": 129724
+  }
+}

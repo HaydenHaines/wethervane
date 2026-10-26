@@ -41,6 +41,24 @@ test("synthetic live result covers the 435 current districts and keeps outcomes 
   assert.equal(value.tipping, null);
 });
 
+test("optional source capture metadata is validated without requiring it in older fixtures", () => {
+  const legacy = makeHouseLiveResult();
+  assert.ok(parseHouseLiveResult(legacy));
+  const captured = makeHouseLiveResult();
+  captured.provenance[0].capture_kind = "rendered_primary_source";
+  captured.provenance[0].limitations = ["Invented captured text, not original PDF bytes."];
+  assert.ok(parseHouseLiveResult(captured));
+  for (const change of [
+    source => { source.capture_kind = "unreviewed_capture"; },
+    source => { source.limitations = ["Invalid\ncontrol character"]; },
+    source => { source.limitations = "not an array"; },
+  ]) {
+    const invalid = structuredClone(captured);
+    change(invalid.provenance[0]);
+    assert.equal(parseHouseLiveResult(invalid), null);
+  }
+});
+
 test("live catalog contains exactly the 16 explicitly allowed saved configurations", () => {
   const catalog = makeHouseLiveCatalog();
   const parsed = parseHouseLiveCatalog(catalog);

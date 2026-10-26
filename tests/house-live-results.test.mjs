@@ -79,6 +79,21 @@ test("all sixteen saved configurations use the same complete result-driven rende
   }
 });
 
+test("source capture notes appear only for nonempty limitations and keep each source link", () => {
+  assert.doesNotMatch(render(), /Source capture notes/);
+  const noted = structuredClone(view);
+  noted.sources[0].capture_kind = "rendered_primary_source";
+  noted.sources[0].limitations = ["Invented earlier capture; current refresh failed."];
+  noted.sources.push({ ...noted.sources[0], id: "invented-second-source", label: "Invented rendered source",
+    url: "https://example.invalid/rendered", limitations: ["Invented rendered text, not original PDF bytes."] });
+  const html = render({ view: noted });
+  assert.match(html, /Source capture notes \(2\)/);
+  assert.match(html, /saved file fingerprint identifies that text/);
+  assert.match(html, /Invented earlier capture; current refresh failed/);
+  assert.match(html, /Invented rendered text, not original PDF bytes/);
+  assert.match(html, /href="https:\/\/example.invalid\/rendered"/);
+});
+
 test("Other leaders stay out of the D/R path; a missing chamber never creates control numbers", () => {
   const html = render();
   const other = html.split('data-segment="other"')[1].split("</section>")[0];

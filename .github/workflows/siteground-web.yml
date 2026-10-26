@@ -44,3 +44,8 @@ jobs:
       - run: npx playwright install --with-deps chromium
       - run: npm run test:house-live-browser
       - run: npm run test:e2e
+      - name: Verify the published current House release
+        if: hashFiles('data/house-live/publication.json') != ''
+        run: npx playwright test --config=playwright.site.config.ts tests/site/house-live-release.spec.ts
+        env:
+          BALLOTMANCY_LIVE_HOUSE_RELEASE: "1"

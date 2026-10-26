@@ -35,6 +35,33 @@ test("accepts a complete 435-district selected result and preserves only the pub
   assert.equal("publicationReview" in output, false);
 });
 
+test("browser publication copies only validated optional source capture notes", () => {
+  const input = publication();
+  input.view.sources[0].capture_kind = "rendered_primary_source";
+  input.view.sources[0].limitations = ["Invented captured text, not original PDF bytes."];
+  input.view.sources[0].privateCapturePath = "/private/original.pdf";
+  const output = parseHouseLivePublication(input);
+  assert.ok(output);
+  assert.deepEqual(output.view.sources[0].limitations, input.view.sources[0].limitations);
+  assert.equal(output.view.sources[0].capture_kind, "rendered_primary_source");
+  assert.equal("privateCapturePath" in output.view.sources[0], false);
+  output.view.sources[0].limitations.push("Display-only note.");
+  assert.equal(input.view.sources[0].limitations.length, 1);
+  for (const change of [
+    source => { source.capture_kind = "unreviewed_capture"; },
+    source => { source.limitations = ["Invalid\ncontrol character"]; },
+    source => { source.limitations = "not an array"; },
+  ]) {
+    const invalid = publication();
+    change(invalid.view.sources[0]);
+    assert.equal(parseHouseLivePublication(invalid), null);
+  }
+  const legacy = parseHouseLivePublication(publication());
+  assert.ok(legacy);
+  assert.equal("capture_kind" in legacy.view.sources[0], false);
+  assert.equal("limitations" in legacy.view.sources[0], false);
+});
+
 test("preserves optional website publication notes separately from native limitations", () => {
   const input = publication();
   const nativeLimitations = [...input.view.qualification.limitations];

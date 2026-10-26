@@ -1,0 +1,54 @@
+{
+  "schema": "HouseLivePredictionBindingReviewV1",
+  "issued_at": "2026-10-25T19:35:57.325007+00:00",
+  "status": "exact_receipt_plan_and_outputs_bound",
+  "configuration": {
+    "id": "house-current-error-low",
+    "base": "fundamentals",
+    "polling": "standard",
+    "uncertainty": "error-low"
+  },
+  "prediction_receipt": {
+    "path": "research/house-live-20261025/predictions-v1/house-current-error-low/receipt.json",
+    "sha256": "77d2bd580bd49744469564d65a84a0150a5672d82ed2e41ae6e2f13464208010"
+  },
+  "input_pins": [
+    {
+      "path": "research/house-live-20261025/predictions-v1/house-current-error-low/receipt.json",
+      "sha256": "77d2bd580bd49744469564d65a84a0150a5672d82ed2e41ae6e2f13464208010"
+    },
+    {
+      "path": "research/house-live-20261025/predictions-v1/house-current-error-low/plan.json",
+      "sha256": "080e8bebc8dd89ea9f6b686359b478608645f3bc51f8271fc7b89e00b5038807"
+    },
+    {
+      "path": "research/house-live-20261025/predictions-v1/house-current-error-low/run-source.py",
+      "sha256": "7e8d894797480cbe8d1e12ebdea40b4a53be079c6460f1b0b56d4f71d6099c6f"
+    },
+    {
+      "path": "research/house-live-20261025/predictions-v1/house-current-error-low/diagnostics.json",
+      "sha256": "7f57f2942b5278b46e0560cf43fb6a2493fea139c252ef9e8a43e59ac8fc4b76"
+    },
+    {
+      "path": "research/house-live-20261025/predictions-v1/house-current-error-low/joint-draws.npz",
+      "sha256": "2a566392c41d2624b42fe2fef63451654334809a2a47a126d1c2c77f06db79c5"
+    },
+    {
+      "path": "research/house-live-20261025/predictions-v1/house-current-error-low/conditional-shares.npz",
+      "sha256": "e2d6c45330ae6aad5d6337f09595c82a270f60950a7a33877883df38315724aa"
+    },
+    {
+      "path": "research/house-live-20261025/predictions-v1/house-current-error-low/conditional-group-probability-means.npy",
+      "sha256": "e1a8cf1e0886e8499da15d86f8c38ae69035e02657b218f22f3e6c4ca9d64332"
+    },
+    {
+      "path": "research/house-live-20261025/predictions-v1/house-current-error-low/polls.csv",
+      "sha256": "95dc384da46bed506ddfd2ae4d9e9cf5cecef263de99ae2e95053511d8b22a3c"
+    }
+  ],
+  "review_source": {
+    "path": "research/house-live-20261025/prediction_binding.py",
+    "sha256": "6a48697b9687d7ed29e8e1f1979ee74953dbb439fb8cc89c5481aa906be85f74"
+  },
+  "scope": "Exact root-relative receipt.plan equality, saved driver identity, receipt/plan configuration agreement, complete exact raw-output membership and digests, status/diagnostic agreement; recursively checked original sources for combined runs. Arithmetic and simulation qualification remain separate."
+}

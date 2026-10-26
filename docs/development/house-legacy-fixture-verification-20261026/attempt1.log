@@ -1,0 +1,133 @@
+[WebServer] (node:1753105) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 42 tests using 1 worker
+
+(node:1753118) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [desktop-chromium] › tests/site/chambers.spec.ts:29:5 › a preparing House fixture keeps the collapsed Senate default and shows no invented results (702ms)
+  ✓   2 [desktop-chromium] › tests/site/chambers.spec.ts:58:5 › House deep links and keyboard chamber tabs preserve their selected panel (654ms)
+  ✓   3 [desktop-chromium] › tests/site/chambers.spec.ts:94:5 › switching chambers, Back and Forward restore the exact prior Senate selection (1.1s)
+  ✓   4 [desktop-chromium] › tests/site/chambers.spec.ts:147:7 › 16 eligible districts use one data-driven ribbon without fabricating chamber control (813ms)
+  ✓   5 [desktop-chromium] › tests/site/chambers.spec.ts:147:7 › 435 eligible districts use one data-driven ribbon without fabricating chamber control (1.2s)
+  ✓   6 [desktop-chromium] › tests/site/chambers.spec.ts:345:5 › district state focus, map keyboard selection and House history update the same detail (748ms)
+  ✓   7 [desktop-chromium] › tests/site/chambers.spec.ts:409:5 › a mismatched map vintage never colors districts and leaves race exploration available (1.2s)
+  ✓   8 [desktop-chromium] › tests/site/chambers.spec.ts:444:7 › a House server error offers a working retry (554ms)
+  ✓   9 [desktop-chromium] › tests/site/chambers.spec.ts:444:7 › a House invalid result offers a working retry (578ms)
+  ✓  10 [desktop-chromium] › tests/site/house-selection.spec.ts:53:5 › House views save exact results locally and restore district, map mode and history across years (1.2s)
+  ✓  11 [desktop-chromium] › tests/site/house-selection.spec.ts:90:5 › a saved House restore rejects a changed result and retry retains the exact saved identity (578ms)
+  ✓  12 [desktop-chromium] › tests/site/house-selection.spec.ts:127:5 › withdrawn and changed House views remain listed, explained and deletable (459ms)
+  ✓  13 [desktop-chromium] › tests/site/house-selection.spec.ts:146:5 › a browser storage failure does not claim a House view was saved (443ms)
+  ✓  14 [desktop-chromium] › tests/site/house-selection.spec.ts:159:5 › an actual-winner view can retain an unknown selected result without substituting a forecast (575ms)
+  ✓  15 [desktop-chromium] › tests/site/house-selection.spec.ts:177:5 › House builder shows all eight roles with only its own saved fundamentals selector active (640ms)
+  ✓  16 [desktop-chromium] › tests/site/house-selection.spec.ts:214:5 › an unavailable House variant keeps its reason and future capability flags do not admit controls (378ms)
+  ✓  17 [desktop-chromium] › tests/site/house-selection.spec.ts:232:5 › a fixed legacy House result shows its model without inventing a selector (342ms)
+  ✓  18 [desktop-chromium] › tests/site/house-selection.spec.ts:246:5 › House model/year selections restore exact results, scope and history without carrying districts across maps (912ms)
+  ✓  19 [desktop-chromium] › tests/site/house-selection.spec.ts:282:7 › a House service failure preserves the displayed model and permits retry (476ms)
+  ✓  20 [desktop-chromium] › tests/site/house-selection.spec.ts:282:7 › a House wrong result failure preserves the displayed model and permits retry (510ms)
+  ✘  21 [desktop-chromium] › tests/site/house-selection.spec.ts:307:5 › an unknown House deep link explains its missing edition and can recover to historical research (213ms)
+(node:1753675) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  22 [mobile-chromium] › tests/site/chambers.spec.ts:29:5 › a preparing House fixture keeps the collapsed Senate default and shows no invented results (659ms)
+  ✓  23 [mobile-chromium] › tests/site/chambers.spec.ts:58:5 › House deep links and keyboard chamber tabs preserve their selected panel (728ms)
+  ✓  24 [mobile-chromium] › tests/site/chambers.spec.ts:94:5 › switching chambers, Back and Forward restore the exact prior Senate selection (1.1s)
+  ✓  25 [mobile-chromium] › tests/site/chambers.spec.ts:147:7 › 16 eligible districts use one data-driven ribbon without fabricating chamber control (856ms)
+  ✓  26 [mobile-chromium] › tests/site/chambers.spec.ts:147:7 › 435 eligible districts use one data-driven ribbon without fabricating chamber control (1.3s)
+  ✓  27 [mobile-chromium] › tests/site/chambers.spec.ts:345:5 › district state focus, map keyboard selection and House history update the same detail (891ms)
+  ✓  28 [mobile-chromium] › tests/site/chambers.spec.ts:409:5 › a mismatched map vintage never colors districts and leaves race exploration available (1.3s)
+  ✓  29 [mobile-chromium] › tests/site/chambers.spec.ts:444:7 › a House server error offers a working retry (639ms)
+  ✓  30 [mobile-chromium] › tests/site/chambers.spec.ts:444:7 › a House invalid result offers a working retry (608ms)
+  ✓  31 [mobile-chromium] › tests/site/house-selection.spec.ts:53:5 › House views save exact results locally and restore district, map mode and history across years (1.3s)
+  ✓  32 [mobile-chromium] › tests/site/house-selection.spec.ts:90:5 › a saved House restore rejects a changed result and retry retains the exact saved identity (659ms)
+  ✓  33 [mobile-chromium] › tests/site/house-selection.spec.ts:127:5 › withdrawn and changed House views remain listed, explained and deletable (523ms)
+  ✓  34 [mobile-chromium] › tests/site/house-selection.spec.ts:146:5 › a browser storage failure does not claim a House view was saved (515ms)
+  ✓  35 [mobile-chromium] › tests/site/house-selection.spec.ts:159:5 › an actual-winner view can retain an unknown selected result without substituting a forecast (687ms)
+  ✓  36 [mobile-chromium] › tests/site/house-selection.spec.ts:177:5 › House builder shows all eight roles with only its own saved fundamentals selector active (707ms)
+  ✓  37 [mobile-chromium] › tests/site/house-selection.spec.ts:214:5 › an unavailable House variant keeps its reason and future capability flags do not admit controls (444ms)
+  ✓  38 [mobile-chromium] › tests/site/house-selection.spec.ts:232:5 › a fixed legacy House result shows its model without inventing a selector (393ms)
+  ✓  39 [mobile-chromium] › tests/site/house-selection.spec.ts:246:5 › House model/year selections restore exact results, scope and history without carrying districts across maps (976ms)
+  ✓  40 [mobile-chromium] › tests/site/house-selection.spec.ts:282:7 › a House service failure preserves the displayed model and permits retry (553ms)
+  ✓  41 [mobile-chromium] › tests/site/house-selection.spec.ts:282:7 › a House wrong result failure preserves the displayed model and permits retry (544ms)
+  ✘  42 [mobile-chromium] › tests/site/house-selection.spec.ts:307:5 › an unknown House deep link explains its missing edition and can recover to historical research (280ms)
+
+
+  1) [desktop-chromium] › tests/site/house-selection.spec.ts:307:5 › an unknown House deep link explains its missing edition and can recover to historical research 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByRole('alert')
+    Expected substring: "does not identify a current or historical edition"
+    Error: strict mode violation: getByRole('alert') resolved to 2 elements:
+        1) <p role="alert">This House link does not identify a current or hi…</p> aka getByText('This House link does not')
+        2) <div role="alert" aria-live="assertive" id="__next-route-announcer__"></div> aka locator('[id="__next-route-announcer__"]')
+
+    Call log:
+      - Expect "toContainText" getByRole('alert') with timeout 5000ms
+      - waiting for getByRole('alert')
+
+
+      312 |   await page.goto("/?chamber=house&run=unknown");
+      313 |   await expect(page.getByRole("heading", { name: "This House link could not be opened", exact: true })).toBeVisible();
+    > 314 |   await expect(page.getByRole("alert")).toContainText("does not identify a current or historical edition");
+          |                                         ^
+      315 |   await page.getByRole("button", { name: "Explore historical House research", exact: true }).click();
+      316 |   await expect(page).toHaveURL(/run=fixture-fixed-2022-h14/);
+      317 |   await expect(page.locator("details.house-configuration")).toBeVisible();
+        at /home/hayden/projects/ballotmancy-house-live-ui-20261025/tests/site/house-selection.spec.ts:314:41
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/house-selection-an-unknown-3d96f-over-to-historical-research-desktop-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/house-selection-an-unknown-3d96f-over-to-historical-research-desktop-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/house-selection-an-unknown-3d96f-over-to-historical-research-desktop-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/house-selection-an-unknown-3d96f-over-to-historical-research-desktop-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [mobile-chromium] › tests/site/house-selection.spec.ts:307:5 › an unknown House deep link explains its missing edition and can recover to historical research 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByRole('alert')
+    Expected substring: "does not identify a current or historical edition"
+    Error: strict mode violation: getByRole('alert') resolved to 2 elements:
+        1) <p role="alert">This House link does not identify a current or hi…</p> aka getByText('This House link does not')
+        2) <div role="alert" aria-live="assertive" id="__next-route-announcer__"></div> aka locator('[id="__next-route-announcer__"]')
+
+    Call log:
+      - Expect "toContainText" getByRole('alert') with timeout 5000ms
+      - waiting for getByRole('alert')
+
+
+      312 |   await page.goto("/?chamber=house&run=unknown");
+      313 |   await expect(page.getByRole("heading", { name: "This House link could not be opened", exact: true })).toBeVisible();
+    > 314 |   await expect(page.getByRole("alert")).toContainText("does not identify a current or historical edition");
+          |                                         ^
+      315 |   await page.getByRole("button", { name: "Explore historical House research", exact: true }).click();
+      316 |   await expect(page).toHaveURL(/run=fixture-fixed-2022-h14/);
+      317 |   await expect(page.locator("details.house-configuration")).toBeVisible();
+        at /home/hayden/projects/ballotmancy-house-live-ui-20261025/tests/site/house-selection.spec.ts:314:41
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/house-selection-an-unknown-3d96f-over-to-historical-research-mobile-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/house-selection-an-unknown-3d96f-over-to-historical-research-mobile-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/house-selection-an-unknown-3d96f-over-to-historical-research-mobile-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/house-selection-an-unknown-3d96f-over-to-historical-research-mobile-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    [desktop-chromium] › tests/site/house-selection.spec.ts:307:5 › an unknown House deep link explains its missing edition and can recover to historical research 
+    [mobile-chromium] › tests/site/house-selection.spec.ts:307:5 › an unknown House deep link explains its missing edition and can recover to historical research 
+  40 passed (31.8s)

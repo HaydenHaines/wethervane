@@ -140,7 +140,9 @@ export function houseLiveView(result: HouseLiveResult, entry: HouseLiveCatalogEn
       identitySemantics: result.joint_draws.identity_semantics },
     geographySha256: result.geography.sha256,
     sources: result.provenance.map(source => ({ id: source.id, label: source.label, url: source.url,
-      retrieved_at: source.retrieved_at, sha256: source.sha256, role: source.role })),
+      retrieved_at: source.retrieved_at, sha256: source.sha256, role: source.role,
+      ...(source.capture_kind !== undefined ? { capture_kind: source.capture_kind } : {}),
+      ...(source.limitations !== undefined ? { limitations: [...source.limitations] } : {}) })),
     historicalEvidence: result.historical_evidence.map(evidence => ({ label: evidence.label, url: evidence.url, qualification: evidence.qualification })),
   };
 }

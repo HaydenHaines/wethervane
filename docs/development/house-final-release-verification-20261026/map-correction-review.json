@@ -1,0 +1,85 @@
+{
+  "schema": "HouseDisplayProjectionCorrectionV1",
+  "reviewedAt": "2026-10-26T14:10:16.677116+00:00",
+  "finding": "Feature-wide reversal failed on mixed-direction MultiPolygons HI-02, RI-02 and TN-02, creating globe-complement fills. A separately reversed AL-04 hole required per-ring handling.",
+  "fix": "For every polygon part, use D3 spherical area to orient exterior rings to the smaller side and holes oppositely. Construct a display copy; no source coordinates, district identities, geometries, or forecast artifacts are changed.",
+  "primaryDocumentation": "https://d3js.org/d3-geo",
+  "sourceGeometry": {
+    "path": "data/house-live/geography/house-2026.geojson",
+    "sha256": "cfbd60c7300d1c7fa10ca8ff918e15b7fd86882b07f19d70ec46003e7e728422",
+    "size": 7032092
+  },
+  "implementation": {
+    "path": "lib/district-projection.ts",
+    "sha256": "ad0439e6e039e013164cea8f39c151817052519289bb4acf33dfa4d88c552dac",
+    "size": 1178
+  },
+  "unitTests": {
+    "path": "tests/district-projection.test.mjs",
+    "sha256": "c128d948ef614f2e4fa26f87109f2effbbed9251f5c5fdcde44276b25abd83c4",
+    "size": 4317
+  },
+  "browserTests": {
+    "path": "tests/site/house-live-release.spec.ts",
+    "sha256": "0053f580f99b62f14142cbcae044e939753e92f0fad3e03f3c212ba705b931ab",
+    "size": 30211
+  },
+  "visualCapture": {
+    "path": "docs/development/house-final-release-verification-20261026/corrected-visual-capture.json",
+    "sha256": "1da3bac117a850a5c0010e5b52b154e73abbdfac8e8dcc1f233faf435d093347",
+    "size": 2535
+  },
+  "images": [
+    {
+      "path": "docs/development/house-final-release-verification-20261026/desktop-builder.png",
+      "sha256": "109cb4ea603fb6cfdfa2f82638873cd8f0d762ac947e91da306684882c27c2dc",
+      "size": 146033
+    },
+    {
+      "path": "docs/development/house-final-release-verification-20261026/desktop-corrected-map.png",
+      "sha256": "7283a2e25c43f05941c438e1dfb6f71b9dc2fee263e2920fa1088c93337480ae",
+      "size": 312984
+    },
+    {
+      "path": "docs/development/house-final-release-verification-20261026/desktop-map.png",
+      "sha256": "6011081da7bbff5c860a582c00c5f3cfeea9ff93e12afbc1e7c7a91ffd2e1e03",
+      "size": 192463
+    },
+    {
+      "path": "docs/development/house-final-release-verification-20261026/desktop-source-notes.png",
+      "sha256": "bdc18ae2133a650535821dfe3b83acf8a0033163d33aa1793dacc2efd02f738c",
+      "size": 154189
+    },
+    {
+      "path": "docs/development/house-final-release-verification-20261026/desktop-top.png",
+      "sha256": "176f6dcf74bce8fa4a1cb1992e6d77db7ae2a88a384ed57754a1a902baa31cfd",
+      "size": 89709
+    },
+    {
+      "path": "docs/development/house-final-release-verification-20261026/mobile-builder.png",
+      "sha256": "49ae44e81435f777e12e0b81d35e58218a1d6fcdbd5822c080a5c17291901f1e",
+      "size": 288781
+    },
+    {
+      "path": "docs/development/house-final-release-verification-20261026/mobile-corrected-map.png",
+      "sha256": "230286346dbe1bb82c2dabe51792a18f0e0eeebc837efddefe48a718765c5599",
+      "size": 446192
+    },
+    {
+      "path": "docs/development/house-final-release-verification-20261026/mobile-map.png",
+      "sha256": "bda71869a22af2ff3e45e653bc74d15914c43c7d75de7742c0f88ae0409eaac8",
+      "size": 274529
+    },
+    {
+      "path": "docs/development/house-final-release-verification-20261026/mobile-source-notes.png",
+      "sha256": "d1c5dae2d36bc4061a7213783a4607812c7f5855e8763170888f369583989be4",
+      "size": 304339
+    },
+    {
+      "path": "docs/development/house-final-release-verification-20261026/mobile-top.png",
+      "sha256": "9c74996b6d33b2efa413f9c8651a0ba00454b1b29362258a37697ba16d1b88cf",
+      "size": 168385
+    }
+  ],
+  "scope": "Root inspected desktop/mobile corrected maps. All435 districts render as bounded pieces with readable colors and normal background. Final actual browser test also enforces positive finite bounding boxes smaller than half the map dimensions for all16 models."
+}

@@ -216,9 +216,15 @@ function parseView(value: unknown, catalog: HouseLiveCatalogView): HouseLiveView
   const sources = value.sources.map(source => {
     if (!object(source) || !text(source.id) || !text(source.label) || !text(source.url) || !/^https?:\/\//i.test(source.url) ||
       sourceIds.has(source.id) || !utcTimestamp(source.retrieved_at) || Date.parse(source.retrieved_at) > Date.parse(run.cutoffAt as string) ||
-      !hash(source.sha256) || !text(source.role)) return null;
+      !hash(source.sha256) || !text(source.role) ||
+      (source.capture_kind !== undefined && !["received", "rendered_primary_source"].includes(String(source.capture_kind))) ||
+      (source.limitations !== undefined && (!Array.isArray(source.limitations) || source.limitations.length > 20 ||
+        !source.limitations.every(text)))) return null;
     sourceIds.add(source.id);
-    return { id: source.id, label: source.label, url: source.url, retrieved_at: source.retrieved_at, sha256: source.sha256, role: source.role };
+    return { id: source.id, label: source.label, url: source.url, retrieved_at: source.retrieved_at,
+      sha256: source.sha256, role: source.role,
+      ...(source.capture_kind !== undefined ? { capture_kind: source.capture_kind } : {}),
+      ...(source.limitations !== undefined ? { limitations: [...source.limitations] } : {}) };
   });
   if (sources.some(item => !item)) return null;
   const sourceUrlSet = new Set((sources as HouseLiveView["sources"]).map(source => source.url));

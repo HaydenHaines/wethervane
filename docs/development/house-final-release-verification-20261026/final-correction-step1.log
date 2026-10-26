@@ -1,0 +1,312 @@
+TAP version 13
+# (node:1760096) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/hayden/projects/ballotmancy-house-live-ui-20261025/lib/district-projection.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /home/hayden/projects/ballotmancy-house-live-ui-20261025/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: mixed island winding preserves both islands and excludes the rest of the globe
+ok 1 - mixed island winding preserves both islands and excludes the rest of the globe
+  ---
+  duration_ms: 2.880307
+  type: 'test'
+  ...
+# Subtest: holes keep their opposite orientation even when their input winding is wrong
+ok 2 - holes keep their opposite orientation even when their input winding is wrong
+  ---
+  duration_ms: 0.396713
+  type: 'test'
+  ...
+# Subtest: actual published district geometry has no globe-complement or viewport-sized fills
+ok 3 - actual published district geometry has no globe-complement or viewport-sized fills
+  ---
+  duration_ms: 850.855171
+  type: 'test'
+  ...
+# (node:1760097) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/hayden/projects/ballotmancy-house-live-ui-20261025/lib/house-live-publication.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /home/hayden/projects/ballotmancy-house-live-ui-20261025/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: accepts a complete 435-district selected result and preserves only the public response shape
+ok 4 - accepts a complete 435-district selected result and preserves only the public response shape
+  ---
+  duration_ms: 32.066703
+  type: 'test'
+  ...
+# Subtest: browser publication copies only validated optional source capture notes
+ok 5 - browser publication copies only validated optional source capture notes
+  ---
+  duration_ms: 86.817469
+  type: 'test'
+  ...
+# Subtest: preserves optional website publication notes separately from native limitations
+ok 6 - preserves optional website publication notes separately from native limitations
+  ---
+  duration_ms: 14.168637
+  type: 'test'
+  ...
+# Subtest: polling disclosure is tied to the selected result, source identities, per-race counts, and cutoff
+ok 7 - polling disclosure is tied to the selected result, source identities, per-race counts, and cutoff
+  ---
+  duration_ms: 197.431887
+  type: 'test'
+  ...
+# Subtest: rejects malformed or embellished website publication notes
+ok 8 - rejects malformed or embellished website publication notes
+  ---
+  duration_ms: 41.408587
+  type: 'test'
+  ...
+# Subtest: requires all 16 exact allowed configurations and selected id/config/result digest binding
+ok 9 - requires all 16 exact allowed configurations and selected id/config/result digest binding
+  ---
+  duration_ms: 63.683172
+  type: 'test'
+  ...
+# Subtest: rejects wrong cycle, dates, cutoff order, map identity, missing current districts, and observed outcomes
+ok 10 - rejects wrong cycle, dates, cutoff order, map identity, missing current districts, and observed outcomes
+  ---
+  duration_ms: 81.651623
+  type: 'test'
+  ...
+# Subtest: rejects malformed outcome probability simplex and candidate/group membership
+ok 11 - rejects malformed outcome probability simplex and candidate/group membership
+  ---
+  duration_ms: 82.97811
+  type: 'test'
+  ...
+# Subtest: preserves a singleton group outcome without relabeling it as an individual candidate chance
+ok 12 - preserves a singleton group outcome without relabeling it as an individual candidate chance
+  ---
+  duration_ms: 9.233702
+  type: 'test'
+  ...
+# Subtest: keeps conditional two-candidate shares separate from winner chances and checks named candidates
+ok 13 - keeps conditional two-candidate shares separate from winner chances and checks named candidates
+  ---
+  duration_ms: 23.46092
+  type: 'test'
+  ...
+# Subtest: accepts unavailable chamber only with null precision and an explanatory limitation; tipping stays null
+ok 14 - accepts unavailable chamber only with null precision and an explanatory limitation; tipping stays null
+  ---
+  duration_ms: 17.616449
+  type: 'test'
+  ...
+# Subtest: accepts finite fractional seat quantiles from the native linear four-row example
+ok 15 - accepts finite fractional seat quantiles from the native linear four-row example
+  ---
+  duration_ms: 10.749051
+  type: 'test'
+  ...
+# Subtest: source cutoffs and candidate source URLs stay bound to the projected provenance
+ok 16 - source cutoffs and candidate source URLs stay bound to the projected provenance
+  ---
+  duration_ms: 29.264525
+  type: 'test'
+  ...
+# Subtest: joins optional geography to all 435 districts and drops unknown feature fields
+ok 17 - joins optional geography to all 435 districts and drops unknown feature fields
+  ---
+  duration_ms: 41.00346
+  type: 'test'
+  ...
+# Subtest: does not authenticate or imply review from status strings and rejects observation-bearing response branches
+ok 18 - does not authenticate or imply review from status strings and rejects observation-bearing response branches
+  ---
+  duration_ms: 18.235859
+  type: 'test'
+  ...
+# (node:1760103) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/hayden/projects/ballotmancy-house-live-ui-20261025/lib/house-live-catalog.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /home/hayden/projects/ballotmancy-house-live-ui-20261025/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: synthetic live result covers the 435 current districts and keeps outcomes distinct from conditional shares
+ok 19 - synthetic live result covers the 435 current districts and keeps outcomes distinct from conditional shares
+  ---
+  duration_ms: 16.881922
+  type: 'test'
+  ...
+# Subtest: optional source capture metadata is validated without requiring it in older fixtures
+ok 20 - optional source capture metadata is validated without requiring it in older fixtures
+  ---
+  duration_ms: 33.384673
+  type: 'test'
+  ...
+# Subtest: live catalog contains exactly the 16 explicitly allowed saved configurations
+ok 21 - live catalog contains exactly the 16 explicitly allowed saved configurations
+  ---
+  duration_ms: 1.532692
+  type: 'test'
+  ...
+# Subtest: result must have the complete current roster, matching map identity, and no transplanted TX-23 incumbent
+ok 22 - result must have the complete current roster, matching map identity, and no transplanted TX-23 incumbent
+  ---
+  duration_ms: 17.041981
+  type: 'test'
+  ...
+# Subtest: candidate membership, outcome support, and group-vs-candidate kinds are checked
+ok 23 - candidate membership, outcome support, and group-vs-candidate kinds are checked
+  ---
+  duration_ms: 8.336019
+  type: 'test'
+  ...
+# Subtest: nonfinite probabilities, non-simplex outcomes, unordered shares, and late cutoffs fail closed
+ok 24 - nonfinite probabilities, non-simplex outcomes, unordered shares, and late cutoffs fail closed
+  ---
+  duration_ms: 6.543891
+  type: 'test'
+  ...
+# Subtest: an election-day forecast cutoff is valid when issue time is later and every source is earlier
+ok 25 - an election-day forecast cutoff is valid when issue time is later and every source is earlier
+  ---
+  duration_ms: 4.320545
+  type: 'test'
+  ...
+# Subtest: impossible calendar dates are rejected in issue, forecast-cutoff, and source-cutoff timestamps
+ok 26 - impossible calendar dates are rejected in issue, forecast-cutoff, and source-cutoff timestamps
+  ---
+  duration_ms: 0.504765
+  type: 'test'
+  ...
+# Subtest: poll count must match the number of distinct poll source IDs
+ok 27 - poll count must match the number of distinct poll source IDs
+  ---
+  duration_ms: 1.00834
+  type: 'test'
+  ...
+# Subtest: a current forecast cannot claim a known 2026 observed result
+ok 28 - a current forecast cannot claim a known 2026 observed result
+  ---
+  duration_ms: 4.982515
+  type: 'test'
+  ...
+# Subtest: joint-draw roster order and seat PMF summaries must remain internally coherent
+ok 29 - joint-draw roster order and seat PMF summaries must remain internally coherent
+  ---
+  duration_ms: 22.651342
+  type: 'test'
+  ...
+# Subtest: unqualified chamber and tipping statistics stay absent rather than being inferred
+ok 30 - unqualified chamber and tipping statistics stay absent rather than being inferred
+  ---
+  duration_ms: 8.241332
+  type: 'test'
+  ...
+# (node:1760104) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/hayden/projects/ballotmancy-house-live-ui-20261025/lib/house-live-result.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /home/hayden/projects/ballotmancy-house-live-ui-20261025/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: all sixteen saved configurations use the same complete result-driven renderer
+ok 31 - all sixteen saved configurations use the same complete result-driven renderer
+  ---
+  duration_ms: 391.460536
+  type: 'test'
+  ...
+# Subtest: source capture notes appear only for nonempty limitations and keep each source link
+ok 32 - source capture notes appear only for nonempty limitations and keep each source link
+  ---
+  duration_ms: 25.906391
+  type: 'test'
+  ...
+# Subtest: Other leaders stay out of the D/R path; a missing chamber never creates control numbers
+ok 33 - Other leaders stay out of the D/R path; a missing chamber never creates control numbers
+  ---
+  duration_ms: 20.414061
+  type: 'test'
+  ...
+# Subtest: mixed Other groups retain member affiliations without adopting one member's party label
+ok 34 - mixed Other groups retain member affiliations without adopting one member's party label
+  ---
+  duration_ms: 26.187468
+  type: 'test'
+  ...
+# Subtest: polling display separates included questions, zero local inputs, disabled polling, and unpublished details
+ok 35 - polling display separates included questions, zero local inputs, disabled polling, and unpublished details
+  ---
+  duration_ms: 69.377505
+  type: 'test'
+  ...
+# Subtest: browser: instant selection, retained failures, drafts, ribbon, sidebar, and mobile
+ok 36 - browser: instant selection, retained failures, drafts, ribbon, sidebar, and mobile # SKIP
+  ---
+  duration_ms: 0.186259
+  type: 'test'
+  ...
+# Subtest: browser workspace: verified requests, comparisons, failure recovery, navigation and mobile tables
+ok 37 - browser workspace: verified requests, comparisons, failure recovery, navigation and mobile tables # SKIP
+  ---
+  duration_ms: 0.140543
+  type: 'test'
+  ...
+# Subtest: browser House router: publication availability, edition links, failures, history, and mobile navigation
+ok 38 - browser House router: publication availability, edition links, failures, history, and mobile navigation # SKIP
+  ---
+  duration_ms: 0.075362
+  type: 'test'
+  ...
+# Subtest: browser polling: source details follow district/model changes without mobile focus jumps
+ok 39 - browser polling: source details follow district/model changes without mobile focus jumps # SKIP
+  ---
+  duration_ms: 0.23489
+  type: 'test'
+  ...
+# (node:1760110) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/hayden/projects/ballotmancy-house-live-ui-20261025/lib/house-live-view.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /home/hayden/projects/ballotmancy-house-live-ui-20261025/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: projection preserves grouped outcomes without allocating their probabilities to member candidates
+ok 40 - projection preserves grouped outcomes without allocating their probabilities to member candidates
+  ---
+  duration_ms: 8.222646
+  type: 'test'
+  ...
+# Subtest: projection retains independent O identity and keeps conditional pair evidence separate from group win probability
+ok 41 - projection retains independent O identity and keeps conditional pair evidence separate from group win probability
+  ---
+  duration_ms: 5.266878
+  type: 'test'
+  ...
+# Subtest: native O seat distribution projects to unassigned U, with no O caucus added
+ok 42 - native O seat distribution projects to unassigned U, with no O caucus added
+  ---
+  duration_ms: 3.37292
+  type: 'test'
+  ...
+# Subtest: unqualified chamber and tipping stay unavailable in the projected view
+ok 43 - unqualified chamber and tipping stay unavailable in the projected view
+  ---
+  duration_ms: 3.588474
+  type: 'test'
+  ...
+# Subtest: projection exposes only approved source and artifact metadata, not native paths or private fields
+ok 44 - projection exposes only approved source and artifact metadata, not native paths or private fields
+  ---
+  duration_ms: 12.476527
+  type: 'test'
+  ...
+# Subtest: projection copies optional capture notes and keeps native source details private
+ok 45 - projection copies optional capture notes and keeps native source details private
+  ---
+  duration_ms: 1.460776
+  type: 'test'
+  ...
+# Subtest: projection rejects a mismatched run, mismatched configuration, or unreviewed publication status
+ok 46 - projection rejects a mismatched run, mismatched configuration, or unreviewed publication status
+  ---
+  duration_ms: 6.20183
+  type: 'test'
+  ...
+# Subtest: projection copies data and does not mutate or share mutable nested structures with the native result
+ok 47 - projection copies data and does not mutate or share mutable nested structures with the native result
+  ---
+  duration_ms: 13.340326
+  type: 'test'
+  ...
+1..47
+# tests 47
+# suites 0
+# pass 43
+# fail 0
+# cancelled 0
+# skipped 4
+# todo 0
+# duration_ms 1410.965517

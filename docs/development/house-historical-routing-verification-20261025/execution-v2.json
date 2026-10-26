@@ -1,0 +1,26 @@
+{
+  "schema": "HistoricalHouseRoutingExecutionV2",
+  "command": [
+    "npx",
+    "playwright",
+    "test",
+    "--config=playwright.site.config.ts",
+    "tests/site/house-groups.spec.ts",
+    "--grep",
+    "failed new selections preserve"
+  ],
+  "startedAt": "2026-10-25T20:03:17.806022+00:00",
+  "elapsedSeconds": 12.19018787308596,
+  "returnCode": 0,
+  "source": {
+    "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/docs/development/house-historical-routing-verification-20261025/attempt2-source.ts",
+    "sha256": "e8f6092513ea5cf2c525784bcd20c3be3e52385baeaa33bbbc7745a7b1d608d3",
+    "size": 11816
+  },
+  "log": {
+    "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/docs/development/house-historical-routing-verification-20261025/attempt2.log",
+    "sha256": "3260ccefad1faacf74f85f4189899fd22176b26a591ded1279a19ce9b14ad317",
+    "size": 932
+  },
+  "scope": "Only the two failed desktop/mobile cases rerun after updating expected invalid-link explanation and explicit recovery. Other30 passed cases are unchanged."
+}

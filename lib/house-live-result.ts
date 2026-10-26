@@ -10,6 +10,11 @@ export interface HouseLiveConfiguration {
   uncertainty: HouseLiveUncertainty;
 }
 export interface HouseLivePin { path: string; sha256: string }
+export interface HouseLiveSource {
+  id: string; label: string; url: string; retrieved_at: string; sha256: string; role: string;
+  capture_kind?: "received" | "rendered_primary_source";
+  limitations?: string[];
+}
 export interface HouseLiveCandidate {
   candidate_id: string; name: string; party_label: string | null;
   aggregation_party: HouseLiveParty; ballot_status: "printed" | "declared_writein";
@@ -63,7 +68,7 @@ export interface HouseLiveResult {
   chamber: HouseLiveChamber | null; tipping: null;
   qualification: { input_status: string; numerical_status: string; publication_status: string;
     forecast_skill: string; limitations: string[]; evidence: HouseLivePin[] };
-  provenance: { id: string; label: string; url: string; retrieved_at: string; sha256: string; role: string }[];
+  provenance: HouseLiveSource[];
   /** Draft interpretation pending a versioned backend schema. */
   historical_evidence: { label: string; url: string; qualification: string }[];
 }
@@ -256,7 +261,9 @@ export function parseHouseLiveResult(value: unknown): HouseLiveResult | null {
   for (const row of value.provenance) {
     if (!object(row) || !id(row.id) || provenanceIds.has(row.id) || !text(row.label) ||
       !text(row.url) || !/^https?:\/\//i.test(row.url) || !timestamp(row.retrieved_at) ||
-      Date.parse(row.retrieved_at) > cutoff || !hash(row.sha256) || !text(row.role)) return null;
+      Date.parse(row.retrieved_at) > cutoff || !hash(row.sha256) || !text(row.role) ||
+      (row.capture_kind !== undefined && !["received", "rendered_primary_source"].includes(String(row.capture_kind))) ||
+      (row.limitations !== undefined && (!list(row.limitations) || row.limitations.length > 20))) return null;
     provenanceIds.add(row.id);
   }
   const seen = new Set<string>();
