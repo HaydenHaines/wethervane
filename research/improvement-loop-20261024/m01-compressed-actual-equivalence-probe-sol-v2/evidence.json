@@ -1,0 +1,70 @@
+{
+  "schema": "PreparedActualEquivalenceProbeEvidenceV2",
+  "status": "frozen_actual_unexecuted_pending_independent_review",
+  "predecessor_evidence_sha256": "4613346d3166a43835bc3499410811af37cc6dd064ea2a10b1ab49e5a5e95d4a",
+  "predecessor_preserved": true,
+  "files": {
+    "common.py": {
+      "sha256": "710eb717a4f4de7e5088815dfb510940826521ab7fd0a47e110dbad6f3dd1a7d",
+      "bytes": 3025
+    },
+    "entry.py": {
+      "sha256": "559c826aa70a349ae3cc4a12bb80d49236495a3a772cd2e3f9f48d36ac188d99",
+      "bytes": 3371
+    },
+    "child.py": {
+      "sha256": "b6cd61aa6db23d9e538843df7e9b4c6d9c9935ebd3bf01d9454dcc01f7aa810a",
+      "bytes": 8618
+    },
+    "launch.py": {
+      "sha256": "0a4dd1988524dc8efea67a01cebf56458f38931e93f6b246700ebfaec720e21c",
+      "bytes": 7950
+    },
+    "compare.py": {
+      "sha256": "9b892b5cf11b60fb8e106105b50067e65267971a23dd18a4496932f9b9e6c30d",
+      "bytes": 3832
+    },
+    "test_tiny.py": {
+      "sha256": "95883f99ac4a43f3697fc4df5796ce3172184f823df9a5e78f21a8b73a92e25e",
+      "bytes": 9841
+    },
+    "invented_worker.py": {
+      "sha256": "3feb2d26507d95ebdda34e9029690b47159d00e24f6a58b8df0a13880331b21d",
+      "bytes": 381
+    },
+    "contract.json": {
+      "sha256": "aeec9de81deeeae0de8d66338d5536b0bdf24eab4d9e1ef7d4b908f1145e5b88",
+      "bytes": 24669
+    },
+    "tiny-result.json": {
+      "sha256": "81c1f422cef03b131813f5346a754f50bc8fd88a35289cbee80a4c81ece7011d",
+      "bytes": 7056
+    },
+    "tiny-first.log": {
+      "sha256": "19abee408a7a472f9b1602d27efed8cbfee2e152d679d6db3e4861cc06130f83",
+      "bytes": 54
+    },
+    "tiny-final.log": {
+      "sha256": "87c5b578e8880ecf3f86806e1f6e4a9820ff87c7b7284ef7bc23f5e948f00f1e",
+      "bytes": 54
+    },
+    "README.md": {
+      "sha256": "6816df58f8c5287d47d17fa211c98a47023ea7fcf56325383bb7a7ac86c340c1",
+      "bytes": 867
+    },
+    "DESIGN.md": {
+      "sha256": "813971a7050ea49c696fcaec39a9a15244662fe31a8242ffcca6418268cde4dc",
+      "bytes": 13042
+    }
+  },
+  "source_dependency_count": 90,
+  "tiny_tests": 23,
+  "test_terminal_exit_code": 0,
+  "actual_graph_imported": false,
+  "actual_graph_built": false,
+  "actual_graph_compiled": false,
+  "actual_attempt_exists": false,
+  "review_or_resource_receipt_created": false,
+  "invented_test_command": "OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 NUMBA_NUM_THREADS=1 PYTHONDONTWRITEBYTECODE=1 timeout --kill-after=3s 30s nice -n 15 .improvement-ledger/runtime/calibration-v1-env/bin/python -B /home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-compressed-actual-equivalence-probe-sol-v2/test_tiny.py",
+  "no_more_changes_or_runs": true
+}

@@ -1,0 +1,46 @@
+{
+  "schema": "ContinuousImprovementCheckpointV72",
+  "recordedAtUtc": "2026-10-26T23:10:06.303289+00:00",
+  "status": "active; original fixed-state graph probe running, no numerical result yet",
+  "references": {
+    "previous": {
+      "path": "research/improvement-loop-20261024/checkpoints/continuation-v71.json",
+      "sha256": "bb1779eeed45b6da0e66ab1263f8cc144bdc507a7cb418c29d03ff0b0488ec6e",
+      "bytes": 2269
+    },
+    "v2_evidence": {
+      "path": "research/improvement-loop-20261024/m01-compressed-actual-equivalence-probe-sol-v2/evidence.json",
+      "sha256": "98f1b3864fac4631f07d7cd4e3b4bc08f31cd3bb58932f66471701d83b899473",
+      "bytes": 2697
+    },
+    "review": {
+      "path": "research/improvement-loop-20261024/m01-compressed-actual-equivalence-review-luna-v2/independent-review.json",
+      "sha256": "39c75c9e7d7dd0da07afe5551985c098fe6d3e4527f44b42cf113d06281be783",
+      "bytes": 1900
+    },
+    "resource": {
+      "path": "research/improvement-loop-20261024/m01-compressed-equivalence-admission-root-v1/original-resource.json",
+      "sha256": "fe8fb0d207bde70e29751156da3b4eb9640d07643aa123df3bd50f2ed35320b9",
+      "bytes": 1272
+    },
+    "launch": {
+      "path": "research/improvement-loop-20261024/m01-compressed-actual-equivalence-probe-sol-v2/attempt-v1/original/launch.json",
+      "sha256": "d4137fcb95701c3ec3661fed33a41a2ddf73e56d516ce9dbe66bf72e8475e6fb",
+      "bytes": 2118
+    },
+    "entry": {
+      "path": "research/improvement-loop-20261024/m01-compressed-actual-equivalence-probe-sol-v2/attempt-v1/original/entry-receipt.json",
+      "sha256": "e36036ce8294301ca4fef09cc7bb3ff762f29c1616c17ec9ff4d2e9314c4a29f",
+      "bytes": 481
+    }
+  },
+  "review": "Independent Luna reviewed V2 and reproduced 23 invented/source tests. It supports one original-arm attempt; compressed arm requires separately observed clean original acknowledgment, receipt audit and fresh resource assessment. Observed stdout is an external workflow requirement and cannot be proven by rehashing a visible marker. V1 remains preserved and unused.",
+  "launch": "After source review and a per-job resource assessment, the original arm was launched in the existing bounded controller at tool session 85285, controller PID 1987682 and child PID 1987686. Child entry confirms CPU3, nice15, 540/550 second CPU limits, 8 GiB address limit, 64 MiB file limit, 600 second alarm and parent-death signal. Controller adds 4 GiB sampled RSS and 512 MiB sampled staging limits. At checkpoint the exact child was observed live at Jacobian-inclusive ordered-gradient construction, after building the original graph and writing point/layout artifacts. No fit, sampler, forecast, completed result or numerical equivalence is claimed. Poll session 85285 or the same PID/terminal; never restart on polling timeout or missing output. Preserve earlier failed artifacts and owner jobs.",
+  "concurrency": "Resource receipt records protected GPU and House process identities and CPU affinities, with CPU3 selected off their physical cores; it is a point-in-time assessment, not a claim that other work cannot appear. User per-job and 2018/2022 overlap rules remain intact. No owner process modified.",
+  "frontend": "Latest known SiteGround public metadata still old; 0d71d82 locally built and pushed. GitHub status polling returned HTTP403 rate limit; last observed workflow 40414769526 was in e2e, not confirmed terminal. User SiteGround log question remains pending. House owner corrected release remains pending.",
+  "next": [
+    "Poll original session 85285 and retain its full actual tool return; audit result and terminal before deciding whether a separately reviewed/fresh-resource compressed arm is possible.",
+    "Preserve complete partial/failure results and never rerun an uncertain or terminal attempt without a new reason and lineage.",
+    "Continue the registration source/identification gate and House release integration on owner-qualified handoff."
+  ]
+}

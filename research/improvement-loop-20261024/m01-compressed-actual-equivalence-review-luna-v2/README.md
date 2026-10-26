@@ -1,0 +1,27 @@
+# Independent review: compressed M01 actual-equivalence probe V2
+
+Reviewed frozen V2 packet, evidence SHA-256 `98f1b3864fac4631f07d7cd4e3b4bc08f31cd3bb58932f66471701d83b899473`. V1 is separately preserved and remains blocked. No V2 author files were edited. The isolated reproduction imported no actual scientific model and ran no actual graph.
+
+## Decision and bounded recommendation
+
+**The V2 code and fixtures justify one narrowly scoped original-arm attempt only**, if the root retains the complete tool return/acknowledgment and a fresh one-job resource/concurrency receipt is supplied at invocation. This is permission to measure one fixed-state original graph under the controller's bounds; it does not certify graph compilation, numerical correctness, model fit, or forecast quality. If no clean caller-observed original completion return is retained, stop and do not start the compressed arm.
+
+Defer the compressed arm until a separate fresh resource check and an acknowledgment audit confirms the original completion return was actually retained, and confirms its result/terminal/controller-success hashes match the files. The compressed arm must also receive its own fresh check and per-arm return must be retained. The on-disk digest alone cannot prove a human/tool caller observed stdout; the protocol therefore depends on the caller keeping the returned tool record, as documented. This is an operational trust boundary, not a cryptographic receipt system.
+
+## V1 blocker resolved; residual trust boundary
+
+V1 let a directly started `child.py` pass by crafting an `authorization.json` and setting its parent PID to the launcher. V2 rejects ordinary direct invocation before writing a stage marker or importing the model: `child.py` requires a live inherited anonymous pipe, verifies the digest and bounded payload, checks controller PID plus process start ticks, binds arm/output/contract, repeats review/resource admission, and then applies CPU/AS/file/core limits, one CPU affinity, nice, single-thread checks, wall alarm, and Linux parent-death SIGKILL before scientific imports. Controller-side RSS, disk, thread watchdogs and process-group TERM/KILL/reap remain in force. The design explicitly excludes hostile code running as the same user and arbitrary coherent local source rewrites; under that stated boundary the direct-child bypass is closed for accidental invocation.
+
+The caller receipt caveat remains: compressed mode accepts a supplied SHA only after comparing it to the on-disk `original/controller-success.json` and validating the result/terminal pins. Code cannot establish that this SHA came from retained stdout rather than someone re-hashing the file. Keep this requirement as an external workflow audit; do not describe the hash comparison itself as proof of caller observation. The tiny suite does not run the complete two-invocation CLI sequence.
+
+## Scientific and computational scope
+
+Static source/contract review supports identity of the complete frozen Problem and the ordered six-poll block; the compressed provider pins the exact native mean mapping and bank/coefficients. The pair compares complete finite two-point `(2,662)` gradients, logp, factor values, poll logp, rates, exact shared points and coordinate layout, plus unchanged nonmeasurement ownership and distinct target/composition IDs. Both arms use the first selected parent; validation checks all eight `.125` masses, but the graph is not evaluated across all eight parents and no parent mass is included in logp. Six selected central finite differences are a targeted check, not a validation of every derivative. The probe is computational equivalence for two supplied states under `actual_calibration_bank`; it is not posterior integration, all-parent normalization, model aliasing, empirical prediction, or a 2026 forecast. No scientific blocker beyond the explicitly declared unexecuted graph/runtime uncertainty was found.
+
+Caps are intentionally narrow: one CPU, nice 15, one-thread environment, `RLIMIT_CPU` 540/550 seconds, `RLIMIT_AS` 8 GiB, per-file limit 64 MiB, controller RSS watchdog 4 GiB, per-arm sampled disk watchdog 512 MiB, and 600-second worker alarm/controller wall bound. Samples every 0.5 seconds may overshoot. Actual runtime/resource success is unknown. No retries are supported; a failed/incomplete original attempt means stop, not re-run.
+
+## Independent reproduction
+
+Verified all frozen hashes supplied by Sol, including contract, common, entry, child, launch, compare and test source. Copied the test sources and contract to `/tmp/luna-compressed-probe-v2.mLJiuA` and ran only `test_tiny.py` in the specified calibration runtime under `nice -n 15`, a 30-second timeout, and single-thread numerical environment. **23/23 invented/source tests passed.** Tests rejected hand-written authorization, regular descriptor and bad pipe digest before graph import; exercised worker-side limits and wall-alarm termination with the explicitly invented worker; and reaped two tiny sleeping children after receipt-write exception and controller interruption. Output reports `actual_graph_imported=false` and `actual_graph_executed=false`.
+
+This supports entry and cleanup fixtures only. It cannot demonstrate that the 662-coordinate actual graph builds or compiles under caps, that the actual two-arm gradients agree, or that the external caller acknowledgment workflow was observed end to end.

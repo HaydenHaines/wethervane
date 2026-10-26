@@ -1,0 +1,167 @@
+{
+  "schema": "PreparedActualProbeTinyTestsV1",
+  "status": "passed",
+  "tests": [
+    "frozen_contract_all_source_pins",
+    "fresh_receipt",
+    "stale",
+    "future",
+    "overlap",
+    "slot",
+    "wrong_contract",
+    "memory_floor",
+    "retained_digest_mismatch",
+    "complete_vector_equal",
+    "last_coordinate_diff",
+    "missing_coordinate",
+    "nonfinite",
+    "target_ids_distinct_preserved",
+    "mass_changed",
+    "claim_changed",
+    "receipt_exception_reaped_terminal",
+    "controller_interruption_reaped_terminal",
+    "direct_actual_child_handmade_file_rejected_before_model_import",
+    "regular_descriptor_rejected",
+    "wrong_pipe_digest_rejected",
+    "worker_limits_before_invented_work",
+    "worker_wall_alarm_terminates"
+  ],
+  "actual_graph_imported": false,
+  "actual_graph_executed": false,
+  "owned_tiny_children_reaped": 2,
+  "cleanup_receipts": [
+    {
+      "test": "receipt_exception",
+      "terminal": {
+        "arm": "original",
+        "pid": 1985638,
+        "returncode": -15,
+        "reason": "controller_exception",
+        "controller_error": "Traceback (most recent call last):\n  File \"/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-compressed-actual-equivalence-probe-sol-v2/launch.py\", line 39, in run_child\n    atomic_json(out/'launch.json',{'pid':child.pid,'arm':arm,'control_channel_sha256':env['M01_PROBE_CONTROL_SHA256'],'controller_start_ticks':payload['controller_start_ticks'],'command':child.args,'environment':{k:env[k]for k in ['OPENBLAS_NUM_THREADS','OMP_NUM_THREADS','MKL_NUM_THREADS','NUMEXPR_NUM_THREADS','NUMBA_NUM_THREADS','PYTENSOR_FLAGS','NUMBA_CACHE_DIR']},'live_resources':live,'caps':cap})\n  File \"/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-compressed-actual-equivalence-probe-sol-v2/test_tiny.py\", line 33, in write\n    if Path(path).name=='launch.json':raise exc\n                                      ^^^^^^^^^\nOSError: injected receipt write\n",
+        "seconds": 0.004769989987835288,
+        "peak_rss_bytes": 0,
+        "peak_threads": 0,
+        "peak_disk_bytes": 0,
+        "no_retry": true
+      }
+    },
+    {
+      "test": "controller_interruption",
+      "terminal": {
+        "arm": "original",
+        "pid": 1985639,
+        "returncode": -15,
+        "reason": "controller_exception",
+        "controller_error": "Traceback (most recent call last):\n  File \"/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-compressed-actual-equivalence-probe-sol-v2/launch.py\", line 39, in run_child\n    atomic_json(out/'launch.json',{'pid':child.pid,'arm':arm,'control_channel_sha256':env['M01_PROBE_CONTROL_SHA256'],'controller_start_ticks':payload['controller_start_ticks'],'command':child.args,'environment':{k:env[k]for k in ['OPENBLAS_NUM_THREADS','OMP_NUM_THREADS','MKL_NUM_THREADS','NUMEXPR_NUM_THREADS','NUMBA_NUM_THREADS','PYTENSOR_FLAGS','NUMBA_CACHE_DIR']},'live_resources':live,'caps':cap})\n  File \"/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-compressed-actual-equivalence-probe-sol-v2/test_tiny.py\", line 33, in write\n    if Path(path).name=='launch.json':raise exc\n                                      ^^^^^^^^^\nKeyboardInterrupt: injected interruption\n",
+        "seconds": 0.0038695058319717646,
+        "peak_rss_bytes": 0,
+        "peak_threads": 0,
+        "peak_disk_bytes": 0,
+        "no_retry": true
+      }
+    }
+  ],
+  "direct_entry_receipt": {
+    "returncode": 1,
+    "stderr": "Traceback (most recent call last):\n  File \"/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-compressed-actual-equivalence-probe-sol-v2/child.py\", line 62, in <module>\n    try:main()\n        ^^^^^^\n  File \"/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-compressed-actual-equivalence-probe-sol-v2/child.py\", line 10, in main\n    authorization,c,entry_receipt=accept(arm,out)\n                                  ^^^^^^^^^^^^^^^\n  File \"/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-compressed-actual-equivalence-probe-sol-v2/entry.py\", line 10, in accept\n    need(rawfd is not None and expected is not None,'live controller channel required before graph imports')\n  File \"/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-compressed-actual-equivalence-probe-sol-v2/common.py\", line 9, in need\n    if not ok:raise ValueError(message)\n              ^^^^^^^^^^^^^^^^^^^^^^^^^\nValueError: live controller channel required before graph imports\n",
+    "stage_exists": false
+  },
+  "worker_entry_receipts": [
+    {
+      "hanging": false,
+      "returncode": 0,
+      "receipt": {
+        "pid": 1985643,
+        "controller_pid": 1985637,
+        "controller_start_ticks": 119130850,
+        "channel_sha256": "e098f2a6ef125df1a68fcc00237b88dd3679ae4f7c19e42964191a5ee771709e",
+        "cpu_affinity": [
+          0
+        ],
+        "nice": 15,
+        "limits": {
+          "0": [
+            2,
+            3
+          ],
+          "9": [
+            268435456,
+            268435456
+          ],
+          "1": [
+            1048576,
+            1048576
+          ],
+          "4": [
+            0,
+            0
+          ]
+        },
+        "wall_alarm_seconds": 2,
+        "parent_death_signal": "SIGKILL"
+      },
+      "stderr": ""
+    },
+    {
+      "hanging": true,
+      "returncode": -14,
+      "receipt": {
+        "pid": 1985644,
+        "controller_pid": 1985637,
+        "controller_start_ticks": 119130850,
+        "channel_sha256": "ca3140c7eedcf1ae6c64a0ec13dcb55b2e1f08840ac17ea17d33f108628296ce",
+        "cpu_affinity": [
+          0
+        ],
+        "nice": 15,
+        "limits": {
+          "0": [
+            2,
+            3
+          ],
+          "9": [
+            268435456,
+            268435456
+          ],
+          "1": [
+            1048576,
+            1048576
+          ],
+          "4": [
+            0,
+            0
+          ]
+        },
+        "wall_alarm_seconds": 2,
+        "parent_death_signal": "SIGKILL"
+      },
+      "stderr": ""
+    }
+  ],
+  "source_pins": {
+    "common.py": {
+      "sha256": "710eb717a4f4de7e5088815dfb510940826521ab7fd0a47e110dbad6f3dd1a7d",
+      "bytes": 3025
+    },
+    "child.py": {
+      "sha256": "b6cd61aa6db23d9e538843df7e9b4c6d9c9935ebd3bf01d9454dcc01f7aa810a",
+      "bytes": 8618
+    },
+    "compare.py": {
+      "sha256": "9b892b5cf11b60fb8e106105b50067e65267971a23dd18a4496932f9b9e6c30d",
+      "bytes": 3832
+    },
+    "launch.py": {
+      "sha256": "0a4dd1988524dc8efea67a01cebf56458f38931e93f6b246700ebfaec720e21c",
+      "bytes": 7950
+    },
+    "test_tiny.py": {
+      "sha256": "95883f99ac4a43f3697fc4df5796ce3172184f823df9a5e78f21a8b73a92e25e",
+      "bytes": 9841
+    },
+    "entry.py": {
+      "sha256": "559c826aa70a349ae3cc4a12bb80d49236495a3a772cd2e3f9f48d36ac188d99",
+      "bytes": 3371
+    }
+  }
+}

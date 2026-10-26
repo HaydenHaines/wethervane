@@ -1,0 +1,30 @@
+{
+  "schema": "CompressedActualProbeFreshResourcesV1",
+  "contract_sha256": "aeec9de81deeeae0de8d66338d5536b0bdf24eab4d9e1ef7d4b908f1145e5b88",
+  "independent_review_sha256": "99b97788b1596d8e014cb76db007ffb0a46373fc9df7e6f492d9f0213337c42c",
+  "checked_unix": 1793056168.307112,
+  "observer": "root local process and resource observation",
+  "exclusive_actual_probe_slot": true,
+  "resource_conflicts": [],
+  "overlap_assessment": "no_conflict_for_this_one_cpu_job",
+  "cpu": 3,
+  "protected_jobs": [
+    {
+      "pid": 1906964,
+      "start_time_ticks": 118207990
+    },
+    {
+      "pid": 1966453,
+      "start_time_ticks": 118876313
+    },
+    {
+      "pid": 1980171,
+      "start_time_ticks": 119049215
+    }
+  ],
+  "minimum_mem_available_bytes": 6442450944,
+  "minimum_disk_free_bytes": 2147483648,
+  "observed_mem_available_bytes": 45420265472,
+  "observed_disk_free_bytes": 214699933696,
+  "assessment": "CPU 3 is physical core 3; GPU host 10-11 are cores 4-5 and active House combine is restricted to CPU 2/core 2. No same-family probe process was observed; one CPU, 4 GiB RSS watchdog and 512 MiB per-arm staging cap. Other unrelated jobs may be scheduled concurrently; no global exclusivity is claimed. Existing 2018/2022 owner scheduling remains untouched."
+}
