@@ -49,3 +49,13 @@ test("435 rows stay accounted for and duplicate ids or invalid columns reject", 
   assert.throws(() => layoutGroupRibbon([race("same", { D: .5, R: .3, O: .2 }), race("same", { D: .4, R: .4, O: .2 })], 2), /Duplicate/);
   assert.throws(() => layoutGroupRibbon([], 0), RangeError);
 });
+
+test("native rounding tolerance preserves probabilities without inventing normalization", () => {
+  const probabilities = { D: .600000001, R: .3, O: .1 };
+  const result = layoutGroupRibbon([
+    race("rounding", probabilities),
+    race("invalid", { D: .600001, R: .3, O: .1 }),
+  ], 2);
+  assert.deepEqual(result.main.rows[0].probabilities, probabilities);
+  assert.deepEqual(result.unavailable.map(row => row.id), ["invalid"]);
+});

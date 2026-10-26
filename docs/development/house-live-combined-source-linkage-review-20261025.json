@@ -1,0 +1,91 @@
+{
+  "schema": "HouseLiveCombinedSourceLinkageReviewV1",
+  "reviewed_utc": "2026-10-25T16:24:07Z",
+  "status": "read_only_review_confirmed_linkage_gaps",
+  "scope": "Inspected the backend combiner and independent draw audit, current native export evidence shape, and the UI combined-archive importer/decoder. No backend code or model artifacts were changed and no model run was performed.",
+  "inspected_files": [
+    {
+      "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-20261025/combine_predictions.py",
+      "sha256": "98cf4f21ed8baaa1511b3eba1800d6939f74d720d7630aa04a3ede32afa2bc2c"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-20261025/audit_prediction.py",
+      "sha256": "39f72f9af7ea8ae3a197757af94599ac5fc8efa51ac08df82d306c71bc8f1878"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-20261025/export_live.py",
+      "sha256": "68c60edb9fd9d2e42dccb5ce90715f786d3d7401c6369738a4d46d96ca81b183"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-20261025/adapter-check-v2/result.json",
+      "sha256": "71f2128496e3f013033efbe6582e50eeba3b2d763eec4d36f2d7561f1844dac4"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/scripts/import_house_live.mjs",
+      "sha256": "e4b54ead3ff4814e2dc857f13057ec1cc1dedddc2c83d63b8f2e9e358e3cde1a"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/scripts/decode_house_live_joint.py",
+      "sha256": "bd716573139006fda9dbb3710e8203af2bfc2aca9c28608f61d5be3258dc558e"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/lib/house-live-joint-archive.ts",
+      "sha256": "93d58f9a9149bfae4e1f5dfab51fef6d69d85b3ffceb118cfac3cb05734193a4"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/tests/house-live-import.test.mjs",
+      "sha256": "bf36fdd48814b5e16f29487e3c0fb34826bb65b703c8345cae6c88df915feee4"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/tests/site_house_live_joint_decoder_test.py",
+      "sha256": "7a3309861a1e17e4791a17d47fe8669bc70b7c3c85907182ecdba02ce712136c"
+    }
+  ],
+  "independent_audit_scope": {
+    "what_it_checks": "audit_prediction.py source_runs() verifies source plan pins and source receipt pins separately, checks each source plan configuration/settings against the combined plan, checks offsets and predictive chain/draw order, checks source_run_index/source_joint_draw_id values, and compares source NPZ arrays with the corresponding combined row slices.",
+    "what_remains_unbound": [
+      "It does not require a source receipt's nested receipt.plan pin to match the exact source plan file loaded from source_runs[].plan.",
+      "It verifies hashes listed in a source receipt's outputs, but does not require that list to contain the exact joint-draws.npz and conditional-shares.npz files it subsequently opens.",
+      "At top level it verifies the pins declared by receipt.json and loads directory/plan.json and the NPZ files, but does not require receipt.plan to bind that exact plan file or receipt.outputs to pin the exact files being audited."
+    ],
+    "conclusion": "The independent audit materially verifies source row values and declared ordering, but does not close receipt-to-plan or receipt-to-raw-array linkage. It is not an independent fix for the combiner linkage gap."
+  },
+  "confirmed_backend_linkage_gaps": [
+    {
+      "file": "research/house-live-20261025/combine_predictions.py",
+      "locations": "58-64 and 97-98",
+      "finding": "The combiner loads source plan.json and source receipt.json independently, verifies receipt-listed pins and plan inputs, then later opens fixed joint-draws.npz and conditional-shares.npz paths. It does not bind receipt.plan to the exact loaded plan file, compare receipt.configuration/status to that plan, or require the exact NPZ files it opens to appear as matching pins in receipt.outputs.",
+      "risk": "A malformed or adversarial receipt can leave the loaded plan or arrays outside its asserted output binding while the combiner still uses them. Normal forecast receipts currently list these outputs, but the combiner does not enforce that schema relationship."
+    },
+    {
+      "file": "research/house-live-20261025/audit_prediction.py",
+      "locations": "33-67 and 86-104",
+      "finding": "The independent audit checks source-run pins and compares source bytes to combined slices, but has the same missing receipt.plan equality and required-output membership checks. It also does not cross-bind the top-level receipt to the plan/raw files it loads.",
+      "risk": "The arithmetic/source-value audit can pass without establishing that the receipt itself asserted the precise plan and archive artifacts used by the audit."
+    }
+  ],
+  "export_to_importer_integration_gap": {
+    "backend_evidence": "export_live.py:summarize retains plan.json, receipt.json, and joint-draws.npz under evidence/<configuration>/, but its result qualification.evidence list includes admission, input review, bank index, presentation review, diagnostics, and receipt only; it omits a plan pin. The pinned adapter-check-v2 result confirms the evidence list has a receipt and no plan document.",
+    "ui_expectation": "import_house_live.mjs:resolvePredictionPlan scans only result.qualification.evidence documents and requires exactly one local prediction receipt and exactly one local plan document; it then matches the plan document SHA to receipt.plan.sha256.",
+    "finding": "Against the current backend export shape, the importer finds one receipt and zero plan documents and rejects the result as a missing or ambiguous local prediction receipt/plan mapping. The local plan file exists but is not explicitly pinned by the native result evidence, so the importer cannot safely use it under its current no-path-inference design.",
+    "recommended_owner_change": "Have backend export emit an explicit local evidence pin for the copied plan.json in each result's qualification.evidence, retaining the original internal receipt path only as receipt metadata. The importer should continue matching by exact SHA and schema/config identity, not literal path equality; internal research-root paths and exported evidence paths intentionally differ.",
+    "test": "Add an integration fixture built from the real export shape: receipt.plan points at the research-root source path, result evidence includes local evidence/<configuration>/plan.json pin with identical bytes/SHA, and local joint archive path differs from the receipt output path but has the same pinned digest. Assert import succeeds. Assert omission, SHA mismatch, duplicate plan docs, config mismatch, receipt plan SHA mismatch, and missing exact joint output digest fail."
+  },
+  "recommended_backend_patch_and_tests": {
+    "combiner": "For each source, compute the backend-root-relative actual plan pin and require receipt.plan to equal it; require receipt configuration/status to match the loaded plan and accepted run; require exact current joint-draws.npz and conditional-shares.npz pins in receipt.outputs before opening those files. Preserve project-root pin paths here, since this is backend-to-backend linkage.",
+    "independent_audit": "Apply the same exact plan and raw-output binding at the top-level and for each combined source record before reading arrays. Keep its independent array-by-array comparison as a separate check.",
+    "tests": [
+      "A source receipt whose plan pin points to a different valid plan must fail combination and audit.",
+      "A source receipt omitting or mispinning joint-draws.npz or conditional-shares.npz must fail before either file is loaded.",
+      "A top-level combined receipt whose plan pin or raw-output pins do not bind the exact audited files must fail audit.",
+      "A valid combined fixture must still pass source offset, per-source local draw ID, global chain/draw order, and raw-array equality checks."
+    ]
+  },
+  "decoder_scope_review": {
+    "confirmed_checks": "The updated decoder selects exact nine-member versus eleven-member archives based on whether a combined plan is supplied; hash-checks the archive and plan; parses the combined plan with bounded JSON and exact keys; requires two to 32,768 source records, unique seeds, contiguous row/chain offsets, common per-source draw/warmup settings, matching total rows/chains/configuration; and checks source_run_index/source_joint_draw_id for every row.",
+    "scope_boundary": "The decoder explicitly says original source receipts/plans are referenced by pins but not opened. It validates sidecars against the plan's declared row layout; it does not independently authenticate the source receipts/plans, compare raw source NPZs, establish execution, or prove that different seeds produced scientifically independent streams.",
+    "wording_note": "“Authenticated local plan” in the decoder docstring is true only when its caller has already bound the plan pin through native evidence and the prediction receipt. The Python decoder itself verifies the supplied digest but cannot establish who supplied it. Prefer “caller-authenticated plan” or keep the existing importer binding as a required precondition in adjacent API documentation.",
+    "tests_note": "Decoder tests cover invented exact-11 archives and plan layout corruption. Importer tests exercise local receipt/plan mappings using synthetic fixtures, but those fixtures currently add a plan evidence pin that the inspected backend export does not emit. They do not cover the export-to-importer omission above."
+  },
+  "artifact_availability": "No combined prediction receipt/archive was present in the inspected backend prediction output tree; conclusions about the combined format follow combine_predictions.py and audit_prediction.py source schemas plus the current adapter export shape."
+}

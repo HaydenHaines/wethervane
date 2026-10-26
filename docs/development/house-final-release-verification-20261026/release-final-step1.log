@@ -1,0 +1,96 @@
+TAP version 13
+# (node:1760674) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/hayden/projects/ballotmancy-house-live-ui-20261025/lib/district-projection.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /home/hayden/projects/ballotmancy-house-live-ui-20261025/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: mixed island winding preserves both islands and excludes the rest of the globe
+ok 1 - mixed island winding preserves both islands and excludes the rest of the globe
+  ---
+  duration_ms: 1.787197
+  type: 'test'
+  ...
+# Subtest: holes keep their opposite orientation even when their input winding is wrong
+ok 2 - holes keep their opposite orientation even when their input winding is wrong
+  ---
+  duration_ms: 0.252845
+  type: 'test'
+  ...
+# Subtest: actual published district geometry has no globe-complement or viewport-sized fills
+ok 3 - actual published district geometry has no globe-complement or viewport-sized fills
+  ---
+  duration_ms: 751.64957
+  type: 'test'
+  ...
+# Subtest: all four historical district maps retain their source bytes and bounded fills
+ok 4 - all four historical district maps retain their source bytes and bounded fills
+  ---
+  duration_ms: 406.820377
+  type: 'test'
+  ...
+# (node:1760675) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/hayden/projects/ballotmancy-house-live-ui-20261025/lib/house-live-result.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /home/hayden/projects/ballotmancy-house-live-ui-20261025/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: all sixteen saved configurations use the same complete result-driven renderer
+ok 5 - all sixteen saved configurations use the same complete result-driven renderer
+  ---
+  duration_ms: 434.261987
+  type: 'test'
+  ...
+# Subtest: source capture notes appear only for nonempty limitations and keep each source link
+ok 6 - source capture notes appear only for nonempty limitations and keep each source link
+  ---
+  duration_ms: 29.03698
+  type: 'test'
+  ...
+# Subtest: Other leaders stay out of the D/R path; a missing chamber never creates control numbers
+ok 7 - Other leaders stay out of the D/R path; a missing chamber never creates control numbers
+  ---
+  duration_ms: 23.465094
+  type: 'test'
+  ...
+# Subtest: mixed Other groups retain member affiliations without adopting one member's party label
+ok 8 - mixed Other groups retain member affiliations without adopting one member's party label
+  ---
+  duration_ms: 29.638179
+  type: 'test'
+  ...
+# Subtest: polling display separates included questions, zero local inputs, disabled polling, and unpublished details
+ok 9 - polling display separates included questions, zero local inputs, disabled polling, and unpublished details
+  ---
+  duration_ms: 73.09262
+  type: 'test'
+  ...
+# Subtest: browser: instant selection, retained failures, drafts, ribbon, sidebar, and mobile
+ok 10 - browser: instant selection, retained failures, drafts, ribbon, sidebar, and mobile # SKIP
+  ---
+  duration_ms: 0.194305
+  type: 'test'
+  ...
+# Subtest: browser workspace: verified requests, comparisons, failure recovery, navigation and mobile tables
+ok 11 - browser workspace: verified requests, comparisons, failure recovery, navigation and mobile tables # SKIP
+  ---
+  duration_ms: 0.148539
+  type: 'test'
+  ...
+# Subtest: browser House router: publication availability, edition links, failures, history, and mobile navigation
+ok 12 - browser House router: publication availability, edition links, failures, history, and mobile navigation # SKIP
+  ---
+  duration_ms: 0.073979
+  type: 'test'
+  ...
+# Subtest: browser polling: source details follow district/model changes without mobile focus jumps
+ok 13 - browser polling: source details follow district/model changes without mobile focus jumps # SKIP
+  ---
+  duration_ms: 0.265929
+  type: 'test'
+  ...
+1..13
+# tests 13
+# suites 0
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 4
+# todo 0
+# duration_ms 1391.398118

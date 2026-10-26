@@ -1,0 +1,58 @@
+{
+  "schema": "HouseLiveBackendBindingFollowupV1",
+  "reviewed_utc": "2026-10-25T16:42:47Z",
+  "status": "completed_source_binding_evidenced_combined_pending",
+  "scope": "Read-only follow-up to house-live-combined-source-linkage-review-20261025.json. Inspected the revised backend binding helper, combiner, independent audit, exporter, collection reviewer, actual binding-review records and current output presence. No model or million-row array was rerun or rehashed in this follow-up.",
+  "source_pins": [
+    { "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-20261025/prediction_binding.py", "sha256": "6a48697b9687d7ed29e8e1f1979ee74953dbb439fb8cc89c5481aa906be85f74" },
+    { "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-20261025/test_prediction_binding.py", "sha256": "55a8790e39b63bf467ed282cbf724ab186feffb19c8353815f243b51923ad85b" },
+    { "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-20261025/combine_predictions_v2.py", "sha256": "830901b23d6108a568d30e9a17ae781184c67b2b0f48fdcb2422d8243d6c2c64" },
+    { "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-20261025/audit_prediction_v2.py", "sha256": "b2e89130c3c92dff7f7687ee3fe1adacd2bc6ff5735ddd359ae97b1cbe9ce7ae" },
+    { "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-20261025/export_live.py", "sha256": "57168a0f554fd74dc69e6861df6f882046220ceea4fff88f78689b78e2c7fa61" },
+    { "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-20261025/review_collection.py", "sha256": "dc2a17b7e8538b83f35505f6c0af76ae27b44b75037dd20119c150f2d76be56a" },
+    { "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-20261025/fundamentals-v1-binding-review.json", "sha256": "150f8dadd5ddcca77c5151016115734ee38028054c9370fd5056f19001131a75" },
+    { "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-20261025/fundamentals-v2-binding-review.json", "sha256": "0613996c9eb992f72dc69a7af0d0e85998b1c811558b97a6f36ae39d2b31d4d1" },
+    { "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-20261025/polling-v1-binding-review.json", "sha256": "b3582baf56b5219e4165384b516fc6c4ed0cb1d15612d64362926e1a6c3b920d" },
+    { "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-20261025/combined-v1/house-current-fundamentals/plan.json", "sha256": "ba95539614a5158212f5ce66c02fc14b3f5114e4cadcbad63cc738fd1f16eb18" },
+    { "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-20261025/adapter-check-v4/review.json", "sha256": "eb2170fb47c2afd552e66b1329d7ef60727182619f3311f369596235db867768" }
+  ],
+  "binding_implementation": {
+    "status": "source_level_gap_closed_in_new_entrypoints",
+    "evidence": [
+      "prediction_binding.py:28-38 requires the receipt's plan pin to equal the exact local plan hash, receipt and plan configurations to agree, the saved driver to match plan.source, and the complete five-file receipt output set to equal the actual local files and digests.",
+      "prediction_binding.py:41-65 also checks plan input pins and status against exact diagnostics; for a combined plan it recursively checks each original source receipt, plan, driver and outputs, then compares each source-run record's receipt/plan pins and settings/configuration.",
+      "combine_predictions_v2.py:55-66 calls load_bound_prediction on every source before loading arrays; audit_prediction_v2.py:88-99 calls it on the combined output before array loading and audit_prediction_v2.py:52-66 calls it on each source while checking segment identities and raw source slices.",
+      "test_prediction_binding.py:29-103 includes malformed foreign-plan, missing or substituted output, digest, driver, status, recursive-source and before-array-load fixtures."
+    ],
+    "limit": "This helper checks exact saved-file relationships and diagnostics consistency. It does not prove inference convergence, source validity, independence of random streams, forecast skill or publication qualification."
+  },
+  "completed_current_runs": [
+    { "run": "predictions-v1/house-current-fundamentals", "receipt_sha256": "3484ea7b015b4c8a380ed6b5976724b026f9a356e44f2d32ae4303af87d06386", "binding_review_status": "exact_receipt_plan_and_outputs_bound", "prediction_status": "diagnostic_failure", "race_gate": true, "chamber_gate": false },
+    { "run": "predictions-v2/house-current-fundamentals", "receipt_sha256": "99f905dd4f1a3ba870e6a90f4412e26c8d519349c7ba9b34384fd88bcca535ad", "binding_review_status": "exact_receipt_plan_and_outputs_bound", "prediction_status": "diagnostic_failure", "race_gate": true, "chamber_gate": false },
+    { "run": "predictions-v1/house-current-polling", "receipt_sha256": "6274eaf44632e7e1935acfb3c2404c10a91e8f57e6748b083d2e7a5eb1f546db", "binding_review_status": "exact_receipt_plan_and_outputs_bound", "prediction_status": "passed", "race_gate": true, "chamber_gate": true }
+  ],
+  "completed_run_check_scope": "Each three binding-review JSON records has status exact_receipt_plan_and_outputs_bound and pins its current small receipt, local plan, saved driver and all five declared outputs. In this follow-up, current receipt and plan digests, review-source digest and membership of declared output pins were checked without rehashing million-row outputs. The binding-review status records the owner's earlier full-file check; mere file existence would not establish that status.",
+  "combined_current_state": {
+    "directory": "research/house-live-20261025/combined-v1/house-current-fundamentals",
+    "present_files_observed": ["plan.json", "diagnostics.json", "joint-draws.npz", "polls.csv", "run-source.py"],
+    "missing_completion_evidence_observed": ["receipt.json", "conditional-shares.npz", "binding-review.json", "independent-audit.json"],
+    "plan": "HouseLiveCombinedPredictionPlanV1 declares 8 chains of 250000 rows each, source offsets 0 and 1000000, chain offsets 0 and 4, and distinct source seeds 2026102502 and 2026102503.",
+    "status": "partial_output_not_reviewed",
+    "required_binding": "When complete, run load_bound_prediction on the combined receipt and all five actual combined outputs; its recursive source checks must bind both original receipts/plans/raw outputs. The v2 independent audit must then verify source_run_index, source_joint_draw_id, global chain/draw ordering, per-source raw-array equality and both numerical gates. A pinned combined binding review and independent audit must match the selected receipt before collection review; the present plan or partial NPZ is not sufficient."
+  },
+  "export_and_collection_wiring": {
+    "evidence": [
+      "export_live.py:156-164 now includes an explicit copied local plan pin and a binding-review pin in native qualification.evidence; reviewed export requires the binding-review file.",
+      "export_live.py:188-233 requires a passing numerical collection review pinned to the exact selection; for each reviewed selected run it checks the selected receipt and binding-review hashes before copying and requires exactly 16 configurations.",
+      "review_collection.py:92-131 checks each selected run's passed receipt and both numerical gates, a pinned independent audit, and binding-review status exact_receipt_plan_and_outputs_bound with matching configuration and receipt; it verifies the binding review's input/source pins.",
+      "adapter-check-v4/result.json contains both local plan and binding-review pins, while adapter-check-v4/review.json says real_default_numerically_reconciled_and_exactly_bound_not_for_publication; the native result itself says publication_status not_reviewed."
+    ],
+    "status": "local_plan_export_mapping_fixed_default_remains_unpublished"
+  },
+  "focused_test": {
+    "command": ".venv/bin/python -m pytest -q research/house-live-20261025/test_prediction_binding.py -k 'not full_combination'",
+    "result": "13 passed, 1 deselected in 1.78s",
+    "scope": "Synthetic fixture tests only. The full-combination fixture and actual million-row jobs were not run."
+  },
+  "conclusion": "The earlier receipt-to-loaded-plan/configuration/raw-output linkage gap is addressed in the new helper and its v2 combiner/audit entrypoints, with exact binding-review records for three completed source runs. The two fundamentals runs remain numerical failures. The in-progress combined output has no receipt or binding review at this checkpoint. Reviewed publication still requires a complete passing 16-run collection and the website owner's separate release admission."
+}

@@ -1,0 +1,26 @@
+{
+  "schema": "HouseLiveDecoderAndPollCoordinationV1",
+  "issued_utc": "2026-10-25T15:58:36.911058+00:00",
+  "status": "Offline decoder and importer preparation in progress; no pilot or native packet admitted for website publication.",
+  "actual_format": "Read forecast.py and pilot NPZ headers: exact nine-member deflated NPZ, int8 winner_codes, int16 seat_counts, 435 ordered Unicode race IDs, contiguous chain-major draw identity, actual D/R/O codes 0/1/2. Decoder validates raw archive SHA before/after, sidecar IDs and per-row seat equality. It does not qualify parameter-bank indices, covariance, precision or skill.",
+  "owner_message_received": "Input admission frozen at 2026-10-25T15:48:30Z; polling cutoff15:36:34Z,167 questions/98districts. Default F/FP each1M joint draws started. Owner confirms inverse-CDF seat quantiles and linear conditional-share quantiles; final packet not ready.",
+  "frontend_operator_review_contract": "UI-owned HouseLiveSiteReviewV1 now explicitly binds joint_format=house_live_npz_chain_major_v1 and seat_quantile_convention. Root will check real exported empirical frequencies and all16 rosters, maps and hashes before creating any available publication. Native frontend contract unchanged.",
+  "poll_disclosure_audit": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/docs/development/house-live-poll-disclosure-audit-20261025.json",
+  "poll_feedback": [
+    "Selected unit is a poll question by district; do not label all167 independent studies.",
+    "Source discovery ledger includes other contests and years; all1461 exclusions are not current House polls.",
+    "Current artifacts contain NYT discovery only; VoteHub coverage verification is asserted in prose but not evidenced in the inspected receipt/ledger. Future public copy must reflect actual reviewed checks.",
+    "Please keep final source policy and ledger references pinned to actual native race.poll_source_ids so per-race disclosure and counts can be verified."
+  ],
+  "reviewed_source_fingerprints": {
+    "forecast.py": "7e8d894797480cbe8d1e12ebdea40b4a53be079c6460f1b0b56d4f71d6099c6f",
+    "pilot-v2/receipt.json": "c16f150f4cabe6640eeb768901112d9a526cc90f99b026f50e32f824f554ae4f",
+    "pilot-v2/plan.json": "22634b3250e40642b945783e74f6c2c75d1e81f8cd926de02d9a95346f57f721",
+    "polls-v3/receipt.json": "13127f2839a2e65e91f66c1020ea00c966787dc3aba79057f342d769ccffa7a2",
+    "polls-v3/ledger.json": "67eedef5f40f3b233a0e1f557cface5e430e6f64cef3fa59d380f725ea6c3c73"
+  },
+  "source_status": "Pilot remains pilot_not_for_publication with failed precision gates. Poll normalization receipt itself remains pending source/identity review; final input admission/qualification is separate.",
+  "later_evidence_utc": "2026-10-25T16:11:13.356482+00:00",
+  "later_coverage_verification": "Luna independently checked admitted raw VoteHub/NYT bytes. VoteHub current-district inventory78, NYT157, overlap77; only FL28 absent from NYT. Its March3-7 fieldwork is241days before election, outside100-day window. The earlier normalizerreceipt-only gap is now addressed by this separate raw-source verification; website publication remains unadmitted.",
+  "actual_adapter_check": "docs/development/ui-house-live-native-adapter-validation-20261025.json"
+}

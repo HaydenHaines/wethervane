@@ -1,9 +1,16 @@
 # Architecture Design Document: US Political Covariation Model
 
-**Status:** Living document (last updated March 2026)
+**Status:** Archived March 2026 prototype specification; retained for reference
 **Scope:** Full technical specification for the type-primary electoral covariation model
 **Geography:** National (all 50 states + DC)
 **Target:** Functional predictions by October 2026 midterms
+
+This release-branch copy records the earlier county/tract prototype. References
+below to a current architecture, approved migration or production system describe
+that historical work. For the current application, start with [the release
+README](../README.md) and [SiteGround guide](../SITEGROUND.md). Scientific changes
+follow the separate integration worktree's documentation map, implementation
+guide and selected model-stack operational specification.
 
 > **⚠️ MIGRATION IN PROGRESS (2026-03-27):** This document describes the current county-primary production architecture. A migration to **tract-primary architecture with a voter behavior layer** is approved and in progress. See `docs/superpowers/specs/2026-03-27-tract-primary-behavior-layer-design.md` for the target design. Key changes:
 > - Unit of analysis: counties (3,154) → tracts (~81K)

@@ -2,8 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import type { HouseGroupBloc } from "../lib/house-group-result.ts";
-import type { HouseReviewedGroupRace as HouseGroupRace } from "../lib/house-reviewed-catalog.ts";
-import { layoutGroupRibbon, type GroupRibbonEntry } from "../lib/group-ribbon-layout.ts";
+import { layoutGroupRibbon, type GroupRibbonEntry, type GroupRibbonRace } from "../lib/group-ribbon-layout.ts";
 import { COLORS, probability } from "../lib/presentation.ts";
 import HouseGroupLegend from "./HouseGroupLegend";
 
@@ -17,7 +16,7 @@ function tileColor(row: GroupRibbonEntry) {
 }
 
 /** Compact, non-control display of ultimate D/R/O group-win probabilities. */
-export default function HouseGroupRibbon({ races, selectedRaceId, onSelect }: { races: HouseGroupRace[]; selectedRaceId: string; onSelect: (id: string) => void }) {
+export default function HouseGroupRibbon({ races, selectedRaceId, onSelect }: { races: readonly GroupRibbonRace[]; selectedRaceId: string; onSelect: (id: string) => void }) {
   const container = useRef<HTMLDivElement>(null);
   const buttons = useRef(new Map<string, HTMLButtonElement>());
   const [columns, setColumns] = useState(12);

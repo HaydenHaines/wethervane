@@ -1,0 +1,19 @@
+{
+  "schema": "HouseLiveSourcePolicyV1",
+  "issued_at": "2026-10-25T15:48:30.658333+00:00",
+  "forecast_cutoff": "2026-10-25T15:48:30.658333+00:00",
+  "polling_cutoff": "2026-10-25T15:36:34Z",
+  "strict_as_of": false,
+  "roster": "435 November regular district fields: 358 election-authority extractions, 77 reviewed secondary fields, plus the explicit OH09 local-guide correction. Includes documented declared write-ins; no claim of exhaustive unknown-person or future filings.",
+  "identities": "Closed district-scoped named identities; 361 exact Clerk bindings; no runtime fuzzy incumbency. Official active status supersedes secondary lists. TX23 Herrera/Stout/Mendoza; Gonzales withdrawn and resigned.",
+  "affiliation": "Source affiliation preserved. Fusion lines collapse to one person. Independents and other-party winners remain O for chamber control, regardless of former party or assumed caucus.",
+  "structural": "2024 Harris/(Harris+Trump) votes reconstructed on November2026 lines by The Downballot, plus FEC national two-party totals. Republican president and midterm context. Publisher reconstruction and FEC summary retain small state-total discrepancies; no artificial repair.",
+  "structural_attribution": "Jeff Singer, Daniel Donner and David Nir, The Downballot (2026), presidential returns for congressional districts used in the2026 elections; https://the-db.co/presbycd",
+  "geometry": "Census TIGER2026 CD120 in49states; Missouri uses2024 CD119 as directed by the Census September23 correction. All435 identifiers/apportionments match, source and simplified coverage valid, national rendered map visually reviewed. Publisher map-vintage agreement, not a new precinct-level reconstruction audit.",
+  "polling": "167 selected question-level NYT observations in98districts from61pollster keys. Current complete named menu matching; exclude generic/departed/hypothetical/primary/later-round/reallocated/tracking questions. One valid question per sample/race, latest per pollster/race,100-day window. Original URLs retained. Not an exhaustive polling census or independent audit of every underlying questionnaire.",
+  "poll_availability": "max(fieldwork end, aggregator creation date plus one day); conservative ingestion proxy with original publication time unverified.27selected observations lack nominal N; leave missing. Calibrated total logit-error law does not use an additional N term.",
+  "poll_dependence": "Shared cycle, race, pollster and race-time Brownian covariance; alternative questions never independent. Shared source IDs spanning distinct districts retain common pollster/cycle factors, with district-specific residuals. No subgroup rows admitted.",
+  "poll_coverage_crosscheck": "VoteHub current-district coverage is contained in the NYT district inventory except FL28, whose sole source sample is March2026 and outside the100-day window. Do not duplicate VoteHub rows or use its missing RCV flags to re-admit transferred rounds.",
+  "qualification": "Conditional aggregate principal-pair/group comparison, not the unqualified population/count stack. Unmodeled candidate quality, write-in barriers, late roster changes and legal support uncertainty are not automatically included in numerical intervals.",
+  "privacy_and_distribution": "Publish derived forecast facts, citation URLs and hashes. Preserve source bytes internally; public access does not establish rights to redistribute raw third-party datasets."
+}

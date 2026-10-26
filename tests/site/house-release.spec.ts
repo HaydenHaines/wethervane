@@ -121,7 +121,7 @@ test("the actual default 2024 scorecard has independently audited scores and a m
 }) => {
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
-  await page.goto("/?chamber=house");
+  await page.goto("/?chamber=house&edition=historical");
   await expect(page.getByRole("heading", { name: readyHeading })).toBeVisible();
   await expect(page).toHaveURL(new RegExp(`run=${defaultRun}`));
   await expect(page.locator("details.house-configuration")).not.toHaveAttribute(
@@ -174,7 +174,7 @@ test("the actual default 2024 scorecard has independently audited scores and a m
 test("real 2018 year selection loads its own 371 races and retains all four reviewed models", async ({
   page,
 }) => {
-  await page.goto("/?chamber=house");
+  await page.goto("/?chamber=house&edition=historical");
   await expect(scoreValue(page, "Tested coverage")).toHaveText("375 / 435");
   const controls = await openControls(page);
   await controls
@@ -204,7 +204,7 @@ test("real 2018 year selection loads its own 371 races and retains all four revi
 test("a real saved House view restores exact model, race, map edition and actual mode after another model loads", async ({
   page,
 }) => {
-  await page.goto("/?chamber=house");
+  await page.goto("/?chamber=house&edition=historical");
   await expect(scoreValue(page, "Tested coverage")).toHaveText("375 / 435");
   await page
     .getByRole("region", { name: "House race ribbon", exact: true })

@@ -1,0 +1,51 @@
+{
+  "schema": "HouseSourceCaptureTransparencyFollowupV1",
+  "recordedAt": "2026-10-26T13:58:24.994509+00:00",
+  "status": "resolved_before_release",
+  "affectedSources": [
+    {
+      "id": "official-ak-reused-rendered",
+      "url": "https://www.elections.alaska.gov/election/2026/General/SampleBallots/Tagalog%20HD5%20JD3.pdf",
+      "capture_kind": "rendered_primary_source",
+      "limitations": [
+        "Dated official sample ballot previously captured by Senate session; original PDF bytes unavailable. October25 direct refresh failed TLS and web tool accessibility; current secondary reconciliation required."
+      ]
+    },
+    {
+      "id": "official-ia-rendered",
+      "url": "https://sos.iowa.gov/sites/default/files/2026-08/2026%20General%20-%20Candidate%20List%20Database%20-%20All%20Elections_1.pdf",
+      "capture_kind": "rendered_primary_source",
+      "limitations": [
+        "SHA pins rendered source extraction, not original PDF. Direct download denied."
+      ]
+    },
+    {
+      "id": "official-ma-rendered",
+      "url": "https://www.sec.state.ma.us/divisions/elections/research-and-statistics/2026-state-election-candidates.htm",
+      "capture_kind": "rendered_primary_source",
+      "limitations": [
+        "SHA pins the captured rendered text, not the original HTTP response or PDF bytes. Direct download was denied by host."
+      ]
+    },
+    {
+      "id": "official-ny-rendered",
+      "url": "https://elections.ny.gov/system/files/documents/2026/10/accessible-2026-general-ballot-certification-10.7.2026.pdf",
+      "capture_kind": "rendered_primary_source",
+      "limitations": [
+        "SHA pins the captured rendered text, not the original HTTP response or PDF bytes. Direct download was denied by host."
+      ]
+    }
+  ],
+  "review": "Root and Luna agree the real API test must compare the defined public source projection. This test correction neither edits nor weakens native model qualification or source authentication.",
+  "originalBehavior": "Public source DTO explicitly keeps id,label,url,retrieved_at,sha256,role. Native capture_kind and source-specific limitations remain in authenticated native files. Current UI shows candidate source links and general source limitations; it does not claim fingerprints authenticate original PDF bytes.",
+  "originalPlannedWork": "Expose captured-text/reused-source notes in a readable source details section, preserving source-specific qualifications. Do not present captured-render hashes as original-file hashes.",
+  "resolution": {
+    "publicFields": [
+      "capture_kind",
+      "limitations"
+    ],
+    "display": "Expandable Source capture notes under Input status; exact source caveats and conditional plain-language captured-text explanation.",
+    "validation": "Optional fields validated in native and browser parsers; explicit whitelist projection; private fields remain omitted.",
+    "nativeArtifactsChanged": false
+  }
+}

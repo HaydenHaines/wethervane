@@ -1,0 +1,104 @@
+{
+  "schema": "HouseLiveWorkspacePreparationV1",
+  "issued_utc": "2026-10-25T15:22:04.493244+00:00",
+  "status": "tested_private_current_model_workspace_not_production_wired",
+  "base_commit": "e1f869cfb0ffcc7e467552da74954c8e87e51230",
+  "scope_correction": "User explicitly said saving user configurations was a typo and is unnecessary. No new user-save/localStorage feature was built. Existing published saved-view features were not removed. Versioned research results/models remain preserved.",
+  "implemented": [
+    "Browser publication boundary verifies exact16 configuration selection, current435 identities, candidate/group partitions, conditional-pair meaning, sources/cutoffs, chamber summaries and optional geometry; returns only display fields.",
+    "Public and native validators share district/configuration allowlists; singleton groups remain groups and explicit linear seat quantiles remain supported.",
+    "Client verifies requested run and expected result fingerprint, preserving current display on failure without historical fallback.",
+    "Same-page current-model/district/comparison URLs and Back navigation; default+selfcomparison rejected after loading the actual default.",
+    "Live workspace controller supports immediate component selection, comparison loading/retry and retained data. Both abortsignal and requestgeneration guards prevent obsolete responses committing.",
+    "Comparisons require same election/cutoff/candidate and group support/map/rules, allow intentional model/method/polling differences, keep each simulation set separate and never claim accuracy or paired uncertainty.",
+    "Comparison tables show chamber expected seats/control when qualified and selecteddistrict D/R/O differences; tables scroll independently on mobile.",
+    "Artifact reader accepts pinned .geojson companions as well as .json, with unchanged path/fingerprint guards."
+  ],
+  "verification": [
+    {
+      "command": "npm run test:house-live",
+      "log": "/tmp/ballotmancy-live-house-unit-v3-final.log",
+      "exit_code": 0,
+      "passed": 67,
+      "failed": 0,
+      "skipped": 2,
+      "note": "Optional browser cases run separately. Subsequent focused GeoJSON change adds one new test."
+    },
+    {
+      "command": "npm run test:house-live-browser",
+      "log": "/tmp/ballotmancy-live-house-browser-v3.log",
+      "exit_code": 0,
+      "passed": 4,
+      "failed": 0
+    },
+    {
+      "command": "BALLOTMANCY_LIVE_HOUSE_BROWSER=1 node --experimental-strip-types --test --test-name-pattern=browser-workspace tests/house-live-results.test.mjs",
+      "actual_name_filter": "browser workspace",
+      "log": "/tmp/ballotmancy-live-house-workspace-v3.log",
+      "exit_code": 0,
+      "passed": 1,
+      "note": "Targeted connected-workspace retest after request-generation guard; final guard also skips obsolete effect setup."
+    },
+    {
+      "command": "node --experimental-strip-types --test tests/house-live-artifacts.test.mjs",
+      "exit_code": 0,
+      "passed": 7,
+      "note": "Includes new native GeoJSON companion filename support and altered-byte rejection."
+    },
+    {
+      "command": "npm run build",
+      "log": "/tmp/ballotmancy-live-house-build-v3.log",
+      "exit_code": 0
+    },
+    {
+      "command": "npm run typecheck",
+      "exit_code": 0,
+      "note": "Final whole-worktree TypeScript check after parser alignment and request guards."
+    },
+    {
+      "review": "Luna read-only controller review identified stale request completion window; root added generation guards including invalid navigation. Root reviewed parser/native compatibility and Sol comparison semantics; corrections tested."
+    },
+    {
+      "visual": "Root inspected desktop and390pxmobile comparison screenshots; no page overflow, tables retain comparison columns via horizontal scrolling and explicit hint."
+    }
+  ],
+  "unchanged_research_boundary": "No new fitted model, source admission, empirical performance claim, scientific promotion or model-output mutation.",
+  "still_required": [
+    "Native reviewed all16 forecast packet and exact current435 source/map admission.",
+    "Joint winner-file format/chain ordering and named quantile convention; the parameter-bank NPZ code does not establish the winner-matrix format.",
+    "Authenticated importer and reviewed server publication manifest/loader, actual /api/chambers/house/live route and chamber-router activation.",
+    "Concrete poll inclusion/exclusion policy disclosure.",
+    "Real data integration/browser checks and authorized publication. No current tipping marker until separately qualified."
+  ],
+  "source_fingerprints": {
+    "components/HouseLiveComparison.tsx": "f5c98c1796e47a921df9098e17c05d81c99db5c0566d12ec62aa40b55cf87326",
+    "components/HouseLiveControls.tsx": "9668e4d76a559863bd968dda8229c0e7b682b96d49b74ccfecd6a4feabb9e7f6",
+    "components/HouseLiveResults.tsx": "d887d409eb5880e86983eaf7beab3d8c7f002fcfd713f095b862550fab1d3272",
+    "components/HouseLiveWorkspace.tsx": "b26f7f4c538ccbd5f8ff2de873a5f9cc8892a3148505f03614182249594f10e0",
+    "lib/house-live-artifacts.ts": "e56870ab00f4b854247ddb3f2b6dde2c17669cd167f621a38b4c8d02c3c36e79",
+    "lib/house-live-catalog.ts": "54746cc69c2def6f736770a2d325c1a82def38a145788671112275a020858080",
+    "lib/house-live-client.ts": "6d7914c1b2c0550aab65d071b5ff5ec780aefdabc4dfd494431e836948fef4e0",
+    "lib/house-live-collection.ts": "9a60ba12be783b9bf27f8659c3e5c99d73a7fc4859732acc534b1ded3f55ea99",
+    "lib/house-live-comparison.ts": "9fbba0856e641034a90f66a1dd58aea430d81d91ef8f93311c949ed47a97acc4",
+    "lib/house-live-copy.ts": "38ac3b85ceccba07f106671c75146746a6dae19ad41e3873256cbdd9fb914e11",
+    "lib/house-live-joint-check.ts": "7d64e2d6dad5fb37f470a51316a57002bad47dd34800f1c7b93ca765dfacf022",
+    "lib/house-live-model-slices.ts": "0c175752fad89ed978f7aeffe9f8db76628cc8a20d2f008461ab6d08cf238a7e",
+    "lib/house-live-navigation.ts": "3ed133a80b1feba1ac7e320e35e146b999963d98eaf6fc7fa2fe0ce72b3ec937",
+    "lib/house-live-publication.ts": "018b56218aa829118cd75eb7243c8582acd65ada9f1ad1eb323334aed2a7f0a3",
+    "lib/house-live-result.ts": "cddc699251fc1bac60868440a33ca83684a421582b91d31e95ba19607b35858b",
+    "lib/house-live-selection.ts": "aa6d919aa533f1c6e0b792062a0813cf0e6b3705c8ad7a80a49731dc02183621",
+    "lib/house-live-view.ts": "d0ee8bde101afab5cc688fc454a89afa3b01e281075a166bc6085a9f8532484b",
+    "tests/fixtures/house-live-publication.mjs": "06b5421921499fcc5e2e33665541589b00cb76e1bca771c8086fa572b42782a9",
+    "tests/house-live-artifacts.test.mjs": "a3d089abe77c5dc78aa7ccfa51f0c4803aa63eb84134e2ec7e16b1fd75b74224",
+    "tests/house-live-client.test.mjs": "e8f57f01f90d470c210c5a7aaad2c97e4727a25488df99e89efa055aca293cc5",
+    "tests/house-live-collection.test.mjs": "77b3fefdafabf3bc0c0733f707af0825be934b209a776ddb67b03b5fba9f5dfd",
+    "tests/house-live-comparison.test.mjs": "c0cfb1251dbb85571c511bba346df77edf8502da4686d9d46d319ed3434b5e9c",
+    "tests/house-live-joint-check.test.mjs": "7916803d27dfa82e21071a73738c2cbfd14d96b01e0ff829ee8ad0d3cbc49a95",
+    "tests/house-live-navigation.test.mjs": "2a1501569a83e80feae9ae7e8b7daf0a8a3e1e883d4584a4e05baf7060476989",
+    "tests/house-live-publication.test.mjs": "864616a8ad98008091b68597db495389d27333138623d11980ceff21f07c6a56",
+    "tests/house-live-result.test.mjs": "40d08bbdaffa4d1c5bf4e10f39f632250adf159539646ab5e64e9f1ca47b827a",
+    "tests/house-live-results.test.mjs": "b29c4d10286e887440d3b6b0e1707d9c23c363f8179c6c206d25c00197c8187a",
+    "tests/house-live-selection.test.mjs": "0b2e0a6f28a1ee64124efe950afa2d1246c129140a715e026ef3a0dfbc5440c6",
+    "tests/house-live-view.test.mjs": "c34f4983de11496c748cbf2137999ffcf97267b8b63665e9d725c6abff9ecdc9"
+  }
+}

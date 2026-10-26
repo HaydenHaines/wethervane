@@ -1,0 +1,54 @@
+{
+  "schema": "HouseLivePredictionBindingReviewV1",
+  "issued_at": "2026-10-25T18:28:28.881957+00:00",
+  "status": "exact_receipt_plan_and_outputs_bound",
+  "configuration": {
+    "id": "house-current-comparison-house_relative_context_v1-f",
+    "base": "house_relative_context_v1",
+    "polling": "none",
+    "uncertainty": "standard"
+  },
+  "prediction_receipt": {
+    "path": "research/house-live-20261025/predictions-v1/house-current-comparison-house_relative_context_v1-f/receipt.json",
+    "sha256": "0444a9966cc8c0e449fd2a4f1d1edc96986aadab86a2f136ab936969f27e8bed"
+  },
+  "input_pins": [
+    {
+      "path": "research/house-live-20261025/predictions-v1/house-current-comparison-house_relative_context_v1-f/receipt.json",
+      "sha256": "0444a9966cc8c0e449fd2a4f1d1edc96986aadab86a2f136ab936969f27e8bed"
+    },
+    {
+      "path": "research/house-live-20261025/predictions-v1/house-current-comparison-house_relative_context_v1-f/plan.json",
+      "sha256": "1bf71ae056f1c50a5326560da9dd5e9e88e6d2a1c8adef3e56451e467ca65285"
+    },
+    {
+      "path": "research/house-live-20261025/predictions-v1/house-current-comparison-house_relative_context_v1-f/run-source.py",
+      "sha256": "7e8d894797480cbe8d1e12ebdea40b4a53be079c6460f1b0b56d4f71d6099c6f"
+    },
+    {
+      "path": "research/house-live-20261025/predictions-v1/house-current-comparison-house_relative_context_v1-f/diagnostics.json",
+      "sha256": "220c2983e90a68c273825f1e509d70e902ea841cc359ef181d449f7ed96c4631"
+    },
+    {
+      "path": "research/house-live-20261025/predictions-v1/house-current-comparison-house_relative_context_v1-f/joint-draws.npz",
+      "sha256": "d49d082da73f4c40ac2325ee0975bec1cafe6837f68452f2e08564d5141b7c79"
+    },
+    {
+      "path": "research/house-live-20261025/predictions-v1/house-current-comparison-house_relative_context_v1-f/conditional-shares.npz",
+      "sha256": "3c5967b20dd9a43a6a1ac9599c062a3468271a7afc2a631cf86e1af14d9faf97"
+    },
+    {
+      "path": "research/house-live-20261025/predictions-v1/house-current-comparison-house_relative_context_v1-f/conditional-group-probability-means.npy",
+      "sha256": "3f085aeed8cb7742d2047055634e86adab9f55eb11e40493fc35d72b0b23b775"
+    },
+    {
+      "path": "research/house-live-20261025/predictions-v1/house-current-comparison-house_relative_context_v1-f/polls.csv",
+      "sha256": "464761963f6bc9a2931ee49bde0dc86a06f8a8d24198595a9d1bf4564e8a2010"
+    }
+  ],
+  "review_source": {
+    "path": "research/house-live-20261025/prediction_binding.py",
+    "sha256": "6a48697b9687d7ed29e8e1f1979ee74953dbb439fb8cc89c5481aa906be85f74"
+  },
+  "scope": "Exact root-relative receipt.plan equality, saved driver identity, receipt/plan configuration agreement, complete exact raw-output membership and digests, status/diagnostic agreement; recursively checked original sources for combined runs. Arithmetic and simulation qualification remain separate."
+}

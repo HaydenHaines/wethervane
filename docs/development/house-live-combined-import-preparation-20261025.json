@@ -1,0 +1,107 @@
+{
+  "schema": "HouseLiveCombinedImportPreparationV1",
+  "issued_utc": "2026-10-25T16:27:03.714606+00:00",
+  "base_commit": "3478d5a53c8dc06be7a723db9455b1aa03890539",
+  "status": "combined_source_layout_supported_and_real_default_reconciled_not_publication",
+  "scope_correction": "No new user-saved configurations. Canonical standing GOAL.md now removes the mistaken saved-user requirement. Research versions/results retained.",
+  "implemented": [
+    "Explicit combinedPlan local pin and expected configuration bind exact11-member NPZ decoding; original9 remains supported. Plan is hashed before/after decoding; declared source index/local ID/global chain/draw layout checked per row.",
+    "Importer authenticates all explicit local evidence JSON and preserves exact bytes; resolves one receipt and local plan by SHA/schema/config without following original research paths. Passed receipt must pin the native joint archive SHA. Combined plan required for combined11; no inference from missing or extra NPZ members.",
+    "Common operator joint_format denotes chain-major D/R/O encoding. Bridge archiveFormat distinguishes original9 and combined11; combinedPlanSha256 records checked plan identity.",
+    "House copy now explains general elections following top-two primaries, qualified chamber summary unavailable, and neither party reaching218 in most simulations. No probabilities, thresholds or colors changed."
+  ],
+  "validation": [
+    {
+      "command": "npm run test:house-live",
+      "exit_code": 0,
+      "passed": 111,
+      "skipped": 3,
+      "log": "/tmp/ballotmancy-live-house-unit-v6.log",
+      "note": "Optional browser cases skipped; no interactions/layout changed this pass. Includes17 importer/installer and6 archive bridge tests."
+    },
+    {
+      "command": "npm run test:house-live-decoder",
+      "exit_code": 0,
+      "passed": 10,
+      "log": "/tmp/ballotmancy-live-house-decoder-v2.log"
+    },
+    {
+      "command": "npm run build",
+      "exit_code": 0,
+      "log": "/tmp/ballotmancy-live-house-build-v6.log",
+      "note": "Includes TypeScript; both current House API build traces exclude raw NPZ and offline importer/decoder/installer."
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0
+    }
+  ],
+  "actual_default": {
+    "schema": "HouseLiveActualAdapterCheckV2",
+    "issued_utc": "2026-10-25T16:24:56.406Z",
+    "sourceDirectory": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-20261025/adapter-check-v3",
+    "resultSha256": "7a5a4ae1cf973492c3114dfcc6dd5cb3c603c2db897095a5241fd8b88f180c16",
+    "status": "read_only_adapter_check_not_publication_admission",
+    "nativePublicationStatus": "not_reviewed",
+    "numericalStatus": "passed",
+    "checks": {
+      "rowsChecked": 1000000,
+      "raceCount": 435,
+      "chamberChecked": true,
+      "artifactSha256": "9543f3c231006e799c3d90fa1dda0a218e762f8abe17d5e9dc7633d4a1205f11",
+      "archiveFormat": "house_live_npz_chain_major_v1",
+      "seatQuantileConvention": "inverse_cdf"
+    },
+    "elapsedSeconds": 55.035
+  },
+  "actual_combined_plan": {
+    "schema": "HouseLiveCombinedPlanShapeCheckV1",
+    "issued_utc": "2026-10-25T16:26:19.574608+00:00",
+    "plan": {
+      "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-20261025/combined-v1/house-current-fundamentals/plan.json",
+      "sha256": "ba95539614a5158212f5ce66c02fc14b3f5114e4cadcbad63cc738fd1f16eb18"
+    },
+    "configuration": {
+      "id": "house-current-fundamentals",
+      "base": "fundamentals",
+      "polling": "none",
+      "uncertainty": "standard"
+    },
+    "chains": 8,
+    "draws_per_chain": 250000,
+    "source_runs": 2,
+    "status": "actual_plan_passes_decoder_structure_only",
+    "limits": "No combined NPZ or combined publication checked. Source receipts/arrays not authenticated by this plan-only check."
+  },
+  "independent_review": {
+    "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/docs/development/house-live-combined-source-linkage-review-20261025.json",
+    "sha256": "b2158503e60022e406f84f382856e1f40bcf11be4c0896515fa82aab8ab113a7"
+  },
+  "coordination": {
+    "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/docs/development/frontend-scope-and-integration-ack-20261025.json",
+    "sha256": "689483c11c0d55718ddfd3e42507d86c731c6163ca3df3af8b476b1e02dc8346"
+  },
+  "remaining": [
+    "Backend must append exact exported local prediction-plan pin to native qualification.evidence. Current exporter copies plan but omits pin, so importer intentionally rejects missing mapping.",
+    "Backend independent audit/combiner must close receipt-to-loaded-source-plan and receipt-to-actual-source-array binding gaps. Existing audit checks combined slice equality, not these links. Review shared with House and Senate owners; no owner source code/jobs modified.",
+    "No actual combined NPZ, reviewed all16 packet, operator publication review, installed release or current House deployment in this pass. Actual default check remains publication not_reviewed.",
+    "Implement live poll inclusion/exclusion explanations using audited source policy/ledger and exact native result IDs, then integrate all16 actual models when qualified.",
+    "Combined structural/source-layout verification is not proof of scientific independence, historical skill, full covariance, or source-run numerical qualification; original source files are not recursively authenticated by decoder. Cap remains2M rows."
+  ],
+  "copy_source_verification": [
+    "https://www.sos.ca.gov/elections/primary-elections-california",
+    "https://www.sos.wa.gov/elections/voters/helpful-information/top-two-primary-faqs-voters"
+  ],
+  "source_fingerprints": {
+    "components/HouseLiveResults.tsx": "defa2f410e0c4143ae4c5371fa85e935b8cb441a6aeae82b6d0da101c8e28686",
+    "lib/house-live-joint-archive.ts": "93d58f9a9149bfae4e1f5dfab51fef6d69d85b3ffceb118cfac3cb05734193a4",
+    "lib/house-live-server.ts": "98386fd5ea7456f21b7f7b6f52a94304394807852130f8efafdac788f16920c1",
+    "scripts/decode_house_live_joint.py": "bd716573139006fda9dbb3710e8203af2bfc2aca9c28608f61d5be3258dc558e",
+    "scripts/import_house_live.mjs": "e4b54ead3ff4814e2dc857f13057ec1cc1dedddc2c83d63b8f2e9e358e3cde1a",
+    "tests/fixtures/house-live-joint-archive.py": "664a57fa81b45e2620de2e0f6c4f29e04f4fb343a7c2bcf21f6f66c1f6448373",
+    "tests/fixtures/house-live-combined-plan.mjs": "56fd6ece51083e89f9f0dc4340753fc606510c31fc90c01eb026330817ca0c20",
+    "tests/house-live-import.test.mjs": "bf36fdd48814b5e16f29487e3c0fb34826bb65b703c8345cae6c88df915feee4",
+    "tests/house-live-joint-archive.test.mjs": "367d4e5b2d759b123cfff640d0b8a74ffe79092cff924044037a4cc4340790be",
+    "tests/site_house_live_joint_decoder_test.py": "7a3309861a1e17e4791a17d47fe8669bc70b7c3c85907182ecdba02ce712136c"
+  }
+}

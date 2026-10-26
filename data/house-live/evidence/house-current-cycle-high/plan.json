@@ -1,0 +1,229 @@
+{
+  "schema": "HouseLiveCombinedPredictionPlanV1",
+  "issued_at": "2026-10-25T20:50:20.202903+00:00",
+  "configuration": {
+    "id": "house-current-cycle-high",
+    "base": "fundamentals",
+    "polling": "standard",
+    "uncertainty": "cycle-high"
+  },
+  "pilot": false,
+  "settings": {
+    "chains": 20,
+    "draws": 250000,
+    "warmup_per_source": 5000
+  },
+  "source_runs": [
+    {
+      "directory": "predictions-v1/house-current-cycle-high",
+      "receipt": {
+        "path": "research/house-live-20261025/predictions-v1/house-current-cycle-high/receipt.json",
+        "sha256": "808801cc6b71b22aebf651a914693018ea5317f57e397f07e3e9ad586e4c6493"
+      },
+      "plan": {
+        "path": "research/house-live-20261025/predictions-v1/house-current-cycle-high/plan.json",
+        "sha256": "09fe534767d9abdd24d668207830341f6dd0a9973517f2a6ec38f18aed74f222"
+      },
+      "settings": {
+        "chains": 4,
+        "draws": 250000,
+        "warmup": 5000,
+        "seed": 2026102523
+      },
+      "joint_draw_offset": 0,
+      "predictive_chain_offset": 0
+    },
+    {
+      "directory": "predictions-v2/house-current-cycle-high",
+      "receipt": {
+        "path": "research/house-live-20261025/predictions-v2/house-current-cycle-high/receipt.json",
+        "sha256": "9060070a45dc095c999ad302b7be86ff16f900886df7f928ac8c05945992dc95"
+      },
+      "plan": {
+        "path": "research/house-live-20261025/predictions-v2/house-current-cycle-high/plan.json",
+        "sha256": "2b60df732576eccba43ea74f1589997da3cc7a8db1cea6b9217ad051a000d852"
+      },
+      "settings": {
+        "chains": 4,
+        "draws": 250000,
+        "warmup": 5000,
+        "seed": 2026102604
+      },
+      "joint_draw_offset": 1000000,
+      "predictive_chain_offset": 4
+    },
+    {
+      "directory": "predictions-v3/house-current-cycle-high",
+      "receipt": {
+        "path": "research/house-live-20261025/predictions-v3/house-current-cycle-high/receipt.json",
+        "sha256": "539ad571954020c2a3057a631346a0a820e6cea8fd71344640fc6c908afa8b8d"
+      },
+      "plan": {
+        "path": "research/house-live-20261025/predictions-v3/house-current-cycle-high/plan.json",
+        "sha256": "b7d134904a275182c26e89e35996099ac24cb70608e133a1fe429fe6d6a79447"
+      },
+      "settings": {
+        "chains": 4,
+        "draws": 250000,
+        "warmup": 5000,
+        "seed": 2026102605
+      },
+      "joint_draw_offset": 2000000,
+      "predictive_chain_offset": 8
+    },
+    {
+      "directory": "predictions-v4/house-current-cycle-high",
+      "receipt": {
+        "path": "research/house-live-20261025/predictions-v4/house-current-cycle-high/receipt.json",
+        "sha256": "0a4e5bf0fd61134f771443f9c6f9e0b124ca6e64259781615446debc2eb33ed3"
+      },
+      "plan": {
+        "path": "research/house-live-20261025/predictions-v4/house-current-cycle-high/plan.json",
+        "sha256": "50599053bb6f59b886f4803853a517293428c2a7a306fea6d7e7314211603c11"
+      },
+      "settings": {
+        "chains": 4,
+        "draws": 250000,
+        "warmup": 5000,
+        "seed": 2026102606
+      },
+      "joint_draw_offset": 3000000,
+      "predictive_chain_offset": 12
+    },
+    {
+      "directory": "predictions-v5/house-current-cycle-high",
+      "receipt": {
+        "path": "research/house-live-20261025/predictions-v5/house-current-cycle-high/receipt.json",
+        "sha256": "e1027fdb89992c31a812d2960abb9e00112f17a86e56eedb02ce969c0be14ce5"
+      },
+      "plan": {
+        "path": "research/house-live-20261025/predictions-v5/house-current-cycle-high/plan.json",
+        "sha256": "3af059534436b9a5e5ad6244e3949f2a1c4d52896a8fb0d043f704a6a9d3a3e9"
+      },
+      "settings": {
+        "chains": 4,
+        "draws": 250000,
+        "warmup": 5000,
+        "seed": 2026102607
+      },
+      "joint_draw_offset": 4000000,
+      "predictive_chain_offset": 16
+    }
+  ],
+  "inputs": [
+    {
+      "path": "research/house-live-20261025/fits-v2/fundamentals/receipt.json",
+      "sha256": "554b352a3ab3ef7daebcdbd62090e48d14b1a17010b38051c39b8cc2da9f6e4e"
+    },
+    {
+      "path": "research/house-live-20261025/fits-v2/fundamentals/plan.json",
+      "sha256": "22f03dcaa504789a644ac1bdb5e677c9adfa4caa47601570df7fb26e6c8b55d3"
+    },
+    {
+      "path": "research/house-live-20261025/fits-v2/fundamentals/posterior.npz",
+      "sha256": "e9a5c4221e0b2500dedb5e45c8e91c5264311db22981851f2e9d8833c2d2efcf"
+    },
+    {
+      "path": "research/house-live-20261025/panel-v1/features.csv",
+      "sha256": "a8d2dd398d6e000fb14e0f790a130ff817966b2728c04822788f589d2ae15d79"
+    },
+    {
+      "path": "research/house-live-20261025/panel-v1/groups.csv",
+      "sha256": "1b6b350bd424ef430fa39c463104f6618575a335db00bed5b1d506b3c2b29e59"
+    },
+    {
+      "path": "research/house-live-20261025/panel-v1/support.json",
+      "sha256": "664ebde07da4c2624c7844bd905f531f3e5f38c53168b8aaf31b270adf3f8dee"
+    },
+    {
+      "path": "research/house-live-20261025/panel-v1/receipt.json",
+      "sha256": "c3552e3bd35b21d768606f4aaca1258ef1dc734c2e71ebe024e586d9e5595bb9"
+    },
+    {
+      "path": "research/house-live-20261025/polls-v3/selected.csv",
+      "sha256": "4414b8649fa30e2c377dab55d439293b2e2aaee09fd438321a7e9e926a7aa3db"
+    },
+    {
+      "path": "research/house-live-20261025/polls-v3/receipt.json",
+      "sha256": "13127f2839a2e65e91f66c1020ea00c966787dc3aba79057f342d769ccffa7a2"
+    },
+    {
+      "path": "research/house-live-20261025/calibration-v2/error-scales.json",
+      "sha256": "90752d92c896b06ca39838eadf0115121ad5c7b35ee5575d810b6e9e8c4b1dad"
+    },
+    {
+      "path": "research/house-live-20261025/group-fit-v1/receipt.json",
+      "sha256": "388a7bb22c0737c33815fec192ae5c43f2fa9929ff99201c7027b5770ecd5939"
+    },
+    {
+      "path": "research/house-live-20261025/group-fit-v1/posterior.npz",
+      "sha256": "397b5047efaa03faa7b9261717604803922aec0c601327eabcf8d427d051bd1e"
+    },
+    {
+      "path": "src/forecasting/fundamentals_v1.py",
+      "sha256": "d1437063c84cb9276382b5f96d04577d8ccce04c8aeaf4d1e20420e258d7fac9"
+    },
+    {
+      "path": "src/forecasting/polling_basis_v1.py",
+      "sha256": "d0722a26b02f0e9e0d54bdc73036b1b08d7720a27dc6c36e7ff8ead548747142"
+    },
+    {
+      "path": "src/forecasting/polling_v1.py",
+      "sha256": "5876ab790f43c8bd6324590f2a3d007f2da853bce49d0e60cd19142046ab0bcb"
+    },
+    {
+      "path": "src/forecasting/poll_covariance_v1.py",
+      "sha256": "9ae130b3f314d75a5255c7c92fab502ec596a7cca2960090706fa203b133e05d"
+    },
+    {
+      "path": "research/house-full-roster-20261022/winner_v2.py",
+      "sha256": "dd950f5684e768bc851211677786f379bf47cca88d4e8c39a3d88204b2914aeb"
+    },
+    {
+      "path": "research/house-full-roster-20261022/complete.py",
+      "sha256": "25ef21c3494dbf22a8213e13aa2aeff2a7cccc45e9d0310d324e816ce2757727"
+    },
+    {
+      "path": "research/house-live-20261025/admission-v1.json",
+      "sha256": "1a64a1c2f040c9a427f3a5ff84d645776b436cee9ea1d19276d02d9af0974978"
+    },
+    {
+      "path": "research/house-live-20261025/predictions-v1/house-current-cycle-high/receipt.json",
+      "sha256": "808801cc6b71b22aebf651a914693018ea5317f57e397f07e3e9ad586e4c6493"
+    },
+    {
+      "path": "research/house-live-20261025/predictions-v2/house-current-cycle-high/receipt.json",
+      "sha256": "9060070a45dc095c999ad302b7be86ff16f900886df7f928ac8c05945992dc95"
+    },
+    {
+      "path": "research/house-live-20261025/predictions-v3/house-current-cycle-high/receipt.json",
+      "sha256": "539ad571954020c2a3057a631346a0a820e6cea8fd71344640fc6c908afa8b8d"
+    },
+    {
+      "path": "research/house-live-20261025/predictions-v4/house-current-cycle-high/receipt.json",
+      "sha256": "0a4e5bf0fd61134f771443f9c6f9e0b124ca6e64259781615446debc2eb33ed3"
+    },
+    {
+      "path": "research/house-live-20261025/predictions-v5/house-current-cycle-high/receipt.json",
+      "sha256": "e1027fdb89992c31a812d2960abb9e00112f17a86e56eedb02ce969c0be14ce5"
+    },
+    {
+      "path": "research/house-live-20261025/prediction_binding.py",
+      "sha256": "6a48697b9687d7ed29e8e1f1979ee74953dbb439fb8cc89c5481aa906be85f74"
+    }
+  ],
+  "source": {
+    "path": "research/house-live-20261025/combined-v5/house-current-cycle-high/run-source.py",
+    "sha256": "830901b23d6108a568d30e9a17ae781184c67b2b0f48fdcb2422d8243d6c2c64"
+  },
+  "polling_error_scales": {
+    "independent": 0.11294186775612085,
+    "cycle": 0.13862607470679492,
+    "race": 0.09380903529324879,
+    "house": 0.10400740685425215,
+    "movement": 0.06136509540821909
+  },
+  "exact_electoral_rule_simulation": false,
+  "source_2026_outcomes_loaded": false,
+  "combination": "All rows in source order; each original predictive chain remains an independent chain. No source rows are dropped or replicated."
+}

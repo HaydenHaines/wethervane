@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 test("published district maps show modeled and excluded races, including states without forecasts", async ({ page }) => {
   const errors: string[] = [];
   page.on("pageerror", error => errors.push(error.message));
-  await page.goto("/?chamber=house");
+  await page.goto("/?chamber=house&edition=historical");
   const map = page.getByRole("region", { name: "House map", exact: true });
   await expect(map.locator("svg path[data-district-key]")).toHaveCount(435);
   await expect(map.locator("svg path[data-forecast=available]")).toHaveCount(375);
@@ -36,7 +36,7 @@ test("published district maps show modeled and excluded races, including states 
 });
 
 test("changing election year replaces geometry as well as forecasts", async ({ page }) => {
-  await page.goto("/?chamber=house");
+  await page.goto("/?chamber=house&edition=historical");
   await expect(page.locator(".district-map-svg")).toBeVisible();
   const configuration = page.locator("details.house-configuration");
   await configuration.locator(":scope > summary").click();

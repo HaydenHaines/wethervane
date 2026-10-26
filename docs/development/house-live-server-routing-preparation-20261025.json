@@ -1,0 +1,102 @@
+{
+  "schema": "HouseLiveServerRoutingPreparationV1",
+  "issued_utc": "2026-10-25T15:46:39.646900+00:00",
+  "status": "tested_private_integration_no_current_forecast_published",
+  "base_commit": "2b1bb2c9ab9539f678c6ed69e72cc2b5faf9899e",
+  "scope_correction": "No new user-saved configurations, localStorage or saved-view restoration. Research versions/results and existing historical features remain available.",
+  "implemented": [
+    "Operator-reviewed staged publication loader authenticates original native catalog, selected result, qualification/source policy, geography and source receipt bytes; review binds all 16 result hashes and exact joint hashes. Runtime does not read or ship joint matrices.",
+    "Dynamic no-store current House forecast and availability endpoints distinguish absent publication, invalid requests and broken releases. Dangling configured publication directory is an error.",
+    "Single-page House current/historical edition routing defaults to current only on an available release. Existing historical links remain historical. Current failures do not silently load historical forecasts.",
+    "Year-only historical links resolve an available catalog result in the requested year before display. Missing years explain unavailability and offer an explicit published-default action.",
+    "Separate publication-review notes are preserved through server, browser parser and renderer, alongside native model limitations."
+  ],
+  "publication_boundary": {
+    "trust_root": "The checked-in data/house-live/publication.json must be installed only after independent review of real sources, all 16 native results, roster alignment, exact joint rows, calculation summaries and geometry. Matching hashes/booleans alone are not scientific review.",
+    "availability": "All 16 staged result bytes are hashed; default result is also parsed/projected. Nondefault structural/calculation admission belongs to offline review and is rechecked on selected loading.",
+    "prepared_only": true,
+    "available_manifest_created": false,
+    "native_contract_changed": false,
+    "raw_winner_decoder_implemented": false
+  },
+  "verification": [
+    {
+      "command": "npm run test:house-live",
+      "log": "/tmp/ballotmancy-live-house-unit-v4.log",
+      "exit_code": 0,
+      "passed": 88,
+      "skipped": 2,
+      "note": "Before addition of the third opt-in browser case and final dangling-directory regression; final server/API tests separately rerun."
+    },
+    {
+      "command": "BALLOTMANCY_LIVE_HOUSE_BROWSER=1 node --experimental-strip-types --test tests/house-live-results.test.mjs",
+      "passed": 5,
+      "failed": 0,
+      "evidence": "Sol reported complete 5/5 browser/static rendering pass; root independently reran expanded router case below."
+    },
+    {
+      "command": "BALLOTMANCY_LIVE_HOUSE_BROWSER=1 node --experimental-strip-types --test --test-name-pattern='browser House router' tests/house-live-results.test.mjs",
+      "log": "/tmp/ballotmancy-live-house-router-v4-final.log",
+      "exit_code": 0,
+      "passed": 1,
+      "note": "Final includes real controller handling nondefault historical year, unavailable year and explicit default recovery, publication notes, failed publication, Back, mobile layout and untouched localStorage."
+    },
+    {
+      "command": "node --experimental-strip-types --test tests/house-live-server.test.mjs tests/house-live-api.test.mjs",
+      "log": "/tmp/ballotmancy-live-house-server-v4-final.log",
+      "exit_code": 0,
+      "passed": 8
+    },
+    {
+      "command": "npm run test:house",
+      "log": "/tmp/ballotmancy-live-house-historical-v4.log",
+      "exit_code": 0,
+      "passed": 211,
+      "skipped": 1
+    },
+    {
+      "command": "npm run build",
+      "log": "/tmp/ballotmancy-live-house-build-v4.log",
+      "exit_code": 0,
+      "note": "Production build includes both new dynamic routes. Subsequent narrow directory-presence and historical error-display changes were verified by focused tests and final TypeScript check."
+    },
+    {
+      "command": "npm run typecheck",
+      "log": "/tmp/ballotmancy-live-house-typecheck-v4-final.log",
+      "exit_code": 0
+    },
+    {
+      "review": "Luna independently reviewed publication boundary and found dangling-directory ambiguity; root corrected and tested. Root reviewed loader/DTO integrity; Sol independently reviewed and browser-tested routing."
+    },
+    {
+      "visual": "Root inspected 390px navigation screenshot at /tmp/ballotmancy-live-house-ui/edition-navigation-mobile.png. Invented data only; no page overflow."
+    }
+  ],
+  "remaining": [
+    "Native all-16 reviewed House packet and independent current roster/map/source review.",
+    "Raw joint winner format, explicit chain/race order and quantile convention, then authenticated offline importer and calculation checks.",
+    "Actual poll inclusion/exclusion policy disclosure, real data browser verification and publication. No current tipping marker without qualified statistic."
+  ],
+  "source_fingerprints": {
+    "app/api/chambers/house/live/availability/route.ts": "243c05136e764d76097d768d3f67303bb4ca7a6f9161d4a2530aaa45d4786a6e",
+    "app/api/chambers/house/live/route.ts": "5eb68f34a8df4ff241331a2232336685b07fb7fd856ce89a2e2651a2ec6e43fd",
+    "app/globals.css": "cd9d5f79773e78474555542f461f2e731f0b3381a2a720b1f815c57b07966a49",
+    "components/ChamberExplorer.tsx": "a908a079f6057bfed9061fe4f7a043a07c1fa7d84def91bda0409b21d325a042",
+    "components/HouseExplorer.tsx": "0946ad8b67ad303563561e5a87dac90d68ebf9187ffa239a972587deb02539cc",
+    "components/HouseLiveResults.tsx": "b11bd5bce71c740457d9736c622dd83b14b5008941cb207b74929b195a1a1bb4",
+    "components/HouseLiveWorkspace.tsx": "6ccc9d81dd96cd54ebf62f4fc5d606484e7b90fb3634a7600c0ec603a840434c",
+    "components/HouseWorkspace.tsx": "6b4dccef7e674932ec252ea68bd3d77bc62970718add14b5885da105214a71da",
+    "lib/house-live-client.ts": "361ceaadfa4720493349fc80452bc997f698ee100eef927c530c448116a0c366",
+    "lib/house-live-edition.ts": "039772afb35cfa3e1724552e18b8114b58455036b8c29f47b44a7b5906e85e56",
+    "lib/house-live-historical-selection.ts": "125ecc714c3eba530b63d49a62228653df3a9f62d520db3508c514370a57620d",
+    "lib/house-live-publication.ts": "48ea2f98bb381d88422c5cd9fc2be97d77b5c7efbfec9d6ef5270e673a6143a6",
+    "lib/house-live-server.ts": "5167ceeb576e0880cab3f4c938aa4166e91bd3af4b073f182363631764f918b0",
+    "tests/house-live-api.test.mjs": "bcdee051cf31b3b1d9263fc3ada577c151421fb269fdaeb71d34c6e1102ef086",
+    "tests/house-live-client.test.mjs": "128cf8208b2d5c68fe22ed477a7c48a1aae1c69b01217d0bf48990e7e641ad46",
+    "tests/house-live-edition.test.mjs": "92f09d158badfcb8e9e7a1aa92cb1dce8d747faf49d42af05da9248976eef814",
+    "tests/house-live-historical-selection.test.mjs": "6291e113c5e969dc7968e8169fce076b2dd68e44d59e8ad7b1be617eb4aa8a66",
+    "tests/house-live-publication.test.mjs": "0b76a75e274193e5bfa45f0f429e5f5e80bf056ae0feb566c3a12e92c2a81078",
+    "tests/house-live-results.test.mjs": "e50d38c83c55bbaabd62ce110a2c0c4bfb21606bbceb8a8bb227139599e19ff0",
+    "tests/house-live-server.test.mjs": "01af3410fef2fd6f0f2f5ff53260ef66683a13b8bdc35082f0c6b77573cc49ea"
+  }
+}

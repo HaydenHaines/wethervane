@@ -1,6 +1,13 @@
 import type { HouseGroupBloc } from "./house-group-result.ts";
-import type { HouseReviewedGroupRace as HouseGroupRace } from "./house-reviewed-catalog.ts";
 import { layoutSerpentine, type SerpentineLayout } from "./serpentine-layout.ts";
+
+/** Minimal supplied result; presentation does not depend on a historical model family. */
+export interface GroupRibbonRace {
+  id: string;
+  districtKey: string;
+  probabilities: unknown;
+  structural?: boolean;
+}
 
 export interface GroupRibbonEntry {
   id: string;
@@ -24,11 +31,12 @@ function validDistribution(value: unknown): value is { D: number; R: number; O: 
   if (!value || typeof value !== "object") return false;
   const p = value as Record<string, unknown>;
   return Object.keys(p).length === 3 && blocs.every(k => typeof p[k] === "number" && Number.isFinite(p[k]) && (p[k] as number) >= 0 && (p[k] as number) <= 1)
-    && Math.abs((p.D as number) + (p.R as number) + (p.O as number) - 1) <= 1e-12;
+    // Match native result rounding tolerance without renormalizing the supplied chances.
+    && Math.abs((p.D as number) + (p.R as number) + (p.O as number) - 1) <= 1e-8;
 }
 
 /** Orders only explicitly supplied, normalized group probabilities; invalid/future rows stay unranked. */
-export function layoutGroupRibbon(races: readonly HouseGroupRace[], columns: number): GroupRibbonLayout {
+export function layoutGroupRibbon(races: readonly GroupRibbonRace[], columns: number): GroupRibbonLayout {
   layoutSerpentine([], columns);
   const seen = new Set<string>(), main: GroupRibbonEntry[] = [], other: GroupRibbonEntry[] = [], mixedTies: GroupRibbonEntry[] = [], unavailable: GroupRibbonLayout["unavailable"] = [];
   for (const race of races) {

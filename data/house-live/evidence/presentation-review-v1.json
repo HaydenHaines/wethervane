@@ -1,0 +1,23 @@
+{
+  "schema": "HouseLivePresentationReviewV1",
+  "issued_at": "2026-10-25T15:57:31.106567+00:00",
+  "status": "reviewed",
+  "input_pin": {
+    "path": "research/house-live-20261025/current-roster-v1.json",
+    "sha256": "7c9c32a9a6d17281567c72b93e168b40b01ff2e1cfe2a8f5ad02dcc5b4ba0d1d"
+  },
+  "corrections": [
+    {
+      "candidate_id": "house-2026-60f72f329b4167b591e3",
+      "district_key": "OH-04",
+      "field": "party_label",
+      "original": "",
+      "replacement": "Independent",
+      "source_ids": [
+        "greenpapers-oh",
+        "national-roster-discovery"
+      ],
+      "reason": "The Green Papers leaves the party label blank; the captured national current-candidate index explicitly lists Tracey Tackett as Independent. Aggregation partyO, candidate identity, incumbency, model roles, inputs and all numerical forecasts are unchanged."
+    }
+  ]
+}

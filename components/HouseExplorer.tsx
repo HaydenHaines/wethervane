@@ -6,6 +6,7 @@ import {
 } from "../lib/house-result";
 import { parseHousePublicationWithCatalog, type HousePublicationWithCatalog } from "../lib/house-catalog";
 import { houseSelectionForResult, houseSelectionUrl } from "../lib/house-selection";
+import { houseHistoricalRunForYear } from "../lib/house-live-historical-selection";
 import HouseControls from "./HouseControls";
 import HouseGroupResults from "./HouseGroupResults";
 import { groupRunId, type HouseReviewedPublication as HouseGroupPublication } from "../lib/house-reviewed-catalog";
@@ -71,12 +72,13 @@ export default function HouseExplorer({ onReturn }: { onReturn: () => void }) {
   const [builderExpanded, setBuilderExpanded] = useState(false);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(true);
-  const [request, setRequest] = useState<{ id: string | null; navigation: "initial" | "history" | "push"; attempt: number; savedView?: HouseSavedView; groupSavedView?: HouseGroupSavedView } | null>(null);
+  const [request, setRequest] = useState<{ id: string | null; year?: number; navigation: "initial" | "history" | "push"; attempt: number; savedView?: HouseSavedView; groupSavedView?: HouseGroupSavedView } | null>(null);
   useEffect(() => {
     const restore = (navigation: "initial" | "history") => {
       const params = new URLSearchParams(location.search);
       if (params.get("chamber") !== "house") return;
       const id = params.get("run");
+      const year = id === null && params.has("year") ? Number(params.get("year")) : undefined;
       if (navigation === "history" && previous.current?.status === "available" && id === publicationRun(previous.current)) {
         // Also cancel any pending selection if Back returns to the displayed run.
         setRequest(null);
@@ -84,7 +86,7 @@ export default function HouseExplorer({ onReturn }: { onReturn: () => void }) {
         setBusy(false);
         return;
       }
-      setRequest({ id, navigation, attempt: Date.now() });
+      setRequest({ id, year, navigation, attempt: Date.now() });
     };
     restore("initial");
     const onHistory = () => restore("history");
@@ -100,12 +102,25 @@ export default function HouseExplorer({ onReturn }: { onReturn: () => void }) {
       let value: HousePublication;
       if (groupRunId(request!.id)) value = await loadHouseGroup(request!.id, controller.signal);
       else {
-        const query = request!.id ? `?${new URLSearchParams({ run: request!.id })}` : "";
-        const response = await fetch(`/api/chambers/house${query}`, { signal: controller.signal, cache: "no-store" });
-        if (!response.ok) throw Error(response.status === 400 ? "This model selection is not available in the published collection." : "The House view is temporarily unavailable.");
-        const parsed = parseHousePublicationWithCatalog(await response.json());
-        if (!parsed) throw Error("The House publication could not be verified.");
-        value = parsed;
+        const loadLegacyRun = async (id: string | null): Promise<HousePublicationWithCatalog> => {
+          const query = id ? `?${new URLSearchParams({ run: id })}` : "";
+          const response = await fetch(`/api/chambers/house${query}`, { signal: controller.signal, cache: "no-store" });
+          if (!response.ok) throw Error(response.status === 400 ? "This model selection is not available in the published collection." : "The House view is temporarily unavailable.");
+          const parsed = parseHousePublicationWithCatalog(await response.json());
+          if (!parsed) throw Error("The House publication could not be verified.");
+          return parsed;
+        };
+        let legacy = await loadLegacyRun(request!.id);
+        if (request!.id === null && request!.year !== undefined) {
+          if (legacy.status !== "available" || !legacy.catalog)
+            throw Error(`No published historical House catalog is available for ${request!.year}.`);
+          const yearRunId = houseHistoricalRunForYear(legacy.catalog, request!.year);
+          if (!yearRunId) throw Error(`No published historical House result is available for ${request!.year}.`);
+          if (legacy.result.run.id !== yearRunId) legacy = await loadLegacyRun(yearRunId);
+          if (legacy.status !== "available" || legacy.result.run.id !== yearRunId || legacy.result.run.year !== request!.year)
+            throw Error(`The published House result for ${request!.year} could not be verified.`);
+        }
+        value = legacy;
       }
       let savedComparison: AvailableHousePublication | null = null;
       let groupComparison: HouseGroupPublication | null = null;
@@ -188,9 +203,9 @@ export default function HouseExplorer({ onReturn }: { onReturn: () => void }) {
         {error ? (
           <div className="error-box">
             <h1>House view unavailable</h1>
-            <p>{error}</p>
+            <p role="alert">{error}</p>
             <button onClick={retry}>Try again</button>
-            {request?.id && <button onClick={() => setRequest({ id: null, navigation: "initial", attempt: Date.now() })}>Load published default</button>}
+            {(request?.id || request?.year !== undefined) && <button onClick={() => setRequest({ id: null, navigation: "initial", attempt: Date.now() })}>Load published default</button>}
             <button onClick={onReturn}>Explore the Senate</button>
           </div>
         ) : <p role="status">Preparing the House perspective…</p>}

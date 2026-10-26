@@ -1,0 +1,33 @@
+{
+  "schema": "HouseLiveFrontendContractFeedbackV1",
+  "issued_utc": "2026-10-25T14:24:50.173067+00:00",
+  "contract_sha256": "5c9583da083f45a5c3781973238a5ec6d9dce4ecd5a5d724518b192ca859cd60",
+  "status": "Private currentHouse workspace now supports exact model loading, current-model comparisons, race/model URL navigation, safe interrupted/failed requests, and a validated browser response boundary. No user-saved configurations are required per explicit user correction. Native all16 packet and real publication integration remain pending.",
+  "frontend_files": [
+    "lib/house-live-result.ts",
+    "lib/house-live-catalog.ts",
+    "tests/house-live-result.test.mjs",
+    "tests/fixtures/house-live-fixtures.mjs"
+  ],
+  "accepted": [
+    "Separate D/R/O group probabilities and named-pair conditional shares.",
+    "Same-party/independent/unopposed support; no inferred candidate probability from group probability.",
+    "Chamber null when unqualified; tipping null until separately reviewed.",
+    "Complete current435 roster and geography;16 exact current configurations; historical contracts unchanged."
+  ],
+  "clarifications_for_native_export": [
+    "Please confirm concrete historical_evidence shape. Proposed: nonempty array of {label,url,qualification}, linking historical evidence without claiming exact-method or2026 skill.",
+    "Please specify allowed qualification.input_status and numerical_status values; publication_status=reviewed and chamber.precision.passed=true are publication requirements, distinct from structural parsing.",
+    "Please specify joint_draws file format, array key(s), shape, dtype, chain/draw ordering and identity_semantics. Metadata alone cannot establish per-draw conservation or covariance; importer will verify actual raw bytes and review evidence.",
+    "Please provide explicit reviewed handoff manifest pinning catalog, source_policy, qualification, geography and every result, with asset references resolvable inside an exported directory or a manifest mapping native paths to staged content. Native private paths will be stripped from browser projection.",
+    "Full catalog loader will require identical current candidate roster and map identities across all16 results. Please keep candidate IDs, source aliases and outcome membership stable across configurations.",
+    "Please confirm race p_win and chamber PMFs/means/control are direct frequencies from the exported equal-weight winner rows. We are implementing a streaming raw-row verifier; analytic or Rao-Blackwellized probabilities need an explicitly different check rather than silently forcing agreement.",
+    "Please specify seat-quantile convention explicitly: inverse empirical CDF (first integer seat with cumulative mass at least q) or linear interpolation. The raw-row verifier requires one selected convention and never guesses whichever passes.",
+    "Geometry-v2 received as a development candidate only: cfbd60c7300d1c7fa10ca8ff918e15b7fd86882b07f19d70ec46003e7e728422. Independent source admission, Missouri edition exception, and exact final roster alignment remain required before display publication.",
+    "Please specify the source_policy document shape and poll inclusion/exclusion explanations, ideally per input with reason and source URL, so the live House UI can explain which polls are used and why others are omitted."
+  ],
+  "pending_implementation": "Native simulation binary decoder, reviewed export manifest/importer, production API and chamber-router activation, poll-policy disclosure, and real forecast integration validation. Browser client/controller/URL navigation and model comparisons are implemented privately; no user-save feature will be added.",
+  "updated_utc": "2026-10-25T15:20:37.340392+00:00",
+  "scope_clarification": "docs/development/frontend-scope-clarification-20261025.json supersedes prior pending user-saved configuration/restoration requirements. Versioned research models/results remain preserved.",
+  "native_export_discovery": "Read currentHouse Python source files excluding compiled caches: fitted parameter banks use NPZ, but there is no current435 winner-matrix export/decoder format yet. We have not assumed parameter-bank NPZ shape is the live joint winner shape."
+}

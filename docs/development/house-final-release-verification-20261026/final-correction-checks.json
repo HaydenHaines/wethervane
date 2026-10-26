@@ -1,0 +1,43 @@
+{
+  "schema": "HouseFinalCorrectionChecksV1",
+  "startedAt": "2026-10-26T14:05:28.416757+00:00",
+  "status": "passed",
+  "steps": [
+    {
+      "command": [
+        "node",
+        "--experimental-strip-types",
+        "--test",
+        "tests/district-projection.test.mjs",
+        "tests/house-live-result.test.mjs",
+        "tests/house-live-view.test.mjs",
+        "tests/house-live-publication.test.mjs",
+        "tests/house-live-results.test.mjs"
+      ],
+      "returnCode": 0,
+      "elapsedSeconds": 1.4366308159660548,
+      "logSha256": "58b71677d54092afc5197bc8a5ebafa0194a58b74a2423bcde94dfb2bb9cb82e"
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "returnCode": 0,
+      "elapsedSeconds": 9.854678814997897,
+      "logSha256": "2487402e11cf4734ea630bec6e3692586998fa9edae57f70fc54130d47498f69"
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "typecheck"
+      ],
+      "returnCode": 0,
+      "elapsedSeconds": 2.314900164026767,
+      "logSha256": "d5f9a064d7d11dd381d5f5dafe415d18b32b3af9442c158a40f2a25fddfe0001"
+    }
+  ],
+  "finishedAt": "2026-10-26T14:05:42.023805+00:00"
+}

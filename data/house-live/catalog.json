@@ -1,0 +1,223 @@
+{
+  "schema": "HouseLiveForecastCatalogV1",
+  "cycle": 2026,
+  "default_id": "house-current-polling",
+  "entries": [
+    {
+      "id": "house-current-fundamentals",
+      "label": "Fundamentals",
+      "configuration": {
+        "base": "fundamentals",
+        "polling": "none",
+        "uncertainty": "standard"
+      },
+      "result": {
+        "path": "results/house-current-fundamentals.json",
+        "sha256": "4cc3d17c5a39f24292f0fdee039f9f7dab5b96e3614b6d7e35df7f9459046ce4"
+      }
+    },
+    {
+      "id": "house-current-polling",
+      "label": "Standard polling",
+      "configuration": {
+        "base": "fundamentals",
+        "polling": "standard",
+        "uncertainty": "standard"
+      },
+      "result": {
+        "path": "results/house-current-polling.json",
+        "sha256": "c84248d56ff0fd0e291538729680cf8cdaa51bad9fb456c3d359fa022b76451d"
+      }
+    },
+    {
+      "id": "house-current-comparison-recent_calendar_history-f",
+      "label": "Recent calendar history · without polls",
+      "configuration": {
+        "base": "recent_calendar_history",
+        "polling": "none",
+        "uncertainty": "standard"
+      },
+      "result": {
+        "path": "results/house-current-comparison-recent_calendar_history-f.json",
+        "sha256": "9f98bb094bbf23c0c9bb840bbce6986dd5acaee8a777b8054fc9b994c80d4a71"
+      }
+    },
+    {
+      "id": "house-current-comparison-recent_calendar_history-fp",
+      "label": "Recent calendar history · with polls",
+      "configuration": {
+        "base": "recent_calendar_history",
+        "polling": "standard",
+        "uncertainty": "standard"
+      },
+      "result": {
+        "path": "results/house-current-comparison-recent_calendar_history-fp.json",
+        "sha256": "7e485686194aadbb244145701f5da99597f753fda424be7c77ca5a73ccc5471a"
+      }
+    },
+    {
+      "id": "house-current-comparison-house_history_refreshed_v1-f",
+      "label": "Refreshed House history · without polls",
+      "configuration": {
+        "base": "house_history_refreshed_v1",
+        "polling": "none",
+        "uncertainty": "standard"
+      },
+      "result": {
+        "path": "results/house-current-comparison-house_history_refreshed_v1-f.json",
+        "sha256": "e8d0bcc8584ffd821273b332d764fe81bcd3463ec360c00442be40a152bfbb61"
+      }
+    },
+    {
+      "id": "house-current-comparison-house_history_refreshed_v1-fp",
+      "label": "Refreshed House history · with polls",
+      "configuration": {
+        "base": "house_history_refreshed_v1",
+        "polling": "standard",
+        "uncertainty": "standard"
+      },
+      "result": {
+        "path": "results/house-current-comparison-house_history_refreshed_v1-fp.json",
+        "sha256": "937fdf46979e12a54151a563f99aaf7964b0b361c5d51d9d0eabe8adef01e3b5"
+      }
+    },
+    {
+      "id": "house-current-comparison-house_presidential_slope_v1-f",
+      "label": "Learned presidential slope · without polls",
+      "configuration": {
+        "base": "house_presidential_slope_v1",
+        "polling": "none",
+        "uncertainty": "standard"
+      },
+      "result": {
+        "path": "results/house-current-comparison-house_presidential_slope_v1-f.json",
+        "sha256": "431bbde1da4c48ebc2e17ced53283f86425e1f75b834ebbd42f558c83b61116f"
+      }
+    },
+    {
+      "id": "house-current-comparison-house_presidential_slope_v1-fp",
+      "label": "Learned presidential slope · with polls",
+      "configuration": {
+        "base": "house_presidential_slope_v1",
+        "polling": "standard",
+        "uncertainty": "standard"
+      },
+      "result": {
+        "path": "results/house-current-comparison-house_presidential_slope_v1-fp.json",
+        "sha256": "11e2549492c5c35652b359bb4e0e9cc70cda5e38cc0d00ae612dbc196d50d539"
+      }
+    },
+    {
+      "id": "house-current-comparison-house_relative_lean_v1-f",
+      "label": "Relative district and national lean · without polls",
+      "configuration": {
+        "base": "house_relative_lean_v1",
+        "polling": "none",
+        "uncertainty": "standard"
+      },
+      "result": {
+        "path": "results/house-current-comparison-house_relative_lean_v1-f.json",
+        "sha256": "6a65d316c58b2c88208982f01fa383b7f72d1917d5de765c263a2067e04c04d8"
+      }
+    },
+    {
+      "id": "house-current-comparison-house_relative_lean_v1-fp",
+      "label": "Relative district and national lean · with polls",
+      "configuration": {
+        "base": "house_relative_lean_v1",
+        "polling": "standard",
+        "uncertainty": "standard"
+      },
+      "result": {
+        "path": "results/house-current-comparison-house_relative_lean_v1-fp.json",
+        "sha256": "4523b29273d28c0892b7b99ad65c3dada7de986137df762b431db8bf374fc98b"
+      }
+    },
+    {
+      "id": "house-current-comparison-house_relative_context_v1-f",
+      "label": "Relative lean with presidential context · without polls",
+      "configuration": {
+        "base": "house_relative_context_v1",
+        "polling": "none",
+        "uncertainty": "standard"
+      },
+      "result": {
+        "path": "results/house-current-comparison-house_relative_context_v1-f.json",
+        "sha256": "6b42164b32465906ae3eed90c7b8226743bc1bb9b8c7c5caee3e055aa0190025"
+      }
+    },
+    {
+      "id": "house-current-comparison-house_relative_context_v1-fp",
+      "label": "Relative lean with presidential context · with polls",
+      "configuration": {
+        "base": "house_relative_context_v1",
+        "polling": "standard",
+        "uncertainty": "standard"
+      },
+      "result": {
+        "path": "results/house-current-comparison-house_relative_context_v1-fp.json",
+        "sha256": "0bc899399caae440a11d618e181b396853e393aed2a8c40d9f9ca9c4007bee6f"
+      }
+    },
+    {
+      "id": "house-current-cycle-low",
+      "label": "Polling error: common-cycle SD × 0.5",
+      "configuration": {
+        "base": "fundamentals",
+        "polling": "standard",
+        "uncertainty": "cycle-low"
+      },
+      "result": {
+        "path": "results/house-current-cycle-low.json",
+        "sha256": "a167aeb373826027065b9d3a4736ec635f805c38dbbea773c868ebe5f32c2efb"
+      }
+    },
+    {
+      "id": "house-current-cycle-high",
+      "label": "Polling error: common-cycle SD × 2",
+      "configuration": {
+        "base": "fundamentals",
+        "polling": "standard",
+        "uncertainty": "cycle-high"
+      },
+      "result": {
+        "path": "results/house-current-cycle-high.json",
+        "sha256": "1baa27367cda0dc38d2ad5145ac4fe174580d55c4fd27af2f7ac4fec27ba5bdc"
+      }
+    },
+    {
+      "id": "house-current-error-low",
+      "label": "Polling error: all SDs × 2/3",
+      "configuration": {
+        "base": "fundamentals",
+        "polling": "standard",
+        "uncertainty": "error-low"
+      },
+      "result": {
+        "path": "results/house-current-error-low.json",
+        "sha256": "b992c9ac9c28396cd27b6e695967e23babe30091b3d7762a0d18c71f754de01b"
+      }
+    },
+    {
+      "id": "house-current-error-high",
+      "label": "Polling error: all SDs × 1.5",
+      "configuration": {
+        "base": "fundamentals",
+        "polling": "standard",
+        "uncertainty": "error-high"
+      },
+      "result": {
+        "path": "results/house-current-error-high.json",
+        "sha256": "19975e01180dd3ffc6abbc0c392ce6300a940cd6caf659c388c8aba347a48f7f"
+      }
+    }
+  ],
+  "source_policy": {
+    "path": "evidence/source-policy-v1.json",
+    "sha256": "3877b504fdfd9f75c54d5162cdf07259b2071a611d32703105db87624d5511dd"
+  },
+  "qualification": {
+    "path": "qualification.json",
+    "sha256": "96cdc3b2c337e4226a3cf43e11f0b8daa97372af5ad34572a5696061f31d2d6b"
+  }
+}

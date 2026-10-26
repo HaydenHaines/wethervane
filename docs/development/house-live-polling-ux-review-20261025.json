@@ -1,0 +1,117 @@
+{
+  "schema": "HouseLivePollingUxReviewV1",
+  "status": "copy_and_interaction_recommendation_only",
+  "reviewed_at": "2026-10-25",
+  "scope": "Recommend user-facing wording and progressive disclosure for the current House polling inputs. This does not admit source data or authorize publication.",
+  "evidence": {
+    "source_policy": {
+      "path": "research/house-live-20261025/source-policy-v1.json",
+      "sha256": "3877b504fdfd9f75c54d5162cdf07259b2071a611d32703105db87624d5511dd"
+    },
+    "normalizer": {
+      "path": "research/house-live-20261025/current_polls.py",
+      "sha256": "271268d44018e1eb89a2d51bc5a82e2c8159db44139d654c64b1d39fbf38c10a"
+    },
+    "selection_receipt": {
+      "path": "research/house-live-20261025/polls-v3/receipt.json",
+      "sha256": "13127f2839a2e65e91f66c1020ea00c966787dc3aba79057f342d769ccffa7a2",
+      "status": "normalized_pending_source_and_identity_review",
+      "polling_cutoff": "2026-10-25T15:36:34Z"
+    },
+    "selection_artifact_pins": [
+      {
+        "path": "research/house-live-20261025/polls-v3/selected.csv",
+        "sha256": "4414b8649fa30e2c377dab55d439293b2e2aaee09fd438321a7e9e926a7aa3db"
+      },
+      {
+        "path": "research/house-live-20261025/polls-v3/ledger.json",
+        "sha256": "67eedef5f40f3b233a0e1f557cface5e430e6f64cef3fa59d380f725ea6c3c73"
+      },
+      {
+        "path": "research/house-live-20261025/polls-v3/identities.json",
+        "sha256": "3e5eb19cd7d86b18442d2d8baf32deb8724e68ef6fd0ed6aa5d45a7c446fd60b"
+      }
+    ],
+    "counts_and_units": {
+      "selected_records": 167,
+      "unit": "one selected poll-question result for one district, not one respondent and not necessarily one independent survey",
+      "districts_with_selected_records": 98,
+      "current_districts": 435,
+      "districts_without_selected_records": 337,
+      "normalized_pollster_keys": 61,
+      "selected_population_rows": {
+        "likely_voter": 151,
+        "registered_voter": 16
+      },
+      "selected_records_without_reported_nominal_sample_size": 27,
+      "source_inventory_ledger_groups": 1628,
+      "ledger_excluded_first_reason_rows": 1461,
+      "source_inventory_warning": "The 1,628 ledger groups include other offices, cycles, and non-district records. Do not present 1,628 as a number of current House polls or call the 1,461 first-reason rows current House polls rejected for quality. Reason counts are mutually exclusive first-failure outcomes; exact duplicate rows inside question groups were silently removed and are not counted."
+    },
+    "source_scope": "The normalizer selects from NYT question records. The separately reviewed VoteHub snapshot is a coverage cross-check only, not an additional poll-row source. Its current-district inventory is contained in the NYT inventory except FL-28; the two FL-28 records share pollster, field dates, sample size, subject and source URL, and their March fieldwork is outside the 100-day window. This narrow coverage check does not verify every questionnaire or topline.",
+    "publication_boundary": "The input review and aggregate-input admission are distinct from website publication. The selection receipt itself remains marked pending source and identity review. Show poll details only when the owner-reviewed publication artifact supplies them; do not use this UX note or its counts to imply a public release is admitted."
+  },
+  "progressive_disclosure": [
+    {
+      "level": "summary",
+      "placement": "Near the selected live model's polling setting and in the district detail. Keep polling-off status visible without requiring expansion.",
+      "copy_with_polls": "Polling included: 167 selected poll-question results across 98 of 435 districts. All 435 districts receive a forecast. A district with no selected local poll can still be affected by polling information shared across districts.",
+      "copy_polling_off": "Polling is off for this saved forecast; no poll measurements are used.",
+      "copy_enabled_zero_local": "No poll-question result passed this model's selection rules for this district. The district still receives a forecast.",
+      "copy_details_unavailable": "District-level polling details are unavailable for this result.",
+      "copy_guidance": "Keep three states distinct: polling off; polling on with zero selected local records; and poll-selection details unavailable. Zero selected records do not mean no poll was conducted. Do not infer the polling setting from a district count."
+    },
+    {
+      "level": "method",
+      "placement": "One expandable 'How polling is selected' section, with short paragraphs or labeled bullets.",
+      "copy": [
+        "Each count is a poll question used for one district. A single survey covering multiple districts can contribute a district record in each, so the 167 records are not 167 independent surveys.",
+        "The selection keeps one eligible question per sample and district, favoring likely-voter samples, then registered-voter samples, then adult samples; when more than one eligible sample remains from a pollster in a district, it keeps the latest fieldwork.",
+        "A poll's availability date is estimated as the later of its field-end date and one day after the aggregator recorded it. This conservative date-level rule is compared with the October 25, 2026 polling cutoff; it is not a verified original publication time, and later revisions are not tracked.",
+        "The modeled poll share compares the two named principal candidates: each candidate's reported percentage divided by the sum of those two percentages. Other responses are left out of that denominator; the share is not a candidate or party win chance.",
+        "Reported respondent counts are not added as a separate model weight. The selected set has no reported nominal sample size for 27 of its 167 records; those values remain missing and are not imputed. The model's calibrated total polling error already includes sampling error.",
+        "Poll questions and results can share a sample, pollster, election cycle, district, or nearby field dates. The model accounts for shared polling error; alternative questions from one sample are not counted as independent evidence."
+      ]
+    },
+    {
+      "level": "district_rows",
+      "placement": "In the selected race detail, show selected count and selected poll population mix when provided by the reviewed result. Provide included and excluded selection reasons only from owner-reviewed, district-bound aggregates.",
+      "included_row_label": "Selected poll-question results for this district",
+      "included_row_unit": "Records, not respondents or independent surveys. If source-question IDs are not public, do not expose internal IDs; counts must be bound to the result's authenticated selected source identities.",
+      "zero_row_label": "No selected poll-question result for this district",
+      "zero_row_subtext": "This says what entered this saved model, not whether polling exists for the district.",
+      "excluded_row_guidance": "If reviewed metadata contains district-specific exclusions, summarize counts by plain-language reason and clearly say these are candidate records considered by this pipeline. Do not label all 1,461 excluded ledger rows as House polls or display ledger-wide first-reason counts as district results. If no district-bound exclusion summary is supplied, show the zero-selected message without guessing why.",
+      "reason_translation_candidates": {
+        "not_one_current_house_district": "Not a poll for one of the current House districts",
+        "not_2026_house_regular_general": "Not for the 2026 regular House general election",
+        "outside_100_day_field_end_window": "Fieldwork ended more than 100 days before Election Day",
+        "unresolved_or_departed_candidate_in_question": "A listed candidate could not be matched to the reviewed candidate roster",
+        "earlier_same_pollster_race_sample": "An eligible later sample from this pollster covers the district",
+        "reallocated_or_later_round_not_initial_pair_share": "Reports a later ranked-choice round or reallocated result, not initial candidate shares",
+        "outside_named_principal_pair_support": "The model does not support this district's named candidate pair",
+        "alternative_question_same_sample": "Another eligible question from the same sample was selected",
+        "unavailable_at_cutoff_under_created_plus_one_day_rule": "The estimated availability date was after the model's polling cutoff",
+        "missouri_fieldwork_before_final_old_map_confirmation": "Missouri fieldwork began before the final map was confirmed",
+        "question_does_not_include_current_principal_pair": "The question did not include both named principal candidates"
+      },
+      "reason_display_rules": "Use a reason only when the reviewed pipeline reports it for that district. The ledger records the first failing rule, not every possible reason. Collapse non-House/non-district and wrong-election records into a broad source-scope category if needed; avoid language implying that a quality review rejected those records."
+    }
+  ],
+  "do_not_say": [
+    "1628 current House polls were reviewed.",
+    "1461 current House polls were rejected.",
+    "There were no polls in a district with zero selected rows.",
+    "167 independent polls or surveys were used.",
+    "Respondent sample size weights each poll.",
+    "VoteHub contributed additional selected polls.",
+    "The availability date is the poll's publication timestamp.",
+    "Poll evidence in every district is independent, or only affects the district in which it was conducted.",
+    "Input review or aggregate-input admission means the website publication is approved."
+  ],
+  "frontend_integration_notes": {
+    "live_projection": "The current browser race projection carries pollCount. A count alone cannot support district-specific exclusion reasons, population mix, pollster count, or source citation links; render only fields explicitly present in an authenticated, reviewed publication projection.",
+    "reuse": "Do not reuse historical House polling-share widgets or their nominal fourteen-day cutoff copy. The live selection uses an October 25 polling cutoff and has distinct availability and dependence rules.",
+    "possible_summary_payload": "A minimal reviewed payload could expose total selected question-district records, current district denominator, districts with/without selected records, selected population counts, missing-n count, polling cutoff, short selection policy, and district-bound selected/excluded reason counts. Bind each count to selected source IDs internally; do not send raw third-party source rows to the browser.",
+    "limitations": "This note describes the reviewed source policy and inspected normalizer artifacts, not the completeness of all polls, a scientific assessment of the forecast, or permission to redistribute raw source datasets."
+  }
+}
