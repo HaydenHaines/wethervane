@@ -158,11 +158,11 @@ test("the actual default 2024 scorecard has independently audited scores and a m
   await expect(
     page.getByLabel("House model", { exact: true }).locator("option"),
   ).toHaveCount(4);
-  await expect(
-    page
-      .getByRole("group", { name: "Election year", exact: true })
-      .getByRole("button", { name: "2026", exact: true }),
-  ).toHaveCount(0);
+  const currentYear = page
+    .getByRole("group", { name: "Election year", exact: true })
+    .getByRole("button", { name: "2026", exact: true });
+  await expect(currentYear).toHaveAttribute("aria-pressed", "false");
+  await expect(currentYear).toBeEnabled();
   expect(
     await page.evaluate(
       () => document.documentElement.scrollWidth <= innerWidth,
