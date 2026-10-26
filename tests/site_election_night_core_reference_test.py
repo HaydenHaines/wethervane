@@ -8,6 +8,7 @@ from unittest.mock import patch
 import scripts.export_election_night_core_reference as adapter
 ROOT=Path(__file__).resolve().parents[1]
 class CoreReferenceExportTests(unittest.TestCase):
+ @unittest.skipUnless(adapter.SOURCE.is_dir(), "Pinned Senate research source is unavailable")
  def test_actual_qualified_two_banks_publication_and_source_preservation(self):
   value=adapter.build(adapter.SOURCE,ROOT)
   self.assertEqual(value,json.loads((ROOT/'public/data/election-night/core-references.json').read_text()))
@@ -20,6 +21,7 @@ class CoreReferenceExportTests(unittest.TestCase):
    self.assertEqual(len(e['reference']['cohort']),32)
    self.assertFalse(e['reference']['draw_identity']['resampling']);self.assertFalse(e['reference']['draw_identity']['cross_bank_pairing'])
    self.assertEqual(e['sourcePins']['failedV1EvidenceSha256'],adapter.FAILED_V1_SHA)
+ @unittest.skipUnless(adapter.SOURCE.is_dir(), "Pinned Senate research source is unavailable")
  def test_semantic_mutations_fail_even_behind_a_mocked_authenticated_read(self):
   original=adapter.read
   path=(adapter.SOURCE/adapter.BASE/'fixed32-scorecard-reference-root-v2/FP/reference.json').resolve()
@@ -43,6 +45,7 @@ class CoreReferenceExportTests(unittest.TestCase):
    with self.assertRaises(adapter.CoreReferenceExportError):adapter.pinned(root,str(file),digest)
    (root/'outside-link').symlink_to('/etc/passwd')
    with self.assertRaises(adapter.CoreReferenceExportError):adapter.pinned(root,'outside-link',digest)
+ @unittest.skipUnless(adapter.SOURCE.is_dir(), "Pinned Senate research source is unavailable")
  def test_deterministic_temp_export_does_not_replace_existing35_reference(self):
   legacy=ROOT/'public/data/election-night/references.json';before=legacy.read_bytes()
   with tempfile.TemporaryDirectory() as folder:

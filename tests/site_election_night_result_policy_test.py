@@ -20,6 +20,7 @@ def read(path: Path):
 
 
 class SenateResultPolicyExportTests(unittest.TestCase):
+    @unittest.skipUnless(SOURCE.is_dir(), "Pinned Senate research source is unavailable")
     def test_actual_policy_freeze_and_both_forecasts_bind_exactly(self):
         value = adapter.build(SOURCE, ROOT)
         self.assertEqual(value["schemaVersion"], 1)
@@ -77,6 +78,7 @@ class SenateResultPolicyExportTests(unittest.TestCase):
             with self.assertRaisesRegex(adapter.ResultPolicyExportError, "Unsafe source path"):
                 adapter._safe_source(root, "../escape.json")
 
+    @unittest.skipUnless(SOURCE.is_dir(), "Pinned Senate research source is unavailable")
     def test_pinned_mapping_mutations_and_foreign_feed_ids_fail_closed(self):
         original_read = adapter.read
         mapping_path = SOURCE / adapter.MAPPING_REL
@@ -96,6 +98,7 @@ class SenateResultPolicyExportTests(unittest.TestCase):
                 with self.assertRaisesRegex(adapter.ResultPolicyExportError, message):
                     adapter.build(SOURCE, ROOT)
 
+    @unittest.skipUnless(SOURCE.is_dir(), "Pinned Senate research source is unavailable")
     def test_unknown_policy_packet_and_changed_public_bundle_are_rejected(self):
         with self.assertRaisesRegex(adapter.ResultPolicyExportError, "Unexpected integration source root"):
             adapter.build(SOURCE.parent, ROOT)
