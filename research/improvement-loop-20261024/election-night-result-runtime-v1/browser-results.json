@@ -1,0 +1,775 @@
+{
+  "config": {
+    "argv": [
+      "/home/hayden/.nvm/versions/node/v22.22.1/bin/node",
+      "/home/hayden/projects/ballotmancy-election-night-guide-20261026/node_modules/@playwright/test/cli.js",
+      "test",
+      "--config",
+      "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/playwright.runtime.config.mjs"
+    ],
+    "configFile": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/playwright.runtime.config.mjs",
+    "rootDir": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/tests/site",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/browser-artifacts",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "desktop-chromium",
+        "name": "desktop-chromium",
+        "testDir": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/tests/site",
+        "testIgnore": [],
+        "testMatch": [
+          "election-night.spec.ts"
+        ],
+        "timeout": 45000
+      },
+      {
+        "outputDir": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/browser-artifacts",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "mobile-chromium",
+        "name": "mobile-chromium",
+        "testDir": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/tests/site",
+        "testIgnore": [],
+        "testMatch": [
+          "election-night.spec.ts"
+        ],
+        "timeout": 45000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/browser-artifacts",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "desktop-chromium",
+        "testDir": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/tests/site",
+        "snapshotDir": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/tests/site",
+        "testIgnore": [],
+        "testMatch": "election-night.spec.ts",
+        "timeout": 45000,
+        "use": {
+          "baseURL": "http://127.0.0.1:3137",
+          "trace": "retain-on-failure",
+          "screenshot": "only-on-failure",
+          "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.8078.4 Safari/537.36",
+          "viewport": {
+            "width": 1280,
+            "height": 720
+          },
+          "screen": {
+            "width": 1920,
+            "height": 1080
+          },
+          "deviceScaleFactor": 1,
+          "isMobile": false,
+          "hasTouch": false,
+          "defaultBrowserType": "chromium"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": "desktop-chromium"
+      },
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/browser-artifacts",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "mobile-chromium",
+        "testDir": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/tests/site",
+        "snapshotDir": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/tests/site",
+        "testIgnore": [],
+        "testMatch": "election-night.spec.ts",
+        "timeout": 45000,
+        "use": {
+          "baseURL": "http://127.0.0.1:3137",
+          "trace": "retain-on-failure",
+          "screenshot": "only-on-failure",
+          "userAgent": "Mozilla/5.0 (Linux; Android 14; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.8078.4 Mobile Safari/537.36",
+          "viewport": {
+            "width": 412,
+            "height": 839
+          },
+          "screen": {
+            "width": 412,
+            "height": 915
+          },
+          "deviceScaleFactor": 2.625,
+          "isMobile": true,
+          "hasTouch": true,
+          "defaultBrowserType": "chromium"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": "mobile-chromium"
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/browser-results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.64.1",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "election-night.spec.ts",
+      "file": "election-night.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "reviewed expected errors follow only their exact Senate edition and remain distinct from observed scores",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop-chromium",
+              "projectName": "desktop-chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2507,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-26T17:44:53.434Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f7d03a2d4350b8dae4c2-d20fe178a2e2fd4ff5f8",
+          "file": "election-night.spec.ts",
+          "line": 12,
+          "column": 5
+        },
+        {
+          "title": "an invalid uncertainty reference leaves the forecast available and can be retried",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop-chromium",
+              "projectName": "desktop-chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1342,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-26T17:44:56.033Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f7d03a2d4350b8dae4c2-a2f76144bdc7a237d7c4",
+          "file": "election-night.spec.ts",
+          "line": 62,
+          "column": 5
+        },
+        {
+          "title": "senate: same-page guide starts standard, renders every exact model, and preserves the visitor's forecast",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop-chromium",
+              "projectName": "desktop-chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 4697,
+                  "error": {
+                    "message": "Error: locator.screenshot: Error: strict mode violation: locator('#election-night-scorecard').locator('.night-uncertainty-grid') resolved to 2 elements:\n    1) <div class=\"night-uncertainty-grid\">…</div> aka locator('#election-night-scorecard div').filter({ hasText: 'Wrong top choices3.8 of 35The' })\n    2) <div class=\"night-uncertainty-grid\">…</div> aka locator('div').filter({ hasText: '5.7 percentage pointsExpected' }).nth(1)\n\nCall log:\n\u001b[2m  - waiting for locator('#election-night-scorecard').locator('.night-uncertainty-grid')\u001b[22m\n",
+                    "stack": "Error: locator.screenshot: Error: strict mode violation: locator('#election-night-scorecard').locator('.night-uncertainty-grid') resolved to 2 elements:\n    1) <div class=\"night-uncertainty-grid\">…</div> aka locator('#election-night-scorecard div').filter({ hasText: 'Wrong top choices3.8 of 35The' })\n    2) <div class=\"night-uncertainty-grid\">…</div> aka locator('div').filter({ hasText: '5.7 percentage pointsExpected' }).nth(1)\n\nCall log:\n\u001b[2m  - waiting for locator('#election-night-scorecard').locator('.night-uncertainty-grid')\u001b[22m\n\n    at /home/hayden/projects/ballotmancy-election-night-guide-20261026/tests/site/election-night.spec.ts:128:52",
+                    "location": {
+                      "file": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/tests/site/election-night.spec.ts",
+                      "column": 52,
+                      "line": 128
+                    },
+                    "snippet": "  126 |     await expect(panel.locator(\".night-miss-reference\")).toContainText(\"not a limit or a measured accuracy record\");\n  127 |     await panel.locator(\".night-featured\").screenshot({ path: testInfo.outputPath(`${chamber}-featured.png`) });\n> 128 |     await panel.locator(\".night-uncertainty-grid\").screenshot({ path: testInfo.outputPath(`${chamber}-uncertainty.png`) });\n      |                                                    ^\n  129 |     await panel.locator(\".night-all-races > summary\").click();\n  130 |     await expect(panel.locator(\".night-predictions .night-race\")).toHaveCount(10);\n  131 |     if (chamber === \"house\") {"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/tests/site/election-night.spec.ts",
+                        "column": 52,
+                        "line": 128
+                      },
+                      "message": "Error: locator.screenshot: Error: strict mode violation: locator('#election-night-scorecard').locator('.night-uncertainty-grid') resolved to 2 elements:\n    1) <div class=\"night-uncertainty-grid\">…</div> aka locator('#election-night-scorecard div').filter({ hasText: 'Wrong top choices3.8 of 35The' })\n    2) <div class=\"night-uncertainty-grid\">…</div> aka locator('div').filter({ hasText: '5.7 percentage pointsExpected' }).nth(1)\n\nCall log:\n\u001b[2m  - waiting for locator('#election-night-scorecard').locator('.night-uncertainty-grid')\u001b[22m\n\n\n  126 |     await expect(panel.locator(\".night-miss-reference\")).toContainText(\"not a limit or a measured accuracy record\");\n  127 |     await panel.locator(\".night-featured\").screenshot({ path: testInfo.outputPath(`${chamber}-featured.png`) });\n> 128 |     await panel.locator(\".night-uncertainty-grid\").screenshot({ path: testInfo.outputPath(`${chamber}-uncertainty.png`) });\n      |                                                    ^\n  129 |     await panel.locator(\".night-all-races > summary\").click();\n  130 |     await expect(panel.locator(\".night-predictions .night-race\")).toHaveCount(10);\n  131 |     if (chamber === \"house\") {\n    at /home/hayden/projects/ballotmancy-election-night-guide-20261026/tests/site/election-night.spec.ts:128:52"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-26T17:44:57.387Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/browser-artifacts/election-night-senate-same-fd05d-rves-the-visitor-s-forecast-desktop-chromium/test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/browser-artifacts/election-night-senate-same-fd05d-rves-the-visitor-s-forecast-desktop-chromium/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/browser-artifacts/election-night-senate-same-fd05d-rves-the-visitor-s-forecast-desktop-chromium/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/tests/site/election-night.spec.ts",
+                    "column": 52,
+                    "line": 128
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "f7d03a2d4350b8dae4c2-a73d6095ee644874df6f",
+          "file": "election-night.spec.ts",
+          "line": 84,
+          "column": 7
+        },
+        {
+          "title": "house: same-page guide starts standard, renders every exact model, and preserves the visitor's forecast",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop-chromium",
+              "projectName": "desktop-chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 29035,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-26T17:45:02.867Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f7d03a2d4350b8dae4c2-bc2741e2c0fb920cca49",
+          "file": "election-night.spec.ts",
+          "line": 84,
+          "column": 7
+        },
+        {
+          "title": "an open scorecard follows chamber tabs and browser history with each chamber's standard forecast",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop-chromium",
+              "projectName": "desktop-chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 8090,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-26T17:45:31.986Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f7d03a2d4350b8dae4c2-8add4ba27a6fda87f220",
+          "file": "election-night.spec.ts",
+          "line": 156,
+          "column": 5
+        },
+        {
+          "title": "the separate fixed32 grading-group reference keeps exact F and FP values beside the full35 forecast",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop-chromium",
+              "projectName": "desktop-chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2442,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-26T17:45:40.089Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f7d03a2d4350b8dae4c2-c9d689e5c28b0322d16a",
+          "file": "election-night.spec.ts",
+          "line": 178,
+          "column": 5
+        },
+        {
+          "title": "an invalid fixed32 attachment preserves the forecast and35 reference, then retries independently",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop-chromium",
+              "projectName": "desktop-chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1227,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-26T17:45:42.540Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f7d03a2d4350b8dae4c2-fadb2a67e9f9c5bbc0f8",
+          "file": "election-night.spec.ts",
+          "line": 216,
+          "column": 5
+        },
+        {
+          "title": "reviewed expected errors follow only their exact Senate edition and remain distinct from observed scores",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-chromium",
+              "projectName": "mobile-chromium",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2551,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-26T17:45:44.437Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f7d03a2d4350b8dae4c2-de98f068fb251c0faf7c",
+          "file": "election-night.spec.ts",
+          "line": 12,
+          "column": 5
+        },
+        {
+          "title": "an invalid uncertainty reference leaves the forecast available and can be retried",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-chromium",
+              "projectName": "mobile-chromium",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1312,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-26T17:45:47.072Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f7d03a2d4350b8dae4c2-0326f2517cdd8a7a4666",
+          "file": "election-night.spec.ts",
+          "line": 62,
+          "column": 5
+        },
+        {
+          "title": "senate: same-page guide starts standard, renders every exact model, and preserves the visitor's forecast",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-chromium",
+              "projectName": "mobile-chromium",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 6337,
+                  "error": {
+                    "message": "Error: locator.screenshot: Error: strict mode violation: locator('#election-night-scorecard').locator('.night-uncertainty-grid') resolved to 2 elements:\n    1) <div class=\"night-uncertainty-grid\">…</div> aka locator('#election-night-scorecard div').filter({ hasText: 'Wrong top choices3.8 of 35The' })\n    2) <div class=\"night-uncertainty-grid\">…</div> aka locator('div').filter({ hasText: '5.7 percentage pointsExpected' }).nth(1)\n\nCall log:\n\u001b[2m  - waiting for locator('#election-night-scorecard').locator('.night-uncertainty-grid')\u001b[22m\n",
+                    "stack": "Error: locator.screenshot: Error: strict mode violation: locator('#election-night-scorecard').locator('.night-uncertainty-grid') resolved to 2 elements:\n    1) <div class=\"night-uncertainty-grid\">…</div> aka locator('#election-night-scorecard div').filter({ hasText: 'Wrong top choices3.8 of 35The' })\n    2) <div class=\"night-uncertainty-grid\">…</div> aka locator('div').filter({ hasText: '5.7 percentage pointsExpected' }).nth(1)\n\nCall log:\n\u001b[2m  - waiting for locator('#election-night-scorecard').locator('.night-uncertainty-grid')\u001b[22m\n\n    at /home/hayden/projects/ballotmancy-election-night-guide-20261026/tests/site/election-night.spec.ts:128:52",
+                    "location": {
+                      "file": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/tests/site/election-night.spec.ts",
+                      "column": 52,
+                      "line": 128
+                    },
+                    "snippet": "  126 |     await expect(panel.locator(\".night-miss-reference\")).toContainText(\"not a limit or a measured accuracy record\");\n  127 |     await panel.locator(\".night-featured\").screenshot({ path: testInfo.outputPath(`${chamber}-featured.png`) });\n> 128 |     await panel.locator(\".night-uncertainty-grid\").screenshot({ path: testInfo.outputPath(`${chamber}-uncertainty.png`) });\n      |                                                    ^\n  129 |     await panel.locator(\".night-all-races > summary\").click();\n  130 |     await expect(panel.locator(\".night-predictions .night-race\")).toHaveCount(10);\n  131 |     if (chamber === \"house\") {"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/tests/site/election-night.spec.ts",
+                        "column": 52,
+                        "line": 128
+                      },
+                      "message": "Error: locator.screenshot: Error: strict mode violation: locator('#election-night-scorecard').locator('.night-uncertainty-grid') resolved to 2 elements:\n    1) <div class=\"night-uncertainty-grid\">…</div> aka locator('#election-night-scorecard div').filter({ hasText: 'Wrong top choices3.8 of 35The' })\n    2) <div class=\"night-uncertainty-grid\">…</div> aka locator('div').filter({ hasText: '5.7 percentage pointsExpected' }).nth(1)\n\nCall log:\n\u001b[2m  - waiting for locator('#election-night-scorecard').locator('.night-uncertainty-grid')\u001b[22m\n\n\n  126 |     await expect(panel.locator(\".night-miss-reference\")).toContainText(\"not a limit or a measured accuracy record\");\n  127 |     await panel.locator(\".night-featured\").screenshot({ path: testInfo.outputPath(`${chamber}-featured.png`) });\n> 128 |     await panel.locator(\".night-uncertainty-grid\").screenshot({ path: testInfo.outputPath(`${chamber}-uncertainty.png`) });\n      |                                                    ^\n  129 |     await panel.locator(\".night-all-races > summary\").click();\n  130 |     await expect(panel.locator(\".night-predictions .night-race\")).toHaveCount(10);\n  131 |     if (chamber === \"house\") {\n    at /home/hayden/projects/ballotmancy-election-night-guide-20261026/tests/site/election-night.spec.ts:128:52"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-26T17:45:48.399Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/browser-artifacts/election-night-senate-same-fd05d-rves-the-visitor-s-forecast-mobile-chromium/test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/browser-artifacts/election-night-senate-same-fd05d-rves-the-visitor-s-forecast-mobile-chromium/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/browser-artifacts/election-night-senate-same-fd05d-rves-the-visitor-s-forecast-mobile-chromium/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/tests/site/election-night.spec.ts",
+                    "column": 52,
+                    "line": 128
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "f7d03a2d4350b8dae4c2-034c60858835236cafb2",
+          "file": "election-night.spec.ts",
+          "line": 84,
+          "column": 7
+        },
+        {
+          "title": "house: same-page guide starts standard, renders every exact model, and preserves the visitor's forecast",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-chromium",
+              "projectName": "mobile-chromium",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 29477,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-26T17:45:55.762Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f7d03a2d4350b8dae4c2-a145fe7201fdd3bea84e",
+          "file": "election-night.spec.ts",
+          "line": 84,
+          "column": 7
+        },
+        {
+          "title": "an open scorecard follows chamber tabs and browser history with each chamber's standard forecast",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-chromium",
+              "projectName": "mobile-chromium",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4051,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-26T17:46:25.322Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f7d03a2d4350b8dae4c2-92c813dcfb4970d5ed02",
+          "file": "election-night.spec.ts",
+          "line": 156,
+          "column": 5
+        },
+        {
+          "title": "the separate fixed32 grading-group reference keeps exact F and FP values beside the full35 forecast",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-chromium",
+              "projectName": "mobile-chromium",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 1607,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"http://127.0.0.1:3137/?run=current-fundamentals\"\u001b[39m\nReceived: \u001b[31m\"http://127.0.0.1:3137/?run=current-fundamentals\u001b[7m&scenario=campaign_pledge_unaligned&race=2026%3AMI%3Asenate%3Aregular\u001b[27m\"\u001b[39m",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"http://127.0.0.1:3137/?run=current-fundamentals\"\u001b[39m\nReceived: \u001b[31m\"http://127.0.0.1:3137/?run=current-fundamentals\u001b[7m&scenario=campaign_pledge_unaligned&race=2026%3AMI%3Asenate%3Aregular\u001b[27m\"\u001b[39m\n    at /home/hayden/projects/ballotmancy-election-night-guide-20261026/tests/site/election-night.spec.ts:207:24",
+                    "location": {
+                      "file": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/tests/site/election-night.spec.ts",
+                      "column": 24,
+                      "line": 207
+                    },
+                    "snippet": "  205 |       await expect(panel.locator(\".night-method code\")).toHaveText(source.resultSha256);\n  206 |     }\n> 207 |     expect(page.url()).toBe(originalUrl);\n      |                        ^\n  208 |     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);\n  209 |   }\n  210 |   await panel.locator(\".night-primary-reference\").screenshot({ path: testInfo.outputPath(\"senate-primary32-reference.png\") });"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/tests/site/election-night.spec.ts",
+                        "column": 24,
+                        "line": 207
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"http://127.0.0.1:3137/?run=current-fundamentals\"\u001b[39m\nReceived: \u001b[31m\"http://127.0.0.1:3137/?run=current-fundamentals\u001b[7m&scenario=campaign_pledge_unaligned&race=2026%3AMI%3Asenate%3Aregular\u001b[27m\"\u001b[39m\n\n  205 |       await expect(panel.locator(\".night-method code\")).toHaveText(source.resultSha256);\n  206 |     }\n> 207 |     expect(page.url()).toBe(originalUrl);\n      |                        ^\n  208 |     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);\n  209 |   }\n  210 |   await panel.locator(\".night-primary-reference\").screenshot({ path: testInfo.outputPath(\"senate-primary32-reference.png\") });\n    at /home/hayden/projects/ballotmancy-election-night-guide-20261026/tests/site/election-night.spec.ts:207:24"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-26T17:46:29.385Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/browser-artifacts/election-night-the-separat-ec3b0--beside-the-full35-forecast-mobile-chromium/test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/browser-artifacts/election-night-the-separat-ec3b0--beside-the-full35-forecast-mobile-chromium/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/browser-artifacts/election-night-the-separat-ec3b0--beside-the-full35-forecast-mobile-chromium/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/tests/site/election-night.spec.ts",
+                    "column": 24,
+                    "line": 207
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "f7d03a2d4350b8dae4c2-9aa1bafb44a0be3d6a85",
+          "file": "election-night.spec.ts",
+          "line": 178,
+          "column": 5
+        },
+        {
+          "title": "an invalid fixed32 attachment preserves the forecast and35 reference, then retries independently",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 45000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-chromium",
+              "projectName": "mobile-chromium",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1533,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-26T17:46:31.863Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f7d03a2d4350b8dae4c2-07686fff8b791186f7a3",
+          "file": "election-night.spec.ts",
+          "line": 216,
+          "column": 5
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-26T17:44:52.628Z",
+    "duration": 100920.21999999999,
+    "expected": 11,
+    "skipped": 0,
+    "unexpected": 3,
+    "flaky": 0
+  }
+}

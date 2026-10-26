@@ -1,0 +1,48 @@
+{
+  "schema": "ElectionNightResultRuntimeIndependentReviewV1",
+  "status": "qualified_private_preparation_no_actual_result_grade",
+  "reviewedAt": "2026-10-26",
+  "scope": {
+    "repository": "/home/hayden/projects/ballotmancy-election-night-guide-20261026",
+    "readOnlyProductReview": true,
+    "changedProductFiles": false,
+    "actual2026ResultsRead": false
+  },
+  "pins": {
+    "artifactStoreTsSha256": "a0f72a71d230587000831946c5303f76d2244f9d8584569977cdf0fd6b10b7a3",
+    "senateOperatorTsSha256": "0484f65e9ee321eea0d05b1062a5fe6b8e955651fa475e9ea462930ccb9a00c0",
+    "ownerPythonOperatorSha256": "81cf4c04c974faab4388c6d623a93cb8ddfd1d6ce0aa7659e4c7cd330eb9830e",
+    "evaluationTsSha256": "8bcc2e41ef09fbbc5925469ba29d4361d4dfe897b0793fd410f499c493aa17fb",
+    "scoringBridgeTsSha256": "e07b01cf21966c8429b23465b21c4974b4b4b2f5db5a5f26f284af66f9ccdedb",
+    "rawEditorialRubricDecisionSha256": "0d338b95faaa0fd393361e56bd59fae5d8b4f17d50a5b3c326393984c6faf67a",
+    "senateOwnerPolicySha256": "efe1bf193e2959284b73ea833af0a136f6c592001a2faf50505e3258e25cf0cd"
+  },
+  "verified": [
+    "Store hashes actual bytes, checks length/hash on every read, uses create-if-absent hard links, rejects corrupt existing content and symlink/path traversal, and returns frozen parsed objects. Root/ancestor rename by an untrusted concurrent process is explicitly outside its threat model.",
+    "Caller supplies independent publication and admission pin arguments. Lock loader checks role pins, reviewed evidence pins, exact original public source versus normalized projection/native identities, protocol roster/edition, and ordered scored subset plus displayed complement. Private WeakSet brands reject copied or caller-asserted loaded objects.",
+    "Ledger loader requires a caller-selected head at the end of an explicit predecessor chain. It verifies each historical revision, source and evidence bytes, record predecessor and ID/revision uniqueness, one record ID per race, and keeps superseded records while exposing only selected-head records.",
+    "For the reviewed earlier Senate comparison, rubric validation fixes all 35 displayed pairs, exact ordered 32 plurality core for the primary grade and AK/GA/ME as explicit ungraded display rows. The bridge preserves all 35 evaluation rows and only derives paired losses for declared grade targets.",
+    "TS operator matches pinned Python operator in synthetic plurality, RCV, GA runoff, tie, outside-office-winner and preliminary cases. Both use locked pair counts as denominator, retain zero tie margin while withholding binary lead, and require certified/contest-final/no pending recount or dispute for operator final eligibility. TS also rejects counts outside safe integer range.",
+    "Evaluator checks declared resultRuleId against observation when either supplies it for Senate winner and all margins; scoring bridge requires protocol and scored IDs equal the rubric target rule ID. A changed counting rule with unchanged event/round does not silently score.",
+    "Focused node --test on artifact, operator, evaluator and scoring files passed 46/46. The scoring test uses exact raw editorial rubric bytes and invented lock, result source, reviews and outcomes to exercise lock→ledger→bridge→gradeElectionNightRubric, producing analytic A/A/A; it does not score a real 2026 result."
+  ],
+  "actionableBeforeActualGrade": [
+    {
+      "priority": "required",
+      "issue": "Owner Senate policy requires official certified, contest-final results with no pending recount/dispute, while generic evaluator and rubric can score a status of final when a protocol minimum is final. The pure operator emits the stricter eligibility flag, but the current store/bridge do not cryptographically bind a per-race operator projection or its finality evidence to a result record.",
+      "action": "In the future actual-result importer/admission, bind each recorded pair margin/lead to the locked policy row, authenticated source/crosswalk/round/finality evidence and operator output. Require certified eligible status for each actual Senate grade row; preserve preliminary values as descriptive only. This is an admission-layer requirement, not a reason to alter generic historical fixture scoring."
+    },
+    {
+      "priority": "required",
+      "issue": "A trusted ledger pin authorizes one explicit history and chosen head, but the loader cannot prove there is no separately published alternative ledger/head outside that manifest. Source URLs, candidate crosswalk and review-pin content are byte-pinned declarations; scientific correctness is not inferred from their shape.",
+      "action": "The real result publication process must maintain an external single chosen-head pointer/admission decision, document corrections and resolve any competing official revisions before making a grade. Independently review actual source, event, candidate and finality evidence for every row."
+    },
+    {
+      "priority": "required",
+      "issue": "The generic lock loader admits any protocol reviewedDefinition SHA among its review-role pins; it does not semantically prove that review covers the exact protocol/round mapping. The role-specific evidence content and original→projection mapping need external review, despite correct byte binding.",
+      "action": "The pre-result evaluation lock/admission must explicitly attest each protocol and cohort mapping, original/projection pair and result-policy revision; retain the exact role-to-review crosswalk in the admitted decision."
+    }
+  ],
+  "noCodeBlockerFoundForPrivatePreparation": true,
+  "limitations": "No real 2026 result feed, source admission, final pre-outcome lock or result ledger was supplied. This review supports continued private integration and analytic tests only; it does not authorize an actual grade."
+}

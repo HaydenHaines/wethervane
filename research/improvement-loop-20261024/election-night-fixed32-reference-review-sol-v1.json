@@ -1,0 +1,65 @@
+{
+  "schema": "ElectionNightFixed32ReferenceIndependentFrontendReviewV1",
+  "date": "2026-10-26",
+  "status": "passed_scoped_qualified_reference_attachment_no_evaluation_lock",
+  "scope": {
+    "repository": "/home/hayden/projects/ballotmancy-election-night-guide-20261026",
+    "productFilesEdited": false,
+    "rawDrawRecountRepeated": false,
+    "actual2026ResultsUsed": false
+  },
+  "ownerPins": {
+    "handoffSha256": "e571037c39a1203b79c2027ec72a4e2e7ff3b3340c1648eba39f75b6a7c41fbb",
+    "independentReviewSha256": "b82bc61967c3af40274178d79f65ba088e3f5313d32233ec4fbc0c9ac3648c8d",
+    "reviewFreezeSha256": "a90c5c30a2db502a71ff56b98c5c2fc7966f9b1675539fc30b479d9bca18f3d3",
+    "ownerPolicySha256": "efe1bf193e2959284b73ea833af0a136f6c592001a2faf50505e3258e25cf0cd",
+    "FReferenceSha256": "e8945138896bad678ee4d4dee5ab182e92ca150766deb47595cee6fc4825b120",
+    "FPReferenceSha256": "545ff5c25cc74e681afd10305b7c5a00c0653368cf3a6adda76184b9dd142568",
+    "commonCohortSha256": "a11a92c18ad01867b5e68a9ac5f56a3398012abddacd980207098f09323e4ed1"
+  },
+  "frontendPins": {
+    "exporterSha256": "308328e76d867a399d6843594e674c9536a8487ab46aa24805633e11e0fd50fd",
+    "matcherSha256": "09cb462c81114ba6dc5c5a09fc83c08f13bb694eac4c3015fed0418a36185639",
+    "clientSha256": "156089f779a8ad1d2f19a6a757b87cea68cb26d5a5d61bbcf3bc8c30bcfe2995",
+    "catalogSha256": "8a63d2d3f8490b991a3da6b92ad686d2f9a5d0eb3dd03d51f0c644d8d3e16407",
+    "publicationManifestSha256": "af4c54bc163625f842014a097837640670512c4af3737b69be182392c1a03260",
+    "preserved35CatalogSha256": "9d2c289667d9f25fe38515eefb1503133a6f72b92cfcf65e5061540b235ccd5f"
+  },
+  "findings": [
+    {
+      "status": "pass",
+      "topic": "qualified source and exact edition",
+      "evidence": "Exporter pins owner handoff, independent review/freeze and source bytes, including failed V1 evidence; requires reviewed F/FP reference SHAs and original public F/FP result SHAs, native forecast/draw/receipt identities, true October 20/26 dates and separate target IDs."
+    },
+    {
+      "status": "pass",
+      "topic": "fixed cohort and draw identity",
+      "evidence": "Ordered common 32 equals reviewed plurality core, excluding AK/GA/ME while 35 forecast rows remain. F uses 100000 original rows at 1/100000; FP uses original 4x10000 at 1/40000. Axis indices preserve original race order, no resampling or cross-bank pairing. F embedded IDs and FP externally reviewed axis-binding caveat remain explicit."
+    },
+    {
+      "status": "pass",
+      "topic": "numeric projection and interpretation",
+      "evidence": "Exporter verifies reviewed distribution summaries, public marginal means/ranges/pair probabilities and aggregate modal-miss/MAE identities; matcher checks exact pins, per-race target/order/marginals and bounded distributions. The UI labels the 32-race values as model expectations, distinguishes them from the 35-race reference, and says they are not observed errors or grades."
+    },
+    {
+      "status": "pass",
+      "topic": "independent attachment and failure",
+      "evidence": "Build-imported publication manifest authenticates exact catalog bytes. Exact current F/FP editions alone are eligible among 16 saved choices. Full35 and core32 fetch concurrently with separate controllers, 8-second deadlines, byte digests, semantic matchers and error fields. Failure of one preserves the forecast and does not substitute/suppress the other; stale hash or candidate/cohort mismatch fails closed. Parent abort propagates rather than returning stale loaded data."
+    },
+    {
+      "status": "pass",
+      "topic": "no inferred evaluation lock",
+      "evidence": "Owner handoff says no lock/outcomes; both catalog entries and matched reference retain evaluationLock:false and observedResultsConsumed:false. No reference path creates official results, calibration evidence, a grade or a paired F-versus-FP draw difference."
+    }
+  ],
+  "focusedVerification": {
+    "nodeTests": "23 passed, 0 failed in core-reference and client suites",
+    "pythonExporterTests": "4 passed, 0 failed",
+    "sourceRecount": "Relied on owner independent 285-check review; did not rerun native joint bank computation."
+  },
+  "blockers": [],
+  "qualifiedLimitations": [
+    "The independent owner review qualifies the native reference extension; this review covers frontend projection and attachment, not an actual evaluation lock or result-source admission.",
+    "The two optional references resolve as one Promise.all request, so a slow optional fetch can delay displaying the other until its 8-second deadline; it cannot change or suppress the other verified result. This is a bounded presentation latency, not an identity failure."
+  ]
+}

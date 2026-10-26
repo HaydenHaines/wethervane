@@ -1,0 +1,236 @@
+{
+  "schema": "ElectionNightResultPolicyIntegrationReviewSolV1",
+  "reviewedUtc": "2026-10-26T17:31:37.701231+00:00",
+  "reviewer": "Sol; independent of root V3 edits and Luna policy importer. Authored earlier generic V2 rubric primitives; this review does not claim independence from that unchanged base.",
+  "status": "pass_for_preparation_integration_not_evaluation_lock_or_actual_result_admission",
+  "blockingFindings": [],
+  "scope": "Read-only review of root rubric V3 changes, Luna importer, normalized preparation JSON and focused tests against exact editorial/owner source bytes. No repository edits, real-result writes, build or browser execution.",
+  "reviewedArtifacts": [
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/election-night-rubric.ts",
+      "sha256": "252f742e93e7105a95ffca9646a608ea268f49b2e5feb15be8b3d90c00c31260"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/tests/election-night-rubric.test.mjs",
+      "sha256": "f5e52735bd7d29f5e89978aa46cac335c6f4754d3c22ab8d01030eeebe0512b3"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/scripts/export_election_night_result_policy.py",
+      "sha256": "0f1d84598ea9be5d125f53fbc3e74b3c2b291bd1f41f84f3c7247260495fb1a0"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/tests/site_election_night_result_policy_test.py",
+      "sha256": "684ae6e85c3ea42c3f825d0aafe6ee060151d43a2aab42d06d13ad94972dfd6d"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/data/election-night-senate-result-policy.json",
+      "sha256": "44a77f5ae515f446f2885106ad618076da97c8733d96a2a59ea70a692c9618c4"
+    }
+  ],
+  "authority": [
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-rubric-editorial-decision-v3.json",
+      "sha256": "0d338b95faaa0fd393361e56bd59fae5d8b4f17d50a5b3c326393984c6faf67a"
+    },
+    {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-polling-refresh-20261026/result-policy-frontend-handoff-root-v1.json",
+      "sha256": "1d0bae622c90c79c0ce6e66ff796c0011625a38c48e2aa3b25a39140d4e6d4e1"
+    }
+  ],
+  "ownerPins": {
+    "policy": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-polling-refresh-20261026/result-policy-special-rules-sol-v1/policy-v1.json",
+      "sha256": "efe1bf193e2959284b73ea833af0a136f6c592001a2faf50505e3258e25cf0cd"
+    },
+    "mapping": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-polling-refresh-20261026/result-policy-special-rules-sol-v1/locked-35-result-policy-mapping-v1.json",
+      "sha256": "244e9db017957d0a5361f5f1b7a2498f066c43d9b94a59f1277e8cff91b6afa3"
+    },
+    "operator": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-polling-refresh-20261026/result-policy-special-rules-sol-v1/pair_operator.py",
+      "sha256": "81cf4c04c974faab4388c6d623a93cb8ddfd1d6ce0aa7659e4c7cd330eb9830e"
+    },
+    "freeze": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-polling-refresh-20261026/result-policy-special-rules-sol-v1/freeze-manifest-v1.json",
+      "sha256": "c890eda18924215ebe049af38725bb1389998b25f77f1ab91d84a4234d71a7d8"
+    }
+  },
+  "checks": [
+    {
+      "id": "fixed_scope",
+      "result": "pass",
+      "finding": "Primary winner and interval cohorts are the exact predeclared ordered 32 plurality pairs; full35 display remains unchanged. AK, GA and ME are the exact conditional3, not selected from observed errors. Supplementary35 is a separate explicit comparison contract.",
+      "evidence": [
+        {
+          "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/election-night-rubric.ts",
+          "lines": [
+            48,
+            50,
+            199,
+            200,
+            208,
+            209,
+            210,
+            211
+          ]
+        },
+        {
+          "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/scripts/export_election_night_result_policy.py",
+          "lines": [
+            214,
+            317,
+            318,
+            319
+          ]
+        }
+      ]
+    },
+    {
+      "id": "no_partial_grade_shrink",
+      "result": "pass",
+      "finding": "Complete letters require every target final/certified with no unexpected rows or issues. Missing rows retain locked denominators; no automatic shrink. Independently removing both cohort rows and losses, exchanging a core race, changing full display or conditional membership, and supplying only32 rows to supplementary35 all withheld overall letters.",
+      "evidence": [
+        {
+          "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/election-night-rubric.ts",
+          "lines": [
+            208,
+            209,
+            295
+          ]
+        },
+        {
+          "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/tests/election-night-rubric.test.mjs",
+          "lines": [
+            247,
+            254,
+            262,
+            264,
+            265
+          ]
+        }
+      ]
+    },
+    {
+      "id": "unchanged_earlier_bindings",
+      "result": "pass",
+      "finding": "Both original native/public SHAs, run/target/law, issue dates, cutoffs and14/8 calendar-day horizons remain pinned. The separate earlier-issued exception explicitly disclaims matched-horizon or causal polling-skill interpretation. It does not weaken generic matched-cutoff guards.",
+      "evidence": [
+        {
+          "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/election-night-rubric.ts",
+          "lines": [
+            57,
+            63,
+            194,
+            206,
+            207
+          ]
+        },
+        {
+          "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/scripts/export_election_night_result_policy.py",
+          "lines": [
+            228,
+            235
+          ]
+        }
+      ]
+    },
+    {
+      "id": "actual_source_byte_identity",
+      "result": "pass",
+      "finding": "Independently hashed editorialV3, owner handoff/policy/mapping/operator/freeze and every one of20 normalized sourceFiles; all matched. Importer additionally verifies16 freeze-listed files with lengths and safe containment before reading normalized metadata.",
+      "evidence": [
+        {
+          "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/scripts/export_election_night_result_policy.py",
+          "lines": [
+            69,
+            78,
+            90,
+            156,
+            174
+          ]
+        }
+      ]
+    },
+    {
+      "id": "all35_pair_identity",
+      "result": "pass",
+      "finding": "Independently checked35 mapping/normalized rows against each exact F and FP public bundle: race ID, seat, ordered candidate IDs/names/parties match. Full/core/conditional arrays exactly equal editorialV3 and owner mapping order. FL/OH remain special events; independents retain party labels.",
+      "evidence": [
+        {
+          "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/scripts/export_election_night_result_policy.py",
+          "lines": [
+            241,
+            252,
+            282,
+            317
+          ]
+        }
+      ]
+    },
+    {
+      "id": "authority_not_result_admission",
+      "result": "pass",
+      "finding": "Normalized JSON remains preparation_not_evaluation_lock with evaluationLock, observedResultsUsed and actualGradesAssigned false. Official route URLs preserve their partial/discovery status; officialFeedCandidateIds and officialFeedContestId are null for all35. Exact-source/candidate/round crosswalks and source-finality admission remain separate. No official authority URL is treated as a result record.",
+      "evidence": [
+        {
+          "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/scripts/export_election_night_result_policy.py",
+          "lines": [
+            255,
+            256,
+            257,
+            289,
+            331,
+            359,
+            361
+          ]
+        }
+      ]
+    },
+    {
+      "id": "policy_semantics_preserved",
+      "result": "pass",
+      "finding": "Policy retains positive first+second authenticated-count denominator; relative lead and named-pair margin rather than all-candidate/legal winner; official exact-two final round only for AK/ME; certified decisive general or exact qualifying runoff for GA; tied pair counts allow margin0 but no pair-winner indicator; same admitted result revision for both forecast editions. Source-finality policy and source gaps are copied unchanged.",
+      "evidence": [
+        {
+          "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/scripts/export_election_night_result_policy.py",
+          "lines": [
+            111,
+            354,
+            355,
+            356,
+            357,
+            361
+          ]
+        }
+      ]
+    }
+  ],
+  "validation": [
+    {
+      "command": "node --experimental-strip-types --test --test-reporter=spec tests/election-night-rubric.test.mjs",
+      "result": "12/12 pass"
+    },
+    {
+      "command": "python3 -B -m unittest discover -s tests -p site_election_night_result_policy_test.py -v",
+      "result": "4/4 pass"
+    },
+    {
+      "method": "Independent Python direct byte/identity comparisons, not importer output assertions alone",
+      "result": "All35/32/3 identities, each forecast35rows, source-finality object and20sourceFiles verified"
+    },
+    {
+      "method": "Independent in-memory invented-fixture mutations via existing test builders; no source edits",
+      "result": "12/12 changes refused overall letters: ad-hoc cohort shrinking, wrong core membership, incomplete interval cohort, changed display/conditional scope, native/public/cutoff drift, result revision mismatch, called results, zero baseline and incomplete supplementary35"
+    }
+  ],
+  "limitationsAndRequiredNextBindings": [
+    "This is approval of preparation code and exact metadata translation only. It is not the final evaluation lock and admits no actual2026 outcome/source/feed crosswalk.",
+    "Generic rubric receives already admitted scalar scores. The trusted operator/import/scoring bridge must enforce owner-specific certified/contest-final status, no pending recount/dispute, exact observed round and event, and tie/omitted-officewinner handling. Generic final/certified labels alone do not establish these facts.",
+    "The owner Python operator was byte-pinned, not reimplemented or executed on real results in this review. Its official-rule fact captures are separate from root-selected scoring eligibility choices.",
+    "All35 forecast/display rows must survive downstream lock and renderer integration. A32-race observed aggregate must use a separately reviewed32-race reference from each unchanged original draw bank, rather than the existing35-race reference.",
+    "Known source gaps remain: partial result route discovery, no future official result contest/candidate IDs or certified round files, blocked ballot/source refreshes and incomplete new Florida writ evidence. These cannot be filled from model IDs or authority landing URLs.",
+    "This focused review did not run a full build/browser, publish, change forecasts, evaluate actual2026 outcomes, or assign an actual grade."
+  ],
+  "observed2026ResultsUsed": false,
+  "actual2026GradesAssigned": false
+}

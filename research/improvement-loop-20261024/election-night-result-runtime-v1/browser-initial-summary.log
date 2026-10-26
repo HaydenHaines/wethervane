@@ -1,0 +1,70 @@
+passed [desktop-chromium] reviewed expected errors follow only their exact Senate edition and remain distinct from observed scores
+
+passed [desktop-chromium] an invalid uncertainty reference leaves the forecast available and can be retried
+
+failed [desktop-chromium] senate: same-page guide starts standard, renders every exact model, and preserves the visitor's forecast
+Error: locator.screenshot: Error: strict mode violation: locator('#election-night-scorecard').locator('.night-uncertainty-grid') resolved to 2 elements:
+    1) <div class="night-uncertainty-grid">…</div> aka locator('#election-night-scorecard div').filter({ hasText: 'Wrong top choices3.8 of 35The' })
+    2) <div class="night-uncertainty-grid">…</div> aka locator('div').filter({ hasText: '5.7 percentage pointsExpected' }).nth(1)
+
+Call log:
+[2m  - waiting for locator('#election-night-scorecard').locator('.night-uncertainty-grid')[22m
+
+
+  126 |     await expect(panel.locator(".night-miss-reference")).toContainText("not a limit or a measured accuracy record");
+  127 |     await panel.locator(".night-featured").screenshot({ path: testInfo.outputPath(`${chamber}-featured.png`) });
+> 128 |     await panel.locator(".night-uncertainty-grid").screenshot({ path: testInfo.outputPath(`${chamber}-uncertainty.png`) });
+      |                                                    ^
+  129 |     await panel.locator(".night-all-races > summary").click();
+  130 |     await expect(panel.locator(".night-predictions .night-race")).toHaveCount(10);
+  131 |     if (chamber === "house") {
+    at /home/hayden/projects/ballotmancy-election-night-guide-20261026/tests/site/election-night.spec.ts:128:52
+passed [desktop-chromium] house: same-page guide starts standard, renders every exact model, and preserves the visitor's forecast
+
+passed [desktop-chromium] an open scorecard follows chamber tabs and browser history with each chamber's standard forecast
+
+passed [desktop-chromium] the separate fixed32 grading-group reference keeps exact F and FP values beside the full35 forecast
+
+passed [desktop-chromium] an invalid fixed32 attachment preserves the forecast and35 reference, then retries independently
+
+passed [mobile-chromium] reviewed expected errors follow only their exact Senate edition and remain distinct from observed scores
+
+passed [mobile-chromium] an invalid uncertainty reference leaves the forecast available and can be retried
+
+failed [mobile-chromium] senate: same-page guide starts standard, renders every exact model, and preserves the visitor's forecast
+Error: locator.screenshot: Error: strict mode violation: locator('#election-night-scorecard').locator('.night-uncertainty-grid') resolved to 2 elements:
+    1) <div class="night-uncertainty-grid">…</div> aka locator('#election-night-scorecard div').filter({ hasText: 'Wrong top choices3.8 of 35The' })
+    2) <div class="night-uncertainty-grid">…</div> aka locator('div').filter({ hasText: '5.7 percentage pointsExpected' }).nth(1)
+
+Call log:
+[2m  - waiting for locator('#election-night-scorecard').locator('.night-uncertainty-grid')[22m
+
+
+  126 |     await expect(panel.locator(".night-miss-reference")).toContainText("not a limit or a measured accuracy record");
+  127 |     await panel.locator(".night-featured").screenshot({ path: testInfo.outputPath(`${chamber}-featured.png`) });
+> 128 |     await panel.locator(".night-uncertainty-grid").screenshot({ path: testInfo.outputPath(`${chamber}-uncertainty.png`) });
+      |                                                    ^
+  129 |     await panel.locator(".night-all-races > summary").click();
+  130 |     await expect(panel.locator(".night-predictions .night-race")).toHaveCount(10);
+  131 |     if (chamber === "house") {
+    at /home/hayden/projects/ballotmancy-election-night-guide-20261026/tests/site/election-night.spec.ts:128:52
+passed [mobile-chromium] house: same-page guide starts standard, renders every exact model, and preserves the visitor's forecast
+
+passed [mobile-chromium] an open scorecard follows chamber tabs and browser history with each chamber's standard forecast
+
+failed [mobile-chromium] the separate fixed32 grading-group reference keeps exact F and FP values beside the full35 forecast
+Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+Expected: [32m"http://127.0.0.1:3137/?run=current-fundamentals"[39m
+Received: [31m"http://127.0.0.1:3137/?run=current-fundamentals[7m&scenario=campaign_pledge_unaligned&race=2026%3AMI%3Asenate%3Aregular[27m"[39m
+
+  205 |       await expect(panel.locator(".night-method code")).toHaveText(source.resultSha256);
+  206 |     }
+> 207 |     expect(page.url()).toBe(originalUrl);
+      |                        ^
+  208 |     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  209 |   }
+  210 |   await panel.locator(".night-primary-reference").screenshot({ path: testInfo.outputPath("senate-primary32-reference.png") });
+    at /home/hayden/projects/ballotmancy-election-night-guide-20261026/tests/site/election-night.spec.ts:207:24
+passed [mobile-chromium] an invalid fixed32 attachment preserves the forecast and35 reference, then retries independently
+

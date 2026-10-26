@@ -1,0 +1,71 @@
+{
+  "schema": "ElectionNightResultCohortReviewV1",
+  "reviewedAt": "2026-10-26",
+  "status": "recommend_fixed_32_plurality_core_primary;_keep_all_35_visible;no_outcomes_or_grades_used",
+  "reviewScope": {
+    "handoff": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-polling-refresh-20261026/result-policy-frontend-handoff-root-v1.json",
+      "sha256": "1d0bae622c90c79c0ce6e66ff796c0011625a38c48e2aa3b25a39140d4e6d4e1"
+    },
+    "policy": {
+      "path": "research/senate-polling-refresh-20261026/result-policy-special-rules-sol-v1/policy-v1.json",
+      "sha256": "efe1bf193e2959284b73ea833af0a136f6c592001a2faf50505e3258e25cf0cd"
+    },
+    "mapping": {
+      "path": "research/senate-polling-refresh-20261026/result-policy-special-rules-sol-v1/locked-35-result-policy-mapping-v1.json",
+      "sha256": "244e9db017957d0a5361f5f1b7a2498f066c43d9b94a59f1277e8cff91b6afa3"
+    },
+    "operator": {
+      "path": "research/senate-polling-refresh-20261026/result-policy-special-rules-sol-v1/pair_operator.py",
+      "sha256": "81cf4c04c974faab4388c6d623a93cb8ddfd1d6ce0aa7659e4c7cd330eb9830e"
+    },
+    "freezeManifest": {
+      "path": "research/senate-polling-refresh-20261026/result-policy-special-rules-sol-v1/freeze-manifest-v1.json",
+      "sha256": "c890eda18924215ebe049af38725bb1389998b25f77f1ab91d84a4234d71a7d8"
+    },
+    "routeRegistry": {
+      "path": "research/senate-polling-refresh-20261026/result-policy-sources-luna-v1/registry.json",
+      "sha256": "428fcd0d87057a0cc729495e90d632f7ac90678fb6e01eec3a9c415a017a9415"
+    },
+    "specialRuleSources": {
+      "path": "research/senate-polling-refresh-20261026/result-policy-special-rules-sol-v1/official-special-rule-sources-v1.json",
+      "sha256": "64c4b9d1bf2c979b22ddf1c7bef08c868b7206d3b839866d902d506d3a34311b"
+    }
+  },
+  "cohortRecommendation": {
+    "primary": "Predeclare the named 32-race plurality-core cohort for both Senate winner-relative-lead and pair-margin grades. It is a fixed, rule-based cohort excluding Alaska, Maine, and Georgia because their admitted measurement events are conditional on final-pair or decisive-event behavior. This decision is not yet an evaluation lock; owner must pin the cohort, result protocol, comparison contract, and source admission before returns.",
+    "display": "Keep all 35 modeled principal pairs on the page and retain each row's native forecast and explicit result status. The three special-rule rows remain visible in a separately labeled conditional-event section or status grouping; they never disappear from the 32-row grading denominator after outcomes are observed.",
+    "why_not_35_as_primary": "A complete 35-row letter depends on AK/ME producing an official observed final round with exactly the two locked contenders and GA producing a certified decisive general result or a qualifying certified runoff with the same two principals. If those conditions fail, the predeclared policy makes the pair event unavailable; a full-cohort requirement can prevent the letter from ever being issued. The 32 core avoids those known event-definition dependencies while remaining outcome-independent. It still depends on future official source admission, exact crosswalks, finality, and no unresolved dispute, so a 32-row letter is not guaranteed.",
+    "35_secondary": "Keep all-35 forecast diagnostics and row-level expectations distinct. If a separate 35-row result summary or letter is ever desired, it must be independently predeclared as a secondary analysis with its own fixed denominator and completion rule; it cannot replace, rescue, or be silently mixed into the primary 32 cohort."
+  },
+  "essential_cohort_alignment": {
+    "finding": "The current Senate V2 model-implied shared-error reference covers 35 rows. If the primary observed-score cohort is 32, do not use the 35-row expected MAE, 90% bands, miss-count reference, or coverage-count reference as though they describe the same scored cohort.",
+    "required": "Before the evaluation lock, compute and independently review an additive 32-row expected-error/shared-error reference from the already retained native joint draw bank, filtering only the predeclared fixed 32 core in native order. Pin its ordered cohort, count, denominators, draw identity, definitions, archive/source hashes, and review. Preserve the existing 35-row V2 artifact byte-for-byte and label it as a separate all-35 model diagnostic. Never rebuild tails from interval endpoints or splice banks.",
+    "per_race": "Existing per-race expected errors and event probabilities can remain visible for all 35 as model-implied row-level diagnostics, but the all-35 aggregate distribution must not be presented as the 32-row score cohort's expectation."
+  },
+  "publicLabelsAndStates": {
+    "heading": "2026 Senate scorecard · 35 named principal pairs shown",
+    "primaryScoreLabel": "Primary comparison cohort: 32 predeclared plurality races (named-pair relative lead and margin; not the legal Senate-seat winner).",
+    "coverage": "Show final/certified admitted rows as n/32 and keep pending, preliminary-only, unresolved, mismatched, and unsupported rows visible by name. No letter until every row in the fixed 32 cohort has an admitted final/certified result on both forecast arms, the same result revision, and no pending result-affecting dispute. Never report n/N using only the currently available subset as a final grade.",
+    "initialState": "Awaiting admitted official result data and reviewed candidate/contest crosswalks; no score or letter assigned.",
+    "pluralityRows": "Pair margin uses only the two named candidates' authenticated counts: 100*(first-second)/(first+second). It is the pair's relative lead/share, not full-ballot share or an unconditional seat-winner probability. An omitted candidate winning the office does not invalidate a supported pair margin; show that office-winner-outside-pair diagnostic separately and do not grade legal seat winner.",
+    "tie": "An admitted certified tie yields pair margin 0 and first share 50%; the binary first-versus-second winner indicator is unavailable with a tie status. Do not assign the tie to the second candidate or infer a state-law tie winner.",
+    "ak_me": "Keep the model row visible with 'conditional RCV final-pair rule; outside primary plurality cohort.' Only an official observed final round with exactly two continuing candidates identical to the locked pair can support the separate pair metric. Early majority termination with more than two remaining, another final pair, replacement, or no final-pair report stays unavailable. Never synthesize final preferences or substitute first-round votes.",
+    "ga": "Keep the model row visible with 'conditional decisive general/runoff rule; outside primary plurality cohort.' Certified November general counts qualify only if no runoff is required. If a runoff is required, the general remains pending; a certified runoff qualifies only if both locked principals are finalists. A changed event date requires a reviewed policy version.",
+    "special_identity": "Preserve Florida and Ohio as the frozen class-3 special contests and require exact seat/event identity. Do not join to a same-day regular election by state alone.",
+    "revision": "Every correction, recount, or certification update is a new immutable result revision with source/crosswalk/round pins, observed time, supersedes pointer, and reason. Recompute both unchanged forecasts against the same admitted revision; preserve older versions and forecast vintages."
+  },
+  "source_and_crosswalk_limitations": {
+    "future_feed_ids": "The reviewed mapping contains 0/35 official result-feed candidate-ID sets and 0/35 contest IDs. Current contender and source-record IDs are internal model/roster identities, not official vendor keys. No fuzzy name/party alias, replacement mapping, or future key can be assumed.",
+    "route_registry": "Route inventory is partial metadata, not result-source admission. It reports no verified certification/result route for AL, CO, and GA; LA destination unverified; NE/NH results destinations not followed; MT surfaced a test host; OH portal contained mock totals; WV event key association unverified; WY general-election artifact not yet present. A route URL does not authenticate payload, exact event/round, candidates, or finality.",
+    "source_captures": "The 16 official special-rule entries are web-tool rendered extractions, not downloaded origin bytes. Direct AK access limitations and the official FAQ/search rendering are disclosed; proposed bills/old initiative text are not treated as current law. Before use, separately admit exact source bytes/version, URL and retrieval time, contest/event/round IDs, and crosswalk evidence.",
+    "finality": "Only admitted official certified/contest-final data with no pending recount or result-affecting dispute can score a final letter. Preliminary official data may be descriptive only. Calls, deadlines, 100% reporting, or vendor labels do not establish finality.",
+    "operator_boundary": "The pure operator validates count arithmetic and declared identity/finality booleans but performs no source authentication or I/O. Frontend/operator integration must bind the independently reviewed admission and crosswalk artifacts; those booleans or route metadata alone are not proof.",
+    "evidence_scope": "The owner handoff reports 12 independently rerun tests against invented 2099 fixture counts; no actual 2026 general outcome or actual grade was used. The source work disclosed incidental 2026 primary-result search snippet exposure and says no values were used. Preserve that audit disclosure internally; do not claim that no result snippets were encountered."
+  },
+  "comparisonInterpretation": {
+    "rule": "For the 32 primary targets, F and FP must be scored on the exact same admitted result revision and the same predeclared 32-row event/denominator mapping. Preserve both forecast editions and their separate draw banks; never pair, splice, or reweight simulated draws to claim a cross-bank difference distribution.",
+    "limitation": "The current approved Senate comparison is October 20 basic-history F versus October 26 polling FP, with different information cutoffs and scheduled-election horizons (14 versus 8 calendar days). Label it as descriptive performance of those issued editions on the same targets/results; it does not isolate the effect of polling or establish long-run calibration."
+  },
+  "reviewConclusion": "Recommend the fixed 32 plurality core as the primary grade cohort, keep all 35 forecast/result rows visible, and create a separate reviewed 32-row model-implied shared-error reference before using the existing 35-row diagnostic beside 32-row scores. Keep AK/ME/GA as explicitly conditional special-event rows, with source, crosswalk, finality, and immutable-revision gates. No source ingestion, policy lock, UI change, outcome lookup, or grade was performed in this review."
+}

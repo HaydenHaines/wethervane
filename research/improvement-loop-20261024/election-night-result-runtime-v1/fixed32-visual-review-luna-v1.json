@@ -1,0 +1,83 @@
+{
+  "review": "fixed32-visual-review-luna-v1",
+  "reviewedAt": "2026-10-26",
+  "result": "pass",
+  "scope": "Visual and wording review of the six supplied Senate coverage and fixed-32 expected-error screenshots. Read-only; no product edits.",
+  "sourceFiles": [
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/components/ElectionNightGuide.tsx",
+      "sha256": "38dce0e6a5a740def610138fe5b0e7031b0416cfb77422ddf3791c5b2bd79681"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/components/ElectionNightRubric.tsx",
+      "sha256": "a45a901df5ce57861ad11a8976409e8b129fbf2470a98c279630aa22af778fed"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/data/election-night-senate-result-policy.json",
+      "sha256": "44a77f5ae515f446f2885106ad618076da97c8733d96a2a59ea70a692c9618c4"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/data/election-night-reference-publication.json",
+      "sha256": "9dbcd9cbab826082e773ab3dfd1447b960bae57ac33ab3b3fcbef39336bc9878"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/data/election-night-core-reference-publication.json",
+      "sha256": "af4c54bc163625f842014a097837640670512c4af3737b69be182392c1a03260"
+    }
+  ],
+  "screenshots": [
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/desktop-senate-coverage-viewport.png",
+      "sha256": "5ed6ee0fd8e263d454ccecc33e8114c1a81aaf1a622bd5bd16c31808bb9e1196"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/mobile-senate-coverage-viewport.png",
+      "sha256": "5c85c08c4a9cbc1c4bc9d95b5eddacb66f7d17571d0c9a0b6ea419182e09288d"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/desktop-primary32-fp-viewport.png",
+      "sha256": "4577099122ad94a1d8131ee55f0f80637fe49d53a743ba753ac91712d00b74af"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/mobile-primary32-fp-viewport.png",
+      "sha256": "d9c5aed82d16341588106978cc3370d5ac24036d98bfd6cf80df697d335e947e"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/desktop-primary32-f-viewport.png",
+      "sha256": "ea6e22286fdad3c824a9efc6b733003ff69275eec7c4d44ce23108734a18fe85"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/mobile-primary32-f-viewport.png",
+      "sha256": "c3e00802fecfcd30ec5c6c05bc38610b1af1a3a040042fbc99d8f71e49157dda"
+    }
+  ],
+  "findings": [
+    {
+      "severity": "pass",
+      "topic": "35 displayed versus 32 primary",
+      "finding": "The coverage note explicitly says all 35 forecasts remain visible and the primary grade covers 32 candidate pairs. It explains AK/ME ranked-choice-round and GA runoff exceptions, says those races remain on the scoreboard, and says grouping is selected before results arrive. The mobile rendering keeps this readable without clipping."
+    },
+    {
+      "severity": "pass",
+      "topic": "scoring target and legal office distinction",
+      "finding": "Visible copy says the grade checks the two named candidates' margin and which one finishes ahead; it explicitly says it does not score the chance of every possible office winner. This avoids presenting pair-relative lead as a legal seat-winner evaluation."
+    },
+    {
+      "severity": "pass",
+      "topic": "expected-error reference scope",
+      "finding": "The new panel is headed as the 32 candidate pairs used for the primary grade, says the reference uses exactly that fixed group, and states AK/ME/GA remain in the full forecast and are tracked separately. Both desktop and mobile clearly label error and wrong-choice summaries with the 32 denominator."
+    },
+    {
+      "severity": "pass",
+      "topic": "no grade or observed-result implication",
+      "finding": "The overall results section says Not scored because verified election results have not been added. The primary reference says these are model expectations, not observed errors or grades. The uncertainty summaries remain explicitly simulation-based."
+    },
+    {
+      "severity": "pass",
+      "topic": "mobile readability",
+      "finding": "The fixed-32 panel stacks its two statistics vertically, preserves the qualifying explanation and caveat, and shows no clipping or horizontal overflow in the supplied viewport."
+    }
+  ],
+  "recommendations": [],
+  "editsMade": false
+}

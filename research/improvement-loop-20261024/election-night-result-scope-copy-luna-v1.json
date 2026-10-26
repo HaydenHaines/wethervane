@@ -1,0 +1,50 @@
+{
+  "review": "election-night-result-scope-copy-luna-v1",
+  "date": "2026-10-26",
+  "scope": [
+    "/home/hayden/projects/ballotmancy-election-night-guide-20261026/components/ElectionNightGuide.tsx",
+    "/home/hayden/projects/ballotmancy-election-night-guide-20261026/components/ElectionNightRubric.tsx",
+    "/home/hayden/projects/ballotmancy-election-night-guide-20261026/data/election-night-senate-result-policy.json",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-rubric-editorial-decision-v3.json"
+  ],
+  "overall": "No misleading cohort selection or statistical-claim blocker in the 32/35 copy. The principal distinction is stated plainly and is consistent with the owner policy. Two small clarity improvements are recommended; the known 35-reference sentence is still pending its planned replacement.",
+  "verified_against_policy": {
+    "all35_remain_displayed": true,
+    "fixed_primary32_and_conditional3": true,
+    "conditional_ids": [
+      "2026:AK:senate:regular",
+      "2026:GA:senate:regular",
+      "2026:ME:senate:regular"
+    ],
+    "no_post_outcome_shrinkage": "Copy says the grouping is chosen before results and a missing/disputed race stays pending instead of being dropped.",
+    "AK_ME_rule": "The collapsible explanation correctly requires an observed final round with exactly the two forecast principals and disavows manufactured transfers or substituted first-choice votes.",
+    "GA_rule": "The explanation correctly waits for the general count only when it decides the election without runoff; otherwise it waits for the actual runoff between the forecast pair.",
+    "pair_metric_boundary": "The details state that Senate scores compare the two named principal contenders and are not necessarily the full-ballot office winner. The scope copy also correctly says another candidate winning the office does not erase the named pair's votes."
+  },
+  "findings": [
+    {
+      "severity": "minor clarity",
+      "location": "ElectionNightGuide.tsx Senate cohort note, visible paragraph before details",
+      "finding": "The first-view copy identifies 32 candidate pairs and says AK, ME, and GA need separate final-count comparisons, but the reason for those exceptions appears only after opening the details. The detailed text is accurate and readable; users who do not open it may see the 32/35 split as unexplained.",
+      "recommendation": "Add one short visible reason: AK and ME require the actual final ranked-choice round; GA may require a runoff. Preserve the full rules in the details."
+    },
+    {
+      "severity": "minor clarity",
+      "location": "ElectionNightGuide.tsx Senate cohort note and ElectionNightRubric.tsx score descriptions",
+      "finding": "Pair-only scoring is disclosed in the rubric details, but the visible scope note could more directly name the scored target. “Candidate pairs” is correct, yet a reader may still interpret winner probability as the legal seat winner.",
+      "recommendation": "In the visible scope note, say the grade checks which of each named pair received more votes (and their margin), not who legally wins the seat. Keep the detailed source/finality requirements. The existing rubric detail is correct and should remain."
+    },
+    {
+      "severity": "known pending replacement",
+      "location": "ElectionNightRubric.tsx Senate baseline note",
+      "finding": "The sentence says the all-35 shared-error figures need a separate 32-race reference before comparing the primary group's aggregate error. This is transparent and prevents denominator mixing, but it is stale once the separately qualified fixed-32 reference is imported.",
+      "recommendation": "As root already plans, replace it only after the fixed-32 reference is pinned and qualified. Keep the currently published 35-race figures labeled as 35-race figures; do not imply they grade the 32-race primary cohort."
+    }
+  ],
+  "not_found": [
+    "No claim that the 32-race group measures all-Senate or full-ballot legal-winner accuracy.",
+    "No concealed post-result exclusion: all 35 remain on the scoreboard and the primary denominator is fixed before results.",
+    "No implication that certified named-pair lead by itself authenticates the legal office winner."
+  ],
+  "edits_made": false
+}

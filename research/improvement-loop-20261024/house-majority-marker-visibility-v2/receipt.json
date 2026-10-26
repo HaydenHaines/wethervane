@@ -1,0 +1,45 @@
+{
+  "schema": "HouseMajorityMarkerVisibilityVerificationV2",
+  "utc": "2026-10-26T17:51:11.263992+00:00",
+  "head": "d4f3eaa3e553613fe50fcd68b839b98e7daab951",
+  "status": "published_and_served_verified",
+  "request": "Make the House snake majority marker visible again.",
+  "finding": "The previous 22px dark bar was present but easy to confuse with the selected district outline.",
+  "change": "4px gold bar with dark edge and light halo; 28px compact and 58px expanded; marker has no selection-like tile shadow. Shared legend updated.",
+  "scope": "CSS only. Dynamic 218-seat positions and all forecast data unchanged. A ranked seat-count reference, not an estimated district-tipping probability.",
+  "source": {
+    "path": "/home/hayden/projects/ballotmancy-siteground/app/globals.css",
+    "sha256": "ecf2a46c0426ae45f6a34bfa9501db2196062e787d42056601a8f5a46f211175",
+    "bytes": 68567
+  },
+  "verification": {
+    "build": "passed including TypeScript",
+    "browser": "2 passed, all 16 actual configurations on desktop and mobile; existing map, ribbon, control and dynamic majority assertions. Temporary additional visibility assertions passed and were not retained as implementation-mirroring tests.",
+    "independentVisualReview": "Luna reviewed all four local compact/expanded screenshots; no visibility blocker.",
+    "served": "https://ballotmancy.com/?chamber=house checked on desktop/mobile compact/expanded; FL-14 marker, gold rgb(245,206,107), 4px bar, 28/58px heights, light halo.",
+    "githubHostedCI": "Not checked this turn; gh account token is invalid. Normal SSH git push and pre-push lint passed."
+  },
+  "screenshots": [
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/house-majority-marker-visibility-v2/ballotmancy-marker-served-desktop-compact.png",
+      "sha256": "f687b7d4a0e759514a885c43a864311fe269179944f67dc96a523c43942e167a",
+      "bytes": 158187
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/house-majority-marker-visibility-v2/ballotmancy-marker-served-desktop-expanded.png",
+      "sha256": "59d5dad795ffb8fadce7787ecebca40bc3ed421957238bc0497cf5cb76ee0657",
+      "bytes": 159336
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/house-majority-marker-visibility-v2/ballotmancy-marker-served-mobile-compact.png",
+      "sha256": "3dc5f7cbf838f9b4108d2e4779a9f49fe509693f4262c0b74e2b2b98e8ca3016",
+      "bytes": 236360
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/house-majority-marker-visibility-v2/ballotmancy-marker-served-mobile-expanded.png",
+      "sha256": "bf21bd094599369f17c1b40731b97dabd4d37a534031b943f221c9f7e02d8dd2",
+      "bytes": 155247
+    }
+  ],
+  "screenshotsCommitted": false
+}

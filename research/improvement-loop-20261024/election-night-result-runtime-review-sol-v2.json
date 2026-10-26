@@ -1,0 +1,39 @@
+{
+  "schema": "ElectionNightResultRuntimeReviewAddendumV2",
+  "supersedes": null,
+  "preservesV1": {
+    "path": "election-night-result-runtime-review-sol-v1.json",
+    "sha256": "c0ad7d9f671e68d4d0f2e2f434ad782914159bfd179484262561fd8d9750fd93"
+  },
+  "date": "2026-10-26",
+  "status": "certified_minimum_and_empty_pre_result_ledger_implemented_private_preparation",
+  "changes": [
+    {
+      "kind": "certified_minimum",
+      "details": "For explicitly earlier Senate contracts bound to owner result-policy SHA efe1bf19..., the bridge now requires both model and baseline winner plus supported margin protocols to use minimumStatus certified on all 35 displayed races, including AK/GA/ME outside the 32-row primary grade. A final-only result remains unresolved under certified-minimum targets, with null paired losses and no letter."
+    },
+    {
+      "kind": "empty_pre_result_ledger",
+      "details": "The authenticated ledger accepts chosenHeadSha256 null exactly when revisions is empty. It still requires caller-pinned publication/admission manifests and locked result-policy review. It returns empty records/history/provenance; the bridge leaves all frozen targets pending without a placeholder result or grade. Nonempty chains still require the exact final revision hash."
+    }
+  ],
+  "pins": {
+    "artifactStoreTsSha256": "4241a78694d377354d15e6e2b948fe6a24e2f09a712938bdf9a53c5fc4b918c7",
+    "scoringBridgeTsSha256": "981bb5c318d6f67e7dfdfbcec156a56eba48208e5c1b2d61cee80f5268a3d859",
+    "artifactTestsSha256": "1d2c5b2c8b3da12a048bbae7e5fb59832ca972f93285f2544c7dfd32bd977f46",
+    "scoringTestsSha256": "ed325c914ddbbcbef5c4d9a785d97e210caa5b3aeefe74058555c76982a07f62"
+  },
+  "verification": {
+    "focusedNodeTests": "24 passed, 0 failed, 0 skipped",
+    "typecheck": "npm run typecheck passed",
+    "diffCheck": "git diff --check passed",
+    "certifiedScopeTest": "Invented 35 displayed/32 graded fixture rejects final minimums in both arms, including the ungraded display tail; 35 final-only revision records remain unresolved and no grade is issued."
+  },
+  "remainingActualGradeRequirements": [
+    "Authenticate actual official source bytes and review per-race candidate, event, round, count and finality extraction; the certified-minimum guard does not bind operator output or prove booleans.",
+    "Publish an authoritative single chosen result-ledger head and resolve competing official versions or corrections.",
+    "Admit the exact pre-outcome evaluation lock, source-to-projection review and result-policy mapping before any actual 2026 letter."
+  ],
+  "actual2026ResultsRead": false,
+  "actual2026GradeAssigned": false
+}

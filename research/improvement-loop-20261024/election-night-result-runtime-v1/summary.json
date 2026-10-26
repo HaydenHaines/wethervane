@@ -1,0 +1,560 @@
+{
+  "schema": "ElectionNightResultRuntimeVerificationSolV1",
+  "completedUtc": "2026-10-26T17:50:33.513672+00:00",
+  "worktree": "/home/hayden/projects/ballotmancy-election-night-guide-20261026",
+  "head": "98f3218764d513927671f2f29440113966a2ab08",
+  "status": "passed_with_documented_test_harness_corrections",
+  "sourceFrozenForRootReview": [
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/tests/site/election-night.spec.ts",
+      "sha256": "807f06ea3f2a0eea3dcaead72bd7d1739c4c092c30284e7ec1972194d7ccf8e7",
+      "bytes": 18029
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/components/ElectionNightGuide.tsx",
+      "sha256": "38dce0e6a5a740def610138fe5b0e7031b0416cfb77422ddf3791c5b2bd79681",
+      "bytes": 27484
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/components/ElectionNightRubric.tsx",
+      "sha256": "a45a901df5ce57861ad11a8976409e8b129fbf2470a98c279630aa22af778fed",
+      "bytes": 6162
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/app/globals.css",
+      "sha256": "b6cb6f18e31b2abd10c43083314318897e123a23e9fa06f86b6e9e3e9ad7739e",
+      "bytes": 76505
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/election-night-client.ts",
+      "sha256": "156089f779a8ad1d2f19a6a757b87cea68cb26d5a5d61bbcf3bc8c30bcfe2995",
+      "bytes": 11162
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/election-night-core-reference.ts",
+      "sha256": "09cb462c81114ba6dc5c5a09fc83c08f13bb694eac4c3015fed0418a36185639",
+      "bytes": 17266
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/election-night-reference.ts",
+      "sha256": "79bc01695e8ee426bf2d3a90b1827b814701408925f6b449b60fde1178867c3f",
+      "bytes": 20875
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/election-night-rubric.ts",
+      "sha256": "252f742e93e7105a95ffca9646a608ea268f49b2e5feb15be8b3d90c00c31260",
+      "bytes": 32412
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/election-night-artifacts.ts",
+      "sha256": "4241a78694d377354d15e6e2b948fe6a24e2f09a712938bdf9a53c5fc4b918c7",
+      "bytes": 27853
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/election-night-scoring.ts",
+      "sha256": "981bb5c318d6f67e7dfdfbcec156a56eba48208e5c1b2d61cee80f5268a3d859",
+      "bytes": 22381
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/data/election-night-core-reference-publication.json",
+      "sha256": "af4c54bc163625f842014a097837640670512c4af3737b69be182392c1a03260",
+      "bytes": 511
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/data/election-night-reference-publication.json",
+      "sha256": "9dbcd9cbab826082e773ab3dfd1447b960bae57ac33ab3b3fcbef39336bc9878",
+      "bytes": 338
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/data/election-night-senate-result-policy.json",
+      "sha256": "44a77f5ae515f446f2885106ad618076da97c8733d96a2a59ea70a692c9618c4",
+      "bytes": 75048
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/public/data/election-night/core-references.json",
+      "sha256": "8a63d2d3f8490b991a3da6b92ad686d2f9a5d0eb3dd03d51f0c644d8d3e16407",
+      "bytes": 95289
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/public/data/election-night/references.json",
+      "sha256": "9d2c289667d9f25fe38515eefb1503133a6f72b92cfcf65e5061540b235ccd5f",
+      "bytes": 71391
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/package.json",
+      "sha256": "c03eb0b782d782d52f74d5da9467912c0a87f0b555c94557368cd584d6fb9cf7",
+      "bytes": 4115
+    }
+  ],
+  "checks": [
+    {
+      "command": "npm run test:election-night",
+      "result": "102/102 pass",
+      "log": "unit.log"
+    },
+    {
+      "command": "npm run test:election-night-export",
+      "result": "12/12 pass",
+      "log": "export.log"
+    },
+    {
+      "command": "npm run typecheck",
+      "result": "pass",
+      "log": "typecheck.log"
+    },
+    {
+      "command": "npm run build",
+      "result": "pass production build",
+      "log": "build.log"
+    }
+  ],
+  "browser": {
+    "origin": "http://127.0.0.1:3137",
+    "mode": "production build, local private preview; desktop Chromium and Pixel7 mobile Chromium",
+    "initial": {
+      "passed": 11,
+      "failed": 3,
+      "report": "browser-results.json",
+      "humanReadableSummary": "browser-initial-summary.log"
+    },
+    "corrections": [
+      "Existing screenshot selector matched both full35 and primary32 uncertainty grids; scoped to first grid.",
+      "New mobile test captured URL before underlying forecast initial normalization; wait for main hero readiness before capturing original URL."
+    ],
+    "targetedRerun": {
+      "passed": 4,
+      "failed": 0,
+      "report": "browser-retry-results.json",
+      "log": "browser-retry.log"
+    },
+    "uniqueCasesVerified": 14,
+    "finalCaseResults": [
+      {
+        "title": "reviewed expected errors follow only their exact Senate edition and remain distinct from observed scores",
+        "project": "desktop-chromium",
+        "status": "passed",
+        "errors": []
+      },
+      {
+        "title": "an invalid uncertainty reference leaves the forecast available and can be retried",
+        "project": "desktop-chromium",
+        "status": "passed",
+        "errors": []
+      },
+      {
+        "title": "senate: same-page guide starts standard, renders every exact model, and preserves the visitor's forecast",
+        "project": "desktop-chromium",
+        "status": "passed",
+        "errors": []
+      },
+      {
+        "title": "house: same-page guide starts standard, renders every exact model, and preserves the visitor's forecast",
+        "project": "desktop-chromium",
+        "status": "passed",
+        "errors": []
+      },
+      {
+        "title": "an open scorecard follows chamber tabs and browser history with each chamber's standard forecast",
+        "project": "desktop-chromium",
+        "status": "passed",
+        "errors": []
+      },
+      {
+        "title": "the separate fixed32 grading-group reference keeps exact F and FP values beside the full35 forecast",
+        "project": "desktop-chromium",
+        "status": "passed",
+        "errors": []
+      },
+      {
+        "title": "an invalid fixed32 attachment preserves the forecast and35 reference, then retries independently",
+        "project": "desktop-chromium",
+        "status": "passed",
+        "errors": []
+      },
+      {
+        "title": "reviewed expected errors follow only their exact Senate edition and remain distinct from observed scores",
+        "project": "mobile-chromium",
+        "status": "passed",
+        "errors": []
+      },
+      {
+        "title": "an invalid uncertainty reference leaves the forecast available and can be retried",
+        "project": "mobile-chromium",
+        "status": "passed",
+        "errors": []
+      },
+      {
+        "title": "senate: same-page guide starts standard, renders every exact model, and preserves the visitor's forecast",
+        "project": "mobile-chromium",
+        "status": "passed",
+        "errors": []
+      },
+      {
+        "title": "house: same-page guide starts standard, renders every exact model, and preserves the visitor's forecast",
+        "project": "mobile-chromium",
+        "status": "passed",
+        "errors": []
+      },
+      {
+        "title": "an open scorecard follows chamber tabs and browser history with each chamber's standard forecast",
+        "project": "mobile-chromium",
+        "status": "passed",
+        "errors": []
+      },
+      {
+        "title": "the separate fixed32 grading-group reference keeps exact F and FP values beside the full35 forecast",
+        "project": "mobile-chromium",
+        "status": "passed",
+        "errors": []
+      },
+      {
+        "title": "an invalid fixed32 attachment preserves the forecast and35 reference, then retries independently",
+        "project": "mobile-chromium",
+        "status": "passed",
+        "errors": []
+      }
+    ],
+    "coverage": [
+      "All16 real Senate and16 real House guide choices across desktop/mobile; exact artifactSHA and expected modal miss count; main view and URL preserved.",
+      "Actual primary32 F9.6pp and FP5.7pp means and own middle90ranges, modal miss counts/ranges; full35 forecast preserved and FP35reference coexists.",
+      "Bad35 attachment leaves primary32 available; bad32 leaves35 forecast/reference available; both retry paths verified.",
+      "Unsupported current choices remove primary reference without error; no observed results or numeric grades invented.",
+      "Chamber tabs/history and scorecard close/reopen/focus behavior remain working."
+    ]
+  },
+  "viewportCaptures": [
+    {
+      "viewport": "desktop",
+      "kind": "primary32",
+      "runId": "current-polling",
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/desktop-primary32-fp-viewport.png",
+      "viewportSize": {
+        "width": 1280,
+        "height": 900
+      },
+      "top": 99.828125,
+      "height": 292.03125,
+      "text": "The 32 candidate pairs used for the primary gradeThis reference uses exactly the fixed grading group. Alaska, Maine and Georgia stay in the full forecast above and are tracked separately for evaluation.5.7 percentage pointsExpected average margin error across these 32 races, ignoring the direction of each miss.The middle 90% of simulated elections has an average error of 4.1 to 8.1 points.3.0 wrong top choices out of 32The middle 90% runs from 1 to 6 wrong choices in these same races.These are this model\u2019s expectations, not observed errors or grades. The calculation preserves shared errors across races and uses this forecast\u2019s own saved simulations. It does not combine simulations from different models.",
+      "sha256": "4577099122ad94a1d8131ee55f0f80637fe49d53a743ba753ac91712d00b74af"
+    },
+    {
+      "viewport": "desktop",
+      "kind": "coverage35-core32-conditional3",
+      "runId": "current-polling",
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/desktop-senate-coverage-viewport.png",
+      "viewportSize": {
+        "width": 1280,
+        "height": 900
+      },
+      "top": 99.578125,
+      "height": 204.1875,
+      "text": "All 35 predictions stay visible. The primary grade covers 32 candidate pairs.Alaska and Maine may require ranked-choice rounds; Georgia may require a runoff. They remain on the scoreboard with their own status. This grouping is chosen before election results arrive.The grade tests the margin and which of the two named candidates finishes ahead. It does not score the chance of every possible office winner.Why three races are tracked separatelyFor Alaska and Maine, the comparison requires an officially reported final round with exactly the two forecast candidates remaining. We will not invent transfers or substitute first-choice votes.For Georgia, the general-election count is used only if it decides the election without a runoff. Otherwise, the comparison waits for an actual runoff between the two forecast candidates.All comparisons concern the two named candidates\u2019 votes. If another candidate wins the office, that is recorded separately; it does not erase known votes for the forecast pair. Certified tied pair counts can give a zero margin, but no winner-probability score.The primary grade needs eligible certified results for every one of its 32 races. A missing or disputed result stays pending; it is not dropped to produce a grade.",
+      "sha256": "5ed6ee0fd8e263d454ccecc33e8114c1a81aaf1a622bd5bd16c31808bb9e1196"
+    },
+    {
+      "viewport": "desktop",
+      "kind": "primary32",
+      "runId": "current-fundamentals",
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/desktop-primary32-f-viewport.png",
+      "viewportSize": {
+        "width": 1280,
+        "height": 900
+      },
+      "top": 99.578125,
+      "height": 292.03125,
+      "text": "The 32 candidate pairs used for the primary gradeThis reference uses exactly the fixed grading group. Alaska, Maine and Georgia stay in the full forecast above and are tracked separately for evaluation.9.6 percentage pointsExpected average margin error across these 32 races, ignoring the direction of each miss.The middle 90% of simulated elections has an average error of 6.3 to 15.3 points.3.3 wrong top choices out of 32The middle 90% runs from 1 to 7 wrong choices in these same races.These are this model\u2019s expectations, not observed errors or grades. The calculation preserves shared errors across races and uses this forecast\u2019s own saved simulations. It does not combine simulations from different models.",
+      "sha256": "ea6e22286fdad3c824a9efc6b733003ff69275eec7c4d44ce23108734a18fe85"
+    },
+    {
+      "viewport": "mobile",
+      "kind": "primary32",
+      "runId": "current-polling",
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/mobile-primary32-fp-viewport.png",
+      "viewportSize": {
+        "width": 412,
+        "height": 839
+      },
+      "top": 100.109375,
+      "height": 567.375,
+      "text": "The 32 candidate pairs used for the primary gradeThis reference uses exactly the fixed grading group. Alaska, Maine and Georgia stay in the full forecast above and are tracked separately for evaluation.5.7 percentage pointsExpected average margin error across these 32 races, ignoring the direction of each miss.The middle 90% of simulated elections has an average error of 4.1 to 8.1 points.3.0 wrong top choices out of 32The middle 90% runs from 1 to 6 wrong choices in these same races.These are this model\u2019s expectations, not observed errors or grades. The calculation preserves shared errors across races and uses this forecast\u2019s own saved simulations. It does not combine simulations from different models.",
+      "sha256": "d9c5aed82d16341588106978cc3370d5ac24036d98bfd6cf80df697d335e947e"
+    },
+    {
+      "viewport": "mobile",
+      "kind": "coverage35-core32-conditional3",
+      "runId": "current-polling",
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/mobile-senate-coverage-viewport.png",
+      "viewportSize": {
+        "width": 412,
+        "height": 839
+      },
+      "top": 100.046875,
+      "height": 311.375,
+      "text": "All 35 predictions stay visible. The primary grade covers 32 candidate pairs.Alaska and Maine may require ranked-choice rounds; Georgia may require a runoff. They remain on the scoreboard with their own status. This grouping is chosen before election results arrive.The grade tests the margin and which of the two named candidates finishes ahead. It does not score the chance of every possible office winner.Why three races are tracked separatelyFor Alaska and Maine, the comparison requires an officially reported final round with exactly the two forecast candidates remaining. We will not invent transfers or substitute first-choice votes.For Georgia, the general-election count is used only if it decides the election without a runoff. Otherwise, the comparison waits for an actual runoff between the two forecast candidates.All comparisons concern the two named candidates\u2019 votes. If another candidate wins the office, that is recorded separately; it does not erase known votes for the forecast pair. Certified tied pair counts can give a zero margin, but no winner-probability score.The primary grade needs eligible certified results for every one of its 32 races. A missing or disputed result stays pending; it is not dropped to produce a grade.",
+      "sha256": "5c85c08c4a9cbc1c4bc9d95b5eddacb66f7d17571d0c9a0b6ea419182e09288d"
+    },
+    {
+      "viewport": "mobile",
+      "kind": "primary32",
+      "runId": "current-fundamentals",
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/mobile-primary32-f-viewport.png",
+      "viewportSize": {
+        "width": 412,
+        "height": 839
+      },
+      "top": 99.890625,
+      "height": 567.375,
+      "text": "The 32 candidate pairs used for the primary gradeThis reference uses exactly the fixed grading group. Alaska, Maine and Georgia stay in the full forecast above and are tracked separately for evaluation.9.6 percentage pointsExpected average margin error across these 32 races, ignoring the direction of each miss.The middle 90% of simulated elections has an average error of 6.3 to 15.3 points.3.3 wrong top choices out of 32The middle 90% runs from 1 to 7 wrong choices in these same races.These are this model\u2019s expectations, not observed errors or grades. The calculation preserves shared errors across races and uses this forecast\u2019s own saved simulations. It does not combine simulations from different models.",
+      "sha256": "c3e00802fecfcd30ec5c6c05bc38610b1af1a3a040042fbc99d8f71e49157dda"
+    }
+  ],
+  "visualInspection": "Sol inspected desktop primary32FP, mobile primary32FP and mobile Senate coverage viewport captures: readable, no skip-link artifact; browser checks confirmed no horizontal overflow and capture script recorded zero page errors. Root subsequently reported Luna independent visual review passed.",
+  "preview": {
+    "stopped": true,
+    "port": 3137,
+    "stalePidFileRemoved": true,
+    "health": "preview-health.json"
+  },
+  "implementationEdits": [
+    "tests/site/election-night.spec.ts only; temporary preview/capture configs and local evidence outside guide repository"
+  ],
+  "boundaries": [
+    "No root UI edits, actual2026 result writes or grades, or public deployment. Reviewer made no commit/push; root separately committed and pushed98f3218.",
+    "Node_modules remains the existing external symlink; it was not staged.",
+    "Initial failed browser run/traces/screenshots retained locally. Source guide tests are the only changes intended for root commit; local traceZIP/screenshots are evidence, not release files."
+  ],
+  "evidence": [
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/browser-artifacts/.last-run.json",
+      "sha256": "95aa74288bd7061476fc5abc068716bea39918a80c99adf3dbab083c7ec403e6",
+      "bytes": 194
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/browser-artifacts/election-night-house-same--9ceca-rves-the-visitor-s-forecast-desktop-chromium/house-featured.png",
+      "sha256": "5648789b975dd6e556fa6ca3fd3ea56d9eaeb32e9c52f09bd0e96ffa4ea5d562",
+      "bytes": 327347
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/browser-artifacts/election-night-house-same--9ceca-rves-the-visitor-s-forecast-desktop-chromium/house-uncertainty.png",
+      "sha256": "646f792a5eeb14f335e93ee6013b158007f142e967f80e8743b5f89cfc70743f",
+      "bytes": 36155
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/browser-artifacts/election-night-house-same--9ceca-rves-the-visitor-s-forecast-mobile-chromium/house-featured.png",
+      "sha256": "5a754b5cd846166377bc7580e1da907468ddef4ae15a9202585181b0525d7d0f",
+      "bytes": 1456764
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/browser-artifacts/election-night-house-same--9ceca-rves-the-visitor-s-forecast-mobile-chromium/house-uncertainty.png",
+      "sha256": "5d03a8615e13d927620fbb85d0806db177b8e82e87fc8a5737e8d5464cde4d1f",
+      "bytes": 138435
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/browser-artifacts/election-night-senate-same-fd05d-rves-the-visitor-s-forecast-desktop-chromium/error-context.md",
+      "sha256": "ebeb401c5e926b4f61afcb383dc7d15054faf82b0c8d7c6bbf31d48f2a870e23",
+      "bytes": 89557
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/browser-artifacts/election-night-senate-same-fd05d-rves-the-visitor-s-forecast-desktop-chromium/senate-featured.png",
+      "sha256": "eb0eb6415ae84ccfc2002a4dc40415fd594b3d9290d30752fe6f3f3a6c511fbc",
+      "bytes": 403729
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/browser-artifacts/election-night-senate-same-fd05d-rves-the-visitor-s-forecast-desktop-chromium/test-failed-1.png",
+      "sha256": "4b6d5c030395432703d4f16c8c02a23c4cf740ab937a438c79beae63330e508f",
+      "bytes": 103119
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/browser-artifacts/election-night-senate-same-fd05d-rves-the-visitor-s-forecast-desktop-chromium/trace.zip",
+      "sha256": "cc141f9b90b52b518c5d01fb3380a6aa82155e826ed128029c378d0575dbf4df",
+      "bytes": 3307004
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/browser-artifacts/election-night-senate-same-fd05d-rves-the-visitor-s-forecast-mobile-chromium/error-context.md",
+      "sha256": "7d73759892611f64609589c5d45d990c33e068a802b786814faa31ba85c452bb",
+      "bytes": 88633
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/browser-artifacts/election-night-senate-same-fd05d-rves-the-visitor-s-forecast-mobile-chromium/senate-featured.png",
+      "sha256": "0db7626e8f7e29221802f9eb90f4d9fdc8fdd3ab1dce2aa51bcbc95afbdc7062",
+      "bytes": 1640125
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/browser-artifacts/election-night-senate-same-fd05d-rves-the-visitor-s-forecast-mobile-chromium/test-failed-1.png",
+      "sha256": "1ecc155ac381938f5c12fe929a38f1f05c6c33e318230e8534c964ca65d25b8d",
+      "bytes": 260014
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/browser-artifacts/election-night-senate-same-fd05d-rves-the-visitor-s-forecast-mobile-chromium/trace.zip",
+      "sha256": "b1bde25e19be2635136e498929e94985227991f052f96c46b52d469b6fa8e747",
+      "bytes": 4075184
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/browser-artifacts/election-night-the-separat-ec3b0--beside-the-full35-forecast-desktop-chromium/senate-primary32-reference.png",
+      "sha256": "080a3ec30b319363235c2f750a61e1aceaea4cfed7fe3f3dce4d37532ef2dda4",
+      "bytes": 41978
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/browser-artifacts/election-night-the-separat-ec3b0--beside-the-full35-forecast-mobile-chromium/error-context.md",
+      "sha256": "322ea4babd520f68f87c16666604c342dd31159626c7d3631dea12c981a755fa",
+      "bytes": 79332
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/browser-artifacts/election-night-the-separat-ec3b0--beside-the-full35-forecast-mobile-chromium/test-failed-1.png",
+      "sha256": "76c5ed2d9ac11ff4b50f992d8be9268e9d1e3a05c1078959ca6f961024c93415",
+      "bytes": 253123
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/browser-artifacts/election-night-the-separat-ec3b0--beside-the-full35-forecast-mobile-chromium/trace.zip",
+      "sha256": "5dbf4e24196bb38ed2e8309c7b49813fac22d55f7532d2efa50382f64099b4c4",
+      "bytes": 1220527
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/browser-initial-summary.log",
+      "sha256": "a6fccfc47b3fabb3e4984765660342476e80250236b489aa78a91170f20e1a60",
+      "bytes": 5244
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/browser-results.json",
+      "sha256": "ca993e70fc0e2fe8df7abaa49cfad513393cba6f0ce7030711b024b7da7a46d5",
+      "bytes": 37234
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/browser-retry-artifacts/.last-run.json",
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903",
+      "bytes": 45
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/browser-retry-artifacts/election-night-senate-same-fd05d-rves-the-visitor-s-forecast-desktop-chromium/senate-featured.png",
+      "sha256": "eb0eb6415ae84ccfc2002a4dc40415fd594b3d9290d30752fe6f3f3a6c511fbc",
+      "bytes": 403729
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/browser-retry-artifacts/election-night-senate-same-fd05d-rves-the-visitor-s-forecast-desktop-chromium/senate-uncertainty.png",
+      "sha256": "0875acc4e2bf9ae6f711d27f59c90aac2bee03a7906f6fba7bce55ce7b18ea1e",
+      "bytes": 61802
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/browser-retry-artifacts/election-night-senate-same-fd05d-rves-the-visitor-s-forecast-mobile-chromium/senate-featured.png",
+      "sha256": "0db7626e8f7e29221802f9eb90f4d9fdc8fdd3ab1dce2aa51bcbc95afbdc7062",
+      "bytes": 1640125
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/browser-retry-artifacts/election-night-senate-same-fd05d-rves-the-visitor-s-forecast-mobile-chromium/senate-uncertainty.png",
+      "sha256": "a51dc4c7ec431d0f10c1d02e50d31e305aee2c6b1349a3d8fee36f57a6428e2e",
+      "bytes": 227839
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/browser-retry-artifacts/election-night-the-separat-ec3b0--beside-the-full35-forecast-desktop-chromium/senate-primary32-reference.png",
+      "sha256": "080a3ec30b319363235c2f750a61e1aceaea4cfed7fe3f3dce4d37532ef2dda4",
+      "bytes": 41978
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/browser-retry-artifacts/election-night-the-separat-ec3b0--beside-the-full35-forecast-mobile-chromium/senate-primary32-reference.png",
+      "sha256": "54e82c017eeed3489a143bd4588bd8f078af1f8c5f2e32755051fd8a6f0ad1a0",
+      "bytes": 180747
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/browser-retry-results.json",
+      "sha256": "cc3c8181b4ef2607d550ee697fd53b3ee9acf4adb8a7c1a30dba5bd37c7804a5",
+      "bytes": 10421
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/browser-retry.log",
+      "sha256": "453993f916a5af4eada3007e04f37b514550b84a0584fdc409a1aebec1fe50ad",
+      "bytes": 1123
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/build.log",
+      "sha256": "013c2c1373b18a3c1b93d318a0bb6d6f9ac6e67a2f321fb0c1cef3fdd0301e8e",
+      "bytes": 1127
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/capture-viewport.mjs",
+      "sha256": "d833d8ac0cae48b0e8ae8687eaa0f1221221ad80cfea884f75688f921f9ef810",
+      "bytes": 2679
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/desktop-primary32-f-viewport.png",
+      "sha256": "ea6e22286fdad3c824a9efc6b733003ff69275eec7c4d44ce23108734a18fe85",
+      "bytes": 115124
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/desktop-primary32-fp-viewport.png",
+      "sha256": "4577099122ad94a1d8131ee55f0f80637fe49d53a743ba753ac91712d00b74af",
+      "bytes": 120666
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/desktop-senate-coverage-viewport.png",
+      "sha256": "5ed6ee0fd8e263d454ccecc33e8114c1a81aaf1a622bd5bd16c31808bb9e1196",
+      "bytes": 131202
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/export.log",
+      "sha256": "fe856c4b514e75b478eb24b30705bf2fcc3b5c4053b146f6edd7dc92711cb010",
+      "bytes": 239
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/fixed32-visual-review-luna-v1.json",
+      "sha256": "b8bec3558b6cb360183b9a27121437f10a772ff2bfdc4778ecab3a9f0e9acf21",
+      "bytes": 4908
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/mobile-primary32-f-viewport.png",
+      "sha256": "c3e00802fecfcd30ec5c6c05bc38610b1af1a3a040042fbc99d8f71e49157dda",
+      "bytes": 276236
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/mobile-primary32-fp-viewport.png",
+      "sha256": "d9c5aed82d16341588106978cc3370d5ac24036d98bfd6cf80df697d335e947e",
+      "bytes": 255802
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/mobile-senate-coverage-viewport.png",
+      "sha256": "5c85c08c4a9cbc1c4bc9d95b5eddacb66f7d17571d0c9a0b6ea419182e09288d",
+      "bytes": 272666
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/playwright.retry.config.mjs",
+      "sha256": "50bdece20a6503b488480dffeea7a2f19718b83cff6d7989e1e782e0be4683d8",
+      "bytes": 984
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/playwright.runtime.config.mjs",
+      "sha256": "bd4ef0cda7752c22ff355be719e368e3ab46b6765ace336ac513f137e8921d4c",
+      "bytes": 972
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/preview-health.json",
+      "sha256": "13fc9cd6dacc380c98ffe51b8c2b173458c991ba6bb24b766588ecdbb3eef0a4",
+      "bytes": 254
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/preview.log",
+      "sha256": "9cb373f848431aed409d30260266449510476eda988478b66ef4aad68a260662",
+      "bytes": 154
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/typecheck.log",
+      "sha256": "d5f9a064d7d11dd381d5f5dafe415d18b32b3af9442c158a40f2a25fddfe0001",
+      "bytes": 52
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/unit.log",
+      "sha256": "d060a0d96a63ec00c945525305a018d4e526b58d304b6388cc70ad22747efbcb",
+      "bytes": 31468
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-result-runtime-v1/visual-capture.json",
+      "sha256": "870afabd6b331a6ff1431ccf692d6b8f31dc6e21f9b2a9d41a8f913e39943bc6",
+      "bytes": 7998
+    }
+  ],
+  "rootIntegration": {
+    "privateGuideCommit": "98f3218",
+    "pushed": true,
+    "authority": "Root message after verification; reviewer made no commit/push",
+    "publicGuideDeployed": false,
+    "liveCssFixSeparate": "d4f3eaa; root reports independently deployed/verified; guide inherits on next merge before publication"
+  }
+}
