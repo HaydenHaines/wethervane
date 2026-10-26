@@ -1,0 +1,35 @@
+{
+  "schema": "ContinuousImprovementCheckpointV63",
+  "recordedAtUtc": "2026-10-26T22:17:25.984089+00:00",
+  "status": "active; no scientific fit, model promotion or demonstrated thousands-cycle improvement loop",
+  "references": {
+    "previous": {
+      "path": "research/improvement-loop-20261024/checkpoints/continuation-v62.json",
+      "sha256": "d4b9b86cdb07656a7e091fc99710c55ca8ad817efaa008f351b37ee085115e67",
+      "bytes": 2196
+    },
+    "count_v3_evidence": {
+      "path": "research/improvement-loop-20261024/m01-counting-sink-prototype-sol-v3/evidence.json",
+      "sha256": "99462be5361dd6b394e6d3f32f587fc3a0964299bbd8082fa19b8700d0ab872e",
+      "bytes": 62848
+    },
+    "count_v3_review": {
+      "path": "research/improvement-loop-20261024/m01-counting-sink-review-luna-v3/independent-review.json",
+      "sha256": "7c81f852c44cde979aeea7794a4e0e49fda373cb01b70b6ed89ba32de231fcce",
+      "bytes": 5422
+    },
+    "queue_v3_receipt": {
+      "path": "research/improvement-loop-20261024/queue-v3-release-audit-root-v1/receipt.json",
+      "sha256": "350fc89abea45ce37bb7185fa1d277ab6b78acb72ff16cc5c620433808b76f5c",
+      "bytes": 2230
+    }
+  },
+  "count_v3": "Invented-object V3 passed 15 tests and an independent rerun, including both post-rename failure cases and a reaped-controller success boundary. Independent review nevertheless found two residual trust issues: rehashing an uncertain externally visible supervisor receipt can falsely imply successful return, and an uncoordinated concurrent mutation after a file pin can race verification. Prototype remains research-only. A V4 under development explores a caller-retained in-memory acknowledgment and cooperating snapshot locks; neither can establish arbitrary hostile-storage or power-loss safety, and restart durability remains unproven. No TX graph, incomplete pickle, sampler or forecast was touched.",
+  "parallel_model_path": "A separate source-bound actual-TX graph-size-measurement design is being prepared by another agent using only source analysis and invented tests; no actual graph has been built for that design. Any future experiment needs independent review, fresh resource check and precise parent/factor/gradient provenance.",
+  "ci": "GitHub run 40409345000 job 121875483082 has passed all previously failed stages, build, typecheck and House browser tests; its full end-to-end step remains in progress. No workflow success is claimed until final status.",
+  "next": [
+    "Independently review V4 and distinguish session-only acknowledgment from durable resumability; preserve failures and source versions.",
+    "Independently review the actual graph measurement design before considering a bounded execution.",
+    "Poll GitHub job 121875483082 and preserve owner scientific work."
+  ]
+}

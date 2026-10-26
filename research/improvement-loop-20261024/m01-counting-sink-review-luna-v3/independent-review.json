@@ -1,0 +1,45 @@
+{
+  "schema": "IndependentCountingSinkV3ReviewV1",
+  "reviewer": "luna",
+  "date": "2026-10-26",
+  "scope": "Frozen invented-object prototype only; no actual TX graph, pickle load, compile, sampling, forecast, or owner changes",
+  "source_pins": {
+    "counting.py": "405dd912264d1feb61afc0ed37eadb71d29e55574645a4421c19243df1a11acc",
+    "test_counting.py": "24c3e0f875b4a798bc22ef695d85d026b2ea7f28e47369cce5afb51c1002613e",
+    "FINDINGS.md": "1a8ab10ab30c40806a330b943f58f2d293dd5bd9c0d822710d70aaf3739abc8a",
+    "evidence.json": "99462be5361dd6b394e6d3f32f587fc3a0964299bbd8082fa19b8700d0ab872e",
+    "test-result.json": "c39843028996c16beec91a457883a654b6c534b4549b5ca893c8ddb3b185d44a"
+  },
+  "independent_runs": {
+    "fresh_copy_suite": "15 invented tests passed in 4.271 seconds in a fresh /tmp copy.",
+    "both_inner_post_rename_failures": "Suite tests verified complete-marker fsync failure with writable and denied seal-failure evidence. Neither path generated external success; public verification rejects both. The no-failure-record case intentionally passes only local file-consistency verification, not public completion verification.",
+    "outer_supervisor_sigterm": "In a fresh temporary process tree, SIGTERM to outer supervisor after worker startup caused outer supervisor to terminate/reap controller (terminal exit 80) and controller to TERM/reap direct worker (terminal return -15); no success receipt. No matching processes remained immediately afterward.",
+    "external_success_receipt_fsync": "Fresh run injected directory fsync failure after success.json rename: supervise raised OSError, success.json remained, and verify_complete accepted it when supplied its freshly recomputed hash plus manifest hash.",
+    "late_mutation": "A fresh successful tiny run with mutation injected immediately after pin(process.log) during verify_complete returned success while current process.log SHA no longer matched the complete manifest. Other mutations made before verification are caught by hashes; this demonstrates a read/verify TOCTOU window under concurrent writes."
+  },
+  "supported": [
+    "Exact local output and external control rosters are checked; failure marker, missing marker/receipt, source/request mismatch, altered bytes, and nonzero/unreaped controller are rejected. V3 correctly distinguishes local consistency from success evidence.",
+    "The count worker, inner run controller, and outer supervisor have separate direct-child cleanup/reaping evidence for catchable exception/SIGTERM toy paths. Source/request, PID/returncode and controller result projections are cross-checked under the trusted-local protocol.",
+    "Pickle payload is still not persisted or loaded. Caller-selected SHA values identify bytes but do not prove authorization or safe deserialization."
+  ],
+  "gaps": [
+    {
+      "severity": "medium",
+      "finding": "No lock or immutable snapshot protects verification from concurrent/late writes. verify_local_files_only hashes each file once and later checks roster only; verify_complete reads receipt/manifest hashes once. A concurrent writer after a file is pinned but before return makes verification succeed on stale bytes. Require a documented exclusive immutable-output contract or lock and verify opened-file identity/content at a stable snapshot; reject late mutation before any consumer uses files."
+    },
+    {
+      "severity": "medium",
+      "finding": "If success.json rename succeeds but its containing-directory fsync fails, supervise raises without returning its success receipt, but the file remains. The public verifier accepts if a caller recomputes the receipt hash from disk. This is outside the stated caller-retained-receipt discipline, not an unforgeable external authorization mechanism; make the requirement operational by persisting the successful returned receipt in a separate trusted caller record and never recomputing after a failed/uncertain call."
+    },
+    {
+      "severity": "low",
+      "finding": "SIGKILL, power loss and uncatchable outer-supervisor death remain unsupported. Killing the outer supervisor cannot execute its finally block and there is no parent-death watch; forked controller/worker may outlive it. Worker cleanup covers only its direct child; invented worker has no descendants. These limits are correctly documented."
+    },
+    {
+      "severity": "low",
+      "finding": "Success receipt verification trusts locally generated process/storage history and caller-retained SHA expectations. A coherent rewrite or caller recomputation can fabricate a self-consistent record; it is not a signature, trusted timestamp, or independent append-only audit."
+    }
+  ],
+  "v1_v2_identity": "V1 and V2 files remain separate and are not imported as runtime code. V3 manifest schemas reject V1 completion evidence; V3 candidate/terminal/completion use V3 schemas. No V1/V2 changes or files read from the old partial pickle.",
+  "recommendation": "The previously reviewed inner-marker failure cases are closed under the documented local trust contract. Before adaptation, address or explicitly accept the verification TOCTOU under a strict immutable-output contract; require caller-retained success receipt evidence and do not recover success by hashing a marker after an uncertain publication failure. Keep pickle deserialization prohibited absent a separately authenticated and reviewed restore process."
+}
