@@ -1,0 +1,30 @@
+{
+  "schema": "ContinuousImprovementCheckpointV50",
+  "recordedAtUtc": "2026-10-26T20:31:24.499706+00:00",
+  "previous": {
+    "path": "research/improvement-loop-20261024/checkpoints/continuation-v49.json",
+    "sha256": "b9665e852a0a79050423a01b6c78ff72cf29b27cb841224e4f802efea0acea3a",
+    "bytes": 7911
+  },
+  "correction": {
+    "scope": "Supersedes the incorrect claim in v49, the old root review and Luna review that 2024 H0/F0 training sets differ by 30 keys. Direct comparison of pinned compatibility.json shows equal sets for all four folds: 299, 329, 357, 387. Calibration-overlap counts remain unchanged. Earlier review files are preserved unedited.",
+    "readme": {
+      "path": "research/improvement-loop-20261024/m01-bank-membership-correction-root-v1/README.md",
+      "sha256": "bf3ad61fdeb5b486afbd8d2903634d5165d056b941dcb9489d2147ed7227c431",
+      "bytes": 1226
+    },
+    "script": {
+      "path": "research/improvement-loop-20261024/m01-bank-membership-correction-root-v1/check.py",
+      "sha256": "df13f248f07aac861ca104fa280e8d78df3e9030d7f4bf83aef6fdef4252bc0f",
+      "bytes": 1639
+    },
+    "result": {
+      "path": "research/improvement-loop-20261024/m01-bank-membership-correction-root-v1/result.json",
+      "sha256": "22dc16d02269099f9de6426c668c650e9ffec129b788811b20d8662971c92122",
+      "bytes": 821
+    },
+    "rawBankStatus": "Source metadata set equality only. Original NetCDF bank validation and native factor ownership remain separate work."
+  },
+  "goal": "active; no model promoted",
+  "next": "Continue the v49 actions, correcting the H0/F0 membership assertion everywhere it is reused; do not alter active owner jobs."
+}
