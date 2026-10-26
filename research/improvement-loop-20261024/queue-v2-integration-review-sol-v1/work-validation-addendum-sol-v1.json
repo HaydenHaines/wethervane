@@ -1,0 +1,65 @@
+{
+  "schema": "QueueV2WorkValidationIndependentSolAddendumV1",
+  "reviewed_at_utc": "2026-10-26T21:27:37.750905+00:00",
+  "previous_review": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-v2-integration-review-sol-v1/independent-review-sol-v1.json",
+    "sha256": "56a7cf4924f2929bf7348b9d78d3222d380096820ca2c1969ee5748a865cdd6f",
+    "bytes": 17173
+  },
+  "source_pin": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-v2/experiment_queue.py",
+    "sha256": "27195955c52e0ae06909b93d16be46f0db136841f57fd610d4773955d6443471",
+    "bytes": 37397
+  },
+  "test_source_pin": {
+    "sha256": "3c1d9a0db83766bccf6f3293808a74be466add5583489c3260c5872999051f36",
+    "bytes": 40239
+  },
+  "original_v1_pin": {
+    "sha256": "6995febe73a5c1c2a317849416a58cc25130b9bbda44161f6a7624b321a8415f",
+    "bytes": 35468
+  },
+  "only_dispatcher_change_from_prior_review": "One early configuration(root) call in work() before creating output directory; removing it exactly reconstructs prior reviewed dispatcher SHA256.",
+  "verdict": "pass_for_v2_early_work_validation_with_explicit_legacy_v1_side_effect_limit",
+  "focused_regressions": {
+    "passed": 5,
+    "tests": [
+      "test_store_versions_cannot_dispatch_each_others_plans",
+      "test_v2_rejects_valid_pins_for_a_different_dispatcher_path",
+      "test_v2_rejects_dependencies_preloaded_from_another_version",
+      "test_worker_runs_under_separate_detached_executor_controller",
+      "test_killed_partial_admission_keeps_ownership_and_allows_unrelated_work"
+    ],
+    "stdout": "",
+    "stderr": "test_store_versions_cannot_dispatch_each_others_plans (test_experiment_queue.QueueTests.test_store_versions_cannot_dispatch_each_others_plans)\nDifferent code versions cannot silently operate on each other's pinned stores. ... ok\ntest_v2_rejects_valid_pins_for_a_different_dispatcher_path (test_experiment_queue.QueueTests.test_v2_rejects_valid_pins_for_a_different_dispatcher_path) ... ok\ntest_v2_rejects_dependencies_preloaded_from_another_version (test_experiment_queue.QueueTests.test_v2_rejects_dependencies_preloaded_from_another_version) ... ok\ntest_worker_runs_under_separate_detached_executor_controller (test_experiment_queue.QueueTests.test_worker_runs_under_separate_detached_executor_controller) ... ok\ntest_killed_partial_admission_keeps_ownership_and_allows_unrelated_work (test_experiment_queue.QueueTests.test_killed_partial_admission_keeps_ownership_and_allows_unrelated_work)\nA durable plan must retain its claim even when its writer dies before the receipt. ... ok\n\n----------------------------------------------------------------------\nRan 5 tests in 2.664s\n\nOK\n"
+  },
+  "independent_cross_version_work": [
+    {
+      "client": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-v2",
+      "store_version": "V1",
+      "rejected": true,
+      "store_files_unchanged": true,
+      "worker_output_created": false,
+      "worker_output_files": []
+    },
+    {
+      "client": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024",
+      "store_version": "V2",
+      "rejected": true,
+      "store_files_unchanged": true,
+      "worker_output_created": true,
+      "worker_output_files": []
+    }
+  ],
+  "valid_v2_empty_worker": {
+    "status": "finished",
+    "qualification": "unassessed",
+    "all_jobs_recorded": true
+  },
+  "findings": [
+    "V2 work now rejects an incompatible V1 store before creating worker output, while store bytes remain unchanged. Targeted real detached-worker and partial-recovery tests still pass.",
+    "Unchanged V1 work rejects V2 dispatch but creates an empty requested controller-output directory first. It does not create receipt, reservation, admission or executor files in the V2 store. Thus bidirectional cross-version dispatch prevention is verified, but a blanket no-side-effect claim for all V1 entrypoints is false. Preserve old code and document this limit rather than claiming V1 was repaired.",
+    "No automatic or manual migration has been supplied. V2 remains fresh-store only, using explicit V2 schema and exact actual source paths; previous frozen review is preserved as evidence for its prior source version."
+  ],
+  "scope": "Fresh temporary stores only; no code/owner changes, scientific fit, migration or deployment. Final source stable during tests."
+}

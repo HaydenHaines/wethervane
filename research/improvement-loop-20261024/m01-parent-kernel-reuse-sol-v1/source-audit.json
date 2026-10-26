@@ -1,0 +1,84 @@
+{
+  "schema": "FrozenTXParentKernelSourceAuditV1",
+  "pins": {
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/modular-count-graph-astra-v1/components.py": {
+      "sha256": "7baf3ea8e644c025763e5a63b1721b14ddc748a94be3f1e106adf9f34f6ad2a7",
+      "bytes": 26015
+    },
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/modular-count-graph-astra-v1/graph.py": {
+      "sha256": "f8c9417c371e405cc24c884035cded3598746a043b74f183079e297d72108131",
+      "bytes": 22096
+    },
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/src/senate_count_stack_v1/inputs.py": {
+      "sha256": "6f4a1f5a747432c69a12392f1d1c2a1f4c4c3df3c1f16e886c44e1089438cb3e",
+      "bytes": 17725
+    },
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-native-successor-provider-sol-v1/provider.py": {
+      "sha256": "6154ecb3d66ad38b5ba5fa94719d1da865f3e32bdf749ef1bb4ed4250606d853",
+      "bytes": 5176
+    },
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-native-successor-provider-sol-v1/selection.json": {
+      "sha256": "03edb47049384b662cdd645053fc6083bde8fb41d972b1a07da8b71ecf6283b5",
+      "bytes": 45703
+    },
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/checkpoints/continuation-v54.json": {
+      "sha256": "d183b9e978cdaf8b8c4efe679fb52de93f7cf97ee7364911ace237d50adcfec7",
+      "bytes": 2566
+    }
+  },
+  "parent_fields": {
+    "cell_ids": {
+      "equal_across_all": true
+    },
+    "event_ids": {
+      "equal_across_all": true
+    },
+    "exposure": {
+      "equal_across_all": false
+    },
+    "mass": {
+      "equal_across_all": true
+    },
+    "parent_id": {
+      "equal_across_all": false
+    },
+    "problem_identity": {
+      "equal_across_all": true
+    },
+    "row_id": {
+      "equal_across_all": false
+    },
+    "schema": {
+      "equal_across_all": true
+    },
+    "upstream_identity": {
+      "equal_across_all": true
+    }
+  },
+  "parent_count": 8,
+  "original_masses": [
+    0.125,
+    0.125,
+    0.125,
+    0.125,
+    0.125,
+    0.125,
+    0.125,
+    0.125
+  ],
+  "exposure_shape": [
+    3,
+    24
+  ],
+  "direct_selected_component_parent_read_sites": [
+    {
+      "attribute": "protected",
+      "line": 56
+    }
+  ],
+  "numerical_dependency": "Only whole exposure3x24 enters selected provider numerical graph via ProtectedPopulation.exposure. IDs/mass/lineage also enter compiler contract/target metadata, not logp.",
+  "current_api_symbolic_parent_supported": false,
+  "compiler_block": "compile_model requires exposure output np.ndarray exactly array_equal to ctx.protected exposure before converting to TensorConstant/SpecifyShape.",
+  "possible_route": "Experimental identity-based substitution of model.typed_ports exposure in unoptimized logp/dlogp, adding explicit symbolic conditioning input and separately authenticating full selected parent envelope. Not tested on actual graph here.",
+  "scope": "Source and serialized actual parent fields only; no actual graph import/build/compile, source edits or scientific qualification."
+}

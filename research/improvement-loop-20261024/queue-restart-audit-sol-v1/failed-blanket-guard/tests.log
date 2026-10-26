@@ -1,0 +1,10 @@
+test_original_failure_preserved_and_fixed_same_actual_boundary (test_recovery.RecoveryTests.test_original_failure_preserved_and_fixed_same_actual_boundary) ... ok
+test_partial_unrelated_admission_blocks_new_claims_until_exact_repair (test_recovery.RecoveryTests.test_partial_unrelated_admission_blocks_new_claims_until_exact_repair) ... {"original": {"contender_admitted": true, "contender_error": null, "original_exact_repair_error": "attempt/output already belongs to another queue plan", "partial_admissions": ["original"], "all_jobs_recorded": false, "reserved": 0, "queues": {"contender": {"same": {"outcome": "accepted_execution", "error": null, "qualification": "unassessed"}}}, "actual_launches": 1, "caller_exitcode": 82}, "fixed": {"contender_admitted": false, "contender_error": "another partial admission requires exact repair before new admission", "original_exact_repair_error": null, "partial_admissions": [], "all_jobs_recorded": true, "reserved": 0, "queues": {"original": {"same": {"outcome": "accepted_execution", "error": null, "qualification": "unassessed"}}}, "actual_launches": 1, "caller_exitcode": 82}}
+ok
+test_twelve_serial_adaptive_admissions_with_competing_killed_tick_clients (test_recovery.RecoveryTests.test_twelve_serial_adaptive_admissions_with_competing_killed_tick_clients) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 6.609s
+
+OK
+{"serial_cycles": 12, "killed_competing_clients": 24, "actual_launches": 12, "reservations": 0, "historical_plan_drift_quarantined": true}

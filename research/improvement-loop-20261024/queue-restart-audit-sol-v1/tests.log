@@ -1,0 +1,12 @@
+test_missing_or_corrupt_partial_scaffold_rejects_new_admission (test_recovery.RecoveryTests.test_missing_or_corrupt_partial_scaffold_rejects_new_admission) ... ok
+test_original_failure_preserved_and_fixed_same_actual_boundary (test_recovery.RecoveryTests.test_original_failure_preserved_and_fixed_same_actual_boundary) ... ok
+test_partial_admission_preserves_claims_but_allows_unrelated_admission (test_recovery.RecoveryTests.test_partial_admission_preserves_claims_but_allows_unrelated_admission) ... {"original": {"contender_admitted": true, "contender_error": null, "original_exact_repair_error": "attempt/output already belongs to another queue plan", "partial_admissions": ["original"], "all_jobs_recorded": false, "reserved": 0, "queues": {"contender": {"same": {"outcome": "accepted_execution", "error": null, "qualification": "unassessed"}}}, "actual_launches": 1, "caller_exitcode": 82}, "fixed": {"contender_admitted": false, "contender_error": "attempt/output belongs to a partial admission; repair that exact plan first", "original_exact_repair_error": null, "partial_admissions": [], "all_jobs_recorded": true, "reserved": 0, "queues": {"original": {"same": {"outcome": "accepted_execution", "error": null, "qualification": "unassessed"}}}, "actual_launches": 1, "caller_exitcode": 82}}
+ok
+test_receipt_before_job_directory_death_exact_retry_and_tick_repair (test_recovery.RecoveryTests.test_receipt_before_job_directory_death_exact_retry_and_tick_repair) ... ok
+test_twelve_serial_adaptive_admissions_with_competing_killed_tick_clients (test_recovery.RecoveryTests.test_twelve_serial_adaptive_admissions_with_competing_killed_tick_clients) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 7.006s
+
+OK
+{"serial_cycles": 12, "killed_competing_clients": 24, "actual_launches": 12, "reservations": 0, "historical_plan_drift_quarantined": true}

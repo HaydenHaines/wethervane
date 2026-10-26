@@ -1,0 +1,84 @@
+{
+  "schema": "ContinuousImprovementCheckpointV56",
+  "recordedAtUtc": "2026-10-26T21:30:59.088798+00:00",
+  "status": "active; no qualified weakest layer, fitted challenger, scientific promotion or proof of thousands of complete cycles",
+  "references": {
+    "previous": {
+      "path": "research/improvement-loop-20261024/checkpoints/continuation-v55.json",
+      "sha256": "adb0cbef3cec8cc8e187ad8c41e48d9ea544c5fa36d84281a83ab396771cc382",
+      "bytes": 5357
+    },
+    "queue_v2": {
+      "path": "research/improvement-loop-20261024/queue-v2/experiment_queue.py",
+      "sha256": "27195955c52e0ae06909b93d16be46f0db136841f57fd610d4773955d6443471",
+      "bytes": 37397
+    },
+    "queue_v2_tests": {
+      "path": "research/improvement-loop-20261024/queue-v2/test_experiment_queue.py",
+      "sha256": "3c1d9a0db83766bccf6f3293808a74be466add5583489c3260c5872999051f36",
+      "bytes": 40239
+    },
+    "queue_v2_receipt": {
+      "path": "research/improvement-loop-20261024/queue-authoritative-regression-root-v1/integration-receipt-v2.json",
+      "sha256": "e5666c130465e766d94941da7ecf764615c008b4898190fea0739f27f0e105c1",
+      "bytes": 2169
+    },
+    "queue_v2_documentation": {
+      "path": "research/improvement-loop-20261024/experiment_queue.md",
+      "sha256": "a7b21c864988e68526a0b8fe02020596864862c698d081cfa8591b08dee06c46",
+      "bytes": 13898
+    },
+    "queue_defect_evidence": {
+      "path": "research/improvement-loop-20261024/queue-restart-audit-sol-v1/evidence.json",
+      "sha256": "6585f96744c05ad836daa2307d94eff00fa8f369ff2f48f37c6d06f9a0bcaadc",
+      "bytes": 7853
+    },
+    "queue_defect_independent_review": {
+      "path": "research/improvement-loop-20261024/queue-restart-review-luna-v1/independent-review-luna-v1.json",
+      "sha256": "8754e7b4411cc60c9dc8805252b2650100830a3c63ff37fd5f8a703030b456b0",
+      "bytes": 5552
+    },
+    "queue_v2_independent_review": {
+      "path": "research/improvement-loop-20261024/queue-v2-integration-review-sol-v1/independent-review-sol-v1.json",
+      "sha256": "56a7cf4924f2929bf7348b9d78d3222d380096820ca2c1969ee5748a865cdd6f",
+      "bytes": 17173
+    },
+    "queue_v2_final_review": {
+      "path": "research/improvement-loop-20261024/queue-v2-integration-review-sol-v1/work-validation-addendum-sol-v1.json",
+      "sha256": "a9ce850f88525f27855a7d78aa05ab7d7d9fa787dcb27793c52469423c011ffd",
+      "bytes": 4475
+    },
+    "parent_reuse_tiny": {
+      "path": "research/improvement-loop-20261024/m01-parent-kernel-reuse-sol-v1/evidence.json",
+      "sha256": "05b32fecbe0a09cb70d05f25a7d97041214a1685d67ed0b7563f0563ae345fa7",
+      "bytes": 2737
+    },
+    "parent_reuse_review": {
+      "path": "research/improvement-loop-20261024/m01-parent-kernel-reuse-luna-review-v1/independent-review-luna-v1.json",
+      "sha256": "494b118b3ec76303dd6b5cc16b7f2538c5917afa9c3256c5eb70c972a3632719",
+      "bytes": 6818
+    },
+    "actual_symbolic_failure": {
+      "path": "research/improvement-loop-20261024/m01-parent-symbolic-substitution-sol-v1/evidence.json",
+      "sha256": "3b10c5f23bcb4537d50cfcf81c2c02ca6da469b694efcce258d3c7d2b9afce9f",
+      "bytes": 3732
+    },
+    "historical_source": {
+      "path": "research/improvement-loop-20261024/m01-historical-crosswalk-luna-v4/evidence.json",
+      "sha256": "224e1a57841ffbe708910c4739de97b60ece09ed713f6bc65918775873292fce",
+      "bytes": 9577
+    }
+  },
+  "queue": "A real killed caller left a durable unsealed plan; the old queue permitted a second ID to claim its attempt/output, blocking exact repair. Independently reviewed V2 protects partial claims, permits nonconflicting work, rejects mixed version stores/imported helper paths, and validates before worker output creation. All 28 V2 tests passed with frozen source and independent review. The original source was temporarily changed for testing and restored exactly; no proof of the absence of concurrent clients during that interval. V2 uses a distinct store schema and new source path; no V1 store migration exists. Malformed partial plans still need preservation-first manual recovery. Synthetic 12-cycle/24-client evidence is not proof of thousands of adaptive scientific cycles.",
+  "parent_reuse": "Tiny A-B-A explicit-exposure reuse reproduced independently, with source evidence that exposure is the only direct numerical parent input in inspected components. Original TX complete logp retained exact exposure identity and strict symbolic replacement was constructed; the original pre-derived gradient lacked that node, so gradient replacement stopped before invocation. No numeric parity or compiled reuse established. Independent source review of this failure remains underway. Differentiation after replacement is an untested next hypothesis; whole-parent source, mass, target identity and normalization remain required.",
+  "historical_source": "An original Emerson Missouri 2016 release closely matches a 538 poll event, but question/sample identity and full earlier-vintage data remain unproven. No bank or fit was admitted.",
+  "frontend": "House race details now state the count is of poll questions included in the forecast and other polls may exist; the change is live at 60e2a68. The 2026 Louisiana first-round poll found by the owner does not establish an ultimate winner. Candidate-level House groups remain unresolved; exploratory California and Louisiana research is not qualified for public named picks.",
+  "ci": "SiteGround web workflow failed at election-night-export tests; runner logs were unavailable with current GitHub permission. Tests include hardcoded local research inputs that standard runners lack. Source-dependent tests now skip only when that source is absent; all 12 pass locally when present, and a simulated absent-source run passes three portable checks with nine explicit skips. Fix pushed as ab9629f; the GitHub rerun is pending and later steps remain unverified.",
+  "forecast_schedule": "The GPU owner subsequently relayed that Hayden explicitly released the 12-hour 2026 hold, superseding V55. The owner intends 2018, then 2022, then 2026; preserve owner boundaries, current job states and ordinary data/diagnostic qualification.",
+  "next": [
+    "Independently review the actual symbolic failure and test whether deriving a gradient after logp replacement preserves the complete graph before considering bounded compile; retain parent, mass and source binding.",
+    "Monitor the GitHub web workflow through all stages and address evidenced failures without hiding source-dependent tests.",
+    "Use V2 only for new stores and preserve V1 stores and pins; design any future migration separately, with explicit audit and recovery.",
+    "Continue candidate-level House forecasting research and actual 2018/2022 count-model qualification under owner direction."
+  ]
+}

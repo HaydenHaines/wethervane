@@ -1,0 +1,26 @@
+--- projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/experiment_queue.py	2026-10-25 13:33:56.063257902 -0500
++++ projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-restart-audit-sol-v1/patched/experiment_queue.py	2026-10-26 16:16:55.863903201 -0500
+@@ -183,6 +183,23 @@
+             if (directory / "receipt.json").exists():
+                 require(document(directory / "receipt.json")["plan"] == executor.pin(directory / "plan.json"), "queue admission plan changed")
+                 return executor.pin(directory / "receipt.json")
++        # A durable partial plan also owns its attempt/output identities.
++        # entries() excludes unsealed admissions; validate those claims explicitly
++        # so another ID cannot steal them before exact interrupted admission repair.
++        for pending in (root / "queues").iterdir():
++            require(pending.is_dir(), "unknown admission-store entry")
++            if pending == directory or (pending / "receipt.json").exists():
++                continue
++            require((pending / "plan.json").is_file(), "unresolved admission scaffold requires repair")
++            pending_plan = document(pending / "plan.json")
++            pending_jobs = validate_plan(pending_plan)
++            require(pending_plan["queue_id"] == pending.name, "partial admission identity mismatch")
++            for job in jobs.values():
++                spec = job["execution_spec"]
++                require(not any(old["execution_spec"]["attempt_id"] == spec["attempt_id"] or
++                                old["execution_spec"]["output_directory"] == spec["output_directory"]
++                                for old in pending_jobs.values()),
++                        "attempt/output belongs to a partial admission; repair that exact plan first")
+         old_entries = list(entries(root))
+         for job in jobs.values():
+             spec = job["execution_spec"]

@@ -1,0 +1,266 @@
+{
+  "schema": "QueueV2IntegrationIndependentSolReviewV1",
+  "reviewed_at_utc": "2026-10-26T21:26:05.525838+00:00",
+  "verdict": "qualified_pass_updated_v2_source_isolation_and_recovery",
+  "scope": "Fresh temporary domains only; actual V1/V2 real execution, separate-process cross-version/mixed-import/alternate-directory probes, complete frozen V2 regression suite. Only this review packet written; no code/owner/store changes.",
+  "source_pins": {
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/experiment_queue.py": {
+      "sha256": "6995febe73a5c1c2a317849416a58cc25130b9bbda44161f6a7624b321a8415f",
+      "bytes": 35468
+    },
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/execution.py": {
+      "sha256": "ce02f4c4b9be397b299c2219092fdd355db1695798af07c4974bc63cb6bbbc93",
+      "bytes": 36273
+    },
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/ledger.py": {
+      "sha256": "d65cea890ecf9b456f8b9625d173f15dac1e7fa94bb618d3407e26f368ee220a",
+      "bytes": 13115
+    },
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/run_receipts.py": {
+      "sha256": "a7e78b822207109e0257adce9abb6493c53a0d93158177131ade76c0d874e73e",
+      "bytes": 30383
+    },
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-v2/experiment_queue.py": {
+      "sha256": "309257aba2418c431a5e6008c79f0ceb279077c80ffea7e2920daa4a3bf6aba0",
+      "bytes": 37373
+    },
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-v2/execution.py": {
+      "sha256": "ce02f4c4b9be397b299c2219092fdd355db1695798af07c4974bc63cb6bbbc93",
+      "bytes": 36273
+    },
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-v2/ledger.py": {
+      "sha256": "d65cea890ecf9b456f8b9625d173f15dac1e7fa94bb618d3407e26f368ee220a",
+      "bytes": 13115
+    },
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-v2/run_receipts.py": {
+      "sha256": "a7e78b822207109e0257adce9abb6493c53a0d93158177131ade76c0d874e73e",
+      "bytes": 30383
+    }
+  },
+  "v2_test_pin": {
+    "sha256": "5752428f206a2df956ac4826a08b5ed5bdfa2fd1d0b09d6db3567087b4349ef3",
+    "bytes": 39692
+  },
+  "documentation_pin": {
+    "sha256": "9c3b603d224d5bd0458ee13c6f9cfbe942fa306d0522a3e712c37ec7b615f151",
+    "bytes": 13501
+  },
+  "frozen_sources_unchanged_during_review": true,
+  "original_v1_sha_restored": true,
+  "fresh_store_observations": {
+    "V1": {
+      "schema": "LocalExperimentQueueStoreV1",
+      "sources": [
+        {
+          "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/experiment_queue.py",
+          "sha256": "6995febe73a5c1c2a317849416a58cc25130b9bbda44161f6a7624b321a8415f",
+          "size": 35468
+        },
+        {
+          "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/execution.py",
+          "sha256": "ce02f4c4b9be397b299c2219092fdd355db1695798af07c4974bc63cb6bbbc93",
+          "size": 36273
+        },
+        {
+          "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/ledger.py",
+          "sha256": "d65cea890ecf9b456f8b9625d173f15dac1e7fa94bb618d3407e26f368ee220a",
+          "size": 13115
+        },
+        {
+          "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/run_receipts.py",
+          "sha256": "a7e78b822207109e0257adce9abb6493c53a0d93158177131ade76c0d874e73e",
+          "size": 30383
+        }
+      ],
+      "real_job_status": {
+        "schema": "LocalExperimentQueueObservationV1",
+        "capacity": 1,
+        "reserved": 0,
+        "queues": {
+          "tiny-plan": {
+            "tiny": {
+              "outcome": "accepted_execution",
+              "error": null,
+              "qualification": "unassessed"
+            }
+          }
+        },
+        "all_jobs_recorded": true,
+        "partial_admissions": [],
+        "quarantined_admissions": [],
+        "unknown_reservations": 0,
+        "qualification": "unassessed"
+      },
+      "executor_path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/execution.py",
+      "actual_prepared_manager": {
+        "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/execution.py",
+        "sha256": "ce02f4c4b9be397b299c2219092fdd355db1695798af07c4974bc63cb6bbbc93",
+        "size": 36273
+      }
+    },
+    "V2": {
+      "schema": "LocalExperimentQueueStoreV2",
+      "sources": [
+        {
+          "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-v2/experiment_queue.py",
+          "sha256": "309257aba2418c431a5e6008c79f0ceb279077c80ffea7e2920daa4a3bf6aba0",
+          "size": 37373
+        },
+        {
+          "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-v2/execution.py",
+          "sha256": "ce02f4c4b9be397b299c2219092fdd355db1695798af07c4974bc63cb6bbbc93",
+          "size": 36273
+        },
+        {
+          "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-v2/ledger.py",
+          "sha256": "d65cea890ecf9b456f8b9625d173f15dac1e7fa94bb618d3407e26f368ee220a",
+          "size": 13115
+        },
+        {
+          "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-v2/run_receipts.py",
+          "sha256": "a7e78b822207109e0257adce9abb6493c53a0d93158177131ade76c0d874e73e",
+          "size": 30383
+        }
+      ],
+      "real_job_status": {
+        "schema": "LocalExperimentQueueObservationV1",
+        "capacity": 1,
+        "reserved": 0,
+        "queues": {
+          "tiny-plan": {
+            "tiny": {
+              "outcome": "accepted_execution",
+              "error": null,
+              "qualification": "unassessed"
+            }
+          }
+        },
+        "all_jobs_recorded": true,
+        "partial_admissions": [],
+        "quarantined_admissions": [],
+        "unknown_reservations": 0,
+        "qualification": "unassessed"
+      },
+      "executor_path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-v2/execution.py",
+      "actual_prepared_manager": {
+        "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-v2/execution.py",
+        "sha256": "ce02f4c4b9be397b299c2219092fdd355db1695798af07c4974bc63cb6bbbc93",
+        "size": 36273
+      }
+    }
+  },
+  "cross_version_default_api_checks": [
+    {
+      "store_version": "V1",
+      "client": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-v2",
+      "action": "status",
+      "rejected": true,
+      "store_file_snapshot_unchanged": true
+    },
+    {
+      "store_version": "V1",
+      "client": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-v2",
+      "action": "enqueue",
+      "rejected": true,
+      "store_file_snapshot_unchanged": true
+    },
+    {
+      "store_version": "V1",
+      "client": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-v2",
+      "action": "initialize",
+      "rejected": true,
+      "store_file_snapshot_unchanged": true
+    },
+    {
+      "store_version": "V2",
+      "client": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024",
+      "action": "status",
+      "rejected": true,
+      "store_file_snapshot_unchanged": true
+    },
+    {
+      "store_version": "V2",
+      "client": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024",
+      "action": "enqueue",
+      "rejected": true,
+      "store_file_snapshot_unchanged": true
+    },
+    {
+      "store_version": "V2",
+      "client": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024",
+      "action": "initialize",
+      "rejected": true,
+      "store_file_snapshot_unchanged": true
+    }
+  ],
+  "alternate_source_directory": {
+    "rejected": true,
+    "store_unchanged": true,
+    "error": "queue store source identity differs from running dispatcher"
+  },
+  "mixed_import_checks": [
+    {
+      "module": "execution",
+      "rejected": true,
+      "root_not_created": true
+    },
+    {
+      "module": "ledger",
+      "rejected": true,
+      "root_not_created": true
+    },
+    {
+      "module": "run_receipts",
+      "rejected": true,
+      "root_not_created": true
+    }
+  ],
+  "incomplete_store_compatibility_boundary": [
+    {
+      "store_version": "V1",
+      "client": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-v2",
+      "rejected": true,
+      "store_file_bytes_unchanged": true,
+      "missing_queues_directory_recreated": false
+    },
+    {
+      "store_version": "V2",
+      "client": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024",
+      "rejected": true,
+      "store_file_bytes_unchanged": true,
+      "missing_queues_directory_recreated": true
+    }
+  ],
+  "v2_suite": {
+    "returncode": 0,
+    "stdout": "",
+    "stderr": "test_bound_dependency_drift_does_not_rebind_or_launch_consumer (test_experiment_queue.QueueTests.test_bound_dependency_drift_does_not_rebind_or_launch_consumer) ... ok\ntest_cached_native_roles_cannot_swap_and_effective_binding_matches_plan (test_experiment_queue.QueueTests.test_cached_native_roles_cannot_swap_and_effective_binding_matches_plan) ... ok\ntest_competing_killed_clients_share_capacity_across_two_queues (test_experiment_queue.QueueTests.test_competing_killed_clients_share_capacity_across_two_queues) ... ok\ntest_corrupted_cached_result_or_release_retains_capacity_and_quarantines (test_experiment_queue.QueueTests.test_corrupted_cached_result_or_release_retains_capacity_and_quarantines) ... ok\ntest_corrupted_prepared_attempt_still_counts_capacity (test_experiment_queue.QueueTests.test_corrupted_prepared_attempt_still_counts_capacity) ... ok\ntest_empty_scaffold_admission_and_failed_terminal_drift_are_explicit (test_experiment_queue.QueueTests.test_empty_scaffold_admission_and_failed_terminal_drift_are_explicit) ... ok\ntest_exact_prelaunch_resume_in_new_plan_launches_once_and_preserves_deferral (test_experiment_queue.QueueTests.test_exact_prelaunch_resume_in_new_plan_launches_once_and_preserves_deferral) ... ok\ntest_filesystem_exists_without_producer_terminal_never_admits_dependency (test_experiment_queue.QueueTests.test_filesystem_exists_without_producer_terminal_never_admits_dependency) ... ok\ntest_invalid_graph_duplicate_attempt_and_unbound_sha_rejected (test_experiment_queue.QueueTests.test_invalid_graph_duplicate_attempt_and_unbound_sha_rejected) ... ok\ntest_killed_partial_admission_keeps_ownership_and_allows_unrelated_work (test_experiment_queue.QueueTests.test_killed_partial_admission_keeps_ownership_and_allows_unrelated_work)\nA durable plan must retain its claim even when its writer dies before the receipt. ... ok\ntest_malformed_admission_preserves_unknown_reservation_count (test_experiment_queue.QueueTests.test_malformed_admission_preserves_unknown_reservation_count) ... ok\ntest_missing_admission_with_reservation_freezes_other_queue_dispatch (test_experiment_queue.QueueTests.test_missing_admission_with_reservation_freezes_other_queue_dispatch) ... ok\ntest_nonzero_invalid_native_and_declared_output_gates_block_dependents (test_experiment_queue.QueueTests.test_nonzero_invalid_native_and_declared_output_gates_block_dependents) ... ok\ntest_partial_admission_resumes_same_plan_and_is_visible_before_resume (test_experiment_queue.QueueTests.test_partial_admission_resumes_same_plan_and_is_visible_before_resume) ... ok\ntest_prelaunch_deferred_result_before_release_reconciles_without_launch (test_experiment_queue.QueueTests.test_prelaunch_deferred_result_before_release_reconciles_without_launch) ... ok\ntest_prelaunch_resume_rejects_output_unsealed_proof_and_launch_intent (test_experiment_queue.QueueTests.test_prelaunch_resume_rejects_output_unsealed_proof_and_launch_intent) ... ok\ntest_prepared_input_drift_defers_without_terminal_and_unrelated_job_runs (test_experiment_queue.QueueTests.test_prepared_input_drift_defers_without_terminal_and_unrelated_job_runs) ... ok\ntest_real_dependency_chain_consumes_exact_output_and_sha_argument (test_experiment_queue.QueueTests.test_real_dependency_chain_consumes_exact_output_and_sha_argument) ... ok\ntest_receipt_only_roles_exact_consumer_path_and_sha_are_required (test_experiment_queue.QueueTests.test_receipt_only_roles_exact_consumer_path_and_sha_are_required) ... ok\ntest_relative_root_cli_and_api_execute_same_absolutely_admitted_dag (test_experiment_queue.QueueTests.test_relative_root_cli_and_api_execute_same_absolutely_admitted_dag) ... ok\ntest_result_before_release_is_incomplete_and_reconciles_exact_result (test_experiment_queue.QueueTests.test_result_before_release_is_incomplete_and_reconciles_exact_result) ... ok\ntest_resume_same_reservation_after_prepare_and_launch_crashes (test_experiment_queue.QueueTests.test_resume_same_reservation_after_prepare_and_launch_crashes) ... ok\ntest_retry_is_new_plan_attempt_and_outputs_without_rebinding_old_consumer (test_experiment_queue.QueueTests.test_retry_is_new_plan_attempt_and_outputs_without_rebinding_old_consumer) ... ok\ntest_store_versions_cannot_dispatch_each_others_plans (test_experiment_queue.QueueTests.test_store_versions_cannot_dispatch_each_others_plans)\nDifferent code versions cannot silently operate on each other's pinned stores. ... ok\ntest_unknown_live_remains_reserved_then_recovered_unknown_blocks_downstream (test_experiment_queue.QueueTests.test_unknown_live_remains_reserved_then_recovered_unknown_blocks_downstream) ... ok\ntest_v2_rejects_dependencies_preloaded_from_another_version (test_experiment_queue.QueueTests.test_v2_rejects_dependencies_preloaded_from_another_version) ... ok\ntest_v2_rejects_valid_pins_for_a_different_dispatcher_path (test_experiment_queue.QueueTests.test_v2_rejects_valid_pins_for_a_different_dispatcher_path) ... ok\ntest_worker_runs_under_separate_detached_executor_controller (test_experiment_queue.QueueTests.test_worker_runs_under_separate_detached_executor_controller) ... ok\n\n----------------------------------------------------------------------\nRan 28 tests in 13.734s\n\nOK\n"
+  },
+  "findings": [
+    {
+      "severity": "resolved_during_review",
+      "finding": "Initial V2 source inspection retained V1 schema and only verified stored pins; a normal mixed-import probe also demonstrated adjacent pinned executor differed from actual imported executor while configuration succeeded. Root then updated V2 only. Final source schema/version checks and explicit execution/ledger/run_receipts import-path checks reject those cases; V1 remained unchanged."
+    },
+    {
+      "severity": "resolved_documentation",
+      "finding": "The initial Verification command selected V1. Final documentation now explicitly targets research/improvement-loop-20261024/queue-v2; independently read and source-pinned after correction."
+    },
+    {
+      "severity": "compatibility_limit",
+      "finding": "Cross-version default status/enqueue/initialize reject without changing files or adding admission for valid initialized stores. Updated V2 rejects V1 even when its queues directory is missing, without recreating it. Unchanged V1 initialize still recreates a missing queues directory in an incomplete V2 root before rejecting schema; therefore blanket no-mutation claims must be limited to valid stores or to V2 caller behavior."
+    },
+    {
+      "severity": "migration_gap",
+      "finding": "No migration supplied. Renaming/copying source directories or editing config schema/source pins is not a supported upgrade. Existing V1 stores remain on exact original paths/bytes; V2 is fresh-store only. Public plan/admission/job receipt schema names remain shared but the store pin plus top-level checked config separates supported dispatch domains."
+    },
+    {
+      "severity": "trust_limit",
+      "finding": "Local source/config integrity assumes trusted Python loading and cooperative mutable filesystem; arbitrary runtime monkeypatching or coherent config/source rewrite is not prevented. Private/internal verify_config=False status bypass is not a dispatch authorization path. No stronger archive/rollback protection is claimed."
+    }
+  ],
+  "limitations": [
+    "No source-file edits, code repair, owner jobs, global process signaling, production store migration or scientific run performed.",
+    "Complete V2 suite and independent small commands use synthetic fixtures and local Linux executor assumptions; power-loss, unbounded scale, arbitrary noncooperating writers and scientific qualification remain outside evidence."
+  ],
+  "documentation_verification_command_targets_v2": true
+}

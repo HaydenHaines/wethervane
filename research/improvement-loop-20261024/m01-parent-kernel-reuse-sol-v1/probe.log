@@ -1,0 +1,91 @@
+{
+  "schema": "TinyParentExposureKernelReuseV1",
+  "scope": "Synthetic2event3cell/6coordinate model only. No actual TX graph build/compile, fits, parent normalization or scientific equivalence certificate.",
+  "native_exposure_guard": [
+    {
+      "case": "exact_original_array",
+      "status": "accepted"
+    },
+    {
+      "case": "different_parent_array",
+      "status": "rejected",
+      "message": "Protected population adapter cannot transform or resample its supplied parent"
+    },
+    {
+      "case": "symbolic_input",
+      "status": "rejected",
+      "message": "Protected population adapter cannot transform or resample its supplied parent"
+    }
+  ],
+  "exact_identity_substitution": [
+    {
+      "target": "typed_port",
+      "status": "exact_node_present_replaced"
+    }
+  ],
+  "checks": [
+    {
+      "parent": "A",
+      "logp": -12.77737139434992,
+      "fixed_density_error": 1.7763568394002505e-15,
+      "gradient_max_error": 3.3306690738754696e-16
+    },
+    {
+      "parent": "B",
+      "logp": -13.16353291537553,
+      "fixed_density_error": 0.0,
+      "gradient_max_error": 4.440892098500626e-16
+    },
+    {
+      "parent": "A_again",
+      "logp": -12.77737139434992,
+      "fixed_density_error": 1.7763568394002505e-15,
+      "gradient_max_error": 3.3306690738754696e-16
+    }
+  ],
+  "negative_checks": [
+    {
+      "case": "wrong_shape",
+      "error_type": "AssertionError"
+    },
+    {
+      "case": "negative",
+      "error_type": "ValueError"
+    },
+    {
+      "case": "nonfinite",
+      "error_type": "ValueError"
+    }
+  ],
+  "masses": [
+    0.3,
+    0.7
+  ],
+  "mass_used_in_conditional_logp": false,
+  "normalization_established": false,
+  "runtime": {
+    "pymc": "5.28.0",
+    "pytensor": "2.38.2",
+    "numpy": "2.5.4",
+    "fastmath": false,
+    "cxx": ""
+  },
+  "pins": {
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-parent-kernel-reuse-sol-v1/probe.py": {
+      "sha256": "1644259995a9387f16e15e4529c471d51ed64c9ea5c3fa4545e4da001fcc2d20",
+      "bytes": 5350
+    },
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/modular-count-graph-astra-v1/graph.py": {
+      "sha256": "f8c9417c371e405cc24c884035cded3598746a043b74f183079e297d72108131",
+      "bytes": 22096
+    },
+    "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/lib/python3.12/site-packages/pymc/model/core.py": {
+      "sha256": "844e8523dfb24a62c0069eea122659474f017b95ad1df389a6663abba41cfb71",
+      "bytes": 90232
+    },
+    "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/lib/python3.12/site-packages/pytensor/graph/replace.py": {
+      "sha256": "28481c8b3f8a9127165ce9ad1c8ba65d1a9de13be365d54ba314d1b801cf481d",
+      "bytes": 10474
+    }
+  }
+}

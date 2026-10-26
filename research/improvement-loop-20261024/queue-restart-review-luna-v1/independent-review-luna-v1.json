@@ -1,0 +1,62 @@
+{
+  "schema": "QueuePartialAdmissionRecoveryIndependentReviewLunaV1",
+  "review_date": "2026-10-26",
+  "verdict": "supports_merge_for_identified_partial_plan_ownership_fault_with_documented_operator_recovery_for_malformed_records",
+  "scope": "Read-only review of original enqueue/locking and isolated frozen proposed patch; bounded tests used fresh temporary stores only.",
+  "source_files": {
+    "original": {
+      "path": "research/improvement-loop-20261024/experiment_queue.py",
+      "sha256": "6995febe73a5c1c2a317849416a58cc25130b9bbda44161f6a7624b321a8415f"
+    },
+    "patched": {
+      "path": "research/improvement-loop-20261024/queue-restart-audit-sol-v1/patched/experiment_queue.py",
+      "sha256": "33f0c6e841f998e8a70c48afc29c79744eddc60b1573553a1d16bd5dcf25abee"
+    },
+    "other_copied_files_match_current_root": ["execution.py", "ledger.py", "run_receipts.py"]
+  },
+  "original_defect_reproduction": {
+    "source_record": "research/improvement-loop-20261024/queue-restart-audit-sol-v1/original-repro.json",
+    "fault_boundary": "Hard exit after durable plan.json publication and before admission receipt publication.",
+    "original_outcome": "A contender under a different queue ID reuses the same attempt/output identity and is admitted. The exact original retry is then rejected as already owned. One contender launch occurs; original plan remains unrecorded.",
+    "assessment": "Real ownership gap: unsealed durable plans were invisible to entries() and the collision scan over admitted plans."
+  },
+  "patch_review": {
+    "locking": "enqueue() acquires the pre-existing dispatcher flock before scanning partial admissions and holds it through plan/receipt publication. tick() uses the same lock, so a cooperating dispatcher cannot dispatch the contender between ownership inspection and admission.",
+    "partial_claims": "All unsealed peer queue directories are checked. A valid durable partial plan must validate and its queue_id must match the directory name. Attempt ID or output-directory overlap rejects; unrelated identities are permitted.",
+    "exact_retry": "If a plan exists, same queue ID requires the same canonical plan digest. Exact retry continues through normal ownership/fresh-attempt validation and can publish the missing receipt. Once the receipt exists and pins the plan, enqueue is idempotent.",
+    "scaffold": "The caller's own empty scaffold is an allowed repair state; a peer scaffold with no plan is unresolved and blocks unrelated enqueue, rather than allowing unknown ownership to be ignored.",
+    "admission_receipt": "Queue entries with a receipt are governed by existing admission receipt/store/plan pin checks. A crash after receipt publication is handled by idempotent retry; tick can create absent job directories. No scientific qualification is implied.",
+    "change_scope": "Diff adds only partial unsealed-plan scan to experiment_queue.py. execution.py, ledger.py, and run_receipts.py in patch copy match current root files."
+  },
+  "tests": {
+    "patched_queue_tests": {
+      "method": "Loaded existing test_experiment_queue.QueueTests with sys.path forcing patched module first; each test creates its own temporary queue store.",
+      "result": "24 passed",
+      "elapsed_seconds": 13.514,
+      "covers": ["dependency readiness and exact result/release/output pin binding", "duplicate/unbound dependency rejection", "capacity contention and lock recovery", "malformed admission reservation quarantine", "partial admission exact retry", "result-before-release crash reconciliation", "prelaunch/prepare/launch crash recovery", "failed/corrupt output and terminal quarantine"]
+    },
+    "sol_recovery_tests": {"result": "3 passed", "elapsed_seconds": 7.149, "source": "queue-restart-audit-sol-v1/test_recovery.py"},
+    "fresh_store_independent_probes": [
+      {"case": "empty_scaffold", "result": "blocks unrelated admission; exact plan repairs scaffold; subsequent unrelated plan succeeds"},
+      {"case": "post_receipt_hard_exit", "exit_code": 84, "result": "exact retry returns same receipt pin; tick creates absent job directory, launches exactly once, records completion and releases all capacity"},
+      {"case": "malformed_partial_plan", "result": "unrelated enqueue fails closed as unsupported queue plan; different plan cannot overwrite durable queue ID plan"}
+    ]
+  },
+  "gaps": [
+    {
+      "severity": "availability_documentation",
+      "finding": "A malformed durable partial plan or unknown non-directory queue entry prevents new enqueue operations. The public API deliberately refuses to overwrite the plan, so operator preservation/quarantine is required.",
+      "recommended_condition": "Document a preservation-first, explicit manual repair/quarantine procedure before operational adoption. Do not add automatic deletion/rewrite."
+    },
+    {
+      "severity": "trust_boundary",
+      "finding": "This remains a local cooperating-process queue over a trusted filesystem; content-addressed pins do not prevent a privileged writer from replacing or rewriting store files outside the API."
+    }
+  ],
+  "not_found": [
+    "No duplicate attempt/output admission through a valid unsealed partial plan under the dispatcher lock.",
+    "No exact retry mutation or double launch after a receipt-published process crash.",
+    "No change to dependency readiness or result/release terminal authentication in the narrow patch."
+  ],
+  "qualification": "Infrastructure recovery only; science remains unassessed and promotion/publication is not authorized."
+}

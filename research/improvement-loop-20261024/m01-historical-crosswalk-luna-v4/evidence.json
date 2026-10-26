@@ -1,0 +1,127 @@
+{
+  "schema": "HistoricalPollSourceCrosswalkLunaV4",
+  "review_date": "2026-10-26",
+  "target_cutoff": "2018-10-23",
+  "decision": {
+    "complete_authentic_pre_cutoff_senate_poll_question_sample_crosswalk_found": false,
+    "strongest_next_route": "Pinned 2018-05-30 FiveThirtyEight pollster-ratings CSV as late-cycle frame plus manual original-release matching for each candidate row",
+    "verified_example": "538 poll event 76050 -> Emerson College Nov 7 2016 Missouri release; event match verified, exact questionnaire/sample identity not established",
+    "no_model_fit_or_data_admission": true
+  },
+  "five_thirtyeight_2018": {
+    "commit": "https://github.com/fivethirtyeight/data/commit/142cad5610ed6b3468e730199034b280b9e805d5",
+    "raw_url": "https://raw.githubusercontent.com/fivethirtyeight/data/142cad5610ed6b3468e730199034b280b9e805d5/pollster-ratings/raw-polls.csv",
+    "commit_timestamp": "2018-05-30T14:41:12Z (GitHub metadata; a commit timestamp alone is not trusted independent proof of public availability)",
+    "local_source_path": "research/improvement-loop-20261024/m01-538-archive-root-v1/raw-polls-20180530.csv",
+    "bytes": 1326873,
+    "sha256": "79489a9d7f796d8f50841e91d8dcb858679ada75690812d4757f095a107efb91",
+    "git_blob_sha1": "39675528c20d57e88fbb1147ee10f6295f7061da",
+    "source_documentation": "https://github.com/fivethirtyeight/data/blob/142cad5610ed6b3468e730199034b280b9e805d5/pollster-ratings/README.md",
+    "readme_claims_from_prior_source_audit": {
+      "pollno": "538 poll ID",
+      "polldate": "median field date",
+      "samplesize": "may be estimated",
+      "dataset_scope": "congressional and gubernatorial polls in the final 21 days since 1998 (as stated by 2018 article/documentation review)"
+    },
+    "existing_archive_counts_from_pinned_local_audit": {
+      "2012_2016_senate_general_rows": 465,
+      "days_before_election_min": 2,
+      "days_before_election_max": 21,
+      "candidate_inventory": "research/improvement-loop-20261024/m01-538-archive-root-v1/candidate-inventory.json"
+    },
+    "current_article_status": {
+      "original_article_url": "https://fivethirtyeight.com/features/the-polls-are-all-right/",
+      "observed_current_behavior": "redirects to ABC News politics landing page",
+      "interpretation": "contemporaneous article page itself not recaptured in this pass; rely on pinned repo object and prior article metadata capture, not current URL"
+    }
+  },
+  "release_to_archive_event_match": {
+    "race": "2016 Missouri Senate general election, Jason Kander (D) vs Roy Blunt (R)",
+    "538_row": {
+      "pollno": "76050",
+      "race_code": "2016_Sen-G_MO",
+      "pollster": "Emerson College",
+      "polldate": "2016-11-05",
+      "samplesize": 750,
+      "cand1_name": "Democrat",
+      "cand1_pct": 45.5,
+      "cand2_name": "Republican",
+      "cand2_pct": 44.8
+    },
+    "primary_release": {
+      "publisher": "Emerson College Polling",
+      "url": "https://media.wix.com/ugd/3bebb2_4c95f9bb0b874960a67b0cb7c019efd8.pdf",
+      "document_title": "Emerson College Polls: Emerson Map Shows Many Tight Races",
+      "release_date": "2016-11-07 (stated on PDF first page)",
+      "field_dates": "2016-11-04 through 2016-11-05 (stated in PDF)",
+      "population": "likely general-election voters (stated in PDF)",
+      "missouri_n": 750,
+      "summary_topline": "Kander 46%, Blunt 45% (release narrative)",
+      "detailed_senate_ballot_frequency_table": {
+        "Kander": {"count": 341, "percent": 45.5},
+        "Blunt": {"count": 336, "percent": 44.8},
+        "someone_else": {"count": 40, "percent": 5.3},
+        "undecided": {"count": 33, "percent": 4.4},
+        "total_n": 750
+      },
+      "document_observations": "PDF says Nov 4-5 field dates; describes all samples as likely general-election voters; gives MO n=750, and detailed Senate Ballot frequency counts. It does not furnish a stable sample ID, question ID, respondent microdata, or verbatim exact Senate question wording in the accessible release material reviewed."
+    },
+    "exact_field_midpoint": "2016-11-05; matches 538 median field date",
+    "classification": "Verified source-release-to-538 poll-event correspondence; not a verified question-ID, sample-ID, or respondent-level identity",
+    "why_evidence_is_strong": [
+      "same state and Senate race",
+      "same pollster",
+      "primary release field interval has median date identical to 538 polldate",
+      "the primary release itself establishes the likely-general-election-voter population; 538 has no population field, so there is no direct population equality check",
+      "exact sample N",
+      "exact Democratic and Republican reported shares in the detailed frequency table",
+      "release contains a specific Senate ballot frequency table and primary-document date"
+    ],
+    "what_it_does_not_prove": [
+      "a source-native sample or questionnaire identifier",
+      "verbatim question wording or candidate order for the row",
+      "raw respondent/sample bytes or weighting computation from 538's ingestion",
+      "that all other 538 candidate rows match their named releases",
+      "that current RealClearPolling historical-page data were captured unchanged by the 2018 cutoff"
+    ],
+    "current_rcp_corroboration_only": {
+      "url": "https://www.realclearpolling.com/polls/senate/general/2016/missouri/blunt-vs-kander",
+      "observed_row": "Emerson, Nov 4-5, Blunt 45, Kander 46; linked PDF is the same Emerson source release",
+      "vintage_status": "Current page crawled in 2026; not evidence of a pre-cutoff RCP snapshot"
+    }
+  },
+  "later_fivethirtyeight_index": {
+    "readme_url": "https://github.com/fivethirtyeight/data/blob/master/state-of-the-polls-2024/README.md",
+    "readme_scope": "2012, 2016, 2020 and 2024 poll datasets whose end field date is 180 to 15 days before election; at least one presidential, Senate, House, governor or generic-ballot question",
+    "documented_schema_relevant_fields": ["pollster_name", "pollster_rating_id", "sponsor_names", "state", "start_date", "end_date", "tracking", "has_senate?"],
+    "limitations": ["post-2018 vintage", "no poll-level sample size or stable sample ID in documented schema", "no verbatim question text", "no original source URL in documented schema", "Senate flag is only whether a Senate vote question exists"],
+    "assessment": "Useful later historical discovery/indexing frame, not a pre-2018 source vintage or question/sample crosswalk"
+  },
+  "texas_politics_project_partial_bridge": {
+    "archive_url": "https://texaspolitics.utexas.edu/polling-data-archive",
+    "archive_observation": "The current archive names individual survey waves and links poll summary, crosstabs, codebook, one or more data files, graphics, and a methodology statement. It states wave-specific interview dates and matched-down final sample sizes; e.g. June 2016 Texas Statewide Study lists YouGov interview dates June 10-20 and a final matched sample n=1,200.",
+    "coverage": "Texas registered-voter surveys by UT/Texas Politics Project/YouGov; not a national cross-pollster Senate dataset; some waves do not coincide with U.S. Senate election years.",
+    "availability_limit": "The current archive and current downloadable file links do not independently date first public availability of all legacy files; each source wave's original dated release must be verified. Current archive is therefore a promising primary-pollster source family but not an authenticated full pre-2018 corpus."
+  },
+  "access_and_capture": {
+    "emerson_pdf_downloaded_locally": false,
+    "emerson_pdf_sha256": null,
+    "reason": "No binary response capture available through the current web reader; no shell network retrieval. Rights/redistribution scope was not resolved, so no PDF was copied.",
+    "wayback_cdx": {
+      "requested_endpoint_example": "https://web.archive.org/cdx/search/cdx?url=realclearpolitics.com/epolls/2016/senate/missouri_senate_race.html&output=json&filter=statuscode:200&from=2016&to=2018&collapse=digest",
+      "web_tool_result": "endpoint inaccessible/restricted",
+      "shell_result": "outbound shell connection refused",
+      "meaning": "RCP pre-cutoff snapshot not established; these failures do not prove no snapshot exists"
+    },
+    "no_owner_artifacts_modified": true,
+    "no_raw_poll_release_reproduced": true
+  },
+  "sources": [
+    {"title": "FiveThirtyEight pollster-ratings pinned commit", "url": "https://github.com/fivethirtyeight/data/commit/142cad5610ed6b3468e730199034b280b9e805d5", "source_type": "primary repository"},
+    {"title": "FiveThirtyEight 2018 article endpoint (now redirects)", "url": "https://fivethirtyeight.com/features/the-polls-are-all-right/", "source_type": "publisher page; unavailable at original URL"},
+    {"title": "Emerson College Nov. 7, 2016 release", "url": "https://media.wix.com/ugd/3bebb2_4c95f9bb0b874960a67b0cb7c019efd8.pdf", "source_type": "primary release"},
+    {"title": "Current RCP Missouri 2016 poll page", "url": "https://www.realclearpolling.com/polls/senate/general/2016/missouri/blunt-vs-kander", "source_type": "aggregator current historical page; no as-of-2018 claim"},
+    {"title": "FiveThirtyEight State of the Polls README", "url": "https://github.com/fivethirtyeight/data/blob/master/state-of-the-polls-2024/README.md", "source_type": "primary dataset documentation, post-target"},
+    {"title": "UT/Texas Politics Project poll archive", "url": "https://texaspolitics.utexas.edu/polling-data-archive", "source_type": "pollster archive; current page"}
+  ]
+}

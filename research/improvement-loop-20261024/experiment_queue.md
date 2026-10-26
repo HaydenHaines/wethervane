@@ -1,11 +1,23 @@
 # Persistent experiment command queue
 
-`experiment_queue.py` executes fixed dependency graphs through the reviewed
+`queue-v2/experiment_queue.py` executes fixed dependency graphs through its pinned
 `execution.py`. It adds persistent dispatch and capacity accounting for future
 explicitly selected commands. It does not generate hypotheses, fit scientific
 models by itself, assess forecast quality, promote models or publish results.
 Tests use invented subprocesses; no existing owner job or completed scientific
 comparison is adopted, restarted or repeated.
+
+The original top-level `experiment_queue.py` remains unchanged for stores that
+pin it. It has a known interrupted-admission ownership defect and does not have
+the protection described below. Version 2 is for **new stores**: store receipts
+pin exact source paths and hashes, so switching an existing store to these files
+is not a supported migration. Keep old sources and receipts available; do not
+edit store pins or silently rewrite an existing plan to use the new code.
+V2 uses a distinct store schema, compares store pins with its source files and
+checks actual imported helper-module paths, and validates the store before creating
+a worker output. An older V1 client may still create a missing `queues` directory
+in an incomplete incompatible store, or an empty requested worker-output
+directory, before rejecting it; do not use V1 clients to operate on V2 stores.
 
 ## Execution domain
 
@@ -108,6 +120,32 @@ Other per-job source/input failures do not prevent
 unrelated eligible work from using the remaining safe capacity. Inspection checks
 compact receipt links; owner scientific verification remains independent.
 
+An admission can be interrupted after its plan is durable but before its receipt
+is published. That partial plan still owns every declared attempt ID and output
+directory. While holding the dispatcher lock, `enqueue` validates other partial
+plans and rejects collisions; unrelated plans can be admitted. Retrying the exact
+original plan seals its receipt. If death occurs after receipt publication but
+before job directories are created, an exact retry retains the receipt and a
+subsequent tick creates those directories. A scaffold without a readable plan,
+a malformed plan, or an unknown queue-store entry instead blocks new admissions:
+its claims cannot be safely inferred. This is a fail-closed availability limit,
+not automatic repair.
+
+For a malformed partial admission, first stop dispatch clients and controller
+workers without killing or modifying any separately owned scientific process.
+Record `status`, the queue path, process identities, reservations and attempted
+inputs; make a consistent preservation copy of the store and hash the damaged
+bytes. Look for the exact original canonical plan and its independently recorded
+digest in the admission request or a verified backup. Only if those establish
+the full original identity, and the attempt/reservation history is reconciled,
+may an operator preserve the damaged entry outside the queue directory, restore
+the exact verified plan at its original path, and retry that same plan with its
+original digest. Keep both the damaged bytes and a dated recovery record. If the
+original claims or process state cannot be established, leave admission blocked
+and investigate; do not delete the partial entry, invent a plan, reassign its
+output, or silently reset the store. There is currently no automated quarantine
+or repair command.
+
 ## Prelaunch deferral and explicit retries
 
 If pinned bytes drift before any executor launch intent, dispatch records a
@@ -167,11 +205,11 @@ are complete, including recorded failures. A deadline with pending work leaves
 the queue resumable. Neither status establishes scientific qualification.
 
 ```sh
-python3 -B research/improvement-loop-20261024/experiment_queue.py --root STORE initialize --capacity 1
-python3 -B research/improvement-loop-20261024/experiment_queue.py --root STORE enqueue --plan PLAN.json --sha256 CANONICAL_SHA
-python3 -B research/improvement-loop-20261024/experiment_queue.py --root STORE tick
-python3 -B research/improvement-loop-20261024/experiment_queue.py --root STORE status
-python3 -B research/improvement-loop-20261024/experiment_queue.py --root STORE work --output FRESH_CONTROLLER_OUTPUT --poll-seconds 1 --max-runtime 3600
+python3 -B research/improvement-loop-20261024/queue-v2/experiment_queue.py --root STORE initialize --capacity 1
+python3 -B research/improvement-loop-20261024/queue-v2/experiment_queue.py --root STORE enqueue --plan PLAN.json --sha256 CANONICAL_SHA
+python3 -B research/improvement-loop-20261024/queue-v2/experiment_queue.py --root STORE tick
+python3 -B research/improvement-loop-20261024/queue-v2/experiment_queue.py --root STORE status
+python3 -B research/improvement-loop-20261024/queue-v2/experiment_queue.py --root STORE work --output FRESH_CONTROLLER_OUTPUT --poll-seconds 1 --max-runtime 3600
 ```
 
 For continued dispatch after the invoking caller exits, launch this exact pinned
@@ -191,7 +229,7 @@ converted or changed by this implementation.
 ## Verification
 
 ```sh
-python3 -B -m unittest discover -s research/improvement-loop-20261024 -p test_experiment_queue.py -v
+python3 -B -m unittest discover -s research/improvement-loop-20261024/queue-v2 -p test_experiment_queue.py -v
 ```
 
 Invented owner commands exercise a real dependent receipt/SHA chain, independent

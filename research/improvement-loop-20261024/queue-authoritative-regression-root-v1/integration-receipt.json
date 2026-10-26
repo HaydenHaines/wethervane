@@ -1,0 +1,29 @@
+{
+  "schema": "QueueV2RootIntegrationReceiptV1",
+  "recordedAtUtc": "2026-10-26T21:22:10.563272+00:00",
+  "original_failure": {
+    "log": "research/improvement-loop-20261024/queue-authoritative-regression-root-v1/original-failure.log",
+    "sha256": "3d5144fb0d0934fddee405c3fb81ebfe7d7b1faecc0b3dd18a8355a76c6f39ce",
+    "outcome": "expected failure: partial contender admitted"
+  },
+  "temporary_in_place_test": {
+    "source_sha256": "33f0c6e841f998e8a70c48afc29c79744eddc60b1573553a1d16bd5dcf25abee",
+    "tests_passed": 25,
+    "seconds": 13.504,
+    "note": "Original source was briefly changed for this test and restored immediately after discovering store source pins; past absence of concurrent clients was not established."
+  },
+  "versioned_test": {
+    "command": "python3 -B -m unittest discover -s research/improvement-loop-20261024/queue-v2 -p test_experiment_queue.py -v",
+    "tests_passed": 25,
+    "failures": 0,
+    "seconds": 14.8,
+    "source_sha256": "33f0c6e841f998e8a70c48afc29c79744eddc60b1573553a1d16bd5dcf25abee",
+    "test_sha256": "16ac9c53e921ce2e531d72454635c1703a93a9a85171147b08e28224425db9ff",
+    "output": "Command output was observed in the agent tool session, not separately captured as a file."
+  },
+  "original_source_restored_sha256": "6995febe73a5c1c2a317849416a58cc25130b9bbda44161f6a7624b321a8415f",
+  "limits": [
+    "V2 has a separate source path and supports new stores; migration of a V1 store is not implemented.",
+    "No claim is made that 12 synthetic cycles prove thousands of scientific improvement runs or model quality."
+  ]
+}

@@ -1,0 +1,18 @@
+test_killed_partial_admission_keeps_ownership_and_allows_unrelated_work (test_experiment_queue.QueueTests.test_killed_partial_admission_keeps_ownership_and_allows_unrelated_work)
+A durable plan must retain its claim even when its writer dies before the receipt. ... FAIL
+
+======================================================================
+FAIL: test_killed_partial_admission_keeps_ownership_and_allows_unrelated_work (test_experiment_queue.QueueTests.test_killed_partial_admission_keeps_ownership_and_allows_unrelated_work)
+A durable plan must retain its claim even when its writer dies before the receipt.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/test_experiment_queue.py", line 149, in test_killed_partial_admission_keeps_ownership_and_allows_unrelated_work
+    with self.assertRaisesRegex(ValueError, "partial admission"):
+AssertionError: ValueError not raised
+
+----------------------------------------------------------------------
+Ran 1 test in 0.095s
+
+FAILED (failures=1)
+
+returncode=1
