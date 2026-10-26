@@ -1,0 +1,327 @@
+{
+  "schema": "M01CurrentPilotProvenanceInventoryV1",
+  "scope": "Current TX2026 supplied-bank/native-interface candidate only. No claim this is a selected full Problem or historical replay.",
+  "pins": {
+    "training": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/tx-disjoint-calibration-sol-v1/attempt-v1/selected-disjoint-training.csv",
+      "sha256": "151a14846e850ff0b4537897a29faa772a5a5e0a81f8cd92f41fcdec202dcb61"
+    },
+    "target": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/calibration-consumer-v1/inputs/target-coordinates.json",
+      "sha256": "ef1793ee6d4cef3fef398c2c10fe5fdc1fb0c6654f7c40472d818bd8c835ed03"
+    },
+    "bank_plan": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/calibration-consumer-v1/inputs/plan.json",
+      "sha256": "9ffc1342bc0afad4c13ae3be73d3e6bfbd10cb8e88fecc178f76e40f6c1590be"
+    },
+    "polls": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/actual-pilot-source-sol-v1/observation-maps-v2/TX2026-six-LV-poll-original-observations.json",
+      "sha256": "6decdb256747863abd3680a269d8314a9d5b545ae8becf9274fbaf1da6bdc491"
+    },
+    "surveys": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/actual-pilot-source-sol-v1/observation-maps-v2/CES2020-joint-survey-components.json",
+      "sha256": "6d87eca65df2a7a5960298f3b76a4cd985f7f03c6c4ea701c3bcf79c219f4128"
+    },
+    "survey_receipt": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/actual-pilot-source-sol-v1/observation-maps-v2/CES2020-mapping-receipt.json",
+      "sha256": "4c73bc2f90bfe0b8aaa9f049334f2ed880453c7dc40175bc00fd57fe8b8c07ce"
+    },
+    "survey_source_receipt": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/source-panel-sol-v1/ces2020-behavior-training-v1/receipt.json",
+      "sha256": "661ac25dac301c26dbae7d483c4f4d42c722b4827b77986c8993d23e1662638c"
+    },
+    "official": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/actual-pilot-source-sol-v1/physical-sources-v2/TX2020-2024-official-candidate-count-observations.json",
+      "sha256": "773f4bfa83534741b23566879e925a43f273cbbc6a0c4dd6f228755e65cfffe0"
+    },
+    "official_model": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/actual-pilot-source-sol-v1/observation-maps-v2/official-count-components.json",
+      "sha256": "ba623de118b289c1edda4d5b5b7b9a719de081470a0b5081f8d68d3ea3175592"
+    },
+    "poll_receipt": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/actual-pilot-source-sol-v1/observation-maps-v2/TX2026-poll-mapping-receipt.json",
+      "sha256": "3f425c5fe1c39e56a66a81e73aa09a77d5ed5e3afe54ed68c64c29104d6e5a92"
+    },
+    "calibration_route": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/actual-source-review-astra-v1/disjoint-calibration-route.json",
+      "sha256": "f745bebf7f268a7b67c4fad010346c2efd42dd4258ad611ae59adde1d9f26361"
+    },
+    "outcomes": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/historical-intake-sol/derived/outcomes_allowed_cycles_SEPARATE.csv",
+      "sha256": "70f66904a37d05225b22061d63bb95ea1b3e6837146924a3477cb22bd8d3d9b3"
+    },
+    "owner_coordination": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/coordination-frontend-20261026/m01-count-binding-followup-v2.md",
+      "sha256": "b9a31e40c3320e56bf98c93a027b3817c0d992a07e7290f918c7b9885921992b"
+    }
+  },
+  "calibration": {
+    "rows": 1483,
+    "fields": [
+      "state",
+      "source_row_number",
+      "cycle",
+      "race_id",
+      "source_race_id",
+      "dem_candidate_id",
+      "rep_candidate_id",
+      "dem_candidate_name",
+      "rep_candidate_name",
+      "election_date",
+      "start_date",
+      "end_date",
+      "source_election_date",
+      "election_date_correction",
+      "source_democratic_value",
+      "source_republican_value",
+      "reported_n",
+      "dem_share",
+      "first_candidate_conditional_share",
+      "first_candidate_id",
+      "second_candidate_id",
+      "first_candidate_name",
+      "second_candidate_name",
+      "source_id",
+      "source_path",
+      "source_value_basis",
+      "reported_n_basis",
+      "effective_n",
+      "variance",
+      "pollster",
+      "population",
+      "methodology",
+      "publication_date",
+      "available_date",
+      "availability_basis",
+      "publication_date_verified",
+      "historical_version_verified",
+      "strict_asof_qualified",
+      "candidate_join_basis",
+      "source_candidate_names_verified",
+      "sample_overlap_status",
+      "observation_id",
+      "sample_id",
+      "potential_overlap_group",
+      "days_to_election",
+      "forecast_target",
+      "pollster_key",
+      "lead_bin",
+      "actual_dem_share"
+    ],
+    "event_count": 105,
+    "metadata_counts": {
+      "cycle": {
+        "2012": 467,
+        "2016": 463,
+        "2018": 288,
+        "2020": 265
+      },
+      "source_id": {
+        "tierney_cnn": 1483
+      },
+      "sample_overlap_status": {
+        "unknown_no_author_sample_ID_or_field_start": 1483
+      },
+      "publication_date_verified": {
+        "False": 1483
+      },
+      "historical_version_verified": {
+        "False": 1483
+      },
+      "strict_asof_qualified": {
+        "False": 1483
+      }
+    },
+    "label_definition": "logit(dem_share)-logit(actual_dem_share)",
+    "strict_asof": {
+      "availability_basis": "field_end_date_proxy_only_NOT_verified_publication",
+      "row_count": 1483,
+      "publication_date_verified": false,
+      "historical_version_verified": false,
+      "strict_asof_qualified": false,
+      "earliest_historical_target_claim": null,
+      "qualification": "Retrospective 2026 calibration using outcomes through 2020; not a time-safe historical score"
+    },
+    "outcome_source_fields": [
+      "year",
+      "cycle",
+      "state",
+      "race_id",
+      "source_race_id",
+      "election_date",
+      "dem_votes",
+      "rep_votes",
+      "actual_dem_share",
+      "archive_538_dem_votes",
+      "archive_538_rep_votes",
+      "outcome_source",
+      "official_dem_votes",
+      "official_rep_votes",
+      "role"
+    ]
+  },
+  "current_polls": {
+    "rows": 6,
+    "fields": [
+      "admission_status",
+      "candidate_identity_basis",
+      "days_to_election",
+      "design_effect",
+      "design_weights_acquired",
+      "effective_n",
+      "event_kind",
+      "evidence_kind",
+      "field_end",
+      "field_start",
+      "fieldwork_provider_id",
+      "first_candidate_id",
+      "first_conditional_share",
+      "first_pct",
+      "full_response_options_complete",
+      "information_time_basis",
+      "known_overlap",
+      "mode",
+      "nominal_sample_n",
+      "nominal_sample_universe",
+      "original_html_or_pdf_bytes_acquired",
+      "overlap_group_id",
+      "pollster",
+      "pollster_id",
+      "pollster_key",
+      "principal_person_alias_assertions",
+      "projection",
+      "projection_qualifier",
+      "publication_basis",
+      "publication_date",
+      "publication_time_utc",
+      "qualifiers",
+      "question_id",
+      "question_kind",
+      "question_specific_n",
+      "question_universe",
+      "race_id",
+      "raw_percentages_not_renormalized",
+      "release_id",
+      "reported_moe_pct",
+      "results",
+      "retrieved_current_pass",
+      "sample_id",
+      "second_candidate_id",
+      "second_pct",
+      "selected_for_aggregate",
+      "selected_sample_owner",
+      "source_evidence_qualifier",
+      "source_files",
+      "source_url",
+      "sponsor",
+      "stage",
+      "state",
+      "survey_universe",
+      "unknown_metadata_fields",
+      "weighted_percentages_are_not_binomial_counts"
+    ],
+    "model_map_rows": 6,
+    "mapping_bijection": true,
+    "exact_publication_instants_known": 0,
+    "cross_survey_overlap_claims": [
+      "Questions/universes and subsequent republications from the same survey share sample_id; respondent-level overlap across different surveys unknown"
+    ],
+    "unknown_metadata_counts": {
+      "question_specific_n": 5,
+      "effective_n": 6,
+      "publication_time_utc": 6,
+      "sponsor": 2,
+      "mode": 2
+    }
+  },
+  "surveys": {
+    "blocks": 33,
+    "records": 4294,
+    "unique_source_record_ids": 4294,
+    "block_fields": [
+      "id",
+      "source_id",
+      "event_id",
+      "contest_id",
+      "community_date",
+      "groups",
+      "rows"
+    ],
+    "row_fields": [
+      "record_id",
+      "cell_id",
+      "community_mask",
+      "turnout_mask",
+      "answer_mask"
+    ],
+    "raw_join_key": [
+      "year",
+      "case_id"
+    ],
+    "source_id": "CES2020_historical_training",
+    "source_receipt_fields": [
+      "schema",
+      "created_utc",
+      "source",
+      "code",
+      "admission",
+      "selected_year",
+      "selected_columns",
+      "rows",
+      "no2022political_or2024political_or2025_orprotectedGSS_values_read",
+      "models_fitted",
+      "target_scoring_run",
+      "interpretation",
+      "files"
+    ],
+    "coverage": {
+      "rows": 4294,
+      "partial_community_rows": 99,
+      "missing_turnout_rows": 1019,
+      "missing_answer_rows": 1284,
+      "Other_rows": 40
+    },
+    "weights": "weight/weight_post/vvweight/vvweight_post retaineddiagnostic-only; nooutcomecalibratedweightlikelihood",
+    "observation_units": "Onejointobservedanswerpatternperoriginalrecord; no weightedpseudo-counts"
+  },
+  "official": {
+    "rows": 10,
+    "fields": [
+      "cycle",
+      "event_date",
+      "race_id",
+      "source_candidate_id",
+      "source_candidate_name",
+      "source_excel_row",
+      "source_id",
+      "source_line",
+      "source_page",
+      "source_party",
+      "source_sheet",
+      "votes"
+    ],
+    "events": [
+      "2020:TX:senate:regular",
+      "2024:TX:senate:regular"
+    ],
+    "role": "Earlier official training counts for2026current; NOT2024or2020forecastevaluation"
+  },
+  "joins": {
+    "calibration_event_vs_current_official": [],
+    "calibration_cycle_vs_current_official": [
+      "2020"
+    ],
+    "interpretation": "Empty event intersection is a recomputed event-key check only; shared cycle and respondent/source dependence are not removed."
+  },
+  "unresolved": [
+    "All 1483 calibration rows have unknown author sample identity/field start and unverified publication/vintage.",
+    "Current poll sample/release/overlap IDs identify repeated releases, not cross-survey respondent disjointness.",
+    "CES year/case_id is unique internally; no cross-source person crosswalk to polls/calibration is established here.",
+    "Outcome race keys permit event exclusion; row-level original official result byte/vintage chain is not fully verified by this audit.",
+    "Calibration and downstream 2020 events share cycle; a joint shared-error conditional model or separately justified route is required.",
+    "No complete selected M01 Problem, fundamentals training-label ledger, or full vector manifest is yet bound."
+  ],
+  "model_fit": false,
+  "owner_tree_mutated": false,
+  "empirical_admission": false
+}

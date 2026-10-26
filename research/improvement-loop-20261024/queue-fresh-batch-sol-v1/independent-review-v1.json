@@ -1,0 +1,75 @@
+{
+  "schema": "FreshQueueBatchIndependentReviewV1",
+  "reviewStatus": "reviewed_no_blocking_findings",
+  "scope": "Read-only independent review of frozen fresh-plan batch utility, author probe, and exact post-receipt crash regression. Reviewer did not run tests or probes.",
+  "reviewedSources": [
+    {
+      "path": "fresh_batch.py",
+      "sha256": "b55a5a47964d66f42d69d60a7b75195cf4ad672c3943b42527b5a6ab8bacdc34"
+    },
+    {
+      "path": "test_fresh_batch.py",
+      "sha256": "b1517384b7fe4d2e888cae7eb4ca82db918fdbf7806055f655d383995125de43"
+    },
+    {
+      "path": "README.md",
+      "sha256": "af07427aa95494bb08c4465be78e4d144284e825b516741ac5d2453b82ebd9dc"
+    },
+    {
+      "path": "test_post_receipt_crash.py",
+      "sha256": "33d1e08b323d5058428234fd6804407272c61d30b6d5c8c90fcc8811df30c0e4"
+    },
+    {
+      "path": "probe.py",
+      "sha256": "812161fdd321617bbedca1246d5ee960a6effb4e66d74386af0bb28d00961879"
+    },
+    {
+      "path": "probe-result-v1.json",
+      "sha256": "44d54c4db937a8a2a724c39a30699702a75442d707c89f0fe88ccc206691dc8e"
+    },
+    {
+      "path": "author-tests-v2.log",
+      "sha256": "9ee3e444d7fa3d26a84cf1d441c8a890382cca28d3bb35d39301e5e71061728c"
+    },
+    {
+      "path": "author-evidence-v1.json",
+      "sha256": "885aadb3e70da67e6ab3999fd8b99f530fe82f58b263b4904e967df1506ac1ea"
+    },
+    {
+      "path": "experiment_queue.py",
+      "sha256": "6995febe73a5c1c2a317849416a58cc25130b9bbda44161f6a7624b321a8415f"
+    },
+    {
+      "path": "execution.py",
+      "sha256": "ce02f4c4b9be397b299c2219092fdd355db1695798af07c4974bc63cb6bbbc93"
+    },
+    {
+      "path": "ledger.py",
+      "sha256": "d65cea890ecf9b456f8b9625d173f15dac1e7fa94bb618d3407e26f368ee220a"
+    },
+    {
+      "path": "run_receipts.py",
+      "sha256": "a7e78b822207109e0257adce9abb6493c53a0d93158177131ade76c0d874e73e"
+    }
+  ],
+  "findings": [
+    "Batch admission uses the existing dispatcher lock, authenticates the history once through entries(), validates the fixed roster before writes, and records its source/store/plan pins in durable intent. Per-plan admission receipt formats and executor dispatch/reconciliation semantics are unchanged.",
+    "The exact post-receipt crash regression demonstrates that ordinary enqueue preserves the receipt pin and tick reconstructs missing job scaffolding. The test stops at bind and asserts prepare/launch are not called; it launches no executor job.",
+    "Interrupted batch admission is a committed prefix and is intentionally not resumable through the batch tool. README directs recovery through ordinary enqueue and makes no atomic-batch claim.",
+    "Historical receipt trust retains the existing queue.entries boundary: admission fields and receipt-to-plan pin are checked, but there is no independent root signature that detects coherent replacement of both receipt and plan by an external writer. This is pre-existing queue behavior and the cooperative-lock limitation is documented.",
+    "The author probe reports 250 fixed independent plans: batch 4.6851 seconds with one history scan versus ordinary enqueue 8.1691 seconds with 250 scans; both report zero launches. This is one synthetic matched run over two fresh stores, with no repeated trials or uncertainty estimate. No 1000-plan run was observed or reviewed."
+  ],
+  "authorTestEvidence": {
+    "reportedPassed": 11,
+    "reportedFailed": 0,
+    "reportedDurationSeconds": 3.372,
+    "logInspected": true,
+    "independentlyExecuted": false
+  },
+  "qualification": "unassessed",
+  "limitations": [
+    "Evidence covers bounded admission of already known independent synthetic plans only.",
+    "No adaptive sequential cycles, model execution, scientific comparisons, production store, dispatch throughput, or 1000-plan probe were evaluated.",
+    "Existing status and dispatch still scan historical queue state."
+  ]
+}

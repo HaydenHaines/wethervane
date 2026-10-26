@@ -1,0 +1,56 @@
+{
+  "schema": "FreshQueueBatchAuthorEvidenceV1",
+  "recordedAtUtc": "2026-10-26T19:46:55.224079+00:00",
+  "status": "author_checks_passed_independent_review_pending",
+  "sources": [
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-fresh-batch-sol-v1/fresh_batch.py",
+      "sha256": "b55a5a47964d66f42d69d60a7b75195cf4ad672c3943b42527b5a6ab8bacdc34",
+      "size": 7564
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-fresh-batch-sol-v1/test_fresh_batch.py",
+      "sha256": "b1517384b7fe4d2e888cae7eb4ca82db918fdbf7806055f655d383995125de43",
+      "size": 10221
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-fresh-batch-sol-v1/probe.py",
+      "sha256": "812161fdd321617bbedca1246d5ee960a6effb4e66d74386af0bb28d00961879",
+      "size": 2763
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-fresh-batch-sol-v1/README.md",
+      "sha256": "af07427aa95494bb08c4465be78e4d144284e825b516741ac5d2453b82ebd9dc",
+      "size": 3966
+    }
+  ],
+  "evidence": [
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-fresh-batch-sol-v1/author-tests-v1.log",
+      "sha256": "222459137bcc0766d825865c33499b1e926ebc3f641c4c4c93dde2a16ee8abb8",
+      "size": 1603
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-fresh-batch-sol-v1/probe-result-v1.json",
+      "sha256": "44d54c4db937a8a2a724c39a30699702a75442d707c89f0fe88ccc206691dc8e",
+      "size": 2234
+    }
+  ],
+  "tests": {
+    "passed": 10,
+    "failed": 0,
+    "scope": "Temporary-store admission only; final focused suite launches no executor jobs."
+  },
+  "coreChanged": false,
+  "receiptFormatsChanged": false,
+  "productionStoresTouched": false,
+  "scientificJobsLaunched": 0,
+  "qualification": "unassessed",
+  "limits": [
+    "Known independent fixed-plan admission only; no adaptive sequential cycle scale claim.",
+    "Existing queue status/dispatch remain full-history scans.",
+    "Existing cooperative-lock boundary retained; hostile writers are outside isolation guarantee.",
+    "Interrupted prefix recovered through ordinary enqueue; no rollback or synthetic batch success."
+  ],
+  "initialTestCollectionNote": "Initial imported fixture class unintentionally collected existing harmless executor fixture tests; no scientific models. Final suite imports fixture module without collecting its test class."
+}

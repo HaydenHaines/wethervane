@@ -1,0 +1,23 @@
+{
+  "schema": "FreshQueueThousandIndependentRootVerificationV1",
+  "verifiedAtUtc": "2026-10-26T19:50:14.522393+00:00",
+  "probeResultSha256": "e0396eb001435857c478a1ab7b4e0266d8761a5924820eeba0cede2410600235",
+  "admissionReceiptSha256": "5655a44321f1cfa6bf975b35492c86a0542b1f7e868d05e5956d11bad3dc6709",
+  "verifiedIndividualReceiptCount": 1000,
+  "independentStatus": {
+    "queueCount": 1000,
+    "waiting": 1000,
+    "reserved": 0,
+    "executionStoreExists": false
+  },
+  "independentUnitTests": {
+    "batch": 10,
+    "receiptCrash": 1,
+    "failures": 0,
+    "logPaths": [
+      "/mnt/research-storage/ballotmancy-queue-independent-test.log",
+      "/mnt/research-storage/ballotmancy-queue-crash-independent-test.log"
+    ]
+  },
+  "limits": "One predeclared synthetic batch, 1000 pending plans, zero attempts. Does not measure actual scientific cycles, adaptive serial experiments, full-store tamper protection, production throughput or qualification."
+}

@@ -1,0 +1,86 @@
+{
+  "schema": "FreshQueueBatchAuthorEvidenceV2",
+  "recordedAtUtc": "2026-10-26T19:50:00.528329+00:00",
+  "status": "frozen_author_and_independent_review_passed",
+  "previous": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-fresh-batch-sol-v1/author-evidence-v1.json",
+    "sha256": "885aadb3e70da67e6ab3999fd8b99f530fe82f58b263b4904e967df1506ac1ea",
+    "size": 2671
+  },
+  "sources": [
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-fresh-batch-sol-v1/fresh_batch.py",
+      "sha256": "b55a5a47964d66f42d69d60a7b75195cf4ad672c3943b42527b5a6ab8bacdc34",
+      "size": 7564
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-fresh-batch-sol-v1/test_fresh_batch.py",
+      "sha256": "b1517384b7fe4d2e888cae7eb4ca82db918fdbf7806055f655d383995125de43",
+      "size": 10221
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-fresh-batch-sol-v1/test_post_receipt_crash.py",
+      "sha256": "33d1e08b323d5058428234fd6804407272c61d30b6d5c8c90fcc8811df30c0e4",
+      "size": 2401
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-fresh-batch-sol-v1/probe.py",
+      "sha256": "812161fdd321617bbedca1246d5ee960a6effb4e66d74386af0bb28d00961879",
+      "size": 2763
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-fresh-batch-sol-v1/probe_1000.py",
+      "sha256": "f7808c6335aaf06633e8c546dbaa3541021ea4c4e60a702f3c9b02a28cb94057",
+      "size": 3945
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-fresh-batch-sol-v1/README.md",
+      "sha256": "af07427aa95494bb08c4465be78e4d144284e825b516741ac5d2453b82ebd9dc",
+      "size": 3966
+    }
+  ],
+  "evidence": [
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-fresh-batch-sol-v1/author-tests-v2.log",
+      "sha256": "9ee3e444d7fa3d26a84cf1d441c8a890382cca28d3bb35d39301e5e71061728c",
+      "size": 1782
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-fresh-batch-sol-v1/independent-review-v1.json",
+      "sha256": "1acd794b0bd0e8aa5f89ac1bd839df94ebaa7e0c13c2896601b4c62107e32de9",
+      "size": 3868
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-fresh-batch-sol-v1/probe-result-v1.json",
+      "sha256": "44d54c4db937a8a2a724c39a30699702a75442d707c89f0fe88ccc206691dc8e",
+      "size": 2234
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-fresh-batch-sol-v1/probe-1000-result-v1.json",
+      "sha256": "e0396eb001435857c478a1ab7b4e0266d8761a5924820eeba0cede2410600235",
+      "size": 3535
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-fresh-batch-sol-v1/probe-1000-v1.log",
+      "sha256": "817bd73ac251a31a3d55d4ebad95c79b6c97103a62cc3ef28afcebe38bb9b68b",
+      "size": 331
+    }
+  ],
+  "tests": {
+    "passed": 11,
+    "failed": 0,
+    "seconds": 3.372
+  },
+  "coreChanged": false,
+  "receiptFormatsChanged": false,
+  "productionStoresTouched": false,
+  "scientificJobsLaunched": 0,
+  "qualification": "unassessed",
+  "limits": [
+    "1000 fixed known independent synthetic pending admissions only, not1000adaptive sequential cycles.",
+    "Existing status/dispatch still scan history.",
+    "Cooperating dispatcher-lock domain only.",
+    "Interrupted batches require ordinary enqueue; immutable evidence preserved."
+  ],
+  "frozen": true
+}

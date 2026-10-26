@@ -1,0 +1,47 @@
+{
+  "schema": "TwoCycleOwnerEvidenceReceiptV1",
+  "reviewedAtUtc": "2026-10-26T19:50:36.584128+00:00",
+  "comparison": {
+    "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/nevada-2022-followup-root-v1/nevada-gpu-community-v2/two-cycle-comparison-v1/result.json",
+    "sha256": "bae1ca8271e06c02665b5464e641b9adec5efc458e05879a861ef59d3be7d9a7"
+  },
+  "sourcePins": [
+    {
+      "role": "texas_scores",
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/gpu-backend-implementation-20261025/texas-gpu-choice-coordinates-v1/provisional-predictive-analysis-v1/scores.json",
+      "sha256": "792536f3b24cbcf24360c7fc18b759d71f5bf3744ba7f28213907b5ddb43e77e"
+    },
+    {
+      "role": "nevada_scores",
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/nevada-2022-followup-root-v1/nevada-gpu-community-v2/provisional-predictive-analysis-v1/scores.json",
+      "sha256": "d35fefe16a4b19573eb49ecdea3021fee3ce4f63622931c7c47de29c60224987"
+    },
+    {
+      "role": "texas_manifest",
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/gpu-backend-implementation-20261025/texas-gpu-choice-coordinates-v1/provisional-predictive-analysis-v1/manifest.json",
+      "sha256": "302e59722b1b0f01b6813af25c9169429f9dcd37acf991d15580d656713cea12"
+    },
+    {
+      "role": "nevada_manifest",
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/nevada-2022-followup-root-v1/nevada-gpu-community-v2/provisional-predictive-analysis-v1/manifest.json",
+      "sha256": "7fe6683a66e44b06c47e7803885296a1a23dc6399f5ca7b8dda7d4e3d456f939"
+    }
+  ],
+  "independentChecks": "Matched source digest pins and recomputed reported relative named-vote errors from published observed and predicted means; did not recompute predictive banks or numerical diagnostics.",
+  "findings": {
+    "Nevada2022": {
+      "namedVoteRelativeError": 0.6456754056079927,
+      "retainedDivergences": 0
+    },
+    "Texas2018": {
+      "namedVoteRelativeError": 0.31320061087458195,
+      "retainedDivergences": 59
+    }
+  },
+  "limitations": [
+    "Named candidate votes are not turnout; errors do not identify a causal model layer.",
+    "Texas retains 59 divergences; numerical qualification fails.",
+    "Different state races and information sets prevent a matched algorithm-only comparison.",
+    "No forecast, layer promotion, or publication is qualified by this receipt."
+  ]
+}

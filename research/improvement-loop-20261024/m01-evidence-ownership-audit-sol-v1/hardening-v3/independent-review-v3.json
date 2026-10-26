@@ -1,0 +1,30 @@
+{
+  "schema": "M01ExplicitTargetValidatorIndependentReviewV3",
+  "status": "reviewed_empty_historical_target_hole_closed",
+  "scope": "Independent read-only review of hardening-v3 plus 26 synthetic validator groups. Original inventory review remains historical at the parent independent-review-v1.json.",
+  "reviewedFiles": [
+    {"path": "README.md", "sha256": "81722dfab8deb99e572e1fdbc0ff5de9c4b68bfd8f9c851315077a51e56ae10b"},
+    {"path": "validator.py", "sha256": "80e2422e4abd876edbd318008a0065470f9c8983242da5b635d3d2a2a46d3959"},
+    {"path": "test_validator.py", "sha256": "587a769930625495753b9d7c8d48cf8fe51f05106aa1ff4b018582923449753d"},
+    {"path": "test_malformed.py", "sha256": "e996135093cd6ccbcf1512bf1b0ac74f19edc62be6f721422eda71082a82af3e"},
+    {"path": "test_targets.py", "sha256": "78d51a1be2796bcdd000d4cc230b7e540b9f9ce6168571ee9402d32f581491db"},
+    {"path": "tests.log", "sha256": "9bb8a0b238d20e212eedb2b6709d7af85ca8bb0cfed997ef184d2574190c2e3f"},
+    {"path": "verification.json", "sha256": "cde167a55e947d711dacc7f93c5a9b3ffb5635c0bd5716819f033e652fa763a6"}
+  ],
+  "testRun": {
+    "command": "PYTHONDONTWRITEBYTECODE=1 python3 -B -m unittest discover -v",
+    "groupsPassed": 26,
+    "failures": 0,
+    "errors": 0,
+    "durationSeconds": 0.006,
+    "result": "passed"
+  },
+  "reviewFindings": [
+    "Historical replay now rejects an empty evaluation_event_keys list; this closes the v2 vacuous target-label intersection check.",
+    "Retrospective mode may provide an explicit empty target list, while a missing list remains rejected. This preserves the stated distinction between retrospective analysis and strict historical replay.",
+    "A synthetic historical fixture with a listed target event reused as a training outcome is rejected. Malformed-input and timezone-offset coverage remains present; all 26 test groups passed independently.",
+    "A nonempty target list is a structural requirement only. The validator does not authenticate target identity or prove that the supplied target roster is complete; source and Problem binding remain external review requirements.",
+    "Successful synthetic checks continue to report authenticated=false and fit_authorized=false. No actual evidence ledger, model fit, or scientific admission is claimed."
+  ],
+  "qualification": "unassessed"
+}
