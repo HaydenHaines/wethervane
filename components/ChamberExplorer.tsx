@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import type { ChamberId } from "../lib/chamber";
 import SenateWorkspace from "./SenateWorkspace";
 import HouseWorkspace from "./HouseWorkspace";
+import ElectionNightGuide from "./ElectionNightGuide";
 
 const fromUrl = (): ChamberId =>
   new URLSearchParams(location.search).get("chamber") === "house"
@@ -14,6 +15,16 @@ export default function ChamberExplorer() {
   const [chamber, setChamber] = useState<ChamberId | null>(null);
   const urls = useRef({ senate: "/", house: "/?chamber=house" });
   const tabs = useRef<Partial<Record<ChamberId, HTMLButtonElement | null>>>({});
+  const [scorecardOpen, setScorecardOpen] = useState(false);
+  const scorecardButton = useRef<HTMLButtonElement>(null);
+  const previousScroll = useRef(0);
+  function closeScorecard() {
+    setScorecardOpen(false);
+    requestAnimationFrame(() => {
+      scorecardButton.current?.focus({ preventScroll: true });
+      window.scrollTo({ top: previousScroll.current, behavior: "instant" });
+    });
+  }
   useEffect(() => {
     const restore = () => {
       const next = fromUrl();
@@ -27,6 +38,7 @@ export default function ChamberExplorer() {
 
   function select(next: ChamberId) {
     if (next === chamber) return;
+    if (scorecardOpen) previousScroll.current = window.scrollY;
     if (chamber)
       urls.current[chamber] =
         location.pathname + location.search + location.hash;
@@ -49,6 +61,12 @@ export default function ChamberExplorer() {
         <nav className="mastnav" aria-label="Main navigation">
           <a href="#races">The races</a>
           <a href="#methodology">How to read this</a>
+          <button type="button" className="night-guide-trigger" ref={scorecardButton}
+            aria-expanded={scorecardOpen} aria-controls="election-night-scorecard" disabled={!chamber}
+            onClick={() => {
+              if (scorecardOpen) closeScorecard();
+              else { previousScroll.current = window.scrollY; setScorecardOpen(true); }
+            }}>Election night scorecard</button>
           <span className="preview">
             <i />
             Research preview
@@ -88,6 +106,7 @@ export default function ChamberExplorer() {
         </div>
         <span className="small">Two chambers. Your perspective.</span>
       </div>
+      {scorecardOpen && chamber && <ElectionNightGuide key={chamber} chamber={chamber} onClose={closeScorecard} />}
       {chamber ? (
         <div
           role="tabpanel"
