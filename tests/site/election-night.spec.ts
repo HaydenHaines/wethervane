@@ -6,6 +6,53 @@ const read = (path: string) => JSON.parse(readFileSync(resolve(path), "utf8"));
 const senateRegistry = read("public/data/explorer/registry.json");
 const houseCatalog = read("data/house-live/catalog.json");
 
+test("reviewed expected errors follow only their exact Senate edition and remain distinct from observed scores", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "Election night scorecard", exact: true }).click();
+  const panel = page.locator("#election-night-scorecard");
+  await expect(panel).toHaveAttribute("aria-busy", "false");
+  const margin = panel.locator(".night-margin-reference");
+  await expect(margin.locator(".night-reference-value")).toContainText("5.6");
+  await expect(margin.locator(".night-reference-band")).toContainText("4.0 to 7.9 points");
+  await expect(margin).toContainText("not measured accuracy");
+  await expect(panel.locator(".night-miss-reference .night-reference-band")).toContainText("1 to 7 wrong choices");
+  await expect(panel.locator(".night-featured .night-race-expected-error")).toHaveCount(6);
+  await panel.locator(".night-reference-details > summary").click();
+  await expect(panel.locator(".night-reference-details")).toContainText("31.5 of 35");
+  await expect(panel.locator(".night-reference-details")).toContainText("26 to 35");
+  await expect(panel.locator(".night-reference-details")).toContainText("−5.5 to +5.8 points");
+  await expect(panel.locator(".night-reference-details")).toContainText("near zero by construction");
+  await panel.locator(".night-models > summary").click();
+  await panel.getByLabel("Scorecard model").selectOption("current-fundamentals");
+  await expect(margin).toContainText("No reviewed error reference for this edition");
+  await expect(panel.locator(".night-race-expected-error")).toHaveCount(0);
+  await expect(panel.locator(".night-reference-details")).toHaveCount(0);
+  await panel.getByLabel("Scorecard model").selectOption("current-polling");
+  await expect(margin.locator(".night-reference-value")).toContainText("5.6");
+  await expect(panel.locator(".night-summary")).toContainText("Not scored");
+  await expect(panel.locator(".night-edition")).toContainText("have not yet been locked");
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+});
+
+test("an invalid uncertainty reference leaves the forecast available and can be retried", async ({ page }) => {
+  const path = "**/data/election-night/references.json";
+  await page.route(path, async route => {
+    const response = await route.fetch();
+    await route.fulfill({ response, body: (await response.text()) + " " });
+  });
+  await page.goto("/");
+  await page.getByRole("button", { name: "Election night scorecard", exact: true }).click();
+  const panel = page.locator("#election-night-scorecard");
+  await expect(panel.locator(".night-reference-error")).toContainText("could not be verified");
+  await expect(panel.locator(".night-featured .night-race")).toHaveCount(6);
+  await expect(panel.locator(".night-race-expected-error")).toHaveCount(0);
+  await expect(panel.locator(".night-reference-value")).toHaveCount(0);
+  await page.unroute(path);
+  await panel.getByRole("button", { name: "Retry uncertainty reference", exact: true }).click();
+  await expect(panel.locator(".night-reference-value")).toContainText("5.6");
+  await expect(panel.locator(".night-reference-error")).toHaveCount(0);
+});
+
 for (const chamber of ["senate", "house"] as const) {
   test(`${chamber}: same-page guide starts standard, renders every exact model, and preserves the visitor's forecast`, async ({ page }, testInfo) => {
     test.setTimeout(240_000);
