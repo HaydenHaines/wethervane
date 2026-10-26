@@ -1,0 +1,98 @@
+{
+  "status": "analytical_prior_sensitivity_not_a_fit_or_recommendation",
+  "illustrative_fixed_k": 32.2575,
+  "incumbent_variance": 0.031000542509493915,
+  "max_feasible_log_sd": 0.17472759150191394,
+  "sensitivities": [
+    {
+      "log_sd": 0,
+      "mean": 1.0,
+      "variance": 0.031000542509493915,
+      "cross_event_covariance": 0.0,
+      "cross_event_correlation": 0.0,
+      "matched_variance_gamma": {
+        "status": "finite_gamma",
+        "shape": 32.2575
+      }
+    },
+    {
+      "log_sd": 0.05,
+      "mean": 1.0,
+      "variance": 0.03358126842903914,
+      "cross_event_covariance": 0.0025031276057950855,
+      "cross_event_correlation": 0.07453940017436998,
+      "matched_variance_gamma": {
+        "status": "finite_gamma",
+        "shape": 35.17873922927918
+      }
+    },
+    {
+      "log_sd": 0.1,
+      "mean": 1.0,
+      "variance": 0.04136227022558224,
+      "cross_event_covariance": 0.01005016708416806,
+      "cross_event_correlation": 0.24297909735989565,
+      "matched_variance_gamma": {
+        "status": "finite_gamma",
+        "shape": 48.211554522463075
+      }
+    },
+    {
+      "log_sd": 0.15,
+      "mean": 1.0,
+      "variance": 0.05446099507785973,
+      "cross_event_covariance": 0.02275503416444592,
+      "cross_event_correlation": 0.41782259269986466,
+      "matched_variance_gamma": {
+        "status": "finite_gamma",
+        "shape": 124.03783870750455
+      }
+    },
+    {
+      "log_sd": 0.175,
+      "mean": 1.0,
+      "variance": 0.06306339057023091,
+      "cross_event_covariance": 0.031098769339824816,
+      "cross_event_correlation": 0.4931350670908106,
+      "matched_variance_gamma": {
+        "status": "impossible",
+        "shape": null
+      }
+    },
+    {
+      "log_sd": 0.2,
+      "mean": 1.0,
+      "variance": 0.07307647284207863,
+      "cross_event_covariance": 0.04081077419238824,
+      "cross_event_correlation": 0.558466666564245,
+      "matched_variance_gamma": {
+        "status": "impossible",
+        "shape": null
+      }
+    },
+    {
+      "log_sd": 0.35,
+      "mean": 1.0,
+      "variance": 0.16535962600515916,
+      "cross_event_covariance": 0.13031912007401103,
+      "cross_event_correlation": 0.7880951549197693,
+      "matched_variance_gamma": {
+        "status": "impossible",
+        "shape": null
+      }
+    }
+  ],
+  "checks_passed": [
+    "s_zero_reduces_to_gamma_variance",
+    "s_zero_cross_event_covariance_zero",
+    "s_zero_matching_shape_recovers_incumbent",
+    "deterministic_U_leaves_B_variance",
+    "deterministic_U_perfect_event_correlation",
+    "zero_s_deterministic_U_zero_variance",
+    "equality_boundary",
+    "infeasible_fixed_example",
+    "feasible_example_recovers_target_variance",
+    "enumerated_general_product_variance",
+    "enumerated_general_cross_event_covariance"
+  ]
+}

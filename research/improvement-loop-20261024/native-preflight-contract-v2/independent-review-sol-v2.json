@@ -1,0 +1,212 @@
+{
+  "schema": "IndependentPreflightReviewSolV2",
+  "scope": "Lab-only invented runtime fixtures; no production or matcher mutation",
+  "verdict": "pass_for_tested_scope",
+  "supplied_tests_rerun": {
+    "private": {
+      "passed": 68,
+      "failed": 0
+    },
+    "legacy": {
+      "passed": 7,
+      "failed": 0
+    }
+  },
+  "checks": [
+    {
+      "name": "exact_match",
+      "expected": "match",
+      "actual": "match",
+      "pass": true
+    },
+    {
+      "name": "year_date_cross_product_rejected",
+      "expected": "none",
+      "actual": "none",
+      "pass": true
+    },
+    {
+      "name": "wrong_date_rejected",
+      "expected": "none",
+      "actual": "none",
+      "pass": true
+    },
+    {
+      "name": "missing_slot",
+      "expected": "invalid",
+      "actual": "invalid",
+      "pass": true
+    },
+    {
+      "name": "extra_slot",
+      "expected": "invalid",
+      "actual": "invalid",
+      "pass": true
+    },
+    {
+      "name": "unrelated_malformed_binding",
+      "expected": "invalid",
+      "actual": "invalid",
+      "pass": true
+    },
+    {
+      "name": "unrelated_duplicate",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "pass": true
+    },
+    {
+      "name": "owner_pin_mismatch",
+      "expected": "invalid",
+      "actual": "invalid",
+      "pass": true
+    },
+    {
+      "name": "catalog_hash_mismatch",
+      "expected": "invalid",
+      "actual": "invalid",
+      "pass": true
+    },
+    {
+      "name": "sparse_catalog_slots",
+      "expected": "invalid",
+      "actual": "invalid",
+      "pass": true
+    },
+    {
+      "name": "sparse_catalog_options",
+      "expected": "invalid",
+      "actual": "invalid",
+      "pass": true
+    },
+    {
+      "name": "uncloneable_unknown_field",
+      "expected": "invalid",
+      "actual": "invalid",
+      "pass": true
+    },
+    {
+      "name": "cycle",
+      "expected": "invalid",
+      "actual": "invalid",
+      "pass": true
+    },
+    {
+      "name": "shared_noncyclic_reference",
+      "expected": "match",
+      "actual": "match",
+      "pass": true
+    },
+    {
+      "name": "null_prototype_record",
+      "expected": "match",
+      "actual": "match",
+      "pass": true
+    },
+    {
+      "name": "nonfinite",
+      "expected": "invalid",
+      "actual": "invalid",
+      "pass": true
+    },
+    {
+      "name": "symbol_key",
+      "expected": "invalid",
+      "actual": "invalid",
+      "pass": true
+    },
+    {
+      "name": "getter_not_invoked",
+      "expected": "invalid",
+      "actual": "invalid",
+      "pass": true
+    },
+    {
+      "name": "missing_metadata",
+      "expected": "none",
+      "actual": "none",
+      "pass": true
+    },
+    {
+      "name": "proxy_throws",
+      "expected": "invalid",
+      "actual": "invalid",
+      "pass": true
+    }
+  ],
+  "filePins": [
+    {
+      "path": "README.md",
+      "expected": "a07a4a12c4fe0ba21a19a3495f434c33844c445ccae172d6b805d3795e9b2798",
+      "actual": "a07a4a12c4fe0ba21a19a3495f434c33844c445ccae172d6b805d3795e9b2798",
+      "consistent": true
+    },
+    {
+      "path": "contract.mjs",
+      "expected": "fb899e20723793918f8a5fdf851219724f2e31fd358d873972c63c6d111eefe7",
+      "actual": "fb899e20723793918f8a5fdf851219724f2e31fd358d873972c63c6d111eefe7",
+      "consistent": true
+    },
+    {
+      "path": "contract.test.mjs",
+      "expected": "16e17febfb809373046e9548a3bbae944beb8413b170979b13847448680b9de1",
+      "actual": "16e17febfb809373046e9548a3bbae944beb8413b170979b13847448680b9de1",
+      "consistent": true
+    },
+    {
+      "path": "independent-review-sol-v1.json",
+      "expected": "48b920321fae85f30abf96b90d0a4dd78d34b1adcf0c1df915cf1e5e20c992bb",
+      "actual": "48b920321fae85f30abf96b90d0a4dd78d34b1adcf0c1df915cf1e5e20c992bb",
+      "consistent": true
+    },
+    {
+      "path": "independent-review-sol-v1.mjs",
+      "expected": "6b8744e6ff472291bf50f806f39e423debd837946ea7c4b6508820d6649ab2a9",
+      "actual": "6b8744e6ff472291bf50f806f39e423debd837946ea7c4b6508820d6649ab2a9",
+      "consistent": true
+    },
+    {
+      "path": "legacy-tests.tap",
+      "expected": "5e80d8bce33130e5a0485963238296be4d0aec58fcf1e90eefb4e1d34454471b",
+      "actual": "5e80d8bce33130e5a0485963238296be4d0aec58fcf1e90eefb4e1d34454471b",
+      "consistent": true
+    },
+    {
+      "path": "tests.tap",
+      "expected": "7ad53b69dbe12b7979d98d3ae776ccffeff74b54ea220653d7620421748d5061",
+      "actual": "7ad53b69dbe12b7979d98d3ae776ccffeff74b54ea220653d7620421748d5061",
+      "consistent": true
+    }
+  ],
+  "productionPins": [
+    {
+      "path": "lib/composition-resolver.ts",
+      "before": "6bf76eec5cca85fdf1bb18794b990485805f9ab3f179628e3de6853c5a385ea2",
+      "after": "6bf76eec5cca85fdf1bb18794b990485805f9ab3f179628e3de6853c5a385ea2",
+      "current": "6bf76eec5cca85fdf1bb18794b990485805f9ab3f179628e3de6853c5a385ea2",
+      "consistent": true
+    },
+    {
+      "path": "lib/composition-types.ts",
+      "before": "afd0645981ea009d99d9536f8b0c1fb9f49fbd34b618d4b4eaf60195f21d2b37",
+      "after": "afd0645981ea009d99d9536f8b0c1fb9f49fbd34b618d4b4eaf60195f21d2b37",
+      "current": "afd0645981ea009d99d9536f8b0c1fb9f49fbd34b618d4b4eaf60195f21d2b37",
+      "consistent": true
+    },
+    {
+      "path": "public/data/explorer/capabilities.json",
+      "before": "90de625f6177fdecc1d9297922dd475e43be1877b6971b380a2c88138950c4f9",
+      "after": "90de625f6177fdecc1d9297922dd475e43be1877b6971b380a2c88138950c4f9",
+      "current": "90de625f6177fdecc1d9297922dd475e43be1877b6971b380a2c88138950c4f9",
+      "consistent": true
+    }
+  ],
+  "reviewedContractSha256": "fb899e20723793918f8a5fdf851219724f2e31fd358d873972c63c6d111eefe7",
+  "executionReview": "Pure matcher imports no I/O, scheduler, model code or production module; every normal-return state forces executionAvailable false and configurationId/resultId/run null. No integration references found with rg in app/lib/components/tests.",
+  "limitations": [
+    "Owner/artifact pins are string consistency, not authentication or byte validation.",
+    "Per-slot instance references are opaque declarations, not verified catalog-to-scientific-source mappings.",
+    "Sparse arrays are runtime JavaScript values, not dense parsed JSON; uncloneable extras likewise exceed JSON values. Contract currently claims all untrusted runtime inputs.",
+    "Production before/after pins corroborate selected files only, not a full repository diff."
+  ]
+}

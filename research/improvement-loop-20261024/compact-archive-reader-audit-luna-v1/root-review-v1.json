@@ -1,0 +1,53 @@
+{
+  "schema": "HouseReaderInventoryRootReviewV1",
+  "reviewedAtUtc": "2026-10-26T20:03:25.609088+00:00",
+  "inventorySha256": "d128ba4e4aa75069d5e8c3148c2ae4b05bb5b97f82cd46fdc50f3eb72bd692e2",
+  "sourcePins": [
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/scripts/decode_house_live_joint.py",
+      "sha256": "1edf6a075d83d2b4973df56226bab9e7e8735233ed7c4f92660f0b3c8fa16900"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/scripts/house_live_conditional_storage.py",
+      "sha256": "85e2c08dd6a9d44b0cf75040671f0947c12eba784c0ee695bffcffc3e845f733"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/scripts/import_house_live.mjs",
+      "sha256": "a94b20c8cf1a8b887bde38972b66acc5e9c30df522a2e201373e4119a019c702"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/scripts/house_live_evidence.mjs",
+      "sha256": "fd05542d11002ba87f5fb2b99bbd062952f5f5aaa8abab33fe1a6649402711dd"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/house-live-joint-archive.ts",
+      "sha256": "2213349c3865463c1880b7dd76d4947d4343bed3a020e0278c48ce962884a5fb"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/house-live-joint-check.ts",
+      "sha256": "7d64e2d6dad5fb37f470a51316a57002bad47dd34800f1c7b93ca765dfacf022"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/house-live-result.ts",
+      "sha256": "27d071b9eee2d0bb52ab0755c41b0b3ca0fa218727a7726ecda5e4ee23ddf5ad"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/election-night-house-reference.ts",
+      "sha256": "e44d70bab7b5f9ab0621f685c2fe66515329833003a80d5486143d70ee2e3d8b"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-correction-20261026-v2/expected_error_sidecar_segments.py",
+      "sha256": "5eea622079d6749190c4ee5a8a658f30dc685d3c14f020f01e457e638a01b57a"
+    }
+  ],
+  "checks": [
+    "Read decoder/archive streaming code and sidecar transform: identities, ordered race support, equal weights and summary paths agree with inventory.",
+    "The public site consumes compact result/reference JSON while raw NPZ inputs are used by offline validation and scorecard regeneration; this is a consumer inventory, not a test requirement for storage action.",
+    "Storage and House owners received the summary and the user clarification that theoretical validation can be sufficient."
+  ],
+  "limits": [
+    "No actual prediction archive was read or regenerated.",
+    "Pins describe the inspected source state and do not establish future interface versions or complete scientific reproducibility.",
+    "Compact format migration requires addressing the current consumer contract; storage policy remains the user-authorized owner decision."
+  ]
+}

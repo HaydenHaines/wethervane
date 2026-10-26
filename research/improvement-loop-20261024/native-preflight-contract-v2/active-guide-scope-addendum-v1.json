@@ -1,0 +1,45 @@
+{
+  "schema": "PrivatePreflightScopeAddendumV1",
+  "checkedAtUtc": "2026-10-26T20:03:39.441775+00:00",
+  "frozenEvidenceSha256": "04f5679edccf3f22b30ba8614ffe60c085ea1a6d3f2cf4589cf5ffc730121bf4",
+  "clarification": "productionPins in frozen evidence.json identify lab worktree files only, not the active guide catalog or a deployed website. Legitimate catalog editions differ between branches. This addendum is a read-only current snapshot, not a reconstruction of historical active-guide state.",
+  "lab": {
+    "root": "/home/hayden/projects/ballotmancy-improvement-lab",
+    "head": "eceff5a9e257ca31728fb41772f39a7dbeb70a3f",
+    "frozenEvidenceAbsolutePaths": {
+      "lib/composition-resolver.ts": "/home/hayden/projects/ballotmancy-improvement-lab/lib/composition-resolver.ts",
+      "lib/composition-types.ts": "/home/hayden/projects/ballotmancy-improvement-lab/lib/composition-types.ts",
+      "public/data/explorer/capabilities.json": "/home/hayden/projects/ballotmancy-improvement-lab/public/data/explorer/capabilities.json"
+    }
+  },
+  "activeGuide": {
+    "root": "/home/hayden/projects/ballotmancy-election-night-guide-20261026",
+    "head": "fc7ef5011abfbd10f21ff70da8282ed70b8d4d92",
+    "trackedStatusPorcelain": "",
+    "allTrackedFilesCleanAgainstOwnHead": true,
+    "checks": {
+      "lib/composition-resolver.ts": {
+        "absolutePath": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/composition-resolver.ts",
+        "workingSha256": "6bf76eec5cca85fdf1bb18794b990485805f9ab3f179628e3de6853c5a385ea2",
+        "ownHeadSha256": "6bf76eec5cca85fdf1bb18794b990485805f9ab3f179628e3de6853c5a385ea2",
+        "matchesOwnHead": true,
+        "sameAsLabEvidencePin": true
+      },
+      "lib/composition-types.ts": {
+        "absolutePath": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/composition-types.ts",
+        "workingSha256": "afd0645981ea009d99d9536f8b0c1fb9f49fbd34b618d4b4eaf60195f21d2b37",
+        "ownHeadSha256": "afd0645981ea009d99d9536f8b0c1fb9f49fbd34b618d4b4eaf60195f21d2b37",
+        "matchesOwnHead": true,
+        "sameAsLabEvidencePin": true
+      },
+      "public/data/explorer/capabilities.json": {
+        "absolutePath": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/public/data/explorer/capabilities.json",
+        "workingSha256": "8af66da11bfc64dfaff189298f9516e990febc87000b0bec18429eb20fc36fee",
+        "ownHeadSha256": "8af66da11bfc64dfaff189298f9516e990febc87000b0bec18429eb20fc36fee",
+        "matchesOwnHead": true,
+        "sameAsLabEvidencePin": false
+      }
+    }
+  },
+  "mutations": "Only this addendum written; production files and frozen evidence unchanged."
+}

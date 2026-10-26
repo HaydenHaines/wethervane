@@ -1,0 +1,89 @@
+{
+  "record_id": "tx2018-nv2022-reconciliation-luna-v1",
+  "purpose": "Primary-source reconciliation of the Texas 2018 preliminary versus canvassed U.S. Senate totals, and arithmetic scope check for Nevada 2022 FEC Senate votes.",
+  "scope": "Source interpretation only. No estimates, model fits, or inferred undervote counts.",
+  "texas_2018": {
+    "election": "2018-11-06 Texas general election, U.S. Senate",
+    "preliminary_source": {
+      "url": "https://www.sos.texas.gov/elections/forms/enrrpts/2018-general.pdf",
+      "document_title": "Race Summary Report, 2018 General Election",
+      "document_status": "Unofficial Election Tabulation",
+      "timestamp_shown": "2018-12-04 12:26",
+      "page": 0,
+      "candidate_votes": {
+        "Ted Cruz": 4244204,
+        "Beto O'Rourke": 4024777,
+        "Neal M. Dikeman": 65240
+      },
+      "race_total": 8334221,
+      "arithmetic": "4,244,204 + 4,024,777 + 65,240 = 8,334,221"
+    },
+    "canvass_source": {
+      "url": "https://elections.sos.state.tx.us/elchist331_state.htm",
+      "document_title": "2018 General Election Race Summary Report",
+      "document_status": "SOS page labels results CANVASS VOTES; no canvass/publication date visible in inspected page",
+      "candidate_votes": {
+        "Ted Cruz": 4260553,
+        "Beto O'Rourke": 4045632,
+        "Neal M. Dikeman": 65470
+      },
+      "race_total": 8371655,
+      "arithmetic": "4,260,553 + 4,045,632 + 65,470 = 8,371,655"
+    },
+    "independent_federal_compilation": {
+      "url": "https://www.fec.gov/documents/2705/federalelections2018.pdf",
+      "document_title": "Federal Elections 2018: Election Results for the U.S. Senate and the U.S. House of Representatives",
+      "document_date": "October 2019",
+      "scope": "Federal Election Commission compilation; Texas general Senate results appear in the November 6 column and match the SOS canvass figures.",
+      "matching_total": 8371655
+    },
+    "difference": {
+      "candidate_delta_canvass_minus_preliminary": {
+        "Ted Cruz": 16349,
+        "Beto O'Rourke": 20855,
+        "Neal M. Dikeman": 230
+      },
+      "total_delta": 37434,
+      "arithmetic": "8,371,655 - 8,334,221 = 37,434; 16,349 + 20,855 + 230 = 37,434",
+      "interpretation_limit": "This is a preliminary-to-canvassed revision. The inspected records do not explain the cause of candidate-level changes. Do not interpret this difference as undervotes or overvotes."
+    },
+    "turnout_related_limit": "Texas EAVS and legislative turnout discrepancies were already documented by the Senate owner. This record does not repeat or reconcile those turnout quantities and does not derive any official undervote number."
+  },
+  "nevada_2022": {
+    "election": "2022-11-08 Nevada general election, U.S. Senate",
+    "source": {
+      "url": "https://www.fec.gov/resources/cms-content/documents/federalelections2022.pdf",
+      "document_title": "Federal Elections 2022: Election Results for the U.S. Senate and the U.S. House of Representatives",
+      "document_status": "FEC federal results compilation; Nevada section contains separate primary and general columns",
+      "location": "Nevada section, general column, lines 1168-1189 of rendered PDF"
+    },
+    "general_election_rows": {
+      "Catherine Cortez Masto": 498316,
+      "Adam Paul Laxalt": 490388,
+      "None of These Candidates": 12441,
+      "Barry Lindemann": 8075,
+      "Neil Scott": 6422,
+      "Barry Rubinson": 5208
+    },
+    "arithmetic": {
+      "named_human_candidates_only": "498,316 + 490,388 + 8,075 + 6,422 + 5,208 = 1,008,409",
+      "none_of_these_candidates": 12441,
+      "all_reported_rows": "1,008,409 + 12,441 = 1,020,850",
+      "fec_total_state_votes": 1020850,
+      "check": "The FEC Total State Votes exactly includes the None of These Candidates row and the five named human candidates."
+    },
+    "interpretation_limit": "None of These Candidates is a ballot option, not an electable person. FEC Total State Votes is the Senate contest tally, not total ballots/turnout; this table does not report Senate undervotes or overvotes."
+  },
+  "sources_consulted": [
+    "https://www.sos.texas.gov/elections/forms/enrrpts/2018-general.pdf",
+    "https://elections.sos.state.tx.us/elchist331_state.htm",
+    "https://www.fec.gov/documents/2705/federalelections2018.pdf",
+    "https://www.fec.gov/resources/cms-content/documents/federalelections2022.pdf"
+  ],
+  "created": "2026-10-26",
+  "authoring_context": "Delegated source research requested by frontend coordinator; copied into isolated lab. Original new file was inadvertently created in the owner tree; the owner was informed and no existing owner files were edited.",
+  "original_record": {
+    "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/turnout-refinement-20261026/tx2018-nv2022-reconciliation-luna-v1/evidence.json",
+    "sha256": "54df638b867f68326f9e8f88fc8dc51e093837ebe80d5016d6fc729be5fc36e8"
+  }
+}

@@ -1,0 +1,56 @@
+TAP version 13
+# (node:1880905) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/hayden/projects/ballotmancy-improvement-lab/lib/composition-resolver.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /home/hayden/projects/ballotmancy-improvement-lab/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: all 48 exact saved component configurations resolve to their frozen run
+ok 1 - all 48 exact saved component configurations resolve to their frozen run
+  ---
+  duration_ms: 2.714011
+  type: 'test'
+  ...
+# Subtest: canonical presets resolve only to their exact server-owned saved runs
+ok 2 - canonical presets resolve only to their exact server-owned saved runs
+  ---
+  duration_ms: 0.281493
+  type: 'test'
+  ...
+# Subtest: run request helper copies exact server metadata and rejects an unknown run
+ok 3 - run request helper copies exact server metadata and rejects an unknown run
+  ---
+  duration_ms: 0.519715
+  type: 'test'
+  ...
+# Subtest: stale or tampered hashes and scientific IDs never resolve ready
+ok 4 - stale or tampered hashes and scientific IDs never resolve ready
+  ---
+  duration_ms: 1.559755
+  type: 'test'
+  ...
+# Subtest: uncached requests for the four declared families remain metadata-only, never scheduled
+ok 5 - uncached requests for the four declared families remain metadata-only, never scheduled
+  ---
+  duration_ms: 0.868205
+  type: 'test'
+  ...
+# Subtest: unknown slots, unsupported combinations and missing choices are incompatible
+ok 6 - unknown slots, unsupported combinations and missing choices are incompatible
+  ---
+  duration_ms: 0.189098
+  type: 'test'
+  ...
+# Subtest: catalog-defined extra slots resolve saved combinations and block undeclared computation
+ok 7 - catalog-defined extra slots resolve saved combinations and block undeclared computation
+  ---
+  duration_ms: 0.714373
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 90.311603

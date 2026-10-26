@@ -1,0 +1,40 @@
+{
+  "schema": "PrivatePreflightEvidenceV2",
+  "scope": "Invented inputs; dense JSON runtime boundary; metadata consistency only; no owner qualification or production integration",
+  "tests": {
+    "private": {
+      "passed": 68,
+      "failed": 0
+    },
+    "legacyResolver": {
+      "passed": 7,
+      "failed": 0
+    }
+  },
+  "files": {
+    "README.md": "a07a4a12c4fe0ba21a19a3495f434c33844c445ccae172d6b805d3795e9b2798",
+    "contract.mjs": "fb899e20723793918f8a5fdf851219724f2e31fd358d873972c63c6d111eefe7",
+    "contract.test.mjs": "16e17febfb809373046e9548a3bbae944beb8413b170979b13847448680b9de1",
+    "independent-review-sol-v1.json": "48b920321fae85f30abf96b90d0a4dd78d34b1adcf0c1df915cf1e5e20c992bb",
+    "independent-review-sol-v1.mjs": "6b8744e6ff472291bf50f806f39e423debd837946ea7c4b6508820d6649ab2a9",
+    "legacy-tests.tap": "5e80d8bce33130e5a0485963238296be4d0aec58fcf1e90eefb4e1d34454471b",
+    "tests.tap": "7ad53b69dbe12b7979d98d3ae776ccffeff74b54ea220653d7620421748d5061"
+  },
+  "productionPins": {
+    "lib/composition-resolver.ts": {
+      "before": "6bf76eec5cca85fdf1bb18794b990485805f9ab3f179628e3de6853c5a385ea2",
+      "after": "6bf76eec5cca85fdf1bb18794b990485805f9ab3f179628e3de6853c5a385ea2",
+      "unchanged": true
+    },
+    "lib/composition-types.ts": {
+      "before": "afd0645981ea009d99d9536f8b0c1fb9f49fbd34b618d4b4eaf60195f21d2b37",
+      "after": "afd0645981ea009d99d9536f8b0c1fb9f49fbd34b618d4b4eaf60195f21d2b37",
+      "unchanged": true
+    },
+    "public/data/explorer/capabilities.json": {
+      "before": "90de625f6177fdecc1d9297922dd475e43be1877b6971b380a2c88138950c4f9",
+      "after": "90de625f6177fdecc1d9297922dd475e43be1877b6971b380a2c88138950c4f9",
+      "unchanged": true
+    }
+  }
+}

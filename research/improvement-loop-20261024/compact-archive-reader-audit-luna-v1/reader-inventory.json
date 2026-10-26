@@ -1,0 +1,78 @@
+{
+  "schema": "HouseCompactArchiveReaderInventoryLunaV1",
+  "created": "2026-10-26",
+  "status": "read_only_theoretical_frontend_inventory",
+  "scope": "Static source inspection of the House native result/import path, conditional archive adapter, joint archive decoder/checker, and House expected-error scorecard sidecar. No owner-tree edits, large archive reads, builds, tests, refits, publication, or actual-result evaluation.",
+  "inspected_sources": [
+    {"path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/scripts/decode_house_live_joint.py", "areas": "V1/V2 request, exact archive members, combined draw identities, validation and fail-closed exit"},
+    {"path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/scripts/house_live_conditional_storage.py", "areas": "Conditional NPZ and segmented-manifest readers; V2 plan/receipt/output binding"},
+    {"path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/scripts/import_house_live.mjs", "areas": "Explicit roots, staging policy, evidence resolution, joint archive check, release validation"},
+    {"path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/scripts/house_live_evidence.mjs", "areas": "V1/V2 plan/receipt selection and conditional-storage binding"},
+    {"path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/house-live-joint-archive.ts", "areas": "Offline decoder invocation and row stream handling"},
+    {"path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/house-live-joint-check.ts", "areas": "Native race probabilities and chamber summary checks"},
+    {"path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/house-live-result.ts", "areas": "Published per-race support, probabilities, conditional pair summary, chamber PMF, result identity"},
+    {"path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/election-night-house-reference.ts", "areas": "House scorecard expected-error sidecar validation and UI projection"},
+    {"path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-correction-20261026-v2/expected_error_sidecar_segments.py", "areas": "Read-only identification of the scorecard's draw-level transforms and compact joint-metric output"}
+  ],
+  "native_joint_archive": {
+    "format": "NPZ of exact flat NPY members; 435 ordered current House race IDs; original row order is chain-major.",
+    "ordinary_v1_members": {
+      "winner_codes.npy": "int8 [N,435], codes D=0/R=1/O=2; one winner-group outcome per race and row",
+      "seat_counts.npy": "little-endian int16 [N,3], D/R/O seats per row; checked against winner_codes",
+      "race_ids.npy": "little-endian Unicode [435], exact order is checked against native result",
+      "categorical_bank_index.npy": "int64 [N], required, nonnegative, value is not otherwise interpreted by the frontend checker",
+      "core_posterior_index.npy": "int64 [N], required, nonnegative, value is not otherwise interpreted by the frontend checker",
+      "national_z.npy": "float64 [N], required and finite, value is not otherwise interpreted by the frontend checker",
+      "joint_draw_id.npy": "int64 [N], must equal arange(N)",
+      "predictive_chain.npy": "int64 [N], must equal floor(row / draws_per_chain)",
+      "predictive_draw.npy": "int64 [N], must equal row modulo draws_per_chain"
+    },
+    "combined_v1_v2_extra_members": {
+      "source_run_index.npy": "int16 [N], each row's ordered source-run segment",
+      "source_joint_draw_id.npy": "int64 [N], source-local ID; checked against each plan segment offset"
+    },
+    "weights_and_identity": "No row weights are stored in the winner NPZ. Native and segment summaries use equal weight per joint row; V2 explicitly binds equal_weight_per_original_joint_row. For V2, combined global IDs are arange(N), child IDs remain local arange within each run, source segments remain ordered and contiguous, chain/draw coordinates are exact, chain lengths/warmup must align, and original seeds must be distinct.",
+    "what_each_row_enables": "Race marginal winner probabilities, joint chamber seat counts/PMFs/control probabilities, tied-modal winner miss count, and preserved cross-race dependence. Row identities and source indexes support replay/audit of the selected combination.",
+    "fail_closed": "Decoder requires exact member set, supported NPY version/dtypes/shapes/C-order, bounded headers and rows (7,000,000), safe pinned paths, SHA-256 and stable-file identity; rejects malformed codes, sidecar mismatches, bad race order, nonfinite national_z, negative indexes, duplicate/reordered IDs, noncontiguous source segments or invalid plan semantics. A nonzero decoder exit invalidates the stream even if bytes were emitted; the caller checks the complete row count and summary reconciliation."
+  },
+  "conditional_shares_storage": {
+    "required_semantic_members": {
+      "shares": "float64 [N,P], aligned per-row conditional named-pair shares; P is the ordered pair cohort",
+      "race_ids": "Unicode [P], exact ordered identities of races with a supported named pair",
+      "joint_draw_id": "int64 [N], child-local arange; V2 adapter verifies this and synthesizes/checks global arange for concatenated segments"
+    },
+    "other_members": "The storage manifest is data-driven and records exact member names, dtypes, shapes, row axes and reader rules for every original NPY member. The adapter accepts only primitive, flat NPZ members with native C-order; preserves all member bytes and same row order. Known model examples include shared_cycle, coefficients, tau_cycle and tau_race, but this frontend adapter does not hard-code those names or interpret their values.",
+    "v2_segmentation": "Manifest references original conditional-shares.npz sources by root-relative path and SHA, exact rows, offsets and member metadata. It requires identical race IDs, member schemas, dtype and trailing shapes; contiguous source coverage; original draw IDs; and at most 7,000,000 rows. Streaming is bounded to at most 4,096 rows per read (default 2,048). All sources are reverified during reads. No source resampling or reweighting occurs.",
+    "selected_plan_receipt_requirements": "V2 requires explicit conditional root plus pinned manifest, V2 combined plan and passed V2 receipt. Selected outputs must be exactly diagnostics.json, joint-draws.npz, conditional-shares.index.json, conditional-group-probability-means.npy and polls.csv; their bytes are hash checked. Selected diagnostics must say race_passed=true and chamber_passed=true. Every original child plan/receipt/settings/input/output is pinned; a completed original run may have truthful diagnostic_failure, but selected V2 may not. Original configuration, law fields, input set, source code, draws/warmup, seeds, offsets and identities must reconcile.",
+    "validation_boundary": "This adapter checks conditional share archive structure, IDs, SHA and lineage. It does not numerically compare shares to each native conditional-pair mean/quantile, validate share finiteness/range, or parse/compare conditional-group-probability-means.npy values. Those stronger share checks are performed by the separate expected-error sidecar builder (e.g. N x P shares finite in [0,1], means and p05/p95 match native result, shared joint IDs, row/seat consistency)."
+  },
+  "published_summaries_and_scorecard": {
+    "native_result_json_is_site_payload": [
+      "Per-race D/R/O group win probabilities and candidate/group memberships across 435 races",
+      "Where applicable, named-pair mean, p05/p10/p50/p90/p95/p975 quantiles, first candidate exceeds half, close and 10-point event probabilities, and denominator/qualifications",
+      "When chamber summary is qualified: D/R/O 436-cell seat PMFs, expected seats, p05/p10/p50/p90/p95, and D/R/unresolved majority probabilities"
+    ],
+    "expected_error_scorecard_inputs": "The House expected-error sidecar is bound to exact result SHA, run/configuration/cutoffs, source pin hashes, row count/chain count, 435 ordered winner IDs, ordered pair IDs (current sidecar protocol: 412 supported pairs and 23 inapplicable), pair mask and equal row weights. It provides one modal group call and one pair-error status per race, four joint summary metrics, precision diagnostics, qualifications and limitations.",
+    "scorecard_draw_transforms": [
+      "Per row: mean signed pair-margin error across equal-weight supported pairs",
+      "Per row: mean absolute pair-margin error across equal-weight supported pairs",
+      "Per row: number of supported pair draws within each frozen p05/p95 interval (inclusive endpoints)",
+      "Per row: count of races where simulated group winner differs from frozen modal group"
+    ],
+    "scorecard_joint_metric_archive": "Builder stores only N x 4 float64 joint-metric values plus metric_names, joint_draw_id, predictive_chain and predictive_draw. The JSON sidecar stores per-race expected absolute margin errors/modal calls and joint means, SDs, quantiles, MCSE, rank R-hat, plus PMF for the two discrete count metrics. Runtime scorecard projection validates summary arithmetic/identity from the JSON reference; it does not stream raw posterior arrays or actual election results.",
+    "scorecard_fail_closed": "Reference must match the current dated forecast edition/result hash, qualification, dimensions, source pins, ordered IDs, exact tie rule and modal calls. It validates 435 race entries, 412 applicable pairs/23 inapplicable pairs, PMF integer-count resolution, moments/quantiles, expected modal misses and pair-error aggregate consistency. Mismatch returns unavailable reference; it does not mark the forecast as scored or consume actual results."
+  },
+  "compact_or_regenerate_assessment": {
+    "frontend_minimum_for_existing_display": "Site display can use the already-published native result JSON plus the exact compact expected-error sidecar JSON; raw NPZ arrays are offline importer/audit inputs and are deliberately never staged. Keep result and scorecard sidecar hashes/bindings and source pins.",
+    "minimum_for_import_time_native_joint_recheck": "To reproduce all existing row-level marginal, seat-PMF, control-probability and joint scorecard checks, retain each aligned winner row (or a lossless encoding), ordered race IDs, row/chain/draw IDs, and for combined runs source-run/local-draw IDs plus exact ordered plans/weights. Marginal win counts and seat PMFs alone can validate summaries but destroy joint dependence and cannot replay cross-race miss distributions or row/source identity.",
+    "minimum_for_regenerating_expected_error_scorecard": "Retain aligned per-row winner_codes for all races, conditional shares for every supported pair, joint_draw_id and predictive chain/draw IDs, ordered winner/pair race IDs, frozen native pair means/intervals and modal groups, equal per-row/equal-pair definitions, and the plan/receipt/configuration/input/driver bindings. Without conditional shares, per-race margin errors and pair interval-coverage metrics are irrecoverable from winner codes. Without winner rows, modal-group miss counts and their joint distribution are irrecoverable from pair shares. The four N x 1 joint metric vectors suffice to reproduce joint aggregate scorecard summaries, but not the per-race margin-error breakdown or independent recomputation from underlying predictions.",
+    "regeneration_route": "Refitting/rerunning original forecast jobs is a possible recovery route only if all pinned source inputs, source code, configurations, seeds, chain settings, dependencies/runtime and exact build behavior remain available. The frontend importer does not itself regenerate forecasts or source arrays; it authenticates existing artifacts. No regeneration guarantee is established by this inspection."
+  },
+  "limitations": [
+    "This is a frontend/native-reader inventory, not a forecast correctness or scientific qualification review.",
+    "No actual House prediction archive was opened, hashed, decoded or compared; no heavy process was run.",
+    "Existing imported native JSON contains summaries, so raw individual draws are not needed for ordinary site display once offline validation is complete.",
+    "The frontend's 7,000,000-row limits and structure checks do not prove correct model fitting, useful forecast skill, or that every scientific diagnostic is independently reproduced.",
+    "No production or Senate/House owner directory was modified; this record is lab-only."
+  ]
+}

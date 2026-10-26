@@ -1,0 +1,68 @@
+{
+  "schema": "ContinuousImprovementCheckpointV48",
+  "recordedAtUtc": "2026-10-26T20:04:27.707158+00:00",
+  "previous": {
+    "path": "research/improvement-loop-20261024/checkpoints/continuation-v47.json",
+    "sha256": "70ca456d6e9860251da81369138f233e1be9968489af2cbf38092994b486a659"
+  },
+  "goal": "active: no ranked weakest layer or promoted model",
+  "turnoutResearch": {
+    "scope": "Independent source review and analytical prior-factor sensitivity, not a fit or causal attribution.",
+    "identificationAudit": {
+      "path": "research/improvement-loop-20261024/persistent-identification-audit-sol-v1/FINDINGS.md",
+      "sha256": "127786ead611f3203e6ac7a440dd0a8e47e0e9475feb48e8d80c427b59947461"
+    },
+    "auditCopyProvenance": {
+      "path": "research/improvement-loop-20261024/persistent-identification-audit-sol-v1/copy-provenance.json",
+      "sha256": "2caeeb069fccd800fbd7e4a32dc9be03d1ae9b2edf3d426aaab740234dcacd73"
+    },
+    "momentsRootReview": {
+      "path": "research/persistent-product-moments-sol-v1/root-review-v1.json",
+      "sha256": "9c43c669d8fcfec44e2f041a8e88d877037a832a6dea9894cd4db52f06766455"
+    },
+    "findings": "The fixed-sd persistent factor changes both marginal and cross-event variation. At illustrative fixed k=32.2575, matching incumbent variance with independent mean-one event Gamma would require s<0.17473; proposed s=0.35 is not matchable under that simplified assumption. This is not a full-model posterior result. The Senate owner is developing a separate shared-Gamma control.",
+    "sourceReconciliation": {
+      "path": "research/improvement-loop-20261024/tx2018-nv2022-reconciliation-luna-v1/evidence.json",
+      "sha256": "764a0fc5d51f095166ee485d47ac4b0ef09c9b0c50103c1a77431ab487f896e9"
+    },
+    "boundaries": "Two delegated reviews inadvertently created new files inside the Senate owner worktree despite lab-only instructions. Owner notified; no preexisting owner files edited; original bytes remain in place and lab copies record provenance."
+  },
+  "frontendPreparation": {
+    "privateMatcher": {
+      "path": "research/improvement-loop-20261024/native-preflight-contract-v2/contract.mjs",
+      "sha256": "fb899e20723793918f8a5fdf851219724f2e31fd358d873972c63c6d111eefe7"
+    },
+    "review": {
+      "path": "research/improvement-loop-20261024/native-preflight-contract-v2/independent-review-sol-v2.json",
+      "sha256": "0f1cb71ab1bb8395f55c86f08934f93e036692efb7461375725d9418de4cf454"
+    },
+    "catalogScope": {
+      "path": "research/improvement-loop-20261024/native-preflight-contract-v2/active-guide-scope-addendum-v1.json",
+      "sha256": "39a5bc34d4d7a7f2951415d930ce8e418b9848c2f03af47e35bffbb442d5a896"
+    },
+    "scopeReview": {
+      "path": "research/improvement-loop-20261024/native-preflight-contract-v2/independent-active-guide-scope-review-sol-v1.json",
+      "sha256": "b2b5661e5444c31be8d804025f38873624634cde4b2cc62eccce3300b1e3fd32"
+    },
+    "verification": "68 synthetic cases and 7 legacy resolver cases independently passed. V1 preserved including independent findings; V2 rejects malformed runtime data. Matching is metadata consistency only; no production wiring, owner authentication, model execution or forecast qualification."
+  },
+  "compactStorage": {
+    "inventory": {
+      "path": "research/improvement-loop-20261024/compact-archive-reader-audit-luna-v1/reader-inventory.json",
+      "sha256": "d128ba4e4aa75069d5e8c3148c2ae4b05bb5b97f82cd46fdc50f3eb72bd692e2"
+    },
+    "rootReview": {
+      "path": "research/improvement-loop-20261024/compact-archive-reader-audit-luna-v1/root-review-v1.json",
+      "sha256": "b6a974a8494e370ae109ad1954af59741870f80f8bc4f6d9a702b004ac0c8c43"
+    },
+    "userClarification": "Theoretical validation is sufficient for the user-authorized storage plan; no full-tested-regeneration prerequisite is imposed. Existing frontend readers retain exact current format requirements until compatible adapters exist.",
+    "status": "Summary sent to storage, House and GPU owners. v5 backup is now represented by an exact reversible delta; historical original path requires the documented materialization step."
+  },
+  "house": "House precision jobs remain owner-controlled; no corrected 16-model public release at last handoff.",
+  "next": [
+    "Continue coordinating owner matched Nevada fit and identification control without duplicating their runs.",
+    "Integrate exact qualified House catalog after owner handoff; adapt readers only when a new producer contract exists.",
+    "Pursue earlier-only M01 source provenance and joint evidence ownership; do not infer historic vintage.",
+    "Continue adaptive-cycle queue scaling; predeclared 1000-plan admission is not completed science cycles."
+  ]
+}

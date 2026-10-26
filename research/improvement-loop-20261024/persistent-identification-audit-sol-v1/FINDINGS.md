@@ -1,0 +1,28 @@
+# Independent persistence identification audit
+
+Local evidence audit only: no fit, posterior load, new score, owner mutation or acquisition. Source hashes are in manifest.json. Reuses existing owner decomposition; no duplicate decomposition. Repository refine-model-layer and verify-election-model workflows informed the comparison.
+
+## Existing evidence
+
+The Nevada owner reconstructs every joint row as E×Q×G and conserves ballot categories. Participant intensity is 1,706,066 versus named intensity 1,659,520. The 651,111 named-vote excess is therefore upstream of candidate allocation. Observed named/SOS report is 98.51%, versus native named/participant intensity 97.27%; retaining native participation would require only 59.11% named completion to match the answer. That is an arithmetic diagnostic, not an observed physical completion rate, because the administrative bridge is provisional. Redistributing named candidates conserves their sum.
+
+Alternative administrative targets span only 1,887 counts versus about 682,000 excess participants. Those alternative definitions cannot numerically explain the overshoot under their provisional bridges; this does not validate the bridge or exclude broader report error. Existing exposure sensitivity (2.193m ACS CVAP versus 2.270m dated parent exposure) still produces 1.648m participants. It does not identify an exposure error or justify changing protected parents.
+
+Existing saved-row log-growth contributions are E +.0864, Q -.0093, G +.4472; training log Q/log G correlation is about -.993. Setting future G=1 leaves 1.705m participants. These prioritize persistence over merely reducing event dispersion, but are descriptive counterfactuals, not joint refits or causal attribution. Training 2018 named+NOTC and 2020 EAC report have distinct observation laws; the latter has negative-binomial release/state error. Two events are not two equivalent physical-count anchors.
+
+## Discriminating comparisons
+
+- Native incumbent versus B_state×U_event: jointly refit identical problem/data/cutoffs, eight protected parents/masses, ballot/choice laws, chains and tuning opportunity. Score report predictions through the same bridge, physical count proxies separately, named counts separately. Track posterior Q/B/U dependence. Lower counts with stable exposure/completion localize improvement to this participation-law change but do not establish true persistence.
+- Marginal-variance control: adding lognormal B(.35) changes both single-event variability and cross-event covariance. Current comparison is not persistence alone. Prior-predictive matched-marginal or documented variance-matched control would help distinguish dependence from broader marginals; Gamma versus lognormal×Gamma may not allow exact marginal equality. Existing synthetic Gamma factor-swap fixture demonstrates this distinction without target labels. B=1 compiler equivalence tests implementation, not empirical identification.
+- Context transfer: repeated earlier same-estimand midterm reports can identify persistence more directly; presidential reports test v1's strong constant-state-level assumption. A2018/A2022 remain individual primary checks; B2020/B2024 transfer checks are substantive. A state/context variant needs separate versioning and more history. One Nevada gain cannot establish persistence nationally.
+- Measurement interaction: jointly refit a separately prespecified CES selection/misreporting sensitivity with the same algorithm pair. Sample yes/no/missing counts are not population turnout. Keep each physical report once. A 2018 turnout report added alongside named+NOTC needs a nested/joint observation law, not independent duplication. Validation-match failures cannot be relabeled abstention. B may absorb survey/report mismatch rather than genuine persistence.
+- Completion versus choice: compare participant/report total, named+NOTC total, named fraction, NOTC and minor-option fractions, conditional D/R shares on common rows. Choice within named options cannot fix total turnout. LV pair-poll means cancel scalar event/response factors, although indirect joint-state dependence remains. Refitted sensitivity is required for scientific attribution.
+- Bounded law: retain probability of expected participants above exposure (incumbent Nevada 7.92%) and tail diagnostics. Native persistence remains unbounded; finite-person participation is a separately versioned experiment, not clipping.
+
+For each arm retain parent/row identity, inference and Monte Carlo diagnostics, bias, CRPS, proper interval score, coverage AND width, pair shares/winner scores. Match information for primary algorithm contrast. Simple report persistence/rate references remain useful with explicit information-set differences. Many states in one election do not create independent national cycles.
+
+## Negative result and decision
+
+The distinct report-level state-drift/shared-cycle challenger worsened mean relative CRPS in every cycle: 2018 .1879 versus .1853; 2022 .0838 versus .0798; 2020 .0791 versus .0785; 2024 .0560 versus .0536. Preserve this negative result without repeating the test. Its report-difference estimand, Gaussian drift and fixed measurement errors differ from native persistent rate level; it neither supports nor independently falsifies B_state. Its native-Nevada-pending wording is stale relative to later owner binding.
+
+Retain incumbent status. Native persistence is unfit and unqualified with fixed .35 scale, changed marginals, weak mixed-estimand history and unresolved survey/report confounding. Full-graph density/gradients, all-parent parity and fitting remain owner/GPU-review work. This audit supplies identification comparisons, not new empirical qualification.
