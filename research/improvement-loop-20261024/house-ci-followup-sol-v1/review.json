@@ -1,0 +1,27 @@
+{
+  "schema": "HouseCiFollowupSolV1",
+  "reviewedAtUtc": "2026-10-26T14:32:51.885633+00:00",
+  "ci": {
+    "runId": 40337450024,
+    "jobId": 121622724504,
+    "commit": "30c670a",
+    "url": "https://github.com/HaydenHaines/wethervane/actions/runs/40337450024",
+    "source": "GitHub connector workflow jobs and decoded job logs",
+    "failedStep": "Run npm run test:e2e",
+    "summary": "164 passed, 8 skipped, 2 failed. Both failures were the same cross-year historical comparison test on desktop/mobile."
+  },
+  "cause": "The test expected the historical How this model did heading after navigating a cross-year comparison URL. resolveHouseEdition intentionally rejects that URL before mounting HouseExplorer, with reason The comparison run belongs to a different historical House year.",
+  "change": {
+    "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/tests/site/house-comparison.spec.ts",
+    "sha256": "18900340b3b60a781be4a3699b8530e581cade722a3dfcd8a18fb7348bf02b17",
+    "scope": "Only the stale Playwright test now checks invalid-link warning and recovery; no production code changed."
+  },
+  "verification": {
+    "command": "npx playwright test tests/site/house-comparison.spec.ts --grep \"shared cross-year reference\" --config=playwright.site.config.ts",
+    "desktop": "passed",
+    "mobile": "passed",
+    "total": "2 passed in 3.8s",
+    "productionBuild": "not rerun; test used existing local build"
+  },
+  "limits": "The full CI suite was not rerun locally; root owns follow-up commit/push/CI."
+}
