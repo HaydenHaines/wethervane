@@ -1,0 +1,61 @@
+{
+  "schema": "ElectionNightReferenceAdapterIndependentReviewV1",
+  "date": "2026-10-26",
+  "status": "qualified_no_open_client_correctness_finding_after_final_recheck",
+  "scope": "Read-only review of the private guide's pure reference matcher, authenticated client loading, expected-reference UI and focused tests. Exporter/scientific sidecar were outside this review; no guide code changed.",
+  "inspectedPins": {
+    "lib/election-night-reference.ts": "06384b6a98d00a9014ab933c2469ab14baed06702a98cecb140e276353fc5222",
+    "lib/election-night-client.ts": "13fc8179ef283c292442d2072d7c483f9cf5cbe56079bddee736f9469932b210",
+    "components/ElectionNightGuide.tsx": "966097b78258095f3bb673b883036db45ac60a76c90b2b953c1ae4eab324f7a8",
+    "tests/election-night-reference.test.mjs": "705e4a07d8254345eee50cab6ae985e71e21cd2862a071233c3b1577d6613540",
+    "tests/election-night-client.test.mjs": "e095f23c4adca8ad83e8830c1783ae4339b12f8c06a5744eb24b4c1bdc920d11",
+    "tests/site/election-night.spec.ts": "9107a0401c6a802c23b37071eb56dd9c2e06000091ba4ee1e770c25cd818da1e"
+  },
+  "supportedFindings": [
+    "The client hashes fetched catalog bytes against the build-imported publication manifest and requires its fixed same-origin href. The matcher is explicitly a semantic projection after that byte check; it does not claim scientific authority from pin strings alone.",
+    "Only the exact Oct 26 current-polling Senate run and result hash can match; House, the five older fundamentals-only editions, ten other Senate configurations, dates, targets, laws and changed source pins fail closed. The 35 ordered principal-pair rows require matching named candidate IDs, pair denominator, sign, probability, native modal choice, point means, interval endpoints and rule/omitted-option notes. It does not allocate pooled or outside-candidate win mass.",
+    "Native draw identity is preserved as 4x10000 equal-weight shared rows. The four distribution summaries keep their original quantiles; expected modal misses and mean absolute margin error are checked against the per-race probabilities/errors. Missing close/decisive probabilities remain null rather than inferred from ranges.",
+    "The UI labels errors/ranges as model-implied and internal, explicitly distinguishes them from observed accuracy, says signed error is centered by construction, shows the conditional two-candidate denominator, and assigns no grade or final-result status. The reference cannot be borrowed by a different edition."
+  ],
+  "findingsToFix": [
+    {
+      "id": "avoid_false_reference_errors_for_unqualified_editions",
+      "severity": "medium_user_facing",
+      "evidence": "loadElectionNightForecast calls attachReference for House and every Senate alternative. attachReference always fetches the only Senate standard reference when a publication manifest is passed. If that request fails, House or an alternative displays 'expected-error reference could not be verified' even though no reference exists for its edition. The happy-path alternative test uses a successful fetch and misses this case.",
+      "suggestedChange": "Before fetching, return {reference:null,referenceError:null} for forecasts other than the exact eligible Senate current-polling run/result pin (or expose a supported-identity predicate from the matcher). Add a failed-reference-fetch test for House and one Senate alternative that asserts no error banner and no catalog request. This also avoids unnecessary network work."
+    },
+    {
+      "id": "eligible_semantic_rejection_should_be_verification_error",
+      "severity": "medium_integrity_feedback",
+      "evidence": "When catalog bytes match the publication manifest but matchElectionNightReference returns null for the exact eligible current-polling edition, attachReference returns reference:null,referenceError:null. UI then says 'No reviewed error reference for this edition,' which hides a build/version mismatch or malformed authenticated catalog as ordinary absence.",
+      "suggestedChange": "For the exact eligible run, treat matcher-null as a reference verification error while retaining the forecast. The retry path should remain available. Test a correctly SHA-bound but semantically wrong catalog by changing the manifest test hash to that payload's exact bytes."
+    }
+  ],
+  "nonblockingAbortNote": "Resolved by post-digest parent and child signal checks in final client SHA39b2e6dd….",
+  "testsAssessed": "Author's 9 matcher tests and client/browser tests include actual pin matching, duplicate/stale/foreign edition rejection, row/tie/metric tamper, corrupted optional bytes preserving forecast, reference-fetch cancellation, and UI retry. I inspected their assertions; I did not rerun the full suite while root's build/browser checks are pending.",
+  "scopeBoundary": "Only one reviewed Senate current-polling V1 reference exists. House expected-error export and any future close/decisive event probabilities require separate pinned contracts.",
+  "recheck": {
+    "clientSha256": "bb948b74838c1dbed82bdb7a75a58a2aba1656b920c1b3599c577fd538364fed",
+    "clientTestSha256": "3d07620fc380240662fd2972e7b761b4cbd71f82d63de7b3bd7f07f91d11b14a",
+    "findingsResolved": [
+      "avoid_false_reference_errors_for_unqualified_editions",
+      "eligible_semantic_rejection_should_be_verification_error"
+    ],
+    "evidence": "Build-imported publication editions gate optional fetch by exact chamber/run/result SHA; no match returns null without a fetch or error, and duplicate exact matches reject. A declared eligible edition whose authenticated catalog fails semantic matching now produces a reference verification error while keeping the forecast. Tests assert alternative no-fetch and changed authenticated catalog error.",
+    "remainingNonblocking": "Post-digest signal.throwIfAborted() would strengthen direct loader cancellation; guide already checks its controller before state updates.",
+    "codeModifiedByReviewer": false
+  },
+  "remainingOptionalLoadingLimit": "Resolved for ordinary stalled optional network fetch by an 8-second child-controller deadline; cryptographic digest is non-abortable but stale completion is rejected after digest.",
+  "finalRecheck": {
+    "clientSha256": "39b2e6dd93d71413d474bb2e299b782ece9498415b006493f50d51772c23c929",
+    "clientTestSha256": "810494e8d4549c9a78604b0af3c5127a081fceca8965cb359219c41da291dca9",
+    "previousFindingsResolved": [
+      "avoid_false_reference_errors_for_unqualified_editions",
+      "eligible_semantic_rejection_should_be_verification_error"
+    ],
+    "cancellationAndDeadline": "Parent signal is forwarded to a child AbortController. Parent and child signals are checked after WebCrypto digest; finally clears the 8-second timer and removes the listener. Timeout yields a reference verification error while retaining the authenticated forecast. Parent cancellation propagates as abort. Tests cover parent cancellation during non-abortable digest and a mocked 8-second deadline.",
+    "scopeLimit": "The 8-second bound is on abortable reference network/body work. WebCrypto digest itself is not preempted by abort, but post-digest checks prevent stale fulfillment; an indefinitely stalled digest is outside this timer guarantee.",
+    "rootReportedChecks": "40 unit tests, 10 desktop/mobile browser cases, typecheck and build passed, reported by root; not independently rerun here.",
+    "codeModifiedByReviewer": false
+  }
+}

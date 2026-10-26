@@ -1,0 +1,88 @@
+{
+  "schema": "ElectionNightReferenceCopyProposalV1",
+  "review_date": "2026-10-26",
+  "inputs_reviewed": {
+    "research_decisions": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-research-decisions-v1.json",
+    "editorial_policy_proposal": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-evaluation-policy-sol-v1.json",
+    "senate_reference": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-polling-refresh-20261026/standard-scorecard-reference-v1/reference.json",
+    "reference_edition_cutoff_utc": "2026-10-26T15:03:57.212405+00:00",
+    "evaluation_lock": false,
+    "observed_results_consumed": false,
+    "eligible_races_in_diagnostic": 35,
+    "preserved_joint_rows": 40000
+  },
+  "proposed_layout": {
+    "entry": "Election night scorecard",
+    "subtitle": "How to read the forecast, its uncertainty, and the evidence that could count against it",
+    "first_view": "Lead with a clearly labeled model-implied reference, not a grade or observed-performance claim. Put the cohort and dated-edition status beside the headline. Keep three concise metric cards visible; place formulas, target notes, and per-race diagnostics in a disclosure below.",
+    "headline": "If this model's own assumptions held, its mean absolute margin error across the 35 Senate pair targets would average 5.6 percentage points.",
+    "headline_caveat": "This describes the model's own predictive distribution. It is not an observed error, forecast-accuracy estimate, or claim that each race should miss by 5.6 points.",
+    "metric_cards": [
+      {
+        "title": "Average absolute margin error",
+        "value": "5.62 pp",
+        "support": "Across 35 equally weighted named-pair margins, the model-implied mean of the 35-race average is 5.62 pp. The model's 5th–95th percentile for that average is 4.01–7.93 pp.",
+        "do_not_say": ["The expected error in each race is ±5.6 pp", "95% confidence interval", "Observed accuracy"]
+      },
+      {
+        "title": "Race intervals containing the result",
+        "value": "31.5 of 35 on average",
+        "support": "In the same joint simulations, the count of race-specific central 90% margin intervals containing their simulated margins averaged 31.5; its 5th–95th percentile range was 26–35.",
+        "caveat": "These are per-race intervals evaluated on shared joint rows. The count distribution is not a 90% guarantee that all races, or any specified number of races, will be covered in the real election."
+      },
+      {
+        "title": "Most-likely pair winners missed",
+        "value": "3.84 of 35 on average",
+        "support": "The model-implied mean count was 3.84 races where the simulated principal-pair winner differed from that race's marginally most likely principal. Its 5th–95th percentile count was 1–7.",
+        "caveat": "This is a model-based expectation, not a record of actual misses. It is about each race's two named principal contenders, not every candidate on the ballot."
+      }
+    ],
+    "secondary_direction_check": {
+      "title": "Signed average error",
+      "copy": "Across the same simulated elections, the model-implied 5th–95th percentile for the equal-race signed mean margin error ran from −5.54 to +5.78 pp. Its average is effectively zero because the simulated outcomes are centered on the forecast; this does not establish that real-world errors will be unbiased.",
+      "placement": "Method and diagnostics disclosure, not a leading success metric."
+    },
+    "individual_race_relation": "A selected race can show its own model-implied expected absolute error, calculated from its saved marginal draws. Label it as a race-specific simulation reference. Explain that 5.62 pp is the average across the 35 races in each joint row and then across rows; individual race expectations differ, and 5.62 pp is neither a per-race tolerance nor a guaranteed error band.",
+    "method_disclosure": "For each preserved same-election joint row, compare each simulated pair margin with its frozen predicted mean margin, take the absolute difference, and average the 35 race errors with equal race weights. Summarize that distribution across rows. A single row retains shared cross-race uncertainty; do not shuffle races, reconstruct independence, or treat the 35 contests as independent election cycles.",
+    "target_disclosure": "These are conditional named-principal-pair margins under each race's declared rule/proxy, not weighted national vote margin or full-ballot candidate shares. Omitted candidates, write-ins, nonresponse, and race-specific RCV/runoff approximations remain governed by the forecast's stated limitations.",
+    "edition_status_copy": "Reference for a dated October 26, 2026 forecast edition. It is not an evaluation lock, does not use observed results, and does not establish predictive skill. A later pre-outcome evaluation lock must name the exact edition, horizon, race cohort, targets, and result rules."
+  },
+  "a_to_f_rubric_proposal": {
+    "principle": "A–F remains a required deliverable. Decide and hash the rubric before outcomes; numerical bands are transparent editorial policy for this one cycle, not scientific constants. Do not leave ‘awaiting rubric’ as a permanent substitute for the grade.",
+    "recommended_shape": "Report separate winner-probability and margin/distribution subscores for Senate and House. If one overall letter is required, use a predeclared component-floor rule so a strong dimension cannot hide a weak one. Keep each chamber and target separate unless an explicitly approved normalization and weighting rule says otherwise.",
+    "meaningful_baselines": [
+      {
+        "name": "Matched basic electoral-history forecast",
+        "role": "Primary informative comparator for winner and margin distributions.",
+        "requirements": "Freeze an owner-reviewed basic-history/fundamentals result with the same as-of cutoff, horizon, race cohort, outcome support, margin denominator, point rule, and result mapping. Existing October 20 fundamentals must not be silently treated as cutoff-matched to an October 26 polling forecast."
+      },
+      {
+        "name": "Uniform categorical probabilities",
+        "role": "Ignorance anchor for winner probabilities only.",
+        "requirements": "Use 1/K for every frozen exhaustive outcome category. For a valid two-principal Senate pair this is 50/50; for House D/R/Other groups it is uniform over the listed categories, not necessarily 50/50. This baseline has no margin distribution and cannot receive CRPS or interval scores without a separately frozen margin law."
+      }
+    ],
+    "scoring_and_letter_options": [
+      {
+        "name": "Paired-skill composite",
+        "rule": "Compute winner Brier skill and margin CRPS/interval-score skill against the same-target basic-history baseline on the identical eligible cohort; predeclare weights, thresholds, missing-dimension treatment, and any coverage gates. Show each raw loss and paired baseline difference alongside the letter.",
+        "tradeoff": "Can summarize multiple dimensions, but weights and thresholds are editorial choices and a composite can conceal a weak component unless explicit gates are added."
+      },
+      {
+        "name": "Component-floor grade",
+        "rule": "Map each predeclared skill dimension to A–F bands, then assign the lowest component grade as the overall letter. Keep winner-only results as a separate winner grade when margin targets are unsupported.",
+        "tradeoff": "Easy to explain and prevents one good score from offsetting a poor score, but may be harsh and still needs pre-outcome bands, coverage policy, and missing-component handling."
+      }
+    ],
+    "why_50_50_is_not_a_close_margin_or_skill_claim": "A 50/50 forecast for a two-outcome winner is an uninformative probability benchmark: it gives neither side an advantage and earns no demonstrated skill just because one side wins. It says nothing by itself about the vote-margin distribution; the same winner odds can coexist with narrow or wide margins. Compare winner probabilities with the uniform baseline and margin distributions with a matched margin baseline. Do not give a separate ‘no call’ penalty.",
+    "decision_and_timing": "Owner/editorial reviewers should choose the component structure, exact bands/weights, minimum eligible coverage, finality rule, and joint-check treatment now, publish and hash the table before results are observed, and then apply it to the frozen evaluation lock. Thresholds require judgment, not invented scientific authority. The current pending rubric is a temporary pre-outcome decision, not a permanent release block or reason to omit the user's A–F deliverable.",
+    "no_grade_until": "No actual grade is warranted from the model-implied reference: the sidecar has no observed outcomes and evaluation_lock=false. The grade framework can be shown now; assign a letter only after the separate pre-outcome rubric/lock and reviewed result mappings exist."
+  },
+  "restrictions": {
+    "new_external_research": false,
+    "numeric_grade_thresholds_invented": false,
+    "observed_performance_claimed": false,
+    "cross_chamber_dependence_claimed": false,
+    "product_code_changed": false
+  }
+}

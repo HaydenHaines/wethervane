@@ -1,0 +1,39 @@
+{
+  "schema": "ElectionNightRubricIndependentReviewV1",
+  "date": "2026-10-26",
+  "reviewed": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-rubric-candidate-luna-v2.json",
+  "status": "usable_editorial_candidate_after_target_support_and_missing_result_rules_are_tightened",
+  "mathAndIncentives": {
+    "counterexamples": "All four calculations check: 1-.25/.30=+16.6667% and 1-.25/.25=0; 1-.9025/.40=-125.625% and 1-.9025/.25=-261%; 1-200/20=-900%; 1-.19/.20=+5%, 1-.19/.25=+24%, and 1-19/20=+5%. The stated band and component-floor results follow from the table, with exact-boundary assignment defined.",
+    "properScores": "Binary Brier and unordered categorical Brier/2 are proper for their declared exhaustive event spaces. The central 90% interval score width + 20 times each outside-endpoint distance is proper for the frozen 5th and 95th margin quantiles. The grade bands and D cap are editorial summaries, not themselves proper scoring rules. Publishing raw paired losses is essential.",
+    "uniformCap": "A zero or negative skill against uniform capping winner/overall at D is mathematically coherent and prevents a 50/50 forecast from earning B solely because the history baseline was worse. It can cap an otherwise A margin model at D, so keep the margin subgrade plainly visible and describe D as lack of useful pair/group discrimination in this cycle, not proof of long-run miscalibration. Do not give 50/50 a separate no-call penalty.",
+    "intervalIncentive": "A full [-100,+100] percentage-point interval has width 200 and 100% coverage on the legal margin range but interval score 200; the example's -900% skill versus score 20 is correct. Avoid a second coverage-only grade. An authenticated same-target history interval is still prerequisite."
+  },
+  "materialRevisionsBeforeLock": [
+    {
+      "id": "house_outcome_support",
+      "severity": "blocking_for_full_support_claim",
+      "evidence": "The currently saved 435-race House polling result has outcome-party sets: 226 D/R, 191 D/R/O, 13 D only, 4 D/O, 1 R only. Thus 'the frozen listed D/R/Other outcomes are exhaustive' and uniform 1/K as if every listed set covers every possible official winner are not established. A single-category K=1 uniform reference assigns probability 1 to that listed group and says nothing about an unmodeled official winner.",
+      "change": "Before results, name the actual House grading event and support. If grading official winner party D/R/O, owner must approve a scoring mapping that always has those three categories, maps every official winner (including unmodeled write-ins/independents) to one, and explicitly explains any zero-probability completion for categories missing from a native conditional forecast; use uniform 1/3 on that same three-category target. If native probabilities cannot honestly be read as full-field party probabilities, grade the declared conditional listed-outcome target with uniform 1/K on that exact support and add a separately precommitted scope-failure consequence (for example overall F) if an outside candidate wins. Do not quietly discard the race or call the conditional Brier full-field skill."
+    },
+    {
+      "id": "senate_pair_event",
+      "severity": "wording_and_result_mapping_required",
+      "evidence": "The refreshed Senate standard law forecasts first versus second named principal contender conditional pair share/winner proxy, not every possible seat winner. It has no all-candidate winner law.",
+      "change": "Call the graded binary target 'which named contender leads the other under the locked final pair-vote/round rule' or 'principal-pair lead,' not an unqualified Senate winner. The 50/50 uniform comparator is exhaustive for this binary relative event. If a third candidate wins the seat but both named contenders have comparable official final votes, still score their relative pair lead and pair margin; separately display that the seat winner was outside support. Mark the pair target unavailable only when the locked vote/round/denominator cannot actually be reconstructed. Never force an outside seat winner into one principal category."
+    },
+    {
+      "id": "unsupported_or_unresolved_results",
+      "severity": "precommit_for_a_to_f_delivery",
+      "evidence": "The 100% final-result gate prevents post-result cherry-picking, but one unavailable official round, missing candidate mapping, or indefinite recount can suppress every chamber letter. The phrase 'unsupported' can otherwise become a post-outcome escape hatch.",
+      "change": "Freeze event, fallback official source, certification/finality rule, and explicit escalation/review dates before returns. Keep every locked row in N; only pre-outcome-declared structurally unavailable pair margins are outside their separate margin cohort. An outside-support observed winner triggers the precommitted support-failure consequence rather than a removable exclusion. For genuinely unresolved results, optionally publish a letter early only if exhaustive best/worst admissible completions of those rows leave the same component bands, uniform cap and overall floor; otherwise show raw n/N and 'letter pending' with named rows. This invariant-letter option preserves the fixed table without choosing an easy observed subset."
+    }
+  ],
+  "recommendedTableDisposition": "Keep the proposed A >= +20%, B [+10%,+20%), C [0%,+10%), D [-10%,0%), F < -10% relative-skill bands as an explicit pre-outcome editorial choice, not an empirically established universal scale. Keep the lower-of-winner-and-interval component rule and the uniform SU<=0 D cap if the public page always displays raw Brier/interval scores, history and uniform references, component letters, cohort n/N and this cycle-specific meaning. The 2026 history comparator must be same-target and information-cutoff matched; the existing October 20 fundamentals edition is not automatically an October 26 baseline. Publish the signed table and target/support/missing-result rule before inspecting outcomes for grades.",
+  "additionalPrecision": [
+    "Skill ratios require strictly positive matched baseline mean loss; when zero, publish raw paired differences and withhold that component letter under the precommitted rule.",
+    "For 35 correlated Senate races and one cycle, relative-skill cutoffs can swing with a small baseline loss. A letter describes the locked cycle only; it is not a statistical confidence statement or model calibration certificate.",
+    "Interval score is proper for the two stated quantiles but does not score the entire margin CDF. This is acceptable if the public label says '90% interval skill,' not full distribution skill. The sidecar's model-implied expected error/coverage is not an observed score or grade."
+  ],
+  "checksNotPerformed": "No 2026 outcomes were used, no grade calculated, and no product or native files were modified."
+}

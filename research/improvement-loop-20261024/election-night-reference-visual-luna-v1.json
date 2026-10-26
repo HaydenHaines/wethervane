@@ -1,0 +1,29 @@
+{
+  "schema": "ElectionNightReferenceVisualReviewV1",
+  "review_date": "2026-10-26",
+  "screenshots": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-reference-v1",
+  "verdict": "Visually clear and carefully qualified on desktop and mobile. No release-blocking clipping, per-race/aggregate confusion, or accuracy claim found.",
+  "observations": {
+    "hierarchy": "The expected wrong-top-choice and expected average-margin-error cards are distinct, with the 35-race denominator visible. Method definitions, joint-row coverage and signed-error caveats are in a clear disclosure. The selected-race view states ‘Awaiting verified result’ and gives its own 4.2 pp model-implied expected error separately from the 5.6 pp aggregate.",
+    "interpretation": "Copy says the values are from the model's own probabilities/simulations, not measured accuracy or error limits. It explicitly says 5.6 pp is not a per-race range, explains equal race weighting, names the two-contender conditional target, and rejects full-ballot and national popular-vote readings. The definitions view explains shared rows, no independence reconstruction, interval width plus misses, signed-error direction, the centered-by-construction caveat, no results, and no grade.",
+    "mobile": "All three mobile screens are readable, cards stack naturally, uncertainty and selected-race text wrap within the viewport, and no visible clipping or horizontal overflow appears. The longer definitions disclosure remains scannable with separate headings and paragraphs.",
+    "confidence_and_accuracy": "‘The model expects’ is immediately qualified as its own simulated distribution. ‘Middle 90%’ is paired with explicit range values and the disclosure says internal reference, not evidence of real-world coverage. There is no unsupported predictive-skill claim or grade."
+  },
+  "small_copy_refinements": [
+    {
+      "priority": "optional",
+      "location": "Wrong top choices card, desktop and mobile",
+      "current": "Shared errors let several races miss together.",
+      "suggestion": "In the simulations, several races can miss together because their outcomes share common shifts.",
+      "reason": "‘Shared errors’ is slightly technical; naming shared shifts is more concrete while preserving dependence."
+    },
+    {
+      "priority": "optional",
+      "location": "Expected average margin error card range callout",
+      "suggestion": "The model's 5th–95th percentile range across simulated 35-race averages is 4.0 to 7.9 points.",
+      "reason": "This makes the percentile interpretation self-contained in the first view. Existing nearby copy already rules out a per-race band and 95% confidence interval, so this is a clarity improvement only."
+    }
+  ],
+  "release_blockers": [],
+  "scope_limits": "Visual and wording review of the six supplied screenshots only. No browser run, code edits, source-data validation, or result/grade evaluation performed."
+}

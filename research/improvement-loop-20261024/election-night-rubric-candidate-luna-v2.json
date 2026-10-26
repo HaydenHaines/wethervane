@@ -1,0 +1,112 @@
+{
+  "schema": "ElectionNightRubricCandidateV2",
+  "date": "2026-10-26",
+  "status": "concrete_editorial_candidate_for_owner_review_not_scientific_standard",
+  "purpose": "Turn the A–F proposal into a complete pre-outcome rule that can be accepted or changed before results. It does not compute any grade or establish a final evaluation lock.",
+  "proposed_grade_scope": {
+    "edition": "One separately frozen 2026 edition per chamber and horizon; a dated snapshot alone is not a lock.",
+    "reporting": "Show separate winner and margin/distribution grades and raw scores for each chamber. If one overall chamber letter is required, use the lower of its available component grades; do not average House and Senate or use a House group score as a Senate candidate-pair score.",
+    "interpretation": "A cycle-specific comparison against named baselines, not proof of long-term calibration, universal superiority, or model mechanism. Grade-band boundaries are editorial judgments.",
+    "no_results_yet": "The October 26 Senate reference has evaluation_lock=false and observed_results_consumed=false. No actual grade follows from its simulations."
+  },
+  "metrics_and_exact_thresholds": {
+    "winner_skill": {
+      "loss": "Senate: binary one-event Brier (p(first pair outcome)-indicator)^2. House: full-support unordered categorical Brier over the frozen listed D/R/Other group outcomes, divided by 2 so its range is 0–1. Use the same metric, support and normalization for model and both winner baselines.",
+      "history_skill": "SW = 1 - mean Brier(model) / mean Brier(basic_history), on the identical complete locked cohort.",
+      "uninformative_gate_skill": "SU = 1 - mean Brier(model) / mean Brier(uniform categorical), on the identical cohort. Uniform is 1/K over all exact exhaustive categories; for binary Senate pairs it is 0.5/0.5.",
+      "letter_bands": {
+        "A": "SW >= 0.20",
+        "B": "0.10 <= SW < 0.20",
+        "C": "0.00 <= SW < 0.10",
+        "D": "-0.10 <= SW < 0.00",
+        "F": "SW < -0.10"
+      },
+      "cap": "If SU <= 0, cap the winner grade and any overall chamber grade at D. Do not cap a separate margin grade. If SW has no valid positive-loss denominator or SU cannot be calculated, winner grade is unscorable and the overall letter is withheld.",
+      "output": "Publish model, basic-history, and uniform raw Brier losses; paired differences; SW and SU; eligible count; and the resulting letter."
+    },
+    "margin_distribution_skill": {
+      "loss": "Mean proper central 90% interval score, with alpha=0.10: width + 20 times distance below the lower endpoint + 20 times distance above the upper endpoint. Use the exact frozen named-pair denominator, rule, point/range source, and complete eligible cohort. No post-outcome race weighting.",
+      "history_skill": "SI = 1 - mean interval score(model) / mean interval score(basic_history), on exactly the same margin cohort.",
+      "letter_bands": {
+        "A": "SI >= 0.20",
+        "B": "0.10 <= SI < 0.20",
+        "C": "0.00 <= SI < 0.10",
+        "D": "-0.10 <= SI < 0.00",
+        "F": "SI < -0.10"
+      },
+      "output": "Publish raw interval scores for model and baseline, paired difference and SI. Also show mean absolute point error and 90% interval coverage/width as descriptive diagnostics, but do not grade on coverage alone or point MAE.",
+      "missing_margin_distribution": "If either forecast or basic-history baseline lacks an admitted predictive interval for a frozen margin target, that margin component and overall grade are unscorable. Do not invent a CDF or assign a winner-only score as a full grade."
+    },
+    "threshold_ties": "Assign a score exactly on a cutoff to the higher band shown by the inclusive lower bound (e.g. exactly +10% is B, exactly 0% is C, exactly −10% is D). Use unrounded double-precision values for grade decisions; round only display. Ties in observed winner identity and interval endpoint equality follow the prelocked event/result mapping; interval coverage treats endpoints as covered.",
+    "not_graded_as_thresholds": [
+      "No fixed observed-error or coverage-count cutoffs: those would make nominal model coverage a grade requirement and encourage excessively broad intervals.",
+      "No CRPS requirement until an authenticated, reviewed margin CDF is part of the frozen public target. The existing standard 90% interval score suffices for this candidate.",
+      "No score threshold based on signed error being near zero; mean signed error is shown descriptively because model-centered joint draws can make it nearly zero by construction.",
+      "No A–F letter from raw point MAE, modal hit rate, or a single 90% coverage fraction alone."
+    ]
+  },
+  "baselines": {
+    "basic_history": {
+      "required": true,
+      "construction": "Owner-reviewed and frozen electoral-history/fundamentals distribution built with the same forecast cutoff, horizon, target, race IDs, candidate/group support, margin denominator and point/range rules as the preferred forecast. The existing October 20 fundamentals edition is not automatically cutoff-matched to an October 26 polling edition; it must be reviewed/rebuilt/pinned for the same information date before serving as this baseline.",
+      "denominator_zero": "If mean baseline Brier or interval score is zero, that skill ratio is undefined; show raw paired score differences but withhold the affected grade and overall letter unless a different baseline rule was chosen before outcomes."
+    },
+    "uniform_winner": {
+      "required": true,
+      "construction": "For winner scoring only, assign 1/K to every exact exhaustive outcome category for each race. Do not use a binary 50/50 distribution for House races with an Other/group category. No interval or margin baseline is derived from uniform winner probabilities."
+    },
+    "matched_cohort": "Score the preferred model and each baseline on the exact same locked race/margin cohort and final-result eligibility mask. Publish count and reasons for unavailable, unresolved, unsupported and mismatched targets. Never compare the model and baseline on different races or silently renormalize a candidate subset.",
+    "baseline_readiness": "A same-cutoff reviewed basic-history output and exact uniform winner baseline are prerequisites for applying this rubric. A matching baseline is not established merely because an older model is called ‘fundamentals’ or because its historical score is available."
+  },
+  "coverage_finality_and_missing_policy": {
+    "grade_coverage_gate": "Require 100% of each locked target-specific cohort to have an authenticated final or certified result mapped to the exact locked race, candidates/groups, rule/round and denominator. A letter is withheld if any locked row is unreported, partial, called-only, unresolved, unsupported or mismatched. Do not silently grade a reduced after-the-fact subset.",
+    "component_cohorts": "Freeze winner and margin cohorts separately before outcomes. House winner cohort uses its listed exhaustive group outcomes; Senate winner cohort uses its two named principal-pair outcomes. Margin cohort contains only races with an explicitly frozen named-pair distribution/denominator, with known unsupported races listed before results. Coverage percentages use the frozen target cohort count, never a post-outcome count.",
+    "pending_display": "While coverage is incomplete, show provisional descriptive scores/counts with explicit n/N final, pending and excluded reasons, but no letter. Once every target result is final/certified and the result mapping plus baselines pass review, apply the already published bands; this is a finite data-completion rule, not an indefinite editorial hold.",
+    "official_rule": "Before results, name the accepted official source and finality test by state/race type. A called winner may support a visibly provisional hit count, never the final grade. Margins require matching final/certified pair shares under the locked rule and denominator. Recount, runoff, RCV round, changed candidate, or unresolved tie follows the frozen event rule; otherwise it remains mismatched/unresolved and blocks the 100% gate.",
+    "not_applicable": "Only targets declared unsupported in the signed pre-outcome cohort definition are outside that metric's cohort. A post-outcome missing candidate, source failure, source/rule mismatch or unavailable pair margin is not grounds to remove the race."
+  },
+  "four_counterexamples": [
+    {
+      "case": "Every Senate winner forecast is 50/50",
+      "hypothetical_inputs": "For each binary race the model Brier is 0.25, equal to uniform Brier 0.25; suppose same-cutoff basic history Brier is 0.30. Then SW=16.7%, which alone falls in B, while SU=0.",
+      "candidate_result": "The uniform gate caps winner/overall grade at D, regardless of a strong margin grade. Show the B winner skill versus history and zero skill versus uniform, so no one mistakes a coin flip for demonstrated discrimination.",
+      "why_it_matters": "A 50/50 winner probability does not define how narrow or wide the vote margin is. It cannot be called a tight-race forecast without the separate margin distribution."
+    },
+    {
+      "case": "Confidently wrong winner forecast",
+      "hypothetical_inputs": "In a binary race, assign 0.95 to the losing outcome and 0.05 to the winner. One-event Brier is 0.9025. If basic history mean Brier is 0.40, SW=−125.6%; against uniform 0.25, SU=−261%.",
+      "candidate_result": "Winner grade F; the uniform cap also applies. Even if interval-skill is A, the overall component-floor letter is F. Show actual probability loss and the outcome identity; do not let a favorite-hit count conceal confident errors.",
+      "why_it_matters": "Proper probability scoring penalizes confident wrong calls much more than uncertain misses."
+    },
+    {
+      "case": "Excessively wide margin intervals",
+      "hypothetical_inputs": "Suppose winner skill is +25% (A), while a model's 90% intervals span 200 pp and average interval score is 200; a matched basic-history interval score is 20, so SI=−900% (F). The wide forecast may cover every realized result.",
+      "candidate_result": "Margin grade F and overall grade F under the component floor, despite nominal coverage of 100%. Width penalty prevents ‘cover everything’ from earning a good distribution score.",
+      "why_it_matters": "Coverage alone rewards arbitrarily wide intervals; the proper interval score balances width with misses."
+    },
+    {
+      "case": "Mild improvement over basic history",
+      "hypothetical_inputs": "Suppose model mean winner Brier is 0.19 against history 0.20 (SW=+5%), uniform Brier is 0.25 (SU=+24%), and interval score is 19 against history 20 (SI=+5%).",
+      "candidate_result": "Winner C, margin C, overall C. This recognizes improvement over the matched reference without promoting a small positive skill to A/B. The numbers are an illustration of the proposed bands, not empirical thresholds.",
+      "why_it_matters": "A passing grade requires evidence against an informative, same-target baseline, not merely a correct outcome or improvement relative to chance."
+    }
+  ],
+  "distortion_challenge": {
+    "component_floor": "Conservative but can let one weak/volatile dimension dominate an otherwise strong letter. Mitigation: show each component grade, raw score, baseline difference and coverage beside overall; never publish the overall letter alone. A different aggregate must be selected before results, not after seeing component scores.",
+    "uniform_cap": "Can cap a strong margin forecast at D because winner probabilities are no better than ignorance. That is a normative rule chosen to prevent an overall forecast grade from implying useful winner discrimination; the separate margin subgrade remains visible. Owner may reject it, but any replacement cap/aggregation must be fixed before results.",
+    "threshold_volatility": "Relative skill is unstable when the basic-history loss is small and an election contains only 35 Senate races. Publish baseline losses, paired loss differences and cohort size; do not interpret bands as universal reliability labels.",
+    "coverage_gate": "A 100% gate may delay the letter on one unresolved contest. It prevents selection bias from grading only the available/easy races; show the pending count and already-computed provisional diagnostics. If an owner prefers a lower threshold, it must be a fixed fraction and retain every missing row in the denominator, with that partial-cohort rule disclosed before outcomes.",
+    "equal_weighting": "Equal race weighting intentionally describes average contest-level performance, not population-weighted national vote error or statewide turnout impact. Any population-weighted metric must have a separate frozen name, inputs, and grade policy."
+  },
+  "thresholds_are_editorial": {
+    "selected_candidate_bands": true,
+    "authority": "No scientific source establishes these numeric A/B/C/D/F cutoffs. They are proposed editorial thresholds for a single locked cycle against named baselines.",
+    "required_signoff_artifact": "Before any outcomes are inspected for grading, publish/hash the approved baseline artifacts, exact bands, normalization, uniform cap, cohort, complete-coverage rule, finality and mismatch policy, point/interval metrics, tie policy, and overall component aggregation.",
+    "no_permanent_block": "The proposed bands are concrete now. Awaiting outcome completion is ordinary scorecard status; awaiting editorial adoption must be resolved before the result is graded, not used as a standing reason to omit A–F."
+  },
+  "known_reference_limitations": [
+    "The Oct 26 Senate native sidecar is a model-implied diagnostic, not an evaluation lock or observed score; the public preferred edition and result/admission contract must be pinned before grading.",
+    "The Senate diagnostic targets conditional principal pairs and their declared proxy rules; they are not full-field candidate counts, all-candidate shares or a national weighted margin.",
+    "House winner and margin cohorts and House same-row diagnostics require their own exact freeze and cross-chamber aggregation is not authorized by this candidate."
+  ]
+}
