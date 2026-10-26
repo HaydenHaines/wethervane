@@ -9,6 +9,7 @@ As of October 26, 2026 UTC:
 The first entry is the latest checkpoint. Earlier entries preserve the scope and
 remaining work recorded at their issuance; later checkpoints supersede that status.
 
+- [Checkpoint v83](checkpoints/continuation-v83.json) records a clarified CPS replicate-weight source gap and continued deferral of the reviewed dynamic graph while 2018 materialization and House recovery hold capacity.
 - [Checkpoint v82](checkpoints/continuation-v82.json) records the independently reviewed V3 all-parent evaluator; its dynamic phase remains unrun while owner materialization and House recovery have substantial resource commitments.
 - [Checkpoint v81](checkpoints/continuation-v81.json) records 76 retained divergence flags in the completed 2018 sampler; independent provenance review confirms the predeclared zero-divergence gate cannot pass as-is. Owner investigation remains active.
 - [Checkpoint v80](checkpoints/continuation-v80.json) records independent owned-evaluator review and a separate successor to check the exact parent/point roster before execution. The 2018 sampler has finished; owner qualification remains pending.

@@ -1,0 +1,105 @@
+{
+  "packet": "m01-cps-replicate-vintage-followup-luna-v1",
+  "checked_utc": "2026-10-26",
+  "method": "Read official Census web pages, small layout SAS source and official technical documentation; no microdata/replicate data download.",
+  "conclusion": {
+    "asec_replicates_exist": {
+      "2018": true,
+      "2020": true,
+      "meaning": "Current official pages list ASEC person replicate weight data and instructions. This does not establish Nov Voting supplement replicate files."
+    },
+    "asec_person_join_keys": ["H_SEQ", "PPPOS"],
+    "asec_replicate_columns": "PWWGT0 through PWWGT160",
+    "variance": "CPS SDR direct variance: (4/160) * sum((theta_r - theta_0)^2), r=1..160, as documented in CPS methodological sources.",
+    "voting_replicate_file_observed": {
+      "2018": false,
+      "2020": false,
+      "scope": "Not observed in year-specific voting pages or the official year /supp directory listings checked. This is not a proof of global nonexistence."
+    },
+    "vintage": "Exact first-public-release timestamps and then-current bytes for the ASEC replicate files were not established. Current page revisions and FTP Last modified values are not treated as first-release proof."
+  },
+  "primary_sources": [
+    {
+      "id": "asec_2018_page",
+      "url": "https://www.census.gov/data/datasets/2018/demo/cps/cps-asec-2018.html",
+      "observed": "Lists 2018 replicate weight usage instruction, SAS input statements and data file; page last revised 2021-10-08."
+    },
+    {
+      "id": "asec_2018_layout",
+      "url": "https://www2.census.gov/programs-surveys/cps/datasets/2018/march/CPS_ASEC_ASCII_REPWGT_2018.SAS",
+      "observed": "Defines PWWGT0..PWWGT160 and final keys H_SEQ and PPPOS."
+    },
+    {
+      "id": "asec_2020_page",
+      "url": "https://www.census.gov/data/datasets/2020/demo/cps/cps-asec-2020.html",
+      "observed": "Lists 2020 ASEC files including replicate weights, separate instructions and replicate file. Provides 2010 Census-based and 2020 Census-based replicate-weight files. Page last revised 2022-10-27."
+    },
+    {
+      "id": "asec_2020_layout",
+      "url": "https://www2.census.gov/programs-surveys/cps/datasets/2020/march/CPS_ASEC_ASCII_REPWGT_2020.SAS",
+      "observed": "Defines PWWGT0..PWWGT160 and final keys H_SEQ and PPPOS."
+    },
+    {
+      "id": "asec_merge_guide",
+      "url": "https://www.census.gov/topics/population/foreign-born/guidance/cps-guidance/using-cps-asec-microdata.html",
+      "observed": "Describes the purpose of ASEC replicate files and merging person, household and replicate weight files."
+    },
+    {
+      "id": "2020_control_guidance",
+      "url": "https://www2.census.gov/programs-surveys/cps/datasets/2021/march/Guidance_on_Using_Replicate_Weights_2020-2021.pdf",
+      "observed": "Official guide says 2020 and 2021 ASEC have alternate 2010-Census-based and 2020-Census-based replicate weights, with use depending on comparison vintage."
+    },
+    {
+      "id": "cps_design_methodology",
+      "url": "https://www2.census.gov/programs-surveys/cps/methodology/tp63rv.pdf",
+      "observed": "CPS design documentation describes successive-difference replication and 160 replicate weights."
+    },
+    {
+      "id": "voting_index",
+      "url": "https://www.census.gov/data/datasets/time-series/demo/cps/cps-supp_cps-repwgt/cps-voting.html",
+      "observed": "Current voting page links generic household/person replicate instructions; 2018/2020 sections do not present replicate-weight file sections, while 2024 does."
+    },
+    {
+      "id": "voting_2018_page",
+      "url": "https://www.census.gov/data/datasets/2018/demo/cps/cps-voting.html",
+      "observed": "Lists November 2018 Voting technical documentation and supplement data file, no distinct replicate-weight file; revised 2021-10-08."
+    },
+    {
+      "id": "voting_2020_page",
+      "url": "https://www.census.gov/data/datasets/2020/demo/cps/cps-voting.html",
+      "observed": "Lists November 2020 Voting technical documentation and supplement data file, no distinct replicate-weight file; revised 2021-10-08."
+    },
+    {
+      "id": "cps_2018_supp_dir",
+      "url": "https://www2.census.gov/programs-surveys/cps/datasets/2018/supp/",
+      "observed": "Directory shows nov18pub but no nov18rep; other months/supplements have several rep files. Directory timestamps do not establish historical first release."
+    },
+    {
+      "id": "cps_2020_supp_dir",
+      "url": "https://www2.census.gov/programs-surveys/cps/datasets/2020/supp/",
+      "observed": "Directory shows nov20pub dated 2021-04-29 and no nov20rep. Directory timestamp is not treated as immutable first-release evidence."
+    },
+    {
+      "id": "voting_2018_techdoc",
+      "url": "https://www2.census.gov/programs-surveys/cps/techdocs/cpsnov18.pdf",
+      "observed": "Voting supplement documentation says no supplement weight and directs point estimation use of PWSSWGT."
+    },
+    {
+      "id": "voting_2020_techdoc",
+      "url": "https://www2.census.gov/programs-surveys/cps/techdocs/cpsnov20.pdf",
+      "observed": "Voting supplement documentation says no supplement weight and directs point estimation use of PWSSWGT."
+    }
+  ],
+  "preserved_prior_packet": {
+    "readme_sha256": "083adabb6b50a919754e503af6f3e039f7a2cef9f21170f188fdd44e5a57118f",
+    "evidence_sha256": "2525d68485172721dd1636c59761952364e8dcf9cf6118a187ec4302617c792c",
+    "path": "../m01-cps-historical-instrument-luna-v1/"
+  },
+  "limitations": [
+    "No microdata or replicate-weight data files were downloaded or joined.",
+    "ASEC files concern March income/economic supplement data and are not validated as weights for November voting responses.",
+    "No exact first public release timestamp or historical byte snapshot for 2018/2020 ASEC replicate files was established.",
+    "Absence of a file in the inspected Voting year page and directory is an observed-link/listing limit, not proof of nonexistence elsewhere.",
+    "The generic person-replicate Word instruction was linked from Census but not rendered by the web tool, so no voting-specific key/formula claim is based on it."
+  ]
+}

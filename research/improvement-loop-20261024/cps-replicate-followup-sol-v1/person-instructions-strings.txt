@@ -1,0 +1,543 @@
+ SEQ CHAPTER \h \r 1
+March 7, 2012 
+MEMORANDUM FOR 	Enrique Lamas
+Acting Chief, Demographic Surveys Division
+From: 					
+ SEQ CHAPTER \h \r 1
+Ruth Ann Killion
+Chief, Demographic Statistical Methods Division
+Subject: 						CPS Supplements: Estimating Person Level Supplement Variances with Replicate Weights
+ SEQ CHAPTER \h \r 1
+This document provides instructions for using a Current Population Survey (CPS) person level supplement public use replicate weight file to create variance estimates.  This document also includes background information on variance estimates by the replication method.  Provide this document to data users as part of the documentation for the replicate weight files.
+If you have any questions or need additional information, please contact David Hornick of the Demographic Statistical Methods Division via email at 
+ HYPERLINK "mailto:David.V.Hornick@census.gov" 
+David.V.Hornick@census.gov
+ or by phone at 301-763-4183.
+Attachment
+cc: 	P. Flanagan (DSMD)
+	A. Kearney
+D. Hornick
+	S. Clark
+C. Laskey (DSD)
+	L. Clement
+	G. Weyland
+	T. Marshall
+T. Hicks
+Estimating Current Population Survey (CPS)
+Person Level Supplement Variances
+Using Replicate Weights
+Part I:  Instructions for Using CPS Person Level Supplement Replicate Weights to Calculate Variances
+Introduction
+This document provides the data user with instructions on how to use the Current Population Survey (CPS) supplement replicate weights to calculate variances.  Background information on how the household-level replicate weights are created can be found in Part II.
+Person Level Supplement Weights
+CPS person level supplements require a person level weight to be used in estimation.  One of three possible variables (PWSUPWGT, SRWGT, or NRWGT) are supplied on the public use file. The variable PWSUPWGT is supplied if self-response weight did not occur, SRWGT is supplied for self-response analysis, and NRWGT is supplied for total response analysis.
+Replicate Weight File
+Researchers interested in using the replicate weights should contact the appropriate research office to obtain a copy of the replicate weight data files.
+ SEQ CHAPTER \h \r 1
+  The replicate weights file and the public use survey data file both have the full sample weight.  On the replicate weight file, the variable name is PERSUPWGT0.  The full sample weight on these files is given as means of verifying that the files are properly merged to the public use survey data.  
+Merging the Person Level Supplement Replicate Weight File with the Person File
+Obtain:		Person Level Supplement File 
+		Person Level Replicate Weight Files 
+Merge these files using QSTNUM and OCCURNUM.  This is a simple one-to-one match.
+Creating Replicate Estimates
+Replicate estimates are created using each of the 160 weights independently to create 160 replicate estimates.  For point estimates, multiply the replicate weights by the item of interest at the record level (either an indicator variable to determine the number of people with a characteristic or a variable that contains some value, say, number of children in the household who play sports) and tally the weighted values to create the 160 replicate estimates.  Use these replicate estimates in the formula to calculate the total variance for the item of interest.  For example, say the item of interest is the number of children who play sports (SPORT=1).  Tally the weights for all the records with variable SPORT = 1 to create the 160 replicate estimates of the number of children who play sports.  Then use these estimates in the formula to calculate the total variance for the number of children who play sports.
+Use of Replicate Estimates in Variance Calculations
+Calculate variance estimates for person level supplement estimates using:
+ EMBED Equation.COEE2  
+ 			       (1)
+ EMBED Equation.COEE2  
+is the estimate of the statistic of interest, such as a point estimate, ratio of domain means, regression coefficient, or log-odds ratio, using the weight for the full sample and
+ EMBED Equation.COEE2  
+are the replicate estimates of the same statistic using the replicate weights. See reference [1] Judkins (1990) and [2], Chapter14.
+Example for Total Variance of Point Estimates
+The total variance for a point estimate
+ EMBED Equation.COEE2  
+ can be calculated by plugging the replicate weight estimates and the point estimate into formula (1):
+ EMBED Equation.COEE2  
+ EMBED Equation.COEE2  
+are the replicate estimates.
+Example for Variance of Regression Coefficients
+Variances for regression coefficients
+ EMBED Equation.COEE2  
+can be calculated using formula (1) as well.  Calculating the 160 replicate regression coefficients 
+ EMBED Equation.3  
+ and using formula (1),
+ EMBED Equation.COEE2  
+gives the variance estimate for the regression coefficient
+ EMBED Equation.COEE2  
+Direct Variances Versus Generalized Variance Functions
+Variances calculated using the above formulas often times do not match the variance estimates that are achieved by using generalized variance functions (GVF).  The GVF is a simple model that expresses the variance as a function of the survey estimate.  The parameters of the model are estimated using direct replicated variances from several estimates that have similar characteristics.  These models provide a relatively easy way to obtain an approximate standard error on numerous characteristics.
+With considerably more effort, the replicate weights can be used to calculate variances using the formulas provided above.  These variance estimates are considered to be direct variance estimates and are subject to some variance themselves.
+Examples of Calculating Variances Using:
+SAS, SUDAAN, or WesVar
+SAS CODE
+The following is example SAS code that can be used to calculate standard errors using the replicate weights.
+***********************************************************;
+* The FIRST STEP is to flag the data records              *;
+* desired after creating the SAS data sets.               *;
+* This example flags children that play sports.           *;
+***********************************************************;
+data user.data1;
+ merge PERSON_LEVEL_DATA_2010 (rename = (cwgt=cwgtt)) PERSON_LEVEL_REPLICATE_WGTS_2010;
+ by qstnum;
+ if SPORT = 1 then sport_child = 1; else sport_child = 0;
+***********************************************************;
+* The SECOND STEP of code sums the full sample and the    *;
+* 160 replicate weights and writes them out to a file.    *;
+***********************************************************;
+proc means data=user.data1 sum noprint;
+ where sport_child =1;
+ var persupwgt0 persupwgt1-hhsupwgt160;
+ output out=user.data2 sum=est rw1-rw160;
+***********************************************************;
+* The THIRD STEP of code uses the estimates of the full   *;
+* sample and the 160 replicates to compute the estimated  *;
+* replicate variance(s) using the formula(s) for 160      *;
+* replicates. In the code below replace {MODFAC} with the *;
+* appropriate module factor.                              *;
+***********************************************************;
+data user.data3 (keep=char est var se cv);
+ set user.data2 end=eof;
+ if _n_=1 then sdiffsq = 0;
+ array repwts{161} est rw1-rw160;
+ do I = 2 to 161;
+   sdiffsq = sdiffsq + (repwts{i} - repwts{1})**2;
+ if eof then do;
+   var = (4/160) * sdiffsq;
+   se = (var)**.5;
+   cv = se/est;
+   length char $9;
+   char = 'Males 16+';
+   output;
+proc print data = user.data3;
+  var char est var se cv;
+SUDAAN CODE
+The following is an example of SUDAAN code that can be used to calculate standard errors using the replicate weights.
+/**************************************************************
+* When specifying the sample design in SUDAAN the following   *
+* design statements need to be used:                          *
+*      IDVAR  variables                                       *
+*      REPWGT variables / ADJFAY = 4  -- multiply the         *
+*                                        replicate weights    *
+*                                        by the module factor *
+*                                        to get the proper    *
+*                                        final replicate      *
+*                                        weights.             *
+*            and                                              *
+*      WEIGHT variable -- multiply the weight by the          *
+*                         module factor to get the proper     *
+*                         final weight.                       *
+***************************************************************/;
+PROC CROSSTAB DATA = PERSON_LEVEL_DATA_2010 REPDATA = _LEVEL_REPLICATE_WGTS_2010 DESIGN = BRR;
+IDVAR h_seq pppos;
+WEIGHT cwgt;
+REPWGT cwgt1-cwgt160 / ADJFAY = 4;
+SUBPOPN 16 <= a_age & a_sex = 1;
+TABLES _one_;
+Using WesVar to calculate the variances for the person level supplement requires you to set up the WesVar data set properly.  This can be done in the data file creation window of WesVar.  This document will not walk you through all the steps required to use WesVar to calculate standard errors, but will assist you in the data creation window.  There are five steps in creating your WesVar data set.  NOTE: Make sure that the weight fields have the module factor applied.
+At the DATA FILE CREATION window in WesVar, add the full weight, household weight, to the full sample field.
+Add the household replicate weights to the replicates field.
+At the METHOD sidebar box, click on the FAY radio button.
+In the FAY_K window, enter 0.5 as the FAY adjustment value.
+Add the variables of interest to the variables field.
+After creating the WesVar data set, you can proceed with your analysis.  The output pages of your analysis will contain the standard errors.
+Estimating Person Level Supplement Variances with
+Replicate Weights
+PART II:  Replicate Variance Estimates for Current Population Survey (CPS) -- Person Level Supplement
+tc \l2 "Direct Calculation of Variance Estimates
+Introduction
+tc \l2 "		Introduction
+The variance of any survey estimate based on a probability sample may be estimated by the method of replication.  This method requires that the sample selection, the collection of data, and the estimation procedures be independently carried through (replicated) several times.  The dispersion of the resulting estimates then can be used to measure the variance of the full sample (reference [2]).
+However, we would not consider repeating any large survey, such as a CPS person level supplement, several times to obtain variance estimates.  A practical alternative is to draw a set of random samples from the full sample using the same principles of selection.  We could then apply the estimation procedures to these random samples.  We refer to these random samples as replicates.
+ SEQ CHAPTER \h \r 1
+the a CPS person level supplements, we use a total of 160 replicates to calculate the supplement variance estimates.  For additional information on determining the number of replicates see [2].  During the weighting processing, all 160 replicates undergo the same weighting adjustments.
+In the following section we describe the methodology used in forming the 160 person level supplement replicates.  The theoretical basis of the methodology we use is based on the family of 
+balanced half-sample
+ methods.  Kirk Wolter discusses this methodology in reference [3] and Robert Fay extended the theory in reference [4].  We use both the balanced half-sample and the extended methodology to produce the replicated weights used for the person level supplement.
+The Replication Method Applied to Person Level Supplement
+The person level supplement replicate weights are created differently for the self-representing (SR) strata and the nonself-representing strata (NSR).  We derive both sets of replicate weights from methods known as 
+balanced half-sample
+ methods.  The SR weights are created using the successive difference replication [4] and the NSR weights are created using the modified half sample technique [4].
+Replicates for the person level supplement are formed through a five-step process:
+The first step is the construction of a k 
+ k Hadamard matrix, where k is the number of replicates that will be formed.
+Next, each SR case is assigned two rows of the Hadamard matrix and each NSR case one row.  
+In the third step, each sample case uses the assigned rows from the Hadamard matrix to calculate its replicate factors.  
+In the fourth step, the replicate factors are multiplied by the full-sample weights to produce the replicate weights.  
+Finally, the full sample and each of the replicate samples go through the weighting process. 
+At the end of this section, an example is provided to reinforce the steps of the replication method used for person level supplement replicate weights.  This example uses a sample of five cases and will create four replicates for each sample case.
+Step 1: Construct the Hadamard Matrix
+As mentioned earlier, the first step in creating the replicate weights for person level supplement is the construction of a Hadamard matrix.  A Hadamard matrix H is a k 
+ k matrix with all elements either equal to  +1 or -1.  Hadamard matrices are unique in that they satisfy 
+ EMBED Equation.3  
+, where I is the identity matrix of order k, Hk is a k 
+ k Hadamard matrix, and HkT is the transpose of the k 
+ k Hadamard matrix.  The order k is necessarily 1, 2, or 4t, where t is a positive integer.  An example of a 2 
+ 2 Hadamard matrix is as follows:
+ EMBED Equation.3  
+				       (1)
+Note that:
+EMBED Equation.COEE2  \* MERGEFORMAT
+The Hadamard matrix allows us to choose certain replicate samples so that we can get an unbiased estimate of the variance with significantly fewer calculations than other half-sample methods (reference [3]).  For the person level supplement, since 160 replicates are used, we used a 160 
+ 160 Hadamard matrix to form our replicate factors.  Please see reference
+[5] for information on the construction of 160 
+ 160 Hadamard matrices.
+Step 2: Assign Row Values
+Assignment of the row values depends on whether the sample case is SR or NSR.  As mentioned earlier, replicate weights are formed differently for SR and NSR sample.  Each SR case in the full sample will use two rows of the Hadamard matrix and the NSR cases are assigned to one row.
+Assignment of Row Values for SR Cases
+Since the first row of most Hadamard matrices consists entirely of +1=s, it is not assigned to a sample case.  Therefore, the assignment process for the SR cases begins with the assignment of Rows 2 and 3 of the Hadamard matrix to the first sample case.  The remaining row assignments are set up to ensure that consecutive sample cases share one row of the Hadamard matrix.  Following this algorithm, Rows 3 and 4 are assigned to the second sample case.  This row assignment continues until you reach the kth row of the k 
+ k Hadamard matrix.  At this point, you skip over the first row and return to the second row for the next assignment.  After assigning all the row numbers incrementing by one, continue assigning the row numbers starting from Row 2, but increase the increment interval to two.   Using an increment of two, the assignment process will continue with Rows 2 and 4 for the next sample case, followed by Rows 4 and 6, Rows 6 and 8, and so on.  Under an increment of two, cycle through the rows twice to pick up all the row numbers.  After assigning all increments of two, assign the row numbers with an increment of three.   Use three cycles while incrementing by three.  Continue to increase the increment and number of cycles up to a maximum increment of ten and then start the assignments over with the increment of one (if the independent sample is large enough to make this necessary).  This provides 1,590 unique row assignment pairs.
+Assignment of Row Values for NSR Cases
+The NSR sampled strata are combined into pseudo-strata within each state to form paired strata.  Each pseudo-stratum is assigned to a row of the Hadamard matrix.   Within the pseudo-strata, one of the NSR PSU is randomly assigned the replicate factor 1.5 and the other NSR PSU receives the factor of 0.5.  These values are assigned based on the Hadamard matrix.  When the value of the Hadamard matrix changes the assigned replicate factor changes.  For example, if the value of the Hadamard matrix is 1 and the first NSR PSU receives the replicate value of 1.5, the other NSR PSU receives a replicate factor of 0.5. When the value from the Hadamard matrix is 
+1, the first NSR PSU receives a replicate value of 0.5 and the second NSR PSU receives a replicate value of 1.5.  These values are further adjusted to account for the unequal sizes of the original strata within pseudo-stratum.
+In most cases the pseudo-strata consist of a pair of strata except where an odd number of strata within the state requires that a triplet be formed.  In this case two rows of the Hadamard are assigned to the pseudo-stratum resulting in replicate factors of about 0.5, 1.7, and 0.8; or 1.5, 0.3, and 1.2 for the three PSUs assuming roughly equal sizes of the original strata.  These values are further adjusted to account for the unequal sizes of the original strata within pseudo-stratum.
+At the completion of the row assignment, each sample case will have k replicate factors - one factor for each replicate sample.
+Step 3: Calculation of the Replicate Factors for the Person Level Supplement
+The unique assignment of the row values to the SR sample cases ensures that the replicate factors take on one of three values: 0.3, 1.0, or 1.7.  The replicate factors are calculated using the following formula:
+ EMBED Equation.3  
+	       (2)
+i	=	The sample case (i = 1, 2, 
+r	=	The replicate (r = 1, 2, 
+RI	=	The first row value assigned to sample case i
+RII	=	The second row value assigned to sample case i
+h(RI, r) 	=	The (RI, r)th cell of the Hadamard matrix
+h(RII, r) 	=	The (RII, r)th cell of the Hadamard matrix
+NOTE:	The Hadamard cell to use is determined by the assigned row values and the column number corresponding to the replicate number.  For example, when calculating a replicate factor for replicate 4, use the following cells from the Hadamard matrix: (RI, 4) and (RII, 4).
+Step 4: Calculation of the Replicate Weights for the Person Level Supplement
+Each case within a probability sample has a sample weight that reflects the inverse of its probability of selection (i.e., the base weight).  The weight can be viewed as the number of population members this sample case represents.  The fourth step in the replication method calculates the replicate weights for each replicate sample.  The replicate weights are calculated using the following formula:
+EMBED Equation.3
+		       (3)
+	i	=	The sample case ( i = 1, 2, 
+	r	=	The replicate sample (r = 1, 2, 
+	Replicate Factor ir	=	The replicate factor for the rth replicate of sample case i
+	Basewt i	=	The full-sample base weight of sample case i 
+Step 5: Perform the Weighting Process
+The final step in the creating replicate weights for the person level supplement involves sending the full sample and each replicate sample through the weighting process.  The weighting process could be a simple ratio adjustment or could involve the implementation of a succession of complex adjustments.  After the weighting adjustments, we are able to calculate estimates of variance for any person level supplement estimate.
+The base weights of the person level supplement sample cases went through the following adjustments:
+CPS Special weight Adjustment derived from CPS subsampling probabilities
+Basic CPS Noninterview Adjustment (At the household level)
+Person Level Supplement Noninterview Adjustment
+First-stage Ratio Adjustment to reduce variances due to the sampling of NSR PSUs
+Person Level Supplement Second-stage Ratio Adjustment to reduce variances by controlling to independent estimates of the current population
+An Example of the Replication Method
+In an attempt to reinforce the steps of the replication method used for the person level supplement, we will create replicate samples for a sample data set.  Our sample data set consists of five cases, all from an SR PSU, and we will create four replicates for each sample case.  The sample cases and their corresponding full-sample weights are as follows (please assume the cases in this example are ordered in a manner reflective of the sample design):
+Table 1.  Sample Data for the Person Level Supplement Replication Example
+Sample Case
+Sample Weight
+Case #1
+Case #2
+Case #3
+Case #4
+Case #5
+Since we plan to create four replicates, we will need to construct a 4 
+ 4 Hadamard matrix.  An example of a 4 
+ 4 Hadamard matrix is as follows:
+EMBED Equation.3
+				       (4)
+Recall that each sample case is assigned two rows of the Hadamard matrix.  This assignment of rows begins with the second row and allows consecutive sample cases to share a row.  The row assignments for the five sample cases are as follows:
+Table 2.  Assignment of Rows for Sample Data
+Sample Case
+Sample Weight
+Case #1
+Case #2
+Case #3
+Case #4
+Case #5
+If we apply the Row I and Row II values into formula (2) for case #1, we arrive at the following replicate factors:
+ EMBED Equation.3  
+Recall that we determine the Hadamard matrix cell to use by the row value assigned in Table 2 and the column number corresponding to the replicate number.  If we apply the Row I and Row II values in formula (2) for the remaining cases, the replicate factors will be as shown below in Table 3.
+Table 3.  Replicate Factors for Sample Data
+Sample Case
+Sample Weight
+Replicate Factors
+Replicate 1
+Replicate 2
+Replicate 3
+Replicate
+Case #1
+Case #2
+Case #3
+Case #4
+Case #5
+Now that we have calculated the replicate factors for each sample case, we are ready to calculate the replicate weights using formula (3).
+Table 4.  Replicate Weights for Sample Data
+Sample Case
+Sample Weight
+Replicate Weights
+Replicate 1
+Replicate 2
+Replicate 3
+Replicate
+Case #1
+Case #2
+Case #3
+Case #4
+Case #5
+Sum of Weights
+The last step in the creation of the replicate weights is the implementation of any weighting adjustments.  In our example, we use a ratio adjustment to control our sample to the population total of 100.00.
+Therefore, we have to calculate a separate ratio adjustment factor for the full sample and for each replicate sample.  In this example, the ratio adjustment factor formula is as follows:
+ EMBED Equation.3  
+	   			       (5)
+	i	=	The sample case (i = 1, 2, 
+	r	=	The replicate sample (r = 0, 1, 
+			NOTE: Replicate 0 refers to the full sample
+	wi	=	The weight for sample case i (either the full-sample weight or a 			replicate weight)
+	RAFr	=	The ratio adjustment factor for replicate sample r
+Using formula (5), the ratio adjustment factors for the full sample and each replicate sample are calculated as follows:
+Full Sample RAF = (100.00 
+  112.00) 	=  0.8929
+Replicate 1 RAF  = (100.00 
+  112.00)  	=  0.8929
+Replicate 2 RAF  = (100.00 
+   88.90)  	=  1.1249
+Replicate 3 RAF  = (100.00 
+ 136.50)  	=  0.7326
+Replicate 4 RAF  = (100.00 
+  110.60)	=  0.9042
+To perform the ratio adjustment, multiply the full-sample and replicate weights by the corresponding ratio adjustment factor.  The following table provides the ratio adjusted weights.
+Table 5.  Ratio Adjusted Weights for Sample Data
+Sample Case
+Sample Weight
+Replicate Weights
+Replicate 1
+Replicate 2
+Replicate 3
+Replicate
+Case #1
+Case #2
+Case #3
+Case #4
+Case #5
+Sum of Weights
+Using these ratio adjusted weights, we are ready to calculate estimates of variance for survey estimates.  The next section discusses the calculation of variance estimates using replicates from the person level supplement replication method.
+Variance Estimation using the Person Level Supplement Replication Weights
+Once the person level supplement replicates weights are formed, estimates of variance for any full
+sample person level supplement survey estimate is calculated using the following formula:
+EMBED Equation.3
+				       (6)
+	r	=	The replicate sample (r = 1......k)
+	o	=	The full sample
+	k	=	The total number of replicate samples (k = 160)
+	yo	=	The survey estimate using the full-sample weights
+	yr	=	The survey estimate using the replicate weights from replicate r
+This variance estimate is the product of a constant and the sum of squared differences between each replicate survey estimate and the full-sample survey estimate. 
+An Example of Replicate Variance Estimation
+Using the example set forth in the previous section, we will illustrate variance estimation using the person level supplement replicate weights.  Recall that our sample consists of five sample cases and four replicates per sample case.  The goal of this section is to estimate the total number of children who play sports in our population and its corresponding estimate of variance.
+Assume that our five sample cases had the responses shown below in Table 6 when asked if there were children who play sports at the time of interview.  
+Table 6.  Variance Estimation Using Sample Data
+Sample Case
+Play Sports
+Sample Weight
+Replicate Weights
+Replicate 1
+Replicate 2
+Replicate 3
+Replicate
+Case #1
+YES - 1
+Case #2
+  19.64
+Case #3
+YES - 1
+Case #4
+YES - 1
+Case #5
+To calculate the full-sample survey estimate of the number of children who play sports, we would add the full-sample weights of the sample cases that responded 
+ to the play sports question.  Therefore, the total estimate for the number of children who play sports (PS) is calculated as follows:
+Full-Sample of 
+ Responses = 26.79 + 13.39 + 17.86 = 58.04
+In order to calculate the variance estimate for this survey estimate, we must calculate the same survey estimate for each of the replicate samples.  The replicate survey estimates are as follows:
+Replicate 1 of 
+ Responses	= 26.79 + 13.39 + 17.86 = 58.04
+Replicate 2 of 
+ Responses	= 10.12 + 16.87 + 22.50 = 49.49
+Replicate 3 of 
+ Responses	= 37.36 +   3.30 + 24.91 = 65.57
+Replicate 4 of 
+ Responses	= 27.12 + 23.06 +   5.42 = 55.60			
+Now we can use these survey estimates in formula (6) to calculate the variance estimate for the number of children who play sports.  The calculation of this variance estimate is as follows:
+EMBED Equation.3
+Thus Var(yo) = 135.757.
+Therefore, the survey estimate of 
+ responses to the number children who play sports is 58.04.  This survey estimate has an estimated variance of 135.757, or a standard error of 11.65.
+References
+[1] 	Judkins, D. (1990) 
+s Method for Variance Estimation,
+ Journal of Official Statistics, Vol. 6, No. 3, 1990, pp.223-239.
+[2]	Demographic Statistical Methods Division (October 2006), The Current Population Survey: Design and Methodology, U.S. Department of Commerce, U.S. Census Bureau, Technical Paper 66, Washington, D.C. http://www.census.gov/prod/2006pubs/tp-66.pdf.
+[3]	Wolter, Kirk (1985), Introduction to Variance Estimation, New York: Springer
+Verlag New York Inc.
+[4]	Fay, Robert, and Train, George (1995), 
+Aspects of Survey and Model
+Based Postcensal Estimation of Income and Poverty Characteristics for States and Counties,
+ Proceedings of the Section on Government Statistics, American Statistical Association, Alexandria, VA, pp. 154
+[5]	Plackett, R.L. and Burman, J.P. (1946), 
+The Design of Optimal Multifactorial Experiments,
+ Biometrika, 33, pp. 305-325.
+ EMBED 
+nhxgaSo
+rJr^4V~
+uk#Sigd2]
+d``fbd``b
+d``fbd``b
+RpeqIj.
+d``fbd``b
+obIFHeA*
+RpeqIj.
+gT ~=t`'
+d``fbd``b
+Microsoft Equation 2.0
+DS Equation
+Equation.COEE2
+Microsoft Equation 2.0
+DS Equation
+Equation.COEE2
+Microsoft Equation 2.0
+DS Equation
+Equation.COEE2
+Microsoft Equation 2.0
+DS Equation
+Equation.COEE2
+Microsoft Equation 2.0
+DS Equation
+Equation.COEE2
+Microsoft Equation 2.0
+DS Equation
+Equation.COEE2
+Microsoft Equation 2.0
+DS Equation
+Equation.COEE2
+Microsoft Equation 3.0
+DS Equation
+Equation.3
+Microsoft Equation 2.0
+Equation.COEE2
+Microsoft Equation 3.0
+Equation.3
+Microsoft Equation 3.0
+DS Equation
+Equation.3
+Microsoft Equation 2.0
+DS Equation
+Equation.COEE2
+Microsoft Equation 3.0
+DS Equation
+Equation.3
+Microsoft Equation 3.0
+DS Equation
+Equation.3
+Microsoft Equation 3.0
+DS Equation
+Equation.3
+Microsoft Equation 3.0
+DS Equation
+Equation.3
+Microsoft Equation 3.0
+DS Equation
+Equation.3
+Microsoft Equation 3.0
+DS Equation
+Equation.3
+Microsoft Equation 3.0
+DS Equation
+Equation.3
+Paintbrush Picture
+Use of the Public Use Replicate Weight File
+^^^777cccccc
+uuuuuu777
+LLL"""::::::<<<nnnnnn
+LLL"""::::::<<<nnnnnn
+======ppp
+vvv@@@@@@
+vvv@@@@@@
+@@@VVVIIIIII
+999eeeeee
+UUU......((({{{444444yyy
+      &&&YYY
+$$$$$$vvv
+ddd||||||
+ZZZZZZ%%%//////
+      &&&YYY
+$$$$$$vvv
+ddd||||||
+ZZZZZZ%%%//////
+999\\\111111
+999\\\111111
+;;;111LLLLLL
+...%%%OOOOOO
+===444444
+...%%%OOOOOO
+===444444
+::::::,,,
+~~~~~~QQQ
+yyyyyyddd
+ooooooUUU666
+yyyyyyddd
+ooooooUUU666
+''''''***---222222
+CCCCCCvvvllllll
+FFFoooDDDDDD
+222iiiiii
+TTTTTTCCC333
+III______OOO
+------::::::AAAAAAmmmmmmmmmmmmmmmddddddRRRMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMfffHHH######
+zzzzzzggg
+XXX333......
+###			uuuuuuRRR
+???{{{QQQQQQ
+NNN]]]]]]
+[[[[[[rrr
+999999bbbaaaaaa
+TTTWWW,,,,,,
+666rrrrrr
+[[[[[[rrr
+999999bbbaaaaaa
+TTTWWW,,,,,,
+666rrrrrr
+222,,,,,,
+oooooolll
+YYYfffCCCCCC
+YYYfffCCCCCC
+DDD^^^^^^???
+DDD^^^^^^???
+%%%??????}}}nnn
+))))))cccyyy
+'''fffffffff
+'''fffffffff
+d``fbd``b
+LZL C4*	
+d``fbd``b
+obIFHeA*
++a|SVd~
+XD=(DOz
+d``Nad``b
+CPjANfrbI*
+?TYM7Ml
+["{,	w1
+$ rI@pW
+c\W)gXZO
+Bureau Of The Census
+464E276E.dotm
+proct308
+Microsoft Office Word
+US Census Bureau
+Use of the Public Use Replicate Weight File
+_PID_HLINKS
+Microsoft Word 97-2003 Document
+MSWordDoc
+Word.Document.8
+[Content_Types].xml
+_rels/.rels
+theme/theme/themeManager.xml
+theme/theme/theme1.xml
+w toc'v
+3Vq%'#q
+theme/theme/_rels/themeManager.xml.rels
+K(M&$R(.1
+[Content_Types].xmlPK
+_rels/.relsPK
+theme/theme/themeManager.xmlPK
+theme/theme/theme1.xmlPK
+theme/theme/_rels/themeManager.xml.relsPK
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<a:clrMap xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" bg1="lt1" tx1="dk1" bg2="lt2" tx2="dk2" accent1="accent1" accent2="accent2" accent3="accent3" accent4="accent4" accent5="accent5" accent6="accent6" hlink="hlink" folHlink="folHlink"/>
