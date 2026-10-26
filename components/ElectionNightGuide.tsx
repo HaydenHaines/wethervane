@@ -47,10 +47,14 @@ function InputNotice({ notice, detail = false }: { notice: ElectionNightInputNot
   </aside>;
 }
 
+function raceCallLabel(race: ElectionNightRace): string {
+  const outcome = race.outcomes.find(item => item.id === race.modalPick.outcomeId)!;
+  return outcome.kind === "candidate" ? outcome.name : outcome.members.length === 1
+    ? `${outcome.members[0].name} (${outcome.name})` : `${outcome.name} (individual winner not distinguished: ${outcome.members.map(member => member.name).join(", ")})`;
+}
 function RaceCallRow({ race, notice }: { race: ElectionNightRace; notice?: ElectionNightInputNotice }) {
   const outcome = race.outcomes.find(item => item.id === race.modalPick.outcomeId)!;
-  const call = outcome.kind === "candidate" ? outcome.name : outcome.members.length === 1
-    ? `${outcome.members[0].name} (${outcome.name})` : `${outcome.name} (individual winner not distinguished: ${outcome.members.map(member => member.name).join(", ")})`;
+  const call = raceCallLabel(race);
   const category = outcome.winProbability <= .6 ? "Tossup" : outcome.winProbability <= .9 ? "Likely" : "Safe";
   return <article className="night-call-row" data-call-race={race.id}>
     <div><span>{label(race)} · {race.modalPick.tiedOutcomeIds.length > 1 ? "Tied top chances · fixed-order call" : "Our call"}</span><strong>{call}</strong><small>{probability(outcome.winProbability)}{outcome.kind === "group" ? " chance for the group" : " chance to win"} · {category}</small></div>
@@ -212,7 +216,7 @@ export default function ElectionNightGuide({ chamber, onClose }: { chamber: Cham
     <div className="night-guide-heading"><div><div className="eyebrow">An election-night watcher’s guide</div>
       <h2 id="night-guide-title" ref={heading} tabIndex={-1}>Election night scorecard</h2>
       <p>What the model predicts, how wrong it expects to be, and what the results can tell us.</p>
-    </div><button type="button" className="night-close" onClick={onClose}>Close scorecard</button></div>
+    </div><div className="night-guide-actions"><button type="button" className="night-close" disabled={!forecast || busy} onClick={() => window.print()}>Print scorecard</button><button type="button" className="night-close" onClick={onClose}>Close scorecard</button></div></div>
     {error && <div className="error-box" role="alert"><p>{error}</p>{loaded && <p>The previously verified forecast is still shown below.</p>}<button type="button" onClick={() => setAttempt(value => value + 1)}>Try again</button></div>}
     {!forecast || !displayed ? !error && <p role="status">Loading the standard {chamber === "house" ? "House" : "Senate"} forecast…</p> : <>
       <div className="night-edition" data-scorecard-result-sha={forecast.run.artifactSha256}><strong>{forecast.chamber === "house" ? "House" : "Senate"} · {forecast.run.label}</strong>
@@ -235,6 +239,24 @@ export default function ElectionNightGuide({ chamber, onClose }: { chamber: Cham
         <p>Changes here affect only this scorecard. Opening it again starts with the standard forecast.</p>
       </details>
       {busy && <p role="status">Loading the selected model. The previously verified forecast remains visible.</p>}
+      <section className="night-print-only" aria-label="Printable scorecard">
+        <div className="eyebrow">Ballotmancy · Election-night watcher’s guide</div>
+        <h1>{forecast.chamber === "house" ? "House" : "Senate"} scorecard</h1>
+        <p>{forecast.run.label} · {forecast.run.id === displayed.defaultRunId ? "Standard forecast" : "Alternative model"}<br />Inputs through {date(forecast.run.cutoffAt)} · Issued {date(forecast.run.issuedAt)}</p>
+        <h2>Point prediction</h2>
+        {calls?.seats && calls.control ? <p><strong>{calls.control === "U" ? "Control unresolved" : `${calls.control === "D" ? "Democrats" : "Republicans"} control the ${forecast.chamber === "house" ? "House" : "Senate"} with ${calls.seats[calls.control]} seats`}</strong><br />{calls.seats.D} Democratic · {calls.seats.R} Republican · {calls.seats.U} other / unassigned.</p> : <p>A complete chamber prediction is unavailable for this scenario.</p>}
+        <p>Seat counts add the highest-chance outcome in each contest{forecast.chamber === "senate" ? " to the seats not up for election; the vice president breaks a 50–50 tie" : "; 218 seats are needed for a majority"}. Fixed ordering breaks exact ties. These are point calls, not guarantees or the most common simulated outcome.</p>
+        {forecast.inputNotices.map(notice => <p key={notice.raceId}><strong>{notice.districtKey} inputs under review:</strong> {notice.publicWording}</p>)}
+        <h2>Race predictions</h2>
+        <p>Competitive contests appear first: a leading win chance of at most 90%, or a predicted two-candidate margin within five points. Group chances do not distinguish individual winners. A pair margin is a separate measure and, in House races, may not represent the winner-group event.</p>
+        <table><thead><tr><th>Contest</th><th>Point call</th><th>Win chance</th><th>Two-candidate margin</th></tr></thead><tbody>
+          {[...(calls?.competitive ?? []), ...otherCalls].map(race => <tr key={race.id}><td>{label(race)}</td><td>{raceCallLabel(race)}{race.modalPick.tiedOutcomeIds.length > 1 ? " (fixed-order tie)" : ""}</td><td>{probability(race.modalPick.probability)}{race.modalPick.kind === "group" ? " group" : ""}</td><td>{race.pair ? pointPrediction(race.pair) : "Unavailable"}</td></tr>)}
+        </tbody></table>
+        <h2>Uncertainty</h2>
+        <p>The model expects {forecast.summary.expectedModalMisses.toFixed(1)} wrong top choices on average across {forecast.summary.raceCount} races. This is the model’s own expectation, not a guaranteed limit or a measured accuracy record.</p>
+        {forecast.chamberScenario && <p>Middle 90% of simulated seat totals: Democrats {forecast.chamberScenario.seats.D.seatQuantiles.p05}–{forecast.chamberScenario.seats.D.seatQuantiles.p95}; Republicans {forecast.chamberScenario.seats.R.seatQuantiles.p05}–{forecast.chamberScenario.seats.R.seatQuantiles.p95}. Shared errors can move races together.</p>}
+        <p>Forecasts update on the website. This printout records the dated edition above; the election-night evaluation needs a separately locked forecast and verified results.</p>
+      </section>
       <section className="night-section" aria-labelledby="night-results-title">
         <div className="eyebrow">1 · Results and predictive power</div><h3 id="night-results-title">The predictions we can check</h3>
         <p>{forecast.chamber === "senate" ? "This Senate edition covers each race’s two named principal contenders, under the stated election-rule approximations." : "Winner chances cover the listed modeled candidates or groups. A group’s chance does not identify which member wins."}</p>

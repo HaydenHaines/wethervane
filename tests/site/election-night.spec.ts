@@ -441,7 +441,8 @@ test("an invalid fixed32 attachment preserves the forecast and35 reference, then
   await expect(panel.locator(".night-reference-error")).toHaveCount(0);
 });
 
-test("the scorecard calls every race and gives a matching chamber point prediction", async ({ page }) => {
+test("the scorecard calls every race and gives a matching chamber point prediction", async ({ page }, testInfo) => {
+  test.setTimeout(90_000);
   for (const [chamber, count] of [["senate", 35], ["house", 435]] as const) {
     await page.goto(`/?chamber=${chamber}`);
     await page.getByRole("button", { name: "Election night scorecard", exact: true }).click();
@@ -458,5 +459,18 @@ test("the scorecard calls every race and gives a matching chamber point predicti
       await expect(panel.locator("[data-call-race]").filter({ hasText: "individual winner not distinguished" }).first()).toBeVisible();
     }
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    await page.evaluate(() => { window.print = () => document.documentElement.setAttribute("data-print-invoked", "yes"); });
+    await panel.getByRole("button", { name: "Print scorecard" }).click();
+    await expect(page.locator("html")).toHaveAttribute("data-print-invoked", "yes");
+    await page.emulateMedia({ media: "print" });
+    const printout = panel.locator(".night-print-only");
+    await expect(printout).toBeVisible();
+    await expect(printout.locator("tbody tr")).toHaveCount(count);
+    await expect(printout).toContainText("Inputs through");
+    await expect(panel.locator(".night-rubric")).toBeVisible();
+    await expect(page.locator(".masthead")).toBeHidden();
+    if (chamber === "house") await expect(printout).toContainText("NY-21 inputs under review");
+    if (testInfo.project.name === "desktop-chromium") await page.pdf({ path: testInfo.outputPath(`${chamber}-scorecard.pdf`), printBackground: true });
+    await page.emulateMedia({ media: "screen" });
   }
 });
