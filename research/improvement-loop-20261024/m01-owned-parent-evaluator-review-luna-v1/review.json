@@ -1,0 +1,53 @@
+{
+  "schema": "IndependentOwnedParentEvaluatorReviewV1",
+  "date": "2026-10-26",
+  "source_pins": {
+    "evidence": {"path":"research/improvement-loop-20261024/m01-owned-parent-evaluator-sol-v1/evidence.json","sha256":"c0cc51ecc9814d61b3bd31a1092867b3630d63733a92496b454065e7813e840f"},
+    "contract": {"path":"research/improvement-loop-20261024/m01-owned-parent-evaluator-sol-v1/contract.json","sha256":"8d644b368b2272efe22991e7aa32883a5106c8ed4a6b3b2bc5ed1d143ffa5315"},
+    "child": {"path":"research/improvement-loop-20261024/m01-owned-parent-evaluator-sol-v1/child.py","sha256":"71e7eabc12a8cf565ef181ff49851945b32932abfdbac68b1c63b6636ef0333c"},
+    "evaluator": {"path":"research/improvement-loop-20261024/m01-owned-parent-evaluator-sol-v1/evaluator.py","sha256":"20d6497a26577e196aa77a8842c48954e7ed33aa283394422b51385597cdb1a0"},
+    "controller": {"path":"research/improvement-loop-20261024/m01-owned-parent-evaluator-sol-v1/launch.py","sha256":"5f3b5a04df74ca2fa72d60ba9b17514417a4d1d18a8a903ca986bec046caac92"},
+    "entry_gate": {"path":"research/improvement-loop-20261024/m01-owned-parent-evaluator-sol-v1/entry.py","sha256":"77fb380f8acc1480c2e545b1233278f1461b93ae8e4e0d4febfe31880d568f81"},
+    "comparison": {"path":"research/improvement-loop-20261024/m01-owned-parent-evaluator-sol-v1/compare.py","sha256":"873803274cd1186b2b53ed66ad5621f9938dc72591af5e8494bd0049d07e95ba"},
+    "tiny_tests": {"path":"research/improvement-loop-20261024/m01-owned-parent-evaluator-sol-v1/test_tiny.py","sha256":"f876e9d9228f7ea143a70ce2d0feb2ed3f88d711721cd3e5e94376e496916dc5"},
+    "tiny_result": {"path":"research/improvement-loop-20261024/m01-owned-parent-evaluator-sol-v1/tiny-result.json","sha256":"3ee464e786573448c42a3aa4128b734350168b400293fadd85c461ba3de2cc56"},
+    "population_cut_contract": {"path":"/home/hayden/projects/wethervane-redesign-20261006/integration/research/handoffs-20261009/cut-contract-v1.json","sha256":"5d2dea9b54fc081099e819e594504721761358047194f97b1bdb95c9f9d320b2"},
+    "fixed_mass_bank_implementation": {"path":"/home/hayden/projects/wethervane-redesign-20261006/integration/src/senate_count_stack_v1/banks.py","sha256":"3b47727fde988ab9be41519a2c02522f60c9d681488eb06081863b47898165b8"},
+    "v1_mutable_envelope_counterexample": {"path":"research/improvement-loop-20261024/m01-all-parent-input-reuse-review-luna-v1/review.json","sha256":"91e445ca221331b0dc1cbeb2379b071d95fd603b7d85ffb84f2282be11ff2b18"}
+  },
+  "verdict": "No actual-model blocker found in this frozen preparation. The owned child, not the caller, builds/compiles the graph and calls the numerical engine. The evaluator accepts only a revalidated BoundParent and immutable Point; it derives the exposure from the parent record, passes owned read-only point/exposure arrays to the internally constructed engine, captures outputs itself, checks finiteness/factor sum/support and input immutability, then emits immutable canonical bytes. This is materially stronger than V2 metadata-only sealing. Actual graph behavior, numerical equivalence, and resource feasibility are still entirely unexecuted.",
+  "owned_execution_and_receipt_boundary": {
+    "positive_controls": [
+      "The only actual child path first requires a one-use inherited anonymous-pipe payload, verifies its hash/nonce/controller PID and process start time, phase/output/contract, and external source/resource admission before scientific imports. Direct CLI entry with a handmade authorization file is rejected in the tiny suite before stage/model import.",
+      "child.py loads the source-pinned parent manifest and provider internally, validates the original Problem/role bindings, builds the selected compressed graph, compiles one owned NUMBA function, constructs an internal engine closure, and creates the evaluator session. No CLI/API takes a caller engine or numerical result.",
+      "The dynamic graph strictly replaces only the exact typed exposure port in complete Jacobian-inclusive logp, factors and diagnostics. It asserts old-port disappearance, E survival, unchanged 662-value coordinate layout, positive finite 3x24 E, and no exact stale whole-parent array constant. It retains factor inventory and checks the full factor sum.",
+      "Evaluator receipt captures complete parent record/envelope, exact point layout and values, exposure digest, source/kernel provenance and all computed output vectors. It snapshots read-only inputs and revalidates parent/point/input after the engine call. compare.py requires the caller-retained output digest, matching per-call parent/point/kernel provenance, saved parent0 baseline, and a separate native fixed-B composition.",
+      "The controller gates each phase separately with fresh source review and resource receipts, creates one child per phase, applies one-CPU/nice/thread/cpu/address-space/file/core/wall bounds, monitors RSS/disk/threads, kills/reaps its own process group on handled failure, writes terminal status, then compares before publishing controller success. Fixed-B additionally requires the caller-retained dynamic completion digest and fresh assessment."
+    ],
+    "limits": [
+      "The caller-retained SHA of a result alone is not proof of origin if self-authored; the intended provenance requires the successful tool return, source-bound controller, process terminal and controller-success acknowledgment. This is a trusted local workspace/accidental-bypass boundary, not hostile same-user cryptographic security.",
+      "Evaluator's private session factory is injectable in tests, but it is not reachable as a production CLI engine override; fixture engines are invented and clearly labeled.",
+      "The output proves what the owned Python engine returned under the pinned source path only if the full process/tool-return chain is preserved. It does not independently prove PyTensor/NUMBA mathematics, all execution semantics, or filesystem durability under SIGKILL/power loss."
+    ]
+  },
+  "parent_and_cut_semantics": {
+    "finding": "The eight parent records and fixed .125 masses are pinned; every bound call validates the full record and uses its own complete exposure. The generic dynamic kernel's compiler_parent_contract remains parent0, while each call's parent envelope records the current parent. The design does not call a new exposure input a rebound native compiler contract and correctly marks conditional_normalization=unverified.",
+    "cut_law": "Within each fixed parent i, a future conditional q_i must normalize K_i by its own Z_i. Predictions combine the normalized q_i distributions using the original .125 masses. No downstream evidence/Z reweight is allowed for population_cut_v1. This packet neither computes Z_i nor fits/samples q_i."
+  },
+  "baseline_and_coverage_review": {
+    "parent0": "The first two common states compare dynamic outputs to the saved actual compressed parent0 baseline for full logp, poll term, factor sums, and target-contest rates. Parent0's other two contest rate vectors and physical diagnostics were absent from that old baseline, which the design states explicitly. A third parent0 state is used for return-order isolation but has no saved fixed parent0 oracle.",
+    "fixed_B": "B is fixed bank ordinal 1 before seeing new densities. A distinct fixed-parent-B native graph is required in a separate phase and compared at the same three points to dynamic B for complete logp/poll, every factor array, all three contest rate vectors and physical diagnostics. Two selected full-logp finite differences are compared; no analytic gradient or all-coordinate derivative claim is made.",
+    "uncovered_rows": "Parents 2–7 have no independent fixed-native baselines. Even after successful dynamic all-eight execution and B anchor, correctness for those rows needs an exhaustive independently reviewed proof that exposure is the only parent-dependent numeric input, or further fixed-parent anchors. Source audit flags direct protected[...] reads but is explicitly not exhaustive against aliases/configuration-dependent paths.",
+    "normalization_and_science": "Three points per parent and a B anchor do not establish any conditional normalizer, posterior sampling/convergence, predictive aggregation, or election calibration. No scientific conclusion about forecast quality or fit performance follows."
+  },
+  "independent_tiny_reproduction": {
+    "scope": "Copied common.py, entry.py, child.py, evaluator.py, launch.py, compare.py, contract.json, test_tiny.py and invented_worker.py to a fresh /tmp directory; ran the fixture suite with the calibration Python, one-thread environment, nice 15 and 30-second timeout. No actual graph import/build/compile/evaluation.",
+    "outcome": "All 25 tests passed, including actual child direct-entry rejection, actual sleeping child cleanup after injected receipt-write exception and KeyboardInterrupt, invented engine A→B→A with all eight parent-bound inputs, point/exposure mutation rejection, and invented hard-limit/wall-alarm worker tests. The fresh result JSON hash differs from the frozen result because resource admission timestamps, PIDs and receipts are generated at runtime; test count/status matched.",
+    "additional_review": "Source read-only review found no unintended caller-supplied numerical result, point, exposure or engine on the actual CLI path. No actual child or graph was launched."
+  },
+  "minor_comparison_hardening": {
+    "finding": "compare_dynamic checks 27 calls and checks A-return outputs, but it does not itself assert a 27-row exact roster of parent indices 0..7 three times each plus parent0 revisit, nor explicitly compare every call point against the predeclared point roster. The pinned actual child loop currently constructs precisely that sequence and writes complete calls; so this is not a demonstrated runtime gap under the pinned, trusted source. Explicit roster/point assertions would make the comparison result self-checking and guard future refactors.",
+    "recommendation": "Add explicit expected (parent_index, point_index) ordered tuples for dynamic and fixed-B call indexes, validate each call's point against the exact contract points, and test duplicate/missing parent rows in a synthetic comparator fixture before any actual run."
+  },
+  "run_boundary": "This review authorizes no actual graph execution. Required next gates remain caller-retained independent source-review digest, fresh per-phase resources/concurrency receipts, and a separate parent/tool decision to run the staged probe."
+}
