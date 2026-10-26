@@ -1,0 +1,114 @@
+{
+  "review": "election-night-senate-lock-proposal-review-luna-v1",
+  "reviewedAt": "2026-10-26",
+  "status": "proposal_review_pass_with_lock_artifacts_still_pending",
+  "scope": "Read-only review of Sol's Senate pre-outcome lock draft, public F/FP source projections, target-selector helper, cohort/protocol artifacts and generator. No admission, review hash, lock or results created.",
+  "exactPins": {
+    "draft": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-senate-lock-draft-sol-v1/draft.json",
+      "sha256": "93922a94b0cbccce524105adb333ab8bd46a6357d8e4830716d59f41fb92c148"
+    },
+    "publicFPPollingSource": {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/public/data/explorer/current-polling.json",
+      "sha256": "905ce512c44104d3e48900745cec0f430c9e3954736614468e1a8b728b6da5f0"
+    },
+    "publicFBaselineSource": {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/public/data/explorer/current-fundamentals.json",
+      "sha256": "37af627c934f519f32b2cf77a326f5658758a24153ee574fdc1a0ba46bfd51c1"
+    },
+    "normalizedPublicForecastProjections": {
+      "FP": {
+        "sha256": "4d71f5f1e3e6459ec60ba30a15157b1e485daba377da84c20ff2a1818d28a033",
+        "verification": "Recomputed with toSenateElectionNightForecast(current-polling, registry entry); canonical JSON SHA matches the pinned draft projection."
+      },
+      "F": {
+        "sha256": "695d07fd579d5644dd065896d18826c078216af7cac3fb0d5ef5669f9908238c",
+        "verification": "Recomputed with toSenateElectionNightForecast(current-fundamentals, registry entry); canonical JSON SHA matches the pinned draft projection."
+      }
+    },
+    "selectorAndGenerator": [
+      {
+        "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/election-night-senate-targets.ts",
+        "sha256": "d6eb86dc9c5ef782329872a55476025f9c0687844906e0052c69c4fe24ec1496"
+      },
+      {
+        "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/scripts/prepare_election_night_senate_lock.mjs",
+        "sha256": "20191dd12bef72f50ab2338437b03a23d093cd56b6cb7a9da2c8aa2926acf2b8"
+      },
+      {
+        "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/data/election-night-senate-result-policy.json",
+        "sha256": "44a77f5ae515f446f2885106ad618076da97c8733d96a2a59ea70a692c9618c4"
+      }
+    ],
+    "pinnedPolicyHashes": {
+      "registrySha256": "c1e6d85bd4886768975d91d45f57a151114564dfb8f73645b484f089a5214031",
+      "policySha256": "efe1bf193e2959284b73ea833af0a136f6c592001a2faf50505e3258e25cf0cd",
+      "mappingSha256": "244e9db017957d0a5361f5f1b7a2498f066c43d9b94a59f1277e8cff91b6afa3",
+      "operatorSha256": "81cf4c04c974faab4388c6d623a93cb8ddfd1d6ce0aa7659e4c7cd330eb9830e",
+      "freezeManifestSha256": "c890eda18924215ebe049af38725bb1389998b25f77f1ab91d84a4234d71a7d8",
+      "FPublicSha256": "37af627c934f519f32b2cf77a326f5658758a24153ee574fdc1a0ba46bfd51c1",
+      "FPPublicSha256": "905ce512c44104d3e48900745cec0f430c9e3954736614468e1a8b728b6da5f0"
+    }
+  },
+  "checks": {
+    "publicSourceHashesMatchForecastBindings": true,
+    "publicForecastMetadataMatchesBindings": true,
+    "bothSourceBundlesContain35UniqueOrderedRaces": true,
+    "bothNormalizedProjectionHashesMatchDraft": true,
+    "allReferencedDraftBlobPinsAndByteLengthsVerified": 34,
+    "fullDisplayCohort": 35,
+    "primaryGradeCohort": 32,
+    "separatelyTrackedUngradedDisplayRaces": [
+      "2026:AK:senate:regular",
+      "2026:GA:senate:regular",
+      "2026:ME:senate:regular"
+    ],
+    "primaryWinnerTargets": 32,
+    "primaryIntervalTargets": 32,
+    "protocolRaceRowsPerForecast": 35,
+    "protocolMinimumStatusForWinnerAndMargin": "certified"
+  },
+  "dateAndHorizonReview": {
+    "FP": {
+      "cutoffAt": "2026-10-26T15:03:57.212405+00:00",
+      "issuedAt": "2026-10-26T15:05:11.698781+00:00",
+      "strictAsOf": false,
+      "horizonCalendarDays": 8
+    },
+    "F": {
+      "cutoffAt": "2026-10-20T15:21:23Z",
+      "issuedAt": "2026-10-20T15:25:53.623020+00:00",
+      "strictAsOf": true,
+      "horizonCalendarDays": 14
+    },
+    "finding": "Dates and horizons match the pinned public forecast metadata and November 3, 2026 general election. Preserve the documented qualification that this is a later forecast with more time/information, not a controlled test of polling's causal contribution. The FP strictAsOf=false availability-proxy caveat should remain visible."
+  },
+  "selectorSemantics": {
+    "finding": "The helper and draft generator clearly treat eventId/roundId as stable predeclared observation-selection identifiers, not official feed/contest/round IDs. AK/ME select an official observed final round only when the exact locked pair remains; GA selects the certified no-runoff general event or the exact locked-pair runoff; other races select certified decisive general. The actual source contest ID, report roundId and roundLabel are separately captured in SenateSourceExtraction and are reviewed independently. No actual feed IDs are invented; current candidate and contest crosswalks remain null and are explicitly marked as needing separate review.",
+    "AK_ME_roundId": "official_observed_exact_locked_final_two_v1",
+    "GA_roundId": "certified_no_runoff_general_or_exact_pair_runoff_v1",
+    "plurality_roundId": "certified_decisive_general_v1",
+    "actualRoundField": "sourceContest.roundId and sourceContest.roundLabel in the future source extraction, with field locations and independent eventRound review"
+  },
+  "targetSemantics": {
+    "finding": "The comparison target generator builds equal 32-row named-pair lead and interval cohorts from the fixed core list, preserving the ordered first/second candidate IDs and the same pair denominator rule for both forecast editions. It does not score the excluded AK/GA/ME rows in the primary contract. The all-35 forecast/protocol remains separately pinned. The result policy distinguishes conditional pair lead/margin from a legal Senate seat-winner score.",
+    "denominator": "sum of the two named principal candidates' votes under the declared result rule",
+    "comparisonLabel": "October 26 polling vs October 20 electoral history, fixed 32 plurality pairs"
+  },
+  "blockers": [
+    {
+      "scope": "final evaluation lock, not proposal correctness",
+      "issue": "This draft is intentionally not ready to admit or freeze: candidateLock.frozenAt is null; lock reviews and projection review hashes are null; both protocol reviewedDefinition fields are null; trusted publication/admission manifests are absent. The listed independent reviews and scientific admission decision must be completed before the final lock is issued.",
+      "disposition": "Expected and correct for this proposal stage. Do not treat this review as any missing admission or role review."
+    }
+  ],
+  "not_blockers_for_preoutcome_lock": [
+    "No actual results or official result artifacts exist yet; they are not prerequisites to freezing a prospective forecast evaluation protocol.",
+    "Official feed contest/candidate IDs are null by design pending future source extraction and independent crosswalk review; no IDs should be fabricated in the pre-outcome lock."
+  ],
+  "outcome": "No defect found in exact public source/projection binding, date identity, 35/32 cohort selection, certified-only protocol statuses, or selector-round semantics. Ready for the requested independent lock-manifest and scientific admission review; this proposal itself remains unadmitted/unfrozen.",
+  "resultsUsed": false,
+  "admissionIssued": false,
+  "reviewHashIssued": false,
+  "filesModified": false
+}

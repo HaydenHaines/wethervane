@@ -42,3 +42,7 @@ Hayden added two priorities during the next research round:
 - Polling momentum: measure how often a candidate whose late polling rises outperforms or underperforms final polls. Separate fieldwork age from publication lag, actual opinion change from survey noise and pollster composition, and avoid mechanical associations caused by using the same poll to define both trend and error. Preserve denominators, election-cycle dependence and qualified source availability. A universal one-to-two-week lag is a hypothesis, not a given.
 
 These priorities extend the research backlog; they do not bypass matched validation, independent review or the incumbent-preservation rules above.
+
+## Automatic scorecard updates
+
+Hayden clarified on October 26 that the election-night scorecard must read the site's currently published forecast and update automatically when that forecast changes. Keep one reusable scorecard renderer; new forecast revisions and supported configurations must not require a new scorecard or per-revision UI code. Discover exact-edition expected-error references from published metadata and update predictions and matching references together. Keep dated forecasts and evaluation policies available for falsification; an archived evaluation edition is separate from the live-current display. Unavailable references must remain explicit, never copied from an older edition. The scorecard release remains queued behind the corrected House release.

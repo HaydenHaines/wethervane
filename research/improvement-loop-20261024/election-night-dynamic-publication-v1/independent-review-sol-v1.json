@@ -1,0 +1,104 @@
+{
+  "schema": "ElectionNightDynamicPublicationIndependentReviewSolV1",
+  "reviewedUtc": "2026-10-26T18:27:50.020711+00:00",
+  "status": "passed_bounded_read_only_review",
+  "blockingFindings": [],
+  "reviewedArtifacts": [
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/election-night-client.ts",
+      "sha256": "d2f4575a39ca10ed302a84457b5389588fe77509eb50665fdd900b85b89bcb1a"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/election-night-publication.ts",
+      "sha256": "03f3ed216e676fd9f4f994043e208e58befe39345ba4427b8be60ed44cb16354"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/election-night-reference.ts",
+      "sha256": "65532786762ef3664a0ab6c0ffe61ace1ec46e8088c7a717399bf15f3ce8c770"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/election-night-core-reference.ts",
+      "sha256": "51ddf45200ee23a6facc2f74fd6699df88de0502a30bafa3f13f262eb8c81b6f"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/election-night-forecast.ts",
+      "sha256": "56d9d157f654c4a83f110cdb1b2939af12ff9379f6eebcf72d1a33c1ff1eb082"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/components/ElectionNightGuide.tsx",
+      "sha256": "562eea4dc39897c877d1619fd9e2c6bc88cfb0da300b9b1fe931044ab0591544"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/components/ElectionNightRubric.tsx",
+      "sha256": "6fd66c84f8aca6853f08eeda45ac497f6a5b468139c301471b343ba2e0a1e673"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/scripts/export_election_night_publication_index.mjs",
+      "sha256": "4aec93b5614fac799b46d831eaf2be11481b58e8283dc078479fb152ca45a6c4"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/public/data/election-night/publication-index.json",
+      "sha256": "3d66c9eadee8474f98bc0e9ef34e583d3764c5c6fa6d4db076f3fee6c9a889fb"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/tests/election-night-client.test.mjs",
+      "sha256": "66e0735ac2ca09019644d86b0b25bd0e4a8bbeed05a8704d69c69736b2813edb"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/tests/election-night-publication-index.test.mjs",
+      "sha256": "85c4592a6365333d94c53fe24e2bcbcb3a76f98439b418d2e76088bd20e8cfbc"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/tests/site/election-night.spec.ts",
+      "sha256": "b0934304baea7323386c38cb576475c8833d3c24d9eb1a05c3c76d04fd2013f6"
+    }
+  ],
+  "validation": {
+    "command": "node --experimental-strip-types --test --test-reporter=spec tests/election-night-client.test.mjs tests/election-night-reference.test.mjs tests/election-night-core-reference.test.mjs tests/election-night-publication-index.test.mjs",
+    "passed": 39,
+    "failed": 0
+  },
+  "fixedFindings": [
+    {
+      "id": "old_core_source_pins",
+      "before": "Runtime core matcher required old policy/mapping hashes despite a new reviewed qualification descriptor.",
+      "resolution": "Qualified policy/mapping source hashes now come from the exact runtime descriptor; legacy constants remain only for legacy calls."
+    },
+    {
+      "id": "old_model_configuration_guards",
+      "before": "Qualified runtime references still required fundamentals/standard configuration and could reject a new preferred model.",
+      "resolution": "Descriptor binds current configuration and strictAsOf; projection accepts safe future component names within known principal-pair target/law schemas."
+    },
+    {
+      "id": "malformed_optional_primary_manifest",
+      "before": "editions.some before validation could throw and reject an otherwise verified forecast.",
+      "resolution": "Validation moved into fail-soft optional-reference handling; regression test preserves forecast on malformed publication."
+    },
+    {
+      "id": "preaborted_index_request",
+      "before": "A pre-aborted parent could start an un-aborted independent reference-index request.",
+      "resolution": "Index loader checks parent abort before creating its derived controller/fetch; regression test asserts no index fetch."
+    }
+  ],
+  "conclusions": [
+    "Latest standard/default selection comes from the current registry/catalog, including changed default IDs and reused run IDs with new public SHA.",
+    "Exact published descriptors bind target, law, source/public hashes, dates, configuration, cohort, draw shape and weights. Old or changed index/catalog bytes cannot supply another forecast revision with borrowed metrics.",
+    "Refreshed exact reference catalogs attach without per-edition renderer edits; absent, stale or malformed optional references preserve the verified forecast with explicit availability/error state.",
+    "Guide active-controller, disposed and abort guards prevent late requests from replacing newer choices. Background refresh follows the selected stable model ID or current default and clears stale references when forecast SHA changes.",
+    "Runtime date allowlists are replaced by publication descriptors. Backward-compatible direct matcher calls retain their original exact pins.",
+    "Site publication is the descriptor trust root; actual source/scientific qualification remains an upstream reviewed release decision, separate from this runtime matching review."
+  ],
+  "residualReadiness": {
+    "houseForecastRefresh": "Dynamic; same renderer follows current qualified House catalog and exact revised result SHA.",
+    "houseExpectedErrorReference": "Still awaits the separately qualified corrected16 normalized sidecar contract and release integration. This review does not claim House error-sidecar readiness.",
+    "evaluationLock": "Not established; forecast preparation/reference updates do not admit actual outcomes or numeric grades."
+  },
+  "limits": [
+    "Read-only review; reviewer made no frontend edits.",
+    "Final production build and targeted browser verification are owned by Sol2/root, not independently rerun as part of this39-test review.",
+    "No real election results consumed, no fits, publication, deployment or scientific/publication admission issued."
+  ],
+  "publicationAdmission": false,
+  "observedResultsConsumed": false,
+  "actualGradesAssigned": false
+}

@@ -1,0 +1,30 @@
+{
+  "schema": "ElectionNightSenateAdmissionIndependentReviewLunaV3Addendum",
+  "reviewedAt": "2026-10-26",
+  "status": "prior_minor_schema_caveat_resolved",
+  "scope": "Addendum to Luna V2 only: read-only verification of the diagnostic crosswalk rename. No tests rerun, no admission/review issued, and no actual election results used.",
+  "sourcePins": {
+    "admissionTs": {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/election-night-senate-admission.ts",
+      "sha256": "056f5856f7c53dcbec61199d8eb51b9f006cd50db3f34869a28c8e06a9c711a4"
+    },
+    "admissionTests": {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/tests/election-night-senate-admission.test.mjs",
+      "sha256": "80e0d7677254edda1e759176ae5f5eb5674d5594a93b84c097bbcb2b577dff20"
+    },
+    "selectorTs": {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/election-night-senate-targets.ts",
+      "sha256": "5fba6ea439ae61b7b6a1e6e467b88f704239bfbae91c520b834dbe4c0741123e"
+    }
+  },
+  "resolvedFinding": {
+    "priorCaveat": "Crosswalk field nativeCandidateId could imply that an outside-pair official-winner diagnostic key was a modeled/native forecast candidate ID.",
+    "currentContract": "candidateCrosswalk.candidateKey is the identity key used to bind count-map keys; pair keys are exact native forecast candidate IDs, while any extra diagnostic key is a separately reviewed source-person identity, not a modeled outcome.",
+    "evidence": "The admission type and all validation lookups use candidateKey. The synthetic outside-pair test identity is explicitly INVENTED:outside-pair and is bound to a source locator; no legal-winner grading path is enabled.",
+    "assessment": "The naming ambiguity is resolved. The earlier V2 approval remains qualified by its stated scope; this addendum only supersedes the caveat, not unrelated source review or admission requirements."
+  },
+  "testStatus": "Parent reports updated admission tests pass 8/8; this addendum did not rerun them.",
+  "actualResultsUsed": false,
+  "admissionIssued": false,
+  "reviewHashIssued": false
+}

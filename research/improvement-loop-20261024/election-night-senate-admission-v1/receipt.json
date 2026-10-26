@@ -1,0 +1,88 @@
+{
+  "schema": "SenateSourceAdmissionPreparationReceiptV1",
+  "date": "2026-10-26",
+  "sourceCommit": "f921e94",
+  "sourcePins": [
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/election-night-senate-admission.ts",
+      "sha256": "056f5856f7c53dcbec61199d8eb51b9f006cd50db3f34869a28c8e06a9c711a4",
+      "bytes": 20719
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/election-night-senate-targets.ts",
+      "sha256": "5fba6ea439ae61b7b6a1e6e467b88f704239bfbae91c520b834dbe4c0741123e",
+      "bytes": 2063
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/scripts/prepare_election_night_senate_lock.mjs",
+      "sha256": "20191dd12bef72f50ab2338437b03a23d093cd56b6cb7a9da2c8aa2926acf2b8",
+      "bytes": 19201
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/tests/election-night-senate-admission.test.mjs",
+      "sha256": "80e0d7677254edda1e759176ae5f5eb5674d5594a93b84c097bbcb2b577dff20",
+      "bytes": 17423
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/tests/election-night-senate-lock-draft.test.mjs",
+      "sha256": "8fff8f12589d12f9d7687f6b4ec485b72d4c5c584f29ad35366eafb0368f4b27",
+      "bytes": 7937
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/tests/fixtures/election-night/senate-policy-v1.json",
+      "sha256": "efe1bf193e2959284b73ea833af0a136f6c592001a2faf50505e3258e25cf0cd",
+      "bytes": 10286
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/tests/fixtures/election-night/senate-mapping-v1.json",
+      "sha256": "244e9db017957d0a5361f5f1b7a2498f066c43d9b94a59f1277e8cff91b6afa3",
+      "bytes": 130186
+    }
+  ],
+  "reviews": [
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-senate-admission-review-sol-v1.json",
+      "sha256": "e4d173e434050d05fc0668ae6b0b3c9562cd9b2fd808d280557b6ceea0fb284b",
+      "bytes": 3485
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-senate-admission-review-luna-v2.json",
+      "sha256": "8523334de031369f0d1778e01324ec7baaebd3eb228040f6d494aab17d4140b0",
+      "bytes": 7366
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-senate-admission-review-luna-v3-addendum.json",
+      "sha256": "f260d4b891fc5c2211427475019bec7efb606964d9e409d3f343e2728eea824d",
+      "bytes": 2152
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-senate-lock-proposal-review-luna-v1.json",
+      "sha256": "5d56e3ad1d89becf14605853fe89487cc745305f819e3bf56cc4d6afabe0de24",
+      "bytes": 7730
+    }
+  ],
+  "tests": {
+    "sourceAdmission": "8 passed, no failures; real policy/mapping identities, invented forecasts/reports/reviews/trust roots",
+    "draftIntegration": "3 passed locally; 2 owner-dependent exact-proposal integration cases explicitly skip when scientific owner tree is absent",
+    "sourceLog": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-senate-admission-v1/source-admission-tests.log",
+      "sha256": "eb16124d34aa3ac26962efa506d6ca218d20f1c7efd45413eeafc5cc4838af8f",
+      "bytes": 2590
+    }
+  },
+  "implemented": [
+    "Caller-selected publication and admission pins authenticate raw report, source extraction, supporting evidence and three role reviews before applying the operator.",
+    "Raw owner mapping bytes and exact row prevent substituted special-state policies. Observed source round metadata must agree with operator inputs.",
+    "Canonical record and revision proposal preserve predecessor/source lineage, source-local outside-pair diagnostic identities, certified-only scoring and tied-margin behavior.",
+    "Generator assembles exact pre-outcome forecast/protocol/cohort evidence without creating an admission or public ledger head."
+  ],
+  "boundaries": {
+    "rawReportParsingAutomaticallyVerified": false,
+    "rawReportInterpretation": "Independent reviewed extraction is required; byte authentication alone does not establish vote totals.",
+    "actualResultSourcesConsumed": false,
+    "publicHeadChanged": false,
+    "evaluationLockAdmitted": false,
+    "actualGradeAssigned": false
+  },
+  "userClarification": "The scorecard follows current published forecasts automatically. This dated protocol proposal and retained source history are separate from the live-current renderer; no per-revision scorecard is created."
+}

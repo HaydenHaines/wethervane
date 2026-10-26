@@ -1,0 +1,401 @@
+{
+  "schema": "SenateEarlierFBaselineCompatibilityReviewV1",
+  "reviewed_utc": "2026-10-26T16:35:22.109363+00:00",
+  "recommendation": "Accept existing October20 basic-electoral-history F as an explicitly earlier-issued conditional-pair benchmark for October26 standard FP, via this separate mapping. Do not relabel it as a contemporaneous F run or silently alias source target IDs.",
+  "status": "native_distribution_and_pair_target_compatible; frontend_binding_and_actual_result_eligibility_still_required",
+  "scope": "Only existing native2026 forecast data, metadata and relevant code. No fitting, forecasts, random draws, historical evaluation labels or actual-result scores generated.",
+  "mapping": {
+    "path": "research/senate-polling-refresh-20261026/scorecard-baseline-compatibility-sol/candidate-pair-event-mapping-v1.json",
+    "sha256": "9024069ac0f397c2d379663d653d384e32532548ef26772035eda61ce55265e0",
+    "bytes": 76871
+  },
+  "forecast_editions": {
+    "F": {
+      "target_id": "national_senate_aggregate_baseline_v1",
+      "forecast": {
+        "path": "research/national-senate-forecast-20261020/forecast-v1/forecast.json",
+        "sha256": "c02bdc63a0df27824578c07d6e2b752b831ae4bbd858cabc432ee00fbbf94136",
+        "bytes": 201127
+      },
+      "edition_date": "2026-10-20",
+      "structural_input_cutoff_utc": "2026-10-20T15:21:23Z",
+      "declared_issuance_utc": "2026-10-20T15:25:53.623020+00:00",
+      "execution_started_utc": "2026-10-20T15:26:00.572964+00:00",
+      "execution_finished_utc": "2026-10-20T15:26:05.218332+00:00",
+      "publication_instant_utc": null,
+      "publication_evidence_status": "Native issuance/execution metadata do not independently establish when a public release went live; owner must bind an existing publication receipt for an earlier-published label.",
+      "label_recommendation": "Basic electoral history — October20 edition (earlier issued)",
+      "scheduled_general_date_horizon_calendar_days": 14,
+      "horizon_basis": "November3 scheduled date minus October20 cutoff date; not a uniform final-decisive-event horizon.",
+      "declared_issuance_precedes_execution_completion": true
+    },
+    "FP": {
+      "target_id": "national_senate_aggregate_poll_v1",
+      "forecast": {
+        "path": "research/senate-polling-refresh-20261026/runner-sol/predictions-v1/standard/forecast.json",
+        "sha256": "a1ffba60d937bfc81d06df51af6ed917a7ddc71fd9860c1d702de7c7c5db67cb",
+        "bytes": 198505
+      },
+      "edition_date": "2026-10-26",
+      "poll_input_cutoff_utc": "2026-10-26T15:03:57.212405+00:00",
+      "structural_input_cutoff_utc": "2026-10-20T15:21:23Z",
+      "executed_utc": "2026-10-26T15:05:11.698781+00:00",
+      "receipt_finished_utc": "2026-10-26T15:05:12.030657+00:00",
+      "publication_instant_utc": null,
+      "native_handoff_status": "numerically_qualified_and_independently_reviewed_not_published",
+      "scheduled_general_date_horizon_calendar_days": 8
+    }
+  },
+  "identity_findings": {
+    "same_election_cohort": true,
+    "same_ordered_candidate_pairs": true,
+    "same_seats_event_kinds_and_scheduled_dates": true,
+    "same_denominator_margin_sign_and_rule_proxies": true,
+    "same_non_up_seat_roster_scenarios_tie_break": true,
+    "same_publication_time_or_information_horizon": false,
+    "same_distribution_or_model_source_target_id": false,
+    "limitations": [
+      "F/FP difference combines polling information and a later information horizon; it is not an equal-horizon controlled skill comparison.",
+      "Both remain principal-pair aggregate proxies, not joint person/count/participation or full-ballot election-rule forecasts.",
+      "Matching target metadata does not establish external calibration or future scoring-label eligibility."
+    ]
+  },
+  "native_draw_banks": {
+    "F": {
+      "artifact": {
+        "path": "research/national-senate-forecast-20261020/forecast-v1/joint-draws.npz",
+        "sha256": "3244418fd97e377e72dd013e6e3bad3c25948bd80228b3a97953e4599b88a6a8",
+        "bytes": 54705315
+      },
+      "array_members": [
+        {
+          "name": "shares",
+          "shape": [
+            100000,
+            35
+          ],
+          "dtype": "float64"
+        },
+        {
+          "name": "logits",
+          "shape": [
+            100000,
+            35
+          ],
+          "dtype": "float64"
+        },
+        {
+          "name": "first_wins",
+          "shape": [
+            100000,
+            35
+          ],
+          "dtype": "bool"
+        },
+        {
+          "name": "shared_cycle",
+          "shape": [
+            100000
+          ],
+          "dtype": "float64"
+        },
+        {
+          "name": "posterior_index",
+          "shape": [
+            100000
+          ],
+          "dtype": "int64"
+        },
+        {
+          "name": "race_ids",
+          "shape": [
+            35
+          ],
+          "dtype": "<U22"
+        },
+        {
+          "name": "chamber_group_names",
+          "shape": [
+            9
+          ],
+          "dtype": "<U44"
+        },
+        {
+          "name": "chamber_seats",
+          "shape": [
+            100000,
+            9
+          ],
+          "dtype": "int64"
+        }
+      ],
+      "row_count": 100000,
+      "race_axis": "Embedded race_ids; exact frozen roster order authenticated.",
+      "joint_row_identity": "(native artifact SHA256, row_index0..99999); posterior_index is not unique draw identity.",
+      "weight_per_row": 1e-05,
+      "joint_across_races": true,
+      "scoring_distribution_source": "shares; logits and winner rows are aligned checks; chamber_seats remain aligned to these rows."
+    },
+    "FP": {
+      "artifact": {
+        "path": "research/senate-polling-refresh-20261026/runner-sol/predictions-v1/standard/joint-draws.npz",
+        "sha256": "a7240d654861078c7850e3d0c10c1f287604035de531abf14d82821aa4d5cc31",
+        "bytes": 22617735
+      },
+      "array_members": [
+        {
+          "name": "logits",
+          "shape": [
+            4,
+            10000,
+            35
+          ],
+          "dtype": "float64"
+        },
+        {
+          "name": "shares",
+          "shape": [
+            4,
+            10000,
+            35
+          ],
+          "dtype": "float64"
+        },
+        {
+          "name": "first_wins",
+          "shape": [
+            4,
+            10000,
+            35
+          ],
+          "dtype": "bool"
+        },
+        {
+          "name": "shared_cycle",
+          "shape": [
+            4,
+            10000
+          ],
+          "dtype": "float64"
+        },
+        {
+          "name": "posterior_index",
+          "shape": [
+            4,
+            10000
+          ],
+          "dtype": "int64"
+        },
+        {
+          "name": "beta",
+          "shape": [
+            4,
+            10000,
+            2
+          ],
+          "dtype": "float64"
+        },
+        {
+          "name": "tau_cycle",
+          "shape": [
+            4,
+            10000
+          ],
+          "dtype": "float64"
+        },
+        {
+          "name": "tau_race",
+          "shape": [
+            4,
+            10000
+          ],
+          "dtype": "float64"
+        },
+        {
+          "name": "observed_race_indices",
+          "shape": [
+            25
+          ],
+          "dtype": "int64"
+        }
+      ],
+      "chain_draw_shape": [
+        4,
+        10000
+      ],
+      "row_count": 40000,
+      "race_axis": "NPZ lacks standalone race_ids. Bind axis2 to frozen roster order via empirical prior construction, helper summarize enumeration, same receipt and this mapping.",
+      "joint_row_identity": "(native artifact SHA256, chain_index, within_chain_draw_index); C-order flattening only for empirical scoring.",
+      "weight_per_row": 2.5e-05,
+      "joint_across_races": true,
+      "autocorrelation": "Retain chain/draw axes for MC uncertainty.40000 retained rows are not40000 independent posterior draws."
+    },
+    "cross_bank_contract": "No shared row identity/coupling is declared. Never zip F and FP rows by index or posterior_index, splice races from the banks, average forecasts, equalize row counts by resampling or claim a joint law for paired per-draw differences."
+  },
+  "scoring_support": {
+    "F_native_rows_sufficient_for_pair_CRPS": true,
+    "F_native_rows_sufficient_for_central90_intervals": true,
+    "CRPS_definition": "For one model and one compatible scalar observed margin y: sum_i w_i*abs(x_i-y) -0.5*sum_ij w_i*w_j*abs(x_i-x_j), where x=200*share-100 in percentage points and weights are that model bank's original uniform weights.",
+    "CRPS_implementation_note": "Use the sorted weighted empirical formula, not a100000x100000 pairwise allocation. Score each model separately against the same admitted y. Score difference may compare resulting scalar scores without pairing draw banks.",
+    "interval90_definition": "Saved first-share p05/p95, or identical NumPy default linear empirical quantiles from the complete bank, transformed to margin by200*p-100. Inclusive coverage requires an eligible observed margin. Width=upper-lower.",
+    "point_and_binary_events": "Native point margin is transformed mean share. Pair event uses share>.5; exact forecast-probability0.5 modal tie choice is a separate frontend policy. No actual-result tie rule is admitted by this review.",
+    "joint_cohort_diagnostics": "If aggregating error/coverage/misses across races, retain all selected races from each same native row at that bank's original weights. A fixed eligible subset must be identical for both and recomputed from each original bank. No race-independence reconstruction.",
+    "not_supported": [
+      "Vote-count CRPS or count intervals: neither bank contains participation/candidate counts.",
+      "Unconditional all-candidate winner grading without a compatible winner operator; omitted candidates have no outcome support.",
+      "A calibrated grade, actual accuracy, empirical coverage or CRPS value without admitted observed results.",
+      "Cross-bank joint error-difference distribution or cross-chamber coupling from these artifacts alone."
+    ]
+  },
+  "actual_result_binding_required": [
+    "Pin comparison contract, both unchanged source target IDs, forecast artifacts, true edition/issue dates, outcome-source version and scoring operator before labels.",
+    "Pin the same fixed race cohort and ordered candidate-ID mapping. A scalar pair margin requires a certified count/round with positive sum of the two named principal votes; do not divide by all valid votes or allocate other/undecided.",
+    "Pair-win labels mean first beats second. This remains different from the actual office winner if an omitted candidate wins; any full-winner availability/abstention policy must be explicit and frozen.",
+    "AK/ME require an admitted final-preference/final-round mapping for the exact named pair; never substitute first-choice counts or infer missing transfers/exhaustion.",
+    "GA eventual/runoff proxy needs an explicit final-decisive-event/date and vote-denominator policy; do not silently score it against a November3 general first-round margin.",
+    "FL/OH retain special seat/event identities and the regular-discrepancy-transfer qualification; preserve independent candidates' I parties and keep caucus scenarios separate.",
+    "Freeze actual-result exact-tie/missing/not-yet-final handling and the score denominator. Recompute both models on any accepted fixed cohort rather than silently dropping cases after seeing errors.",
+    "Bind a public publication receipt before describing F as previously published at an exact instant; never replace its October20 issue date with the October26 adapter date."
+  ],
+  "verification": {
+    "F": {
+      "max_share_quantile_absolute_difference": 0.0,
+      "max_share_mean_absolute_difference": 1.0103029524088925e-14,
+      "max_win_probability_absolute_difference": 0.0
+    },
+    "FP": {
+      "max_share_quantile_absolute_difference": 0.0,
+      "max_share_mean_absolute_difference": 7.66053886991358e-15,
+      "max_win_probability_absolute_difference": 0.0
+    }
+  },
+  "checks": {
+    "handoff_standard_forecast_pin": true,
+    "FP_unchanged_F_reference_pin": true,
+    "F_native_matches_original_receipt": true,
+    "FP_native_matches_handoff": true,
+    "FP_chamber_matches_handoff": true,
+    "frozen_input_bytes_identical": true,
+    "source_target_ids_distinct_preserved": true,
+    "F_and_FP_passed_receipts": true,
+    "exact_unique_35_race_order": true,
+    "F_embedded_race_axis_matches": true,
+    "F_joint_shape": true,
+    "FP_joint_shape": true,
+    "F_finite_unit_shares": true,
+    "F_saved_winner_rows_match_proxy": true,
+    "F_saved_summary_reproduced": true,
+    "FP_finite_unit_shares": true,
+    "FP_saved_winner_rows_match_proxy": true,
+    "FP_saved_summary_reproduced": true,
+    "same_chamber_group_namespace": true,
+    "F_and_FP_party_seats_conserve100": true,
+    "same_caucus_scenarios_and_tie_break": true,
+    "all_35_candidate_pair_and_proxy_matches": true,
+    "all_35_same_seat_state": true
+  },
+  "checks_passed": 23,
+  "all_checks_passed": true,
+  "source_pins": [
+    {
+      "path": "research/senate-polling-refresh-20261026/frontend-handoff-v2.json",
+      "sha256": "53ecb8ea7c322932a64784453a00bd4181c7e95cea474c2f843e5b0e0bcd356b",
+      "bytes": 33194
+    },
+    {
+      "path": "research/senate-polling-refresh-20261026/runner-sol/predictions-v1/standard/forecast.json",
+      "sha256": "a1ffba60d937bfc81d06df51af6ed917a7ddc71fd9860c1d702de7c7c5db67cb",
+      "bytes": 198505
+    },
+    {
+      "path": "research/national-senate-forecast-20261020/forecast-v1/forecast.json",
+      "sha256": "c02bdc63a0df27824578c07d6e2b752b831ae4bbd858cabc432ee00fbbf94136",
+      "bytes": 201127
+    },
+    {
+      "path": "research/national-senate-forecast-20261020/forecast-v1/receipt.json",
+      "sha256": "b2f083636dbcd8ffe535844bfe7af0af5aa6574b7b8c1358fbafde40135a5ee3",
+      "bytes": 1409
+    },
+    {
+      "path": "research/senate-polling-refresh-20261026/runner-sol/predictions-v1/standard/receipt.json",
+      "sha256": "46dc22f42147ff4ceaf9981055fa9eed22362251af012debde12f9fcd8dfd53c",
+      "bytes": 102308
+    },
+    {
+      "path": "research/national-senate-forecast-20261020/forecast-v1/inputs.json",
+      "sha256": "49d175f0c442b911e92710bb8f6d2082bf4ed8fdb675e2c57f306a194266262c",
+      "bytes": 308091
+    },
+    {
+      "path": "research/senate-polling-refresh-20261026/runner-sol/predictions-v1/standard/source-snapshots/062-inputs-frozen-root-v1.json",
+      "sha256": "49d175f0c442b911e92710bb8f6d2082bf4ed8fdb675e2c57f306a194266262c",
+      "bytes": 308091
+    },
+    {
+      "path": "research/national-senate-forecast-20261020/forecast-v1/joint-draws.npz",
+      "sha256": "3244418fd97e377e72dd013e6e3bad3c25948bd80228b3a97953e4599b88a6a8",
+      "bytes": 54705315
+    },
+    {
+      "path": "research/senate-polling-refresh-20261026/runner-sol/predictions-v1/standard/joint-draws.npz",
+      "sha256": "a7240d654861078c7850e3d0c10c1f287604035de531abf14d82821aa4d5cc31",
+      "bytes": 22617735
+    },
+    {
+      "path": "research/senate-polling-refresh-20261026/runner-sol/predictions-v1/standard/chamber-draws.npz",
+      "sha256": "186361c10c16e9a2943303f149bd359a70ec990f2f087464dd75b1e47ac68d8a",
+      "bytes": 266943
+    },
+    {
+      "path": "research/senate-polling-refresh-20261026/runner-sol/predictions-v1/standard/run-specification.json",
+      "sha256": "05e83cf86b1f081836bda9d402130337f0746623c069c6c63f267d081ccb10e7",
+      "bytes": 7932
+    },
+    {
+      "path": "research/senate-polling-refresh-20261026/runner-sol/predictions-v1/standard/numerical-gates.json",
+      "sha256": "77b1f90ef1399fda8cc44c79d01edcd92fb8f422a014ea9c27980e62a1da2044",
+      "bytes": 685
+    },
+    {
+      "path": "research/senate-polling-refresh-20261026/standard-scorecard-reference-v1/reference.json",
+      "sha256": "48d36fdce404a74569553c859a8b8d66bb9790c0eef614950bfa98ca5da058db",
+      "bytes": 49076
+    },
+    {
+      "path": "research/senate-polling-refresh-20261026/scorecard-review-sol/review-v1.json",
+      "sha256": "4ba519f76c03852659c69eec96e84913c0fbcd00c8e8e3d82de6e9e7d845fe05",
+      "bytes": 17193
+    },
+    {
+      "path": "research/national-senate-forecast-20261020/forecast_runner.py",
+      "sha256": "96ce7cdd9199d0593f892a8599f8dc22eceaa7b20041a91be4faf7e3829bda4d",
+      "bytes": 21447
+    },
+    {
+      "path": "research/senate-polling-refresh-20261026/runner-sol/predictions-v1/standard/source-snapshots/066-00-standard_runner.py",
+      "sha256": "172b899d7cfe524b1ac139fd9d2a8866942f84ae071a9994d5c72b1492f7d733",
+      "bytes": 18335
+    },
+    {
+      "path": "research/senate-polling-refresh-20261026/runner-sol/predictions-v1/standard/source-snapshots/230-refresh_runner.py",
+      "sha256": "71d6700a996aa2b51e659074aa71b0568513df9e52a22b0470e6d1aee51b5e01",
+      "bytes": 38031
+    },
+    {
+      "path": "research/senate-polling-refresh-20261026/runner-sol/predictions-v1/standard/source-snapshots/238-polling_v1.py",
+      "sha256": "5876ab790f43c8bd6324590f2a3d007f2da853bce49d0e60cd19142046ab0bcb",
+      "bytes": 11466
+    }
+  ],
+  "operations": {
+    "historical_evaluation_labels_read": false,
+    "actual2026_results_read": false,
+    "posterior_arrays_opened": false,
+    "existing_native2026_forecast_arrays_read": true,
+    "new_forecast_draws_or_fits": 0,
+    "observed_scores_computed": false,
+    "frontend_or_shared_artifacts_changed": false,
+    "row_resampling_or_bank_splicing": false
+  }
+}

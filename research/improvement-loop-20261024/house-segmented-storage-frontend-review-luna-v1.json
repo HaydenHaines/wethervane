@@ -1,0 +1,36 @@
+{
+  "schema": "HouseSegmentedStorageFrontendReviewLunaV1",
+  "reviewedAt": "2026-10-26",
+  "status": "narrow_identity_and_streaming_review_pass_no_material_blocker_found",
+  "scope": "Read-only review of the frontend offline V2 storage reader and its importer, evidence resolver and joint decoder integration, informed by the Sol1 storage review. No original 2M-row re-audit, build, runtime import, publication or source changes.",
+  "ownerEvidence": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/house-segmented-storage-review-sol-v1/review.json",
+    "sha256": "d02e3bfa8e6aeef3130c07142f5ec40a460c2ecc3997aa257cd277e062701814"
+  },
+  "frontendPins": [
+    {"path":"/home/hayden/projects/ballotmancy-election-night-guide-20261026/scripts/house_live_conditional_storage.py","sha256":"75ec961de84f6f1e93fa7dca93e2fc7d6dd27587810e6087b5ea2693c186370a"},
+    {"path":"/home/hayden/projects/ballotmancy-election-night-guide-20261026/scripts/import_house_live.mjs","sha256":"a94b20c8cf1a8b887bde38972b66acc5e9c30df522a2e201373e4119a019c702"},
+    {"path":"/home/hayden/projects/ballotmancy-election-night-guide-20261026/scripts/house_live_evidence.mjs","sha256":"fd05542d11002ba87f5fb2b99bbd062952f5f5aaa8abab33fe1a6649402711dd"},
+    {"path":"/home/hayden/projects/ballotmancy-election-night-guide-20261026/scripts/decode_house_live_joint.py","sha256":"45b4e5ef68acf5b4770be7a19c60a9438a68a1365a16bc22e62e894753153def"},
+    {"path":"/home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/house-live-joint-archive.ts","sha256":"2213349c3865463c1880b7dd76d4947d4343bed3a020e0278c48ce962884a5fb"},
+    {"path":"/home/hayden/projects/ballotmancy-election-night-guide-20261026/tests/site_house_live_conditional_storage_test.py","sha256":"66ee91f2ea2a03d976d43c7b55e045e75d9e36c763dc870017f47316dac12c1e"},
+    {"path":"/home/hayden/projects/ballotmancy-election-night-guide-20261026/tests/house-live-segmented-storage.test.mjs","sha256":"f0563b9c67c2f7fe534ca490bc6f54c5adccedcd1acd41fce659b84973ac3bb3"}
+  ],
+  "findings": [
+    "The V2 reader requires an explicit operator storage root; normalized pins reject traversal, resolved paths must stay within that root, and authenticated reads are checked against file identity before/after streaming. It authenticates manifest/child/plan/receipt and input/output bytes without inferring a research path from evidence contents.",
+    "Manifest validation checks exact member sets/order, unique source identities, contiguous offsets, shared ordered race IDs, dtypes/shapes/row rules, original draw IDs and total coverage. Member payloads are iterated in bounded C-order blocks; original source segments are concatenated by row without rebuilding independence or changing equal original-row weights. The small identity vector is decoded for race-order checks.",
+    "The importer wires storage only through an explicitly supplied offline root and rejects output inside that root. The evidence resolver requires matching V2 plan/receipt versions and a unique authenticated V2 binding review; V1 keeps its old path. The decoder requires explicit conditional storage and exact ordered pair IDs for a V2 plan, then retains the raw eleven-member joint archive and validates its row/chain identity separately.",
+    "The storage adapter and added integration remain offline. Conditional arrays are not copied into public/browser output, and this integration does not itself qualify the corrected forecast or authorize publication. Existing owner qualification gates remain distinct."
+  ],
+  "validationBoundary": {
+    "tests": "The Sol review records final reader tests 8/8, segmented-storage tests 4/4, relevant Node candidate/import/archive tests 38/38, and TypeScript typecheck pass. I did not rerun them.",
+    "largeArrayParity": "Owner's bounded review records authenticated prior 2M-row parity receipts; I did not independently rehash large source archives or repeat array parity.",
+    "qualifiedCorrected16PacketAdmitted": false,
+    "actualResultsConsumed": false,
+    "publicationPerformed": false
+  },
+  "limitations": [
+    "This review is limited to identity, path binding, streaming and integration contracts. It is not a second scientific-storage audit or a corrected-forecast qualification.",
+    "The reader rejects non-native structured/Fortran arrays by design; a future format change needs explicit support and tests."
+  ]
+}

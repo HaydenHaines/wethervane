@@ -1,0 +1,57 @@
+{
+  "schema": "HouseSegmentedStorageFrontendRootReviewV1",
+  "date": "2026-10-26",
+  "sourceCommit": "e1f6841",
+  "scope": "Independent read of frontend reader, resolver, decoder and import/check wiring; no original2M re-audit or scientific publication decision.",
+  "sources": [
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/scripts/house_live_conditional_storage.py",
+      "sha256": "75ec961de84f6f1e93fa7dca93e2fc7d6dd27587810e6087b5ea2693c186370a",
+      "bytes": 19187
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/scripts/house_live_evidence.mjs",
+      "sha256": "fd05542d11002ba87f5fb2b99bbd062952f5f5aaa8abab33fe1a6649402711dd",
+      "bytes": 6125
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/scripts/decode_house_live_joint.py",
+      "sha256": "45b4e5ef68acf5b4770be7a19c60a9438a68a1365a16bc22e62e894753153def",
+      "bytes": 22415
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/house-live-joint-archive.ts",
+      "sha256": "2213349c3865463c1880b7dd76d4947d4343bed3a020e0278c48ce962884a5fb",
+      "bytes": 5725
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/scripts/check_house_live_candidate.mjs",
+      "sha256": "d1622878a0256521abad121a767174d781ff6a16edd15415014f8a890ff8115d",
+      "bytes": 3630
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/scripts/import_house_live.mjs",
+      "sha256": "a94b20c8cf1a8b887bde38972b66acc5e9c30df522a2e201373e4119a019c702",
+      "bytes": 18198
+    }
+  ],
+  "supportingReviews": [
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/house-segmented-storage-review-sol-v1/review.json",
+      "sha256": "d02e3bfa8e6aeef3130c07142f5ec40a460c2ecc3997aa257cd277e062701814",
+      "bytes": 14468
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/house-segmented-storage-frontend-review-luna-v1.json",
+      "sha256": "eab45aa6f9077ac47ae3130fff68ed3aa08f274c5fe1da82121c56acfcefcc89",
+      "bytes": 4445
+    }
+  ],
+  "findings": [
+    "V2 paths require an explicit offline storage root and remain within it; original and selected evidence bytes are authenticated.",
+    "Child arrays retain primitive C-order member bytes, original row order and shared race identity; contiguous row/chain offsets and equal per-row weights are checked.",
+    "Original precision-failure runs may contribute only with truthful completed-run diagnostics; selected receipt and diagnostics must pass.",
+    "Public/browser APIs and V1 decoder remain supported. Tests exercise raw/segmented parity, mutation rejection, explicit-root failures and backward-compatible imports."
+  ],
+  "decision": "No material frontend integration blocker found within this scope. Corrected all16 release and independent native/sidecar audits remain required."
+}

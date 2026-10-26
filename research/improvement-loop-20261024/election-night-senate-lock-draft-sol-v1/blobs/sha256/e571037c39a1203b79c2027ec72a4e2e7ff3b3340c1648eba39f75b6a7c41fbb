@@ -1,0 +1,34 @@
+{
+  "schema": "Fixed32ScorecardReferencesFrontendHandoffV1",
+  "issued_utc": "2026-10-26T17:28:49.453621+00:00",
+  "status": "independently_reviewed_ready_for_owner_fixed32_integration",
+  "references": {
+    "F": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-polling-refresh-20261026/fixed32-scorecard-reference-root-v2/F/reference.json",
+      "sha256": "e8945138896bad678ee4d4dee5ab182e92ca150766deb47595cee6fc4825b120"
+    },
+    "FP": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-polling-refresh-20261026/fixed32-scorecard-reference-root-v2/FP/reference.json",
+      "sha256": "545ff5c25cc74e681afd10305b7c5a00c0653368cf3a6adda76184b9dd142568"
+    }
+  },
+  "review": {
+    "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-polling-refresh-20261026/fixed32-scorecard-review-sol-v1/review-v1.json",
+    "sha256": "b82bc61967c3af40274178d79f65ba088e3f5313d32233ec4fbc0c9ac3648c8d"
+  },
+  "review_freeze": {
+    "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-polling-refresh-20261026/fixed32-scorecard-review-sol-v1/freeze-v1.json",
+    "sha256": "a90c5c30a2db502a71ff56b98c5c2fc7966f9b1675539fc30b479d9bca18f3d3"
+  },
+  "cohort": "Exact predeclared32pluralitycore, excludingAK/ME/GA; all35rowsremainvisibleelsewhere.",
+  "owner_action": "Use these new32-cohort expected-errorreferences with your explicitly versioned32coregradingcontract. Keep original35reference andsourcebindings; neverrelabel35statisticsas32.",
+  "invariants": [
+    "F100000originalrows at1/100000;FP4x10000originalrows at1/40000.",
+    "No cross-bank pairing, no resampling, no independent-race reconstruction.",
+    "FdatedOct20,FPdatedOct26; distinct source target IDs andcommon32paircohort.",
+    "FPaxis externallyboundbyreviewedorderedroster/forecastsource; noembeddedrace_ids claim.",
+    "Model-implied jointdiagnostics, notactualerrors orgradingproof; nominalcoverage/centeringbyconstruction."
+  ],
+  "evaluation_lock_or_publication_issued": false,
+  "new_forecast_or_outcomes": false
+}

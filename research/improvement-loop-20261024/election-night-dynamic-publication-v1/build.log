@@ -1,0 +1,23 @@
+
+> ballotmancy-site@0.1.0 prebuild
+> python3 scripts/export_election_night_publication_index.py
+
+
+> ballotmancy-site@0.1.0 build
+> next build --webpack
+
+▲ Next.js 16.4.2 (webpack)
+✓ Running next.config.mjs took 11ms
+- Experiments (use with caution):
+  · cpus: 2
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 4.9s
+  Running TypeScript ...
+components/ElectionNightGuide.tsx(233,10): error TS18047: 'loaded' is possibly 'null'.
+components/ElectionNightGuide.tsx(233,92): error TS18047: 'loaded' is possibly 'null'.
+components/ElectionNightGuide.tsx(245,10): error TS18047: 'loaded' is possibly 'null'.
+components/ElectionNightGuide.tsx(245,99): error TS18047: 'loaded' is possibly 'null'.
+components/ElectionNightGuide.tsx(246,65): error TS18047: 'loaded' is possibly 'null'.
+Failed to type check.
+

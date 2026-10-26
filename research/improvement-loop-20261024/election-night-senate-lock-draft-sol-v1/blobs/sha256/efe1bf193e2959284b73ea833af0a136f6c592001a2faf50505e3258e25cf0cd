@@ -1,0 +1,154 @@
+{
+  "schema": "Senate35PreResultOperatorPolicyV1",
+  "prepared_utc": "2026-10-26T17:08:13.400530+00:00",
+  "status": "root_requested_policy_choices_implemented_for_review; no_frontend_lock_or_actual_source_admission",
+  "root_policy_choices": {
+    "fixed_rows": "Keep all35 locked rows and explicit unavailable statuses. Recommend separately predeclared32 plurality-core cohort excludingAK/ME/GA; do not silently drop conditional targets after outcomes.",
+    "candidate_identity": "Preserve exact native canonical IDs and original official roster support. Future state/vendor candidate/contest keys remain null until separately reviewed crosswalk. No party-equivalent replacement, fuzzy autoalias, imputed preferences or transfer allocation.",
+    "plurality": "Certified decisive November3 general counts for the exact locked pair determine conditional margin/relative lead. An omitted candidate winning office does not invalidate known pair margin/relative lead. Record omitted-officewinner diagnostic separately; no legal-winner grade.",
+    "AK_ME": "Require an official observed final round with exactly two continuing candidates, equal to the exact locked IDs. Early majority with more than two remaining, a missing/omitted/replacement finalist, or absent final-pair report => margin and pair score unavailable. Never fabricate a hypothetical final pair or substitute first choices.",
+    "GA": "Use certified decisive general counts only when no runoff is required. If runoff required, November3 is pending, not decisive. Use actual certified runoff counts only if both exact locked principals comprise the runoff; no modeled transfers or fallback to general share. Calendar expectsDecember1; postponement requires new event-policy review.",
+    "ties": "Certified equal pair counts permit margin0/share.5. Pair-winner indicator unavailable with explicit tie flag, never automatically second winner. Do not infer a legal tie winner or grade the office winner.",
+    "denominator": "D=first+second authenticated counts in the admitted decisive event/round; D>0. Margin_pp=100*(first-second)/D; no all-candidate, turnout, registration or exhausted-ballot denominator substitution.",
+    "independents_specials": "Keep I parties and caucus scenarios separate; FL/OH special/class3 identities must match locked seat/event, not a same-day regular contest."
+  },
+  "facts_vs_choices": "Official fact summaries and their exact captures are separate in official-special-rule-sources-v1.json. The restrictions above are scorecard eligibility choices requested by root, not assertions that law always tabulates the locked pair.",
+  "source_finality_policy": {
+    "future_actual_source_admission": "Before operator use, independently admit exact official source bytes/version, observed source/contest/round identifiers and each candidate-ID crosswalk. Pin raw bytes withSHA256,URL/retrievalUTC and format. Metadata registry routes alone do not supply admission.",
+    "certified_final_only": "Final scoring requires official certified/contest-final status with explicit no pending recount or result-affecting dispute; scheduled deadlines,100%reporting, calls or provider labels do not substitute.",
+    "preliminary": "An admitted official preliminary source with reviewed identity/event/round may supply descriptive pair values only. Final-score eligibility false. Missing/unknown finality remains pending. Never display a final grade from preliminary data.",
+    "revisions": "Each official correction/recount/certification revision becomes a new immutable result version with raw/source/crosswalk/round/event pins, observedUTC, supersedes pointer and reason. Keep earlier bytes/results, mark superseded; recompute both unchanged F/FP against the same new result version and frozen cohort. Do not revise forecasts or mutate old scores in place.",
+    "escalation": [
+      "changed law or decisive-event date",
+      "candidate replacement/death/disqualification or unresolved source identity",
+      "conflicting official certified versions",
+      "unclear round/finality or transfer/exhaustion map",
+      "court order, pending recount or result-affecting contest",
+      "unmatched special/seat or feed/vendor migration"
+    ],
+    "unknowns": "Unresolved cases retain unavailable/pending status with reason; no inferred legal tie rule, invented source ID, cloned candidate, missing count fill or optional pair reconstruction."
+  },
+  "frontend_binding": {
+    "source_target_ids_remain_distinct": {
+      "F": "national_senate_aggregate_baseline_v1",
+      "FP": "national_senate_aggregate_poll_v1"
+    },
+    "fixed_cohorts": {
+      "full_35_locked_rows": [
+        "2026:AK:senate:regular",
+        "2026:AL:senate:regular",
+        "2026:AR:senate:regular",
+        "2026:CO:senate:regular",
+        "2026:DE:senate:regular",
+        "2026:FL:senate:special",
+        "2026:GA:senate:regular",
+        "2026:IA:senate:regular",
+        "2026:ID:senate:regular",
+        "2026:IL:senate:regular",
+        "2026:KS:senate:regular",
+        "2026:KY:senate:regular",
+        "2026:LA:senate:regular",
+        "2026:MA:senate:regular",
+        "2026:ME:senate:regular",
+        "2026:MI:senate:regular",
+        "2026:MN:senate:regular",
+        "2026:MS:senate:regular",
+        "2026:MT:senate:regular",
+        "2026:NC:senate:regular",
+        "2026:NE:senate:regular",
+        "2026:NH:senate:regular",
+        "2026:NJ:senate:regular",
+        "2026:NM:senate:regular",
+        "2026:OH:senate:special",
+        "2026:OK:senate:regular",
+        "2026:OR:senate:regular",
+        "2026:RI:senate:regular",
+        "2026:SC:senate:regular",
+        "2026:SD:senate:regular",
+        "2026:TN:senate:regular",
+        "2026:TX:senate:regular",
+        "2026:VA:senate:regular",
+        "2026:WV:senate:regular",
+        "2026:WY:senate:regular"
+      ],
+      "plurality_core_32": [
+        "2026:AL:senate:regular",
+        "2026:AR:senate:regular",
+        "2026:CO:senate:regular",
+        "2026:DE:senate:regular",
+        "2026:FL:senate:special",
+        "2026:IA:senate:regular",
+        "2026:ID:senate:regular",
+        "2026:IL:senate:regular",
+        "2026:KS:senate:regular",
+        "2026:KY:senate:regular",
+        "2026:LA:senate:regular",
+        "2026:MA:senate:regular",
+        "2026:MI:senate:regular",
+        "2026:MN:senate:regular",
+        "2026:MS:senate:regular",
+        "2026:MT:senate:regular",
+        "2026:NC:senate:regular",
+        "2026:NE:senate:regular",
+        "2026:NH:senate:regular",
+        "2026:NJ:senate:regular",
+        "2026:NM:senate:regular",
+        "2026:OH:senate:special",
+        "2026:OK:senate:regular",
+        "2026:OR:senate:regular",
+        "2026:RI:senate:regular",
+        "2026:SC:senate:regular",
+        "2026:SD:senate:regular",
+        "2026:TN:senate:regular",
+        "2026:TX:senate:regular",
+        "2026:VA:senate:regular",
+        "2026:WV:senate:regular",
+        "2026:WY:senate:regular"
+      ],
+      "special_conditional_3": [
+        "2026:AK:senate:regular",
+        "2026:GA:senate:regular",
+        "2026:ME:senate:regular"
+      ]
+    },
+    "cohort_use": "Recommend predeclaring full35 row display plus separately named32-core metric cohort. Any unavailable metric remains explicitly unavailable; report fixed and available denominators, never silently shrink or relabel a cohort. This packet computes no grade and chooses no grade thresholds.",
+    "same_actual_result_version_for_F_FP": true,
+    "draw_banks": "Preserve each bank and native weights independently. Do not splice or pair F/FP rows or confuse result-policy execution time with forecast issue date.",
+    "semantic_labels": "Pair margin and first-versus-second relative lead; not unconditional all-candidate/legal office winner."
+  },
+  "operator": {
+    "path": "research/senate-polling-refresh-20261026/result-policy-special-rules-sol-v1/pair_operator.py",
+    "sha256": "81cf4c04c974faab4388c6d623a93cb8ddfd1d6ce0aa7659e4c7cd330eb9830e",
+    "bytes": 5517
+  },
+  "invented_fixture_tests": {
+    "path": "research/senate-polling-refresh-20261026/result-policy-special-rules-sol-v1/test_pair_operator.py",
+    "sha256": "136da70327eef41ae9d5097951bb9f0d15f87f09f64fce06f8bb8ebfe86f5073",
+    "bytes": 5927
+  },
+  "operator_api": "evaluate_pair(locked_row, admitted_observation) -> availability, pair margin/share, nullable relative-lead indicator, tie flag, separate omitted-officewinner diagnostic. No I/O, network, fits, predictions, scores or legal-winner grading.",
+  "source_support": {
+    "path": "research/senate-polling-refresh-20261026/result-policy-special-rules-sol-v1/official-special-rule-sources-v1.json",
+    "sha256": "64c4b9d1bf2c979b22ddf1c7bef08c868b7206d3b839866d902d506d3a34311b",
+    "bytes": 19930
+  },
+  "source_gaps": [
+    "No newFlorida2026writ/term-end notice captured; existing accepted class3special native identity is preserved, with new vacancy law/candidate metadata support only.",
+    "AK direct current statute/page access blocked; current officialFAQ is public search-rendered. Petition/proposedbill text is not current statutory proof.",
+    "AK/ME candidate ballot refreshes blocked; exact native pairs remain the already admitted official-source identities, not freshly requalified current menus.",
+    "No future official result candidate/contest IDs, certified round files or actual result source versions exist in this packet."
+  ],
+  "acquisition_boundary": {
+    "actual2026_general_result_tables_requested_or_used": false,
+    "incidental2026_primary_totals_search_hit": true,
+    "description": "Candidate/special-election discovery returned an incidental official2026PRIMARY-results search hit with totals despite domain/rule focus. Parent notified; no values used as policy/test inputs. Full rendered wrappers preserve search context. Also unrelated historical result snippets appeared; no result table was intentionally opened.",
+    "no_claim_of_zero_outcome_snippets_seen": true,
+    "new_tests_use_only_invented2099_fixture_counts": true
+  },
+  "operations": {
+    "new_forecasts_fits_or_grades": 0,
+    "actual_result_operator_called_on_2026_outcomes": false,
+    "frontend_shared_code_or_lock_edits": false,
+    "new_law_or_tie_resolution_inferred": false
+  }
+}

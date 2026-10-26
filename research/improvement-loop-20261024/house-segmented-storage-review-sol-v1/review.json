@@ -1,0 +1,207 @@
+{
+  "schema": "HouseSegmentedStorageIntegrationReviewSolV1",
+  "reviewedUtc": "2026-10-26T18:13:45.005789+00:00",
+  "status": "owner_v2_bounded_review_passed_and_frontend_offline_adapter_tests_passed_pending_separate_implementation_review",
+  "scope": "Independent read-only review of owner segmented-storage V2 implementation/receipts; implementation of frontend offline V2 verification alongside unchanged raw NPZ V1/public schemas. This report is not an independent review of Sol-authored frontend code.",
+  "ownerReview": {
+    "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-correction-20261026-v2/segmented-storage-review-v2.json",
+    "sha256": "59fa6c64790f8c260866b5fe0c6ef85598bcd178f35e9fa47c1b8a2a9abd7528"
+  },
+  "ownerReviewStatus": "implementation_and_storage_compatibility_passed",
+  "exactOwnerPinsVerified": [
+    {
+      "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-correction-20261026-v2/conditional_segments_v1.py",
+      "sha256": "2b537a2036418799355eb4c7b3eedf11ae999b077391813bf32c3b9b4bb604c3"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-correction-20261026-v2/prediction_binding_segments.py",
+      "sha256": "35344c4e5e80f91b183bc43d6ea3a420c791bdbf4497f6c488a42aa24b5b7520"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-correction-20261026-v2/combine_source_segments.py",
+      "sha256": "8935fb7920cab8ff0895aac9facff07757269f5a20d5009821aa91e17bd7eec7"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-correction-20261026-v2/audit_prediction_segments.py",
+      "sha256": "c5b0398d1ec5ee2b193882822318ba47628372a9e3305da12460adf806f2d69d"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-correction-20261026-v2/export_live_segments.py",
+      "sha256": "f4ad9783b76ac01b76242d6bdbd88edd9fd2d462ed4df36662f0fe0b7b4bcaae"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-correction-20261026-v2/expected_error_sidecar_segments.py",
+      "sha256": "5eea622079d6749190c4ee5a8a658f30dc685d3c14f020f01e457e638a01b57a"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-correction-20261026-v2/run_precision_extensions.py",
+      "sha256": "16c671f8e4aadc8778198776e39aa98dfbd8c6594b4033e2079124d9a95a424c"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-disagreement-20261026/ny21-poll-diagnostic/sidecar-audit-segments-v1/audit_expected_error_sidecar.py",
+      "sha256": "857c573b1d39fefdc5a6bea95e0f4dd1b532d64f54943988bed9cb2cfb44a12a"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-disagreement-20261026/ny21-poll-diagnostic/sidecar-audit-segments-v1/test_audit_expected_error_sidecar.py",
+      "sha256": "d07eb219e47b2151070c831898b1fb6c7399a9a7d6abcbdd58b2372f6793ced2"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-disagreement-20261026/ny21-poll-diagnostic/sidecar-audit-segments-v1/README.md",
+      "sha256": "cfc6768c4481da4fc709b87f79958477c9b4e73af991a5a72a1c09f26433e000"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-correction-20261026-v2/conditional-segments-tests-v1.xml",
+      "sha256": "85ac23f72e990e5c0eba8dbd1a537892105020c584e63fc199d0be4ff4f38faa"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-correction-20261026-v2/segmented-pipeline-tests-v1.xml",
+      "sha256": "cf0ce446f4c51eecc57609826661c6d87d80b25efa76a4ad1bdb4a900509a17b"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-correction-20261026-v2/segmented-sidecar-auditor-tests-v1.xml",
+      "sha256": "453db7c2c91dbcaa4f96d913fe8bccb1af5e47f68b97c24732ae6cfbf0618fda"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-correction-20261026-v2/precision-extension-program-tests-v1.xml",
+      "sha256": "dbfcf8c68777de11812896821f42ca57f0308d78da8928683c0ba4ca90ffb6e1"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-correction-20261026-v2/conditional-segments-compatibility-v1/receipt.json",
+      "sha256": "a73bfe1c32121f1e9f83190a80ba3ee54dcac3d268c74b7de5a5f396df4efe11"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-correction-20261026-v2/segmented-sidecar-stream-compatibility-v1.json",
+      "sha256": "3c24a2c890266c1bb4dc36ed7103d09d3ef2441b0c4b1274d4f2ab1cc4811cd3"
+    }
+  ],
+  "ownerPinMismatchCount": 0,
+  "ownerFindings": [
+    {
+      "finding": "Storage manifest references original NPZ sources by exact root-relative path/SHA; offsets cover every original row without gaps/overlaps, race IDs are shared exactly, local draw IDs must be original arange and global IDs are reconstructed explicitly. All nonidentity member dtypes/shapes/order retain original data.",
+      "source": "conditional_segments_v1.py"
+    },
+    {
+      "finding": "V2 binding retains original nonpilot V1 sources, independent seeds and equal retained chain lengths, complete receipt/output/input hashes, exact conditional manifest membership, unchanged configuration/error scales/group completion/source-outcome flags and original law inputs. Completed original sources can have truthful precision failure; a selected publication source must pass all required gates.",
+      "source": "prediction_binding_segments.py and combine_source_segments.py"
+    },
+    {
+      "finding": "Independent sidecar auditor recognizes V2 storage and separately authenticates selected source/selection/scientific/native review lineage. It reconstructs source-aligned blocks across boundaries and enforces original row weights and source-local/global chain coordinates. Passing source status is not relaxed merely because an original extension run can fail precision.",
+      "source": "sidecar-audit-segments-v1/audit_expected_error_sidecar.py"
+    },
+    {
+      "finding": "The compatibility receipt authenticates an old-edition 2M-row/8-chain exact element-bit comparison for all conditional and joint members. The stream receipt reports zero differences in all four old2M diagnostic vectors. Both receipts explicitly disclaim corrected forecast/publication qualification.",
+      "source": "conditional-segments-compatibility-v1/receipt.json and segmented-sidecar-stream-compatibility-v1.json"
+    }
+  ],
+  "boundedActualChecks": {
+    "ownerSmallPinsHashed": 16,
+    "compatibilityManifestSha256": "85c9b4e47708669cdfa6e62c18b5c2e283e4dea615eccb3ae99dae1f745bb981",
+    "manifestTotalRows": 2000000,
+    "orderedPairCount": 412,
+    "sources": [
+      {
+        "rows": 1000000,
+        "chains": 4,
+        "drawsPerChain": 250000,
+        "seed": 2026102502,
+        "compressedConditionalArchiveBytes": 3133978924
+      },
+      {
+        "rows": 1000000,
+        "chains": 4,
+        "drawsPerChain": 250000,
+        "seed": 2026102503,
+        "compressedConditionalArchiveBytes": 3133979546
+      }
+    ],
+    "additionalChecks": "Independently hashed the small compatibility manifest and original plan bytes; checked offsets, unique ordered race IDs, row/chain settings and exact source-archive hashes declared by original receipts.",
+    "largeArchiveBytesRehashed": false,
+    "actual2MArrayParityRepeated": false
+  },
+  "frontendScope": {
+    "newAdapter": "scripts/house_live_conditional_storage.py",
+    "paths": [
+      {
+        "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/scripts/house_live_conditional_storage.py",
+        "sha256": "75ec961de84f6f1e93fa7dca93e2fc7d6dd27587810e6087b5ea2693c186370a"
+      },
+      {
+        "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/scripts/house_live_evidence.mjs",
+        "sha256": "fd05542d11002ba87f5fb2b99bbd062952f5f5aaa8abab33fe1a6649402711dd"
+      },
+      {
+        "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/scripts/check_house_live_candidate.mjs",
+        "sha256": "d1622878a0256521abad121a767174d781ff6a16edd15415014f8a890ff8115d"
+      },
+      {
+        "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/scripts/import_house_live.mjs",
+        "sha256": "a94b20c8cf1a8b887bde38972b66acc5e9c30df522a2e201373e4119a019c702"
+      },
+      {
+        "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/scripts/decode_house_live_joint.py",
+        "sha256": "45b4e5ef68acf5b4770be7a19c60a9438a68a1365a16bc22e62e894753153def"
+      },
+      {
+        "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/house-live-joint-archive.ts",
+        "sha256": "2213349c3865463c1880b7dd76d4947d4343bed3a020e0278c48ce962884a5fb"
+      },
+      {
+        "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/tests/site_house_live_conditional_storage_test.py",
+        "sha256": "66ee91f2ea2a03d976d43c7b55e045e75d9e36c763dc870017f47316dac12c1e"
+      },
+      {
+        "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/tests/house-live-segmented-storage.test.mjs",
+        "sha256": "f0563b9c67c2f7fe534ca490bc6f54c5adccedcd1acd41fce659b84973ac3bb3"
+      }
+    ],
+    "entryPoints": [
+      "checkHouseLiveCandidate(..., conditionalStorageRoot)",
+      "importHouseLive(..., conditionalStorageRoot)",
+      "--conditional-storage-root (offline CLI only)"
+    ],
+    "behavior": [
+      "Same live import/check paths now recognize exact HouseLiveCombinedPredictionPlanV2/HouseLivePredictionReceiptV2 and require a unique authenticated V2 binding review.",
+      "V2 demands a separately explicit operator root; no research root is inferred from receipt paths. Paths resolve inside that root, and actual manifest/child/plan/receipt/input/output bytes are SHA256-authenticated.",
+      "Original selected/native plan SHA and selected source receipt SHA must match their local authenticated copies. Every original child must preserve full predictive-law/input/driver identity, seeds, equal chain lengths, warmup, complete row/chain offsets and source-local draw identities.",
+      "Selected completed V2 source must have passed receipt and both diagnostic flags. Original source diagnostic_failure is allowed only with matching flags; it grants no publication admission.",
+      "The independent stdlib reader streams native C-order member bytes, re-batches across segment boundaries without independence reconstruction, retains shared coordinates, preserves exact floating bits, and assigns each original row1/totalRows.",
+      "V1 inputs still use their existing nine/eleven-member NPZ checks and existing public/archive format identifiers. Public/browser schemas and APIs are unchanged; new offline options are additive.",
+      "V2 remains the same raw eleven-member winner NPZ to the website; conditional arrays stay offline and are never staged. Existing full16 catalog, scientific/native/operator review, geography, polling and qualification gates remain in the importer.",
+      "No run-ID or per-edition scorecard entry list is hardcoded into storage support; exact references can be discovered by future qualified release publication."
+    ]
+  },
+  "validation": [
+    {
+      "command": "node --experimental-strip-types --test --test-reporter=spec tests/house-live-candidate.test.mjs tests/house-live-joint-archive.test.mjs tests/house-live-import.test.mjs tests/house-live-segmented-storage.test.mjs",
+      "result": "38/38 pass; existing V1 and synthetic16 import gates preserved"
+    },
+    {
+      "command": "python3 -B -m unittest discover -s tests -p site_house_live_*test.py -v",
+      "result": "18/18 passed before one additional storage test; 11 existing joint-decoder plus then7 storage tests"
+    },
+    {
+      "command": "python3 -B -m unittest discover -s tests -p site_house_live_conditional_storage_test.py -v",
+      "result": "Final8/8 storage tests pass; every member bit parity and chunk1/3/8 cross-boundary equality; gaps/overlaps/reordering/duplicates/shape/dtype/rule/path/hash/local-ID/law/seed/length/input corruption rejected; truthful original diagnostic failure distinguished from selected failure"
+    },
+    {
+      "command": "node --experimental-strip-types --test --test-reporter=spec tests/house-live-segmented-storage.test.mjs",
+      "result": "Final4/4 pass after latest reader guard changes; actual existing candidate and CLI use V2 path, explicit root required, absent/ambiguous storage reviews and wrong receipt versions rejected, corrupt child/manifest rejected"
+    },
+    {
+      "command": "node node_modules/typescript/bin/tsc --noEmit --incremental false",
+      "result": "pass after root fixed unrelated in-flight Senate readonly producer observation"
+    }
+  ],
+  "boundariesAndLimits": [
+    "No corrected16 packet was admitted or qualified; it remains pending. No real native datasets, scientific journals, forecasts, sidecars, source archives, publication manifests or public website were changed.",
+    "Owner code tree was read-only. The old2M six-plus-GB conditional archives were not rehashed or recomputed; actual large-array parity remains the scoped owner compatibility evidence, not a new independent recount claim.",
+    "Future actual V2 import necessarily authenticates original child bytes; this can require substantial read I/O. This turn used only small invented arrays and metadata/code hash checks, with no fits or all2M repetition.",
+    "New reader deliberately supports the native bounded C-order primitive array format and64-bit source identity dtype. Object/structured/Fortran arrays fail closed; public V1 decoder behavior is preserved.",
+    "Stored-byte authentication and source-law equality do not establish empirical forecast calibration, numerical qualification or a scientific/publication decision.",
+    "New frontend implementation still benefits from separate root/Luna review before committing. No build/browser/commit/push or election-night-artifacts/scoring changes were performed."
+  ],
+  "observedResultsConsumed": false,
+  "fitsRun": 0,
+  "publicationsPerformed": 0,
+  "qualifiedCorrected16PacketAdmitted": false
+}

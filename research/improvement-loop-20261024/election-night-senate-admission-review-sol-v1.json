@@ -1,0 +1,44 @@
+{
+  "schema": "ElectionNightSenateAdmissionIndependentReviewV1",
+  "reviewedAt": "2026-10-26",
+  "status": "material_gaps_reported_to_root_before_admission",
+  "scope": {
+    "productFilesEdited": false,
+    "actual2026ResultsUsed": false,
+    "admissionIssued": false
+  },
+  "sourcePins": {
+    "admissionTsSha256": "0daa4dd0c41fafa35710e53cc50650d4296613242a1d010287888f60ebf6ee0f",
+    "selectorTsSha256": "d6eb86dc9c5ef782329872a55476025f9c0687844906e0052c69c4fe24ec1496",
+    "draftCohortSha256": "369815db81236318da3519e4998b47a321e27ff4e26d7e56c228afcb8cf9cfce"
+  },
+  "draftCohortShape": {
+    "policySha256": "efe1bf193e2959284b73ea833af0a136f6c592001a2faf50505e3258e25cf0cd",
+    "mappingSha256": "244e9db017957d0a5361f5f1b7a2498f066c43d9b94a59f1277e8cff91b6afa3",
+    "senateObservationSelectorsCount": 35,
+    "matchesProducerExpectedTopLevelShape": true
+  },
+  "passes": [
+    "Caller-pinned publication and admission bytes are used as trust roots; the producer does not create those decisions or select a new public head.",
+    "Source, extraction and all three role reviews bind exact source/extraction/policy/lock hashes; supporting bytes are read and authenticated.",
+    "Owner operator is invoked on the selected policy row with explicit finality declarations; certified tie retains margin zero while binary lead is unresolved, preliminary counts remain provisional, and outside-pair office winner is diagnostic only.",
+    "Correction proposal binds authenticated prior ledger/head, unique revision ID and selected prior record SHA; both forecast arms later use the same canonical record bytes."
+  ],
+  "materialGaps": [
+    {
+      "id": "conditional_family_reverse_guard",
+      "finding": "Selector helper allows AK/ME or GA policy rows to be relabeled plurality_named_pair, since it checks family\u21d2state but not state\u21d2required family. lockedTarget checks a claimed mapping SHA and forecast pair, not exact raw owner mapping row bytes. A substituted cohort/protocol could then interpret general counts under the wrong owner rule.",
+      "action": "Enforce the reverse state/race family mapping or authenticate and compare all 35 selector policy rows to the pinned raw owner mapping before preparing a result."
+    },
+    {
+      "id": "actual_report_round_mapping",
+      "finding": "sourceContest.roundId and roundLabel need only have the right shape; the code never reconciles them with observation.stage/eventDate/officialObservedFinalRound/continuingCandidateIds or GA runoff data. An extraction can contain contradictory report-round metadata yet feed a qualifying structured observation into the operator.",
+      "action": "Require structured observed stage/date/round provenance that the review binds and validate its equality/selection against the operator inputs; preserve the actual report round ID separately from stable selector IDs."
+    }
+  ],
+  "additionalSourceIntegrityNotes": [
+    "Two native candidates can map to the same non-null sourceCandidateId; require distinct source identities when IDs are present or an explicit reviewed exception.",
+    "officialOfficeWinnerId can populate the operator diagnostic without a required report locator or independent source-identity mapping; bind it before public display."
+  ],
+  "limitations": "These findings are about the current pre-admission code. Independently reviewed extraction/admission bytes are still required; no current official result feed or actual grade was evaluated."
+}

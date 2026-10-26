@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "status": "private_preparation_reviewed_not_published",
+  "objective": "Scorecard follows newly published same-format forecasts and exact reviewed references while open",
+  "sourceFilesSha256": {
+    "components/ElectionNightGuide.tsx": "562eea4dc39897c877d1619fd9e2c6bc88cfb0da300b9b1fe931044ab0591544",
+    "components/ElectionNightRubric.tsx": "6fd66c84f8aca6853f08eeda45ac497f6a5b468139c301471b343ba2e0a1e673",
+    "lib/election-night-client.ts": "d2f4575a39ca10ed302a84457b5389588fe77509eb50665fdd900b85b89bcb1a",
+    "lib/election-night-publication.ts": "03f3ed216e676fd9f4f994043e208e58befe39345ba4427b8be60ed44cb16354",
+    "lib/election-night-forecast.ts": "56d9d157f654c4a83f110cdb1b2939af12ff9379f6eebcf72d1a33c1ff1eb082",
+    "lib/election-night-reference.ts": "65532786762ef3664a0ab6c0ffe61ace1ec46e8088c7a717399bf15f3ce8c770",
+    "lib/election-night-core-reference.ts": "51ddf45200ee23a6facc2f74fd6699df88de0502a30bafa3f13f262eb8c81b6f",
+    "scripts/export_election_night_publication_index.mjs": "4aec93b5614fac799b46d831eaf2be11481b58e8283dc078479fb152ca45a6c4",
+    "public/data/election-night/publication-index.json": "3d66c9eadee8474f98bc0e9ef34e583d3764c5c6fa6d4db076f3fee6c9a889fb",
+    "tests/election-night-client.test.mjs": "66e0735ac2ca09019644d86b0b25bd0e4a8bbeed05a8704d69c69736b2813edb",
+    "tests/election-night-publication-index.test.mjs": "85c4592a6365333d94c53fe24e2bcbcb3a76f98439b418d2e76088bd20e8cfbc",
+    "tests/site/election-night.spec.ts": "b0934304baea7323386c38cb576475c8833d3c24d9eb1a05c3c76d04fd2013f6",
+    "package.json": "69ca2c071ad0dff9272f9991cb88a488b477d9411e97ea10b0c1c3d92a59566d"
+  },
+  "verification": {
+    "nodeSuite": {
+      "passed": 119,
+      "failed": 0,
+      "log": "node-suite.log"
+    },
+    "exportSuite": {
+      "passed": 12,
+      "failed": 0,
+      "log": "export-suite.log"
+    },
+    "nonincrementalTypecheck": {
+      "passed": true,
+      "log": "typecheck.log"
+    },
+    "productionBuild": {
+      "passed": true,
+      "log": "final-build.log"
+    },
+    "browserFullGuide": {
+      "passed": 16,
+      "failed": 0,
+      "log": "browser.log"
+    },
+    "browserFinalTargeted": {
+      "passed": 4,
+      "failed": 0,
+      "log": "final-browser.log"
+    },
+    "independentReview": "Sol1 read-only final review: no remaining material finding; focused matcher/client/index tests 39/39 pass"
+  },
+  "behavior": [
+    "No reference from an old result SHA attaches to a newly published forecast.",
+    "A new same-run result SHA, date, and reviewed publication descriptor/catalog attach full35 and core32 references without renderer edits.",
+    "A new supported Senate base/uncertainty stack is accepted when registry/bundle bytes and descriptor/reference semantics match.",
+    "Missing or malformed optional references remain unavailable while the verified forecast stays visible.",
+    "The open Guide refreshes the selected model or changed standard default without rewriting visitor forecast URL/settings."
+  ],
+  "limitations": [
+    "Publication index is a site-owned release decision; a future reference still requires separately reviewed catalog and manifest publication.",
+    "No election outcomes, evaluation lock, or observed grade are created by this change.",
+    "Different result law or unsupported reference shape still requires a reviewed adapter."
+  ],
+  "deployment": "No commit, push, or publication by this agent."
+}

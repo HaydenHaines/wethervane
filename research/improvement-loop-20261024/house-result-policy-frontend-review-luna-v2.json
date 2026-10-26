@@ -1,0 +1,98 @@
+{
+  "review": "house-result-policy-frontend-review-luna-v2",
+  "reviewedAt": "2026-10-26",
+  "addendumTo": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/house-result-policy-frontend-review-luna-v1.json",
+  "preservesPriorReview": true,
+  "scope": "Read-only follow-up of v4 policy handoff against the three design blockers from Luna v1. No actual outcomes, candidate-level adjudications, result admissions, or forecast data consumed.",
+  "sourcePins": {
+    "receipt": {
+      "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-correction-20261026-v2/result-policy-handoff-v4/receipt.json",
+      "schema": "HousePreOutcomePolicyHandoffV4"
+    },
+    "policyProposal": {
+      "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-correction-20261026-v2/result-policy-handoff-v4/policy-proposal.json",
+      "sha256": "9da96d49054f65fd215df58268e115f9608e1911503c1b2eea91a3be914ab11c"
+    },
+    "raceObservationTargets": {
+      "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-correction-20261026-v2/result-policy-handoff-v4/race-observation-targets.json",
+      "sha256": "f95bafb34087096bae5bee3074cf6dac918f8f119526ebd8c957fd447e2fe005"
+    },
+    "officialResultAdmissionContract": {
+      "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-correction-20261026-v2/result-policy-handoff-v4/official-result-admission-contract.json",
+      "sha256": "8cf5a7d0fa7729e3a6b6e7496ec902619bd5251690ea9662912612952533c643"
+    },
+    "partyTruthAuthorityCodebook": {
+      "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-correction-20261026-v2/result-policy-handoff-v4/party-truth-authority-codebook.json",
+      "sha256": "01628cf44f380b588a42bda080d11a7242b0d6605fdab9a525e90923a7602025"
+    },
+    "MaineOfficialGlossaryCapture": {
+      "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-correction-20261026-v2/maine-rcv-rule-source-v1.html",
+      "sha256": "605de57a492177e9d14d420efaa07fe68cbfb8b3e9c5213e1d4dd9255a06f21d",
+      "url": "https://www3.maine.gov/sos/elections-voting/upcoming/ranked-choice-voting-tabs"
+    },
+    "inheritedAuthorityDirectory": {
+      "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-correction-20261026-v2/result-policy-handoff-v1/official-authorities.json",
+      "sha256": "6b81ce9469d1c558d07a69a1841eb52c07addb3738412cca429ac8cf54d4202b"
+    },
+    "inheritedRaceTargets": {
+      "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-correction-20261026-v2/result-policy-handoff-v1/race-targets.json",
+      "sha256": "2e70c4e7c9d233e0ea2126c31ce59baa8c6871f0b2b9ca7ec2b543a30bc87327"
+    }
+  },
+  "resolutionChecks": {
+    "allV4ReceiptOutputHashesVerified": true,
+    "allV4SourceHashesVerified": true,
+    "all435RaceIdsPreservedInOriginalOrder": true,
+    "pairCohort": {
+      "applicableNamedPairs": 412,
+      "fixedInapplicableRows": 23,
+      "inapplicableReason": "No named principal-pair share distribution in this forecast; fixed before outcomes.",
+      "allRowsRetained": true
+    },
+    "maineInitialChoice": {
+      "resolvedAtPolicyDefinitionLevel": true,
+      "newPolicyDefinition": "Final corrected/certified initial-choice candidate totals before RCV Round 1 promotes a second choice when the first rank is blank. Do not use the unofficial partial Round 0 Election Day tally or the altered Round 1 RCV candidate totals.",
+      "admissionSafeguard": "The extraction must record the literal source field, source round label, and documented measurement semantics. If a controlling official artifact cannot establish initial-choice values, leave this pair measurement unavailable rather than substitute promoted/transfer totals.",
+      "priorAmbiguityRemoved": true,
+      "remainingOperationalLimit": "No 2026 result artifact has been examined, so availability of a corrected/certified initial-choice source field remains to be established only when future results exist. This is not a policy-definition blocker."
+    },
+    "partyTruthCodebook": {
+      "stateRows": 50,
+      "stateIdsUnique": true,
+      "authoritySourceIdsMatchDirectory": true,
+      "globalRuleInheritanceForAllStates": true,
+      "deterministicPrinciples": [
+        "Final official general-ballot/certified candidate designation first; official current filing/nomination/party-preference record only when needed.",
+        "D/R plus minor fusion affiliation maps to the major party once; minor-only maps O; dual D+R or conflicting/uncertain identity stays pending, not O.",
+        "Explicit official no-party/unaffiliated/nonpartisan or non-D/R designation maps O; a missing field alone is not None.",
+        "Write-in status establishes candidacy, not party; obtain official current affiliation or keep pending.",
+        "Use state-specific candidate-preference labels for CA/WA only as evaluation categories and expressly disclaim legal nomination/endorsement.",
+        "Do not use caucus, endorsement, ideology, prior party, FEC, media, or the forecast roster to resolve actual party truth."
+      ],
+      "candidateLevelEvidence": "The codebook explicitly states zero of 1,209 forecast candidate identities are pre-adjudicated and all_candidate_records_individually_reviewed is false. This is a future per-winner evidence/admission task, not a claim of completed identity review."
+    },
+    "commonEditorialSchedule": {
+      "status": "website-owner adopted for the draft; no automated task or evaluation lock created",
+      "timezone": "America/Chicago",
+      "initialReview": "2026-11-04T10:00:00-06:00",
+      "cadence": "Daily 10:00 through 2026-12-16, then Wednesdays 10:00 through 2027-01-06",
+      "summaryCutoff": "2027-01-15T17:00:00-06:00",
+      "pendingTreatment": "Retain all 435/412 IDs; publish resolved n/N and pending/unavailable counts; never impute or shrink the denominator.",
+      "revisionTreatment": "Keep dated releases; later controlling results get a transparent corrected evaluation with prior/new source hashes and changed rows; never rewrite the locked forecast.",
+      "priorScheduleBlockerResolved": true,
+      "noBackgroundAutomationCreated": true
+    }
+  },
+  "readinessBoundary": {
+    "policyProposal": "The three v1 policy-definition blockers are resolved sufficiently for owner/admission review of this pre-outcome result protocol.",
+    "notAnEvaluationLock": true,
+    "notAnOfficialResultAdmission": true,
+    "correctedAll16ForecastAndSidecars": "Still separate/unbound according to receipt.remaining; this v4 policy does not certify forecast readiness.",
+    "candidateAndAffiliationRecords": "No actual candidate identities/affiliations have been adjudicated; future source evidence and admission are required.",
+    "dynamicScorecardBehavior": "This future result policy must not freeze or pin the live scorecard to today's forecast. The live scorecard should continue following the currently published forecast and its matching reviewed reference. The Senate lock/protocol is a separate exercise in defining how a future dated forecast edition could be evaluated.",
+    "actualResultsUsed": false,
+    "gradeOrPublicationCreated": false
+  },
+  "remainingBlockers": [],
+  "filesModifiedOutsideReviewArtifact": false
+}

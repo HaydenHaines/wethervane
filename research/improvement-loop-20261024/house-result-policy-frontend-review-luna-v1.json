@@ -1,0 +1,105 @@
+{
+  "review": "house-result-policy-frontend-review-luna-v1",
+  "reviewedAt": "2026-10-26",
+  "scope": "Independent read-only review of the pre-outcome House result-policy proposal, 435 winner / 412 pair target framing, state-specific rules, finality, review calendar, and readiness status.",
+  "overall": "The proposal has a sound separation of the 435 exhaustive D/R/O winner event from 412 fixed named-pair first-round share/margin events. It is not ready for an evaluation lock until three operational choices are made explicit: Maine first-choice versus Round 1 data, a deterministic per-state party-truth classification rule, and one shared review schedule/cutoff. It is also explicitly not a corrected-forecast/result-admission handoff; no actual score or grade can be prepared from this receipt.",
+  "sourcePins": {
+    "handoffReceipt": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-correction-20261026-v2/result-policy-handoff-v2/receipt.json",
+    "policyProposalSha256": "e8fa12cec851b6281c9dcfebcd10c237e362f6b17d78981794ac6755af37230b",
+    "raceObservationTargetsSha256": "7d2fa440df4571d0020f238bd1db7099481578bd2e3a008d949a327baa4bd649",
+    "officialResultAdmissionContractSha256": "817fdbb8b31fd08008f8f1ce3b06cd93464225adb31a59023739a9b9cb943777",
+    "researchProposalV4Sha256": "c11c2006bb086d7aebafbe4f2e614c5de6257b1c97bdb67ebd38376847c3b33f",
+    "partyWinnerInterpretationV2Sha256": "70de07db3a0bbb5b637f10daf9b484ccc6d678c6b7dd08a781a8056fcf5f70fa",
+    "targetsV1Sha256": "2e70c4e7c9d233e0ea2126c31ce59baa8c6871f0b2b9ca7ec2b543a30bc87327",
+    "authorityDirectoryV1Sha256": "6b81ce9469d1c558d07a69a1841eb52c07addb3738412cca429ac8cf54d4202b"
+  },
+  "validatedScope": {
+    "fixedWinnerEvents": 435,
+    "fixedNamedPairTargets": 412,
+    "pairInapplicable": 23,
+    "forecastCandidateIdentities": 1209,
+    "nonstandardInitialRoundPairs": ["AK-00", "ME-01", "ME-02", "LA-02"],
+    "policyStatus": "complete proposal for owner review, not locked",
+    "forecastReadiness": "Corrected qualified all-16 forecast and independently audited sidecars remain separately unbound per policy proposal; result bytes have not been admitted; no grade/publication created."
+  },
+  "strengths": [
+    "The 435 event scores the fixed D/R/O probability vector against the eventual official seat winner and retains a winner outside the captured roster; it keeps forecast probabilities/roster fixed rather than rewriting them from outcomes.",
+    "The 412 event measures only exact frozen candidate IDs with pair share V1/(V1+V2), clearly distinct from legal seat winner truth. It has explicit zero-denominator, tie, replacement, absence, canceled contest, recount/revision, and unresolved cases.",
+    "The 23 structurally inapplicable pair rows are preserved and distinguished from post-election missing results.",
+    "AK/ME/LA nonstandard first-round mappings are disclosed as new operational targets without claiming historical equivalence; final RCV transfers or Louisiana runoff votes are not substituted into the pair metric.",
+    "Finality policy correctly distinguishes provisional reporting from completed/certified round totals and eventual controlling winner; recount/court revisions are retained and unresolved rows remain pending in fixed denominators.",
+    "The EAC directory is appropriately treated as a discovery index, not evidence of results or certification."
+  ],
+  "prelockResolutions": [
+    {
+      "priority": "blocker",
+      "issue": "Maine 'Round 1 / first-choice totals' conflates two official quantities.",
+      "evidence": "Maine SOS describes the unofficial Election Day first-choice tally as Round 0, while Round 1 begins applying RCV rules and can move a ballot with a blank first ranking but a marked second ranking to that candidate. Maine statute separately says precinct returns report only first-choice votes. Therefore a certified RCV Round 1 table need not equal the raw first-choice candidate counts intended by the wording.",
+      "recommendation": "Before lock, define ME-01/ME-02 pair target as exact official initial-choice totals (Round 0 / precinct-return first-choice totals) and identify the certified source artifact/field that establishes those totals after corrections. Do not label the target Round 1. If the owner intends post-rule Round 1 totals instead, name that as a different operational metric and explicitly accept that changed estimand. Keep eventual legal winner event on final RCV tabulation.",
+      "primarySources": [
+        "https://www.maine.gov/sos/elections-voting/resources-for-ranked-choice-voting",
+        "https://mainelegislature.org/legis/statutes/21-A/title21-Asec711.html",
+        "https://mainelegislature.org/legis/statutes/21-A/title21-Asec723-A.html"
+      ]
+    },
+    {
+      "priority": "blocker",
+      "issue": "Actual D/R/O truth rule is principled but not yet a deterministic 50-state codebook.",
+      "evidence": "The policy refers broadly to official operative ballot/nomination affiliation, includes reasonable fusion handling (major-party plus minor-party line maps to the major party; dual D/R or ambiguous cases stay unresolved), and rejects caucus/endorsement/ideology. But the choice between nomination record and general-ballot label is not resolved for each jurisdiction, including nonpartisan/top-two ballot formats, independent/no-party labels, fusion ballot presentation, and write-ins.",
+      "recommendation": "Before lock, freeze one hierarchy and a per-state mapping table: use the jurisdiction's official party/ballot designation legally attached to the candidate for this general election; account for fusion lines without counting a person twice; map candidates with no D/R designation to O; keep dual-major-party/uncertain identity pending rather than auto-mapping to O. Where the state's official general-election ballot does not establish D/R party identity, specify the exact official nomination/registration record used. Pre-adjudicate all 435 roster winners/candidates and state what source controls before any outcome review.",
+      "primarySourceBoundary": "The EAC 50-state directory is only a locator. State law and each official candidate/ballot source must support the per-state rule; no single national affiliation rule is established by the directory.",
+      "primarySources": [
+        "https://www.eac.gov/voters/register-and-vote-in-your-state"
+      ]
+    },
+    {
+      "priority": "blocker",
+      "issue": "The common review calendar is required but currently deferred to owner choice.",
+      "evidence": "Policy says to declare a common source-review date and repeat schedule before outcome review, and that unresolved rows remain pending at cutoff, but it supplies neither dates nor cadence.",
+      "recommendation": "Set the same dates/cadence for all 435 races and both event types before lock (for example, one initial common review snapshot after the ordinary canvass period, fixed monthly rechecks through a published cutoff, plus a uniform event-triggered update whenever an official recount/order changes a result). At every snapshot publish n/N statuses. Do not advance a final grade while the grade's complete-coverage condition is unmet; races still under active legal review remain pending rather than becoming failed or disappearing. Root should choose and pin actual calendar dates before lock."
+    }
+  ],
+  "secondaryNotes": [
+    {
+      "issue": "Alaska pair wording",
+      "recommendation": "Use 'official first-choice totals from the completed initial count' rather than a generic 'Round 1' label in user-facing/machine policy. Alaska's Division states that its summary report shows 1st Choice results from Round 1, so the shorthand is supported there; preserve the exact report field/round when ingesting."
+    },
+    {
+      "issue": "LA-02 wording",
+      "recommendation": "The Act 7 source supports a November 3, 2026 open primary and December 12 open general for 2026 U.S. House. The policy's separate November pair measurement and eventual winner event are coherent. Keep the November pair metric even if neither pair member advances, as proposed; that is a new conditional share target, not a forecast of the runoff winner."
+    },
+    {
+      "issue": "Availability labels",
+      "recommendation": "In any public result table, report winner-event availability over 435 and pair-event availability over the fixed 412 applicable targets, while showing the 23 inapplicable rows separately. Never label 412/435 as the number of completed results."
+    }
+  ],
+  "primaryRuleChecks": [
+    {
+      "claim": "Maine federal general-election RCV can separate initial-choice votes from the final RCV winner.",
+      "verified": true,
+      "sources": [
+        "https://www.maine.gov/sos/elections-voting/resources-for-ranked-choice-voting",
+        "https://mainelegislature.org/legis/statutes/21-A/title21-Asec711.html",
+        "https://mainelegislature.org/legis/statutes/21-A/title21-Asec723-A.html"
+      ]
+    },
+    {
+      "claim": "Alaska's 2026 general-election framework uses RCV and the official summary identifies first-choice results from Round 1; official results are subject to State Review Board certification.",
+      "verified": true,
+      "sources": [
+        "https://www.elections.alaska.gov/RCV.php/",
+        "https://www.elections.alaska.gov/election-results/e/?id=24genr",
+        "https://www.elections.alaska.gov/Core/PostElectFAQ.php"
+      ]
+    },
+    {
+      "claim": "Louisiana Act No. 7 (2026) sets U.S. House open primary on Nov. 3 and open general on Dec. 12, 2026.",
+      "verified": true,
+      "sources": [
+        "https://legis.la.gov/legis/ViewDocument.aspx?d=1473830"
+      ]
+    }
+  ],
+  "no_outcomes_used": true,
+  "no_forecast_or_product_files_modified": true
+}

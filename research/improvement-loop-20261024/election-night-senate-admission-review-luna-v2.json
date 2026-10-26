@@ -1,0 +1,88 @@
+{
+  "schema": "ElectionNightSenateAdmissionIndependentReviewLunaV2",
+  "reviewedAt": "2026-10-26",
+  "status": "pass_with_nonblocking_identity_naming_caveat",
+  "scope": "Read-only review of repaired source-admission and selector implementation, focused tests, prior Sol findings, stale-review invalidation, and grade boundaries. No tests rerun, source changes, actual election results, or admission/review decisions created.",
+  "sourcePins": {
+    "previousSolReview": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-senate-admission-review-sol-v1.json",
+      "sha256": "e4d173e434050d05fc0668ae6b0b3c9562cd9b2fd808d280557b6ceea0fb284b"
+    },
+    "admissionTs": {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/election-night-senate-admission.ts",
+      "sha256": "839ff7706209916c059988b3767d9c01a52de45482b5cfed42d1e7c80f8c202e"
+    },
+    "selectorTs": {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/election-night-senate-targets.ts",
+      "sha256": "5fba6ea439ae61b7b6a1e6e467b88f704239bfbae91c520b834dbe4c0741123e"
+    },
+    "operatorTs": {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/election-night-senate-results.ts",
+      "sha256": "0484f65e9ee321eea0d05b1062a5fe6b8e955651fa475e9ea462930ccb9a00c0"
+    },
+    "admissionTests": {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/tests/election-night-senate-admission.test.mjs",
+      "sha256": "44d696a8e471dfca9583ea3362a1e7625485be915fa7d6a95d4c9077cbc7502e"
+    },
+    "rawPinnedFixtures": {
+      "policy": {
+        "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/tests/fixtures/election-night/senate-policy-v1.json",
+        "sha256": "efe1bf193e2959284b73ea833af0a136f6c592001a2faf50505e3258e25cf0cd"
+      },
+      "mapping": {
+        "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/tests/fixtures/election-night/senate-mapping-v1.json",
+        "sha256": "244e9db017957d0a5361f5f1b7a2498f066c43d9b94a59f1277e8cff91b6afa3"
+      }
+    }
+  },
+  "priorFindingsDisposition": [
+    {
+      "finding": "Conditional state family could be reverse-mapped to plurality; lock policy row not bound to exact raw owner mapping bytes.",
+      "disposition": "resolved",
+      "evidence": "Selector now enforces state-to-required-family in both directions. Admission requires a caller-trusted mapping pin with the exact reviewed mapping SHA, reads/authenticates those bytes, and compares the selected lock row's state, race, seat, regular/special event, dates, candidate IDs and operator family to the raw mapping row."
+    },
+    {
+      "finding": "Actual report round metadata could contradict operator observations.",
+      "disposition": "resolved for structured fields; actual report labels remain an explicitly reviewed evidence boundary",
+      "evidence": "Extraction stores actual report roundId/roundLabel separately from synthetic selector IDs, plus stage/date/final-round/continuing candidates/runoff flags. Admission requires those structured sourceContest values to equal the operator observation. Round label/ID meaning is established by field locations and the eventRound reviewer, not by pretending a source's label equals the synthetic selection-rule ID."
+    },
+    {
+      "finding": "Two native candidates could reuse one source candidate ID.",
+      "disposition": "resolved",
+      "evidence": "Admission requires non-null source candidate IDs to be unique and all count keys to have an explicit crosswalk. Null official IDs remain permitted when the official source has no stable candidate ID, with source name/locator and independent identity review."
+    },
+    {
+      "finding": "Outside-office-winner diagnostic lacked a supporting locator/crosswalk.",
+      "disposition": "resolved for source-location binding; see nonblocking key-semantics caveat",
+      "evidence": "When an office-winner diagnostic is supplied, code now requires a crosswalk entry for its ID and an officialOfficeWinner field location; the source, candidate identity, and event-round reviews bind the extraction bytes. The operator still marks the field diagnostic-only and does not support legal-winner grading."
+    }
+  ],
+  "gradeBoundaryChecks": {
+    "certifiedPairTie": "Pair margin remains eligible at exactly 0.0; relative-lead outcome ID is null and pair-winner score is unavailable.",
+    "provisionalOrActiveRecount": "Admission marks the record provisional/unresolved; protocol minimumStatus is certified; the evaluator does not produce winner or margin score for the test recount case.",
+    "GA": "General event requires runoffRequired=false; if true it is pending_runoff. A runoff must have the fixed date and exact locked pair. Certified report publication before event date is rejected.",
+    "AK_ME_RCV": "RCV rows require officialObservedFinalRound=true and exactly the locked two candidates continuing. Incomplete/wrong-final-two observations remain unresolved.",
+    "legalOfficeWinner": "The operator projection has legalWinnerGradeSupported=false. The record winner remains the conditional named-pair lead; an outside-office-winner diagnostic is not substituted as the pair winner or scored.",
+    "status": "No observed actual result or grade leaks from the reviewed logic/tests. The tests use invented forecasts, counts, report bytes, review decisions and trust roots; the policy/mapping fixtures are the real pinned bytes asserted by hash."
+  },
+  "staleReviewInvalidation": {
+    "finding": "The old Sol review's code hash is stale relative to the repaired source; its prior finding is not an admission or current approval.",
+    "mechanisms": [
+      "New admission requires a raw mapping pin, caller-trusted publication, and exact mapping hash; old admission shape without mapping cannot pass.",
+      "Reviews bind exact extraction SHA-256, source SHA-256, lock, policy and mapping. A changed extraction cannot reuse a review for old bytes.",
+      "The repaired extraction requires structured sourceContest stage/date/finality/round fields that old extraction shapes did not provide."
+    ],
+    "oldReviewReusedAsApproval": false
+  },
+  "nonblockingCaveat": {
+    "severity": "minor schema clarity before any public display of this diagnostic",
+    "issue": "`officialOfficeWinnerId` and its crosswalk are represented using `nativeCandidateId`. For an office winner outside the two-candidate forecast roster, tests use a synthetic extraction identity (`INVENTED:outside-pair`) in this field. It is locator-backed and diagnostic-only, but the field name can imply an actual native forecast ID.",
+    "riskBoundary": "This does not leak a legal-winner score: the operator explicitly disables it, and the pair score remains based only on the two locked candidates. No actual external winner data is supplied in tests.",
+    "recommendation": "Before publicizing this diagnostic, document the out-of-roster extraction-key convention or separate it into an explicitly source-level winner identity field, while retaining candidate-ID and field-location review."
+  },
+  "notLockOrAdmission": true,
+  "actualResultsUsed": false,
+  "admissionIssued": false,
+  "reviewHashIssued": false,
+  "sourceFilesModified": false
+}
