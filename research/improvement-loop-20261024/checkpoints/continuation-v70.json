@@ -1,0 +1,46 @@
+{
+  "schema": "ContinuousImprovementCheckpointV70",
+  "recordedAtUtc": "2026-10-26T23:00:20.826758+00:00",
+  "status": "active; no registration model fit or demonstrated improvement",
+  "previous_goal_turn": "progress: reviewed provider compression, V3 selection adapter, paired gasoline analysis, House release readiness and deployed-branch metadata commit; no-op/verified-wait classification not applicable",
+  "references": {
+    "previous": {
+      "path": "research/improvement-loop-20261024/checkpoints/continuation-v69.json",
+      "sha256": "bf3b62eec6c1b0547917ed459c2916cf15c77ead952940a8b885dd0ee76f3e7b",
+      "bytes": 2770
+    },
+    "registration_luna": {
+      "path": "research/improvement-loop-20261024/m01-registration-transition-luna-v1/README.md",
+      "sha256": "213674dfc42176e537220bff4e23e15aabc6e521fb4d8ee4f65cc536f8003027",
+      "bytes": 7524
+    },
+    "registration_evidence": {
+      "path": "research/improvement-loop-20261024/m01-registration-transition-luna-v1/evidence.json",
+      "sha256": "1a2d739dca623e94124ea20ec1d6f2f38672537ff8f5e9e918f64d10babfcd17",
+      "bytes": 4842
+    },
+    "challenge_sol": {
+      "path": "research/improvement-loop-20261024/participation-challenge-sol-v1/README.md",
+      "sha256": "566281dec3103a7c24f2dbaf1cf20b863d9c81693cc1060d8bee1e701eb84e75",
+      "bytes": 5407
+    },
+    "toy": {
+      "path": "research/improvement-loop-20261024/participation-challenge-sol-v1/check_identification.py",
+      "sha256": "17ef7d8eef4beafd7d043660de0f2007b2fb28f2f77b28b3da5f83fe4606a618",
+      "bytes": 587
+    },
+    "toy_result": {
+      "path": "research/improvement-loop-20261024/participation-challenge-sol-v1/result.json",
+      "sha256": "57897f004be7547ff604555b6d8d72e801dbb7954ef5baeb5fb7c8dfedfe6c2b",
+      "bytes": 196
+    }
+  },
+  "registration_research": "Recursive Luna/Sol source and interface review identifies a proposed missing registration-to-voting transition but no empirical evidence that it is the weakest layer. The 2024 CPS edited universe covers adult citizens under specified citizenship codes and PES2 registration question is asked only when PES1 is No, DK, refused or no response; voters are skipped. Administrative EAVS supplies different registration/ballot margins, not person-level linkage. An explicit regime and skip observation law, design/replicate-weight uncertainty, historical source availability and survey/administrative estimands are required before considering a joint refit. The selected Measurement consumes sigmoid(turnout_logit+source offset); any staged replacement must retain the correct marginal turnout interface or jointly change Measurement. Existing EAVS report factors own their observations and must not be counted twice. A rational synthetic example exactly demonstrates nonidentification of two stages from marginal voting alone; root independently reran it. The original survey universe wording was corrected against Census documentation; no new data were downloaded and no model fitted.",
+  "owner_status": "Owner 2018 GPU sampler PID 1906964 observed alive and its monitor reported 28 retained transitions after warmup at 2026-10-26T22:58:49Z. This is a live sample, not converged posterior, qualified forecast or permission to restart. House recovery PID 1966453 remained live; recovered publication handoff was absent. Maintain existing per-job and overlap guards.",
+  "frontend": "As of this checkpoint deploy 0d71d82 local production build passed and GitHub run 40414769526 was active in e2e. Public domain still served prior metadata; SiteGround deployment status not accessible locally. A user SiteGround log question is pending. Corrected House data remains unqualified and unpublished; refer to v68 readiness guide.",
+  "next": [
+    "Finish and independently review the complete-graph compressed-provider parity probe, including observed-process and resource guards; never alter owner jobs or rely on blanket owner-idle claims.",
+    "Pursue a source-vintage and identification gate for registration data before proposing a matched full-stack refit; preserve overlap and uncertainty caveats.",
+    "Await and verify actual corrected House handoff and deployment; preserve old NY21 edition evidence."
+  ]
+}

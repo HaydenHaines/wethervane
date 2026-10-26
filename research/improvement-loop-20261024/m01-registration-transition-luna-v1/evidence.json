@@ -1,0 +1,72 @@
+{
+  "packet": "m01-registration-transition-luna-v1",
+  "date": "2026-10-26",
+  "finding": "not_identified_from_current_admitted_contract; research_gate_before_any_matched_refit",
+  "scope": "Read-only source/code review; no CPS/EAVS microdata download, model build, fit, forecast, or owner-data mutation.",
+  "local_inputs": [
+    {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/modular-count-graph-astra-v1/components.py",
+      "sha256": "7baf3ea8e644c025763e5a63b1721b14ddc748a94be3f1e106adf9f34f6ad2a7",
+      "relevant_claim": "Participation uses sigmoid(turnout_logit) for exposure intensity; Measurement uses sigmoid(turnout_logit + source_turnout) and separately models each participation report."
+    },
+    {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/src/senate_count_stack_v1/inputs.py",
+      "sha256": "6f4a1f5a747432c69a12392f1d1c2a1f4c4c3df3c1f16e886c44e1089438cb3e",
+      "relevant_claim": "Survey rows require record_id, cell_id, community_mask, turnout_mask, answer_mask; participation report rows are separate inputs."
+    },
+    {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/actual-pilot-preparation-sol-v1/prepared-v4/problem.json",
+      "sha256": "96f890fae93fec40caa0b58fb67b7df264259fc533b5d7a23eab70c8a4dc7034",
+      "relevant_claim": "Current TX problem: cutoff 2026-10-20T22:13:33Z; purpose actual_current; one state, events 2020/2024/2026; 2 EAVS participation reports, 33 surveys, 1 poll block, no registration outcome rows."
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/participation-challenge-sol-v1/README.md",
+      "sha256": "566281dec3103a7c24f2dbaf1cf20b863d9c81693cc1060d8bee1e701eb84e75",
+      "relevant_claim": "Independent interface challenge and exact-rational invented example; r=3/4,v=4/5 and r=4/5,v=3/4 have equal product 3/5 and identical marginal binomial turnout masses."
+    },
+    {
+      "path": "README.md",
+      "sha256": "213674dfc42176e537220bff4e23e15aabc6e521fb4d8ee4f65cc536f8003027",
+      "relevant_claim": "This packet's final assessment and proposed gate."
+    }
+  ],
+  "primary_sources": [
+    {
+      "title": "CPS November 2024 Voting Supplement Technical Documentation",
+      "url": "https://www2.census.gov/programs-surveys/cps/techdocs/cpsnov24.pdf",
+      "claims_checked": [
+        "People are the observation unit. PES1/PES2 edited universe is PRTAGE >=18 and PRCITSHP=1,2,3,4, subject to CPS interview/nonresponse and editing; this is not a census of all legally eligible voters (pp. 1, 9, 112-113).",
+        "Interviews ran Nov 10-19 2024, allow self/proxy response; basic CPS PWSSWGT is used (p. 9).",
+        "S1/PES1 Yes goes to S5; No/don't know/refused go to S2 (p. 117). PES2 edited universe is PES1=2,-2,-3,-9, including no response; Yes is skipped (p. 113).",
+        "2024 record geography identifies states; selected counties/metros are restricted (p. 1)."
+      ]
+    },
+    {
+      "title": "Census CPS Voting and Registration data archive",
+      "url": "https://www.census.gov/data/datasets/time-series/demo/cps/cps-supp_cps-repwgt/cps-voting.html",
+      "claims_checked": ["2018, 2020, 2022, 2024 materials; 2024 supplement and replicate-weight data are listed; page revised 2025-03-21."]
+    },
+    {
+      "title": "U.S. EAC Studies and Reports, EAVS vintages",
+      "url": "https://www.eac.gov/research-and-data/studies-and-reports",
+      "claims_checked": ["2024 EAVS v1 released 2025-06-30; v2 released 2026-02-12; 2022 v1 released 2023-06-29; 2018 v1 released 2019-06-27."]
+    },
+    {
+      "title": "EAC 2024 Election Administration and Voting Survey Comprehensive Report",
+      "url": "https://www.eac.gov/sites/default/files/2025-06/2024_EAVS_Report_508c.pdf",
+      "claims_checked": [
+        "A1a total registration, A1b active, A1c inactive; report notes North Dakota has no registration (pp. 149-150).",
+        "EAVS describes 2024 state same-day-registration availability and differences by jurisdiction (pp. 84-85).",
+        "F1a counted-ballot turnout is compared to prior-year ACS CVAP; the report recognizes unavailable election-year CVAP and makes state-level calculations (pp. 24-25).",
+        "Question definitions and reporting structure have changed across cycles; see survey methodology (pp. 249+)."
+      ]
+    }
+  ],
+  "evidence_class": {
+    "instrument_skip": "official primary documentation",
+    "available_vintages": "official archive pages",
+    "current_graph_contract": "hash-pinned local source inspection",
+    "identification_counterexample": "invented exact-rational algebraic illustration only",
+    "predictive_benefit": "not tested"
+  }
+}
