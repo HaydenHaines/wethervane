@@ -1,0 +1,92 @@
+{
+  "schema": "QueueMutableHistoryCounterexampleEvidenceV1",
+  "recorded_at_utc": "2026-10-26T22:00:14.693883+00:00",
+  "frozen": true,
+  "packet": {
+    "negative-results.json": {
+      "sha256": "026847b6838fa8f319498e5fc9b43d296975e10bbaadf0a4b72b9251f683af27",
+      "bytes": 12879
+    },
+    "tests.log": {
+      "sha256": "151f108c8a95badbb7124ade49bef9fad0fd3c733c359b195fde37a2636db7d1",
+      "bytes": 886
+    },
+    "probe.py": {
+      "sha256": "b235d0f182a85b7303349e8e6c0652baaf749b4dd12f726c3fb8b20ca65ca948",
+      "bytes": 9454
+    },
+    "test_counterexamples.py": {
+      "sha256": "1f54a465cd0e0e3506d0747bb7dd45fab1b22224dba6d63fa7a74550c95feaf0",
+      "bytes": 1891
+    },
+    "FINDINGS.md": {
+      "sha256": "a20708ecb13ced0a0b7683e1e69aabf0592fb4f4433d7994a6cd5ab07290b014",
+      "bytes": 7979
+    }
+  },
+  "source_pins": {
+    "experiment_queue.py": {
+      "sha256": "6995febe73a5c1c2a317849416a58cc25130b9bbda44161f6a7624b321a8415f",
+      "bytes": 35468
+    },
+    "execution.py": {
+      "sha256": "ce02f4c4b9be397b299c2219092fdd355db1695798af07c4974bc63cb6bbbc93",
+      "bytes": 36273
+    },
+    "ledger.py": {
+      "sha256": "d65cea890ecf9b456f8b9625d173f15dac1e7fa94bb618d3407e26f368ee220a",
+      "bytes": 13115
+    },
+    "run_receipts.py": {
+      "sha256": "a7e78b822207109e0257adce9abb6493c53a0d93158177131ade76c0d874e73e",
+      "bytes": 30383
+    },
+    "queue-v2/experiment_queue.py": {
+      "sha256": "27195955c52e0ae06909b93d16be46f0db136841f57fd610d4773955d6443471",
+      "bytes": 37397
+    },
+    "queue-v2/execution.py": {
+      "sha256": "ce02f4c4b9be397b299c2219092fdd355db1695798af07c4974bc63cb6bbbc93",
+      "bytes": 36273
+    },
+    "queue-v2/ledger.py": {
+      "sha256": "d65cea890ecf9b456f8b9625d173f15dac1e7fa94bb618d3407e26f368ee220a",
+      "bytes": 13115
+    },
+    "queue-v2/run_receipts.py": {
+      "sha256": "a7e78b822207109e0257adce9abb6493c53a0d93158177131ade76c0d874e73e",
+      "bytes": 30383
+    },
+    "queue-v2-incremental-assessment-sol-v1/dispatch.py": {
+      "sha256": "4a55b1fd276d143cccd8aaf997d97c6c2d8c7873c0a7b0239d1b9f107807417c",
+      "bytes": 14294
+    },
+    "queue-v2-incremental-assessment-sol-v1/FINDINGS.md": {
+      "sha256": "dfab5bcf4fdc6846fe0ed19981ae5d6224e964fd9fa886464a66e970487c145d",
+      "bytes": 10990
+    },
+    "queue-v2-incremental-assessment-sol-v1/independent-review-luna-v1.json": {
+      "sha256": "ba19576ddd732cff09a37dca1f22e67755cbb305763b9de56d490e7c55e70e87",
+      "bytes": 3794
+    },
+    "queue-incremental-index-sol-v2/core.py": {
+      "sha256": "207cfa6a85757b8d1d70aac056a96f45476b0a898f692b1ed5b5f5bf7709d9b2",
+      "bytes": 7646
+    }
+  },
+  "scope": "Five intentional adversarial owner-writable corruption cases in fresh temporary domains; V1/V2 and owner jobs untouched",
+  "tests_passed": 5,
+  "negative_findings": [
+    "V1/V2 malformed release without result frees live reservation",
+    "incremental forged committed release row frees live reservation",
+    "same-owner readonly-file replacement bypasses nominal sealing",
+    "selected-only incremental tick does not detect unvisited history mutation"
+  ],
+  "source_identity_weakened": false,
+  "all_temp_workers_exited": true,
+  "all_temporary_domains_removed": true,
+  "fallback_signals": 0,
+  "scientific_jobs": 0,
+  "implemented_fix": false,
+  "production_adoption": false
+}

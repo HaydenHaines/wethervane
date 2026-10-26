@@ -1,0 +1,29 @@
+{
+  "schema": "QueueV3OrphanReleaseFixIndependentAddendumV1",
+  "reviewer": "luna",
+  "date": "2026-10-26",
+  "previous_review": "../queue-v3-release-audit-luna-v1/independent-review.json",
+  "frozen_source_pins": {
+    "queue-v3/experiment_queue.py": "dcf01b7de0dfaed641fa40e2c5c5d2d584f73c78ac691dac2ec42b3f3f2a2b96",
+    "queue-v3/test_experiment_queue.py": "390b6ede9328b6166c1aa78e5e40fa7267ce1f47dbc85ef672e4125c12022c1a",
+    "queue-v3/execution.py": "ce02f4c4b9be397b299c2219092fdd355db1695798af07c4974bc63cb6bbbc93",
+    "queue-v3/ledger.py": "d65cea890ecf9b456f8b9625d173f15dac1e7fa94bb618d3407e26f368ee220a",
+    "queue-v3/run_receipts.py": "a7e78b822207109e0257adce9abb6493c53a0d93158177131ade76c0d874e73e",
+    "queue-v2/experiment_queue.py": "27195955c52e0ae06909b93d16be46f0db136841f57fd610d4773955d6443471"
+  },
+  "checks": {
+    "full_v3_suite": "32 tests passed in 13.806 seconds; each QueueTests case creates a TemporaryDirectory store and cleans child processes",
+    "original_orphan_release_counterexample": "Replayed with release-only forged file and hold-mode job. V3 reported quarantined_integrity, reserved=0, error 'release record exists without its reservation'; no reservation, launch-intent, or child.json appeared.",
+    "live_reservation_release_without_result": "Full suite reran test_release_without_result_never_frees_live_capacity: passed. It observes live child remains alive, reservation stays counted, and next job is not launched.",
+    "orphan_release_with_result": "test_release_without_reservation_is_not_a_valid_result still passes through verified_result rejection.",
+    "version_separation": "Full suite cross-version tests pass: V2/V3 schemas are refused across stores, incompatible preloaded dependency modules and mismatched dispatcher source pins are refused. V1/V2 files not modified; V3 execution/ledger/run_receipts bytes match the prior pins.",
+    "post_test_cleanup": "Immediate process listing had no matching owner/supervisor process. Fixture cleanup sends pidfd SIGKILL; it does not await terminal/reap acknowledgment, so this is not a general cleanup/reaping proof."
+  },
+  "code_assessment": "The new pre-launch guard checks for release.json without reservation.json before the job's cached-result skip/dispatch path, publishes reconciliation-error and continues. This closes the prior release-only/no-result route reproduced in v1 review. Live reservation with release but invalid/missing result remains in the earlier active/reconciliation path and consumes capacity.",
+  "verdict": "targeted_v3_counterexample_closed_under_test; bounded suite and cross-version checks pass",
+  "limits": [
+    "Tests use isolated synthetic commands, not production queue workloads or adversarial multi-user filesystem mutation.",
+    "No V1/V2 source or store was modified; V1 and V2 compatibility is limited to the explicit schema/source-identity tests.",
+    "No broad durability, power-loss, thousands-cycle scale, or process reaping guarantee established."
+  ]
+}

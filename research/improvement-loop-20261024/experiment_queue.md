@@ -1,23 +1,29 @@
 # Persistent experiment command queue
 
-`queue-v2/experiment_queue.py` executes fixed dependency graphs through its pinned
+`queue-v3/experiment_queue.py` executes fixed dependency graphs through its pinned
 `execution.py`. It adds persistent dispatch and capacity accounting for future
 explicitly selected commands. It does not generate hypotheses, fit scientific
 models by itself, assess forecast quality, promote models or publish results.
 Tests use invented subprocesses; no existing owner job or completed scientific
 comparison is adopted, restarted or repeated.
 
+**V1/V2 integrity warning:** an inserted release record with no result can make
+a live reservation appear released. A bounded adversarial test launched two
+workers under capacity one. Do not rely on V1 or V2 capacity accounting after
+inconsistent record changes. Existing source-pinned stores have not been migrated.
+
 The original top-level `experiment_queue.py` remains unchanged for stores that
 pin it. It has a known interrupted-admission ownership defect and does not have
-the protection described below. Version 2 is for **new stores**: store receipts
+the protection described below. V2 repairs the partial-admission ownership defect
+but has the release-record defect above. V3 is for **new stores**: store receipts
 pin exact source paths and hashes, so switching an existing store to these files
 is not a supported migration. Keep old sources and receipts available; do not
 edit store pins or silently rewrite an existing plan to use the new code.
-V2 uses a distinct store schema, compares store pins with its source files and
+V3 uses a distinct store schema, compares store pins with its source files and
 checks actual imported helper-module paths, and validates the store before creating
 a worker output. An older V1 client may still create a missing `queues` directory
 in an incomplete incompatible store, or an empty requested worker-output
-directory, before rejecting it; do not use V1 clients to operate on V2 stores.
+directory, before rejecting it; do not use V1 or V2 clients on V3 stores.
 
 ## Execution domain
 
@@ -120,6 +126,12 @@ Other per-job source/input failures do not prevent
 unrelated eligible work from using the remaining safe capacity. Inspection checks
 compact receipt links; owner scientific verification remains independent.
 
+V3 rejects a release record whose result is missing and retains any existing
+reservation as quarantined. A release without a reservation is quarantined before
+launch, even if no result is present. These checks address the tested inconsistent
+records; they do not make the store safe against arbitrary outside modification
+or restore evidence that has been completely removed.
+
 An admission can be interrupted after its plan is durable but before its receipt
 is published. That partial plan still owns every declared attempt ID and output
 directory. While holding the dispatcher lock, `enqueue` validates other partial
@@ -205,11 +217,11 @@ are complete, including recorded failures. A deadline with pending work leaves
 the queue resumable. Neither status establishes scientific qualification.
 
 ```sh
-python3 -B research/improvement-loop-20261024/queue-v2/experiment_queue.py --root STORE initialize --capacity 1
-python3 -B research/improvement-loop-20261024/queue-v2/experiment_queue.py --root STORE enqueue --plan PLAN.json --sha256 CANONICAL_SHA
-python3 -B research/improvement-loop-20261024/queue-v2/experiment_queue.py --root STORE tick
-python3 -B research/improvement-loop-20261024/queue-v2/experiment_queue.py --root STORE status
-python3 -B research/improvement-loop-20261024/queue-v2/experiment_queue.py --root STORE work --output FRESH_CONTROLLER_OUTPUT --poll-seconds 1 --max-runtime 3600
+python3 -B research/improvement-loop-20261024/queue-v3/experiment_queue.py --root STORE initialize --capacity 1
+python3 -B research/improvement-loop-20261024/queue-v3/experiment_queue.py --root STORE enqueue --plan PLAN.json --sha256 CANONICAL_SHA
+python3 -B research/improvement-loop-20261024/queue-v3/experiment_queue.py --root STORE tick
+python3 -B research/improvement-loop-20261024/queue-v3/experiment_queue.py --root STORE status
+python3 -B research/improvement-loop-20261024/queue-v3/experiment_queue.py --root STORE work --output FRESH_CONTROLLER_OUTPUT --poll-seconds 1 --max-runtime 3600
 ```
 
 For continued dispatch after the invoking caller exits, launch this exact pinned
@@ -229,7 +241,7 @@ converted or changed by this implementation.
 ## Verification
 
 ```sh
-python3 -B -m unittest discover -s research/improvement-loop-20261024/queue-v2 -p test_experiment_queue.py -v
+python3 -B -m unittest discover -s research/improvement-loop-20261024/queue-v3 -p test_experiment_queue.py -v
 ```
 
 Invented owner commands exercise a real dependent receipt/SHA chain, independent

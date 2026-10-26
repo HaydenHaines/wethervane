@@ -1,0 +1,28 @@
+{
+  "schema": "IndependentQueueV3ReleaseInvariantReviewV1",
+  "reviewer": "luna",
+  "review_date": "2026-10-26",
+  "source_pins": {
+    "queue-v3/experiment_queue.py": "4ab1ee5f755c1b6ab7c01b0f22f8c288e7dd1d85c6ac45ed004b5f6988c64f24",
+    "queue-v3/test_experiment_queue.py": "cccd9d31bb36e61ac8615ff4bf6c2e1b28443e3be14a6a75c60b0047c2304785",
+    "queue-v3/execution.py": "ce02f4c4b9be397b299c2219092fdd355db1695798af07c4974bc63cb6bbbc93",
+    "queue-v3/ledger.py": "d65cea890ecf9b456f8b9625d173f15dac1e7fa94bb618d3407e26f368ee220a",
+    "queue-v3/run_receipts.py": "a7e78b822207109e0257adce9abb6493c53a0d93158177131ade76c0d874e73e",
+    "queue-v2/experiment_queue.py": "27195955c52e0ae06909b93d16be46f0db136841f57fd610d4773955d6443471"
+  },
+  "independent_reproduction": {
+    "full_suite": "31 tests passed, 13.453 seconds; test setUp uses TemporaryDirectory stores and tiny fixture processes",
+    "capacity_one_release_without_result": "Reproduced: while first hold-child was alive, forged release with missing result caused reserved=1, quarantined_integrity, exact error 'release record exists without its result', second job not dispatched, existing child remained alive.",
+    "orphan_release_without_reservation_or_result": "Counterexample reproduced in a fresh temp store using hold-mode job: after inserting release.json before first tick (no reservation and no result), tick produced launch-intent and live child; returned status then labeled job quarantined_integrity with reserved=1 due release-without-result. This is a fail-closed violation: malformed artifact did not prevent launch.",
+    "cleanup": "Fixture cleanup sent SIGKILL using pidfd to live child; immediate post-test process listing showed no remaining matching owner/supervisor process. The fixture cleanup does not wait for terminal/reap acknowledgment, so this is an observed cleanup, not a robust cleanup proof."
+  },
+  "version_separation": "V3 changes store schema from LocalExperimentQueueStoreV2 to V3, validates source roster, and has tests for V2/V3 cross-store refusal and mismatched preloaded module identities. V2 files were not modified. Other V3 modules are byte-identical to pinned V2 modules; V3 dispatcher source pin differs.",
+  "legitimate_paths": "Existing tests exercise result-before-release reconciliation and deferred prelaunch result/release recovery; accepted executions require reservation, release, result linkage and executor terminal. These paths passed in full suite.",
+  "finding": {
+    "severity": "high",
+    "status": "confirmed blocker",
+    "description": "The added invariant is enforced by verified_result, but tick skips that check for a job with no result and no reservation. An orphan release-only file can therefore be ignored by the prelaunch selection loop; V3 reserves and launches the attempt, then status quarantines it after reservation exists. The current test only covers orphan release together with a result (direct verified_result), so it misses release-only job state.",
+    "needed_correction": "Before any admission/dispatch of a job, scan/validate its release/reservation/result relationship. Any release without reservation must block/quarantine and consume no execution attempt; preserve existing capacity accounting and ensure no launch-intent/child is created. Add a hold-mode adversarial regression test."
+  },
+  "recommendation": "Do not treat the V3 invariant as complete or adopt V3 until the release-only prelaunch gap is fixed and retested. Existing missing-result-with-live-reservation behavior is supported."
+}

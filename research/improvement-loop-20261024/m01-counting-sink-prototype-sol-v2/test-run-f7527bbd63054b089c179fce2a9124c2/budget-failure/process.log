@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-counting-sink-prototype-sol-v2/counting.py", line 166, in <module>
+    parser=argparse.ArgumentParser();parser.add_argument('--worker',required=True);parser.add_argument('--request-sha',required=True);parser.add_argument('--source-sha',required=True);a=parser.parse_args();worker(a.worker,a.request_sha,a.source_sha)
+                                                                                                                                                                                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-counting-sink-prototype-sol-v2/counting.py", line 57, in worker
+    pickle.Pickler(sink,protocol=5).dump(invented(request))
+  File "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-counting-sink-prototype-sol-v2/counting.py", line 31, in write
+    self.observe(self.snapshot());raise BudgetExceeded('write would exceed logical counting budget')
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+BudgetExceeded: write would exceed logical counting budget

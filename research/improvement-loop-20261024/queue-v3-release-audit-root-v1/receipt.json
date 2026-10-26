@@ -1,0 +1,45 @@
+{
+  "schema": "QueueV3RootReleaseAuditV1",
+  "recordedAtUtc": "2026-10-26T22:01:56.173248+00:00",
+  "source": {
+    "path": "research/improvement-loop-20261024/queue-v3/experiment_queue.py",
+    "sha256": "dcf01b7de0dfaed641fa40e2c5c5d2d584f73c78ac691dac2ec42b3f3f2a2b96",
+    "bytes": 38007
+  },
+  "tests": {
+    "path": "research/improvement-loop-20261024/queue-v3/test_experiment_queue.py",
+    "sha256": "390b6ede9328b6166c1aa78e5e40fa7267ce1f47dbc85ef672e4125c12022c1a",
+    "bytes": 43711
+  },
+  "full_suite": {
+    "path": "research/improvement-loop-20261024/queue-v3-release-audit-root-v1/full-tests-orphan-guard.log",
+    "sha256": "db296a36f397772c4598f81b4214a4643c32c08888c296ca076975a573a1a325",
+    "bytes": 5907
+  },
+  "adversarial_reproduction": {
+    "path": "research/improvement-loop-20261024/queue-mutable-history-counterexample-sol-v1/evidence.json",
+    "sha256": "a99aa0c37071d7f5c886bfba5cd029ce9a0b9e51cd7f579ae8ddc9cd7bf718ad",
+    "bytes": 3367
+  },
+  "first_independent_review": {
+    "path": "research/improvement-loop-20261024/queue-v3-release-audit-luna-v1/independent-review.json",
+    "sha256": "81bd5ac35f55610edfe15141f180fc4f3d5db6d59bbb38d81f96dd5ce9c14f54",
+    "bytes": 3562
+  },
+  "independent_addendum": {
+    "path": "research/improvement-loop-20261024/queue-v3-release-audit-luna-v2/independent-review-addendum.json",
+    "sha256": "77599f7b7699d0bdf948ab383da4dfb4960289b7bd56c92d5c9747af31202911",
+    "bytes": 3015
+  },
+  "original_v1": {
+    "path": "research/improvement-loop-20261024/experiment_queue.py",
+    "sha256": "6995febe73a5c1c2a317849416a58cc25130b9bbda44161f6a7624b321a8415f",
+    "bytes": 35468
+  },
+  "original_v2": {
+    "path": "research/improvement-loop-20261024/queue-v2/experiment_queue.py",
+    "sha256": "27195955c52e0ae06909b93d16be46f0db136841f57fd610d4773955d6443471",
+    "bytes": 37397
+  },
+  "scope": "32 bounded synthetic tests passed with frozen source. V3 uses new schema/source and only new stores; V1/V2 migration is unsupported. External mutation tests do not establish defenses against arbitrary deletion or hostile full-store rewriting. Review observed no matching process after fixture cleanup but does not prove terminal/reap acknowledgment."
+}

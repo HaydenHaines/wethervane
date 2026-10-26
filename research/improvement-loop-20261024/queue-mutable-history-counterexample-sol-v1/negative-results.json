@@ -1,0 +1,403 @@
+{
+  "schema": "QueueMutableHistoryCounterexamplesV1",
+  "cases": [
+    {
+      "case": "incremental-history",
+      "mutation": "owner can replace a chmod0444 file through writable parent directory",
+      "accidental_corruption": false,
+      "expected_pin": {
+        "path": "/tmp/tmp_2wghmhg/output-a/receipt.json",
+        "sha256": "765103c12569aa0de1f0e1ca253605e0b29dde1fffd9bdee4c71a8810c32f00f",
+        "size": 182
+      },
+      "actual_changed_pin": {
+        "path": "/tmp/tmp_2wghmhg/output-a/receipt.json",
+        "sha256": "d846d919e3bb7cce882591dca0a2ef5b53c3e65ee75b6c2580a3c48b2069722d",
+        "size": 183
+      },
+      "cached_expected_root_unchanged": true,
+      "next_tick_historical_receipt_pin_calls": 0,
+      "unrelated_b_launched": true,
+      "observation": {
+        "schema": "DependencyDispatchOperationalObservationV1",
+        "trust": "trusted_mutable_index_no_historical_audit",
+        "reserved": 1,
+        "observations": {
+          "b": "retained_launch_or_live"
+        },
+        "qualification": "unassessed"
+      },
+      "cleanup": {
+        "live_owned_attempts_after_cleanup": {},
+        "fallback_signals": 0,
+        "recorded_child_terminals": {
+          "b": {
+            "return_code": 0,
+            "process_outcome": "returned",
+            "timed_out": false,
+            "recorded_cleanup_verified": true,
+            "terminal_pin": {
+              "path": "/tmp/tmp_2wghmhg/queue/executions/attempts/b/terminal.json",
+              "sha256": "a25e49d1a62a6f36e0e83ac1b802e0a8f2a272372065e96ac8d60618e20312ae",
+              "size": 2168
+            }
+          },
+          "a": {
+            "return_code": 0,
+            "process_outcome": "returned",
+            "timed_out": false,
+            "recorded_cleanup_verified": true,
+            "terminal_pin": {
+              "path": "/tmp/tmp_2wghmhg/queue/executions/attempts/a/terminal.json",
+              "sha256": "b29d39dcfcb205486a6d6018428b803df3a5409800708fcaa67e4e5ca3ab8583",
+              "size": 2168
+            }
+          }
+        },
+        "temp_file_bytes_before_removal": 73061,
+        "temporary_domain_removed": true
+      },
+      "wall_seconds": 1.2108306949958205
+    },
+    {
+      "case": "incremental-forged-row",
+      "mutation": "owner-writable SQLite: unauthorized forged committed release row with canonical digest, no result/release files",
+      "accidental_corruption": false,
+      "legitimate_release_publisher_invoked": false,
+      "configured_capacity": 1,
+      "live_before": {
+        "a": {
+          "job_lock_held": true,
+          "alive_records": [
+            "supervisor",
+            "child"
+          ],
+          "session_member_count": 1
+        }
+      },
+      "live_after": {
+        "b": {
+          "job_lock_held": true,
+          "alive_records": [
+            "supervisor",
+            "child"
+          ],
+          "session_member_count": 1
+        },
+        "a": {
+          "job_lock_held": true,
+          "alive_records": [
+            "supervisor",
+            "child"
+          ],
+          "session_member_count": 1
+        }
+      },
+      "observation_reserved": 1,
+      "observation": {
+        "schema": "DependencyDispatchOperationalObservationV1",
+        "trust": "trusted_mutable_index_no_historical_audit",
+        "reserved": 1,
+        "observations": {
+          "b": "retained_launch_or_live"
+        },
+        "qualification": "unassessed"
+      },
+      "actual_live_attempts": 2,
+      "capacity_exceeded": true,
+      "result_missing_for_a": true,
+      "cleanup": {
+        "live_owned_attempts_after_cleanup": {},
+        "fallback_signals": 0,
+        "recorded_child_terminals": {
+          "b": {
+            "return_code": 0,
+            "process_outcome": "returned",
+            "timed_out": false,
+            "recorded_cleanup_verified": true,
+            "terminal_pin": {
+              "path": "/tmp/tmp6ckmnh5a/queue/executions/attempts/b/terminal.json",
+              "sha256": "512f16eb30f2c25eb3fbed6c3d413141b75101e52a9a3843efc75a210977261b",
+              "size": 2168
+            }
+          },
+          "a": {
+            "return_code": 0,
+            "process_outcome": "returned",
+            "timed_out": false,
+            "recorded_cleanup_verified": true,
+            "terminal_pin": {
+              "path": "/tmp/tmp6ckmnh5a/queue/executions/attempts/a/terminal.json",
+              "sha256": "af4c2c49f009cc19ef226bc03b8c39fa4a69839449d3792e791561ed457c64c7",
+              "size": 2168
+            }
+          }
+        },
+        "temp_file_bytes_before_removal": 71048,
+        "temporary_domain_removed": true
+      },
+      "wall_seconds": 0.9391937160398811
+    },
+    {
+      "case": "v1-forged-release",
+      "mutation": "owner-writable receipt store: unauthorized malformed release.json inserted while result.json absent and worker live",
+      "accidental_corruption": false,
+      "legitimate_release_publisher_invoked": false,
+      "configured_capacity": 1,
+      "live_before": {
+        "a": {
+          "job_lock_held": true,
+          "alive_records": [
+            "supervisor",
+            "child"
+          ],
+          "session_member_count": 1
+        }
+      },
+      "live_after": {
+        "b": {
+          "job_lock_held": true,
+          "alive_records": [
+            "supervisor",
+            "child"
+          ],
+          "session_member_count": 1
+        },
+        "a": {
+          "job_lock_held": true,
+          "alive_records": [
+            "supervisor",
+            "child"
+          ],
+          "session_member_count": 1
+        }
+      },
+      "observation_reserved": 1,
+      "observation": {
+        "schema": "LocalExperimentQueueObservationV1",
+        "capacity": 1,
+        "reserved": 1,
+        "queues": {
+          "plan-a": {
+            "a": {
+              "outcome": "waiting",
+              "error": null,
+              "qualification": "unassessed"
+            }
+          },
+          "plan-b": {
+            "b": {
+              "outcome": "reserved",
+              "error": null,
+              "qualification": "unassessed"
+            }
+          }
+        },
+        "all_jobs_recorded": false,
+        "partial_admissions": [],
+        "quarantined_admissions": [],
+        "unknown_reservations": 0,
+        "qualification": "unassessed"
+      },
+      "actual_live_attempts": 2,
+      "capacity_exceeded": true,
+      "result_missing_for_a": true,
+      "cleanup": {
+        "live_owned_attempts_after_cleanup": {},
+        "fallback_signals": 0,
+        "recorded_child_terminals": {
+          "b": {
+            "return_code": 0,
+            "process_outcome": "returned",
+            "timed_out": false,
+            "recorded_cleanup_verified": true,
+            "terminal_pin": {
+              "path": "/tmp/tmpj99gs_54/queue/executions/attempts/b/terminal.json",
+              "sha256": "e0afbc36e20ae450068d3cfb6ac4fdc7020645d75e6e00cab6d48e8482af6317",
+              "size": 2168
+            }
+          },
+          "a": {
+            "return_code": 0,
+            "process_outcome": "returned",
+            "timed_out": false,
+            "recorded_cleanup_verified": true,
+            "terminal_pin": {
+              "path": "/tmp/tmpj99gs_54/queue/executions/attempts/a/terminal.json",
+              "sha256": "08eb9559265220a1a5ede770bdce8f7d0affc96ce30a16e04762ee0b15f13446",
+              "size": 2168
+            }
+          }
+        },
+        "temp_file_bytes_before_removal": 19461,
+        "temporary_domain_removed": true
+      },
+      "wall_seconds": 0.9577206729445606
+    },
+    {
+      "case": "v2-history",
+      "mutation": "owner can replace a chmod0444 file through writable parent directory",
+      "accidental_corruption": false,
+      "expected_pin": {
+        "path": "/tmp/tmpt62vtyze/output-a/receipt.json",
+        "sha256": "256dbf62b498d35a2d340680466c760ccb30a211b1cede4c4890c33ab356ab88",
+        "size": 182
+      },
+      "actual_changed_pin": {
+        "path": "/tmp/tmpt62vtyze/output-a/receipt.json",
+        "sha256": "ce7b17a753ae5d557159ed14325ae7044c769f166c83b4ff94e7c1da5db6dc94",
+        "size": 183
+      },
+      "cached_expected_root_unchanged": true,
+      "next_tick_historical_receipt_pin_calls": 2,
+      "unrelated_b_launched": false,
+      "observation": {
+        "schema": "LocalExperimentQueueObservationV1",
+        "capacity": 1,
+        "reserved": 1,
+        "queues": {
+          "plan-a": {
+            "a": {
+              "outcome": "quarantined_integrity",
+              "error": "artifact fingerprint changed: /tmp/tmpt62vtyze/output-a/receipt.json",
+              "qualification": "unassessed"
+            }
+          },
+          "plan-b": {
+            "b": {
+              "outcome": "waiting",
+              "error": null,
+              "qualification": "unassessed"
+            }
+          }
+        },
+        "all_jobs_recorded": false,
+        "partial_admissions": [],
+        "quarantined_admissions": [],
+        "unknown_reservations": 0,
+        "qualification": "unassessed"
+      },
+      "cleanup": {
+        "live_owned_attempts_after_cleanup": {},
+        "fallback_signals": 0,
+        "recorded_child_terminals": {
+          "a": {
+            "return_code": 0,
+            "process_outcome": "returned",
+            "timed_out": false,
+            "recorded_cleanup_verified": true,
+            "terminal_pin": {
+              "path": "/tmp/tmpt62vtyze/queue/executions/attempts/a/terminal.json",
+              "sha256": "cc0258f77d04f121060293f67c2164af13d134e7cce5f0ac4c8b37230a4fe86e",
+              "size": 2168
+            }
+          }
+        },
+        "temp_file_bytes_before_removal": 13098,
+        "temporary_domain_removed": true
+      },
+      "wall_seconds": 0.5008910100441426
+    },
+    {
+      "case": "v2-forged-release",
+      "mutation": "owner-writable receipt store: unauthorized malformed release.json inserted while result.json absent and worker live",
+      "accidental_corruption": false,
+      "legitimate_release_publisher_invoked": false,
+      "configured_capacity": 1,
+      "live_before": {
+        "a": {
+          "job_lock_held": true,
+          "alive_records": [
+            "supervisor",
+            "child"
+          ],
+          "session_member_count": 1
+        }
+      },
+      "live_after": {
+        "b": {
+          "job_lock_held": true,
+          "alive_records": [
+            "supervisor",
+            "child"
+          ],
+          "session_member_count": 1
+        },
+        "a": {
+          "job_lock_held": true,
+          "alive_records": [
+            "supervisor",
+            "child"
+          ],
+          "session_member_count": 1
+        }
+      },
+      "observation_reserved": 1,
+      "observation": {
+        "schema": "LocalExperimentQueueObservationV1",
+        "capacity": 1,
+        "reserved": 1,
+        "queues": {
+          "plan-a": {
+            "a": {
+              "outcome": "waiting",
+              "error": null,
+              "qualification": "unassessed"
+            }
+          },
+          "plan-b": {
+            "b": {
+              "outcome": "reserved",
+              "error": null,
+              "qualification": "unassessed"
+            }
+          }
+        },
+        "all_jobs_recorded": false,
+        "partial_admissions": [],
+        "quarantined_admissions": [],
+        "unknown_reservations": 0,
+        "qualification": "unassessed"
+      },
+      "actual_live_attempts": 2,
+      "capacity_exceeded": true,
+      "result_missing_for_a": true,
+      "cleanup": {
+        "live_owned_attempts_after_cleanup": {},
+        "fallback_signals": 0,
+        "recorded_child_terminals": {
+          "b": {
+            "return_code": 0,
+            "process_outcome": "returned",
+            "timed_out": false,
+            "recorded_cleanup_verified": true,
+            "terminal_pin": {
+              "path": "/tmp/tmptou6kjzb/queue/executions/attempts/b/terminal.json",
+              "sha256": "d4bfd00f61bb0f64d9c789f6c941dc9b031498f8a8d916e8d23e9fb1610e36f6",
+              "size": 2168
+            }
+          },
+          "a": {
+            "return_code": 0,
+            "process_outcome": "returned",
+            "timed_out": false,
+            "recorded_cleanup_verified": true,
+            "terminal_pin": {
+              "path": "/tmp/tmptou6kjzb/queue/executions/attempts/a/terminal.json",
+              "sha256": "87334521278bda23bfd8d3e30ccc58baf21dd7370a205d5f788a81048fdd8ef2",
+              "size": 2168
+            }
+          }
+        },
+        "temp_file_bytes_before_removal": 19553,
+        "temporary_domain_removed": true
+      },
+      "wall_seconds": 0.9607920441776514
+    }
+  ],
+  "wall_seconds": 4.989027410047129,
+  "reaped_child_cpu_seconds": 5.312658,
+  "scientific_jobs": 0,
+  "priority": "nice 15",
+  "all_temporary_domains_removed": true
+}

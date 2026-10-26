@@ -1,0 +1,46 @@
+{
+  "schema": "IndependentCountingSinkPrototypeReviewV1",
+  "reviewer": "luna",
+  "review_date": "2026-10-26",
+  "scope": "Frozen invented-object prototype only; no TX graph, incomplete pickle, compile, sampler, or owner files touched",
+  "source_pins": {
+    "counting.py": "3c0536f9bbf03b71f0cb0d5f28af0a2af6ded098ae49aaf9598ce9b56e7d8047",
+    "test_counting.py": "227f1a825c2bde6510e485778761cc96e178421c6fbc85204d26c9bfe4f1db64",
+    "evidence.json": "6f1bea34c1b1587ed8b957c0a97524f257e7472d15c628b69b0c23a2ffedb594",
+    "test-result.json": "0036c9b0f9ec13865269ac270f4f8ef3b2b5f782089242c5f019b6ed3d84e8f3"
+  },
+  "independent_run": {
+    "method": "Copied only counting.py and test_counting.py into a fresh /tmp directory; ran nice -n 15 python3 -B test_counting.py with bytecode disabled.",
+    "result": "all eight invented-object tests passed in 3.671 seconds",
+    "artifacts": "Created only in the disposable /tmp copy's new UUID test fixture; no packet outputs overwritten."
+  },
+  "supported": [
+    "The sink checks the next write budget before accepting/hash accumulation, hashes accepted data in bounded 64 KiB slices and reports accepted-prefix counters. Tiny complete fixture length and digest agree with independent pickle.dumps bytes.",
+    "Completion is published only after child exit code zero, current source/request checks, candidate checks and file pinning. Death after candidate, logical-budget failure and tested CPU signal leave no completion marker. Verification checks an externally supplied complete-manifest hash and all listed files with path/symlink checks.",
+    "No serialized payload is persisted and the prototype explicitly disallows deserialization. Source/request expectations are caller-selected local byte identities, not independent authorization. It only tests invented data, not graph serialization demand or restoration."
+  ],
+  "gaps_and_corrections": [
+    {
+      "severity": "medium",
+      "finding": "The source labels SIGXCPU termination `hard_cpu_soft_limit_signal`, although RLIMIT_CPU soft is 2 CPU seconds and hard is 3. The findings narrative correctly explains it is the soft-limit signal; rename the terminal reason to avoid misleading evidence."
+    },
+    {
+      "severity": "medium",
+      "finding": "The controller has no try/finally cleanup around the live child if the controller is interrupted or an exception occurs after Popen (for example, while writing launch.json). Such a controller failure can leave the toy child running and no terminal receipt. Watchdog-triggered cleanup is tested, but controller death/exception cleanup is not. Before real use, arrange bounded process-group cleanup and preserve an explicit incomplete terminal state."
+    },
+    {
+      "severity": "low",
+      "finding": "If progress atomic_json itself fails after sink bytes were counted in memory, the latest accepted-prefix counter may not be durably recorded; no completion is produced, but failure.json does not include the sink snapshot. The claimed prefix is therefore only the latest successfully persisted progress record."
+    },
+    {
+      "severity": "low",
+      "finding": "Progress is fsynced on every Pickler write: each callback causes temp-file create/write/fsync, rename and directory fsync. This is correct for the tiny crash tests but potentially expensive; measure and specify any checkpoint-throttled lower-bound contract before a larger sink run."
+    },
+    {
+      "severity": "medium",
+      "finding": "The complete-manifest verifier proves byte identity under trusted local generation, not authorization. Preserve the explicit `deserialization_authorized=false` boundary. Any future pickle restore must require authenticated locally generated completed bytes and a separate safe restore test; hashes alone do not make untrusted pickle safe."
+    }
+  ],
+  "resource_limits": "Tested CPU termination and effective limits on toy child; address-space/file exhaustion were not exercised. RSS/output/wall are polling watchdogs (50 ms), so can overshoot. No actual-graph memory, output, timing or disk demand is evidenced.",
+  "recommendation": "Accept only as a successful small invented-object sink prototype. Fix terminal reason and controller cleanup gaps before adapting to a new, separately reviewed bounded experiment. Do not infer actual graph feasibility or restore safety."
+}

@@ -1,0 +1,65 @@
+{
+  "schema": "ContinuousImprovementCheckpointV60",
+  "recordedAtUtc": "2026-10-26T22:03:23.108385+00:00",
+  "status": "active; no fitted challenger, model promotion, or proof of thousands of scientific cycles",
+  "references": {
+    "previous": {
+      "path": "research/improvement-loop-20261024/checkpoints/continuation-v59.json",
+      "sha256": "cd88c71c8776b3b1a5c4ca7f82efcd949cbee1abfefcf9fd0af1ec851de1bb4b",
+      "bytes": 2323
+    },
+    "queue_counterexample": {
+      "path": "research/improvement-loop-20261024/queue-mutable-history-counterexample-sol-v1/evidence.json",
+      "sha256": "a99aa0c37071d7f5c886bfba5cd029ce9a0b9e51cd7f579ae8ddc9cd7bf718ad",
+      "bytes": 3367
+    },
+    "queue_v3_source": {
+      "path": "research/improvement-loop-20261024/queue-v3/experiment_queue.py",
+      "sha256": "dcf01b7de0dfaed641fa40e2c5c5d2d584f73c78ac691dac2ec42b3f3f2a2b96",
+      "bytes": 38007
+    },
+    "queue_v3_receipt": {
+      "path": "research/improvement-loop-20261024/queue-v3-release-audit-root-v1/receipt.json",
+      "sha256": "350fc89abea45ce37bb7185fa1d277ab6b78acb72ff16cc5c620433808b76f5c",
+      "bytes": 2230
+    },
+    "queue_v3_first_review": {
+      "path": "research/improvement-loop-20261024/queue-v3-release-audit-luna-v1/independent-review.json",
+      "sha256": "81bd5ac35f55610edfe15141f180fc4f3d5db6d59bbb38d81f96dd5ce9c14f54",
+      "bytes": 3562
+    },
+    "queue_v3_addendum": {
+      "path": "research/improvement-loop-20261024/queue-v3-release-audit-luna-v2/independent-review-addendum.json",
+      "sha256": "77599f7b7699d0bdf948ab383da4dfb4960289b7bd56c92d5c9747af31202911",
+      "bytes": 3015
+    },
+    "queue_documentation": {
+      "path": "research/improvement-loop-20261024/experiment_queue.md",
+      "sha256": "c44f90e98697de0e9255b0b77123b1ee1d1286d7453ff47d7932b92f79be1893",
+      "bytes": 14672
+    },
+    "count_v1": {
+      "path": "research/improvement-loop-20261024/m01-counting-sink-prototype-sol-v1/evidence.json",
+      "sha256": "6f1bea34c1b1587ed8b957c0a97524f257e7472d15c628b69b0c23a2ffedb594",
+      "bytes": 11067
+    },
+    "count_v1_review": {
+      "path": "research/improvement-loop-20261024/m01-counting-sink-review-luna-v1/independent-review.json",
+      "sha256": "ae078e57733e6ba16f96703fdd49d481fb222069965492a5f7b361f8db840c76",
+      "bytes": 4365
+    },
+    "count_v2": {
+      "path": "research/improvement-loop-20261024/m01-counting-sink-prototype-sol-v2/evidence.json",
+      "sha256": "dc73ff0491022b1a2439480ef51a9c883e6946456ebabadf2e97f1fb3339417e",
+      "bytes": 39692
+    }
+  },
+  "queue": "An adversarial insertion of release.json without a result caused V1 and V2 to launch two live fixture workers under capacity one. V3 is a separate schema/source for new stores: it treats missing-result or missing-reservation releases as invalid and blocks orphan releases before launch. Its 32-test suite and independent replay passed, including live-reservation retention and no orphan launch. These are bounded synthetic tests; they do not protect against arbitrary external deletion or malicious store rewriting. V1/V2 source bytes remain as pinned; no migration exists. Review cleanup sent pidfd SIGKILL with no matching process observed, but did not wait for terminal/reap acknowledgment.",
+  "counting_sink": "The V1 invented-object count-only prototype passed eight tests and an independent rerun, but review found a soft-CPU-limit labeling error and an interruption-after-launch cleanup gap. A separate V2 corrects both and reports 11 invented tests; independent review is pending. No payload was stored or deserialized and no actual TX graph, sampler or forecast ran. Source-bound provenance remains necessary before any future pickle load; SIGKILL and power-loss limitations remain.",
+  "ci": "The prior GitHub run passed the export, House-live and House browser checks, then 198 end-to-end tests passed and two failed solely because a historical House test expected no 2026 button. That stale expectation was updated to verify the current button is enabled and not selected; desktop and mobile targeted tests pass locally. Commit 98c5e23 is pushed, GitHub run 40409345000 job 121875483082 is in progress; final workflow status remains unverified.",
+  "next": [
+    "Complete independent review of the V2 counting prototype and test any remaining process-identity and cleanup gaps before adapting it to real graphs.",
+    "Use queue V3 only for new stores; do not mutate V1/V2 pins or claim automatic migration. Assess scalability and stronger storage trust separately.",
+    "Poll the specific GitHub job through completion and address evidenced failures; preserve the ongoing owner scientific runs."
+  ]
+}
