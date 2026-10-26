@@ -1,0 +1,44 @@
+{
+  "schema": "IndependentOwnedParentEvaluatorV2ReviewV1",
+  "date": "2026-10-26",
+  "source_pins": {
+    "v2_evidence": {"path":"research/improvement-loop-20261024/m01-owned-parent-evaluator-sol-v2/evidence.json","sha256":"1b45614b15eaeb90f6179cd9d6485b370173bd88d8da07ad5628744bf26820d4"},
+    "v2_contract": {"path":"research/improvement-loop-20261024/m01-owned-parent-evaluator-sol-v2/contract.json","sha256":"c4b9aa3a5d14ac509bc1e25ff30bd50918d9cd331a8ba426c1537a4be0268fea"},
+    "v2_compare": {"path":"research/improvement-loop-20261024/m01-owned-parent-evaluator-sol-v2/compare.py","sha256":"fc545fb6946f7cc48eeb3f0efbdcf1ae2c9b3008e2c49fd86e63a4e8ffa69e3a"},
+    "v2_tests": {"path":"research/improvement-loop-20261024/m01-owned-parent-evaluator-sol-v2/test_tiny.py","sha256":"50b15fa8e7a4986948081101a8cfbe0b015dfb270f04f4d8b2968cc6b3928531"},
+    "v2_result": {"path":"research/improvement-loop-20261024/m01-owned-parent-evaluator-sol-v2/tiny-result.json","sha256":"2388d4e6b288b12d130dbd857bce333c9a792412af8f9fcd425072f1d2717356"},
+    "v2_design": {"path":"research/improvement-loop-20261024/m01-owned-parent-evaluator-sol-v2/DESIGN.md","sha256":"09527dd98939551befaa4a6c6e8a2ffcdd8e57aba5782d60a77e3bf84beabfaf"},
+    "v1_review_preserved": {"path":"research/improvement-loop-20261024/m01-owned-parent-evaluator-review-luna-v1/review.json","sha256":"688b568295cca865f2f3424ee8d28046ea2036e97466eba57f186d54e58cfe3d"},
+    "v1_sources_unchanged": {
+      "child.py":"71e7eabc12a8cf565ef181ff49851945b32932abfdbac68b1c63b6636ef0333c",
+      "evaluator.py":"20d6497a26577e196aa77a8842c48954e7ed33aa283394422b51385597cdb1a0",
+      "entry.py":"77fb380f8acc1480c2e545b1233278f1461b93ae8e4e0d4febfe31880d568f81",
+      "launch.py":"5f3b5a04df74ca2fa72d60ba9b17514417a4d1d18a8a903ca986bec046caac92",
+      "invented_worker.py":"4839f02d41226b6005954eb929494f1f7452127e1fe8a9752e466fae4f462486"
+    },
+    "cut_contract": {"path":"/home/hayden/projects/wethervane-redesign-20261006/integration/research/handoffs-20261009/cut-contract-v1.json","sha256":"5d2dea9b54fc081099e819e594504721761358047194f97b1bdb95c9f9d320b2"}
+  },
+  "verdict": "V2 fixes the V1 comparator gap: exact ordered parent/point rosters, complete expected point reconstruction, and FD contents are now checked. Fixed-mass cut semantics remain correct. One source-drift guard is missing at the post-child comparison boundary: launch.py rechecks the general contract but does not recheck the caller-reviewed compare.py pin before importing and running that comparator. This should be closed before an actual run is treated as review-bound.",
+  "validated_changes": {
+    "roster": "check_roster_and_points independently requires dynamic (0,0..2),...(7,0..2),(0,0..2) and fixed-B (1,0..2), with exact order and integer indices. Both phases reject duplicate, missing, swapped, wrong-parent, coherently rehashed wrong-point, and swapped-point-content fixtures.",
+    "saved_points": "expected_points reads the pinned layout and exact NPZ field roster, reconstructs both full source points and the declared third perturbation, then compares complete point layout/value objects and digests on every call. FD entries require the declared variable order, coordinate0, exact step, negative/positive complete point, output scalar match, and matching difference arithmetic.",
+    "fixed_cut": "All eight original .125 masses remain protected; target remains population_cut_v1 with no parent mass in logp. Per-parent conditional normalization remains explicitly unverified; no downstream evidence reweight is proposed.",
+    "source_parity": "Frozen evidence says child.py, evaluator.py, entry.py, launch.py and invented_worker.py are byte-identical to V1. V1 is preserved unchanged. The V2 comparator and contract are separately source-pinned."
+  },
+  "independent_tiny_reproduction": {
+    "scope": "Copied V2 controller/child/evaluator/entry/comparator/test files and contract to fresh /tmp; ran all fixture tests using calibration Python with one thread, nice15, timeout30. No actual graph import/build/compile/evaluation.",
+    "outcome": "43 tests passed. Includes ordered-roster and complete-point negative cases, evaluator/source/cleanup fixtures, and exact point reconstruction. Dynamic/fixed phases remain invented fixture data only.",
+    "source_drift_probe": "In the temporary copy, created a frozen review record pinning the original compare.py, then edited compare.py. common.admission correctly rejected that drift when called. common.read_contract accepted the changed compare.py because it is not in contract['pins']; this mirrors launch.py's post-child path, which calls read_contract() then imports compare without re-running packet-pin admission. The source gate catches drift before child launch, but the comparator is loaded after the worker, so a change during the bounded worker phase is a TOCTOU gap. This is not an actual exploit test and no source file in the packet was changed."
+  },
+  "material_gap_and_fix": {
+    "location": "launch.py:75-82 and common.py:12-15, 25-34",
+    "finding": "The launch-time/entry admission checks the reviewed packet pins. After run_child returns, launch.py calls read_contract(), whose contract pins do not include compare.py, then imports compare.py. Consequently, a compare.py edit after entry admission but before comparison is not rejected by the post-child check. The exact V2 roster/point protections may then be bypassed by a changed comparator while the controller emits success.",
+    "required_guard": "Retain review packet pins in launch state and rehash compare.py (and ideally all packet sources that will be imported/executed) immediately before comparator import; verify the imported module's __file__ and bytes. Alternatively import and retain the reviewed comparator before launching the worker. Add a negative fixture that changes compare.py after a successful child fixture but before comparison and requires no controller-success receipt.",
+    "severity": "Close before actual run. This is a narrow source drift/time-of-check gap; the packet explicitly excludes hostile same-user coherent filesystem rewrites, but accidental concurrent source editing is not prevented at this final comparator boundary."
+  },
+  "nonclaims": [
+    "No actual graph or model code was imported or executed.",
+    "No dynamic exposure kernel behavior, parent0 baseline parity, fixed-B numerical anchor, resource feasibility, conditional normalization, posterior, prediction, or calibration result was tested.",
+    "The comparator fixes structural evidence consistency only; it does not authenticate numerical truth independently of the owned process and caller-retained receipts."
+  ]
+}

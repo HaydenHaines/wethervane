@@ -1,0 +1,232 @@
+{
+  "schema": "OwnedParentEvaluatorInventedTestsV1",
+  "status": "passed",
+  "tests": [
+    "frozen_source_parent_contract",
+    "owned_engine_actual_input_output_all8_A_B_A",
+    "engine_receives_exact_owned_parent_and_point",
+    "changed_result_retained_digest_rejected",
+    "coherently_rehashed_mass_mismatch",
+    "point_tamper_digest_rejected",
+    "point_shape_mismatch",
+    "point_nonfinite",
+    "point_dtype_mismatch",
+    "engine_input_readonly",
+    "factor_sum_mismatch",
+    "nonfinite_output",
+    "fresh_source_resource_admission",
+    "stale_admission",
+    "overlap_conflict",
+    "unreviewed_phase_rejected",
+    "receipt_write_owned_child_reaped",
+    "interruption_owned_child_reaped",
+    "direct_actual_child_rejected_before_model_import",
+    "entry_owned_worker_limits",
+    "entry_wall_alarm",
+    "comparison_shape",
+    "comparison_numerical_delta",
+    "independent_numeric_comparison_helper",
+    "predeclared_B_and_missing_six_baselines",
+    "dynamic_exact_roster_points_accept",
+    "dynamic_duplicate_roster_rejected",
+    "dynamic_missing_call_rejected",
+    "dynamic_swapped_order_rejected",
+    "dynamic_wrong_parent_rejected",
+    "dynamic_coherently_rehashed_wrong_point_rejected",
+    "dynamic_swapped_point_contents_rejected",
+    "fixed-B_exact_roster_points_accept",
+    "fixed-B_duplicate_roster_rejected",
+    "fixed-B_missing_call_rejected",
+    "fixed-B_swapped_order_rejected",
+    "fixed-B_wrong_parent_rejected",
+    "fixed-B_coherently_rehashed_wrong_point_rejected",
+    "fixed-B_swapped_point_contents_rejected",
+    "complete_saved_and_third_actual_point_reconstruction_only",
+    "declared_FD_sign_-1",
+    "declared_FD_sign_1",
+    "undeclared_FD_variable",
+    "verified_comparison_snapshot_clean_control",
+    "child_then_comparator_drift_rejected_no_success"
+  ],
+  "actual_graph_imported": false,
+  "actual_graph_evaluated": false,
+  "conditional_normalization": "unverified",
+  "owned_child_terminals": [
+    {
+      "arm": "dynamic",
+      "pid": 2004347,
+      "returncode": -15,
+      "reason": "controller_exception",
+      "controller_error": "Traceback (most recent call last):\n  File \"/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-owned-parent-evaluator-sol-v3/launch.py\", line 39, in run_child\n    atomic_json(out/'launch.json',{'pid':child.pid,'arm':arm,'control_channel_sha256':env['M01_PROBE_CONTROL_SHA256'],'controller_start_ticks':payload['controller_start_ticks'],'command':child.args,'environment':{k:env[k]for k in ['OPENBLAS_NUM_THREADS','OMP_NUM_THREADS','MKL_NUM_THREADS','NUMEXPR_NUM_THREADS','NUMBA_NUM_THREADS','PYTENSOR_FLAGS','NUMBA_CACHE_DIR']},'live_resources':live,'caps':cap})\n  File \"/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-owned-parent-evaluator-sol-v3/test_tiny.py\", line 47, in fail\n    if Path(path).name=='launch.json':raise exc\n                                      ^^^^^^^^^\nOSError: injected\n",
+      "seconds": 0.004641472129151225,
+      "peak_rss_bytes": 0,
+      "peak_threads": 0,
+      "peak_disk_bytes": 0,
+      "no_retry": true
+    },
+    {
+      "arm": "dynamic",
+      "pid": 2004348,
+      "returncode": -15,
+      "reason": "controller_exception",
+      "controller_error": "Traceback (most recent call last):\n  File \"/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-owned-parent-evaluator-sol-v3/launch.py\", line 39, in run_child\n    atomic_json(out/'launch.json',{'pid':child.pid,'arm':arm,'control_channel_sha256':env['M01_PROBE_CONTROL_SHA256'],'controller_start_ticks':payload['controller_start_ticks'],'command':child.args,'environment':{k:env[k]for k in ['OPENBLAS_NUM_THREADS','OMP_NUM_THREADS','MKL_NUM_THREADS','NUMEXPR_NUM_THREADS','NUMBA_NUM_THREADS','PYTENSOR_FLAGS','NUMBA_CACHE_DIR']},'live_resources':live,'caps':cap})\n  File \"/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-owned-parent-evaluator-sol-v3/test_tiny.py\", line 47, in fail\n    if Path(path).name=='launch.json':raise exc\n                                      ^^^^^^^^^\nKeyboardInterrupt: injected\n",
+      "seconds": 0.004035536898300052,
+      "peak_rss_bytes": 0,
+      "peak_threads": 0,
+      "peak_disk_bytes": 0,
+      "no_retry": true
+    }
+  ],
+  "direct_child_receipt": {
+    "returncode": 1,
+    "stderr": "Traceback (most recent call last):\n  File \"/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-owned-parent-evaluator-sol-v3/child.py\", line 78, in <module>\n    try:main()\n        ^^^^^^\n  File \"/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-owned-parent-evaluator-sol-v3/child.py\", line 10, in main\n    auth,c,entry=accept(phase,out);atomic_json(out/'entry.json',entry);need(phase in ['dynamic','fixed-B'],'unsupported phase')\n                 ^^^^^^^^^^^^^^^^^\n  File \"/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-owned-parent-evaluator-sol-v3/entry.py\", line 10, in accept\n    need(rawfd is not None and expected is not None,'live controller channel required before graph imports')\n  File \"/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-owned-parent-evaluator-sol-v3/common.py\", line 9, in need\n    if not ok:raise ValueError(message)\n              ^^^^^^^^^^^^^^^^^^^^^^^^^\nValueError: live controller channel required before graph imports\n"
+  },
+  "worker_entry_receipts": [
+    {
+      "receipt": {
+        "pid": 2004350,
+        "controller_pid": 2004346,
+        "controller_start_ticks": 119402327,
+        "channel_sha256": "f6b34b6ab3fbcd2b3d76d9d6970f7892092c10f6f0e017fa171db6e4732c651b",
+        "cpu_affinity": [
+          0
+        ],
+        "nice": 15,
+        "limits": {
+          "0": [
+            2,
+            3
+          ],
+          "9": [
+            268435456,
+            268435456
+          ],
+          "1": [
+            1048576,
+            1048576
+          ],
+          "4": [
+            0,
+            0
+          ]
+        },
+        "wall_alarm_seconds": 2,
+        "parent_death_signal": "SIGKILL"
+      },
+      "returncode": 0,
+      "hanging": false
+    },
+    {
+      "receipt": {
+        "pid": 2004364,
+        "controller_pid": 2004346,
+        "controller_start_ticks": 119402327,
+        "channel_sha256": "06d0ce92fe8aeda2bb72845395567b481bd5eb45f45dc62f8e390619e69aa3ed",
+        "cpu_affinity": [
+          0
+        ],
+        "nice": 15,
+        "limits": {
+          "0": [
+            2,
+            3
+          ],
+          "9": [
+            268435456,
+            268435456
+          ],
+          "1": [
+            1048576,
+            1048576
+          ],
+          "4": [
+            0,
+            0
+          ]
+        },
+        "wall_alarm_seconds": 2,
+        "parent_death_signal": "SIGKILL"
+      },
+      "returncode": -14,
+      "hanging": true
+    }
+  ],
+  "comparison_drift_receipts": [
+    {
+      "mode": "clean",
+      "child_returncode": 0,
+      "rejected": false,
+      "error": null,
+      "compared": true,
+      "unreviewed_executed": false,
+      "success_published": true,
+      "execution": {
+        "schema": "VerifiedComparisonExecutionV1",
+        "phase": "dynamic",
+        "source_sha256": {
+          "child.py": "71e7eabc12a8cf565ef181ff49851945b32932abfdbac68b1c63b6636ef0333c",
+          "contract.json": "fb72f99c71689102a361ba1dd504610e4e70bcb2f46732044b43417ce43e3d47",
+          "comparison_gate.py": "28d7e75dc25effc8db215cc70f4ef6fb0742c937ac493a40a5b8193193efad15",
+          "launch.py": "0a26370ff14828bf1743859872e53caa32ac79e4a7e5dd9edfd99b25e74f2267",
+          "entry.py": "77fb380f8acc1480c2e545b1233278f1461b93ae8e4e0d4febfe31880d568f81",
+          "test_tiny.py": "f690497ff7ce98790c452218631b97ec168a9fbbd107b16fb2443bc2aabe467f",
+          "evaluator.py": "a7135193c5b8bca3c38977f37a20908b45733ef012468adcdd04c2afd0b4dbb5",
+          "compare.py": "2a903415077c13a52535e00580f69cc6d52f2e0d3040ea84734060899bda4378",
+          "common.py": "9d0d056b10f605b7aa75d2dd58b8c4c1994ab0f5c393fca67185b0a7e663cdb8"
+        },
+        "comparison_source_mode": "executed verified snapshot bytes; not a newly imported disk module",
+        "review_digest": "e578fb61967ee11c2ac78e390a8e88bd635bed3dac899043803d4945c79f5bbf",
+        "contract_sha256": "fb72f99c71689102a361ba1dd504610e4e70bcb2f46732044b43417ce43e3d47",
+        "scope": "trusted local code; no adversarial filesystem or power-loss guarantee"
+      }
+    },
+    {
+      "mode": "drift",
+      "child_returncode": 0,
+      "rejected": true,
+      "error": "reviewed packet source changed: compare.py",
+      "compared": false,
+      "unreviewed_executed": false,
+      "success_published": false,
+      "execution": null
+    }
+  ],
+  "source_pins": {
+    "common.py": {
+      "sha256": "9d0d056b10f605b7aa75d2dd58b8c4c1994ab0f5c393fca67185b0a7e663cdb8",
+      "bytes": 3544
+    },
+    "entry.py": {
+      "sha256": "77fb380f8acc1480c2e545b1233278f1461b93ae8e4e0d4febfe31880d568f81",
+      "bytes": 3488
+    },
+    "evaluator.py": {
+      "sha256": "20d6497a26577e196aa77a8842c48954e7ed33aa283394422b51385597cdb1a0",
+      "bytes": 4817
+    },
+    "child.py": {
+      "sha256": "71e7eabc12a8cf565ef181ff49851945b32932abfdbac68b1c63b6636ef0333c",
+      "bytes": 11032
+    },
+    "launch.py": {
+      "sha256": "0a26370ff14828bf1743859872e53caa32ac79e4a7e5dd9edfd99b25e74f2267",
+      "bytes": 8633
+    },
+    "compare.py": {
+      "sha256": "fc545fb6946f7cc48eeb3f0efbdcf1ae2c9b3008e2c49fd86e63a4e8ffa69e3a",
+      "bytes": 8039
+    },
+    "test_tiny.py": {
+      "sha256": "f690497ff7ce98790c452218631b97ec168a9fbbd107b16fb2443bc2aabe467f",
+      "bytes": 13916
+    },
+    "contract.json": {
+      "sha256": "fb72f99c71689102a361ba1dd504610e4e70bcb2f46732044b43417ce43e3d47",
+      "bytes": 30861
+    },
+    "comparison_gate.py": {
+      "sha256": "28d7e75dc25effc8db215cc70f4ef6fb0742c937ac493a40a5b8193193efad15",
+      "bytes": 2075
+    }
+  }
+}

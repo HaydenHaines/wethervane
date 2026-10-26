@@ -1,0 +1,93 @@
+{
+  "schema": "PreparedOwnedParentEvaluatorEvidenceV3",
+  "status": "frozen_comparison_source_use_guard_tests_passed_actual_unexecuted",
+  "predecessor_evidence_sha256": "1b45614b15eaeb90f6179cd9d6485b370173bd88d8da07ad5628744bf26820d4",
+  "predecessor_preserved": true,
+  "unchanged_numerical_source_bytes": {
+    "child.py": true,
+    "evaluator.py": true,
+    "entry.py": true,
+    "compare.py": true,
+    "invented_worker.py": true
+  },
+  "files": {
+    "common.py": {
+      "sha256": "9d0d056b10f605b7aa75d2dd58b8c4c1994ab0f5c393fca67185b0a7e663cdb8",
+      "bytes": 3544
+    },
+    "entry.py": {
+      "sha256": "77fb380f8acc1480c2e545b1233278f1461b93ae8e4e0d4febfe31880d568f81",
+      "bytes": 3488
+    },
+    "child.py": {
+      "sha256": "71e7eabc12a8cf565ef181ff49851945b32932abfdbac68b1c63b6636ef0333c",
+      "bytes": 11032
+    },
+    "evaluator.py": {
+      "sha256": "20d6497a26577e196aa77a8842c48954e7ed33aa283394422b51385597cdb1a0",
+      "bytes": 4817
+    },
+    "launch.py": {
+      "sha256": "0a26370ff14828bf1743859872e53caa32ac79e4a7e5dd9edfd99b25e74f2267",
+      "bytes": 8633
+    },
+    "compare.py": {
+      "sha256": "fc545fb6946f7cc48eeb3f0efbdcf1ae2c9b3008e2c49fd86e63a4e8ffa69e3a",
+      "bytes": 8039
+    },
+    "comparison_gate.py": {
+      "sha256": "28d7e75dc25effc8db215cc70f4ef6fb0742c937ac493a40a5b8193193efad15",
+      "bytes": 2075
+    },
+    "test_tiny.py": {
+      "sha256": "f690497ff7ce98790c452218631b97ec168a9fbbd107b16fb2443bc2aabe467f",
+      "bytes": 13916
+    },
+    "invented_worker.py": {
+      "sha256": "4839f02d41226b6005954eb929494f1f7452127e1fe8a9752e466fae4f462486",
+      "bytes": 376
+    },
+    "drift_fixture.py": {
+      "sha256": "66bb5675edfe6cd6ef45530c13b2deeda1f013b4a6f339703a1c32eb19a48775",
+      "bytes": 1801
+    },
+    "contract.json": {
+      "sha256": "fb72f99c71689102a361ba1dd504610e4e70bcb2f46732044b43417ce43e3d47",
+      "bytes": 30861
+    },
+    "tiny-result.json": {
+      "sha256": "65d179afe9e5451f4742b08bf5a444befe4a3143eda9e62a4bf6513f1d2d69f4",
+      "bytes": 10109
+    },
+    "tiny.log": {
+      "sha256": "94f961bbca2ada2c5c6a9c0b2bc47556517b7a7ea255d65b2dc598b79494cbd9",
+      "bytes": 34
+    },
+    "README.md": {
+      "sha256": "a10d26a378a324e9e50717bad4c98cf31eb5029a49d6910387a30ce9a23918d0",
+      "bytes": 592
+    },
+    "DESIGN.md": {
+      "sha256": "57e20e5d7c61b089e4bce6c18df41f43c942307d9e32aa543d3c33668f65c457",
+      "bytes": 18155
+    }
+  },
+  "tests": 45,
+  "test_exit_code": 0,
+  "actual_graph_imported": false,
+  "actual_graph_compiled": false,
+  "actual_kernel_evaluated": false,
+  "actual_attempt_exists": false,
+  "actual_review_or_resource_receipt_created": false,
+  "missing_fixed_baselines": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "conditional_normalization": "unverified",
+  "test_command": "OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 NUMBA_NUM_THREADS=1 PYTHONDONTWRITEBYTECODE=1 timeout --kill-after=3s 30s nice -n15 .improvement-ledger/runtime/calibration-v1-env/bin/python -B /home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-owned-parent-evaluator-sol-v3/test_tiny.py",
+  "no_more_source_changes_or_runs": true
+}

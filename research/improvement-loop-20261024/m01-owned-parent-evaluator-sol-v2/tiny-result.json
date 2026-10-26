@@ -1,0 +1,186 @@
+{
+  "schema": "OwnedParentEvaluatorInventedTestsV1",
+  "status": "passed",
+  "tests": [
+    "frozen_source_parent_contract",
+    "owned_engine_actual_input_output_all8_A_B_A",
+    "engine_receives_exact_owned_parent_and_point",
+    "changed_result_retained_digest_rejected",
+    "coherently_rehashed_mass_mismatch",
+    "point_tamper_digest_rejected",
+    "point_shape_mismatch",
+    "point_nonfinite",
+    "point_dtype_mismatch",
+    "engine_input_readonly",
+    "factor_sum_mismatch",
+    "nonfinite_output",
+    "fresh_source_resource_admission",
+    "stale_admission",
+    "overlap_conflict",
+    "unreviewed_phase_rejected",
+    "receipt_write_owned_child_reaped",
+    "interruption_owned_child_reaped",
+    "direct_actual_child_rejected_before_model_import",
+    "entry_owned_worker_limits",
+    "entry_wall_alarm",
+    "comparison_shape",
+    "comparison_numerical_delta",
+    "independent_numeric_comparison_helper",
+    "predeclared_B_and_missing_six_baselines",
+    "dynamic_exact_roster_points_accept",
+    "dynamic_duplicate_roster_rejected",
+    "dynamic_missing_call_rejected",
+    "dynamic_swapped_order_rejected",
+    "dynamic_wrong_parent_rejected",
+    "dynamic_coherently_rehashed_wrong_point_rejected",
+    "dynamic_swapped_point_contents_rejected",
+    "fixed-B_exact_roster_points_accept",
+    "fixed-B_duplicate_roster_rejected",
+    "fixed-B_missing_call_rejected",
+    "fixed-B_swapped_order_rejected",
+    "fixed-B_wrong_parent_rejected",
+    "fixed-B_coherently_rehashed_wrong_point_rejected",
+    "fixed-B_swapped_point_contents_rejected",
+    "complete_saved_and_third_actual_point_reconstruction_only",
+    "declared_FD_sign_-1",
+    "declared_FD_sign_1",
+    "undeclared_FD_variable"
+  ],
+  "actual_graph_imported": false,
+  "actual_graph_evaluated": false,
+  "conditional_normalization": "unverified",
+  "owned_child_terminals": [
+    {
+      "arm": "dynamic",
+      "pid": 2002550,
+      "returncode": -15,
+      "reason": "controller_exception",
+      "controller_error": "Traceback (most recent call last):\n  File \"/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-owned-parent-evaluator-sol-v2/launch.py\", line 39, in run_child\n    atomic_json(out/'launch.json',{'pid':child.pid,'arm':arm,'control_channel_sha256':env['M01_PROBE_CONTROL_SHA256'],'controller_start_ticks':payload['controller_start_ticks'],'command':child.args,'environment':{k:env[k]for k in ['OPENBLAS_NUM_THREADS','OMP_NUM_THREADS','MKL_NUM_THREADS','NUMEXPR_NUM_THREADS','NUMBA_NUM_THREADS','PYTENSOR_FLAGS','NUMBA_CACHE_DIR']},'live_resources':live,'caps':cap})\n  File \"/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-owned-parent-evaluator-sol-v2/test_tiny.py\", line 47, in fail\n    if Path(path).name=='launch.json':raise exc\n                                      ^^^^^^^^^\nOSError: injected\n",
+      "seconds": 0.005021058022975922,
+      "peak_rss_bytes": 0,
+      "peak_threads": 0,
+      "peak_disk_bytes": 0,
+      "no_retry": true
+    },
+    {
+      "arm": "dynamic",
+      "pid": 2002552,
+      "returncode": -15,
+      "reason": "controller_exception",
+      "controller_error": "Traceback (most recent call last):\n  File \"/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-owned-parent-evaluator-sol-v2/launch.py\", line 39, in run_child\n    atomic_json(out/'launch.json',{'pid':child.pid,'arm':arm,'control_channel_sha256':env['M01_PROBE_CONTROL_SHA256'],'controller_start_ticks':payload['controller_start_ticks'],'command':child.args,'environment':{k:env[k]for k in ['OPENBLAS_NUM_THREADS','OMP_NUM_THREADS','MKL_NUM_THREADS','NUMEXPR_NUM_THREADS','NUMBA_NUM_THREADS','PYTENSOR_FLAGS','NUMBA_CACHE_DIR']},'live_resources':live,'caps':cap})\n  File \"/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-owned-parent-evaluator-sol-v2/test_tiny.py\", line 47, in fail\n    if Path(path).name=='launch.json':raise exc\n                                      ^^^^^^^^^\nKeyboardInterrupt: injected\n",
+      "seconds": 0.004137310199439526,
+      "peak_rss_bytes": 0,
+      "peak_threads": 0,
+      "peak_disk_bytes": 0,
+      "no_retry": true
+    }
+  ],
+  "direct_child_receipt": {
+    "returncode": 1,
+    "stderr": "Traceback (most recent call last):\n  File \"/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-owned-parent-evaluator-sol-v2/child.py\", line 78, in <module>\n    try:main()\n        ^^^^^^\n  File \"/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-owned-parent-evaluator-sol-v2/child.py\", line 10, in main\n    auth,c,entry=accept(phase,out);atomic_json(out/'entry.json',entry);need(phase in ['dynamic','fixed-B'],'unsupported phase')\n                 ^^^^^^^^^^^^^^^^^\n  File \"/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-owned-parent-evaluator-sol-v2/entry.py\", line 10, in accept\n    need(rawfd is not None and expected is not None,'live controller channel required before graph imports')\n  File \"/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-owned-parent-evaluator-sol-v2/common.py\", line 9, in need\n    if not ok:raise ValueError(message)\n              ^^^^^^^^^^^^^^^^^^^^^^^^^\nValueError: live controller channel required before graph imports\n"
+  },
+  "worker_entry_receipts": [
+    {
+      "receipt": {
+        "pid": 2002562,
+        "controller_pid": 2002548,
+        "controller_start_ticks": 119371153,
+        "channel_sha256": "4b25e4642c98a1dec0ca1890223235713c9d33166b618bf306a4958c08a6eed9",
+        "cpu_affinity": [
+          0
+        ],
+        "nice": 15,
+        "limits": {
+          "0": [
+            2,
+            3
+          ],
+          "9": [
+            268435456,
+            268435456
+          ],
+          "1": [
+            1048576,
+            1048576
+          ],
+          "4": [
+            0,
+            0
+          ]
+        },
+        "wall_alarm_seconds": 2,
+        "parent_death_signal": "SIGKILL"
+      },
+      "returncode": 0,
+      "hanging": false
+    },
+    {
+      "receipt": {
+        "pid": 2002563,
+        "controller_pid": 2002548,
+        "controller_start_ticks": 119371153,
+        "channel_sha256": "9134acf02692cf42a4896390b9217f1cf81ab2afe0c5227d363a5b03c9cc79f6",
+        "cpu_affinity": [
+          0
+        ],
+        "nice": 15,
+        "limits": {
+          "0": [
+            2,
+            3
+          ],
+          "9": [
+            268435456,
+            268435456
+          ],
+          "1": [
+            1048576,
+            1048576
+          ],
+          "4": [
+            0,
+            0
+          ]
+        },
+        "wall_alarm_seconds": 2,
+        "parent_death_signal": "SIGKILL"
+      },
+      "returncode": -14,
+      "hanging": true
+    }
+  ],
+  "source_pins": {
+    "common.py": {
+      "sha256": "54c94890c25ea09e27c1c14a3b948dacd2c29753ee2fc015ae9a446bd1657ea6",
+      "bytes": 3305
+    },
+    "entry.py": {
+      "sha256": "77fb380f8acc1480c2e545b1233278f1461b93ae8e4e0d4febfe31880d568f81",
+      "bytes": 3488
+    },
+    "evaluator.py": {
+      "sha256": "20d6497a26577e196aa77a8842c48954e7ed33aa283394422b51385597cdb1a0",
+      "bytes": 4817
+    },
+    "child.py": {
+      "sha256": "71e7eabc12a8cf565ef181ff49851945b32932abfdbac68b1c63b6636ef0333c",
+      "bytes": 11032
+    },
+    "launch.py": {
+      "sha256": "5f3b5a04df74ca2fa72d60ba9b17514417a4d1d18a8a903ca986bec046caac92",
+      "bytes": 8208
+    },
+    "compare.py": {
+      "sha256": "fc545fb6946f7cc48eeb3f0efbdcf1ae2c9b3008e2c49fd86e63a4e8ffa69e3a",
+      "bytes": 8039
+    },
+    "test_tiny.py": {
+      "sha256": "50b15fa8e7a4986948081101a8cfbe0b015dfb270f04f4d8b2968cc6b3928531",
+      "bytes": 12590
+    },
+    "contract.json": {
+      "sha256": "c4b9aa3a5d14ac509bc1e25ff30bd50918d9cd331a8ba426c1537a4be0268fea",
+      "bytes": 30005
+    }
+  }
+}

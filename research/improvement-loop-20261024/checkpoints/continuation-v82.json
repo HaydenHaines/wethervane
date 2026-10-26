@@ -1,0 +1,45 @@
+{
+  "schema": "ContinuousImprovementCheckpointV82",
+  "recordedAtUtc": "2026-10-26T23:54:02.516898+00:00",
+  "status": "active; V3 dynamic evaluator independently reviewed but real execution deferred for owner resources",
+  "references": {
+    "previous": {
+      "path": "research/improvement-loop-20261024/checkpoints/continuation-v81.json",
+      "sha256": "e9d8b8cbbf5ee8a40bc60b0056123d52cc5e2e4f7f257cbaf0572c1a9cbc10f7",
+      "bytes": 2714
+    },
+    "v2": {
+      "path": "research/improvement-loop-20261024/m01-owned-parent-evaluator-sol-v2/evidence.json",
+      "sha256": "1b45614b15eaeb90f6179cd9d6485b370173bd88d8da07ad5628744bf26820d4",
+      "bytes": 2935
+    },
+    "v2_review": {
+      "path": "research/improvement-loop-20261024/m01-owned-parent-evaluator-review-luna-v2/review.json",
+      "sha256": "0e4b6706a6ca662d717fe84795fd9c282144abe104eca140ff87db1e229dfb6c",
+      "bytes": 6714
+    },
+    "v3": {
+      "path": "research/improvement-loop-20261024/m01-owned-parent-evaluator-sol-v3/evidence.json",
+      "sha256": "8203f6b06dd04859ca936e5355e39bbe8dbeb19f5cccba9458eebd25229259c1",
+      "bytes": 3223
+    },
+    "v3_review": {
+      "path": "research/improvement-loop-20261024/m01-owned-parent-evaluator-review-luna-v3/review.json",
+      "sha256": "d2fb6b5f1d1a064b0217a6e6075687ef1155f380151e650f9891f0e91e1afa51",
+      "bytes": 6491
+    },
+    "dynamic_admission_review": {
+      "path": "research/improvement-loop-20261024/m01-owned-parent-evaluator-sol-v3/admission-review-dynamic-luna-v1.json",
+      "sha256": "f1d961d14d7b9e65f011eb133963554f03f345eb40be631dc6f2997b1b027b50",
+      "bytes": 1336
+    }
+  },
+  "evaluator": "V2 adds exact 27-call parent/point roster and finite-difference identity checks, with 43 tiny tests. Independent Luna found its comparator could change during the child run before import. Separately preserved V3 snapshots reviewed comparator/evaluator/gate bytes, checks source pins around use, and passed 45 tiny tests including a comparator-drift negative control; Luna independently reproduced. The independent admission review supports one bounded dynamic phase only, contingent on genuinely nonconflicting fresh resources. No actual dynamic graph or fit was run, no conditional normalizer, all-parent result or forecast is established; fixed-B requires a separate review/assessment. V1 and V2 are preserved.",
+  "resource_observation": "At review the owner national2018 materialization process PID 2003065 was live with a 24 GiB memory cap and observed RSS about 15.4 GiB; House recovery combine PID 2003306 was live at about 12.2 GiB, and the 2022 GPU preflight queue still reported waiting for 2018 analysis. MemAvailable was about 33.0 GiB at the observation. Because these owner workloads have substantial remaining capacity commitments, root did not issue a no-conflict receipt or launch an additional up-to-4-GiB actual evaluator. This is a conservative current scheduling assessment, not a demand for user permission or a claim that unrelated jobs must always be idle. Recheck the same processes and live owner queues before choosing a next action; do not restart them.",
+  "frontend": "SiteGround still served old search metadata at last observation; GitHub checks for 0d71d82 passed. Corrected House handoff is pending. User supplied the Delaware CSV restoration index44; no restoration currently needed.",
+  "next": [
+    "Preserve owner materialization and House recovery capacity; on a genuinely nonconflicting fresh resource and CPU/staging assessment, consider the independently reviewed dynamic-only phase without asking for new user permission.",
+    "Record original parent IDs and fixed masses; if dynamic succeeds, independently audit and separately review fixed-B before claiming anything about parent input reuse.",
+    "Continue other lightweight scientific research and House integration readiness while owners run."
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "schema": "IndependentOwnedParentEvaluatorV3ReviewV1",
+  "date": "2026-10-26",
+  "source_pins": {
+    "evidence": {"path":"research/improvement-loop-20261024/m01-owned-parent-evaluator-sol-v3/evidence.json","sha256":"8203f6b06dd04859ca936e5355e39bbe8dbeb19f5cccba9458eebd25229259c1"},
+    "contract": {"path":"research/improvement-loop-20261024/m01-owned-parent-evaluator-sol-v3/contract.json","sha256":"fb72f99c71689102a361ba1dd504610e4e70bcb2f46732044b43417ce43e3d47"},
+    "common": {"path":"research/improvement-loop-20261024/m01-owned-parent-evaluator-sol-v3/common.py","sha256":"9d0d056b10f605b7aa75d2dd58b8c4c1994ab0f5c393fca67185b0a7e663cdb8"},
+    "launcher": {"path":"research/improvement-loop-20261024/m01-owned-parent-evaluator-sol-v3/launch.py","sha256":"0a26370ff14828bf1743859872e53caa32ac79e4a7e5dd9edfd99b25e74f2267"},
+    "comparison_gate": {"path":"research/improvement-loop-20261024/m01-owned-parent-evaluator-sol-v3/comparison_gate.py","sha256":"28d7e75dc25effc8db215cc70f4ef6fb0742c937ac493a40a5b8193193efad15"},
+    "comparator": {"path":"research/improvement-loop-20261024/m01-owned-parent-evaluator-sol-v3/compare.py","sha256":"fc545fb6946f7cc48eeb3f0efbdcf1ae2c9b3008e2c49fd86e63a4e8ffa69e3a"},
+    "evaluator": {"path":"research/improvement-loop-20261024/m01-owned-parent-evaluator-sol-v3/evaluator.py","sha256":"20d6497a26577e196aa77a8842c48954e7ed33aa283394422b51385597cdb1a0"},
+    "tiny_tests": {"path":"research/improvement-loop-20261024/m01-owned-parent-evaluator-sol-v3/test_tiny.py","sha256":"f690497ff7ce98790c452218631b97ec168a9fbbd107b16fb2443bc2aabe467f"},
+    "tiny_result": {"path":"research/improvement-loop-20261024/m01-owned-parent-evaluator-sol-v3/tiny-result.json","sha256":"65d179afe9e5451f4742b08bf5a444befe4a3143eda9e62a4bf6513f1d2d69f4"},
+    "preserved_v2_finding": {"path":"research/improvement-loop-20261024/m01-owned-parent-evaluator-review-luna-v2/review.json","sha256":"0e4b6706a6ca662d717fe84795fd9c282144abe104eca140ff87db1e229dfb6c"},
+    "cut_contract": {"path":"/home/hayden/projects/wethervane-redesign-20261006/integration/research/handoffs-20261009/cut-contract-v1.json","sha256":"5d2dea9b54fc081099e819e594504721761358047194f97b1bdb95c9f9d320b2"}
+  },
+  "verdict": "V3 closes the V2 post-child comparator-drift gap for the stated cooperating local workspace. It rehashes the independently reviewed local packet after the child, executes the comparison gate from captured verified bytes, and the gate snapshots and executes evaluator/comparator bytes then rechecks sources after comparison. The output/execution provenance remains explicitly trust-local and must be paired with the controller's retained tool return; it is not cryptographic proof of the computation. No actual graph or fit was run.",
+  "verified_fixes": {
+    "source_use": "common.reviewed_sources hashes an exact local file set and returns those exact byte buffers. launch executes comparison_gate.py from the verified snapshot after the child. comparison_gate rechecks review pins and contract, verifies cached common path and NumPy version/path, then compiles evaluator.py and compare.py from verified snapshots rather than reopening them through ordinary import. It checks the reviewed source set and contract again after comparison. comparison-execution.json records the executed snapshot hashes/review/contract and is pinned in controller-success.",
+    "drift_fixture": "The isolated invented child-completes-then-compare-drift fixture alters compare.py after child exit. It rejects on the pinned compare hash before comparison marker execution and before success publication; the clean control executes the verified snapshot. This directly addresses the V2 interval I flagged.",
+    "identity_and_output": "V2 exact parent/point roster reconstruction remains intact; V3 numerical producer sources child/evaluator/entry are unchanged. The actual producer owns graph build/compile/calls, captures complete point/exposure/parent/output, and records source/compiler/PID provenance. No arbitrary result/point/engine is supplied through the actual CLI. The independent B fixed-parent anchor and missing baselines 2–7 remain explicit.",
+    "fixed_cut": "The eight protected masses remain .125, parent mass stays outside logp, and conditional_normalization remains unverified. Within-parent normalization is required before aggregation; downstream evidence does not change the outer masses."
+  },
+  "independent_fixture_reproduction": {
+    "method": "Copied the frozen V3 tiny-test sources and contract to a fresh /tmp directory and ran test_tiny.py with one-thread environment, nice15, and 30-second timeout. No scientific graph/provider import/build/compile/evaluation.",
+    "result": "All 45 tests passed. The fresh result hash differs from frozen output because tests generate time/PID-dependent resource and child receipts; test count/status matched.",
+    "coverage": "Includes the post-child comparator-drift rejection and clean verified-snapshot control, exact roster/point/FD negatives, source/resource admission, direct child rejection, injected child cleanup, and invented engine-only output binding."
+  },
+  "origin_and_scope_limits": [
+    "No actual phase, model graph, NumPy/PyTensor model evaluation, fit, sampler, normalizer, or forecast was run. Thus no numerical receipt origin or parent0/B parity claim is established yet.",
+    "A successful future run still depends on a genuinely fresh, nonconflicting per-phase resource/staging assessment and caller-retained clean controller tool return; no authorization is produced by this review.",
+    "Within the stated cooperating workspace, the verified snapshots and chained hashes are suitable reproducibility evidence. They do not defend against hostile same-user execution, arbitrary coherent filesystem rewrites, filesystem rollback/power loss, or mathematical errors in PyTensor/NUMBA.",
+    "A→all8→A point evaluations and a fixed-B oracle cannot establish the six remaining fixed-parent equivalences absent an exhaustive reviewed proof or further anchors, and cannot establish any q_i normalizer or calibrated predictive performance."
+  ],
+  "v2_finding_disposition": "V2 finding was that launch rechecked the contract but did not verify compare.py at use after the child. V3 now rehashes the local review pin, executes the comparator snapshot and checks post-use drift. The V2 report remains preserved; this review supersedes its blocker for the V3 source packet only."
+}
