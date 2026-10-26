@@ -22,6 +22,7 @@ import { houseLiveStatusLabel as statusLabel, houseLiveCutoffRole } from "../lib
 import HouseGroupRibbon from "./HouseGroupRibbon";
 import HouseLivePollingPolicy from "./HouseLivePollingPolicy";
 import type { HouseLivePollingRun } from "../lib/house-live-polling";
+import { houseNy21Notice, houseNy21NoticeFor } from "../lib/house-ny21-notice";
 
 export interface HouseLiveResultsProps {
   view: HouseLiveView;
@@ -51,7 +52,18 @@ function candidatePartyLabel(race: HouseLiveRaceView, outcomeId: string, party: 
   return independent ? `${independent} · Other (O)` : "Other (O)";
 }
 
-function HouseLiveRaceDetail({ race, detailRef, pollingEnabled }: { race: HouseLiveRaceView; detailRef: RefObject<HTMLElement | null>; pollingEnabled: boolean }) {
+function HouseNy21NoticeDetails({ notice, ariaLabel }: { notice: typeof houseNy21Notice; ariaLabel: string }) {
+  return <section className="house-ny21-notice-details" aria-label={ariaLabel}>
+    <h3>NY-21 forecast inputs under review</h3>
+    <p>{notice.publicWording}</p>
+    <p>{notice.explanation}</p>
+    <p className="small">Issued {notice.issuedDate}. Sources: {notice.sources.map((source, index) => <span key={source.url}>
+      {index > 0 ? " · " : ""}<a href={source.url} target="_blank" rel="noreferrer">{source.label} ({source.date})</a>
+    </span>)}</p>
+  </section>;
+}
+
+function HouseLiveRaceDetail({ race, detailRef, pollingEnabled, notice }: { race: HouseLiveRaceView; detailRef: RefObject<HTMLElement | null>; pollingEnabled: boolean; notice: typeof houseNy21Notice | null }) {
   const rule = ({
     plurality: "Plurality: the candidate with the most votes wins; the forecast reports that candidate’s group.",
     ranked_choice: "Ranked choice: voters rank candidates; the winner’s group is the forecast outcome.",
@@ -67,6 +79,7 @@ function HouseLiveRaceDetail({ race, detailRef, pollingEnabled }: { race: HouseL
     <div className="eyebrow">District in focus · {raceRating(race)}</div>
     <h2 id="house-live-detail-title" tabIndex={-1}>{race.district.districtKey}</h2>
     <p className="small">{STATE_NAMES[race.state] || race.state} · {race.electionLabel}</p>
+    {notice && race.id === notice.raceId && <HouseNy21NoticeDetails notice={notice} ariaLabel="NY-21 forecast input detail" />}
     <p className="detail-note">{pollingEnabled ? `${race.pollCount} selected local poll-question ${race.pollCount === 1 ? "result" : "results"}` : "Polling is switched off for this model"}. <a href="#house-live-polling">Why these polls?</a></p>
     <p className="detail-note">{rule} {method}</p>
     <h3 className="detail-label">Chance of winning</h3>
@@ -165,11 +178,24 @@ export default function HouseLiveResults({ view, catalog, geography, builderExpa
         });
       });
   }
+  function focusNy21() {
+    if (!ny21Notice) return;
+    selectRace(ny21Notice.raceId, false);
+    requestAnimationFrame(() => {
+      const heading = document.getElementById("house-live-detail-title");
+      heading?.focus({ preventScroll: true });
+      heading?.scrollIntoView({
+        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
+        block: "center",
+      });
+    });
+  }
   const shown = useMemo(() => view.races.filter((race) =>
     `${race.district.districtKey} ${STATE_NAMES[race.state] || race.state} ${race.candidates.map((candidate) => `${candidate.name} ${candidate.partyLabel || ""}`).join(" ")} ${race.outcomes.map((outcome) => outcome.name).join(" ")}`
       .toLowerCase().includes(query.trim().toLowerCase())).sort(competitiveOrder), [view.races, query]);
   const visible = expanded ? shown : shown.slice(0, 10);
   const sourceCaptureNotes = view.sources.filter(source => source.limitations?.length);
+  const ny21Notice = houseNy21NoticeFor(view);
 
   if (!selected) return <main className="load-page"><p role="status">No verified current House races are available.</p><button onClick={onHistorical}>Explore historical House research</button></main>;
   return <main>
@@ -193,6 +219,10 @@ export default function HouseLiveResults({ view, catalog, geography, builderExpa
       busy={busy} error={error} onSelect={onSelect} onRetry={onRetry} shareUrl={shareUrl} />
     {comparisonTools}
 
+    {ny21Notice && <section className="house-ny21-notice" aria-label="NY-21 forecast input notice">
+      <div><strong>NY-21 forecast inputs under review · issued {ny21Notice.issuedDate}</strong><p>{ny21Notice.publicWording}</p></div>
+      <button type="button" onClick={focusNy21}>View NY-21</button>
+    </section>}
     <HouseGroupRibbon races={ribbonRaces} selectedRaceId={selected.id} onSelect={selectRace} chamber={{ totalSeats: 435, majorityThreshold: 218 }} />
     <div className="house-results-layout">
       <div>
@@ -223,7 +253,7 @@ export default function HouseLiveResults({ view, catalog, geography, builderExpa
           {!shown.length && <p>No matching districts. Try another district, state, or candidate.</p>}
         </section>
       </div>
-      <HouseLiveRaceDetail race={selected} detailRef={detail} pollingEnabled={view.run.configuration.polling === "standard"} />
+      <HouseLiveRaceDetail race={selected} detailRef={detail} pollingEnabled={view.run.configuration.polling === "standard"} notice={ny21Notice} />
     </div>
 
     <HouseLivePollingPolicy polling={polling} view={view} selected={selected} onRaceSelect={id => selectRace(id, false)} />
@@ -232,6 +262,7 @@ export default function HouseLiveResults({ view, catalog, geography, builderExpa
       <div><div className="eyebrow">Current run evidence</div><h2 id="live-evidence-title">Inputs, computation, and review.</h2></div>
       <div className="method-content">
         <div><h3>Input status</h3><p>{statusLabel(view.qualification.inputStatus, "input")}. Source cutoffs are listed above.</p>
+          {ny21Notice && <HouseNy21NoticeDetails notice={ny21Notice} ariaLabel="NY-21 input review" />}
           {sourceCaptureNotes.length > 0 && <details className="edition-inputs">
             <summary>Source capture notes ({sourceCaptureNotes.length})</summary>
             <p>These notes explain what we could verify. When an original document could not be downloaded, we reviewed captured text; its saved file fingerprint identifies that text rather than the original document.</p>
