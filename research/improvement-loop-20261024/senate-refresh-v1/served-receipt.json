@@ -1,0 +1,36 @@
+{
+  "schema": "SenatePollingRefreshServedReceiptV1",
+  "utc": "2026-10-26T16:21:51.191017+00:00",
+  "commit": "1cd5090fd223547f8a8e51ce3171ccb585645c02",
+  "origin": "https://ballotmancy.com",
+  "status": "passed",
+  "health": {
+    "status": "ok",
+    "application": "ballotmancy",
+    "issuedAt": "2026-10-26T15:05:11.698781+00:00",
+    "cutoffAt": "2026-10-26T15:03:57.212405+00:00",
+    "races": 35,
+    "runId": "current-polling",
+    "resultSha256": "905ce512c44104d3e48900745cec0f430c9e3954736614468e1a8b728b6da5f0"
+  },
+  "actualChecks": "Eight desktop/mobile cases: all16 served artifact bytes equal exact candidate; catalog/resolver/defaultpreset and F/FP date switches; map35/snake35/nativeorder/control views;131 question records over25/35 races,AK datebounds/providerproxy/questionN; no overflow or JS errors.",
+  "logs": [
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/senate-refresh-v1/served-browser.log",
+      "sha256": "ed60db4c0ab1e2da7c5bc406347985d0daa72c899124c2234d9162c34d379723",
+      "bytes": 1823
+    }
+  ],
+  "localQualification": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/senate-refresh-v1/local-release.json",
+    "sha256": "9089336928f02d88a90eb95cf19745210c79091cb39ccc0206da5aa5a2f67942",
+    "bytes": 8189
+  },
+  "houseMarker": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/senate-refresh-v1/house-marker-served.json",
+    "sha256": "ffcc774e9dcf7fab6e91405081f6522f48ba95148ba03ae4b92c7cb5dc0707e7",
+    "bytes": 828
+  },
+  "hostedCI": "40357554925 still running at latest observation; not claimed passed.",
+  "transportNote": "Python urllib health request received403; ordinary curl and Playwright public requests succeeded. No product failure inferred."
+}

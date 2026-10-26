@@ -1,0 +1,197 @@
+
+> ballotmancy-site@0.1.0 test:e2e
+> playwright test --config=playwright.site.config.ts tests/site/composition.spec.ts tests/site/senate.spec.ts
+
+[WebServer] (node:1797376) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 26 tests using 1 worker
+
+(node:1797404) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [desktop-chromium] › tests/site/composition.spec.ts:11:5 › saved current research comparisons update the forecast and reject cross-date comparisons (2.9s)
+  ✓   2 [desktop-chromium] › tests/site/composition.spec.ts:40:5 › the current saved forecast starts with component controls collapsed (979ms)
+  ✓   3 [desktop-chromium] › tests/site/composition.spec.ts:59:5 › historical scorecard distinguishes outcome hits, probability error, and actual chamber control (1.1s)
+  ✓   4 [desktop-chromium] › tests/site/composition.spec.ts:81:5 › an explicitly uncomputed fixture stays separate from the saved result and cannot be saved as ready (1.5s)
+  ✓   5 [desktop-chromium] › tests/site/composition.spec.ts:123:5 › named local views reload and restore the exact stack, race, scenario, and comparison (3.3s)
+  ✓   6 [desktop-chromium] › tests/site/composition.spec.ts:153:5 › custom comparison identities survive URL reload and change probability comparisons (2.1s)
+  ✓   7 [desktop-chromium] › tests/site/composition.spec.ts:175:5 › composition API binds ready presets and completed alternatives and rejects invalid requests without execution (43ms)
+  ✓   8 [desktop-chromium] › tests/site/senate.spec.ts:16:5 › the refreshed current edition matches its frozen polling inputs and independent-candidate outcomes (60ms)
+  ✓   9 [desktop-chromium] › tests/site/senate.spec.ts:71:5 › model and caucus controls preserve independent candidate identity and share intervals (2.1s)
+  ✓  10 [desktop-chromium] › tests/site/senate.spec.ts:122:5 › race search, special elections, and map keyboard selection work together (2.7s)
+  ✓  11 [desktop-chromium] › tests/site/senate.spec.ts:144:5 › the race list remains usable when map geography fails (637ms)
+  ✓  12 [desktop-chromium] › tests/site/senate.spec.ts:153:5 › joint-draw tipping frequencies retain the correct caucus thresholds and denominator (45ms)
+  ✘  13 [desktop-chromium] › tests/site/senate.spec.ts:205:5 › ribbon displays all margin-ordered races, coincident markers, and scenario-specific tipping frequencies (913ms)
+(node:1797687) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  14 [mobile-chromium] › tests/site/composition.spec.ts:11:5 › saved current research comparisons update the forecast and reject cross-date comparisons (2.9s)
+  ✓  15 [mobile-chromium] › tests/site/composition.spec.ts:40:5 › the current saved forecast starts with component controls collapsed (1.1s)
+  ✓  16 [mobile-chromium] › tests/site/composition.spec.ts:59:5 › historical scorecard distinguishes outcome hits, probability error, and actual chamber control (2.1s)
+  ✓  17 [mobile-chromium] › tests/site/composition.spec.ts:81:5 › an explicitly uncomputed fixture stays separate from the saved result and cannot be saved as ready (1.7s)
+  ✓  18 [mobile-chromium] › tests/site/composition.spec.ts:123:5 › named local views reload and restore the exact stack, race, scenario, and comparison (3.4s)
+  ✓  19 [mobile-chromium] › tests/site/composition.spec.ts:153:5 › custom comparison identities survive URL reload and change probability comparisons (2.3s)
+  ✓  20 [mobile-chromium] › tests/site/composition.spec.ts:175:5 › composition API binds ready presets and completed alternatives and rejects invalid requests without execution (49ms)
+  ✓  21 [mobile-chromium] › tests/site/senate.spec.ts:16:5 › the refreshed current edition matches its frozen polling inputs and independent-candidate outcomes (76ms)
+  ✓  22 [mobile-chromium] › tests/site/senate.spec.ts:71:5 › model and caucus controls preserve independent candidate identity and share intervals (2.7s)
+  ✓  23 [mobile-chromium] › tests/site/senate.spec.ts:122:5 › race search, special elections, and map keyboard selection work together (2.9s)
+  ✓  24 [mobile-chromium] › tests/site/senate.spec.ts:144:5 › the race list remains usable when map geography fails (693ms)
+  ✓  25 [mobile-chromium] › tests/site/senate.spec.ts:153:5 › joint-draw tipping frequencies retain the correct caucus thresholds and denominator (35ms)
+  ✘  26 [mobile-chromium] › tests/site/senate.spec.ts:205:5 › ribbon displays all margin-ordered races, coincident markers, and scenario-specific tipping frequencies (1.1s)
+
+
+  1) [desktop-chromium] › tests/site/senate.spec.ts:205:5 › ribbon displays all margin-ordered races, coincident markers, and scenario-specific tipping frequencies 
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 8
+    + Received  + 8
+
+      Array [
+        "2026:RI:senate:regular",
+        "2026:MA:senate:regular",
+    +   "2026:OR:senate:regular",
+        "2026:DE:senate:regular",
+    -   "2026:OR:senate:regular",
+        "2026:CO:senate:regular",
+        "2026:NJ:senate:regular",
+        "2026:VA:senate:regular",
+        "2026:NM:senate:regular",
+        "2026:IL:senate:regular",
+        "2026:GA:senate:regular",
+    -   "2026:NH:senate:regular",
+        "2026:NC:senate:regular",
+    +   "2026:NH:senate:regular",
+        "2026:MN:senate:regular",
+    -   "2026:ME:senate:regular",
+        "2026:MI:senate:regular",
+    +   "2026:ME:senate:regular",
+        "2026:OH:senate:special",
+        "2026:TX:senate:regular",
+        "2026:AK:senate:regular",
+        "2026:IA:senate:regular",
+        "2026:KS:senate:regular",
+    -   "2026:ID:senate:regular",
+    -   "2026:MT:senate:regular",
+    +   "2026:SC:senate:regular",
+        "2026:NE:senate:regular",
+    -   "2026:SC:senate:regular",
+        "2026:FL:senate:special",
+    +   "2026:MT:senate:regular",
+    +   "2026:ID:senate:regular",
+        "2026:LA:senate:regular",
+    +   "2026:MS:senate:regular",
+        "2026:AR:senate:regular",
+    -   "2026:MS:senate:regular",
+    +   "2026:SD:senate:regular",
+        "2026:KY:senate:regular",
+        "2026:AL:senate:regular",
+    -   "2026:SD:senate:regular",
+        "2026:OK:senate:regular",
+        "2026:TN:senate:regular",
+        "2026:WV:senate:regular",
+        "2026:WY:senate:regular",
+      ]
+
+      210 |   const tiles = ribbon.locator("button[data-race-id]");
+      211 |   await expect(tiles).toHaveCount(35);
+    > 212 |   expect(await tiles.evaluateAll((elements) => elements.map((element) => (element as HTMLElement).dataset.raceId))).toEqual(tipping.models.polling.raceOrder);
+          |                                                                                                                     ^
+      213 |   await expect(ribbon.locator(".retained-endcap")).toHaveCount(2);
+      214 |   await expect(ribbon.locator(".retained-endcap").first()).toContainText("34");
+      215 |   await expect(ribbon.locator(".retained-endcap").last()).toContainText("31");
+        at /home/hayden/projects/ballotmancy-senate-refresh-20261026/tests/site/senate.spec.ts:212:117
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/senate-ribbon-displays-all-3fe3b-pecific-tipping-frequencies-desktop-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/senate-ribbon-displays-all-3fe3b-pecific-tipping-frequencies-desktop-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/senate-ribbon-displays-all-3fe3b-pecific-tipping-frequencies-desktop-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/senate-ribbon-displays-all-3fe3b-pecific-tipping-frequencies-desktop-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [mobile-chromium] › tests/site/senate.spec.ts:205:5 › ribbon displays all margin-ordered races, coincident markers, and scenario-specific tipping frequencies 
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 8
+    + Received  + 8
+
+      Array [
+        "2026:RI:senate:regular",
+        "2026:MA:senate:regular",
+    +   "2026:OR:senate:regular",
+        "2026:DE:senate:regular",
+    -   "2026:OR:senate:regular",
+        "2026:CO:senate:regular",
+        "2026:NJ:senate:regular",
+        "2026:VA:senate:regular",
+        "2026:NM:senate:regular",
+        "2026:IL:senate:regular",
+        "2026:GA:senate:regular",
+    -   "2026:NH:senate:regular",
+        "2026:NC:senate:regular",
+    +   "2026:NH:senate:regular",
+        "2026:MN:senate:regular",
+    -   "2026:ME:senate:regular",
+        "2026:MI:senate:regular",
+    +   "2026:ME:senate:regular",
+        "2026:OH:senate:special",
+        "2026:TX:senate:regular",
+        "2026:AK:senate:regular",
+        "2026:IA:senate:regular",
+        "2026:KS:senate:regular",
+    -   "2026:ID:senate:regular",
+    -   "2026:MT:senate:regular",
+    +   "2026:SC:senate:regular",
+        "2026:NE:senate:regular",
+    -   "2026:SC:senate:regular",
+        "2026:FL:senate:special",
+    +   "2026:MT:senate:regular",
+    +   "2026:ID:senate:regular",
+        "2026:LA:senate:regular",
+    +   "2026:MS:senate:regular",
+        "2026:AR:senate:regular",
+    -   "2026:MS:senate:regular",
+    +   "2026:SD:senate:regular",
+        "2026:KY:senate:regular",
+        "2026:AL:senate:regular",
+    -   "2026:SD:senate:regular",
+        "2026:OK:senate:regular",
+        "2026:TN:senate:regular",
+        "2026:WV:senate:regular",
+        "2026:WY:senate:regular",
+      ]
+
+      210 |   const tiles = ribbon.locator("button[data-race-id]");
+      211 |   await expect(tiles).toHaveCount(35);
+    > 212 |   expect(await tiles.evaluateAll((elements) => elements.map((element) => (element as HTMLElement).dataset.raceId))).toEqual(tipping.models.polling.raceOrder);
+          |                                                                                                                     ^
+      213 |   await expect(ribbon.locator(".retained-endcap")).toHaveCount(2);
+      214 |   await expect(ribbon.locator(".retained-endcap").first()).toContainText("34");
+      215 |   await expect(ribbon.locator(".retained-endcap").last()).toContainText("31");
+        at /home/hayden/projects/ballotmancy-senate-refresh-20261026/tests/site/senate.spec.ts:212:117
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/senate-ribbon-displays-all-3fe3b-pecific-tipping-frequencies-mobile-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/senate-ribbon-displays-all-3fe3b-pecific-tipping-frequencies-mobile-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/senate-ribbon-displays-all-3fe3b-pecific-tipping-frequencies-mobile-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/senate-ribbon-displays-all-3fe3b-pecific-tipping-frequencies-mobile-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    [desktop-chromium] › tests/site/senate.spec.ts:205:5 › ribbon displays all margin-ordered races, coincident markers, and scenario-specific tipping frequencies 
+    [mobile-chromium] › tests/site/senate.spec.ts:205:5 › ribbon displays all margin-ordered races, coincident markers, and scenario-specific tipping frequencies 
+  24 passed (41.7s)

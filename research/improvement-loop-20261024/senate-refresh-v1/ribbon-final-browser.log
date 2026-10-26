@@ -1,0 +1,17 @@
+
+> ballotmancy-site@0.1.0 test:e2e
+> playwright test --config=playwright.site.config.ts tests/site/senate.spec.ts -g ribbon displays
+
+[WebServer] (node:1798120) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 1 worker
+
+(node:1798135) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [desktop-chromium] › tests/site/senate.spec.ts:205:5 › ribbon displays all margin-ordered races, coincident markers, and scenario-specific tipping frequencies (2.5s)
+(node:1798236) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [mobile-chromium] › tests/site/senate.spec.ts:205:5 › ribbon displays all margin-ordered races, coincident markers, and scenario-specific tipping frequencies (3.6s)
+
+  2 passed (7.9s)

@@ -1,0 +1,244 @@
+
+> ballotmancy-site@0.1.0 test:senate-refresh
+> python3 -m unittest discover -s tests -p site_senate_refresh_test.py && python3 -m unittest discover -s tests -p site_composition_refresh_test.py
+
+....
+----------------------------------------------------------------------
+Ran 4 tests in 4.945s
+
+OK
+....
+----------------------------------------------------------------------
+Ran 4 tests in 0.003s
+
+OK
+
+> ballotmancy-site@0.1.0 test:explorer-data
+> python3 -m unittest discover -s tests -p 'site_*explorer_test.py' && python3 -m unittest discover -s tests -p site_history_test.py
+
+...........
+----------------------------------------------------------------------
+Ran 11 tests in 6.110s
+
+OK
+........
+----------------------------------------------------------------------
+Ran 8 tests in 0.096s
+
+OK
+
+> ballotmancy-site@0.1.0 test:composition
+> python3 -m unittest discover -s tests -p site_composition_test.py && node --experimental-strip-types --test tests/composition-resolver.test.mjs tests/saved-views.test.mjs
+
+.......
+----------------------------------------------------------------------
+Ran 7 tests in 0.003s
+
+OK
+TAP version 13
+# (node:1793835) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/hayden/projects/ballotmancy-senate-refresh-20261026/lib/composition-resolver.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /home/hayden/projects/ballotmancy-senate-refresh-20261026/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: all 48 exact saved component configurations resolve to their frozen run
+ok 1 - all 48 exact saved component configurations resolve to their frozen run
+  ---
+  duration_ms: 5.498367
+  type: 'test'
+  ...
+# Subtest: canonical presets resolve only to their exact server-owned saved runs
+ok 2 - canonical presets resolve only to their exact server-owned saved runs
+  ---
+  duration_ms: 0.422902
+  type: 'test'
+  ...
+# Subtest: run request helper copies exact server metadata and rejects an unknown run
+ok 3 - run request helper copies exact server metadata and rejects an unknown run
+  ---
+  duration_ms: 0.771121
+  type: 'test'
+  ...
+# Subtest: stale or tampered hashes and scientific IDs never resolve ready
+ok 4 - stale or tampered hashes and scientific IDs never resolve ready
+  ---
+  duration_ms: 2.413142
+  type: 'test'
+  ...
+# Subtest: uncached requests for the four declared families remain metadata-only, never scheduled
+ok 5 - uncached requests for the four declared families remain metadata-only, never scheduled
+  ---
+  duration_ms: 1.317035
+  type: 'test'
+  ...
+# Subtest: unknown slots, unsupported combinations and missing choices are incompatible
+ok 6 - unknown slots, unsupported combinations and missing choices are incompatible
+  ---
+  duration_ms: 0.258279
+  type: 'test'
+  ...
+# Subtest: catalog-defined extra slots resolve saved combinations and block undeclared computation
+ok 7 - catalog-defined extra slots resolve saved combinations and block undeclared computation
+  ---
+  duration_ms: 1.269505
+  type: 'test'
+  ...
+# (node:1793836) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/hayden/projects/ballotmancy-senate-refresh-20261026/lib/saved-views.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /home/hayden/projects/ballotmancy-senate-refresh-20261026/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: saved views retain their exact configuration, run, hash, scenario, and baseline binding
+ok 8 - saved views retain their exact configuration, run, hash, scenario, and baseline binding
+  ---
+  duration_ms: 5.031191
+  type: 'test'
+  ...
+# Subtest: stale or tampered bindings are rejected rather than rebound to an available result
+ok 9 - stale or tampered bindings are rejected rather than rebound to an available result
+  ---
+  duration_ms: 0.59081
+  type: 'test'
+  ...
+# Subtest: malformed JSON, storage shapes, fields, and catalogs do not throw
+ok 10 - malformed JSON, storage shapes, fields, and catalogs do not throw
+  ---
+  duration_ms: 0.812269
+  type: 'test'
+  ...
+# Subtest: canonical views drop unknown fields, trim display names, and retain nullable selections
+ok 11 - canonical views drop unknown fields, trim display names, and retain nullable selections
+  ---
+  duration_ms: 0.35341
+  type: 'test'
+  ...
+# Subtest: stored collections and identifier collisions are bounded
+ok 12 - stored collections and identifier collisions are bounded
+  ---
+  duration_ms: 1.244999
+  type: 'test'
+  ...
+# Subtest: names are capped at 80 UTF-16 characters without leaving a broken surrogate
+ok 13 - names are capped at 80 UTF-16 characters without leaving a broken surrogate
+  ---
+  duration_ms: 0.325377
+  type: 'test'
+  ...
+# Subtest: creation rejects a run/configuration mismatch and malformed typed selections
+ok 14 - creation rejects a run/configuration mismatch and malformed typed selections
+  ---
+  duration_ms: 0.531036
+  type: 'test'
+  ...
+# Subtest: helpers never mutate the catalog or caller selection
+ok 15 - helpers never mutate the catalog or caller selection
+  ---
+  duration_ms: 0.173018
+  type: 'test'
+  ...
+1..15
+# tests 15
+# suites 0
+# pass 15
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 127.416257
+
+> ballotmancy-site@0.1.0 test:explorer-state
+> node --experimental-strip-types --test tests/explorer-state.test.mjs
+
+TAP version 13
+# (node:1793883) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/hayden/projects/ballotmancy-senate-refresh-20261026/lib/explorer-state.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /home/hayden/projects/ballotmancy-senate-refresh-20261026/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a shared historical configuration round-trips including special race and actual map
+ok 1 - a shared historical configuration round-trips including special race and actual map
+  ---
+  duration_ms: 3.09317
+  type: 'test'
+  ...
+# Subtest: unknown configurations get an explicit default notice and no future actual-results mode
+ok 2 - unknown configurations get an explicit default notice and no future actual-results mode
+  ---
+  duration_ms: 0.601029
+  type: 'test'
+  ...
+# Subtest: disabling polls never silently changes an unsupported uncertainty selection
+ok 3 - disabling polls never silently changes an unsupported uncertainty selection
+  ---
+  duration_ms: 0.550122
+  type: 'test'
+  ...
+# Subtest: unsupported combinations never borrow an unrelated forecast
+ok 4 - unsupported combinations never borrow an unrelated forecast
+  ---
+  duration_ms: 0.305558
+  type: 'test'
+  ...
+# Subtest: changing the historical base never silently removes polling
+ok 5 - changing the historical base never silently removes polling
+  ---
+  duration_ms: 0.296622
+  type: 'test'
+  ...
+# Subtest: a year change resolves to that year's actual saved uncertainty law
+ok 6 - a year change resolves to that year's actual saved uncertainty law
+  ---
+  duration_ms: 0.208244
+  type: 'test'
+  ...
+# Subtest: chosen comparison survives shared URL and rejects a different year
+ok 7 - chosen comparison survives shared URL and rejects a different year
+  ---
+  duration_ms: 0.341828
+  type: 'test'
+  ...
+# Subtest: every current saved component choice remains reachable across a 10 FP / 6 F edition split
+ok 8 - every current saved component choice remains reachable across a 10 FP / 6 F edition split
+  ---
+  duration_ms: 80.703291
+  type: 'test'
+  ...
+# Subtest: component switches preserve every F/FP pair's actual artifact date and uncertainty
+ok 9 - component switches preserve every F/FP pair's actual artifact date and uncertainty
+  ---
+  duration_ms: 70.041362
+  type: 'test'
+  ...
+# Subtest: explicit dates and old-date preset requests never borrow a newer saved edition
+ok 10 - explicit dates and old-date preset requests never borrow a newer saved edition
+  ---
+  duration_ms: 74.234486
+  type: 'test'
+  ...
+# Subtest: historical component intent stays date constrained and ambiguous current editions require a date choice
+ok 11 - historical component intent stays date constrained and ambiguous current editions require a date choice
+  ---
+  duration_ms: 68.84178
+  type: 'test'
+  ...
+# Subtest: comparison URLs reject different dates, laws and targets after mixed-edition component switches
+ok 12 - comparison URLs reject different dates, laws and targets after mixed-edition component switches
+  ---
+  duration_ms: 66.20285
+  type: 'test'
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 12
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 504.38628
+
+> ballotmancy-site@0.1.0 test:component-catalog
+> python3 -m unittest discover -s tests -p site_component_catalog_test.py
+
+.......
+----------------------------------------------------------------------
+Ran 7 tests in 0.185s
+
+OK

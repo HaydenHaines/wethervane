@@ -1,0 +1,48 @@
+{
+  "schema": "SenateRefreshPollUiIndependentReviewV1",
+  "date": "2026-10-26",
+  "status": "qualified_no_material_blocker_found",
+  "scope": "Read-only review of the October 26 polling receipt exporter, browser receipt gate and source explanation. No native inputs, forecast files or site files changed; no exporter or full test suite rerun.",
+  "inspectedPins": {
+    "scripts/export_senate_poll_selection.py": "a677bcf245d41bc9dc8ebaaa091b998816b93f4590226584d6c9d5d7d50024d6",
+    "lib/senate-poll-policy.ts": "3075569bc93ba3a6740c150ee7fdbf2671e1c4bbc0efabf39bb1d46046ad95fd",
+    "components/PollingPolicy.tsx": "0ed4a19789c28b018763040d219e9eeab55143374e94cdf8c62ce23f00123bdb",
+    "data/polling-selection-20261026.json": "df78fd4adbd35d1652ae7b8e2766622f7adfcd33c3f73797d6470354b823671f",
+    "nativeHandoff": "53ecb8ea7c322932a64784453a00bd4181c7e95cea474c2f843e5b0e0bcd356b",
+    "nativeRootSourceReview": "1e877076277427215e503f575ce555c3c8a49bbacd6923e8affb58c9c9a45568"
+  },
+  "checks": [
+    {
+      "topic": "Exact edition and bundle binding",
+      "result": "pass",
+      "evidence": "Independently hashed all ten active polling bundle bytes and compared each digest to registry SHA and receipt applicableRuns; all ten matched. Each bundle's run ID and Oct 26 polling cutoff matched the receipt, and forecast provenance matched its distinct handoff arm. Exporter itself computes applicableRuns from bundle bytes and rejects changed ID, cutoff, forecast pin and per-race poll count. Browser gate requires matching run digest, cutoff and all 35 race counts; SenateExplorer.loadBundle checks the downloaded byte hash before rendering in browsers with WebCrypto. Old and new receipt hashes differ for reused run IDs."
+    },
+    {
+      "topic": "Selected questions and sample terminology",
+      "result": "pass",
+      "evidence": "Receipt has 187 reviewed question records: 131 included, 56 excluded, across 25 polled races. Native selected records have 131 distinct sample IDs, so 'one selected question per survey' is supported. UI states that a record is a question, not a respondent count; question-specific N and nominal overall survey N are displayed separately. Of 131 selected records, 77 lack question-specific N but have nominal N, and one lacks both. It does not use these labels as model weights. AK DFP Q18 is labeled ranked-choice final preference; Q15/Q16/Q19 remain dependent excluded alternatives."
+    },
+    {
+      "topic": "Provider grouping",
+      "result": "pass_with_declared_proxy",
+      "evidence": "Among selected records, 113 use source-owner proxy because the actual fieldwork contractor is unknown; 18 preserve documented provider identity. Exporter retains providerIdentityStatus and actualFieldworkProvider separately. UI describes the named survey organization as an approximate grouping, not a verified contractor."
+    },
+    {
+      "topic": "Publication date versus availability bound",
+      "result": "pass_with_source_qualification",
+      "evidence": "Exactly 22 included records have null publicationDate and a bounded availableBy UTC time at or before the Oct 26 cutoff. UI explicitly labels that upper bound as not a publication date and does not invent an exact release day. The 109 included records with recorded dates are called 'Recorded publication date,' not proven first posting time. Root source admission approved the bounded selection and explicitly says unknown publisher dates remain null; some inherited availabilityBasis prose still says 'root availability review pending,' but the later pinned root review resolves that status."
+    },
+    {
+      "topic": "Source format and collection scope",
+      "result": "pass",
+      "evidence": "All 187 receipt rows say original HTML/PDF bytes were not acquired; the UI describes preserved readable web extracts and a non-exhaustive source collection. It avoids treating absent polls as poor-quality polls."
+    }
+  ],
+  "nonblockingNotes": [
+    "The browser helper trusts the digest supplied by its caller; the current SenateExplorer caller supplies the registry SHA after loadBundle's WebCrypto hash check. In an environment without WebCrypto, loadBundle checks bundle structure but skips byte hashing. This is an existing integrity fallback limitation, not a current receipt/content mismatch.",
+    "The 22 unknown posting dates mean the Oct 26 forecast should keep strictAsOf=false and avoid claiming exact historical publication timing; current UI wording does so.",
+    "A future revision could display the source-specific availabilityBasis next to disputed records, but source-reviewed admission and existing conservative public wording do not make it a release blocker."
+  ],
+  "blockingFindings": [],
+  "verificationLimits": "No live browser render or exporter replay was performed in this review. Hash, count, status and wording checks were read-only against the inspected files; intake source accuracy itself was reviewed by Luna/root separately."
+}

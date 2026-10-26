@@ -1,0 +1,21 @@
+
+> ballotmancy-site@0.1.0 test:e2e
+> playwright test --config=playwright.site.config.ts tests/site/election-night.spec.ts
+
+[WebServer] (node:1799138) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 6 tests using 1 worker
+
+(node:1799183) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [desktop-chromium] › tests/site/election-night.spec.ts:10:7 › senate: same-page guide starts standard, renders every exact model, and preserves the visitor's forecast (4.7s)
+  ✓  2 [desktop-chromium] › tests/site/election-night.spec.ts:10:7 › house: same-page guide starts standard, renders every exact model, and preserves the visitor's forecast (26.0s)
+  ✓  3 [desktop-chromium] › tests/site/election-night.spec.ts:82:5 › an open scorecard follows chamber tabs and browser history with each chamber's standard forecast (3.9s)
+(node:1799615) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  4 [mobile-chromium] › tests/site/election-night.spec.ts:10:7 › senate: same-page guide starts standard, renders every exact model, and preserves the visitor's forecast (5.6s)
+  ✓  5 [mobile-chromium] › tests/site/election-night.spec.ts:10:7 › house: same-page guide starts standard, renders every exact model, and preserves the visitor's forecast (26.9s)
+  ✓  6 [mobile-chromium] › tests/site/election-night.spec.ts:82:5 › an open scorecard follows chamber tabs and browser history with each chamber's standard forecast (9.9s)
+
+  6 passed (1.3m)

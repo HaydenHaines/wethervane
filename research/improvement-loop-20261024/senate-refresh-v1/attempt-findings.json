@@ -1,0 +1,17 @@
+{
+  "attempt1": {
+    "result": "2 locator failures,8 passed",
+    "finding": "Nested Playwright has locator started from ancestor #poll-selection rather than the question row; actual AK source text was present. Fixed locator to row-relative child; restricted alternative to named provider.",
+    "productChange": false
+  },
+  "attempt2": {
+    "result": "4 stale expectation failures,32 passed",
+    "finding": "Two composition cases per viewport expected original Oct20 timestamp and old control odds. New edition tests must also reject F/FP comparisons across dates. Historical, explanation and layout cases passed.",
+    "productChange": false
+  },
+  "attempt3": {
+    "result": "24 passed, 2 stale live-ribbon expectation failures",
+    "finding": "The live-ribbon test still read legacy Oct20 tipping-points.json while UI loaded Oct26 current-polling. Changed only live UI expectation to the actual current bundle; original immutable Oct20 numerical test remains. Final targeted rerun passed both viewports.",
+    "productChange": false
+  }
+}

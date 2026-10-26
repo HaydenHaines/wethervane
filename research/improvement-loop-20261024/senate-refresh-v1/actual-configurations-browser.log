@@ -1,0 +1,19 @@
+
+> ballotmancy-site@0.1.0 test:e2e
+> playwright test --config=playwright.site.config.ts tests/site/senate-refresh.spec.ts
+
+[WebServer] (node:1796923) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 4 tests using 1 worker
+
+(node:1796935) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [desktop-chromium] › tests/site/senate-refresh.spec.ts:77:5 › actual refreshed candidate serves all 16 exact current artifacts and coherent URL-selected map, snake and control views (11.1s)
+  ✓  2 [desktop-chromium] › tests/site/senate-refresh.spec.ts:103:5 › actual new default preset and F-to-FP switch preserve edition dates, exact hashes and current poll counts (2.3s)
+(node:1797085) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  3 [mobile-chromium] › tests/site/senate-refresh.spec.ts:77:5 › actual refreshed candidate serves all 16 exact current artifacts and coherent URL-selected map, snake and control views (10.6s)
+  ✓  4 [mobile-chromium] › tests/site/senate-refresh.spec.ts:103:5 › actual new default preset and F-to-FP switch preserve edition dates, exact hashes and current poll counts (2.4s)
+
+  4 passed (27.9s)

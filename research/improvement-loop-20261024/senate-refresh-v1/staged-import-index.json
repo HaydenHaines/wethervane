@@ -1,0 +1,392 @@
+[
+  {
+    "id": "current-polling",
+    "year": 2026,
+    "label": "Standard polling",
+    "targetId": "national_senate_aggregate_poll_v1",
+    "lawId": "senate_principal_pair_aggregate_v1",
+    "dateId": "2026-10-26",
+    "dateLabel": "October 26, 2026",
+    "forecastAt": "2026-10-26T15:03:57.212405+00:00",
+    "issuedAt": "2026-10-26T15:05:11.698781+00:00",
+    "cutoffAt": "2026-10-26T15:03:57.212405+00:00",
+    "horizonDays": null,
+    "components": {
+      "base": "fundamentals",
+      "polling": "standard",
+      "uncertainty": "standard"
+    },
+    "uncertaintyLabel": "Saved polling-error scales",
+    "uncertaintyDescription": "Shares, winners, chamber seats and tipping derive from the same saved joint rows; polling covariance reuses historical calibration without retraining.",
+    "historical": false,
+    "sensitivity": false,
+    "simulationCount": 40000,
+    "strictAsOf": false,
+    "inputCutoffs": [
+      {
+        "label": "Structural inputs",
+        "at": "2026-10-20T15:21:23Z"
+      },
+      {
+        "label": "Polling inputs",
+        "at": "2026-10-26T15:03:57.212405+00:00"
+      }
+    ],
+    "href": "/data/explorer/current-polling.json",
+    "sha256": "905ce512c44104d3e48900745cec0f430c9e3954736614468e1a8b728b6da5f0"
+  },
+  {
+    "id": "current-error-low",
+    "year": 2026,
+    "label": "Polling error: all scales × 2/3",
+    "targetId": "national_senate_aggregate_poll_v1",
+    "lawId": "senate_principal_pair_aggregate_v1",
+    "dateId": "2026-10-26",
+    "dateLabel": "October 26, 2026",
+    "forecastAt": "2026-10-26T15:03:57.212405+00:00",
+    "issuedAt": "2026-10-26T15:07:57.482948+00:00",
+    "cutoffAt": "2026-10-26T15:03:57.212405+00:00",
+    "horizonDays": null,
+    "components": {
+      "base": "fundamentals",
+      "polling": "standard",
+      "uncertainty": "error-low"
+    },
+    "uncertaintyLabel": "Saved polling-error scales",
+    "uncertaintyDescription": "Shares, winners, chamber seats and tipping derive from the same saved joint rows; polling covariance reuses historical calibration without retraining.",
+    "historical": false,
+    "sensitivity": true,
+    "simulationCount": 40000,
+    "strictAsOf": false,
+    "inputCutoffs": [
+      {
+        "label": "Structural inputs",
+        "at": "2026-10-20T15:21:23Z"
+      },
+      {
+        "label": "Polling inputs",
+        "at": "2026-10-26T15:03:57.212405+00:00"
+      }
+    ],
+    "href": "/data/explorer/current-error-low.json",
+    "sha256": "a5db782bed6e3bd80bd1885a4a1a6363a8f34598cb085ca2776767d13aace146"
+  },
+  {
+    "id": "current-error-high",
+    "year": 2026,
+    "label": "Polling error: all scales × 1.5",
+    "targetId": "national_senate_aggregate_poll_v1",
+    "lawId": "senate_principal_pair_aggregate_v1",
+    "dateId": "2026-10-26",
+    "dateLabel": "October 26, 2026",
+    "forecastAt": "2026-10-26T15:03:57.212405+00:00",
+    "issuedAt": "2026-10-26T15:08:01.244749+00:00",
+    "cutoffAt": "2026-10-26T15:03:57.212405+00:00",
+    "horizonDays": null,
+    "components": {
+      "base": "fundamentals",
+      "polling": "standard",
+      "uncertainty": "error-high"
+    },
+    "uncertaintyLabel": "Saved polling-error scales",
+    "uncertaintyDescription": "Shares, winners, chamber seats and tipping derive from the same saved joint rows; polling covariance reuses historical calibration without retraining.",
+    "historical": false,
+    "sensitivity": true,
+    "simulationCount": 40000,
+    "strictAsOf": false,
+    "inputCutoffs": [
+      {
+        "label": "Structural inputs",
+        "at": "2026-10-20T15:21:23Z"
+      },
+      {
+        "label": "Polling inputs",
+        "at": "2026-10-26T15:03:57.212405+00:00"
+      }
+    ],
+    "href": "/data/explorer/current-error-high.json",
+    "sha256": "cc547c919ce6e2902b5c7a0527afc939a5e9199a87a9d02acd18c00e36aa14ae"
+  },
+  {
+    "id": "current-cycle-low",
+    "year": 2026,
+    "label": "Polling error: common-cycle SD × 0.5",
+    "targetId": "national_senate_aggregate_poll_v1",
+    "lawId": "senate_principal_pair_aggregate_v1",
+    "dateId": "2026-10-26",
+    "dateLabel": "October 26, 2026",
+    "forecastAt": "2026-10-26T15:03:57.212405+00:00",
+    "issuedAt": "2026-10-26T15:08:36.177855+00:00",
+    "cutoffAt": "2026-10-26T15:03:57.212405+00:00",
+    "horizonDays": null,
+    "components": {
+      "base": "fundamentals",
+      "polling": "standard",
+      "uncertainty": "cycle-low"
+    },
+    "uncertaintyLabel": "Saved polling-error scales",
+    "uncertaintyDescription": "Shares, winners, chamber seats and tipping derive from the same saved joint rows; polling covariance reuses historical calibration without retraining.",
+    "historical": false,
+    "sensitivity": true,
+    "simulationCount": 40000,
+    "strictAsOf": false,
+    "inputCutoffs": [
+      {
+        "label": "Structural inputs",
+        "at": "2026-10-20T15:21:23Z"
+      },
+      {
+        "label": "Polling inputs",
+        "at": "2026-10-26T15:03:57.212405+00:00"
+      }
+    ],
+    "href": "/data/explorer/current-cycle-low.json",
+    "sha256": "b837c53e7a7afbad4dba12cf18ec0d74e7e685c30e497c8d79725980ca3a7b7d"
+  },
+  {
+    "id": "current-cycle-high",
+    "year": 2026,
+    "label": "Polling error: common-cycle SD × 2",
+    "targetId": "national_senate_aggregate_poll_v1",
+    "lawId": "senate_principal_pair_aggregate_v1",
+    "dateId": "2026-10-26",
+    "dateLabel": "October 26, 2026",
+    "forecastAt": "2026-10-26T15:03:57.212405+00:00",
+    "issuedAt": "2026-10-26T15:08:29.380425+00:00",
+    "cutoffAt": "2026-10-26T15:03:57.212405+00:00",
+    "horizonDays": null,
+    "components": {
+      "base": "fundamentals",
+      "polling": "standard",
+      "uncertainty": "cycle-high"
+    },
+    "uncertaintyLabel": "Saved polling-error scales",
+    "uncertaintyDescription": "Shares, winners, chamber seats and tipping derive from the same saved joint rows; polling covariance reuses historical calibration without retraining.",
+    "historical": false,
+    "sensitivity": true,
+    "simulationCount": 40000,
+    "strictAsOf": false,
+    "inputCutoffs": [
+      {
+        "label": "Structural inputs",
+        "at": "2026-10-20T15:21:23Z"
+      },
+      {
+        "label": "Polling inputs",
+        "at": "2026-10-26T15:03:57.212405+00:00"
+      }
+    ],
+    "href": "/data/explorer/current-cycle-high.json",
+    "sha256": "0d1816e8b5c1729e7b9afc077c56758323a994f98df6629a47a8e3c2da103c55"
+  },
+  {
+    "id": "current-comparison-recent_calendar_history-fp",
+    "year": 2026,
+    "label": "Recent calendar history · with polls",
+    "targetId": "senate2026_principal_pair_fundamentals_comparison_v1",
+    "lawId": "principal_pair_empirical_logit_shared_normal_student_t5_v1",
+    "dateId": "2026-10-26",
+    "dateLabel": "October 26, 2026",
+    "forecastAt": "2026-10-26T15:03:57.212405+00:00",
+    "issuedAt": "2026-10-26T15:09:41.057868+00:00",
+    "cutoffAt": "2026-10-26T15:03:57.212405+00:00",
+    "horizonDays": null,
+    "components": {
+      "base": "recent_calendar_history",
+      "polling": "standard",
+      "uncertainty": "standard"
+    },
+    "uncertaintyLabel": "Saved fitted joint uncertainty",
+    "uncertaintyDescription": "Shares, winners, chamber seats and tipping derive from the same saved joint rows; polling covariance reuses historical calibration without retraining.",
+    "historical": false,
+    "sensitivity": true,
+    "simulationCount": 80000,
+    "strictAsOf": false,
+    "inputCutoffs": [
+      {
+        "label": "Structural inputs",
+        "at": "2026-10-20T15:21:23Z"
+      },
+      {
+        "label": "Polling inputs",
+        "at": "2026-10-26T15:03:57.212405+00:00"
+      }
+    ],
+    "researchEvidence": {
+      "status": "experimental",
+      "numericalStatus": "passed",
+      "forecastSkill": "unobserved_2026",
+      "qualification": "Saved current comparison. Conservative availability bounds include 22 selected observations without exact posting dates; strict as-of is not established."
+    },
+    "href": "/data/explorer/current-comparison-recent_calendar_history-fp.json",
+    "sha256": "ae48766d5a3f60132d5f37cb5540bec67a82ec50a1fb4a1314988330347e0859"
+  },
+  {
+    "id": "current-comparison-senate_history_refreshed_v1-fp",
+    "year": 2026,
+    "label": "Refreshed history · with polls",
+    "targetId": "senate2026_principal_pair_fundamentals_comparison_v1",
+    "lawId": "principal_pair_empirical_logit_shared_normal_student_t5_v1",
+    "dateId": "2026-10-26",
+    "dateLabel": "October 26, 2026",
+    "forecastAt": "2026-10-26T15:03:57.212405+00:00",
+    "issuedAt": "2026-10-26T15:09:30.777711+00:00",
+    "cutoffAt": "2026-10-26T15:03:57.212405+00:00",
+    "horizonDays": null,
+    "components": {
+      "base": "senate_history_refreshed_v1",
+      "polling": "standard",
+      "uncertainty": "standard"
+    },
+    "uncertaintyLabel": "Saved fitted joint uncertainty",
+    "uncertaintyDescription": "Shares, winners, chamber seats and tipping derive from the same saved joint rows; polling covariance reuses historical calibration without retraining.",
+    "historical": false,
+    "sensitivity": true,
+    "simulationCount": 80000,
+    "strictAsOf": false,
+    "inputCutoffs": [
+      {
+        "label": "Structural inputs",
+        "at": "2026-10-20T15:21:23Z"
+      },
+      {
+        "label": "Polling inputs",
+        "at": "2026-10-26T15:03:57.212405+00:00"
+      }
+    ],
+    "researchEvidence": {
+      "status": "experimental",
+      "numericalStatus": "passed",
+      "forecastSkill": "unobserved_2026",
+      "qualification": "Saved current comparison. Conservative availability bounds include 22 selected observations without exact posting dates; strict as-of is not established."
+    },
+    "href": "/data/explorer/current-comparison-senate_history_refreshed_v1-fp.json",
+    "sha256": "eff066dabc955d7ead29a05c0043fa832306aeecc1f8559a4b5f3f2a0f4e6237"
+  },
+  {
+    "id": "current-comparison-senate_presidential_slope_v1-fp",
+    "year": 2026,
+    "label": "Learned presidential slope · with polls",
+    "targetId": "senate2026_principal_pair_fundamentals_comparison_v1",
+    "lawId": "principal_pair_empirical_logit_shared_normal_student_t5_v1",
+    "dateId": "2026-10-26",
+    "dateLabel": "October 26, 2026",
+    "forecastAt": "2026-10-26T15:03:57.212405+00:00",
+    "issuedAt": "2026-10-26T15:10:40.691980+00:00",
+    "cutoffAt": "2026-10-26T15:03:57.212405+00:00",
+    "horizonDays": null,
+    "components": {
+      "base": "senate_presidential_slope_v1",
+      "polling": "standard",
+      "uncertainty": "standard"
+    },
+    "uncertaintyLabel": "Saved fitted joint uncertainty",
+    "uncertaintyDescription": "Shares, winners, chamber seats and tipping derive from the same saved joint rows; polling covariance reuses historical calibration without retraining.",
+    "historical": false,
+    "sensitivity": true,
+    "simulationCount": 80000,
+    "strictAsOf": false,
+    "inputCutoffs": [
+      {
+        "label": "Structural inputs",
+        "at": "2026-10-20T15:21:23Z"
+      },
+      {
+        "label": "Polling inputs",
+        "at": "2026-10-26T15:03:57.212405+00:00"
+      }
+    ],
+    "researchEvidence": {
+      "status": "experimental",
+      "numericalStatus": "passed",
+      "forecastSkill": "unobserved_2026",
+      "qualification": "Saved current comparison. Conservative availability bounds include 22 selected observations without exact posting dates; strict as-of is not established."
+    },
+    "href": "/data/explorer/current-comparison-senate_presidential_slope_v1-fp.json",
+    "sha256": "2af7c796b3344041492f2ed3273191505fb625ddf95ea7953ad4d3143260f989"
+  },
+  {
+    "id": "current-comparison-senate_relative_lean_v1-fp",
+    "year": 2026,
+    "label": "Relative state and national lean · with polls",
+    "targetId": "senate2026_principal_pair_fundamentals_comparison_v1",
+    "lawId": "principal_pair_empirical_logit_shared_normal_student_t5_v1",
+    "dateId": "2026-10-26",
+    "dateLabel": "October 26, 2026",
+    "forecastAt": "2026-10-26T15:03:57.212405+00:00",
+    "issuedAt": "2026-10-26T15:10:28.022277+00:00",
+    "cutoffAt": "2026-10-26T15:03:57.212405+00:00",
+    "horizonDays": null,
+    "components": {
+      "base": "senate_relative_lean_v1",
+      "polling": "standard",
+      "uncertainty": "standard"
+    },
+    "uncertaintyLabel": "Saved fitted joint uncertainty",
+    "uncertaintyDescription": "Shares, winners, chamber seats and tipping derive from the same saved joint rows; polling covariance reuses historical calibration without retraining.",
+    "historical": false,
+    "sensitivity": true,
+    "simulationCount": 80000,
+    "strictAsOf": false,
+    "inputCutoffs": [
+      {
+        "label": "Structural inputs",
+        "at": "2026-10-20T15:21:23Z"
+      },
+      {
+        "label": "Polling inputs",
+        "at": "2026-10-26T15:03:57.212405+00:00"
+      }
+    ],
+    "researchEvidence": {
+      "status": "experimental",
+      "numericalStatus": "passed",
+      "forecastSkill": "unobserved_2026",
+      "qualification": "Saved current comparison. Conservative availability bounds include 22 selected observations without exact posting dates; strict as-of is not established."
+    },
+    "href": "/data/explorer/current-comparison-senate_relative_lean_v1-fp.json",
+    "sha256": "578138601cecb2dac93c90104844e4d3a7515965d2cb071d6e223bcb92ca313c"
+  },
+  {
+    "id": "current-comparison-senate_relative_context_v1-fp",
+    "year": 2026,
+    "label": "Relative lean with presidential context · with polls",
+    "targetId": "senate2026_principal_pair_fundamentals_comparison_v1",
+    "lawId": "principal_pair_empirical_logit_shared_normal_student_t5_v1",
+    "dateId": "2026-10-26",
+    "dateLabel": "October 26, 2026",
+    "forecastAt": "2026-10-26T15:03:57.212405+00:00",
+    "issuedAt": "2026-10-26T15:11:41.500759+00:00",
+    "cutoffAt": "2026-10-26T15:03:57.212405+00:00",
+    "horizonDays": null,
+    "components": {
+      "base": "senate_relative_context_v1",
+      "polling": "standard",
+      "uncertainty": "standard"
+    },
+    "uncertaintyLabel": "Saved fitted joint uncertainty",
+    "uncertaintyDescription": "Shares, winners, chamber seats and tipping derive from the same saved joint rows; polling covariance reuses historical calibration without retraining.",
+    "historical": false,
+    "sensitivity": true,
+    "simulationCount": 80000,
+    "strictAsOf": false,
+    "inputCutoffs": [
+      {
+        "label": "Structural inputs",
+        "at": "2026-10-20T15:21:23Z"
+      },
+      {
+        "label": "Polling inputs",
+        "at": "2026-10-26T15:03:57.212405+00:00"
+      }
+    ],
+    "researchEvidence": {
+      "status": "experimental",
+      "numericalStatus": "passed",
+      "forecastSkill": "unobserved_2026",
+      "qualification": "Saved current comparison. Conservative availability bounds include 22 selected observations without exact posting dates; strict as-of is not established."
+    },
+    "href": "/data/explorer/current-comparison-senate_relative_context_v1-fp.json",
+    "sha256": "8657d119d5586d36cc3fa489403bc7ec0bec953d05ebcb008f183fdb2e4449c2"
+  }
+]

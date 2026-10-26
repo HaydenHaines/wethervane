@@ -1,0 +1,221 @@
+
+> ballotmancy-site@0.1.0 test:e2e
+> playwright test --config=playwright.site.config.ts tests/site/explanations.spec.ts tests/site/composition.spec.ts tests/site/explorer.spec.ts tests/site/layout.spec.ts
+
+[WebServer] (node:1794923) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 36 tests using 1 worker
+
+(node:1794956) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘   1 [desktop-chromium] › tests/site/composition.spec.ts:11:5 › saved current research comparisons update the forecast and compare only matching definitions (6.6s)
+(node:1795092) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   2 [desktop-chromium] › tests/site/composition.spec.ts:33:5 › the current saved forecast starts with component controls collapsed (1.1s)
+  ✓   3 [desktop-chromium] › tests/site/composition.spec.ts:52:5 › historical scorecard distinguishes outcome hits, probability error, and actual chamber control (1.2s)
+  ✘   4 [desktop-chromium] › tests/site/composition.spec.ts:74:5 › an explicitly uncomputed fixture stays separate from the saved result and cannot be saved as ready (5.4s)
+(node:1795255) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   5 [desktop-chromium] › tests/site/composition.spec.ts:111:5 › named local views reload and restore the exact stack, race, scenario, and comparison (3.6s)
+  ✓   6 [desktop-chromium] › tests/site/composition.spec.ts:141:5 › custom comparison identities survive URL reload and change probability comparisons (2.4s)
+  ✓   7 [desktop-chromium] › tests/site/composition.spec.ts:163:5 › composition API binds ready presets and completed alternatives and rejects invalid requests without execution (75ms)
+  ✓   8 [desktop-chromium] › tests/site/explanations.spec.ts:3:5 › refreshed poll explanations connect counts, date bounds, sample Ns and provider proxies (2.2s)
+  ✓   9 [desktop-chromium] › tests/site/explanations.spec.ts:50:5 › poll source explanation follows the selected model and historical evidence limits (1.8s)
+  ✓  10 [desktop-chromium] › tests/site/explorer.spec.ts:10:5 › 2018 archive preserves grouped candidates, all contests, and simultaneous seats (2.7s)
+  ✓  11 [desktop-chromium] › tests/site/explorer.spec.ts:54:5 › 2022 performance and comparisons follow the selected stack without changing observed truth (3.9s)
+  ✓  12 [desktop-chromium] › tests/site/explorer.spec.ts:94:5 › deep links, share links, reload, Back, and reset preserve a coherent selection (4.5s)
+  ✓  13 [desktop-chromium] › tests/site/explorer.spec.ts:124:5 › current sensitivities remain distinct from historical performance and unsupported stacks (2.7s)
+  ✓  14 [desktop-chromium] › tests/site/explorer.spec.ts:149:7 › a missing stack leaves the prior complete view available (1.9s)
+  ✓  15 [desktop-chromium] › tests/site/explorer.spec.ts:149:7 › a changed fingerprint stack leaves the prior complete view available (2.1s)
+  ✓  16 [desktop-chromium] › tests/site/layout.spec.ts:3:5 › race list starts with ten, expands on demand, and searches beyond the initial ten (966ms)
+  ✓  17 [desktop-chromium] › tests/site/layout.spec.ts:24:5 › race details scroll independently before the page bottom on desktop and flow naturally on mobile (1.3s)
+  ✓  18 [desktop-chromium] › tests/site/layout.spec.ts:57:5 › chamber heading and active tab track forecast control and keep a House race subset neutral (3.7s)
+(node:1795755) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  19 [mobile-chromium] › tests/site/composition.spec.ts:11:5 › saved current research comparisons update the forecast and compare only matching definitions (6.7s)
+(node:1795957) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  20 [mobile-chromium] › tests/site/composition.spec.ts:33:5 › the current saved forecast starts with component controls collapsed (1.1s)
+  ✓  21 [mobile-chromium] › tests/site/composition.spec.ts:52:5 › historical scorecard distinguishes outcome hits, probability error, and actual chamber control (2.1s)
+  ✘  22 [mobile-chromium] › tests/site/composition.spec.ts:74:5 › an explicitly uncomputed fixture stays separate from the saved result and cannot be saved as ready (5.5s)
+(node:1796140) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  23 [mobile-chromium] › tests/site/composition.spec.ts:111:5 › named local views reload and restore the exact stack, race, scenario, and comparison (3.8s)
+  ✓  24 [mobile-chromium] › tests/site/composition.spec.ts:141:5 › custom comparison identities survive URL reload and change probability comparisons (2.4s)
+  ✓  25 [mobile-chromium] › tests/site/composition.spec.ts:163:5 › composition API binds ready presets and completed alternatives and rejects invalid requests without execution (76ms)
+  ✓  26 [mobile-chromium] › tests/site/explanations.spec.ts:3:5 › refreshed poll explanations connect counts, date bounds, sample Ns and provider proxies (2.7s)
+  ✓  27 [mobile-chromium] › tests/site/explanations.spec.ts:50:5 › poll source explanation follows the selected model and historical evidence limits (1.9s)
+  ✓  28 [mobile-chromium] › tests/site/explorer.spec.ts:10:5 › 2018 archive preserves grouped candidates, all contests, and simultaneous seats (3.3s)
+  ✓  29 [mobile-chromium] › tests/site/explorer.spec.ts:54:5 › 2022 performance and comparisons follow the selected stack without changing observed truth (4.4s)
+  ✓  30 [mobile-chromium] › tests/site/explorer.spec.ts:94:5 › deep links, share links, reload, Back, and reset preserve a coherent selection (4.6s)
+  ✓  31 [mobile-chromium] › tests/site/explorer.spec.ts:124:5 › current sensitivities remain distinct from historical performance and unsupported stacks (2.9s)
+  ✓  32 [mobile-chromium] › tests/site/explorer.spec.ts:149:7 › a missing stack leaves the prior complete view available (3.0s)
+  ✓  33 [mobile-chromium] › tests/site/explorer.spec.ts:149:7 › a changed fingerprint stack leaves the prior complete view available (2.8s)
+  ✓  34 [mobile-chromium] › tests/site/layout.spec.ts:3:5 › race list starts with ten, expands on demand, and searches beyond the initial ten (1.1s)
+  ✓  35 [mobile-chromium] › tests/site/layout.spec.ts:24:5 › race details scroll independently before the page bottom on desktop and flow naturally on mobile (835ms)
+  ✓  36 [mobile-chromium] › tests/site/layout.spec.ts:57:5 › chamber heading and active tab track forecast control and keep a House race subset neutral (3.2s)
+
+
+  1) [desktop-chromium] › tests/site/composition.spec.ts:11:5 › saved current research comparisons update the forecast and compare only matching definitions 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: locator('.edition-inputs')
+    Expected substring: "16:21:44 GMT"
+    Received string:    "Input and publication timesStructural inputs: Tue, 20 Oct 2026 15:21:23 GMTPolling inputs: Mon, 26 Oct 2026 15:03:57 GMTResult generated: Mon, 26 Oct 2026 15:11:41 GMTThese saved comparisons can combine inputs with different collection deadlines."
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toContainText" locator('.edition-inputs') with timeout 5000ms
+      - waiting for locator('.edition-inputs')
+        14 × locator resolved to <details open="" class="edition-inputs">…</details>
+           - unexpected value "Input and publication timesStructural inputs: Tue, 20 Oct 2026 15:21:23 GMTPolling inputs: Mon, 26 Oct 2026 15:03:57 GMTResult generated: Mon, 26 Oct 2026 15:11:41 GMTThese saved comparisons can combine inputs with different collection deadlines."
+
+
+      20 |   await page.getByText("Input and publication times", { exact: true }).click();
+      21 |   await expect(page.locator(".edition-inputs")).toContainText("15:21:23 GMT");
+    > 22 |   await expect(page.locator(".edition-inputs")).toContainText("16:21:44 GMT");
+         |                                                 ^
+      23 |   await page.getByRole("checkbox", { name: "Compare default", exact: true }).check();
+      24 |   await expect(page.locator(".compare-banner").filter({ hasText: "Comparing with" })).toContainText("different forecast definitions");
+      25 |   await page.getByLabel("Comparison baseline", { exact: true }).selectOption("current-comparison-senate_relative_context_v1-f");
+        at /home/hayden/projects/ballotmancy-senate-refresh-20261026/tests/site/composition.spec.ts:22:49
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/composition-saved-current--2cacd-e-only-matching-definitions-desktop-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/composition-saved-current--2cacd-e-only-matching-definitions-desktop-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/composition-saved-current--2cacd-e-only-matching-definitions-desktop-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/composition-saved-current--2cacd-e-only-matching-definitions-desktop-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [desktop-chromium] › tests/site/composition.spec.ts:74:5 › an explicitly uncomputed fixture stays separate from the saved result and cannot be saved as ready 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByRole('region', { name: 'Who could control the chamber?', exact: true })
+    Expected substring: "8.3%"
+    Received string:    "Who could control the chamber?Independents unaligned · D needs 51; R needs 50Democratic control43.5%Republican control53.2%Control depends on alliances3.3%King and Sanders continue working with the Democrats. The four modeled independent challengers are assigned to neither party if elected, consistent with their stated pledges. Their eventual decisions could differ. Unresolved control means the winners are known in a simulation, but the winning members’ party alliances have not determined who organizes the chamber.A caucus is the group working with a party to organize the chamber, including any allied independents. The party holding the vice presidency can control a 50–50 Senate through its tie-breaking vote.D caucus: 50.1 expected seats (46–55, modeled 90% range)R caucus: 49.6 expected seats (44–54, modeled 90% range)Unaligned: 0.3 expected seats (0–2, modeled 90% range)Expected seats are the average across simulated elections, so they can include fractions. The 90% range spans the 5th to 95th percentiles; outcomes outside that range remain possible."
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toContainText" getByRole('region', { name: 'Who could control the chamber?', exact: true }) with timeout 5000ms
+      - waiting for getByRole('region', { name: 'Who could control the chamber?', exact: true })
+        12 × locator resolved to <section class="control-card" aria-labelledby="control-title">…</section>
+           - unexpected value "Who could control the chamber?Independents unaligned · D needs 51; R needs 50Democratic control43.5%Republican control53.2%Control depends on alliances3.3%King and Sanders continue working with the Democrats. The four modeled independent challengers are assigned to neither party if elected, consistent with their stated pledges. Their eventual decisions could differ. Unresolved control means the winners are known in a simulation, but the winning members’ party alliances have not determined who organizes the chamber.A caucus is the group working with a party to organize the chamber, including any allied independents. The party holding the vice presidency can control a 50–50 Senate through its tie-breaking vote.D caucus: 50.1 expected seats (46–55, modeled 90% range)R caucus: 49.6 expected seats (44–54, modeled 90% range)Unaligned: 0.3 expected seats (0–2, modeled 90% range)Expected seats are the average across simulated elections, so they can include fractions. The 90% range spans the 5th to 95th percentiles; outcomes outside that range remain possible."
+
+
+      90 |   await page.goto("/?run=current-polling&race=2026%3ANE%3Asenate%3Aregular");
+      91 |   const chamber = page.getByRole("region", { name: "Who could control the chamber?", exact: true });
+    > 92 |   await expect(chamber).toContainText("8.3%");
+         |                         ^
+      93 |   const savedChamber = await chamber.innerText();
+      94 |   await expandControls(page);
+      95 |   await page.getByLabel("Base model", { exact: true }).selectOption(experimental.baseId);
+        at /home/hayden/projects/ballotmancy-senate-refresh-20261026/tests/site/composition.spec.ts:92:25
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/composition-an-explicitly--b208a-nd-cannot-be-saved-as-ready-desktop-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/composition-an-explicitly--b208a-nd-cannot-be-saved-as-ready-desktop-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/composition-an-explicitly--b208a-nd-cannot-be-saved-as-ready-desktop-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/composition-an-explicitly--b208a-nd-cannot-be-saved-as-ready-desktop-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [mobile-chromium] › tests/site/composition.spec.ts:11:5 › saved current research comparisons update the forecast and compare only matching definitions 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: locator('.edition-inputs')
+    Expected substring: "16:21:44 GMT"
+    Received string:    "Input and publication timesStructural inputs: Tue, 20 Oct 2026 15:21:23 GMTPolling inputs: Mon, 26 Oct 2026 15:03:57 GMTResult generated: Mon, 26 Oct 2026 15:11:41 GMTThese saved comparisons can combine inputs with different collection deadlines."
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toContainText" locator('.edition-inputs') with timeout 5000ms
+      - waiting for locator('.edition-inputs')
+        14 × locator resolved to <details open="" class="edition-inputs">…</details>
+           - unexpected value "Input and publication timesStructural inputs: Tue, 20 Oct 2026 15:21:23 GMTPolling inputs: Mon, 26 Oct 2026 15:03:57 GMTResult generated: Mon, 26 Oct 2026 15:11:41 GMTThese saved comparisons can combine inputs with different collection deadlines."
+
+
+      20 |   await page.getByText("Input and publication times", { exact: true }).click();
+      21 |   await expect(page.locator(".edition-inputs")).toContainText("15:21:23 GMT");
+    > 22 |   await expect(page.locator(".edition-inputs")).toContainText("16:21:44 GMT");
+         |                                                 ^
+      23 |   await page.getByRole("checkbox", { name: "Compare default", exact: true }).check();
+      24 |   await expect(page.locator(".compare-banner").filter({ hasText: "Comparing with" })).toContainText("different forecast definitions");
+      25 |   await page.getByLabel("Comparison baseline", { exact: true }).selectOption("current-comparison-senate_relative_context_v1-f");
+        at /home/hayden/projects/ballotmancy-senate-refresh-20261026/tests/site/composition.spec.ts:22:49
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/composition-saved-current--2cacd-e-only-matching-definitions-mobile-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/composition-saved-current--2cacd-e-only-matching-definitions-mobile-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/composition-saved-current--2cacd-e-only-matching-definitions-mobile-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/composition-saved-current--2cacd-e-only-matching-definitions-mobile-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) [mobile-chromium] › tests/site/composition.spec.ts:74:5 › an explicitly uncomputed fixture stays separate from the saved result and cannot be saved as ready 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByRole('region', { name: 'Who could control the chamber?', exact: true })
+    Expected substring: "8.3%"
+    Received string:    "Who could control the chamber?Independents unaligned · D needs 51; R needs 50Democratic control43.5%Republican control53.2%Control depends on alliances3.3%King and Sanders continue working with the Democrats. The four modeled independent challengers are assigned to neither party if elected, consistent with their stated pledges. Their eventual decisions could differ. Unresolved control means the winners are known in a simulation, but the winning members’ party alliances have not determined who organizes the chamber.A caucus is the group working with a party to organize the chamber, including any allied independents. The party holding the vice presidency can control a 50–50 Senate through its tie-breaking vote.D caucus: 50.1 expected seats (46–55, modeled 90% range)R caucus: 49.6 expected seats (44–54, modeled 90% range)Unaligned: 0.3 expected seats (0–2, modeled 90% range)Expected seats are the average across simulated elections, so they can include fractions. The 90% range spans the 5th to 95th percentiles; outcomes outside that range remain possible."
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toContainText" getByRole('region', { name: 'Who could control the chamber?', exact: true }) with timeout 5000ms
+      - waiting for getByRole('region', { name: 'Who could control the chamber?', exact: true })
+        13 × locator resolved to <section class="control-card" aria-labelledby="control-title">…</section>
+           - unexpected value "Who could control the chamber?Independents unaligned · D needs 51; R needs 50Democratic control43.5%Republican control53.2%Control depends on alliances3.3%King and Sanders continue working with the Democrats. The four modeled independent challengers are assigned to neither party if elected, consistent with their stated pledges. Their eventual decisions could differ. Unresolved control means the winners are known in a simulation, but the winning members’ party alliances have not determined who organizes the chamber.A caucus is the group working with a party to organize the chamber, including any allied independents. The party holding the vice presidency can control a 50–50 Senate through its tie-breaking vote.D caucus: 50.1 expected seats (46–55, modeled 90% range)R caucus: 49.6 expected seats (44–54, modeled 90% range)Unaligned: 0.3 expected seats (0–2, modeled 90% range)Expected seats are the average across simulated elections, so they can include fractions. The 90% range spans the 5th to 95th percentiles; outcomes outside that range remain possible."
+
+
+      90 |   await page.goto("/?run=current-polling&race=2026%3ANE%3Asenate%3Aregular");
+      91 |   const chamber = page.getByRole("region", { name: "Who could control the chamber?", exact: true });
+    > 92 |   await expect(chamber).toContainText("8.3%");
+         |                         ^
+      93 |   const savedChamber = await chamber.innerText();
+      94 |   await expandControls(page);
+      95 |   await page.getByLabel("Base model", { exact: true }).selectOption(experimental.baseId);
+        at /home/hayden/projects/ballotmancy-senate-refresh-20261026/tests/site/composition.spec.ts:92:25
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/composition-an-explicitly--b208a-nd-cannot-be-saved-as-ready-mobile-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/composition-an-explicitly--b208a-nd-cannot-be-saved-as-ready-mobile-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/composition-an-explicitly--b208a-nd-cannot-be-saved-as-ready-mobile-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/composition-an-explicitly--b208a-nd-cannot-be-saved-as-ready-mobile-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4 failed
+    [desktop-chromium] › tests/site/composition.spec.ts:11:5 › saved current research comparisons update the forecast and compare only matching definitions 
+    [desktop-chromium] › tests/site/composition.spec.ts:74:5 › an explicitly uncomputed fixture stays separate from the saved result and cannot be saved as ready 
+    [mobile-chromium] › tests/site/composition.spec.ts:11:5 › saved current research comparisons update the forecast and compare only matching definitions 
+    [mobile-chromium] › tests/site/composition.spec.ts:74:5 › an explicitly uncomputed fixture stays separate from the saved result and cannot be saved as ready 
+  32 passed (1.8m)
