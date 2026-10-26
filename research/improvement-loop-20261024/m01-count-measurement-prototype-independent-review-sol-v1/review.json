@@ -1,0 +1,109 @@
+{
+  "schema": "M01SuppliedStatePrototypeIndependentReviewSolV1",
+  "reviewedAtUtc": "2026-10-26T19:36:58.748922+00:00",
+  "status": "qualified_mathematical_prototype_review_passed",
+  "materialBlockers": [],
+  "scope": "Independent read-only review of frozen current TX2026 six-poll supplied-state math. No model fit, historical replay, actual posterior, provider registration, forecast, publication, or improvement finding.",
+  "pins": {
+    "specification": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-count-measurement-prototype-spec-v2/specification.json",
+      "sha256": "3216fb4bdd53fbd8e8b11ec8c90f2c6e5da89832240186f1ce2aebc977d0c203",
+      "bytes": 47699
+    },
+    "prototype": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-count-measurement-prototype-sol-v1/prototype.py",
+      "sha256": "244c8214b8e004bb84ad14adb7a0ac27c439bc6283705db532413a4efe015d07",
+      "bytes": 10812
+    },
+    "tests": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-count-measurement-prototype-sol-v1/test_prototype.py",
+      "sha256": "1d857479e7f186c349b3dae8d56b9e41b4fe44a9b0609da0fb31e5104e6dd932",
+      "bytes": 18979
+    },
+    "runner": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-count-measurement-prototype-sol-v1/run_tests.py",
+      "sha256": "54ec47672018fb74c2b263222ebb923cd62768290879483a90d3ffdab645c43a",
+      "bytes": 3504
+    },
+    "authorEvidence": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-count-measurement-prototype-sol-v1/author-evidence-v1.json",
+      "sha256": "0b287f4168fd24f814178e8307e133c6a3175e8ed7ebf81d0c22c621322e75c7",
+      "bytes": 22934
+    },
+    "finalTerminal": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-count-measurement-prototype-sol-v1/attempt5-terminal.json",
+      "sha256": "67b7ee98b8210631ab96e88ea6d25efe1c2281a910af98345a1d024e1cb1246d",
+      "bytes": 1565
+    },
+    "finalTestLog": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-count-measurement-prototype-sol-v1/final-tests.log",
+      "sha256": "2bde9bba3dca816604a9ac3362b48312b62c151a2daf97f2f2a6607b0e8fd59a",
+      "bytes": 2873
+    },
+    "finalTestReport": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-count-measurement-prototype-sol-v1/final-test-report.json",
+      "sha256": "13bdfc1c1ae3027840a3ec18d891fc4f215d63887b66b5514b85d35b1a14898b",
+      "bytes": 4589
+    },
+    "frozenBank": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/calibration-consumer-v1/inputs/posterior-bank.npz",
+      "sha256": "449b9f50eecec0af250834457f256a8fd193616cb70b4847bd35acf614fe0539",
+      "bytes": 296583
+    }
+  },
+  "authorRun": {
+    "attempt": 5,
+    "testsPassed": 12,
+    "testsTotal": 12,
+    "exitCode": 0,
+    "maximumRssKiB": 144648,
+    "wallSeconds": 36.681764364242554,
+    "sourceHashesUnchanged": true,
+    "singleThreadCpu": true
+  },
+  "independentChecks": [
+    {
+      "id": "source_and_scope",
+      "finding": "Prototype only loads authenticated frozen consumer, review, manifest and six-poll bank; code has no sampler, optimizer, registry, forecast export, historical replay or result-label path. Source hashes and bank SHA independently matched author pins."
+    },
+    {
+      "id": "joint_mixture",
+      "finding": "Code and tests sum normalized six-dimensional Gaussian component densities with one shared bank-row index. A separate two-dimensional SciPy calculation matched logdensity; product of marginal mixtures differed."
+    },
+    {
+      "id": "gradient_and_count_port",
+      "finding": "Mean gradient equals responsibility-weighted covariance solve with correct sign. Independent two-dimensional central difference maximum absolute error 1.2719936215432881e-11. The six same-pair rate-port means all equal log(3/2); author PyTensor finite-difference ladder and derivative-sum tests passed."
+    },
+    {
+      "id": "parent_masses",
+      "finding": "Each parent downstream kernel is normalized separately before multiplying the original mass. Independent 3/10,7/10 fixture returned exactly those marginals; author also tests unequal normalizers and eight equal parents."
+    },
+    {
+      "id": "weights_and_boundaries",
+      "finding": "Original 1/4000 calibration row weights are retained; conditional responsibilities are distinct from both input and integrated masses. Zero-weight rows, numerical and symbolic unsupported overflow, invalid vector axes, covariance SPD, and one-point incumbent reduction have focused tests."
+    },
+    {
+      "id": "test_lineage",
+      "finding": "The first run failed exact floating-bit weight equality. The author retained the failed attempt, removed unintended renormalization, added shape and unsupported-range guards across later preserved attempts, and final attempt5 passed without loosening frozen tolerances."
+    }
+  ],
+  "independentSyntheticProbe": {
+    "tool": "existing isolated Python/NumPy/SciPy environment; read-only in-memory fixture",
+    "jointLogDensity": -3.017784306409985,
+    "independentMarginalProductDensity": 0.049063312611406625,
+    "gradientMaximumFiniteDifferenceAbsoluteError": 1.2719936215432881e-11,
+    "parentMarginals": [
+      0.3,
+      0.7
+    ],
+    "broadcastMean": 0.4054651081081645,
+    "broadcastCount": 6
+  },
+  "limitations": [
+    "Computational agreement at supplied means does not evaluate any protected-parent normalizer Z_j, integrate the full native posterior, establish native count-graph factor ownership, or qualify a forecast.",
+    "The current bank contains reviewed historical poll-error calibration data, but original source publication histories remain unverified; Oct20 source availability uses a field-end proxy. This test does not establish strict as-of availability or a leakage-free historical replay.",
+    "The numeric helper is pinned to the current six-poll bank and exact source bytes, while its consumer accepts later 2026 cutoff arguments. Treat the returned object as a numerical fixture only; an actual later edition requires separate source and time admission.",
+    "The count graph example is invented and the rate port is uninstalled. Matched earlier-only bank refits, calibration/downstream source dependence, full-cut validity, empirical skill and precision/practical adoption gates remain open."
+  ],
+  "decision": "Supports only the declared CPU float64 supplied-state mathematical readiness result. No evidence for model promotion or public deployment."
+}

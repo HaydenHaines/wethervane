@@ -1,0 +1,185 @@
+{
+  "schema": "M01SuppliedStatePrototypeTestsV1",
+  "status": "passed",
+  "tests": 12,
+  "failures": 0,
+  "errors": 0,
+  "seconds": 35.51589966798201,
+  "runtime": {
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+    "numpy": "2.5.4",
+    "scipy": "1.18.1",
+    "pytensor": "2.38.2",
+    "mode": "FAST_COMPILE CPU float64",
+    "threads": 1
+  },
+  "details": {
+    "singlePointMaximumLogDensityError": 0.0,
+    "fullBankMaximumLogDensityError": 8.881784197001252e-16,
+    "fullBankMaximumGradientError": 6.394884621840902e-14,
+    "suppliedMeans": [
+      {
+        "mean": [
+          0.02150620522096358,
+          -0.020619287202735648,
+          0.04348511193973903,
+          0.07721585066738346,
+          0.042559614418795855,
+          0.06187540371808731
+        ],
+        "logDensity": 6.3802274389640035,
+        "gradient": [
+          -0.0,
+          -0.0,
+          -0.0,
+          -0.0,
+          -0.0,
+          -0.0
+        ],
+        "largestConditionalResponsibility": 0.00047972312310661875
+      },
+      {
+        "mean": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "logDensity": 6.11575501883388,
+        "gradient": [
+          -0.9229378867580604,
+          -4.1367356985364285,
+          0.8236555949467821,
+          3.340323648800772,
+          1.042171870438265,
+          2.0218976118645626
+        ],
+        "largestConditionalResponsibility": 0.00045195423792696374
+      },
+      {
+        "mean": [
+          0.1,
+          0.1,
+          0.1,
+          0.1,
+          0.1,
+          0.1
+        ],
+        "logDensity": 6.026771221754441,
+        "gradient": [
+          -1.5515132262844686,
+          -5.419442015065672,
+          -0.2634030045749775,
+          2.3884403093140913,
+          -0.24096151234740115,
+          1.1526083706533763
+        ],
+        "largestConditionalResponsibility": 0.00042876865660970665
+      },
+      {
+        "mean": [
+          0.2715062052209636,
+          -0.27061928720273565,
+          0.29348511193973903,
+          -0.17278414933261654,
+          0.29255961441879585,
+          -0.1881245962819127
+        ],
+        "logDensity": -7.607941243848002,
+        "gradient": [
+          -15.156029852703377,
+          18.85604976739471,
+          -19.436885264390675,
+          17.761014839009643,
+          -19.394988861231607,
+          17.628611309104507
+        ],
+        "largestConditionalResponsibility": 0.003216068736344783
+      },
+      {
+        "mean": [
+          -0.5,
+          -0.5,
+          -0.5,
+          -0.5,
+          -0.5,
+          -0.5
+        ],
+        "logDensity": -0.3850267019868232,
+        "gradient": [
+          0.5001777605458779,
+          -1.1881381631823338,
+          3.2987176511433356,
+          5.489904702074757,
+          3.9789511070016053,
+          3.982481092658227
+        ],
+        "largestConditionalResponsibility": 0.018787141509466726
+      },
+      {
+        "mean": [
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ],
+        "logDensity": 0.7977197020192524,
+        "gradient": [
+          -2.910902729171192,
+          -8.217082183755856,
+          -2.6371130744466837,
+          0.30759071680908157,
+          -3.0448906422941846,
+          -0.7452197017111921
+        ],
+        "largestConditionalResponsibility": 0.008283623967279483
+      }
+    ],
+    "countPortFiniteDifferenceMaximumErrors": [
+      3.1600139216436673e-07,
+      2.844474700225419e-08,
+      3.176072738142466e-09
+    ],
+    "weightSemantics": {
+      "inputWeights": [
+        0.5,
+        0.5
+      ],
+      "integratedPosteriorWeights": [
+        0.6541528330577104,
+        0.34584716694228973
+      ],
+      "protectedCalibrationCutWeights": [
+        0.5,
+        0.5
+      ]
+    },
+    "oneDimensionalNormalization": {
+      "integral": 0.9999999999999999,
+      "quadratureError": 2.4453596702836525e-09
+    },
+    "tinyCountGraph": {
+      "categoryCount": 6,
+      "observedParticipants": 7,
+      "source": "invented",
+      "nativeProviderInstalled": false
+    }
+  },
+  "sourceHashes": {
+    "prototype.py": "244c8214b8e004bb84ad14adb7a0ac27c439bc6283705db532413a4efe015d07",
+    "test_prototype.py": "1d857479e7f186c349b3dae8d56b9e41b4fe44a9b0609da0fb31e5104e6dd932"
+  },
+  "scope": {
+    "samplerCalls": 0,
+    "optimizerFitCalls": 0,
+    "nativeProviderInstalled": false,
+    "current2026BankSuppliedPointsOnly": true,
+    "realHistoricalLabelLoads": 0,
+    "empiricalQualification": false,
+    "publication": false
+  }
+}
