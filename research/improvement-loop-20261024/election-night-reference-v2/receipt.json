@@ -1,0 +1,195 @@
+{
+  "schema": "ElectionNightGuideV2IntegrationReceiptV1",
+  "at": "2026-10-26T17:13:18.081157+00:00",
+  "guideCommit": "7ea0a7132d8979716031d0cd4ce537274f9a87e4",
+  "liveCommit": "1cd5090fd223547f8a8e51ce3171ccb585645c02",
+  "published": false,
+  "sources": [
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/components/ElectionNightGuide.tsx",
+      "sha256": "67f28bd1308925ea25d1c05af94250270c5e5d2d2d8236e65c75adee1ffdfe6c",
+      "bytes": 23261
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/components/ElectionNightRubric.tsx",
+      "sha256": "c62bc433a2f217eb215f2bd47ac99935a71025bb41ccfbcdbc5ac9b94ac2319b",
+      "bytes": 5937
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/election-night-evaluation.ts",
+      "sha256": "87fef90a59ccf6cb1a4f1c5de66d4e4253837f95a91c9d95b01ba198aaf05cb9",
+      "bytes": 27646
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/election-night-rubric.ts",
+      "sha256": "dd5b248e4f8af8ed784bcddb2b330cb46b8e03e178bffd89b5ba992b29a2cb40",
+      "bytes": 31034
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/election-night-reference.ts",
+      "sha256": "79bc01695e8ee426bf2d3a90b1827b814701408925f6b449b60fde1178867c3f",
+      "bytes": 20875
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/scripts/export_election_night_reference.py",
+      "sha256": "f728d777ed1511f55067fbde2c9173ea84c64b2f6ff55c6cd5ab05a484169469",
+      "bytes": 24830
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/data/election-night-reference-publication.json",
+      "sha256": "9dbcd9cbab826082e773ab3dfd1447b960bae57ac33ab3b3fcbef39336bc9878",
+      "bytes": 338
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/public/data/election-night/references.json",
+      "sha256": "9d2c289667d9f25fe38515eefb1503133a6f72b92cfcf65e5061540b235ccd5f",
+      "bytes": 71391
+    }
+  ],
+  "reviews": [
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-reference-v2-review-sol.json",
+      "sha256": "d324918123bc5bb077956c0618914a93fd8b7c2adb5e054c4cba9b32db0229e7",
+      "bytes": 5532
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-rubric-implementation-review-sol-v1.json",
+      "sha256": "75fbd18662ba40e137c84cb99bebb4d9330e387f8bc6e8e52543098733ae4201",
+      "bytes": 5799
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-rubric-copy-luna-v1.json",
+      "sha256": "43daffe26d010aafc662b2c4100835549c2b34f238f8cf34a6c3c14243f32cc3",
+      "bytes": 4070
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-reference-v2-visual-luna-v1.json",
+      "sha256": "0b58d9be81dfc87b6fc62c13c5bf2b8c6dba496d905dc19be41251d8623c2087",
+      "bytes": 2864
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-reference-v2-visual-luna-addendum-v1.json",
+      "sha256": "b4ead97662e04931252e0566b38a8065f0186d9dad92ee69a0dee6cf2e6f943b",
+      "bytes": 1341
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-rubric-editorial-decision-v2.json",
+      "sha256": "edb82165b1e6fc76335912108b887b40ded71f0c0de76f3262dcdf39f3e0b79e",
+      "bytes": 9995
+    }
+  ],
+  "checks": {
+    "units": {
+      "passed": 57,
+      "log": {
+        "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-reference-v2/units.log",
+        "sha256": "1ad7ebedfe553f50c42ee700697f3ba4ac71c769954dc0ea5ba7367bd422ce7c",
+        "bytes": 17868
+      }
+    },
+    "export": {
+      "passed": 4,
+      "skippedLocally": 0,
+      "ciScope": "Three native-source export checks skip when local owner research is absent; authenticated published-catalog JS checks still run.",
+      "log": {
+        "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-reference-v2/export.log",
+        "sha256": "0f7fb65ba422c97110078e9d3e47f5aaad2a5d5be1e1b2b500ece0e1def64137",
+        "bytes": 237
+      }
+    },
+    "browser": {
+      "passed": 10,
+      "scope": "16 Senate and16 House choices, desktop/mobile, exact reference/tail values, rubric bands, alternative isolation, corruption/retry, chamber/history and main forecast preservation",
+      "log": {
+        "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-reference-v2/browser.log",
+        "sha256": "5b82610341bc72b883ea90644ec53abe7d3d9a68e4cccd698669307a60a5cc7d",
+        "bytes": 2201
+      }
+    },
+    "typecheck": {
+      "passed": true,
+      "log": {
+        "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-reference-v2/typecheck.log",
+        "sha256": "d5f9a064d7d11dd381d5f5dafe415d18b32b3af9442c158a40f2a25fddfe0001",
+        "bytes": 52
+      }
+    },
+    "build": {
+      "passed": true,
+      "log": {
+        "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-reference-v2/build-final.log",
+        "sha256": "c2ca733c6a9c42dfa4a03629d5d78387d47318ec43461410870e4dfdca41f51d",
+        "bytes": 1127
+      },
+      "initialBuild": {
+        "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-reference-v2/build.log",
+        "sha256": "13051a60c99d5ef56ecb4be61075a2dbee66021ca2d27dfa718df452f0468a01",
+        "bytes": 1127
+      },
+      "note": "Final build includes pure-grader review fixes. Browser-tested UI and exported band values unchanged between builds."
+    }
+  },
+  "visual": {
+    "checks": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-reference-v2/visual.json",
+      "sha256": "8841ef0a94905464b6d3880a5048f6ef4b2cf1a8f368b38f80ed7f53381bc87f",
+      "bytes": 838
+    },
+    "screenshots": [
+      {
+        "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-reference-v2/desktop-close-probabilities.png",
+        "sha256": "13b39a856ee844fea29fad098a8e0d146fe1ee875bed4db3aa0858ca0f40f664",
+        "bytes": 59710
+      },
+      {
+        "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-reference-v2/desktop-rubric.png",
+        "sha256": "b91f9561db1f8f4b3b08cf7d5f21c8611624d16a215d8d4f494a4bab07d0ac06",
+        "bytes": 144531
+      },
+      {
+        "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-reference-v2/mobile-close-probabilities.png",
+        "sha256": "8ebcdaa0efdebe26b18ebe1baec18af54e5a42807795a03640cffa6e9dcb345a",
+        "bytes": 203419
+      },
+      {
+        "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-reference-v2/mobile-rubric-viewport.png",
+        "sha256": "85c2d36b785df33bffc642f1af997d39f6a07bc49012665f857a757dbfb2ea72",
+        "bytes": 284635
+      },
+      {
+        "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-reference-v2/mobile-rubric.png",
+        "sha256": "d84a4c19ce80b47e3073a2487e21e9edf691b6f9ccf63edc480950bdc30e0034",
+        "bytes": 572710
+      }
+    ],
+    "screenshotsLocalIgnoredNotPushed": true,
+    "captureFinding": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-reference-v2/skip-link-screenshot-finding.json",
+      "sha256": "9831ea1dae6773a2c63f6737b4c216daf3ab966424ada72806b49d7d6cc0af4e",
+      "bytes": 554
+    }
+  },
+  "rootIndependentEvaluatorReview": {
+    "reviewedFiles": [
+      "lib/election-night-evaluation.ts",
+      "tests/election-night-evaluation.test.mjs"
+    ],
+    "findings": "Accepted explicit House owner-v2 target, original masses/absent0, outside-group loss/infinite log, separate omitted-candidate identity, no legacy Senate target change. Current artifact435party projections and412pairs checked; authenticating result policy and official sources remains outside the pure API."
+  },
+  "scope": {
+    "senateTailEvents": "Exact35 ordered native pairs,40000samejointrows, inclusive close<=2 and candidate-sided>=10 thresholds; counts/fractions/disjoint/namedcandidate subset bounds verified. V1 metrics and sources preserved.",
+    "rubric": "Raw Brier/2 and proper90interval losses; lower component overall; overall/winner-only coin-flip capD preservesF; complete final/certified cohorts only; zero-baseline undefined; exact reviewed earlier Senate35 mapping.",
+    "house": "Pure fixedDRO scorer permits absent-group actualwinner, no exclusion/renormalization; roster omissions separate. Official-record and result-source admission remain required.",
+    "earlierBaseline": "Oct20F/Oct26FP forecast-as-issued only. This is not a matched-horizon causal layer comparison and cannot qualify a standing-goal model promotion."
+  },
+  "notYetCompleted": [
+    "Immutable actual evaluation lock and authenticated comparison/result policy",
+    "Official result importer, source and revision ledger, including rule/round/denominator mappings",
+    "Actual evaluator-to-grader adapter deriving losses from admitted records",
+    "Qualified corrected House16 release and reviewed expected-error references",
+    "Public guide release after remaining integration/review"
+  ],
+  "actualResultsConsumed": false,
+  "actualGradesAssigned": false,
+  "standingGoalComplete": false
+}

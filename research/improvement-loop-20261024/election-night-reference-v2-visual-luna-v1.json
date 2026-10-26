@@ -1,0 +1,34 @@
+{
+  "schema": "ElectionNightReferenceV2VisualReviewV1",
+  "reviewedAt": "2026-10-26",
+  "status": "mobile_table_and_probability_copy_clear; focused_skip_link_overlays_mobile_rubric_capture",
+  "screenshots": [
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-reference-v2/desktop-close-probabilities.png",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-reference-v2/mobile-close-probabilities.png",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-reference-v2/desktop-rubric.png",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-reference-v2/mobile-rubric.png"
+  ],
+  "findings": [
+    {
+      "severity": "pass",
+      "topic": "mobile_grade_table",
+      "finding": "The two-column A–F table wraps its header cleanly at mobile width; all five rows and threshold labels remain readable with no horizontal overflow or clipped text. Desktop table spacing is clear."
+    },
+    {
+      "severity": "pass",
+      "topic": "named_pair_probabilities",
+      "finding": "The visible qualifier that these margins count votes only for the two named candidates precedes the close and decisive probabilities. At mobile width the caveat, probabilities, candidate labels, and values are all legible and fit without clipping. The expanded details remain the place for the exact denominator and inclusive/non-exhaustive event definitions."
+    },
+    {
+      "severity": "pass_with_disclosure_depth",
+      "topic": "house_coinflip_and_uniform_reference",
+      "finding": "The visible rubric names the House D/R 50/50, Other 0 reference and says Other wins remain counted. The added explanation that beating uniform thirds can simply mean favoring D/R over Other and does not establish D-versus-R discrimination appears inside the collapsed exact-scores details. This is accurate and appropriately detailed, though readers must expand the section to see that nuance."
+    },
+    {
+      "severity": "visual_capture_issue",
+      "topic": "mobile_focused_skip_link",
+      "finding": "The mobile rubric screenshot shows the focused 'Skip to the races' link overlapping the No-letter-grade/winner-probabilities copy. It obscures a heading and part of the surrounding text in this capture. This looks focus-state-specific rather than a normal-flow or table overflow issue; confirm the intended keyboard screenshot state and avoid leaving the focused control over rubric text."
+    }
+  ],
+  "recommendation": "The requested table, probability copy, and House caveat render legibly on mobile without horizontal overflow. Review the visible focused skip-link overlap before accepting this exact keyboard-state capture; no other visual blocker found."
+}

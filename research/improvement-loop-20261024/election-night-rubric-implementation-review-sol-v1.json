@@ -1,0 +1,52 @@
+{
+  "schema": "ElectionNightRubricImplementationIndependentReviewV1",
+  "reviewedUtc": "2026-10-26T17:08:28.021263+00:00",
+  "status": "qualified_pure_grader_no_material_implementation_blocker",
+  "pins": {
+    "editorialDecision": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-rubric-editorial-decision-v2.json",
+      "sha256": "edb82165b1e6fc76335912108b887b40ded71f0c0de76f3262dcdf39f3e0b79e"
+    },
+    "reviewedEarlierMapping": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-polling-refresh-20261026/scorecard-baseline-compatibility-sol/candidate-pair-event-mapping-v1.json",
+      "sha256": "9024069ac0f397c2d379663d653d384e32532548ef26772035eda61ce55265e0"
+    },
+    "reviewedEarlierComparison": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-polling-refresh-20261026/scorecard-baseline-compatibility-sol/review-v1.json",
+      "sha256": "901b1c869b2ce7c5302ad57cef7805eff860324c78821033052b743c69cd5f9e"
+    },
+    "rubricImplementation": {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/election-night-rubric.ts",
+      "sha256": "dd5b248e4f8af8ed784bcddb2b330cb46b8e03e178bffd89b5ba992b29a2cb40"
+    },
+    "rubricTests": {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/tests/election-night-rubric.test.mjs",
+      "sha256": "b157cf6e920c11cda95c7920117d18d47af6d4f349090b25b15e81b35bbcd6a4"
+    },
+    "evaluationImplementation": {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/election-night-evaluation.ts",
+      "sha256": "87fef90a59ccf6cb1a4f1c5de66d4e4253837f95a91c9d95b01ba198aaf05cb9"
+    }
+  },
+  "scope": "Private pure rubric arithmetic and binding checks for caller-authenticated, scientifically admitted contracts and paired loss records. No actual results, final freeze, or public grade were reviewed or claimed.",
+  "verified": [
+    "Editorial V2 decision SHA edb82165... is literal in the rubric. A/B/C/D/F bands (+20/+10/0/-10/else) use unrounded 1-modelMean/historyMean skill and an explicit 1e-12 absolute equality tolerance. Baseline mean zero or an unrepresentable ratio yields no component or overall letter; paired raw differences remain visible.",
+    "Winner input metric is the full categorical Brier sum in [0,2] and is divided exactly once by two. House coin-flip (.5,.5,0) gives .25 for D/R and .75 for O; uniform thirds is reported separately at one-third per observed group. No outside Other winner is dropped. The coin-flip gate caps overall or winner-only at D while retaining an existing F; component history letters remain visible.",
+    "Central-90 interval losses are scalar proper interval scores in percentage points, with accepted [0,4000] physical range for observed and interval endpoints in [-100,100]. Independent evaluator check gave width-only score 200 for [-100,100] at 100, tail score 110 for [-5,5] at -10, and maximum 4000 for a degenerate -100 interval at observed100. Computing each interval score from forecast endpoints is the upstream evaluator/admission responsibility, not this scalar grader.",
+    "Both arms of a paired row must bind the same exact target, observed value, result record ID, revision, record/source SHA, finality and result-policy SHA; the row also binds contract/cohort SHA and each public forecast result SHA. Duplicate, unexpected, mismatched, unavailable or nonfinal rows cannot produce a complete-cohort letter. Unresolved/unsupported finality does not enter partial raw means. Separate predeclared interval exclusions are returned visibly.",
+    "Matched-horizon mode requires equal cutoff and horizon. The sole earlier Senate exception pins public result SHAs 37af627c... and 905ce512..., native forecast SHAs, target/law, issuance/cutoff/horizons, review/mapping/freeze SHA, and ordered 35 winner race/pair/denominator tuples. An independent tuple-by-tuple comparison against the reviewed owner mapping passed 35/35. Senate interval targets must use the same pair/event/round/rule/denominator as the corresponding relative-lead target. The exception remains labeled different-information/different-lead-time and does not imply causal polling skill.",
+    "Malformed JSON-shaped inputs fail closed without an exception or numeric grade in the focused fixtures. No boolean/pin-shaped approval field can by itself authorize actual-result grading."
+  ],
+  "focusedChecks": {
+    "rubricNodeTests": "11/11 passed",
+    "typescript": "npm run typecheck passed",
+    "reviewedTupleComparison": "35/35 exact ordered race, first/second candidate and denominator matches"
+  },
+  "outerAdmissionStillRequired": [
+    "A future immutable evaluation lock/import must authenticate the actual forecast and comparison-contract bytes, final-result source and revisions, and predeclared event/round/denominator mapping. The earlier owner review explicitly did not admit actual results.",
+    "For the issued House scorecard, the outer lock must enforce all 435 party winners, 412 eligible named-pair margins and 23 declared exclusions; this generic pure grader intentionally supports other separately admitted historical cohorts.",
+    "The grader consumes already computed scalar losses. It cannot prove that an offered Brier or interval number was derived from the pinned forecast probabilities/ranges and official truth; the authenticated scoring adapter must do so before calling it.",
+    "Called/provisional paired scores may appear only as clearly labeled descriptive partial raw rows. Actual margin scoring eligibility at those statuses must be fixed by the admitted result policy and upstream evaluator."
+  ],
+  "materialBlockers": []
+}

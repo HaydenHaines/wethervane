@@ -1,0 +1,95 @@
+{
+  "schema": "ContinuousImprovementContinuationV39",
+  "utc": "2026-10-26T17:14:18.631424+00:00",
+  "goal_status": "active",
+  "goal_instruction_file": "/home/hayden/.codex/attachments/c5a479b5-a3ea-4836-b0cf-e39e3e0524d1/pasted-text-1.txt",
+  "operative_goal": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/GOAL.md",
+    "sha256": "1e6574e4647306b46a8830d2623c92f05e420dbfeefaccc25ebb091bbcab87be",
+    "bytes": 5721
+  },
+  "predecessor": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/checkpoints/continuation-v38.json",
+    "sha256": "0ea9da41d33aa5d8e01d81cbe9c2ed6d1d723d3eae2269502246655b75201067",
+    "bytes": 6993
+  },
+  "previous_turn_classification": "progress: user-reported House bar checked on actual live desktop/mobile compact and expanded views; verified bar is present. Returned to private scorecard implementation without changing live forecast.",
+  "this_turn_classification": "Progress: qualified Senate V2 probabilities integrated and reviewed; House party scoring and the editorial rubric implemented and reviewed; UI updated; 57 unit tests, 4 export tests, 10 browser cases, typecheck and build passed; private branch pushed.",
+  "consecutive_blocked_turns": 0,
+  "newEvidence": [
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-reference-v2/receipt.json",
+      "sha256": "dc670162dac291ee44121947914ad2b7c238614907af786a3cfa4df2519c5f37",
+      "bytes": 10127
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-rubric-editorial-decision-v2.json",
+      "sha256": "edb82165b1e6fc76335912108b887b40ded71f0c0de76f3262dcdf39f3e0b79e",
+      "bytes": 9995
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-reference-v2-review-sol.json",
+      "sha256": "d324918123bc5bb077956c0618914a93fd8b7c2adb5e054c4cba9b32db0229e7",
+      "bytes": 5532
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-rubric-implementation-review-sol-v1.json",
+      "sha256": "75fbd18662ba40e137c84cb99bebb4d9330e387f8bc6e8e52543098733ae4201",
+      "bytes": 5799
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-rubric-copy-luna-v1.json",
+      "sha256": "43daffe26d010aafc662b2c4100835549c2b34f238f8cf34a6c3c14243f32cc3",
+      "bytes": 4070
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-reference-v2-visual-luna-v1.json",
+      "sha256": "0b58d9be81dfc87b6fc62c13c5bf2b8c6dba496d905dc19be41251d8623c2087",
+      "bytes": 2864
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-reference-v2-visual-luna-addendum-v1.json",
+      "sha256": "b4ead97662e04931252e0566b38a8065f0186d9dad92ee69a0dee6cf2e6f943b",
+      "bytes": 1341
+    }
+  ],
+  "publication": {
+    "siteground": "1cd5090fd223547f8a8e51ce3171ccb585645c02",
+    "guideBranch": "feature/election-night-guide-20261026",
+    "guideHead": "7ea0a7132d8979716031d0cd4ce537274f9a87e4",
+    "guidePushed": true,
+    "guidePublished": false,
+    "houseMarker": "Served desktop and mobile views verified: 22px compact bars and 58px expanded bars. The dynamic 218-seat reference is at FL-14 for the standard forecast. This is not an empirical district-tipping probability."
+  },
+  "scientificStatus": {
+    "eightRoleImplementationsPresent": true,
+    "fullCountComplementarityQualified": false,
+    "weakestLayerEmpiricallyRanked": false,
+    "challengerPromotedThisRound": false,
+    "actualCountPositiveSelectionApplied": false,
+    "TX2018": {
+      "service": {
+        "MainPID": "1778499",
+        "ExecMainStatus": "0",
+        "ActiveState": "active",
+        "SubState": "running"
+      },
+      "healthTimestamp": "2026-10-26T17:12:41.567191+00:00",
+      "stage": "warmup",
+      "completed": 1475,
+      "qualification": "Running, not posterior or forecast qualified; owner retains control."
+    },
+    "HouseNY21": "Owner reports 6 of 10 polling runs done, with 3 needing precision extensions; fundamentals queue and qualified 16-model packet remain pending. Owner is considering a pinned manifest reader to avoid duplicating large conditional arrays; no artifact format has changed. Original 16 live forecasts and input notice retained.",
+    "SenateEarlierBenchmark": "Reviewed October 20 fundamentals versus October 26 fundamentals plus polling is admitted only as a forecast-as-issued scorecard comparison with the exact 35-pair mapping. It is not a matched-horizon comparison or evidence for challenger promotion."
+  },
+  "nextActions": [
+    "Implement an immutable evaluation lock and authenticated official-result revision store. Requests sent to both owners cover pre-result source, candidate, round, denominator, finality, disputes, ties and missing results. Senate AK/ME/GA and House AK/ME/LA need reviewed round mappings.",
+    "Build the evaluator-to-grader adapter, deriving losses from the same admitted result records and revisions. The generic pure API does not admit results. Bind all 435 House winner rows, the current 412 pair-margin rows and 23 margin exclusions to the actual edition. Preserve the exact 35-pair Senate mapping.",
+    "Bind the reviewed basic-history reference and result policy into an actual scorecard contract. Preserve October 20 and October 26 edition dates, cutoffs, horizons and separate draw banks. Keep generic comparison guards and the standing promotion requirements unchanged.",
+    "Integrate corrected House forecasts and expected-error sidecars only after receiving the complete qualified packet. If the owner adopts a conditional-array manifest reader, adapt offline verification after checking its schema, reader, identities, weights and direct-array parity. Public catalog and bundle APIs remain unchanged.",
+    "Private guide 7ea0a71 is verified and pushed, not live. All 57 unit tests, 4 export tests, 10 browser cases, typecheck and final build passed. Independent Sol reference/rubric reviews and Luna copy/visual reviews are saved. Preview session 80804 stopped and temporary browser config removed.",
+    "Continue the full standing goal: eight-layer coherence, incremental contribution and recursive improvement when qualified evidence arrives. Preserve FS5/F0 gasoline and M02 momentum findings; do not repeat without new evidence. No full-count fit qualification or promotion yet."
+  ],
+  "scopeCorrection": "New user-configuration saving was a typo; no saving or printing feature added. Preserve scientific configurations, results, presets and existing functionality.",
+  "reviewNotes": "The tall mobile element screenshot included an off-viewport fixed skip link. Root DOM measurements, a viewport screenshot and a Luna addendum establish that it does not overlap the actual page. Prior evidence preserved; no UI change was needed."
+}

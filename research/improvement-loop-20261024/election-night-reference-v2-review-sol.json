@@ -1,0 +1,65 @@
+{
+  "schema": "ElectionNightReferenceV2IndependentAdapterReviewV1",
+  "reviewedUtc": "2026-10-26T17:01:34.975121+00:00",
+  "status": "qualified_scoped_private_guide_v2_reference_no_material_blocker",
+  "pins": {
+    "ownerV2": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-polling-refresh-20261026/standard-scorecard-reference-v2/reference.json",
+      "sha256": "64df0b35a79e46d7d838b5aba70dbd678d110b19392ce30fa720c0ae3840a983"
+    },
+    "independentV2Review": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-polling-refresh-20261026/scorecard-tail-review-sol/review-v1.json",
+      "sha256": "b5f793d959c484fc977e46f92afc63bc0375b8817708cd771fe9ae637e5f14e0"
+    },
+    "independentV2Manifest": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-polling-refresh-20261026/scorecard-tail-review-sol/manifest-v1.json",
+      "sha256": "b4cae1844dce11bc9bee0ed287cc0eb8e461142bce91359408207d3e6e0c6ab9"
+    },
+    "ownerV1": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-polling-refresh-20261026/standard-scorecard-reference-v1/reference.json",
+      "sha256": "48d36fdce404a74569553c859a8b8d66bb9790c0eef614950bfa98ca5da058db"
+    },
+    "independentV1Review": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-polling-refresh-20261026/scorecard-review-sol/review-v1.json",
+      "sha256": "4ba519f76c03852659c69eec96e84913c0fbcd00c8e8e3d82de6e9e7d845fe05"
+    },
+    "exporter": {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/scripts/export_election_night_reference.py",
+      "sha256": "f728d777ed1511f55067fbde2c9173ea84c64b2f6ff55c6cd5ab05a484169469"
+    },
+    "matcher": {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/election-night-reference.ts",
+      "sha256": "79bc01695e8ee426bf2d3a90b1827b814701408925f6b449b60fde1178867c3f"
+    },
+    "browserClient": {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/election-night-client.ts",
+      "sha256": "39b2e6dd93d71413d474bb2e299b782ece9498415b006493f50d51772c23c929"
+    },
+    "publicCatalog": {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/public/data/election-night/references.json",
+      "sha256": "9d2c289667d9f25fe38515eefb1503133a6f72b92cfcf65e5061540b235ccd5f"
+    },
+    "publicationManifest": {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/data/election-night-reference-publication.json",
+      "sha256": "9dbcd9cbab826082e773ab3dfd1447b960bae57ac33ab3b3fcbef39336bc9878"
+    }
+  },
+  "checks": [
+    "Owner V2 SHA 64df0b35... and independent tail review SHA b5f793d9... match the exporter and matcher constants. Tail review manifest SHA b4cae184... binds the exact review; pinned source paths are contained beneath the owner root except the one independently pinned prior lab contract, and symlink escape is rejected.",
+    "The exporter checks the exact Oct 26 current-polling public bundle SHA 905ce512..., native standard FP forecast a1ffba60..., joint draws a7240d65..., receipt/numerical gates/owner review, run ID, target/law, polling cutoff and separate Oct 20 structural cutoff. V2 issued time is separate from forecast issue.",
+    "All 35 V2 cohort rows include every V1 row field unchanged. V1 metric definitions and four full diagnostic distributions are byte-equivalent as JSON objects; owner V2 explicitly binds V1 SHA/cohort SHA. Public cohort, distributions, definitions and qualifications copy owner V2 exactly.",
+    "For all 35 rows, each three event probabilities equals its integer count / 40000 and equals the independent reviewer count/fraction. Counts are bounded and their sum is <=40000; inclusive abs(M)<=2, M>=10 and M<=-10 events are disjoint but non-exhaustive. The independent first-candidate states ID, MT, NE, SD retain candidate order and opposition_proxy rather than being recoded Democratic.",
+    "The public catalog has one Senate current-polling entry; its exact bytes match the build imported publication manifest SHA. The browser client verifies fetched bytes with SHA-256 and checks edition identity before the matcher projects data. Missing, timed-out, tampered or other-edition references leave the forecast available without borrowing alternatives. The Senate pair fields are null before this reference, so no unreviewed tail probability is inherited.",
+    "The owner and UI say these are retained-draw model-implied fractions, not observed election skill. Zero retained occurrences are expressly qualified as finite-simulation zeros, not impossibility; the 40000 rows are shared across races and are not independent race draws or a new resampling."
+  ],
+  "focusedTests": {
+    "javascript": "tests/election-night-reference.test.mjs: 10 passed",
+    "python": "tests/site_election_night_reference_test.py: 4 passed"
+  },
+  "limitations": [
+    "The tail review explicitly did not assess frontend adapter conformance; this review covers the adapter and authenticated private guide path only.",
+    "The packet contains no observed outcomes, empirical calibration, actual score, A-F grade or evaluation lock.",
+    "Source pins and browser SHA verification establish exact edition bytes, not scientific admission of future result mappings or a final evaluation cohort."
+  ],
+  "materialBlockers": []
+}

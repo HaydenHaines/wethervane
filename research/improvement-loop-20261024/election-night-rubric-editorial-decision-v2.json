@@ -1,0 +1,136 @@
+{
+  "schema": "ElectionNightRubricEditorialDecisionV2",
+  "issuedUtc": "2026-10-26T16:56:03.521946+00:00",
+  "status": "selected_for_implementation_not_an_evaluation_lock",
+  "authority": "User requested a concrete A-F falsification rubric; root chooses this editorial policy within that authorized scope. No additional user approval is implied.",
+  "evidence": [
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-rubric-candidate-luna-v2.json",
+      "sha256": "99cc32e2714628bb6f77f9750dc9dcd41448164b8478e78c0b993a07d2a2e870"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-rubric-review-sol-v1.json",
+      "sha256": "2ba4fa0acae805130dc30cfb8898ba94f2db9073be469dc9d9c7ce1d312efc8f"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-rubric-review-sol-v2.json",
+      "sha256": "69405bc39bf0d8288e802dbad7713b76b7203d09a8d297eb8dc14cba55bb024e"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-correction-20261026-v2/party-winner-evaluation-interpretation-v2.json",
+      "sha256": "70de07db3a0bbb5b637f10daf9b484ccc6d678c6b7dd08a781a8056fcf5f70fa"
+    },
+    {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-polling-refresh-20261026/scorecard-baseline-compatibility-sol/review-v1.json",
+      "sha256": "901b1c869b2ce7c5302ad57cef7805eff860324c78821033052b743c69cd5f9e"
+    },
+    {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-polling-refresh-20261026/scorecard-baseline-compatibility-sol/candidate-pair-event-mapping-v1.json",
+      "sha256": "9024069ac0f397c2d379663d653d384e32532548ef26772035eda61ce55265e0"
+    },
+    {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-polling-refresh-20261026/scorecard-baseline-compatibility-sol/freeze-manifest-v1.json",
+      "sha256": "3abe88f2434279b3cd70849e4fd9158fb50bcbc91c513781843832fade8a706e"
+    }
+  ],
+  "purpose": "Report the informativeness and predictive losses of one dated forecast on the declared event and complete cohort. A letter does not establish long-run calibration.",
+  "dimensions": {
+    "winner": "Mean Brier/2 on a fixed exhaustive target, compared on the same results and cohort with the explicitly declared basic-history edition. Senate principal-pair relative lead and House D/R/O party winner remain separate targets.",
+    "interval": "Mean proper central90 interval score on eligible named-pair margins, compared on the same results and cohort with the declared basic-history edition. Label90% interval skill, not full-CDF skill.",
+    "point": "Show named mean margin errors/MAE descriptively; not a separate grade component.",
+    "rawScoresPrimary": true
+  },
+  "skill": "1 - model_mean_loss / declared_history_mean_loss, only for positive baseline loss; preserve raw paired loss differences. Same result records/revisions and fixed eligible target cohorts are mandatory.",
+  "bands": [
+    {
+      "grade": "A",
+      "minimumSkill": 0.2
+    },
+    {
+      "grade": "B",
+      "minimumSkill": 0.1
+    },
+    {
+      "grade": "C",
+      "minimumSkill": 0.0
+    },
+    {
+      "grade": "D",
+      "minimumSkill": -0.1
+    },
+    {
+      "grade": "F",
+      "minimumSkill": null
+    }
+  ],
+  "bandsQualification": "Editorial cutoffs, not statistically or scientifically universal constants. Use unrounded losses for assignment; numerical equality tolerance must be declared by implementation.",
+  "overall": "Lower of winner and90% interval grades. Unsupported pair targets retain their predeclared separate cohort and unavailable counts; never invent margins. An overall two-component letter is unavailable if no margin cohort exists; a clearly labeled winner-only grade may be reported.",
+  "coinFlipCap": {
+    "rule": "No better than D overall if winner skill against fixed D/R coin-flip reference is nonpositive. A naturally lower F remains F. This editorial information gate is separate from the proper scoring rule.",
+    "senate": "(.5,.5) on the exact two named principal relative-lead event.",
+    "house": "(.5,.5,0) on the same exhaustive D/R/O party-winner event and all locked races. Never conditionally drop Other winners.",
+    "houseUniformReference": "Also show (1/3,1/3,1/3) losses, labeled uniform-three-category. It is not the D/R-discrimination gate.",
+    "scope": "Probabilities and supported outcomes are not altered to earn a letter. Honest uncertainty remains visible in raw scores even if the editorial informativeness grade is low."
+  },
+  "houseEvent": {
+    "completion": "Preserve native D/R/O probability mass; explicitly fill absent groups with0 for evaluation, distinguish structural absence from finite-draw zero.",
+    "outsideGroupWinner": "Retain in full cohort; ordinary finite Brier and explicit infinite log loss at locked p0. No smoothing, exclusion or renormalization.",
+    "outsideCandidateWinner": "Keep separate omitted-candidate-ID diagnostic; correct party prediction does not establish a correct named-candidate prediction.",
+    "ownerContract": {
+      "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-correction-20261026-v2/party-winner-evaluation-interpretation-v2.json",
+      "sha256": "70de07db3a0bbb5b637f10daf9b484ccc6d678c6b7dd08a781a8056fcf5f70fa"
+    }
+  },
+  "coverage": {
+    "finalLetter": "Require final or certified matched results for every locked target in each graded cohort; preserve all pending/unresolved/unsupported rows. No silent result-dependent subset.",
+    "partial": "Show descriptive partial scoreboard, n/N and raw losses for the same available matched rows, with clear incomplete-status labels; no extrapolated complete-cohort letter.",
+    "delay": "Use the predeclared official/source escalation and revision policy. Do not fabricate finality to make the grade appear.",
+    "futureOption": "A conservative all-admissible-completions grade bound may be added as a separate pre-outcome version after implementation review; not part of V1."
+  },
+  "baselineZero": "If matched-history mean loss is0, percentage skill is undefined. Show raw differences and no inferred component letter until a predeclared reviewed alternative rule exists.",
+  "jointChecks": "Show native shared-election error/miss/coverage reference diagnostics separately; do not grade the model from its own nominal coverage or use joint-tail surprise as an automatic failure.",
+  "unfinished": [
+    "Exact final evaluation edition/horizon/cohort/result mapping and immutable lock",
+    "Explicit result importer/finality/revisions and scoring adapters for House fixed D/R/O",
+    "Executable grade function, independent counterexample tests and public threshold table",
+    "House qualified error-reference integration and Senate close/decisive event probabilities",
+    "Bind the reviewed earlier Senate benchmark to the executable scorecard comparison contract; preserve honest edition labels and final-result eligibility."
+  ],
+  "observedResultsConsumed": false,
+  "actualGradesAssigned": false,
+  "published": false,
+  "predecessor": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-rubric-editorial-decision-v1.json",
+    "sha256": "a55e581d7bafe9ca120f2c2849478b20b8e5caa1b759f9bae67bd43ec7bb16bb"
+  },
+  "comparisonPolicy": {
+    "default": "Matched target, result revision, cohort and information horizon; generic forecast comparison guards remain strict.",
+    "explicitEarlierBenchmark": {
+      "comparisonContractId": "senate2026_conditional_principal_pair_F20261020_FP20261026_comparison_v1",
+      "reviewSha256": "901b1c869b2ce7c5302ad57cef7805eff860324c78821033052b743c69cd5f9e",
+      "mappingSha256": "9024069ac0f397c2d379663d653d384e32532548ef26772035eda61ce55265e0",
+      "freezeManifestSha256": "3abe88f2434279b3cd70849e4fd9158fb50bcbc91c513781843832fade8a706e",
+      "baseline": {
+        "label": "Basic electoral history — October 20 edition (earlier issued)",
+        "runId": "current-fundamentals",
+        "nativeTargetId": "national_senate_aggregate_baseline_v1",
+        "nativeForecastSha256": "c02bdc63a0df27824578c07d6e2b752b831ae4bbd858cabc432ee00fbbf94136",
+        "cutoffAt": "2026-10-20T15:21:23Z",
+        "scheduledGeneralDateHorizonCalendarDays": 14
+      },
+      "model": {
+        "runId": "current-polling",
+        "nativeTargetId": "national_senate_aggregate_poll_v1",
+        "nativeForecastSha256": "a1ffba60d937bfc81d06df51af6ed917a7ddc71fd9860c1d702de7c7c5db67cb",
+        "cutoffAt": "2026-10-26T15:03:57.212405+00:00",
+        "scheduledGeneralDateHorizonCalendarDays": 8
+      },
+      "cohortSize": 35,
+      "requires": "Exact reviewed ordered-pair/event/denominator mapping, both original forecast editions, and a separately admitted final-result operator. This decision is not an evaluation lock.",
+      "publicExplanation": "This compares the October 26 forecast with the October 20 basic electoral-history edition on the same results. The forecasts had different information and lead times; the comparison does not isolate the value of polling.",
+      "gradeMeaning": "Descriptive predictive performance of these forecasts as issued, relative to the named earlier reference. No causal model-layer skill, calibration or challenger-promotion claim.",
+      "drawBankRule": "Score each original bank separately against the same observed results; never pair, splice, resample or infer a cross-bank joint error-difference law."
+    },
+    "standingImprovementGoal": "The standing improvement/promotion loop still requires matched data, cutoffs, coverage, horizons and tuning opportunities. This scorecard-only exception cannot qualify a challenger or rank weakest layers."
+  }
+}

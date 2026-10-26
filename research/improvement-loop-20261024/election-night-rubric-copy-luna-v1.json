@@ -1,0 +1,44 @@
+{
+  "schema": "ElectionNightRubricCopyReviewV1",
+  "reviewedAt": "2026-10-26",
+  "status": "usable_private_copy_with_one_meaningful_clarification_recommended",
+  "scope": {
+    "policy": "ElectionNightRubricEditorialDecisionV2",
+    "policySha256": "edb82165b1e6fc76335912108b887b40ded71f0c0de76f3262dcdf39f3e0b79e",
+    "uiFiles": [
+      "components/ElectionNightRubric.tsx",
+      "components/ElectionNightGuide.tsx",
+      "lib/election-night-rubric.ts",
+      "app/globals.css"
+    ],
+    "outcomesOrGradesReviewed": false
+  },
+  "findings": [
+    {
+      "severity": "positive",
+      "topic": "falsifiability_and_grade_meaning",
+      "finding": "The guide separates winner-probability Brier loss from central-90% interval score, compares each against the declared history reference, preserves raw-loss language, and assigns the overall letter as the worse component. It states exact editorial bands, no-grade-yet status, the requirement for a complete final/certified cohort, baseline-zero behavior, result-failure distinctions, and that the rules are not calibration evidence. The explanation correctly labels the October 20/October 26 Senate comparison as unequal information and lead times and says it does not isolate polling."
+    },
+    {
+      "severity": "positive",
+      "topic": "50_50_vs_margin",
+      "finding": "The guide explicitly says 50/50 win chances do not determine the margin and instructs readers to inspect the separate margin range and close-race chances. This is accurate and directly counters the common reading that even win odds imply a tight race."
+    },
+    {
+      "severity": "clarification_recommended",
+      "topic": "house_coinflip_reference",
+      "finding": "The House paragraph correctly identifies the coin-flip reference as D=.5, R=.5, O=0 while retaining Other wins in the scored cohort, and later identifies uniform thirds separately. It does not yet explain that this cap tests against a D/R-only forecast and is not a test that the model distinguishes D from R; the zero Other probability itself can improve Brier loss on D/R outcomes relative to uniform thirds. The owner-reviewed policy review flags this exact interpretive limitation. Add one short sentence beside the House reference, e.g. 'This D/R coin-flip check does not measure how well a forecast separates Democrats from Republicans when it assigns little chance to Other; compare the separate one-third-each reference too.'"
+    },
+    {
+      "severity": "clarification_recommended",
+      "topic": "margin_event_denominator",
+      "finding": "The featured race shows model-implied close and decisive probabilities with their correct inclusive, mutually exclusive but non-exhaustive boundaries, and its details state the pair denominator and excluded votes. Since the visible chance copy says only 'these two candidates finish within 2 points,' consider naming the event as the 'modeled named-pair margin' in that sentence; this keeps the conditional principal-pair denominator obvious before readers expand prediction details."
+    },
+    {
+      "severity": "positive",
+      "topic": "metric_and_threshold_copy",
+      "finding": "Brier is described as squaring each category-probability error and dividing the multicategory sum by two; interval scoring is described as width plus a 20-times outside penalty in percentage points. The table's rounded bands match the selected thresholds: A at least 20% lower, B 10% to less than 20% lower, C 0% to less than 10% lower, D more than 0% to 10% higher, F more than 10% higher. The raw margin point error is clearly descriptive rather than a graded third component."
+    }
+  ],
+  "recommendation": "No numerical or event-definition blocker found in the private guide copy. Keep the grade visibly pending until the exact comparison, result mapping, and eligible cohorts are locked. Before relying on the House rubric publicly, make the D/R-only versus uniform-thirds distinction explicit; a small named-pair qualifier on the close/decisive probabilities would also improve denominator comprehension."
+}

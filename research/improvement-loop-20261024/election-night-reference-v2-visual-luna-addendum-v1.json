@@ -1,0 +1,19 @@
+{
+  "schema": "ElectionNightReferenceV2VisualReviewAddendumV1",
+  "reviewedAt": "2026-10-26",
+  "supersedesFinding": {
+    "artifact": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-reference-v2-visual-luna-v1.json",
+    "finding": "The full-height mobile rubric screenshot appeared to show the focused skip link over text."
+  },
+  "evidence": {
+    "viewportScreenshot": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-reference-v2/mobile-rubric-viewport.png",
+    "browserState": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-reference-v2/skip-link-screenshot-finding.json",
+    "focus": "h2#night-guide-title",
+    "skipLinkFocused": false,
+    "skipLinkBounds": { "top": -60, "bottom": -20 },
+    "viewportHeight": 839,
+    "scrollY": 7723
+  },
+  "finding": "The skip link is outside the visible viewport and is not focused. Its apparent overlap in the full-height capture is a fixed-element screenshot artifact; the actual mobile viewport has no skip-link overlap. No UI change is warranted for this finding.",
+  "preservedPriorReview": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-reference-v2-visual-luna-v1.json"
+}
