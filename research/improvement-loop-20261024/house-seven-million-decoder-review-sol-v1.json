@@ -1,0 +1,65 @@
+{
+  "schema": "HouseSevenMillionDecoderIndependentReviewSolV1",
+  "reviewedAtUtc": "2026-10-26T19:39:41.824144+00:00",
+  "status": "bounded_decoder_change_review_passed_not_forecast_qualified",
+  "materialBlockersForScopedCodeChange": [],
+  "pins": {
+    "decoder": {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/scripts/decode_house_live_joint.py",
+      "sha256": "1edf6a075d83d2b4973df56226bab9e7e8735233ed7c4f92660f0b3c8fa16900",
+      "bytes": 22413
+    },
+    "conditionalStorage": {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/scripts/house_live_conditional_storage.py",
+      "sha256": "85e2c08dd6a9d44b0cf75040671f0947c12eba784c0ee695bffcffc3e845f733",
+      "bytes": 19237
+    },
+    "decoderTests": {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/tests/site_house_live_joint_decoder_test.py",
+      "sha256": "2b7c123102cc1bd341cda9c074bc796706e1ac410b218e834133850ca28e4934",
+      "bytes": 18693
+    },
+    "storageTests": {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/tests/site_house_live_conditional_storage_test.py",
+      "sha256": "f21a9783f8a5893dd6ed11646dc20187abc8ef3a484c9c808e02be65444ccd08",
+      "bytes": 14905
+    },
+    "streamConsumer": {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/house-live-joint-archive.ts",
+      "sha256": "2213349c3865463c1880b7dd76d4947d4343bed3a020e0278c48ce962884a5fb",
+      "bytes": 5725
+    },
+    "rowChecker": {
+      "path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/house-live-joint-check.ts",
+      "sha256": "7d64e2d6dad5fb37f470a51316a57002bad47dd34800f1c7b93ca765dfacf022",
+      "bytes": 7735
+    }
+  },
+  "changeReviewed": "MAX_ROWS increased from 5,000,000 to 7,000,000 in the offline joint decoder and conditional storage reader, with boundary and ZIP64 fixture tests. No result, model, registry or public data edited in this review.",
+  "independentTestRuns": [
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -p site_house_live_joint_decoder_test.py -v",
+      "passed": 12,
+      "failed": 0
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -p site_house_live_conditional_storage_test.py -v",
+      "passed": 10,
+      "failed": 0
+    }
+  ],
+  "findings": [
+    "Request count and segmented-manifest total both require 1..7,000,000; 7,000,001 is rejected. The declared 7M plan alone cannot pass a four-row archive because exact NPY member shapes and lengths are verified.",
+    "The decoder validates every decoded 435-byte winner row, seat sidecar, finite shock, nonnegative indices, global draw ID, predictive chain/draw, and combined source/local draw identity. It checks archive SHA before and after streaming; caller requires successful process exit and exact row count before accepting summaries.",
+    "The conditional reader validates source row coverage with no gaps/overlap, original joint draw IDs, matching chain counts and selected plan/receipt/law pins; row blocks are bounded at at most 4,096 rows and native row width at most 16,384 bytes.",
+    "The ZIP64 fixture asserts a local ZIP64 extra field and ZIP64 end-of-central-directory record, then decodes all synthetic rows successfully. It exercises Python zipfile support for both forms.",
+    "Decoder stdout flushes at 64 winner rows (27,840 bytes); SHA reads use 1 MiB chunks. The Node consumer processes rows incrementally and keeps fixed-size 435-race/436-seat counters. A nonzero decoder exit invalidates previously streamed rows.",
+    "Source code states and behavior remain offline authentication/numerical checking; passing the decoder is not a scientific, operator or publication qualification."
+  ],
+  "limits": [
+    "No actual 7,000,000-row archive was generated or decoded. New boundary tests use small archives or a synthetic NPY header; they do not establish wall time, disk throughput, end-to-end memory or numerical parity for a future 7M artifact.",
+    "At 7M rows the winner stream alone is 3,045,000,000 bytes. Full validation also performs per-row checks and two complete archive hash passes; run an explicitly bounded actual-artifact check and independent scientific/operator review before any release.",
+    "The conditional manifest JSON is read as a whole and there is no separate manifest byte cap. For the reviewed offline, explicitly pinned operator inputs this does not defeat the 7M row cap, but it is not a general untrusted-input resource guarantee."
+  ],
+  "decision": "Supports the narrow offline 7M acceptance-cap and ZIP64 decoder change. It does not qualify a 7M forecast, a publication, or an empirical precision claim."
+}
