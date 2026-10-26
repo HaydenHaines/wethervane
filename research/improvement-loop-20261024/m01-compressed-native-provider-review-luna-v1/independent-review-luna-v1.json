@@ -1,0 +1,105 @@
+{
+  "component_spec_check": {
+    "both_modes_keep_same_role_stages_and_parameter_patterns_as_original": true,
+    "dependency_pins_checked_by_registry": 69,
+    "implementation_path_matches_copied_provider_py": true,
+    "implementation_sha256": "8c13f9c65e94f22a91dbf13b0acec2b1eab4ce05bbf267c713a4757b71c04b55",
+    "method": "Instantiated both modes in an isolated copy and registered each in native Registry without compiling a graph.",
+    "passed": true
+  },
+  "conclusion": "The frozen successor has a sound source-bound affine poll-factor implementation for the selected six-row block and retains both original modes. The independently reproduced tiny logp/gradient tests, 4000-row bank equality, exact coefficient recomputation, strict symmetry checks, token ownership, and component-source identity support the supplied-state claim. It is not evidence that the actual full graph builds or is normalized/qualified.",
+  "findings": [
+    {
+      "area": "affine replacement and both modes",
+      "evidence": "Both original modes remain supported. The scalar mapping is extracted from the exact pinned native `Measurement.observations` AST prefix (candidate lookup, first/second IDs, and log-rate difference), and selection requires six rows in the authenticated order with direction exactly all ones and zero offset. The incumbent branch uses the exact original fixed covariance; the actual branch loads the pinned 4000-row covariance/weight bank and pinned scalar coefficients. Rerun agrees with the original provider logp and all seven-rate gradients at all twelve supplied states. All covariance rows/weights match exactly and recomputed precision/center/base arrays have zero error.",
+      "severity": "no_material_defect_found"
+    },
+    {
+      "area": "identity, tokens, CES/report delegation",
+      "evidence": "The wrapper pins its selection and all eight selected dependencies; it extracts source-bound native means and validates full Problem/parent plus exact contest_map. It calls unchanged native `Measurement.observations` with only polls emptied, then claims the exact same single factor name and six ordered poll tokens. Supplied tests intercept native delegation and confirm nonpoll data and protected-parent context; a no-graph registry check confirms both modes preserve role/stages/parameter_patterns and that ComponentSpec binds this provider file SHA.",
+      "limit": "The delegation test checks forwarded context, not evaluated CES/report likelihoods. Full graph ownership, inventory equality and runtime registration into the complete model were not built.",
+      "severity": "source_and_ownership_supported_with_scope_limit"
+    },
+    {
+      "area": "actual graph and scientific qualification",
+      "evidence": "All comparisons are tiny supplied-rate PyMC graphs over a 7-entry log-rate vector; the native nonpoll delegate is intercepted. There is no complete TX graph, all-parameter point, parent normalization, sample, posterior predictive or forecast. The result appropriately calls this supplied-state-only evidence and states the current-only calibration bank is not prospective evidence.",
+      "severity": "scope_caveat"
+    },
+    {
+      "area": "runtime",
+      "evidence": "An initial attempt with the repository `.venv` failed during PyMC import because its installed `arviz` lacked `InferenceData`; rerunning the same copied check in the explicitly pinned calibration-v1 runtime passed. This was an environment mismatch, not a source/test defect.",
+      "severity": "environment_reproduction_note"
+    }
+  ],
+  "frozen_artifacts": {
+    "check.py": {
+      "bytes": 5543,
+      "sha256": "517652975ed3b8cbcc74004b7861a58e669330cc72ed19c74aefe6d34e6d6b1d"
+    },
+    "evidence.json": {
+      "bytes": 2310,
+      "sha256": "99368830bbe2cf49e3bc2b41c10fcc41e9c820e78febbb9c1587103ee1db762b"
+    },
+    "provider.py": {
+      "bytes": 5826,
+      "sha256": "8c13f9c65e94f22a91dbf13b0acec2b1eab4ce05bbf267c713a4757b71c04b55"
+    },
+    "result.json": {
+      "bytes": 3914,
+      "sha256": "7763a2d3c4b341dcd875a59fa18aabbca8588b110d9186e3b4c5396466d54031"
+    }
+  },
+  "independent_rerun": {
+    "actual_full_graph_executed": false,
+    "all_4000_covariance_rows_and_weights_exact": true,
+    "coefficient_max_errors": {
+      "base": 0.0,
+      "center": 0.0,
+      "precision": 0.0
+    },
+    "comparisons": 12,
+    "forwarded_nonpoll_context_calls": 4,
+    "max_gradient_error": 2.8421709430404007e-13,
+    "max_logp_error": 5.684341886080801e-13,
+    "means_per_mode": [
+      -8.0,
+      -1.0,
+      0.0,
+      0.6,
+      2.0,
+      8.0
+    ],
+    "method": "Copied provider.py, check.py, selection.json and native-mapping-source.txt to a fresh sibling temporary directory; ran only check.py with the pinned calibration-v1 runtime and isolated temporary PyTensor compiledir. Output/cache were removed after inspection. No actual graph code path exists in the check.",
+    "modes": [
+      "actual_calibration_bank",
+      "incumbent_reduction"
+    ],
+    "negative_cases": [
+      "subtolerance_asymmetry",
+      "unsupported_mode",
+      "row_order",
+      "duplicate",
+      "candidate_reorder",
+      "observation_value",
+      "parent_mass",
+      "frozen_selection_tamper",
+      "contest_rate_reference_mismatch"
+    ],
+    "result": "PASS",
+    "runtime": "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env"
+  },
+  "review_sha256_note": "New review only; Sol\u2019s frozen packet and existing source files were not modified.",
+  "reviewer": "luna",
+  "schema": "IndependentCompressedNativeM01ReviewV1",
+  "scope": "Frozen provider/source/result review, bounded supplied-state rerun in fresh copy, and tiny native-registry ComponentSpec check. No actual TX full graph or owner job was built or changed.",
+  "upstream_selection_pin_validation": {
+    "all_paths_hash_and_size_verified": true,
+    "mapping_ast_sha256": "8f0046f4830d0bdcbccc43900dc0a724c8eda49b4f1187a9748336137c005532",
+    "mapping_source_lines": [
+      535,
+      540
+    ],
+    "native_components_path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/modular-count-graph-astra-v1/components.py",
+    "pin_count": 8
+  }
+}
