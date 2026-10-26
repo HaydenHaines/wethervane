@@ -2569,8 +2569,8 @@ select:focus-visible {
   display: none;
 }
 .house-ribbon.is-compact .house-ribbon-cell.majority-position::after {
-  height: 22px;
-  top: -5px;
+  height: 28px;
+  top: -8px;
 }
 .house-ribbon-ends span:first-child {
   color: var(--dem);
@@ -2616,7 +2616,7 @@ select:focus-visible {
   z-index: 2;
 }
 .house-ribbon-cell.majority-position {
-  box-shadow: 0 0 0 2px var(--ink);
+  z-index: 3;
 }
 .house-ribbon-cell.majority-position::after {
   content: "";
@@ -2624,7 +2624,10 @@ select:focus-visible {
   top: -8px;
   height: 58px;
   left: -4px;
-  border-left: 2px solid var(--ink);
+  border-left: 4px solid #f5ce6b;
+  outline: 1px solid var(--ink);
+  box-shadow: 0 0 0 3px var(--card);
+  border-radius: 1px;
   pointer-events: none;
 }
 .house-ribbon-cell.majority-position[data-direction="right-to-left"]::after {
@@ -2646,7 +2649,10 @@ select:focus-visible {
 .house-majority-key {
   display: inline-block;
   height: 18px;
-  border-left: 2px solid var(--ink);
+  border-left: 4px solid #f5ce6b;
+  outline: 1px solid var(--ink);
+  box-shadow: 0 0 0 3px var(--card);
+  border-radius: 1px;
 }
 .house-majority-summary > div {
   display: flex;
