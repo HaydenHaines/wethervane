@@ -1,0 +1,50 @@
+{
+  "schema": "ContinuousImprovementCheckpointV75",
+  "recordedAtUtc": "2026-10-26T23:21:38.309683+00:00",
+  "status": "active; bounded first-parent fixed-state graph equivalence independently audited, no forecast qualification",
+  "references": {
+    "previous": {
+      "path": "research/improvement-loop-20261024/checkpoints/continuation-v74.json",
+      "sha256": "b92d2eac4e6233918ae1a8cea02bc363521f263197ee0f3e560a6b2a18102d8a",
+      "bytes": 3205
+    },
+    "original_return": {
+      "path": "research/improvement-loop-20261024/m01-compressed-equivalence-admission-root-v1/original-caller-return.json",
+      "sha256": "b44505470df1aeda2f4c8411c85a12c8fb48d9ec192e1f5c399becb26b582983",
+      "bytes": 1102
+    },
+    "compressed_return": {
+      "path": "research/improvement-loop-20261024/m01-compressed-equivalence-admission-root-v1/compressed-caller-return.json",
+      "sha256": "32568f6cd749e5188d9a32d567713eacbedecda6780af8e231a826ff1a115180",
+      "bytes": 1516
+    },
+    "comparison": {
+      "path": "research/improvement-loop-20261024/m01-compressed-actual-equivalence-probe-sol-v2/attempt-v1/comparison.json",
+      "sha256": "79bc079ae74bf3e2779dfbdbe17bfd5809d732a4c82d8a5667c183334d2950cc",
+      "bytes": 1024
+    },
+    "independent_audit": {
+      "path": "research/improvement-loop-20261024/m01-comparison-audit-sol-v1/result.json",
+      "sha256": "98f92700241606354f904e4edec9e7328803f159ddcd410ced5f90c7a527fcb0",
+      "bytes": 49610
+    },
+    "compressed_result": {
+      "path": "research/improvement-loop-20261024/m01-compressed-actual-equivalence-probe-sol-v2/attempt-v1/compressed/result.json",
+      "sha256": "a1864fba783d2bb5e6604335fc645afd6b6718df589405a9f5cef126fa565301",
+      "bytes": 5400
+    },
+    "compressed_terminal": {
+      "path": "research/improvement-loop-20261024/m01-compressed-actual-equivalence-probe-sol-v2/attempt-v1/compressed/terminal.json",
+      "sha256": "3ea1ea43eda5676fd1a40fabb4453908ca6354c15b36fb05e31024f4609d5766",
+      "bytes": 243
+    }
+  },
+  "scientific_result": "The original and compressed M01 actual full graphs completed under separately reviewed one-CPU resource envelopes. Their caller-observed tool returns from sessions 85285 and 79247 are retained and independently checked. On two exact shared states of the first protected parent, all 1324 gradient entries, 206 factor contributions, 20 rates, two poll logps and two joint logps were independently recomputed and compared; maximum absolute gradient difference 1.4210854715202004e-14, poll/factor difference 8.881784197001252e-16, rate/logp difference zero. All 128 point arrays and ordered layout match; both arms passed six selected full-joint finite differences. Full nonmeasurement ownership and joint-contract fields agree; provider, composition and scientific target identities remain distinct. Owner processes were not modified.",
+  "limitations": "This is a finite two-point comparison for one parent under actual_calibration_bank, not global equivalence, the other seven parent evaluations, all-parent normalization, posterior sampling, predictive benefit, or forecast publication. Each arm's source entails two saved state calls plus 12 additional finite-difference function calls. Observed runtimes 264.3s versus 211.7s used different CPUs and are not a controlled performance benchmark; Numba object-mode and loop-fusion warnings remain. Resource watchdog peaks are sampled. Independent audit does not independently recompute the full graphs or FD functions.",
+  "frontend": "Latest public metadata still reflects the older deployment; SiteGround log status pending user response. GitHub run 40414769526 status is unknown after API HTTP403 rate limit, last observed in e2e. House corrected handoff remains pending; v68 readiness guide remains applicable.",
+  "next": [
+    "Use independent interpretation to design all-parent conditional and shared-uncertainty validation without equating finite-point equality to posterior or predictive qualification.",
+    "Pursue versioned matched full-stack comparison and historical data identification, with joint refits as required; no premature promotion.",
+    "Integrate the owner-qualified corrected House native and expected-error reference when delivered; verify actual public deployment."
+  ]
+}

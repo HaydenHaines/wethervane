@@ -1,0 +1,35 @@
+{
+  "schema": "ObservedControllerToolReturnV1",
+  "recordedAtUtc": "2026-10-26T23:20:24.615905+00:00",
+  "tool": "functions.write_stdin",
+  "session_id": 79247,
+  "observed_exit_code": 0,
+  "observed_stdout": "{\"arm\": \"compressed\", \"status\": \"completed\", \"controller_success\": {\"sha256\": \"987742fe0bdc301dd0b6fbbaa32cc399e422defe3206d9a093ccbe248ed2c8c8\", \"bytes\": 374}, \"comparison\": {\"sha256\": \"79bc079ae74bf3e2779dfbdbe17bfd5809d732a4c82d8a5667c183334d2950cc\", \"bytes\": 1024}}\n",
+  "acknowledgment": {
+    "arm": "compressed",
+    "status": "completed",
+    "controller_success": {
+      "sha256": "987742fe0bdc301dd0b6fbbaa32cc399e422defe3206d9a093ccbe248ed2c8c8",
+      "bytes": 374
+    },
+    "comparison": {
+      "sha256": "79bc079ae74bf3e2779dfbdbe17bfd5809d732a4c82d8a5667c183334d2950cc",
+      "bytes": 1024
+    }
+  },
+  "independent_audit": {
+    "all_bound_artifact_hashes_checked": true,
+    "controller_and_child_pids_absent_at_audit": true,
+    "every_stored_numeric_difference_recomputed": true,
+    "two_finite_full_gradients": true,
+    "selected_finite_differences_passed": 6,
+    "max_errors": {
+      "logp": 0.0,
+      "gradient": 1.4210854715202004e-14,
+      "poll_logp": 8.881784197001252e-16,
+      "rates": 0.0,
+      "factor_logp": 8.881784197001252e-16
+    }
+  },
+  "scope": "Caller-recorded tool observation and local audit; first parent and two supplied states only. Not an external signature, all-parent normalization, sampling or forecast qualification."
+}

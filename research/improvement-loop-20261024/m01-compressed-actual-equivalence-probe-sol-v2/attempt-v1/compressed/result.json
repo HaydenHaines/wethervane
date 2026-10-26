@@ -1,0 +1,139 @@
+{
+  "schema": "ActualCompressedEquivalenceArmV1",
+  "status": "completed",
+  "arm": "compressed",
+  "mode": "actual_calibration_bank",
+  "parent_digest": "378dc31671cf1025e2ba8555ee61ccfebb0e02885261e8ec03f2895a963d3e9c",
+  "contract_sha256": "aeec9de81deeeae0de8d66338d5536b0bdf24eab4d9e1ef7d4b908f1145e5b88",
+  "pid": 1990476,
+  "seconds": 207.28824199107476,
+  "coordinates": 662,
+  "finite_difference_checks": [
+    {
+      "name": "choice_intercept",
+      "flat_index": 543,
+      "step": 1e-05,
+      "numeric": 712951.3904801569,
+      "analytic": 712951.3907627681,
+      "error": 0.0002826112322509289,
+      "tolerance": 7.139513904801569
+    },
+    {
+      "name": "turnout_intercept",
+      "flat_index": 548,
+      "step": 1e-05,
+      "numeric": 724.3092986755072,
+      "analytic": 724.309638248233,
+      "error": 0.0003395727258066472,
+      "tolerance": 0.01724309298675507
+    },
+    {
+      "name": "event_gamma_shape_log__",
+      "flat_index": 576,
+      "step": 1e-05,
+      "numeric": -0.7226655725389718,
+      "analytic": -0.7226640129731451,
+      "error": 1.5595658267031354e-06,
+      "tolerance": 0.01000722665572539
+    },
+    {
+      "name": "final_race_sd_log__",
+      "flat_index": 539,
+      "step": 1e-05,
+      "numeric": -0.08328934200108051,
+      "analytic": -0.08328706767495841,
+      "error": 2.2743261220981026e-06,
+      "tolerance": 0.010000832893420011
+    },
+    {
+      "name": "community_interaction_sd_log__",
+      "flat_index": 77,
+      "step": 1e-05,
+      "numeric": 0.058236764743924134,
+      "analytic": 0.05823546641575128,
+      "error": 1.2983281728537466e-06,
+      "tolerance": 0.01000058236764744
+    },
+    {
+      "name": "candidate_role_mean",
+      "flat_index": 582,
+      "step": 1e-05,
+      "numeric": -0.2800021320581436,
+      "analytic": -0.27999999999999864,
+      "error": 2.132058144976856e-06,
+      "tolerance": 0.010002800021320582
+    }
+  ],
+  "warnings": [
+    "Loop fusion failed because the resulting node would exceed the kernel argument limit.",
+    "Loop fusion failed because the resulting node would exceed the kernel argument limit.",
+    "Loop fusion failed because the resulting node would exceed the kernel argument limit.",
+    "Numba will use object mode to run AdvancedIncSubtensor's perform method. Set `pytensor.config.compiler_verbose = True` to see more details.",
+    "Numba will use object mode to run AdvancedIncSubtensor's perform method. Set `pytensor.config.compiler_verbose = True` to see more details.",
+    "Numba will use object mode to run AdvancedIncSubtensor's perform method. Set `pytensor.config.compiler_verbose = True` to see more details."
+  ],
+  "artifacts": {
+    "points.npz": {
+      "sha256": "a9a3c73b7e11faa3be96830c503173ac62aa6bce180b4f762161fc2d9104bd7f",
+      "bytes": 48918
+    },
+    "layout.json": {
+      "sha256": "6bd76c659f430815d63b2089f10524e830036f14caa22668bcdc5eb669cf79d3",
+      "bytes": 7604
+    },
+    "numerical.npz": {
+      "sha256": "a70613d3a4049ccdfe68a01dcabefc9ead92a890e161a5665cfd0d8326f84cf9",
+      "bytes": 13688
+    },
+    "model-envelope.json": {
+      "sha256": "5e03da2766aadfe6f5578f22e1f8428420ac3d4525e35edb819d3a350ad5b076",
+      "bytes": 391215
+    },
+    "evaluated-before-fd.npz": {
+      "sha256": "a70613d3a4049ccdfe68a01dcabefc9ead92a890e161a5665cfd0d8326f84cf9",
+      "bytes": 13688
+    },
+    "evaluation-receipt.json": {
+      "sha256": "dc460e2ffe811508720a37f1eaa115809dbd37694aa95cee3de43af7e254bff2",
+      "bytes": 420
+    },
+    "entry-receipt.json": {
+      "sha256": "7ccf81cfd69b8c56825b6c210ac442533029b82f14e8eb18ad51193342c6e301",
+      "bytes": 481
+    }
+  },
+  "runtime": {
+    "numpy": {
+      "version": "2.5.4",
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/lib/python3.12/site-packages/numpy/__init__.py"
+    },
+    "pytensor": {
+      "version": "2.38.2",
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/lib/python3.12/site-packages/pytensor/__init__.py"
+    },
+    "pymc": {
+      "version": "5.28.0",
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/lib/python3.12/site-packages/pymc/__init__.py"
+    },
+    "numba": {
+      "version": "0.68.0",
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/lib/python3.12/site-packages/numba/__init__.py"
+    },
+    "llvmlite": {
+      "version": "0.50.0",
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/lib/python3.12/site-packages/llvmlite/__init__.py"
+    },
+    "arviz": {
+      "version": "0.22.0",
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/lib/python3.12/site-packages/arviz/__init__.py"
+    },
+    "pydantic": {
+      "version": "2.12.5",
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-native-successor-provider-sol-v1/schema-overlay/pydantic/__init__.py"
+    },
+    "pydantic_core": {
+      "version": "2.41.5",
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-native-successor-provider-sol-v1/schema-overlay/pydantic_core/__init__.py"
+    }
+  }
+}
