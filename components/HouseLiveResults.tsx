@@ -190,12 +190,12 @@ export default function HouseLiveResults({ view, catalog, geography, builderExpa
       });
     });
   }
+  const ny21Notice = houseNy21NoticeFor(view);
   const shown = useMemo(() => view.races.filter((race) =>
-    `${race.district.districtKey} ${STATE_NAMES[race.state] || race.state} ${race.candidates.map((candidate) => `${candidate.name} ${candidate.partyLabel || ""}`).join(" ")} ${race.outcomes.map((outcome) => outcome.name).join(" ")}`
-      .toLowerCase().includes(query.trim().toLowerCase())).sort(competitiveOrder), [view.races, query]);
+    `${race.district.districtKey} ${STATE_NAMES[race.state] || race.state} ${race.candidates.map((candidate) => `${candidate.name} ${candidate.partyLabel || ""}`).join(" ")} ${race.outcomes.map((outcome) => outcome.name).join(" ")} ${race.id === ny21Notice?.raceId ? ny21Notice.publicWording : ""}`
+      .toLowerCase().includes(query.trim().toLowerCase())).sort(competitiveOrder), [view.races, query, ny21Notice]);
   const visible = expanded ? shown : shown.slice(0, 10);
   const sourceCaptureNotes = view.sources.filter(source => source.limitations?.length);
-  const ny21Notice = houseNy21NoticeFor(view);
 
   if (!selected) return <main className="load-page"><p role="status">No verified current House races are available.</p><button onClick={onHistorical}>Explore historical House research</button></main>;
   return <main>
@@ -247,7 +247,7 @@ export default function HouseLiveResults({ view, catalog, geography, builderExpa
           <div className="section-top"><h2 id="house-live-races-title" className="section-title">The districts</h2><span className="small">{visible.length} of {shown.length} {query.trim() ? "matching races" : "races"}</span></div>
           <div className="race-tools"><input aria-label="Search districts or candidates" placeholder="Find a district, state, or candidate" value={query} onChange={(event) => { setQuery(event.target.value); setExpanded(false); }} /></div>
           <div className="house-race-list" id="house-live-race-list">{visible.map((race) => <button key={race.id} aria-pressed={race.id === selected.id} onClick={() => selectRace(race.id)}>
-            <strong>{race.district.districtKey}</strong><span>{race.outcomes.map((outcome) => `${outcome.name} (${outcome.party})`).join(" / ")}</span><b>{raceRating(race)}</b>
+            <strong>{race.district.districtKey}</strong><span>{race.outcomes.map((outcome) => `${outcome.name} (${outcome.party})`).join(" / ")}{race.id === ny21Notice?.raceId && <><br /><small>Christopher Schmidt is a declared write-in, not included in this forecast.</small></>}</span><b>{raceRating(race)}</b>
           </button>)}</div>
           <RaceListToggle expanded={expanded} total={shown.length} controls="house-live-race-list" onToggle={() => setExpanded(!expanded)} />
           {!shown.length && <p>No matching districts. Try another district, state, or candidate.</p>}

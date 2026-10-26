@@ -512,6 +512,13 @@ test.describe("actual staged 2026 House release", () => {
     await expect(focus.getByRole("link", { name: /Siena poll/ })).toBeVisible();
     await expect(focus).toContainText("The displayed probabilities remain the October 25 estimates.");
     await expect(focus).not.toContainText("source-coverage erratum");
+    const search = page.getByLabel("Search districts or candidates");
+    await search.fill("Schmidt");
+    const matchingRaces = page.locator("#house-live-race-list > button");
+    await expect(matchingRaces).toHaveCount(1);
+    await expect(matchingRaces.first()).toContainText("NY-21");
+    await expect(matchingRaces.first()).toContainText("Christopher Schmidt is a declared write-in, not included in this forecast.");
+    await search.clear();
     await expect(page.getByRole("region", { name: "NY-21 input review" })).toBeVisible();
     await page.screenshot({ path: testInfo.outputPath("ny21-notice.png"), fullPage: true });
     await page.goto("/?chamber=house&edition=current&race=2026%3AAL-01%3Ahouse%3Aregular");

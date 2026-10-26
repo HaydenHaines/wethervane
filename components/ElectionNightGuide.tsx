@@ -187,7 +187,7 @@ export default function ElectionNightGuide({ chamber, onClose }: { chamber: Cham
   const featured = useMemo(() => watchIds.flatMap(id => forecast?.races.find(race => race.id === id) ?? []), [watchIds, forecast]);
   const extent = Math.max(10, Math.ceil(Math.max(0, ...featured.flatMap(race => race.pair
     ? [Math.abs(race.pair.range90.lower), Math.abs(race.pair.range90.upper), Math.abs(race.pair.meanMarginPp)] : [])) / 5) * 5);
-  const filtered = useMemo(() => forecast?.races.filter(race => `${label(race)} ${race.outcomes.map(outcome => outcome.name).join(" ")}`.toLowerCase().includes(query.toLowerCase().trim())) ?? [], [forecast, query]);
+  const filtered = useMemo(() => forecast?.races.filter(race => `${label(race)} ${race.outcomes.map(outcome => outcome.name).join(" ")} ${forecast.inputNotices.find(notice => notice.raceId === race.id)?.publicWording ?? ""}`.toLowerCase().includes(query.toLowerCase().trim())) ?? [], [forecast, query]);
   const shown = allExpanded ? filtered : filtered.slice(0, 10);
   return <section id="election-night-scorecard" className="night-guide" data-scorecard-chamber={chamber} aria-labelledby="night-guide-title" aria-busy={busy}>
     <div className="night-guide-heading"><div><div className="eyebrow">An election-night watcher’s guide</div>
