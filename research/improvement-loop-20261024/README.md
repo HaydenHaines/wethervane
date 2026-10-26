@@ -9,6 +9,7 @@ As of October 26, 2026 UTC:
 The first entry is the latest checkpoint. Earlier entries preserve the scope and
 remaining work recorded at their issuance; later checkpoints supersede that status.
 
+- [Checkpoint v81](checkpoints/continuation-v81.json) records 76 retained divergence flags in the completed 2018 sampler; independent provenance review confirms the predeclared zero-divergence gate cannot pass as-is. Owner investigation remains active.
 - [Checkpoint v80](checkpoints/continuation-v80.json) records independent owned-evaluator review and a separate successor to check the exact parent/point roster before execution. The 2018 sampler has finished; owner qualification remains pending.
 - [Checkpoint v79](checkpoints/continuation-v79.json) records successful terminal sampling for the owner’s 2018 GPU run, with diagnostics and prediction still pending, plus a source-only owned-evaluator packet awaiting review.
 - [Checkpoint v78](checkpoints/continuation-v78.json) records independent all-parent binding review: V2 prevents the V1 accidental parent relabeling but is metadata-only and cannot authenticate numerical results. No all-parent graph has run.

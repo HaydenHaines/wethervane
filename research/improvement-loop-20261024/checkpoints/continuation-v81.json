@@ -1,0 +1,30 @@
+{
+  "schema": "ContinuousImprovementCheckpointV81",
+  "recordedAtUtc": "2026-10-26T23:47:27.025549+00:00",
+  "status": "active; 2018 sampler completed but predeclared zero-divergence gate fails",
+  "references": {
+    "previous": {
+      "path": "research/improvement-loop-20261024/checkpoints/continuation-v80.json",
+      "sha256": "3e2a5a0e9696211e230d89193d506e9bf0b968081570b9a41f70302d14db41a2",
+      "bytes": 2800
+    },
+    "audit": {
+      "path": "research/improvement-loop-20261024/national2018-divergence-provenance-sol-v1/review.json",
+      "sha256": "adbe0865c00e041278cb0183d58c85d119b799fe85cab5d03f5f6bf538bd2a7a",
+      "bytes": 7595
+    },
+    "audit_summary": {
+      "path": "research/improvement-loop-20261024/national2018-divergence-provenance-sol-v1/README.md",
+      "sha256": "e8eabe50818f2b074d542cc05ea13bc0308eead74e27be573ddfe129a56a81b2",
+      "bytes": 3589
+    }
+  },
+  "national2018": "The owner retained-divergence audit reports 76 divergent transitions out of 32000 retained transitions, at least one in every protected parent, zero reported depth-limit hits. Independent Sol verified source/plan/receipt linkage, all 200 checkpoint metadata records and arithmetic; did not duplicate raw NPZ recount or calculate Rhat/ESS. The pinned coordinator requires divergent==0 per parent, so this run cannot pass that necessary gate as-is despite exit0. The owner is investigating; original draws remain retained and no gate relaxation or publication is justified. Flags are transitions, not independent election outcomes or a quantified posterior bias. No full diagnostic, accepted bank, inference or prediction is claimed.",
+  "evaluator": "Owned all-parent evaluator V1 independent review found intended producer roster but comparator did not itself check exact parent/point identities. A separately versioned V2 with negative fixtures is frozen and undergoing independent review; no actual dynamic graph was run.",
+  "frontend": "The user supplied verified ledger restoration index44 for historical Delaware raw CSV and requested no current action; v79 records the exact command. No current/queued frontend depends on the old raw path, but historical receipts reference it. Corrected House handoff and SiteGround metadata publication are still pending.",
+  "next": [
+    "Preserve zero-divergence gate and let owner complete divergence investigation without duplicate fitting.",
+    "Complete independent V2 evaluator source/fixture review; if a bounded actual graph is considered, freshly assess owner follow-up CPU/memory and existing 2018/2022 concurrency/staging guards.",
+    "Continue reproducible matched comparisons and release integration only after qualification."
+  ]
+}
