@@ -1,0 +1,120 @@
+{
+  "schema": "M01ExactNativeMethodSuppliedStateParityV1",
+  "status": "passed",
+  "scope": "Invented fixed-state arithmetic/interface check; no complete native graph, fit, sampling, calibration bank or historical replay.",
+  "pins": [
+    {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/modular-count-graph-astra-v1/components.py",
+      "sha256": "7baf3ea8e644c025763e5a63b1721b14ddc748a94be3f1e106adf9f34f6ad2a7"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-count-measurement-prototype-sol-v1/prototype.py",
+      "sha256": "244c8214b8e004bb84ad14adb7a0ac27c439bc6283705db532413a4efe015d07"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-native-supplied-state-parity-sol-v1/check.py",
+      "sha256": "102b51ab95b27ce77a3396729044b49855e60f5162760c76934d15e39d300e6a"
+    },
+    {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/coordination-frontend-20261026/m01-count-binding-followup-v2.md",
+      "sha256": "b9a31e40c3320e56bf98c93a027b3817c0d992a07e7290f918c7b9885921992b"
+    }
+  ],
+  "nativeMethodLines": [
+    472,
+    549
+  ],
+  "checks": [
+    {
+      "ratesA": [
+        60.0,
+        40.0
+      ],
+      "ratesB": [
+        45.0,
+        55.0
+      ],
+      "mean": [
+        0.4054651081081644,
+        0.20067069546215124,
+        -0.40546510810816444
+      ],
+      "nativeLogp": -3.0207627415674616,
+      "prototypeLogp": -3.020762741567464,
+      "absoluteError": 2.220446049250313e-15,
+      "claims": [
+        {
+          "name": "poll_likelihood_synthetic",
+          "tokens": [
+            "poll:p1",
+            "poll:p2",
+            "poll:p3"
+          ]
+        }
+      ]
+    },
+    {
+      "ratesA": [
+        10.0,
+        90.0
+      ],
+      "ratesB": [
+        80.0,
+        20.0
+      ],
+      "mean": [
+        -2.1972245773362196,
+        -1.3862943611198906,
+        2.1972245773362196
+      ],
+      "nativeLogp": -43.14187953098372,
+      "prototypeLogp": -43.14187953098375,
+      "absoluteError": 2.842170943040401e-14,
+      "claims": [
+        {
+          "name": "poll_likelihood_synthetic",
+          "tokens": [
+            "poll:p1",
+            "poll:p2",
+            "poll:p3"
+          ]
+        }
+      ]
+    },
+    {
+      "ratesA": [
+        600.0,
+        400.0
+      ],
+      "ratesB": [
+        450.0,
+        550.0
+      ],
+      "mean": [
+        0.4054651081081644,
+        0.20067069546215124,
+        -0.40546510810816444
+      ],
+      "nativeLogp": -3.0207627415674616,
+      "prototypeLogp": -3.020762741567464,
+      "absoluteError": 2.220446049250313e-15,
+      "claims": [
+        {
+          "name": "poll_likelihood_synthetic",
+          "tokens": [
+            "poll:p1",
+            "poll:p2",
+            "poll:p3"
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Scope token receipt checked locally; complete compiler evidence inventory not executed.",
+    "Survey and participation-report branches deliberately empty; no claim about their laws.",
+    "One synthetic poll block only; actual complete-vector assembly and cross-block dependence remain unvalidated.",
+    "No gradients of the complete native model, protected-parent normalizers, actual posterior diagnostics or predictive skill established.",
+    "Historical 2022/2018 A and 2024/2020 B replays require earlier-only admitted calibration banks, matched joint refits and owner runtime coordination."
+  ]
+}
