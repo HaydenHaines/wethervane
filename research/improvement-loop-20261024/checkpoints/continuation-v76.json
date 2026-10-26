@@ -1,0 +1,45 @@
+{
+  "schema": "ContinuousImprovementCheckpointV76",
+  "recordedAtUtc": "2026-10-26T23:23:51.059600+00:00",
+  "status": "active; first-parent fixed-state numerical equivalence remains valid; protected-cut interpretation corrected",
+  "references": {
+    "previous": {
+      "path": "research/improvement-loop-20261024/checkpoints/continuation-v75.json",
+      "sha256": "d0c1a96d4df40e1110857c4df4b8c914b52eb89146091a8153ea6b6bcf579fca",
+      "bytes": 4301
+    },
+    "initial_interpretation": {
+      "path": "research/improvement-loop-20261024/m01-compressed-actual-equivalence-luna-review-v1/review.json",
+      "sha256": "06507b3b430f57c5ea4a9057c9585a504e7b99b11b8f024ef99da80fcdf724b6",
+      "bytes": 6101
+    },
+    "corrected_interpretation": {
+      "path": "research/improvement-loop-20261024/m01-compressed-actual-equivalence-luna-review-v1/cut-semantics-correction-v2.json",
+      "sha256": "64060bfeef5683f109401845acffa6f0ee82b8cc481491c6d050cf35e3951e05",
+      "bytes": 5808
+    },
+    "serialization_finding": {
+      "path": "research/improvement-loop-20261024/m01-compressed-actual-equivalence-luna-review-v1/cut-semantics-correction-v1-negative-finding.json",
+      "sha256": "caa169d5ecc2dff86ff021a75e04b5884bfd95b38c7179c5374d598e07237191",
+      "bytes": 1409
+    },
+    "independent_challenge": {
+      "path": "research/improvement-loop-20261024/m01-parent-cut-challenge-sol-v1/README.md",
+      "sha256": "b76dcc3c289201a62a072c89fe46129011f357fb7b9f70849e71ffd370982d56",
+      "bytes": 3776
+    },
+    "counterexample": {
+      "path": "research/improvement-loop-20261024/m01-parent-cut-challenge-sol-v1/result.json",
+      "sha256": "12853b9c22ec79176979b29470a559c18acb6cb79b9c3b0382b4528a9ce38436",
+      "bytes": 567
+    }
+  },
+  "critical_correction": "Luna's initial interpretation correctly described the two-state result but proposed normalizing outer parent weights using conditional evidence. That would change the explicit population_cut_v1 target. Root and independent Sol checked the owner's cut contract and bank implementation: normalize K_i/Z_i inside each parent, then retain the original authenticated upstream masses, here eight 0.125 values, when combining. Never weight outer parents proportional to their downstream normalizers in this cut. A different full Bayesian target would require a separate contract. The initial review remains preserved; valid correction v2 supersedes its proposed next test. Independent exact-rational counterexample reproduces a change from 1/8 to 2/9 if evidence incorrectly reweights one parent.",
+  "serialization_note": "An earlier issued correction carried invalid trailing literal backslash-n and failed root JSON parsing. Its initially reported exact bytes were overwritten before preservation; the negative-finding record distinguishes the reported hash from a separate malformed reproduction. Valid correction v2 parses and all referenced source hashes passed root verification. No claim of byte-identical recovery is made.",
+  "unchanged_result": "Both original and compressed full graphs agree at two supplied states for the first parent, including all 662 ordered gradients and nonmeasurement ownership; v75 records independent audit. No all-parent, sampler, forecast or predictive qualification follows, and no later all-parent test was executed.",
+  "next": [
+    "Design a source-bound all-parent test that normalizes each conditional separately and preserves original parent masses exactly; independently challenge this target before execution.",
+    "Continue matched held-out model evaluation and current owner jobs without source mutation.",
+    "Verify public SiteGround deployment and integrate corrected House artifacts only after owner qualification."
+  ]
+}

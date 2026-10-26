@@ -1,0 +1,11 @@
+{
+  "schema": "IssuedInvalidArtifactFindingV1",
+  "date": "2026-10-26",
+  "issued_path": "research/improvement-loop-20261024/m01-compressed-actual-equivalence-luna-review-v1/cut-semantics-correction-v1.json",
+  "initially_reported_sha256": "196e9e85b6e71b18eba7e39b781d3c754817c92fd986930cfc7070d0e84e175e",
+  "finding": "The initially reported correction bytes were invalid JSON due to a literal backslash-n suffix after the closing brace. Root independently observed json.loads failure: Extra data at line 63. That exact first serialization was overwritten while adding source pins before the integrity issue was identified, so its bytes could not be preserved verbatim. A byte-preserved reproduction of the same invalid suffix and correction content before the extra source pins is stored separately; it has its own hash and is not represented as byte-identical to the initial serialization.",
+  "reproduction_path": "research/improvement-loop-20261024/m01-compressed-actual-equivalence-luna-review-v1/cut-semantics-correction-v1-issued-invalid-reproduction.json",
+  "reproduction_sha256": "0228373cc980e096b344bddf2b58366641c094f6ec2acd2a62887789f9f48a11",
+  "reproduction_note": "Intentional malformed reproduction, ending in bytes 5c 6e (literal \\n).",
+  "valid_replacement_path": "research/improvement-loop-20261024/m01-compressed-actual-equivalence-luna-review-v1/cut-semantics-correction-v2.json"
+}

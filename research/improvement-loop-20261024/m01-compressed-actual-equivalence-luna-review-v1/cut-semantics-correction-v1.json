@@ -1,0 +1,63 @@
+{
+  "schema": "PopulationCutInterpretationCorrectionV1",
+  "date": "2026-10-26",
+  "status": "correction_to_next_test_only",
+  "preserved_prior_review": {
+    "path": "research/improvement-loop-20261024/m01-compressed-actual-equivalence-luna-review-v1/review.json",
+    "sha256": "06507b3b430f57c5ea4a9057c9585a504e7b99b11b8f024ef99da80fcdf724b6",
+    "note": "Prior review is preserved unchanged. Its fixed-state result interpretation remains; the proposed next test's evidence-reweighting language was inconsistent with the selected population_cut_v1 target."
+  },
+  "source_pins": {
+    "probe_contract": {
+      "path": "research/improvement-loop-20261024/m01-compressed-actual-equivalence-probe-sol-v2/contract.json",
+      "sha256": "aeec9de81deeeae0de8d66338d5536b0bdf24eab4d9e1ef7d4b908f1145e5b88",
+      "evidence": "parent_digest 378dc31671cf1025e2ba8555ee61ccfebb0e02885261e8ec03f2895a963d3e9c; protected_masses has eight entries, each 0.125"
+    },
+    "original_model_envelope": {
+      "path": "research/improvement-loop-20261024/m01-compressed-actual-equivalence-probe-sol-v2/attempt-v1/original/model-envelope.json",
+      "sha256": "3110a9d8454159f2cc0868b964cc0f5a2a3bc395bc861b35d1744d3f596312fb",
+      "evidence": "joint_contract.inference_target=population_cut_v1; parent_mass_used_in_logp=false; protected parent_mass=0.125"
+    },
+    "compressed_model_envelope": {
+      "path": "research/improvement-loop-20261024/m01-compressed-actual-equivalence-probe-sol-v2/attempt-v1/compressed/model-envelope.json",
+      "sha256": "5e03da2766aadfe6f5578f22e1f8428420ac3d4525e35edb819d3a350ad5b076",
+      "evidence": "same inference target and parent mass semantics"
+    },
+    "selected_joint_model_source": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/src/senate_count_stack_v1/joint.py",
+      "sha256": "5e5b609a2b90c121a6250bf252960cf4442da1e2a09a5913c528f73a1b905eeb",
+      "evidence": "module docstring says it is a complete conditional PyMC block, conditions on the protected population parent, and builds one complete normalized conditional target; parent projection verification remains external"
+    },
+    "selected_provider_source": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/candidate-role-execution-astra-v3/provider.py",
+      "sha256": "8751e298ffa2fc1f8a9676776824690bfbd341a19e371796652c6f973a344225",
+      "evidence": "contract composition selects target=population_cut_v1"
+    },
+    "completed_comparison": {
+      "path": "research/improvement-loop-20261024/m01-compressed-actual-equivalence-probe-sol-v2/attempt-v1/comparison.json",
+      "sha256": "79bc079ae74bf3e2779dfbdbe17bfd5809d732a4c82d8a5667c183334d2950cc",
+      "evidence": "scope is two points and first protected parent; no other-parent normalization"
+    },
+    "population_cut_contract": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/handoffs-20261009/cut-contract-v1.json",
+      "sha256": "5d2dea9b54fc081099e819e594504721761358047194f97b1bdb95c9f9d320b2",
+      "evidence": "defines q(Psi|U_r,...)=K_Ur(Psi)/Z(U_r,...), p_cut(U_r,Psi)=p_N(U_r|D_N)*q(...), integrates prediction using original upstream weights, and explicitly forbids global normalization proportional to Z(U_r) because that changes protected upstream masses"
+    },
+    "bank_cut_implementation": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/src/senate_count_stack_v1/banks.py",
+      "sha256": "3b47727fde988ab9be41519a2c02522f60c9d681488eb06081863b47898165b8",
+      "evidence": "bank construction sets marginal_likelihood_reweighting=False"
+    }
+  },
+  "correct_semantics": {
+    "within_parent": "For each fixed protected parent, the target distribution is normalized conditionally over that parent's target variables. Any posterior/predictive computation within that conditional must use its own normalized conditional law.",
+    "outer_mixture": "The population_cut_v1 prediction must combine the parent-conditional predictions using the authenticated original parent masses (eight times 0.125). Downstream evidence must not update/reweight those protected masses.",
+    "distinction": "A separate Bayesian target that intentionally updates parent probabilities by per-parent marginal likelihood would be a different inference target and would require a separately versioned contract, not parity evidence for population_cut_v1."
+  },
+  "correction": {
+    "retract": "The prior review proposed calculating conditional evidence per parent and then using that evidence to normalize/update outer parent weights. That is not a valid next test for the selected population_cut_v1 target.",
+    "replacement_next_test": "If all-parent scientific parity is the next question, evaluate the original and compressed providers under every authenticated parent, normalize each parent's target conditional law separately, and combine resulting held-out predictive summaries with the fixed original 0.125 masses exactly once. Compare parentwise conditional distributions and the fixed-weight aggregate. Do not use per-parent evidence to change the outer masses.",
+    "scope": "This test addresses all-parent computational/predictive parity under the cut. It does not itself establish forecast calibration unless the predictive summaries are scored against genuinely held-out outcomes."
+  },
+  "no_changes": "No prior review or attempt artifacts were modified; this is a separately versioned interpretive correction."
+}

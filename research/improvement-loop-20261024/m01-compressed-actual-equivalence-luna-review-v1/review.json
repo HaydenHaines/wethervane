@@ -1,0 +1,52 @@
+{
+  "schema": "IndependentCompressedActualEquivalenceInterpretationV1",
+  "date": "2026-10-26",
+  "sources": {
+    "probe_design": {
+      "path": "research/improvement-loop-20261024/m01-compressed-actual-equivalence-probe-sol-v2/DESIGN.md",
+      "sha256": "813971a7050ea49c696fcaec39a9a15244662fe31a8242ffcca6418268cde4dc"
+    },
+    "probe_contract": {
+      "path": "research/improvement-loop-20261024/m01-compressed-actual-equivalence-probe-sol-v2/contract.json",
+      "sha256": "aeec9de81deeeae0de8d66338d5536b0bdf24eab4d9e1ef7d4b908f1145e5b88"
+    },
+    "comparison": {
+      "path": "research/improvement-loop-20261024/m01-compressed-actual-equivalence-probe-sol-v2/attempt-v1/comparison.json",
+      "sha256": "79bc079ae74bf3e2779dfbdbe17bfd5809d732a4c82d8a5667c183334d2950cc"
+    },
+    "original_arm_result": {
+      "path": "research/improvement-loop-20261024/m01-compressed-actual-equivalence-probe-sol-v2/attempt-v1/original/result.json",
+      "sha256": "6c340bd23490c1acc52baaf4fff628aaa61ecc3b570d4a0fd4b8372e017a67b0"
+    },
+    "compressed_arm_result": {
+      "path": "research/improvement-loop-20261024/m01-compressed-actual-equivalence-probe-sol-v2/attempt-v1/compressed/result.json",
+      "sha256": "a1864fba783d2bb5e6604335fc645afd6b6718df589405a9f5cef126fa565301"
+    },
+    "compressed_provider_prior_review": {
+      "path": "research/improvement-loop-20261024/m01-compressed-native-provider-sol-v1/evidence.json",
+      "sha256": "99368830bbe2cf49e3bc2b41c10fcc41e9c820e78febbb9c1587103ee1db762b"
+    }
+  },
+  "assessment": {
+    "supported": [
+      "In actual_calibration_bank mode, original and compressed provider compositions returned numerically equivalent complete joint logp and ordered 662-coordinate gradients at the same two saved points for the first protected parent. Reported maximum absolute discrepancies: logp 0, gradient 1.4210854715202004e-14, poll logp 8.881784197001252e-16, rates 0, factor logp 8.881784197001252e-16.",
+      "At those states, the compared component inventories, poll contribution, rates, factor contributions, and non-measurement provider roster met the comparison's equality checks. This supports unchanged factor/evidence ownership between these two compositions for this selected contract, not independent validity or independence of source observations.",
+      "Each arm also recorded six central finite-difference checks at one perturbed point. This is a useful local numerical check, but it is a selected-coordinate check, not an independent proof of all 662 derivatives."
+    ],
+    "not_established": [
+      "All-parent normalization: only the first protected parent was evaluated. The eight .125 masses were authenticated as protected context, but were not inserted into target logp and no per-parent marginal likelihood, conditional normalizer, or normalized mixture weights were calculated. Thus the run does not establish downstream normalization or equivalence after integrating/updating across all eight parents.",
+      "Full inference: no chain, optimizer, posterior approximation, convergence/ESS diagnostics, posterior draw comparison, or full-vector finite-difference validation was performed. Two point evaluations do not show sampling behavior or posterior equivalence over support.",
+      "Calibration or forecast quality: no held-out cycle, predictive distribution, proper score, coverage, or calibration statistic was computed. The comparison tests representation equivalence, not election-model accuracy.",
+      "Performance: the arm wall times (258.50 s original; 207.29 s compressed) include separate compilation/evaluation under distinct fresh arm caches and sequential execution. They are not a controlled throughput or memory benchmark and do not prove a speedup or resource advantage.",
+      "Historical replay, target identity aliasing, external source truth, and robustness to other admitted modes/poll selections are not established. Contract explicitly selects actual_calibration_bank; incumbent_reduction is outside this actual run."
+    ],
+    "parent_and_evidence_scope": "Both arm results carry the same parent digest 378dc31671cf1025e2ba8555ee61ccfebb0e02885261e8ec03f2895a963d3e9c and contract hash aeec9de81deeeae0de8d66338d5536b0bdf24eab4d9e1ef7d4b908f1145e5b88. The comparison preserves distinct composition and scientific target IDs; it does not claim those IDs are aliases. The six-poll factor and all remaining inventory were compared at the two supplied points."
+  },
+  "single_next_test": {
+    "name": "Eight-parent normalized evidence and posterior-predictive parity",
+    "question": "Does the two-provider representation preserve the full protected-parent mixture after each parent's conditional evidence is normalized, and do resulting predictive summaries remain the same?",
+    "design": "Use a separately versioned, matched all-eight-parent evaluation with identical frozen target-coordinate proposal/draws and original .125 parent masses. For every parent, compute each arm's conditional log evidence using the same validated integration or importance-sampling procedure, include the parent mass exactly once, normalize parent weights with log-sum-exp, and compare parent-wise conditional posterior summaries plus combined held-out predictive distributions. Predeclare ESS/error criteria for the evidence estimator and check evidence ownership across factors. Do not infer all-parent equivalence from the first-parent calculation. This is the highest-value next test because it addresses the main unresolved scientific composition step; it is not a calibration test unless evaluated on genuinely held-out outcomes.",
+    "caveat": "The current comparison artifacts cannot answer this question; the proposed test needs new per-parent integration/evaluation data. It must be a new attempt with an independent source/resource review, not a replay of or mutation to attempt-v1."
+  },
+  "review_scope": "Read-only interpretation of pinned design, contract, comparison, arm receipts, and predecessor provider evidence. No graph rerun, fit, sample, or artifact mutation."
+}
