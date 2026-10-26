@@ -1,0 +1,36 @@
+{
+  "schema": "ContinuousImprovementCheckpointV65",
+  "recordedAtUtc": "2026-10-26T22:27:06.088040+00:00",
+  "status": "active; no model fit or promotion",
+  "references": {
+    "previous": {
+      "path": "research/improvement-loop-20261024/checkpoints/continuation-v64.json",
+      "sha256": "a7546307207ece4fe3196a6996de02767779c856a098d226485ddc7e932a99b6",
+      "bytes": 1454
+    },
+    "count_v4": {
+      "path": "research/improvement-loop-20261024/m01-counting-sink-prototype-sol-v4/evidence.json",
+      "sha256": "8f43268d620598ea5c8156197fad6c3b9c79c3804ae14203f5077a7bbf6eeaa9",
+      "bytes": 32366
+    },
+    "measurement_design": {
+      "path": "research/improvement-loop-20261024/m01-actual-tx-size-design-sol-v1/evidence.json",
+      "sha256": "07927f68cfe7b61287f01674d5faceeeec198c056bf546faacec375a4a25edc6",
+      "bytes": 9969
+    },
+    "measurement_review": {
+      "path": "research/improvement-loop-20261024/m01-actual-tx-size-design-review-luna-v1/independent-review.json",
+      "sha256": "e1e652cb842c0c5ff315f9050d8751ac97f2006605185611ebe583201c4eef86",
+      "bytes": 5045
+    }
+  },
+  "count_v4": "Invented V4 uses an original-session-only returned acknowledgment and immutable captured byte snapshots under a cooperating advisory lock; six local tests passed. It has no restart/fork acknowledgment adoption, protection against hostile mutation, power-loss guarantee or lock-liveness proof. Independent review is in progress. V1\u2013V3 and owner data were preserved; no TX graph, sampler or incomplete pickle was touched.",
+  "measurement_design": "Seven source/tiny fixture checks and independent review support the exact original seven-root, one protocol-5 Pickler bundle and PyMC gradient ordering in the proposed no-payload size measurement. No actual runner, graph build, numerical evaluation, compiler, forecast or scientific qualification exists in that packet. A separately bounded runner is being implemented and needs independent review, fresh resource check and precise trusted-local completion semantics.",
+  "coordination": "The cross-session codex-tui transport failed on repeated attempts to notify the storage coordinator of the intentionally retained incomplete 64 MiB pickle and to report the green site workflow to the House owner. Earlier coordination had succeeded. No message delivery is claimed; the artifact path/hash and do-not-load warning remain in checkpoint V57 and the file is preserved locally.",
+  "ci": "GitHub run 40409345000 job 121875483082 completed successfully for 98c5e23: 200 general end-to-end tests passed and 10 published-House release checks passed separately.",
+  "next": [
+    "Complete independent review of V4 and record what session-only acknowledgment and cooperative locks do and do not guarantee.",
+    "Independently review and test the actual graph measurement runner before a bounded symbolic-only run; retain all prior failed attempts.",
+    "Retry cross-session coordination when its transport is available and preserve the incomplete pickle without loading it."
+  ]
+}

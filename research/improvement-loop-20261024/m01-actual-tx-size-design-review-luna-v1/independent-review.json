@@ -1,0 +1,52 @@
+{
+  "schema": "IndependentActualTXSizeDesignReviewV1",
+  "reviewer": "luna",
+  "date": "2026-10-26",
+  "frozen_evidence_sha256": "07927f68cfe7b61287f01674d5faceeeec198c056bf546faacec375a4a25edc6",
+  "frozen_packet_pins": {
+    "design.py": "2eca6d50d6ac6f78cfde6974dc8d0abddf1c5c1e6c0a4e52bab69640ec944e0a",
+    "design.json": "3ab79d4c47a3a6a8c2e8437f400a1a5d290a504833a89e42bea2f14bb303f10d",
+    "test_design.py": "e8cb8f8f397af371b29e2966f8aafb0c8a735ba18d23123adae6572137b1fa11",
+    "tiny_count.py": "8aad6b113efd548bb3febeb5c333ca00fe554cac5d8de7f3b7e658bc86147abf",
+    "tiny-measurements.json": "130f8b2c4178617cf8e30f802fd3363f8c044760561f96acc411a5c4d00c74b2"
+  },
+  "independent_reproduction": {
+    "tests": "7 passed in 0.099 seconds using a fresh temporary project-shaped directory; this exercised AST/source drift checks and tiny invented Pickler fixtures only.",
+    "actual_tx_graph": false,
+    "scientific_imports": false,
+    "pickle_load": false,
+    "compile_or_sampler": false,
+    "owner_or_partial_pickle_access": false
+  },
+  "supported_design_claims": [
+    "AST pins the original runner's full Jacobian-inclusive model.logp, strict identity graph replacement, rewrite_pregrad before native gradient(rewritten, ordered), then exactly one pickle.dump of the seven roots [original_cost, replaced_cost, rewritten_cost, gradient, ordered_value_vars, E, segments] with protocol 5 and no buffer callback. Single-dump ordering preserves shared memo identity in principle.",
+    "The original runner's source pins, factor inventory, shape witness, first-parent identity/mass/target checks, explicit exposure checks and 662-coordinate segment ledger remain pinned inputs. Existing first-parent mass remains outside conditional logp; this is not an all-parent graph.",
+    "Tiny sink tests support pre-write budget behavior, accepted-prefix count/hash, one-memo byte oracle and observed toy-child output. They correctly do not establish actual graph size, persistence, restore, numerical parity or normalization.",
+    "The 512 MiB logical cap, 120-second wall, 90/95 CPU, 2 GiB RSS watcher, 6 GiB address-space cap, one thread/nice15 and small report/cache budget are explicit prospective bounds, not executed or enforced by this source-analysis packet."
+  ],
+  "pre_execution_gaps": [
+    {
+      "severity": "medium",
+      "finding": "This is a design-only record: source-bound execution record, fresh resource observation, selected controller source and independent design review remain null. No executable actual-TX discard-sink runner or external success receipt exists here. Do not treat it as run authorization or measurement evidence."
+    },
+    {
+      "severity": "medium",
+      "finding": "The design cites a cooperating exclusive-writer protocol but does not implement or pin it. Prior V3 review found verification TOCTOU under concurrent mutation and an external success.json post-rename fsync failure whose hash can be recomputed. Any future runner must either enforce exclusive immutable output and caller-retained receipt provenance or use a reviewed stable-snapshot protocol; do not adopt local file hashes alone as completion proof."
+    },
+    {
+      "severity": "low",
+      "finding": "Tiny durable progress invokes two fsyncs per Pickler write; observed toy streams have only one or three writes. Actual graph callback count and its effect on the 120-second cap are unknown. Every per-write durable update must be included in the budget, or any throttling must specify that persisted prefix is a lower bound and final success persists the exact final digest/count."
+    },
+    {
+      "severity": "low",
+      "finding": "Package METADATA versions are not executable runtime-closure attestation. The README correctly requires a future runner to verify actual imported module paths/bytes, interpreter/executable and environment before graph construction."
+    },
+    {
+      "severity": "low",
+      "finding": "A 512 MiB capped stream can establish only a lower bound if exceeded. Pickler transient allocations remain bounded only by RSS/address-space limits; no actual graph memory or serialization performance is predicted by toy measurements."
+    }
+  ],
+  "pickle_boundary": "No payload is stored or loaded. Hashes and a completed count do not make pickle safe to deserialize. Restoration requires an independent authenticated provenance protocol and separate restore/identity test; it is not part of this design.",
+  "verdict": "source analysis and tiny test design are sound within stated limits; not ready as an executed measurement and no actual graph run performed",
+  "recommendation": "Before any future actual-TX size run, freeze a concrete source-bound runner/controller, exact source/runtime/root/parent/shape pins, fresh resource observation, exclusive-output/completion protocol addressing the prior V3 verification caveats, and independent review. Then count one stream only; cap/failure remains an explicit lower bound and must not be followed by loading the old partial pickle."
+}

@@ -1,0 +1,228 @@
+{
+  "schema": "ActualTXSizeMeasurementDesignV1",
+  "status": "unexecuted_source_bound_design_only",
+  "allow_actual_tx_execution": false,
+  "old_partial_pickle_access": "prohibited; no read/hash/load/retry by this packet",
+  "source_experiment": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-parent-gradient-after-replacement-plan-sol-v1/experiment.py",
+    "sha256": "b5f9ebab4a6f3605dd007ca81a540180f522bf186338ec98677af09b29e4b438",
+    "bytes": 11488
+  },
+  "source_plan": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-parent-gradient-after-replacement-plan-sol-v1/plan.json",
+    "sha256": "1b0873938589b94ffd9b3a038077dcc6a41157ac01a77615e5f6245518a3dab8",
+    "bytes": 7422
+  },
+  "verified_existing_source_pins": [
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-parent-gradient-after-replacement-plan-sol-v1/experiment.py",
+      "sha256": "b5f9ebab4a6f3605dd007ca81a540180f522bf186338ec98677af09b29e4b438",
+      "bytes": 11488
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-parent-gradient-after-replacement-plan-sol-v1/launch_once.py",
+      "sha256": "4a1e9abf26f1c72ed5dfed7a54ad629c0fdfb08cf65f88989bc6c20bfe177ade",
+      "bytes": 3711
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-native-successor-provider-sol-v1/provider.py",
+      "sha256": "6154ecb3d66ad38b5ba5fa94719d1da865f3e32bdf749ef1bb4ed4250606d853",
+      "bytes": 5176
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-native-successor-provider-sol-v1/selection.json",
+      "sha256": "03edb47049384b662cdd645053fc6083bde8fb41d972b1a07da8b71ecf6283b5",
+      "bytes": 45703
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-native-successor-provider-sol-v1/compiler-inventory.json",
+      "sha256": "cc5112ab8005b23d16ddddfc33e0b81fdcb6e5627f5de257db2d899aa2473ffd",
+      "bytes": 306833
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/lib/python3.12/site-packages/pymc/model/core.py",
+      "sha256": "844e8523dfb24a62c0069eea122659474f017b95ad1df389a6663abba41cfb71",
+      "bytes": 90232
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/lib/python3.12/site-packages/pymc/pytensorf.py",
+      "sha256": "1889779356c1c5a60823edb963061bfb24d66bde726dea4ed145d5dada6fcd74",
+      "bytes": 34828
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/lib/python3.12/site-packages/pytensor/graph/replace.py",
+      "sha256": "28481c8b3f8a9127165ce9ad1c8ba65d1a9de13be365d54ba314d1b801cf481d",
+      "bytes": 10474
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/lib/python3.12/site-packages/pytensor/graph/rewriting/utils.py",
+      "sha256": "74cdd66e547df77a0a1c416217e034832c9a1067043e5bd92431637847938af1",
+      "bytes": 7936
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-parent-symbolic-substitution-luna-review-v1/independent-review-luna-v1.json",
+      "sha256": "f5f4019c0abf1a3620688eb3e4aadb88d1d46fac2bdd3318e2483edfb16ec7e4",
+      "bytes": 5113
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-parent-symbolic-substitution-sol-v1/evidence.json",
+      "sha256": "3b10c5f23bcb4537d50cfcf81c2c02ca6da469b694efcce258d3c7d2b9afce9f",
+      "bytes": 3732
+    },
+    {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/modular-count-graph-astra-v1/graph-inventory-v1.json",
+      "sha256": "be9066f6a75fa1da7676e4ac39ff69757ca0a37bd484c3fb18a1e0709e572c0c",
+      "bytes": 486762
+    }
+  ],
+  "source_analysis": {
+    "kind": "AST_structure_only_not_scientific_validation",
+    "pipeline_lines": {
+      "complete_logp": 75,
+      "strict_identity_replace": 78,
+      "rewrite_pregrad": 91,
+      "native_order_gradient": 93,
+      "old_pickle_boundary": 98
+    },
+    "exact_bundle_keys": [
+      "original_cost",
+      "replaced_cost",
+      "rewritten_cost",
+      "gradient",
+      "ordered_value_vars",
+      "E",
+      "segments"
+    ],
+    "one_logical_stream": true,
+    "protocol": 5,
+    "buffer_callback": null,
+    "independent_roots_forbidden": true
+  },
+  "gradient_contract": {
+    "cost": "complete model.logp(jacobian=True)",
+    "sequence": [
+      "strict identity exposure replacement",
+      "pinned pymc.pytensorf.rewrite_pregrad",
+      "assert exact E input/dependence and original port absence",
+      "pinned pymc.pytensorf.gradient(rewritten_cost,model.continuous_value_vars)",
+      "assert E dependence and full ordered gradient vector"
+    ],
+    "coordinate_order": "exact model.continuous_value_vars, native flatten/concatenate helper, segment ledger against frozen shape witness",
+    "dimensions": 662,
+    "E_shape": [
+      3,
+      24
+    ],
+    "E_is_conditioning_only": true,
+    "parent_mass_in_logp": false,
+    "original_parent_masses": [
+      0.125,
+      0.125,
+      0.125,
+      0.125,
+      0.125,
+      0.125,
+      0.125,
+      0.125
+    ]
+  },
+  "frozen_factor_inventory": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-native-successor-provider-sol-v1/compiler-inventory.json",
+    "sha256": "cc5112ab8005b23d16ddddfc33e0b81fdcb6e5627f5de257db2d899aa2473ffd",
+    "bytes": 306833
+  },
+  "frozen_shape_witness": {
+    "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/modular-count-graph-astra-v1/graph-inventory-v1.json",
+    "sha256": "be9066f6a75fa1da7676e4ac39ff69757ca0a37bd484c3fb18a1e0709e572c0c",
+    "bytes": 486762
+  },
+  "target_runtime_metadata_only": {
+    "environment": "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env",
+    "package_versions": {
+      "pymc": {
+        "version": "5.28.0",
+        "metadata_pin": {
+          "path": "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/lib/python3.12/site-packages/pymc-5.28.0.dist-info/METADATA",
+          "sha256": "0e29a3d60b06575e0b9d970d7ae43cc57e39d1d97ef608b46efd9b096824b205",
+          "bytes": 17393
+        }
+      },
+      "pytensor": {
+        "version": "2.38.2",
+        "metadata_pin": {
+          "path": "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/lib/python3.12/site-packages/pytensor-2.38.2.dist-info/METADATA",
+          "sha256": "c3b4266c7322b05e480baf5e77fc96bb7e6f6e11ee9fa90be4f9a2b3d87fe53f",
+          "bytes": 6890
+        }
+      },
+      "numpy": {
+        "version": "2.5.4",
+        "metadata_pin": {
+          "path": "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/lib/python3.12/site-packages/numpy-2.5.4.dist-info/METADATA",
+          "sha256": "e2b909d6a37d76c2bc130f528d7fed0c517322bce16dc7846b6a6df30e200403",
+          "bytes": 6635
+        }
+      },
+      "scipy": {
+        "version": "1.18.1",
+        "metadata_pin": {
+          "path": "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/lib/python3.12/site-packages/scipy-1.18.1.dist-info/METADATA",
+          "sha256": "6d1ebfbce110009e25e8249fea05e21c0449735144e9bd8df1a52931f957c1ea",
+          "bytes": 62353
+        }
+      },
+      "arviz": {
+        "version": "0.22.0",
+        "metadata_pin": {
+          "path": "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/lib/python3.12/site-packages/arviz-0.22.0.dist-info/METADATA",
+          "sha256": "728f31b6eac3ff2de91399f0ba4530dbd87740f0dde1fc95157ca5a4589d2af6",
+          "bytes": 8851
+        }
+      },
+      "xarray": {
+        "version": "2026.9.0",
+        "metadata_pin": {
+          "path": "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/lib/python3.12/site-packages/xarray-2026.9.0.dist-info/METADATA",
+          "sha256": "858a70778b214ffa02163df82d5dd7e5d42df461a9dc174157120e3c91f97c84",
+          "bytes": 12732
+        }
+      },
+      "pandas": {
+        "version": "3.1.0",
+        "metadata_pin": {
+          "path": "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/lib/python3.12/site-packages/pandas-3.1.0.dist-info/METADATA",
+          "sha256": "b2b43910a5ef734a08be961df9c484f4664ad9ec2fa5a08294d0edfa08bcdd4b",
+          "bytes": 18156
+        }
+      }
+    },
+    "scientific_modules_imported": false
+  },
+  "future_required_inputs": {
+    "source_bound_technical_execution_record": null,
+    "fresh_resource_observation": null,
+    "selected_controller_source": null,
+    "independent_design_review": null
+  },
+  "proposed_caps": {
+    "wall_seconds_including_build_and_io": 120,
+    "cpu_soft_seconds": 90,
+    "cpu_hard_seconds": 95,
+    "rss_watchdog_bytes": 2147483648,
+    "address_space_bytes": 6442450944,
+    "logical_stream_budget_bytes": 536870912,
+    "individual_metadata_file_bytes": 1048576,
+    "aggregate_reports_plus_fresh_cache_bytes": 16777216,
+    "nice": 15,
+    "threads": 1,
+    "watchdog_poll_seconds": 0.25
+  },
+  "measurement_success": "All original symbolic/parent/factor guards pass, one Pickler returns normally, exact counted bytes/digest and durable progress validated after observed worker/controller exit under cooperating exclusive-writer protocol; no payload retained.",
+  "independent_scientific_limits": [
+    "No numerical logp/gradient parity",
+    "No all-parent normalization or reuse qualification",
+    "No pickle restoration proof",
+    "No compile/sampler/forecast readiness",
+    "No source admission or predictive improvement"
+  ]
+}

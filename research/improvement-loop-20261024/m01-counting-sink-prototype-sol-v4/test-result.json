@@ -1,0 +1,44 @@
+{
+  "schema": "V4CallerAckSnapshotTestsV1",
+  "root": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-counting-sink-prototype-sol-v4/test-run-2291c7f3f11e4fc68cf20bafc21ecc19",
+  "tests": 6,
+  "failures": 0,
+  "errors": 0,
+  "report": [
+    {
+      "test": "cooperating_race",
+      "readers": 2,
+      "writer_blocked_until_readers_release": true,
+      "snapshots_remain_original": true,
+      "changed_directory_next_verify_rejected": true
+    },
+    {
+      "test": "forked_session_adoption",
+      "rejected": true
+    },
+    {
+      "test": "uncooperative_after_read",
+      "snapshot_valid_original_bytes": true,
+      "live_directory_changed": true,
+      "no_live_directory_claim": true
+    },
+    {
+      "test": "uncooperative_before_read",
+      "changed_captured_bytes_rejected": true
+    },
+    {
+      "test": "normal",
+      "source": "405dd912264d1feb61afc0ed37eadb71d29e55574645a4421c19243df1a11acc",
+      "files": 13,
+      "copy_and_restart_rejected": true
+    },
+    {
+      "test": "uncertain_success",
+      "receipt_visible": true,
+      "raw_v3_file_check_accepts": true,
+      "v4_ack_issued": false,
+      "receipt_sha256": "8f107200abb7bed776d0e98e72bbdc80374c3a065c4c3f562afb36fd7e2122f7"
+    }
+  ],
+  "scope": "invented fixtures only; no deserialize or graph"
+}
