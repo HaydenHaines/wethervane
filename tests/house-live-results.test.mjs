@@ -40,7 +40,7 @@ function compile(relative) {
     const filename = [target, `${target}.ts`, `${target}.tsx`].find(path => existsSync(path));
     assert.ok(filename, `Cannot resolve ${specifier} from ${source}`);
     compile(filename.slice(root.length + 1));
-    return `${prefix}${quote}${filename.endsWith(".json") ? specifier : `${specifier.replace(/\.tsx?$/, "")}.js`}${quote}`;
+    return `${prefix}${quote}${filename.endsWith(".json") ? specifier : `${specifier.replace(/\.tsx?$/, "")}.js`}${quote}${filename.endsWith(".json") ? ' with { type: "json" }' : ""}`;
   });
   const destination = join(directory, relative.replace(/\.tsx?$/, ".js"));
   mkdirSync(dirname(destination), { recursive: true });
