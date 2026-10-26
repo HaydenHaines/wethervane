@@ -1,0 +1,116 @@
+{
+  "schema": "ElectionNightGuideDesignLunaV1",
+  "status": "design_for_review_no_code",
+  "date": "2026-10-26",
+  "sourceContext": {
+    "request": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-scorecard-request-20261026.json",
+    "inspectedComponent": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/components/ChamberExplorer.tsx",
+    "constraints": [
+      "Preserve existing one-page experience and chamber navigation.",
+      "No UI/model edits in this design round.",
+      "Do not print or save visitor-generated personal predictions or settings."
+    ]
+  },
+  "interaction": {
+    "entryButton": {
+      "location": "top-right of existing masthead navigation",
+      "label": "Election night scorecard",
+      "element": "button",
+      "behavior": "Expand or collapse an inline guide section in the current page; update aria-expanded and aria-controls; do not navigate away or alter the visitor's chamber or model settings.",
+      "subtitle": "A watcher’s guide to the preferred model’s predictions, uncertainty, and results.",
+      "focus": "On open, move focus to the guide heading with tabindex=-1; on close, return focus to the entry button. Keep Escape-to-close optional only if implemented without trapping focus."
+    },
+    "presentation": "Inline expandable region, not a modal. This preserves page context, browser history, and the existing chamber tab model while letting the guide contain long-form results and explanations.",
+    "defaults": {
+      "forecast": "The standard forecast snapshot is preselected every time the guide opens, independent of any custom or alternate stack selected elsewhere. Identify it by edition and cutoff, and state whether it is a dated catalog snapshot or evaluation-locked forecast. A changing default catalog pointer is not an irrevocably frozen forecast.",
+      "alternateStacks": "A clearly secondary, labeled disclosure named 'Inspect other model stacks' contains selectable read-only alternatives. Changing it changes only the guide's comparison display, never the standard forecast or the underlying visitor configuration.",
+      "persistence": "No local/session storage, URL mutation, print action, shareable personal prediction, or user-config save. Closing the guide discards only its temporary view state."
+    },
+    "pageStructure": [
+      "Guide heading with forecast edition, snapshot cutoff, last-updated time, selected stack, snapshot-lock status, and current result status.",
+      "Short 'How to use this guide' explanation: probabilities are not guarantees; one election is limited evidence about long-run calibration. Distinguish a dated snapshot from a forecast locked for final evaluation.",
+      "Results and predictive power scoreboard.",
+      "Uncertainty and expected error.",
+      "A–F rubric and evidence against the forecast.",
+      "Sources, definitions, methods, and result-status details in nested disclosures."
+    ]
+  },
+  "sections": [
+    {
+      "id": "results-and-predictive-power",
+      "heading": "Results and predictive power",
+      "initialState": "expanded",
+      "contents": [
+        "Top summary: number of forecasted contests with certified results, provisional/incomplete results, unresolved/rule-dependent results, and not-yet-reported results. Use counts only when denominator and result status are known.",
+        "Featured fixed states/races selected by forecast-time criteria and named before outcomes are observed. For each, show the dated-snapshot or evaluation-locked candidate/group and predicted margin/probability, observed result on the same denominator, signed error, absolute error, result source, timestamp, and provisional/called/final status.",
+        "A compact all-contests table for complete auditability. On desktop, sortable semantic table grouped by state; on mobile, stacked labeled race cards. Initially show the preselected examples and aggregate summary, with a 'Show all contests' disclosure to avoid a long first view. Filters are transient and do not persist.",
+        "State / district score components: point-margin error, win-probability proper score, baseline comparison, and interval coverage/width only where supported. Keep individual score components visible; no unreviewed combined grade."
+      ],
+      "dataTargets": {
+        "senate": "Principal-pair expected/mean margin and p05/p50/p95 predictive quantiles, plus candidate/group winner probabilities. Label pair and share denominator precisely.",
+        "house": "Unconditional D/R/O group winner probabilities separately from conditional named-candidate-pair margin/share; show P(|margin| <= 2pp) and directional decisive-margin odds P(margin >= 10pp) and P(margin <= -10pp) only for supported pairs. Never label this as a within-10pp band or imply a group probability is divided among its members.",
+        "closeMarginBands": "Close: absolute margin <= 2pp. Decisive: margin >= 10pp in the first candidate's direction or <= -10pp in the second candidate's direction. Preserve candidate order and sign convention in labels.",
+        "chamber": "Show joint seat probability mass functions for Senate and House, including unresolved/Other outcomes where modeled. Use joint predictive draws, not products of marginal race chances.",
+        "pending": "Expected margin error and joint miss bands require owner exports. Until present and validated, show 'Not available in this forecast export' with a short reason; do not estimate them from marginal summaries or omit the row silently."
+      },
+      "emptyAndPartialStates": [
+        "Before results: 'No election results are available yet. Snapshot dated [cutoff]; evaluation lock status: [status]. No accuracy grade is available.'",
+        "Partial count: show observed result status and source timestamp; leave final error and grade uncomputed until the chosen result rule is met.",
+        "No matched denominator or rule mismatch: mark not scoreable and explain the mismatch; do not coerce it into the nearest category.",
+        "Conditional pair absent: say 'No supported two-candidate share forecast for this contest'; retain any valid group winner probabilities independently.",
+        "No archived baseline or proper score: show 'Not scored' and identify the missing input."
+      ]
+    },
+    {
+      "id": "uncertainty-and-expected-error",
+      "heading": "Uncertainty: what the forecast expects to get wrong",
+      "initialState": "expanded",
+      "contents": [
+        "For selected contests, use separate, clearly labeled displays for candidate/group win chance and the signed margin distribution. A 50/50 win chance is not a statement that the margin is near zero.",
+        "Display margin center plus p05/p50/p95 range and mark the zero-margin threshold. Explain that the interval represents model-assigned predictive quantiles, not guaranteed bounds.",
+        "Show close-race odds as P(|margin| <= 2pp), plus directional decisive-margin probabilities at >=10pp for each candidate only where the model supports them. Define each threshold and distinguish these probabilities from win chance.",
+        "Summarize shared national/state movement and the joint seat distribution. Explain coordinated same-direction misses as evidence relevant to shared error assumptions; races within one election are dependent and not independent calibration trials.",
+        "Expected error and joint miss-band forecasts are pending owner export; keep an explicit unavailable card until exact validated fields are supplied."
+      ],
+      "accessibility": [
+        "Every chart has a textual equivalent, labeled axes, units, event definition, and a compact data table.",
+        "Never encode outcome, probability, or result status by color alone; maintain contrast and readable zoom on narrow screens.",
+        "Use plain-language descriptions before methodological detail; keep technical definitions available in a disclosure."
+      ]
+    },
+    {
+      "id": "rubric-and-falsification",
+      "heading": "How the forecast will be judged",
+      "placement": "bottom of guide",
+      "contents": [
+        "A–F rubric framework is displayed as a pending rubric preview, not an awarded or provisional grade, until owners approve pre-election thresholds and aggregation.",
+        "Show separate criteria for point error, probability score and skill versus matched baseline, calibration over an appropriate archive, and interval coverage together with width. Keep raw components beside any eventual letter.",
+        "State which frozen evidence would count against the model: confident errors, systematic direction, poor score versus the matched baseline, persistent calibration failure across comparable archived forecasts, undercoverage, and joint outcome patterns inconsistent with shared-uncertainty claims.",
+        "Separate one low-probability surprise, point-estimate error, aggregate probability failure, communication failure, and evidence against a model mechanism. A nonzero probability does not excuse aggregate failure; one election does not prove universal calibration or conclusively refute every probabilistic claim."
+      ],
+      "unreviewedThresholds": true,
+      "gradeBehavior": "Do not invent cutoffs or weights. Before approval, show 'Rubric thresholds under review; no letter grade assigned.' After approval, retain the predeclared rule and publish its components."
+    }
+  ],
+  "acceptanceChecklist": [
+    "Entry control is visible at the top right, keyboard-operable, labeled, and exposes guide state to assistive technology.",
+    "Opening the guide always selects the standard dated snapshot regardless of visitor stack state; its snapshot date and evaluation-lock status are explicit; alternate stacks are secondary and cannot create/edit/print/save personal predictions.",
+    "Guide remains in the same page and does not break chamber tabs, race anchors, browser history, or skip navigation.",
+    "Senate and House output fields appear only with exact target labels, denominators, cutoff, source, and unresolved-case rules.",
+    "House D/R/O win probabilities are visibly distinct from conditional candidate-pair margins and close-race odds.",
+    "Win probability, margin uncertainty, and close-race probability are never collapsed into a single 'tightness' label.",
+    "Joint seat PMFs and shared-error views use joint forecast artifacts; no independence multiplication is used.",
+    "Owner-export fields (expected margin error and joint miss bands) have explicit disabled/unavailable states until validated exact data arrives.",
+    "Provisional, called, certified, incomplete, unresolved, unsupported, and not-yet-reported results remain distinct and sourced.",
+    "A long list of up to 435 House races does not dominate the initial mobile view; all contests remain reachable and usable with screen readers, keyboard, 200% zoom, and a 436px viewport.",
+    "A–F thresholds and weights remain visibly unreviewed; no grade is emitted before pre-election approval.",
+    "No user setting, selection, prediction, or personal scoreboard is saved, printed, or shared."
+  ],
+  "openReviewQuestions": [
+    "Which exact states/races and selection rule will be frozen before the election, and who signs off on the list?",
+    "What result authority and status transition determine scoreability for each race and chamber outcome?",
+    "What exact archived forecast cohort and matched baseline are approved for skill/calibration diagnostics?",
+    "Which owner export schema provides expected margin error and joint miss bands, with identities and denominators that can be verified?",
+    "Who reviews and approves A–F thresholds, weights, and interactions between probabilistic and point accuracy before results are observed?"
+  ]
+}

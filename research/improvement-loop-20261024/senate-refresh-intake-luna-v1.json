@@ -1,0 +1,113 @@
+{
+  "review": "Independent read-only mapping of Senate polling refresh v2 handoff to the site's sanitized polling receipt",
+  "reviewed_at": "2026-10-26",
+  "source_artifacts": {
+    "handoff": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-polling-refresh-20261026/frontend-handoff-v2.json",
+      "status": "numerically_qualified_and_independently_reviewed_not_published",
+      "intake_manifest": "research/senate-polling-refresh-20261026/runner-sol/admitted-intake-v1/intake-manifest-v1.json",
+      "intake_manifest_sha256": "b62ed6b0b26301fa11b92fa26237ed8e29eb63b24dd720d2beb4946a5ed6742e"
+    },
+    "intake_manifest": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-polling-refresh-20261026/runner-sol/admitted-intake-v1/intake-manifest-v1.json",
+      "status": "admitted_for_existing_aggregate_target",
+      "cutoff_utc": "2026-10-26T15:03:57.212405+00:00",
+      "pins": {
+        "candidate_catalog": {"path": "research/senate-polling-refresh-20261026/runner-sol/admitted-intake-v1/catalog-v1.json", "sha256": "a4c02cc5263d5c0def3e972fd8783d3ae0d2c846184e4b474d24fee2fa987c59"},
+        "aggregate_adapter": {"path": "research/senate-polling-refresh-20261026/runner-sol/admitted-intake-v1/aggregate-observations-v1.csv", "sha256": "6d42f0c7bac18ba8d31313f7c7cb1cd70221ab80f986ecede3b2ec23868e3bb3"},
+        "frozen_roster": {"path": "research/national-senate-forecast-20261020/inputs-frozen-root-v1.json", "sha256": "49d175f0c442b911e92710bb8f6d2082bf4ed8fdb675e2c57f306a194266262c"},
+        "source_admission_review": {"path": "research/senate-polling-refresh-20261026/root-source-admission-review-v1.json", "sha256": "1e877076277427215e503f575ce555c3c8a49bbacd6923e8affb58c9c9a45568"},
+        "candidate_manifest": {"path": "research/senate-polling-refresh-20261026/runner-sol/merged-candidate-v4/candidate-intake-manifest-v1.json", "sha256": "c9aafad2f0982b145f5307145c5c2285c62ea2e4c80dd120bf30a8f77abcb580"},
+        "selection_policy": {"path": "research/senate-polling-refresh-20261026/runner-sol/merge-policy-candidate-v1.json", "sha256": "540957952902c95d2e7f7cbbd6d044c9b869a33918f0891d2d442ae265523fb9"}
+      }
+    },
+    "public_contract": "/home/hayden/projects/ballotmancy-siteground/data/polling-selection-20261020.json",
+    "public_component": "/home/hayden/projects/ballotmancy-siteground/components/PollingPolicy.tsx",
+    "current_exporter": "/home/hayden/projects/ballotmancy-siteground/scripts/export_poll_selection.py"
+  },
+  "candidate_accounting": {
+    "candidate_catalog_schema": "PollReleaseCatalogV1",
+    "catalog_rows": 187,
+    "catalog_is_exhaustive_poll_universe": false,
+    "original_pdf_or_html_downloads": 0,
+    "selected_observations": 131,
+    "races_with_selected_observations": 25,
+    "all_races_audited": 35,
+    "disposition_counts": {
+      "candidate_latest_provider_race_sample": 131,
+      "earlier_same_provider_race_sample": 12,
+      "preserved_alternative_or_hold": 44
+    },
+    "selection_reconciliation": "143 rows were candidate-eligible; latest-per-race/provider sample selection retained 131. Twelve eligible earlier samples were superseded by a newer sample for that race/provider. The other 44 are preserved alternatives or holds with their own source/question/date/estimand reason; they are not all model quality rejections. Runner excluded-observations.json is empty because all 131 selected rows were accepted by the runner.",
+    "preserved_alternative_status_counts": {
+      "same_sample_alternate_not_selected": 11,
+      "primary_documented_alternative_not_independent": 15,
+      "excluded_informed_ballot_same_sample": 2,
+      "primary_documented_excluded_first_choice_vs_eventual_RCV_target": 2,
+      "primary_documented_held_state_metadata_conflict": 4,
+      "held_publication_date_not_verified": 1,
+      "held_original_source_unavailable": 1,
+      "primary_ballot_verified_missing_primary_sample_metadata": 1,
+      "primary_documented_held_conflicting_LV_sample_sizes": 1,
+      "primary_documented_held_estimand_incompatible_with_current_AK_final_RCV_proxy": 1,
+      "primary_documented_qualified_aggregate_only_but_preserved_as_alternative": 5
+    },
+    "rule_plain_language": "For each race and provider/source-owner key, retain the latest eligible sample. Where a survey has overlapping ballot-question variants, select the reviewed target-compatible question once; list alternatives with their documented relationship/reason. Older samples, alternative questions, holds, and absent discovery candidates mean different things and should not be collapsed into one ‘poll rejected’ bucket.",
+    "selection_check": {"status": "passed_no_sampling", "candidate_selection_exact": true, "unique_selected_sample_ids": 131, "unique_selected_overlap_group_ids": 131}
+  },
+  "source_and_poll_fields": {
+    "per_record_public_fields_recommended": {
+      "id": "release_id (stable and unique catalog question identifier)",
+      "raceId_state": "race_id and state",
+      "pollster": "publisher-facing pollster label; retain pollster_id as grouping identity where safe",
+      "sourceUrl": "source_url directly to reviewed public publisher/source record",
+      "fieldStart_fieldEnd": "field_start/field_end; nullable when not verified",
+      "publicationDate": "publication_date, nullable; do not fabricate from retrieval or table-generation dates",
+      "availabilityBound": "source_available_by_utc or source_catalog_available_by_utc with explicit basis; label as ‘evidence observed by’ bound, never as publication timestamp",
+      "questionUniverse_questionKind": "question_universe and question_kind, translated to plain language",
+      "questionSpecificN_nominalN": "question_specific_n and nominal_sample_n with voter universe; nullable; do not substitute full survey N for question N",
+      "reportedMoe": "reported_moe_pct with note that it is publisher-reported, often applies to a different/full sample, and is not necessarily valid for a subgroup",
+      "mode_sponsor": "mode and sponsor when supplied",
+      "responseOptions": "preserve full response-option/candidate mapping where reviewed; do not imply poll percentages are raw person counts",
+      "selectionStatus_reason": "selected/older/alternative/held state and exact reviewed qualifier/reason; never invent a quality judgment",
+      "providerIdentity": "fieldwork_provider_id as a dependence/grouping proxy; show actual_fieldwork_provider_id only if known. Keep fieldwork_provider_identity_status and say subcontractor may be unknown.",
+      "dependence": "sample_id/overlap_group_id only as reviewed dependence identifiers; same survey/sample questions are not independent. Cross-survey respondent overlap remains unknown.",
+      "sourceEvidence": "source_evidence_qualifier and original_html_or_pdf_bytes_acquired; explain that web-rendered publisher text was preserved and original documents were generally unavailable."
+    },
+    "known_coverage": {
+      "publication_date_missing": 22,
+      "selected_rows_with_conservative_availability_bound_for_missing_publication_date": 22,
+      "question_specific_n_missing": 78,
+      "nominal_sample_n_missing": 1,
+      "effective_n_missing": 127,
+      "actual_fieldwork_provider_unknown": 113,
+      "selected_pollster_keys": 55,
+      "selected_fieldwork_provider_keys": 53,
+      "modes": 68,
+      "sample_size_caution": "Poll percentages are weighted published percentages, not binomial counts. Effective sample sizes/design weights are generally unavailable. The row/question N, if supplied, must remain distinct from the survey's overall N."
+    },
+    "plain_language_global_disclosures": [
+      "This is a bounded set of primary-source questions, not every poll published or conducted; discovery-only and access/measurement holds remain in the catalog.",
+      "The refreshed forecast uses the existing polling-error calibration; it is not retrained or empirically validated by this update.",
+      "Latest fieldwork ends October 23; latest known publication is October 25. Exact posting dates are unknown for 22 selected questions; an availability bound says evidence had been observed by that time, not when it was first published.",
+      "Provider keys group repeated releases, but the actual survey-taking subcontractor is unknown for many sources; shared respondents across separate surveys cannot be determined.",
+      "Likely-voter, registered-voter, and unspecified-voter samples are different populations; preserve each publisher's universe label.",
+      "Where reported MOE applies to full sample rather than a subgroup, say so and do not present it as subgroup uncertainty."
+    ]
+  },
+  "site_mapping": {
+    "current_receipt_schema": "schemaVersion 1, currently data/polling-selection-20261020.json; 63 catalog records, 49 included and 14 excluded, cutoff 2026-10-20T16:21:44Z",
+    "existing_record_shape": ["id", "raceId", "state", "pollster", "fieldStart", "fieldEnd", "publicationDate", "sourceUrl", "status", "reason", "questionUniverse", "questionKind"],
+    "recommended_receipt": "Use a newly dated receipt for the 2026-10-26 source set (rather than overwrite the October 20 evidence silently); retain a compatible base record shape and add nullable publicationDate, availabilityBound/basis, questionSpecificN, nominalSampleN/universe, reportedMoe/denominator caveat, mode, sponsor, provider identity status, dependence key disclosure, selectionDisposition, qualifiers, and source evidence flags.",
+    "run_binding": "Bind receipt applicability to exact refreshed result SHA-256 values for polling-enabled standard and reviewed polling comparison runs only; no unreviewed/fundamentals-only result should match. Preserve historical-policy branch unchanged.",
+    "exporter_mismatch": "scripts/export_poll_selection.py is October-20-specific: hard-coded research directory, exact 63 catalog/54 selected/49 admitted/5 runner-excluded assertions, older reason map, non-null publication-date requirement, and old input/run directories. It cannot export this 187/131 packet without a separately reviewed refresh path. Existing component also hardcodes October-20 cutoff and provider wording; both need refreshing for the new receipt while retaining explicit historical fallback and no-polls state.",
+    "receipt_ui_gaps": "Current public fields cannot express date bounds, question-level versus nominal N, nullable date basis, source document availability, provider uncertainty, or per-alternative reasons. The list heading ‘recorded exclusions’ risks flattening alternatives/holds/older samples; explain each disposition separately. Current claim ‘provider—the organization conducting the survey’ overstates what is known."
+  },
+  "limits": [
+    "Do not call the 56 nonselected catalog rows model-rejected; 12 are earlier samples and 44 are diverse alternatives/holds.",
+    "Do not treat missing catalog rows as evidence no poll occurred.",
+    "Do not describe provider/source-owner grouping keys as verified fieldwork subcontractors.",
+    "Do not treat publisher percentages as raw counts or reported full-sample MOE as subgroup MOE.",
+    "Do not imply publication timestamp for a conservative source-availability bound."
+  ]
+}

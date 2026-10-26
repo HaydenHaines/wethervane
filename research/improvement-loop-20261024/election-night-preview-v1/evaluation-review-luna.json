@@ -1,0 +1,23 @@
+{
+  "review": "Independent read-only review of election-night scoring helper and unit tests",
+  "review_date": "2026-10-26",
+  "files": [
+    "/home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/election-night-evaluation.ts",
+    "/home/hayden/projects/ballotmancy-election-night-guide-20261026/tests/election-night-evaluation.test.mjs"
+  ],
+  "scope": "Pure scoring math, estimand and target matching, finality, denominator/orientation, grouped outcomes, infinite log loss, coverage accounting, test adequacy. No build/server/tests run; no real results or grades reviewed.",
+  "verdict": "No material scoring or target-handling defect found in reviewed code. The helper clearly delegates source authentication and scientific admission to its caller, binds the protocol to the exact forecast edition, preserves unavailable states, and returns grade=not_graded.",
+  "verified_semantics": {
+    "winner": "Brier sum is full-support, unnormalized multicategory Brier (0–2); log loss is natural log with an explicit JSON-safe infinite state. Forecast support is validated without renormalizing. Senate winner scoring requires exactly the two named candidate outcomes and the conditional-principal-pair estimand; House scoring keeps every listed candidate/group outcome. An unlisted actual winner is unsupported, and group outcomes do not create individual candidate probabilities.",
+    "margin": "Observed error is observed first-minus-second margin minus the selected forecast mean/median. Exact named candidates, event, round, rule, denominator, units and orientation must agree. Margin requires final/certified status; a winner call or provisional margin cannot authorize it. The central-90 interval score and inclusive endpoints are mathematically correct.",
+    "finality_and_coverage": "Winner minimum status can explicitly allow called, final or certified results; called scores remain marked provisional and finality strata are separate. Missing data, unsupported targets and mismatches remain distinct; all forecast races remain in the per-partition coverage totals. Duplicate revisions do not get silently selected.",
+    "source_binding": "Protocol forecast fields must match run ID, chamber, artifact hash, issue time and cutoff. Invalid source references fail closed at record level. Comments make clear that hashes/references alone are not authentication or target approval."
+  },
+  "test_quality": {
+    "expected_margin_error_direction": "Meaningfully asserted: invented first-minus-second forecast mean +2pp versus invented observed -7pp produces signed error -9pp; orientation and absolute error are checked. Median path is also checked.",
+    "coverage": "Tests exercise called/final/certified strata, unresolved and empty records, unsupported and mismatched targets, duplicate revisions, extra records and missing/duplicate protocol targets; the coverage partition invariant is asserted.",
+    "other_cases": "Tests cover full-category support and Brier scaling, log loss, zero-probability infinity through JSON, interval width/tail penalties/endpoints, group membership without individual allocation, Senate proxy labeling, exact target/denominator/finality mismatches, source metadata, and nonmutation. Every numeric/source fixture is explicitly labeled invented."
+  },
+  "nonblocking_test_gap": "Add one explicit modal-tie scoring case. Implementation selects the lexicographically first tied outcome, matching ElectionNightForecast.summary.tiePolicy=lexicographic_outcome_id, but the evaluation tests do not pin behavior when the actual outcome is another tied modal outcome. Confirm that modalPickCorrect intentionally means the deterministic tie-break pick was correct rather than any maximum-probability outcome.",
+  "noted_boundary": "The evaluator intentionally does not authenticate source bytes, scientifically admit result mappings, decide official certification, or choose a forecast edition. These must remain enforced by the separately reviewed caller/protocol; the implementation header says so explicitly."
+}

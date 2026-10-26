@@ -1,0 +1,33 @@
+{
+  "schema": "HouseNy21NoticeUxFollowupV2",
+  "inherits_source_and_original_native_pins_from": "../house-ny21-notice-v1/evidence.json",
+  "previous_evidence_sha256": "657f271d8418141e4fa34cebc2e2e1920d8c5158ee9c47a771824c8c2bdce657",
+  "changes": [
+    "Exact owner publicWording retained",
+    "Plain NY-21 forecast inputs under review heading and three plain source labels",
+    "Internal limits kept only in owner receipt, not site UI",
+    "View NY-21 focuses and centers district heading on desktop and mobile, respecting reduced motion"
+  ],
+  "verification": {
+    "focused_unit": "8 pass, 4 unrelated browser skips",
+    "typecheck": "pass",
+    "production_build": "pass",
+    "actual_release_browser": "2 pass (desktop and mobile), including 16 API/native NY-21 outcome comparisons per browser, keyboard focus, viewport visibility, links, unrelated race, alternative model and no page overflow",
+    "stale_hash": "fixture tests hide notice for replacement SHA"
+  },
+  "source_erratum_sha256": "9159c561ca3ac223d5bc04313c87e1de4b542d1de4ea4299d95a3c3911ee2e44",
+  "files_sha256": {
+    "lib/house-ny21-notice.ts": "4acde2c1ec9eaac7475cd867ffa43c29a5799a447a50dbea2683c6d0916cb408",
+    "components/HouseLiveResults.tsx": "fb84143177d125ab952c9176d2413faa79a570761a678e4bc9f78fbd9b46770b",
+    "app/globals.css": "9ced5e0866aa14ba4c6dac1447b57b4bc46fbefc4ab52d921a8c5d80832b7a05",
+    "tests/house-ny21-notice.test.mjs": "3a339921f5ee4b37ee61450aeb9414ee2021283efcebee8e2afb1941bc7405cd",
+    "tests/house-live-results.test.mjs": "6764f42c9e7ebba846dc71dcb0eec1a870fc10bd9df1eabd346832b6897bb45a",
+    "tests/site/house-live-release.spec.ts": "825f369c023ae473d103fb616ace3e3100125121add0c361d1f548908a734835"
+  },
+  "screenshots": {
+    "desktop": "desktop-ny21-notice.png",
+    "mobile": "mobile-ny21-notice.png"
+  },
+  "no_native_edits": true,
+  "no_commit_push_deploy": true
+}

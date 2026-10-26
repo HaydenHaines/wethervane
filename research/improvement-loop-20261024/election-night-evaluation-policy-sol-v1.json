@@ -1,0 +1,81 @@
+{
+  "schema": "ElectionNightEvaluationPolicyProposalV1",
+  "status": "research_proposal_requires_owner_and_editorial_signoff_before_outcomes; no grades_or_results_computed",
+  "date": "2026-10-26",
+  "scope": "A reproducible, cycle-specific public scorecard for the preferred frozen 2026 House and Senate forecasts. A–F remains a required deliverable, but this proposal does not assert evidence-backed universal letter cutoffs.",
+  "sourcePins": [
+    {"path": "research/improvement-loop-20261024/election-night-scorecard-request-20261026.json", "role": "user brief"},
+    {"path": "research/improvement-loop-20261024/election-night-contract-audit-sol-v1/adapter-contract.json", "role": "existing adapter audit"},
+    {"path": "research/improvement-loop-20261024/election-night-research-round2/evaluation-counterexamples-luna.md", "role": "evaluation research"},
+    {"path": "research/improvement-loop-20261024/election-night-research-round2/accountability-critique-luna.md", "role": "accountability review"},
+    {"path": "research/improvement-loop-20261024/election-night-research-round2/independent-source-review-sol.md", "role": "source correction"},
+    {"path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/data/house-score-evidence.json", "sha256": "ae4906591e00f9b0a827164e71e82b012e75ada6c08992fe33a7eb5eca82d121"},
+    {"path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/public/data/explorer/history-2018-FP-1.json", "sha256": "4f2af5135824a5b0420b31f5e589eb038d070ae70450ef4c80d0a4236e78fd02"},
+    {"path": "/home/hayden/projects/ballotmancy-election-night-guide-20261026/public/data/explorer/history-2022-FP-1.json", "sha256": "1c1f3c226ca285724d3cc2af0fca1b77d6bff43a6b918ebb749686157596cf71"},
+    {"path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-polling-refresh-20261026/standard-scorecard-reference-v1/reference.json", "sha256": "48d36fdce404a74569553c859a8b8d66bb9790c0eef614950bfa98ca5da058db"},
+    {"path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-polling-refresh-20261026/scorecard-review-sol/review-v1.json", "sha256": "4ba519f76c03852659c69eec96e84913c0fbcd00c8e8e3d82de6e9e7d845fe05"}
+  ],
+  "freezeContract": {
+    "editionVersusLock": "A dated published edition is not an evaluation lock. Issue one immutable evaluation-lock record per chamber and declared horizon before observing outcomes; link, never overwrite, earlier editions. A later live update is a separate forecast and cannot replace the lock.",
+    "primaryHorizonProposal": "Last reviewed preferred edition published before polls close for that chamber; freeze a cutoff timestamp and source-input cutoffs. If the site also wants H14/H7/H1 scores, lock each as a separate horizon and never pool their scores for a single grade without a predeclared horizon rule.",
+    "requiredFields": ["freezeId", "schemaVersion", "chamber", "electionDate", "horizonId", "forecastIssuedAt", "forecastCutoffAt", "sourceInputCutoffs", "strictAsOfFlag", "runId", "configurationIdAndHash", "forecastArtifactSha256", "catalogSha256", "nativeReviewPins", "targetId", "lawId", "mapVintage", "orderedRaceIdsAndHash", "outcomeSupportAndMappingVersion", "cohortDefinitionAndHash", "pointRule", "intervalLevels", "closeBandDefinitions", "metricDefinitionHash", "baselineSetHash", "resultRuleHash", "rubricHash", "limitations"],
+    "cohorts": [
+      {"id": "all_declared_winner_contests", "rule": "Freeze every supported contest in ordered map roster before returns; preserve unavailable and unresolved counts. House group winner probabilities and Senate principal-pair winner probabilities have different targets and must never be pooled."},
+      {"id": "eligible_pair_margins", "rule": "Freeze named first/second candidate identities and exact D/(D+R) or other declared pair denominator; current House has 412 available conditional pairs and 23 unavailable, but the final lock must pin its own mask. Senate pair margins are conditional on the declared pair, not all-candidate margins."},
+      {"id": "illustrative_and_competitive", "rule": "Freeze selection from forecast-time quantities only, including any named examples and close-probability or interval rule. Report separately from all-contest cohort; never select by realized miss."}
+    ],
+    "ruleEvents": "For runoff, recount, cancellation, uncontested, write-in or changed candidate identity, pin an event/round rule and either map to the predeclared target or mark ineligible with reason; do not silently substitute a later race definition."
+  },
+  "resultsContract": {
+    "storage": "Append-only, separately versioned result records linked by freezeId/raceId/eventId; each revision has source URL, exact retrieved bytes hash or cited source pin, publication/retrieval times, reporting completeness, candidate/group mapping, denominator, status and supersedes ID. Never alter frozen forecast bytes.",
+    "separateAxes": {"countStatus": ["unreported", "partial", "complete", "unknown"], "callStatus": ["uncalled", "called", "unresolved"], "finalityStatus": ["provisional", "final", "certified", "rule_dependent", "unresolved"]},
+    "scoringRule": "Called winner may enter a clearly labeled provisional call tally, but not final winner Brier until the predeclared finality rule is met. Final margins and vote shares require matching final or certified denominator/round; partial leads have no final error/grade. If final and certified disagree, preserve both versions and name the one used by policy. Show pending/unavailable in the original cohort denominator.",
+    "eligibilityRecord": ["freezeId", "raceId", "metricId", "resultRevisionId", "eligibleBoolean", "reason", "observedOutcomeOrNull", "observedPairMarginPpOrNull"]
+  },
+  "scoreContract": {
+    "winner": "Use a full-support unordered categorical Brier loss sum_k (p_k - 1[y=k])^2 for House group D/R/Other if those are the frozen exhaustive categories; specify whether divided by 2 and use that normalization for every baseline. Use binary Brier (p-y)^2 for a truly two-outcome Senate principal pair; an outside-pair actual result needs a predeclared mapping or is ineligible, never quietly forced to one principal. Display modal hits/misses as descriptive counts, not a substitute for Brier.",
+    "margin": "On exactly the frozen pair-share target, show observed minus frozen point in percentage points, MAE, and mean CRPS of the frozen predictive margin CDF; show central 90% coverage plus mean width and mean proper 90% interval score. A House retrospective D/(D+R) share score is not automatically comparable with a candidate-specific 2026 pair if support differs.",
+    "aggregation": "Equal weight per eligible contest within chamber/target/horizon, with fixed cohort and counts; also report per-race contributions. Do not treat contests or model draws as independent election cycles. Any alternate population weighting needs a separately locked metric ID.",
+    "joint": "Compare observed chamber quantities to same-row native joint-draw distribution only for matching locked cohort and target; report realized tail rank for signed mean error, absolute mean error, coverage count and modal misses with a declared two-sided/tie convention. These are checks against the model-implied law, not historical skill or a second independent grade. Never match House and Senate rows or cross-model rows by index."
+  },
+  "baselines": {
+    "required": [
+      {"id": "basic_electoral_history", "purpose": "Primary informative comparator", "construction": "Owner must export a frozen, simple preset based only on information available by the same cutoff, with the same race IDs, outcome support, point/margin distribution target and result rule. Current saved history/fundamentals variants are candidates only after support and horizon checks; an historical score summary alone is not the 2026 baseline."},
+      {"id": "uninformative_categorical", "purpose": "Ignorance anchor for winner probabilities", "construction": "Uniform 1/K across the exact frozen exhaustive K outcome categories (1/2 only for a valid binary pair), chosen before results. This has no invented margin CDF, so it cannot be scored by CRPS/interval score unless a separately sourced, frozen marginal distribution is provided."}
+    ],
+    "comparison": "Score forecast and each baseline on the identical eligible cohort and target. Publish raw loss, paired mean loss difference L_baseline-L_model (positive means model better), and optional skill 1-L_model/L_baseline only when baseline loss is positive; retain difference when zero. Keep baseline coverage and gaps explicit. No artificial '50/50 no call' penalty.",
+    "minimumEvidence": "Pin executable baseline rule/artifact, inputs as-of cutoff, map/support/denominator, output sha, result-mapping audit and reviewed matched score computation."
+  },
+  "gradePolicyOptions": {
+    "meaning": "A letter can describe this one frozen 2026 cycle against named references, not establish long-run calibration, universal superiority, or a mechanism explanation. Keep winner and margin/distribution subscores visible. All numerical weights, thresholds, minimum coverage and floors are editorial choices requiring signed pre-outcome approval; none below is asserted as science-established.",
+    "option1PairedSkillComposite": {
+      "numericDefinition": "For each eligible chamber/target: W=1-meanCategoricalBrier_model/meanCategoricalBrier_history; M=1-meanCRPS_model/meanCRPS_history; I=1-meanIntervalScore_model/meanIntervalScore_history where each denominator>0. Define S=wW*W+wM*M+wI*I, wW+wM+wI=1, nonnegative, with precommitted weights and missing-dimension policy. Candidate grade is A if S>=tA; B if tB<=S<tA; C if tC<=S<tB; D if tD<=S<tC; F if S<tD, ordered tD<tC<tB<tA. Exactly zero skill is the meaningful 'equals informative baseline' anchor, not an automatically approved C boundary.",
+      "guardrails": "Predeclare separate threshold vectors by House/Senate target; show both baseline comparisons. A-grade eligibility may also require nonnegative W and M, enough final-result coverage, and no predeclared joint diagnostic breach; these gates must be explicit. Winner-only contests can receive winner subgrade but cannot inherit a margin composite. Do not average a House group Brier and Senate pair Brier into one letter without owner-approved normalization and weighting."
+    },
+    "option2ComponentFloors": {
+      "numericDefinition": "For each scored dimension j in {winner Brier skill, margin CRPS skill, interval-score skill}, map s_j to integer grade points 4=A,3=B,2=C,1=D,0=F using a precommitted ordered numeric threshold vector t_j. The overall grade is min_j gradePoints_j, with a separately precommitted maximum downgrade for a joint-check breach and declared treatment of missing dimensions. This is deliberately a worst-component policy; it cannot quietly change to an average after the result.",
+      "guardrails": "Requires reviewed dimension thresholds and result-coverage rule. A joint-tail event alone is not automatic F unless owner explicitly defends such a gate in advance. Display component scores and letter with exact threshold table."
+    },
+    "thresholdDecision": "Neither archive below supplies transferable cutoffs tA/tB/tC/tD or t_j. Owner/editorial review must choose and hash actual numeric thresholds, weights/gates and minimum eligible fraction before 2026 outcomes; state that those bands are judgmental. Inspect candidate rules on available history as a sensitivity check, publish the whole small-cycle distribution, and avoid claiming a tuned historical percentile or blind holdout validation. If this review cannot finish by the lock, show the A–F scale with 'awaiting approved rubric' and no inferred letter; this is a temporary gate, not a replacement of the user-required A–F deliverable."
+  },
+  "historicalDistributionAudit": {
+    "house": "Reviewed file has 16 scored runs = four configurations x four election years (2018, 2020, 2022, 2024), 371/383/373/375 eligible two-party contests per year, with MAE/CRPS/90% interval score and coverage. These are four correlated election cycles, not 16 independent validation cycles. Across all configurations/cycles, two-party-share CRPS is 0.01796644584141692 to 0.0494819888353413 (fraction-share units); the very broad range and differing configurations do not license universal 2026 pair-margin cutoffs. Source states retrospective proxies and non-strict-as-of, exclusion of third-party votes, and failure of eligible-seat subtotal precision in all 16. No matching full-field group-winner categorical Brier baseline is present in this file.",
+    "senate": "History index has 2018 and 2022 saved H14 retrospective replays, not strict as-of; the cited standard FP bundles carry chamber seat CRPS and control Brier/log score, not the per-race 2026 principal-pair margin/Brier distribution. Example standard FP control Brier 0.00011962531250000085 (2018) and 0.023488031562499997 (2022), illustrating realized outcome variation, not a grade-band calibration. The archive explicitly says its historical categorical winner-gate law differs from the saved 2026 principal-pair law and no full-field vote-share margins exist.",
+    "newSenateSidecar": "The Oct. 26 refreshed standard reference is SHA 48d36fd... and independent review SHA 4ba519f...: 35 principal pairs, 4x10000 preserved joint rows, model-implied mean absolute margin error 5.621801760616599 percentage points and modal pair miss mean 3.83785, with same-row distributions. It has evaluation_lock=false and observed_results_consumed=false; it is a useful forecast expectation/reference if this edition is chosen and pinned, never an observed historical score or calibrated A–F band. It is a scoped native sidecar, not a full frontend adapter.",
+    "conclusion": "No audited collection here offers matched same-target, same-horizon, same-as-of forecast-versus-basic-history and uniform-baseline score distributions sufficient to infer specific A–F numbers. This is an evidence gap, not a hidden-holdout requirement or reason to skip exact 2026 scoring."
+  },
+  "implementationNow": [
+    "Define schemas and immutable hash checks for evaluation lock, result revision, eligibility, baseline and metric/rubric records; use unavailable/pending/null with reasons.",
+    "Freeze named cohorts, horizons, points, intervals, outcome mappings, illustrative race selection and target-specific formulas before returns.",
+    "Show current model-implied expected modal misses and reviewed Senate joint reference with labels that distinguish expectations from actual errors; House expected margin/joint export is still owner-dependent.",
+    "Display A–F rubric framework and exact pending reason; never compute a letter from an unapproved threshold table or partial results."
+  ],
+  "missingForFinalEvaluation": [
+    "Owner confirmation of exact final House and Senate preferred edition/lock, strict-as-of status and complete target/event/cohort rules; new Senate refreshed handoff is qualified but not published or selected as a final lock.",
+    "Official or otherwise owner-reviewed source, versioned result importer, complete called/final/certified rules, candidate/group/denominator mapping and revision policy.",
+    "Reviewed same-cutoff basic electoral-history baseline outputs on identical 2026 target support and cohort; explicit uniform categorical baseline; matched score audit.",
+    "House reviewed expected-margin-error and same-row joint diagnostics export; Senate sidecar adaptation for whichever final edition/cohort is locked and no claim of cross-chamber coupling.",
+    "Owner/editorial selection and publication of numeric A–F thresholds/weights/coverage gates with justification and hash before outcomes; no universal scientific cutoff can be read from available retrospective archives."
+  ],
+  "restrictionsObserved": {"guideCodeEdited": false, "modelFitsRun": false, "sourceDataMutated": false, "published": false, "actualGradesComputed": false}
+}

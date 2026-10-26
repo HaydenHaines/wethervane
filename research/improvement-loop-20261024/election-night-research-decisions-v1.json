@@ -1,0 +1,56 @@
+{
+  "schema": "ElectionNightResearchDecisionV1",
+  "utc": "2026-10-26T15:56:25.009399+00:00",
+  "scope": "Completed two recursive Luna rounds and independent Sol source audit before guide implementation. User required A-F remains unfinished, not replaced by a permanent ungraded preview.",
+  "evidence": [
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-research-round2/accountability-critique-luna.md",
+      "sha256": "69a018f6cc1418ee324c4fd10ea74205adecfefe3e111000219367de629c500f",
+      "bytes": 10884
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-research-round2/evaluation-counterexamples-luna.md",
+      "sha256": "b0345ec670b95c4b77f44b0c4687df87de9d0f718b9fb73761ebbfc473f71b8c",
+      "bytes": 10472
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-research-round2/independent-source-review-sol.md",
+      "sha256": "12fda0cc503742387091bd541e29121708ce29a80cadd149aa388a5a85e2d3b9",
+      "bytes": 11394
+    }
+  ],
+  "acceptedDesign": [
+    "Same-page top-right Election night scorecard, standard forecast first; alternatives secondary and no saved-user-config or printing feature.",
+    "Freeze specific named candidate margins, complete declared race cohorts, source dates and illustrations before outcomes; dated snapshot alone is not an evaluation lock.",
+    "Separate winner/group probabilities from conditional named-pair margins, preserving rules/denominators and unsupported targets.",
+    "Two sections: actual predictions/results scoreboard; expected error and uncertainty checks. Joint same-election rows remain intact.",
+    "Even win probability alone does not establish a genuinely tight margin. Show point/range and actual close/decisive event probabilities where exported.",
+    "Score probabilities with proper categorical Brier/log scores; pair margin interval score penalizes both width and misses. Uniform categorical and same-target strong baseline comparisons prevent uninformative forecasts passing as skill.",
+    "One election has correlated races, not many independent national shocks. Preserve errors and expected joint shifts without excusing every outcome as possible.",
+    "Keep called, provisional, final, certified, unresolved and unsupported separate. No partial count becomes a final margin.",
+    "A-F is an editorial communication rule that must be declared before outcomes with transparent baseline/coverage/aggregation choices. No universal numeric thresholds are established by these sources."
+  ],
+  "corrections": [
+    "Round1 attribution of 2016 polling report to NCPP corrected to AAPOR/Kennedy et al.",
+    "Ranked probability score inappropriate for unordered D/R/Other categories without an ordinal target; use categorical scoring.",
+    "2016 PEC final Nov8 probability and earlier statements are separate vintages; modern sidebar is not 2016 evidence.",
+    "AAPOR poll-level error denominators and post-outcome battleground subsets must not become predeclared forecast evaluation cohorts.",
+    "Gneiting/Raftery JASA proper-scoring paper differs from three-author JRSSB calibration paper; Gelman2020 has four authors.",
+    "Legacy docs/election-night-live-mode-design.md is an obsolete proposal, not authority for automated calls or partial-vote updating. Current watcher-guide brief governs."
+  ],
+  "primaryReferences": [
+    "https://sites.stat.washington.edu/people/raftery/Research/PDF/Gneiting2007jasa.pdf",
+    "https://sites.stat.columbia.edu/gelman/research/published/jdm200907b.pdf",
+    "https://election.princeton.edu/articles/final-projections-2016/"
+  ],
+  "implementationEvidence": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-preview-v2/receipt.json",
+    "sha256": "271858932c7ccf74c7d2a9b8a896db30ab8fdd561a0728df9fd618e3848c96cc",
+    "bytes": 2478
+  },
+  "policyProposal": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/election-night-evaluation-policy-sol-v1.json",
+    "sha256": "9512408d98b79a04432e1ce7c6daed02c8290c9c7157128292ac0d489cd85d17",
+    "bytes": 16084
+  }
+}

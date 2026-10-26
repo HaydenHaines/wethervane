@@ -1,0 +1,92 @@
+TAP version 13
+# (node:1791709) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/election-night-evaluation.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /home/hayden/projects/ballotmancy-election-night-guide-20261026/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: proper categorical scores use full unordered support, natural logs and explicit binary normalization
+ok 1 - proper categorical scores use full unordered support, natural logs and explicit binary normalization
+  ---
+  duration_ms: 2.438819
+  type: 'test'
+  ...
+# Subtest: zero-probability observed outcomes retain infinite log loss through JSON without clipping
+ok 2 - zero-probability observed outcomes retain infinite log loss through JSON without clipping
+  ---
+  duration_ms: 1.379042
+  type: 'test'
+  ...
+# Subtest: a tied modal call grades the fixed outcome-ID choice, not any equally probable winner
+ok 3 - a tied modal call grades the fixed outcome-ID choice, not any equally probable winner
+  ---
+  duration_ms: 0.471263
+  type: 'test'
+  ...
+# Subtest: central 90% interval scoring includes width, both tail penalties and inclusive endpoint coverage
+ok 4 - central 90% interval scoring includes width, both tail penalties and inclusive endpoint coverage
+  ---
+  duration_ms: 0.213815
+  type: 'test'
+  ...
+# Subtest: certified named-pair margins use observed-minus-predicted orientation and an explicit mean or median rule
+ok 5 - certified named-pair margins use observed-minus-predicted orientation and an explicit mean or median rule
+  ---
+  duration_ms: 0.367366
+  type: 'test'
+  ...
+# Subtest: called winners and final/certified margins have separate statuses and coverage counts
+ok 6 - called winners and final/certified margins have separate statuses and coverage counts
+  ---
+  duration_ms: 0.796839
+  type: 'test'
+  ...
+# Subtest: group outcome scoring preserves pooled membership without creating individual probabilities
+ok 7 - group outcome scoring preserves pooled membership without creating individual probabilities
+  ---
+  duration_ms: 0.32223
+  type: 'test'
+  ...
+# Subtest: a Senate proxy is never silently scored as full-ballot truth
+ok 8 - a Senate proxy is never silently scored as full-ballot truth
+  ---
+  duration_ms: 0.317712
+  type: 'test'
+  ...
+# Subtest: event, round, target, named candidates, denominator, scale and finality require explicit matches
+ok 9 - event, round, target, named candidates, denominator, scale and finality require explicit matches
+  ---
+  duration_ms: 1.523616
+  type: 'test'
+  ...
+# Subtest: every frozen race remains in unresolved, unsupported, mismatched or scored accounting
+ok 10 - every frozen race remains in unresolved, unsupported, mismatched or scored accounting
+  ---
+  duration_ms: 0.535294
+  type: 'test'
+  ...
+# Subtest: duplicate revisions and extra/missing target records are explicit and never silently selected
+ok 11 - duplicate revisions and extra/missing target records are explicit and never silently selected
+  ---
+  duration_ms: 0.493635
+  type: 'test'
+  ...
+# Subtest: protocol binding and source metadata fail closed; pins alone do not authorize mismatched target mappings
+ok 12 - protocol binding and source metadata fail closed; pins alone do not authorize mismatched target mappings
+  ---
+  duration_ms: 0.512942
+  type: 'test'
+  ...
+# Subtest: evaluation never mutates the forecast, protocol or result records and returns detached source references
+ok 13 - evaluation never mutates the forecast, protocol or result records and returns detached source references
+  ---
+  duration_ms: 0.412421
+  type: 'test'
+  ...
+1..13
+# tests 13
+# suites 0
+# pass 13
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 104.248095

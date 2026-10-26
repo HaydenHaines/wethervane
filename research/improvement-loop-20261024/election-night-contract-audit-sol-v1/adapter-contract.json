@@ -1,0 +1,291 @@
+{
+  "availability": {
+    "requiredStates": [
+      "available",
+      "unavailable",
+      "pending_result",
+      "requires_owner_export",
+      "inapplicable"
+    ],
+    "rule": "Missing numeric quantities are null with nonempty reason, never zero; preserve native qualifications and explicit support."
+  },
+  "blocks": {
+    "evaluation": {
+      "availability": "pending_frozen_protocol_and_eligible_truth",
+      "required": [
+        "freezeId",
+        "resultRecordPin",
+        "metricDefinitionsPin",
+        "cohort",
+        "eligibleCount",
+        "pendingCount",
+        "unavailableCount",
+        "pointErrors",
+        "probabilityScores",
+        "intervalScores",
+        "distributionScores",
+        "baselineComparisons",
+        "jointDiagnostics"
+      ],
+      "safeguards": [
+        "No independent-race confidence intervals from correlated contests.",
+        "Keep binary and categorical Brier definitions/normalizations explicit.",
+        "Declare log-score zero-probability or floor convention; never silently clip.",
+        "Interval coverage must accompany width; scores preserve units and exact targets."
+      ],
+      "signedMarginError": "observed_margin_pp - frozen_point_pp"
+    },
+    "expectedMarginError": {
+      "availability": "requires_owner_export",
+      "definitionExample": "E_abs_margin_error_pp = E[abs(M_draw_pp - frozen_point_pp)]",
+      "limitation": "Model-implied predictive error, not historical measured accuracy or Monte Carlo error.",
+      "required": [
+        "metricId",
+        "pointRule",
+        "cohort",
+        "target",
+        "units",
+        "valueOrDistribution",
+        "drawLayoutAndWeights",
+        "nativeArtifactPins",
+        "reviewPin"
+      ]
+    },
+    "expectedModalWinnerMisses": {
+      "assumptions": [
+        "One modal call per frozen race; complete declared probability vector; predeclared tie rule for observed calls.",
+        "Linearity of expectation; no independence assumption.",
+        "House mode refers to groups, Senate mode to the admitted conditional pair law."
+      ],
+      "availability": "deterministic_transform_from_exported_probabilities",
+      "doesNotSupply": [
+        "miss_count_predictive_interval",
+        "margin_error",
+        "probability_of_coordinated_misses"
+      ],
+      "formula": "sum_over_frozen_races(1-max_over_declared_outcomes(p))"
+    },
+    "freeze": {
+      "electionNightEvaluationLock": "Distinct from dated saved edition; no lock inferred from current publication.",
+      "required": [
+        "schemaVersion",
+        "freezeId",
+        "chamber",
+        "runId",
+        "configuration",
+        "targetId",
+        "lawId",
+        "forecastArtifactPin",
+        "catalogPin",
+        "reviewPins",
+        "sourcePins",
+        "issuedAt",
+        "cutoffAt",
+        "sourceCutoffs",
+        "strictAsOf",
+        "electionDate",
+        "resultRuleDefinition",
+        "orderedRaceIds",
+        "cohortDefinitionPin",
+        "pointRule",
+        "intervalDefinitions",
+        "eventDefinitions",
+        "qualification",
+        "limitations"
+      ],
+      "sourceIdentity": "Hash exact bytes and bind mapping/version; no source authority from file existence or embedded status."
+    },
+    "grade": {
+      "reason": "No researched, owner-reviewed historical threshold/aggregation rubric has been approved.",
+      "status": "not_graded"
+    },
+    "jointEvaluation": {
+      "availability": "requires_owner_export",
+      "constraints": [
+        "Use original same-row winners for winner/chamber diagnostics and same-row pair shares for margins.",
+        "For combined House artifacts bind source-run/local-row offsets and combined plan.",
+        "No cross-model row matching by equal index.",
+        "No cross-chamber joint probability without a separately reviewed coupled model/artifact."
+      ],
+      "required": [
+        "diagnosticDefinitionPin",
+        "chamber",
+        "runId",
+        "target",
+        "orderedRaceIds",
+        "cohortMask",
+        "nativeArtifactPins",
+        "drawIdentity",
+        "weights",
+        "summary",
+        "reviewPin"
+      ]
+    },
+    "observedResults": {
+      "availability": "pending_result_source_decision",
+      "gates": [
+        "A called winner does not establish final margin.",
+        "Score margin only under the declared finality/round/denominator mapping.",
+        "Keep unreported, unresolved and unsupported races in cohort accounting."
+      ],
+      "required": [
+        "resultRecordId",
+        "raceId",
+        "sourcePin",
+        "sourceUrl",
+        "retrievedAt",
+        "sourcePublishedAt",
+        "resultRevision",
+        "roundOrEventId",
+        "candidateAndGroupMapping",
+        "denominator",
+        "reportingStatus",
+        "callStatus",
+        "finalityStatus",
+        "winner",
+        "pairMargin",
+        "scoringEligibility",
+        "reason"
+      ],
+      "statusAxes": {
+        "callStatus": [
+          "uncalled",
+          "called",
+          "unresolved"
+        ],
+        "finalityStatus": [
+          "provisional",
+          "final",
+          "certified",
+          "rule_dependent",
+          "unresolved"
+        ]
+      },
+      "storage": "Separate versioned result records; never insert truth into frozen native forecast."
+    },
+    "race": {
+      "pairMarginForecast": {
+        "intervalTransform": "Apply same monotone transform to corresponding share quantiles.",
+        "orientation": "first_minus_second",
+        "required": [
+          "availability",
+          "firstCandidateId",
+          "secondCandidateId",
+          "denominator",
+          "units",
+          "orientation",
+          "mean",
+          "median",
+          "intervals",
+          "closeOrDecisiveEvents",
+          "qualifications"
+        ],
+        "reverseOrientation": "Negate mean/median; negate and reverse the lower/upper quantile tails.",
+        "shareTransform": "m_pp=100*(2*s_fraction-1)",
+        "support": "Votes for exactly the named pair; not total valid ballots and not group-winner probability.",
+        "units": "percentage_points"
+      },
+      "required": [
+        "raceId",
+        "state",
+        "districtOrSeatId",
+        "mapVintage",
+        "ruleFamily",
+        "forecastNotes",
+        "winnerForecast",
+        "pairMarginForecast"
+      ],
+      "winnerForecast": {
+        "outcomeFields": [
+          "outcomeId",
+          "kind",
+          "memberCandidateIds",
+          "names",
+          "partyOrGroup",
+          "probability"
+        ],
+        "personProbability": "Only an explicitly exported singleton candidate outcome; no division or allocation of pooled group mass.",
+        "required": [
+          "supportSemantics",
+          "outcomes"
+        ]
+      }
+    }
+  },
+  "defaults": {
+    "house": "house-current-polling",
+    "senate": "current-polling"
+  },
+  "fieldMappings": {
+    "houseCurrentDisplay": {
+      "identity": "run.resultSha256; races[].candidates; ruleFamily/method",
+      "input": "HouseLiveDisplayV1 from authenticated HouseLivePublication",
+      "pair": "races[].conditionalPair",
+      "pairEvents": "firstExceedsHalf/marginWithinTwoPoints/firstMarginAtLeastTenPoints/secondMarginAtLeastTenPoints",
+      "warning": "Ordinary ExplorerRace alone drops House pair fields; use the HouseLiveRaceView extension or native result. Generic outcome.share is intentionally absent for House winner groups.",
+      "winners": "races[].outcomes[].winProbability"
+    },
+    "houseCurrentNative": {
+      "admission": "House live manifest/catalog/operator-review/qualification binding through existing server loader",
+      "chamber": "chamber.seats/majority/scenario_id/retained_seats/threshold/precision",
+      "closeOrDecisiveEvents": [
+        "conditional_shares.p_margin_within_2pp",
+        "conditional_shares.p_first_margin_at_least_10pp",
+        "conditional_shares.p_second_margin_at_least_10pp"
+      ],
+      "identities": "race_id/district_key/rule_family/method; candidates[]; outcomes[].member_candidate_ids",
+      "input": "data/house-live/results/<catalog result>.json",
+      "pairDenominator": "conditional_shares.denominator",
+      "pairHalfEvent": "conditional_shares.p_first_exceeds_half",
+      "pairIds": "conditional_shares.first_candidate_id/second_candidate_id",
+      "pairMean": "conditional_shares.mean",
+      "pairQuantiles": "conditional_shares.quantiles.p025/p05/p10/p50/p90/p95/p975",
+      "provenance": "provenance; qualification.evidence; joint_draws",
+      "qualifications": "qualification; source_cutoffs; strict_as_of; race/conditional qualifications",
+      "winnerVector": "outcomes[].p_win"
+    },
+    "senateCurrent": {
+      "admission": "registry exact href/sha256",
+      "chamber": "scenarios[].thresholds/retainedSeats/control/seats",
+      "closeOrDecisiveEvents": null,
+      "identities": "run.*; races[].id/state/seatId; outcomes[].id/name/kind/members",
+      "input": "public/data/explorer/<registry run>.json",
+      "pairDenominator": "share.denominator",
+      "pairMean": "races[].outcomes[].share.mean",
+      "pairQuantiles": "share.quantiles.p05/p50/p95",
+      "provenance": "provenance.sources",
+      "qualifications": "run.strictAsOf/inputCutoffs/researchEvidence; limitations; race notes",
+      "winnerVector": "races[].outcomes[].winProbability"
+    }
+  },
+  "implemented": false,
+  "notRequested": [
+    "new model fits",
+    "margins for unsupported races",
+    "within-group candidate probabilities",
+    "cross-chamber synthetic draws",
+    "user configuration saving",
+    "UI edits in this audit",
+    "numerical grades"
+  ],
+  "ownerRequests": [
+    {
+      "owner": "both_model_owners",
+      "request": "Confirm dated edition vs explicit evaluation freeze, target/rule/cohort/point/tie/baseline protocol; preserve versions."
+    },
+    {
+      "owner": "senate",
+      "request": "Compact derived sidecar from existing arrays for close/decisive pair odds, agreed expected margin errors and joint diagnostics; bind ordered35 columns absent from current archive, chain layout, weights, chamber coupling and review."
+    },
+    {
+      "owner": "house",
+      "request": "Bind existing conditional-shares receipt pin and412 mask to current group draw identity; export only agreed expected margin error/joint diagnostics; reuse historical per-race scores with original source/mask/reference context."
+    },
+    {
+      "owner": "root_results_integration",
+      "request": "Choose source and implement separately versioned observed-results/status/round/finality mapping before outcome scoring."
+    }
+  ],
+  "schema": "ElectionNightGuideAdapterContractProposalV1",
+  "status": "proposed_for_root_and_owner_review"
+}

@@ -1,0 +1,90 @@
+TAP version 13
+# (node:1788367) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/election-night-client.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /home/hayden/projects/ballotmancy-election-night-guide-20261026/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: the scorecard default follows the current standard registry with exact bytes and independent choices
+ok 1 - the scorecard default follows the current standard registry with exact bytes and independent choices
+  ---
+  duration_ms: 27.686311
+  type: 'test'
+  ...
+# Subtest: changed artifact bytes and selected-result revisions cannot silently replace a forecast
+ok 2 - changed artifact bytes and selected-result revisions cannot silently replace a forecast
+  ---
+  duration_ms: 3.282999
+  type: 'test'
+  ...
+# Subtest: a valid hash cannot make another model's payload become the requested model
+ok 3 - a valid hash cannot make another model's payload become the requested model
+  ---
+  duration_ms: 2.070482
+  type: 'test'
+  ...
+# Subtest: untrusted registry paths, duplicate identities, and historical choices never fetch a forecast
+ok 4 - untrusted registry paths, duplicate identities, and historical choices never fetch a forecast
+  ---
+  duration_ms: 3.812022
+  type: 'test'
+  ...
+# Subtest: aborting a guide request propagates to its read and cannot manufacture a result
+ok 5 - aborting a guide request propagates to its read and cannot manufacture a result
+  ---
+  duration_ms: 0.614083
+  type: 'test'
+  ...
+# (node:1788368) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/election-night-forecast.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /home/hayden/projects/ballotmancy-election-night-guide-20261026/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: all 16 actual current Senate artifacts preserve exact editions, winner vectors, margins and native default scenario without mutation
+ok 6 - all 16 actual current Senate artifacts preserve exact editions, winner vectors, margins and native default scenario without mutation
+  ---
+  duration_ms: 71.488764
+  type: 'test'
+  ...
+# Subtest: all 16 actual House artifacts preserve 435 listed winner vectors, exact 412/23 pair support and saved bands without allocating group mass
+ok 7 - all 16 actual House artifacts preserve 435 listed winner vectors, exact 412/23 pair support and saved bands without allocating group mass
+  ---
+  duration_ms: 633.222961
+  type: 'test'
+  ...
+# Subtest: a replacement House artifact never inherits the old NY-21 input notice
+ok 8 - a replacement House artifact never inherits the old NY-21 input notice
+  ---
+  duration_ms: 21.749584
+  type: 'test'
+  ...
+# Subtest: exact modal ties use lexicographic outcome IDs, preserve group identity, and do not treat near ties as exact
+ok 9 - exact modal ties use lexicographic outcome IDs, preserve group identity, and do not treat near ties as exact
+  ---
+  duration_ms: 21.415812
+  type: 'test'
+  ...
+# Subtest: Senate rejects historical, cross-bound metadata, malformed support and share identities
+ok 10 - Senate rejects historical, cross-bound metadata, malformed support and share identities
+  ---
+  duration_ms: 13.107803
+  type: 'test'
+  ...
+# Subtest: House rejects wrong editions, districts, joint order, candidate allocation and unbound pair support
+ok 11 - House rejects wrong editions, districts, joint order, candidate allocation and unbound pair support
+  ---
+  duration_ms: 204.842851
+  type: 'test'
+  ...
+# Subtest: unavailable qualified House chamber remains null and input issue/cutoff dates are never replaced
+ok 12 - unavailable qualified House chamber remains null and input issue/cutoff dates are never replaced
+  ---
+  duration_ms: 21.978618
+  type: 'test'
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 12
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1113.535255

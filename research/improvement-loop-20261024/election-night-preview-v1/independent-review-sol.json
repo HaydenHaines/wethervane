@@ -1,0 +1,68 @@
+{
+  "schema": "ElectionNightPrototypeIndependentReviewV1",
+  "reviewed_on": "2026-10-26",
+  "status": "private_preparation_only_not_publication_ready",
+  "repository": "/home/hayden/projects/ballotmancy-election-night-guide-20261026",
+  "review_mode": "read_only_static_review_plus_direct_default_artifact_arithmetic; no code changes, no test reruns or server use",
+  "supported_findings": [
+    {
+      "topic": "dated identity and loading",
+      "finding": "The Senate loader hashes the exact fetched bundle bytes against its registry entry, validates its metadata and rejects selected-entry hash changes. House uses the established authenticated publication loader and selected result-hash guard. The guide starts from each chamber's current standard entry rather than adopting the visitor's selected forecast; its own selections do not write the URL. The displayed 'dated snapshot' is explicitly not described as the final election-night evaluation freeze.",
+      "evidence": ["lib/election-night-client.ts:20", "lib/election-night-client.ts:43", "lib/election-night-client.ts:50", "components/ElectionNightGuide.tsx:110", "tests/site/election-night.spec.ts:17"]
+    },
+    {
+      "topic": "winner and margin targets",
+      "finding": "The House projection retains native D/R/O winner-group probabilities without dividing pooled groups among members, preserves 412 supported conditional principal-pair margins, and keeps 23 unsupported pair margins null. The Senate projection retains the two named-principal-contender support and conditional denominator. A two-candidate 50/50 chance is not presented as a narrow margin by itself.",
+      "evidence": ["lib/election-night-forecast.ts:61", "lib/election-night-forecast.ts:179", "components/ElectionNightGuide.tsx:38", "components/ElectionNightGuide.tsx:50", "tests/election-night-forecast.test.mjs:92"]
+    },
+    {
+      "topic": "model-implied top-choice misses",
+      "finding": "The sum of 1 minus each race's maximum listed winner probability is the expected number of modal-outcome misses under the modeled, exhaustive support; linearity requires no race independence. Exact top ties are broken by lexicographic outcome ID and reported. Direct arithmetic on the current default artifacts gives 4.220425 of 35 Senate and 29.813697 of 435 House modeled contests, with zero exact top ties in both defaults. These are neither expected margin errors nor uncertainty intervals for the miss count.",
+      "evidence": ["lib/election-night-forecast.ts:81", "lib/election-night-forecast.ts:111", "components/ElectionNightGuide.tsx:139", "public/data/explorer/registry.json", "data/house-live/catalog.json"]
+    },
+    {
+      "topic": "request races and failures",
+      "finding": "A request-specific AbortController is aborted on model change or unmount, and the component checks the abort signal before applying success or error. On failed replacement it retains the previously verified forecast with an explicit error. Reopening resets to the standard model. The browser test is designed to check all 16 model choices per chamber and visitor URL/hero preservation; I did not rerun it while the owner was running the four browser cases.",
+      "evidence": ["components/ElectionNightGuide.tsx:67", "components/ElectionNightGuide.tsx:81", "components/ElectionNightGuide.tsx:106", "tests/site/election-night.spec.ts:33"]
+    }
+  ],
+  "material_issues_or_next_changes": [
+    {
+      "priority": "must_correct_before_publication",
+      "topic": "Senate pair-event wording claims distinct support that is not exported",
+      "finding": "The Senate projector populates pair.firstExceedsHalf from first.winProbability, while the UI says the pair event is 'separate from the winner chances above.' The displayed percentage is therefore a reuse of a winner probability, not an independently supplied pair-event estimate. The Senate model may define those as the same principal-pair proxy event, but this code has not established a distinct event. Do not present it as an independent check or a full-ballot winner chance.",
+      "specific_change": "Have the Senate modeling owner confirm the event identity. If identical, label it as the same named-pair proxy and remove the 'separate' sentence for Senate; if not documented, leave firstExceedsHalf unavailable and omit the percentage until separately exported. Keep the House conditional-pair event explicitly separate from House group-winner chances.",
+      "evidence": ["lib/election-night-forecast.ts:162", "components/ElectionNightGuide.tsx:53", "public/data/explorer/current-polling.json"]
+    },
+    {
+      "priority": "must_correct_before_publication",
+      "topic": "NY-21 material input limitation absent from guide",
+      "finding": "This guide branch predates the published NY-21 coverage notice. The generic 'roster corrections require a new dated edition' note does not tell a House scorecard reader that the October 25 NY-21 result omits declared write-in Christopher Schmidt and excludes two polls naming him. Neither the featured/all-races card nor guide method details surfaces the issued correction.",
+      "specific_change": "After merging the notice release, reuse the website-owned exact run-ID/result-hash gate and owner public wording inside the guide's House NY-21 card and method/input review. Do not copy the notice to a replacement result hash or alter the frozen probabilities; keep the source links and plain labels.",
+      "evidence": ["lib/election-night-forecast.ts:38", "lib/election-night-forecast.ts:228", "components/ElectionNightGuide.tsx:35", "/home/hayden/projects/ballotmancy-house-benchmark/research/house-disagreement-20261026/ny21-coverage-erratum-v1.json"]
+    },
+    {
+      "priority": "required_contracts_before_publication_as_a_scorecard",
+      "topic": "final freeze, outcome feed and evaluated errors",
+      "finding": "The guide has no locked final forecast horizon/selection, verified result source or status feed, outcome reconciliation, signed/absolute margin errors, proper scores, same-target baselines or reviewable numerical A-F rubric. The UI marks results 'Not scored,' expected margin error and joint miss range as pending, and says grading rules are not locked. That is honest for a private forecast guide, but a visible A-F scale and the headline 'how wrong it expects to be' can imply a fuller evaluation than exists.",
+      "specific_change": "Before presenting it as a public election-night scorecard, freeze model/version/hash and illustrated-race IDs before outcomes; bind results by contest rule and final/provisional status; export the expected margin-error and joint miss distribution if claimed; predeclare cohorts/baselines/proper scores; have modeling owners review any numerical A-F thresholds and aggregation. Until then call it an ungraded forecast preview, and narrow the headline to the available top-choice count and margin ranges.",
+      "evidence": ["components/ElectionNightGuide.tsx:103", "components/ElectionNightGuide.tsx:111", "components/ElectionNightGuide.tsx:125", "components/ElectionNightGuide.tsx:142", "components/ElectionNightGuide.tsx:154"]
+    },
+    {
+      "priority": "should_address_before_publication",
+      "topic": "source provenance and unsupported metrics need more explicit display",
+      "finding": "The projection carries source URLs/hashes, but the guide renders only candidate-source links in each race and a result fingerprint in methods. House provenance capture limitations are flattened into unlabeled text bullets, losing their specific source link/label. Senate close-versus-decisive event probabilities remain null, correctly avoiding invention; House 23 unsupported pairs correctly show no margin. The guide should not imply close-race chances or model expected margin error are available across both chambers.",
+      "specific_change": "Render source-linked House capture limitations and forecast provenance with labels; show an explicit unavailable state for Senate close/decisive probabilities and for House unsupported margins. Keep the distinction between categorical winner/group probabilities and conditional named-pair margins in the primary card and scoring plan.",
+      "evidence": ["lib/election-night-forecast.ts:162", "lib/election-night-forecast.ts:226", "components/ElectionNightGuide.tsx:43", "components/ElectionNightGuide.tsx:164"]
+    },
+    {
+      "priority": "navigation_followup",
+      "topic": "changing chamber while guide is open silently changes its content",
+      "finding": "ChamberExplorer keeps scorecardOpen true on tab or popstate changes and keys the guide by chamber, causing an open guide to remount with the other chamber's standard forecast. The saved scroll position comes from the prior chamber. This does not rewrite the URL or adopt the visitor's model, but it can be disorienting and is not covered by the current browser test.",
+      "specific_change": "Choose an explicit behavior: close the guide and restore focus on chamber navigation, or announce the chamber change, reset its scroll target, and test browser back/forward plus rapid tab/model changes.",
+      "evidence": ["components/ChamberExplorer.tsx:18", "components/ChamberExplorer.tsx:28", "components/ChamberExplorer.tsx:39", "components/ChamberExplorer.tsx:108", "tests/site/election-night.spec.ts:9"]
+    }
+  ],
+  "explicit_unfinished_gates": ["reviewed expected-margin-error and joint-miss export", "verified result feed and rule/status reconciliation", "final dated evaluation freeze", "same-target baselines and proper-score specifications", "owner-reviewed numerical grade thresholds and aggregation", "NY-21 notice inheritance only for the original 16 exact result hashes"],
+  "overall": "Qualified internal preparation with sound artifact loading and honest absence of outcome grades. It should remain unpublished until the stated result/freeze/scoring gates and the Senate event wording and NY-21 limitation are addressed."
+}

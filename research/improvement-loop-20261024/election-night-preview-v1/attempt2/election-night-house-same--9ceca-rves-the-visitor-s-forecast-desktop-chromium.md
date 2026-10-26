@@ -1,0 +1,2083 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: election-night.spec.ts >> house: same-page guide starts standard, renders every exact model, and preserves the visitor's forecast
+- Location: tests/site/election-night.spec.ts:10:7
+
+# Error details
+
+```
+Error: locator.click: Error: strict mode violation: locator('#election-night-scorecard').locator('.night-all-races summary') resolved to 11 elements:
+    1) <summary>All 435 predictions</summary> aka getByText('All 435 predictions', { exact: true })
+    2) <summary>Prediction details and what is covered</summary> aka locator('.night-predictions > article > .night-race-definitions > summary').first()
+    3) <summary>Prediction details and what is covered</summary> aka locator('.night-predictions > article:nth-child(2) > .night-race-definitions > summary')
+    4) <summary>Prediction details and what is covered</summary> aka locator('.night-predictions > article:nth-child(3) > .night-race-definitions > summary')
+    5) <summary>Prediction details and what is covered</summary> aka locator('.night-predictions > article:nth-child(4) > .night-race-definitions > summary')
+    6) <summary>Prediction details and what is covered</summary> aka locator('.night-predictions > article:nth-child(5) > .night-race-definitions > summary')
+    7) <summary>Prediction details and what is covered</summary> aka locator('.night-predictions > article:nth-child(6) > .night-race-definitions > summary')
+    8) <summary>Prediction details and what is covered</summary> aka locator('article:nth-child(7) > .night-race-definitions > summary')
+    9) <summary>Prediction details and what is covered</summary> aka locator('article:nth-child(8) > .night-race-definitions > summary')
+    10) <summary>Prediction details and what is covered</summary> aka locator('article:nth-child(9) > .night-race-definitions > summary')
+    ...
+
+Call log:
+  - waiting for locator('#election-night-scorecard').locator('.night-all-races summary')
+
+```
+
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - link "Skip to the races" [ref=e3] [cursor=pointer]:
+      - /url: "#races"
+    - banner [ref=e4]:
+      - link "Ballotmancy home" [ref=e5] [cursor=pointer]:
+        - /url: /
+        - generic [aria-hidden] [ref=e6]: b.
+        - text: ballotmancy
+      - navigation "Main navigation" [ref=e7]:
+        - link "The races" [ref=e8] [cursor=pointer]:
+          - /url: "#races"
+        - link "How to read this" [ref=e9] [cursor=pointer]:
+          - /url: "#methodology"
+        - button "Election night scorecard" [expanded] [ref=e10] [cursor=pointer]
+        - generic [ref=e11]: Research preview
+    - generic [ref=e13]:
+      - tablist "Chamber" [ref=e14]:
+        - tab "Senate" [ref=e15] [cursor=pointer]
+        - tab "House" [selected] [ref=e16] [cursor=pointer]
+      - generic [ref=e17]: Two chambers. Your perspective.
+    - region [ref=e18]:
+      - generic [ref=e19]:
+        - generic [ref=e20]:
+          - generic [ref=e21]: An election-night watcher’s guide
+          - heading "Election night scorecard" [level=2] [ref=e22]
+          - paragraph [ref=e23]: What the model predicts, how wrong it expects to be, and what the results can tell us.
+        - button "Close scorecard" [ref=e24] [cursor=pointer]
+      - generic [ref=e25]:
+        - strong [ref=e26]: "House · Polling error: all SDs × 1.5"
+        - generic [ref=e27]: Alternative model · Dated snapshot
+        - paragraph [ref=e28]: Inputs through Sun, 25 Oct 2026 15:48:30 GMT. Forecast issued Sun, 25 Oct 2026 22:12:59 GMT.
+        - paragraph [ref=e29]: This is a saved forecast edition. The final election-night evaluation edition and grading rules have not yet been locked.
+      - group [ref=e30]:
+        - generic "Inspect other model stacks" [active] [ref=e31] [cursor=pointer]
+        - generic [ref=e32]:
+          - text: Scorecard model
+          - combobox "Scorecard model" [ref=e33]:
+            - option "Fundamentals"
+            - option "Standard polling · Standard"
+            - option "Recent calendar history · without polls"
+            - option "Recent calendar history · with polls"
+            - option "Refreshed House history · without polls"
+            - option "Refreshed House history · with polls"
+            - option "Learned presidential slope · without polls"
+            - option "Learned presidential slope · with polls"
+            - option "Relative district and national lean · without polls"
+            - option "Relative district and national lean · with polls"
+            - option "Relative lean with presidential context · without polls"
+            - option "Relative lean with presidential context · with polls"
+            - 'option "Polling error: common-cycle SD × 0.5"'
+            - 'option "Polling error: common-cycle SD × 2"'
+            - 'option "Polling error: all SDs × 2/3"'
+            - 'option "Polling error: all SDs × 1.5" [selected]'
+        - paragraph [ref=e34]: Changes here affect only this scorecard. Opening it again starts with the standard forecast.
+      - region [ref=e35]:
+        - generic [ref=e36]: 1 · Results and predictive power
+        - heading "The predictions we can check" [level=3] [ref=e37]
+        - generic [ref=e38]:
+          - generic [ref=e39]:
+            - strong [ref=e40]: "435"
+            - generic [ref=e41]: modeled contests
+          - generic [ref=e42]:
+            - strong [ref=e43]: "412"
+            - generic [ref=e44]: with a two-candidate margin
+          - generic [ref=e45]:
+            - strong [ref=e46]: Not scored
+            - generic [ref=e47]: verified election results have not been added
+        - heading "Races to watch" [level=4] [ref=e48]
+        - paragraph [ref=e49]: These six examples have the least certain winners in the dated standard forecast. The same races stay here when you inspect another stack. Their margins show whether an even win chance also means a close expected race.
+        - generic [ref=e50]:
+          - article [ref=e51]:
+            - generic [ref=e52]:
+              - heading "OH-07 · Ohio" [level=4] [ref=e53]
+              - generic [ref=e54]: Awaiting verified result
+            - generic [ref=e55]:
+              - generic [ref=e56]:
+                - term [ref=e57]: Predicted two-candidate margin
+                - definition [ref=e58]: Max Miller +4.0 points
+              - generic [ref=e59]:
+                - term [ref=e60]: Highest win chance
+                - definition [ref=e61]: Max Miller · 69.0%
+              - generic [ref=e62]:
+                - term [ref=e63]: Final result / prediction error
+                - definition [ref=e64]: Not scored
+            - generic [ref=e65]:
+              - img "Average margin −4.0 points; middle 90% from −18.0 to +11.1 points. Positive means Brian K. Poindexter ahead." [ref=e66]:
+                - generic [ref=e68]: −25
+                - generic [ref=e69]: "0"
+                - generic [ref=e70]: +25 points
+              - paragraph [ref=e71]:
+                - text: "Middle 90%:"
+                - strong [ref=e72]: −18.0 to +11.1 points
+                - text: .
+              - paragraph [ref=e73]: "Positive means Brian K. Poindexter ahead; negative means Max Miller ahead. Dot: average margin."
+            - paragraph [ref=e74]:
+              - strong [ref=e75]: 15.5%
+              - text: chance that these two candidates finish within 2 points of each other.
+            - group [ref=e76]:
+              - generic "Prediction details and what is covered" [ref=e77] [cursor=pointer]
+          - article [ref=e78]:
+            - generic [ref=e79]:
+              - heading "KY-06 · Kentucky" [level=4] [ref=e80]
+              - generic [ref=e81]: Awaiting verified result
+            - generic [ref=e82]:
+              - generic [ref=e83]:
+                - term [ref=e84]: Predicted two-candidate margin
+                - definition [ref=e85]: Ralph Alvarado +3.8 points
+              - generic [ref=e86]:
+                - term [ref=e87]: Highest win chance
+                - definition [ref=e88]: Ralph Alvarado · 69.2%
+              - generic [ref=e89]:
+                - term [ref=e90]: Final result / prediction error
+                - definition [ref=e91]: Not scored
+            - generic [ref=e92]:
+              - img "Average margin −3.8 points; middle 90% from −16.3 to +9.5 points. Positive means Zach Dembo ahead." [ref=e93]:
+                - generic [ref=e95]: −25
+                - generic [ref=e96]: "0"
+                - generic [ref=e97]: +25 points
+              - paragraph [ref=e98]:
+                - text: "Middle 90%:"
+                - strong [ref=e99]: −16.3 to +9.5 points
+                - text: .
+              - paragraph [ref=e100]: "Positive means Zach Dembo ahead; negative means Ralph Alvarado ahead. Dot: average margin."
+            - paragraph [ref=e101]:
+              - strong [ref=e102]: 17.3%
+              - text: chance that these two candidates finish within 2 points of each other.
+            - group [ref=e103]:
+              - generic "Prediction details and what is covered" [ref=e104] [cursor=pointer]
+          - article [ref=e105]:
+            - generic [ref=e106]:
+              - heading "PA-10 · Pennsylvania" [level=4] [ref=e107]
+              - generic [ref=e108]: Awaiting verified result
+            - generic [ref=e109]:
+              - generic [ref=e110]:
+                - term [ref=e111]: Predicted two-candidate margin
+                - definition [ref=e112]: SCOTT PERRY +2.0 points
+              - generic [ref=e113]:
+                - term [ref=e114]: Highest win chance
+                - definition [ref=e115]: SCOTT PERRY · 60.0%
+              - generic [ref=e116]:
+                - term [ref=e117]: Final result / prediction error
+                - definition [ref=e118]: Not scored
+            - generic [ref=e119]:
+              - img "Average margin −2.0 points; middle 90% from −15.4 to +11.8 points. Positive means JANELLE STELSON ahead." [ref=e120]:
+                - generic [ref=e122]: −25
+                - generic [ref=e123]: "0"
+                - generic [ref=e124]: +25 points
+              - paragraph [ref=e125]:
+                - text: "Middle 90%:"
+                - strong [ref=e126]: −15.4 to +11.8 points
+                - text: .
+              - paragraph [ref=e127]: "Positive means JANELLE STELSON ahead; negative means SCOTT PERRY ahead. Dot: average margin."
+            - paragraph [ref=e128]:
+              - strong [ref=e129]: 18.7%
+              - text: chance that these two candidates finish within 2 points of each other.
+            - group [ref=e130]:
+              - generic "Prediction details and what is covered" [ref=e131] [cursor=pointer]
+          - article [ref=e132]:
+            - generic [ref=e133]:
+              - heading "IA-03 · Iowa" [level=4] [ref=e134]
+              - generic [ref=e135]: Awaiting verified result
+            - generic [ref=e136]:
+              - generic [ref=e137]:
+                - term [ref=e138]: Predicted two-candidate margin
+                - definition [ref=e139]: Zach Nunn +1.7 points
+              - generic [ref=e140]:
+                - term [ref=e141]: Highest win chance
+                - definition [ref=e142]: Zach Nunn · 57.1%
+              - generic [ref=e143]:
+                - term [ref=e144]: Final result / prediction error
+                - definition [ref=e145]: Not scored
+            - generic [ref=e146]:
+              - img "Average margin −1.7 points; middle 90% from −19.3 to +16.1 points. Positive means Sarah Trone Garriott ahead." [ref=e147]:
+                - generic [ref=e149]: −25
+                - generic [ref=e150]: "0"
+                - generic [ref=e151]: +25 points
+              - paragraph [ref=e152]:
+                - text: "Middle 90%:"
+                - strong [ref=e153]: −19.3 to +16.1 points
+                - text: .
+              - paragraph [ref=e154]: "Positive means Sarah Trone Garriott ahead; negative means Zach Nunn ahead. Dot: average margin."
+            - paragraph [ref=e155]:
+              - strong [ref=e156]: 15.6%
+              - text: chance that these two candidates finish within 2 points of each other.
+            - group [ref=e157]:
+              - generic "Prediction details and what is covered" [ref=e158] [cursor=pointer]
+          - article [ref=e159]:
+            - generic [ref=e160]:
+              - heading "MI-10 · Michigan" [level=4] [ref=e161]
+              - generic [ref=e162]: Awaiting verified result
+            - generic [ref=e163]:
+              - generic [ref=e164]:
+                - term [ref=e165]: Predicted two-candidate margin
+                - definition [ref=e166]: Michael Bouchard +1.4 points
+              - generic [ref=e167]:
+                - term [ref=e168]: Highest win chance
+                - definition [ref=e169]: Michael Bouchard · 56.2%
+              - generic [ref=e170]:
+                - term [ref=e171]: Final result / prediction error
+                - definition [ref=e172]: Not scored
+            - generic [ref=e173]:
+              - img "Average margin −1.4 points; middle 90% from −16.0 to +13.0 points. Positive means Christina Bertrand Hines ahead." [ref=e174]:
+                - generic [ref=e176]: −25
+                - generic [ref=e177]: "0"
+                - generic [ref=e178]: +25 points
+              - paragraph [ref=e179]:
+                - text: "Middle 90%:"
+                - strong [ref=e180]: −16.0 to +13.0 points
+                - text: .
+              - paragraph [ref=e181]: "Positive means Christina Bertrand Hines ahead; negative means Michael Bouchard ahead. Dot: average margin."
+            - paragraph [ref=e182]:
+              - strong [ref=e183]: 18.2%
+              - text: chance that these two candidates finish within 2 points of each other.
+            - group [ref=e184]:
+              - generic "Prediction details and what is covered" [ref=e185] [cursor=pointer]
+          - article [ref=e186]:
+            - generic [ref=e187]:
+              - heading "TX-15 · Texas" [level=4] [ref=e188]
+              - generic [ref=e189]: Awaiting verified result
+            - generic [ref=e190]:
+              - generic [ref=e191]:
+                - term [ref=e192]: Predicted two-candidate margin
+                - definition [ref=e193]: MONICA DE LA CRUZ +6.1 points
+              - generic [ref=e194]:
+                - term [ref=e195]: Highest win chance
+                - definition [ref=e196]: MONICA DE LA CRUZ · 76.2%
+              - generic [ref=e197]:
+                - term [ref=e198]: Final result / prediction error
+                - definition [ref=e199]: Not scored
+            - generic [ref=e200]:
+              - img "Average margin −6.1 points; middle 90% from −20.1 to +9.6 points. Positive means BOBBY PULIDO ahead." [ref=e201]:
+                - generic [ref=e203]: −25
+                - generic [ref=e204]: "0"
+                - generic [ref=e205]: +25 points
+              - paragraph [ref=e206]:
+                - text: "Middle 90%:"
+                - strong [ref=e207]: −20.1 to +9.6 points
+                - text: .
+              - paragraph [ref=e208]: "Positive means BOBBY PULIDO ahead; negative means MONICA DE LA CRUZ ahead. Dot: average margin."
+            - paragraph [ref=e209]:
+              - strong [ref=e210]: 12.7%
+              - text: chance that these two candidates finish within 2 points of each other.
+            - group [ref=e211]:
+              - generic "Prediction details and what is covered" [ref=e212] [cursor=pointer]
+        - group [ref=e213]:
+          - generic "All 435 predictions" [ref=e214] [cursor=pointer]
+        - paragraph [ref=e215]: When verified results are added, a called winner and a final vote margin will be tracked separately. An incomplete count will not be scored as a final margin.
+      - region [ref=e216]:
+        - generic [ref=e217]: 2 · Uncertainty
+        - heading "What the forecast expects to get wrong" [level=3] [ref=e218]
+        - generic [ref=e219]:
+          - article [ref=e220]:
+            - heading "Wrong top choices" [level=4] [ref=e221]
+            - generic [ref=e222]:
+              - text: "29.4"
+              - generic [ref=e223]: of 435
+            - paragraph [ref=e224]: The expected number of incorrect top choices under the model’s own probabilities. This is an average, not a limit or a measured accuracy record.
+            - paragraph [ref=e225]: A top choice may be a candidate group; its chance is not divided among the members.
+          - article [ref=e226]:
+            - heading "How far the margins could miss" [level=4] [ref=e227]
+            - paragraph [ref=e228]: Awaiting a reviewed uncertainty summary
+            - paragraph [ref=e229]: The margin ranges above are available. The model’s expected average margin error and the range for the number of misses have not yet been published.
+        - article [ref=e230]:
+          - heading "Shared uncertainty in the chamber" [level=4] [ref=e231]
+          - paragraph [ref=e232]: Party majority · others unassigned. At least 218 seats for a party. Other and independent winners remain unassigned. Unresolved means neither party reaches 218; it does not predict Speaker negotiations.
+          - generic [ref=e233]:
+            - generic [ref=e234]:
+              - term [ref=e235]: Democratic seats
+              - definition [ref=e236]: 225.4 average · 198–262 in the middle 90% of simulated elections
+            - generic [ref=e237]:
+              - term [ref=e238]: Republican seats
+              - definition [ref=e239]: 209.2 average · 173–237 in the middle 90% of simulated elections
+            - generic [ref=e240]:
+              - term [ref=e241]: Other / unassigned seats
+              - definition [ref=e242]: 0.4 average · 0–1 in the middle 90% of simulated elections
+          - paragraph [ref=e243]: These chamber ranges come from the saved election simulations. Races can miss in the same direction together; they are not independent tests of a national prediction.
+        - paragraph [ref=e244]:
+          - strong [ref=e245]: 50/50 does not tell us the margin.
+          - text: It can mean a narrow contest, or uncertainty about which candidate wins comfortably. Use the separate margin range and close-race chances where available.
+      - region [ref=e246]:
+        - generic [ref=e247]: The evaluation rubric
+        - heading "How the forecast will be judged" [level=3] [ref=e248]
+        - generic "A through F scale; no grade assigned" [ref=e249]:
+          - generic [ref=e250]: A
+          - generic [ref=e251]: B
+          - generic [ref=e252]: C
+          - generic [ref=e253]: D
+          - generic [ref=e254]: F
+        - paragraph [ref=e255]:
+          - strong [ref=e256]: No letter grade assigned.
+          - text: The thresholds, comparison forecasts and rules for combining scores are still under review. They must be published before outcomes are scored.
+        - generic [ref=e257]:
+          - generic [ref=e258]:
+            - term [ref=e259]: Specific predictions
+            - definition [ref=e260]: Compare the named candidate margins with verified final results, using the same vote definition. Show the size and direction of each error.
+          - generic [ref=e261]:
+            - term [ref=e262]: Useful probabilities
+            - definition [ref=e263]: Score confident mistakes more heavily and compare performance with simple forecasts on the same races. Predicting everything at 50/50 must not pass as demonstrated skill.
+          - generic [ref=e264]:
+            - term [ref=e265]: Honest ranges
+            - definition [ref=e266]: Check both how often results fall inside the ranges and how wide those ranges were. Very broad ranges do not earn a high grade merely by containing the results.
+          - generic [ref=e267]:
+            - term [ref=e268]: Shared misses
+            - definition [ref=e269]: Check coordinated shifts against the model’s joint predictions. Many misses in one election are not many independent elections.
+        - paragraph [ref=e270]: A result having been possible does not excuse poor performance. One surprising result also does not settle whether the model is reliable across elections. Both the individual misses and the comparison scores need to stay visible.
+      - group [ref=e271]:
+        - generic "Edition, sources and evaluation definitions" [ref=e272] [cursor=pointer]
+      - button "Return to the forecast" [ref=e273] [cursor=pointer]
+    - tabpanel "House" [ref=e274]:
+      - group "House election edition" [ref=e276]:
+        - button "Current · 2026" [pressed] [ref=e277] [cursor=pointer]
+        - button "Historical elections" [ref=e278] [cursor=pointer]
+      - main [ref=e279]:
+        - generic [ref=e280]:
+          - generic [ref=e281]:
+            - generic [ref=e282]: 2026 United States House · 435 current districts
+            - heading "The House, in perspective." [level=1] [ref=e283]: The House,in perspective.
+            - paragraph [ref=e284]: Fundamentals. Current forecast with its inputs, testing status, and limitations shown separately.
+            - group [ref=e285]:
+              - generic "Input and forecast times" [ref=e286] [cursor=pointer]
+          - generic [ref=e287]:
+            - text: THE CURRENT EDITION
+            - strong [ref=e288]: 2026 forecast · 435 seats · 218 for a majority
+            - text: Forecast cutoff Sun, 25 Oct 2026 15:48:30 GMT
+        - group [ref=e289]:
+          - generic "Build your perspective Fundamentals" [ref=e290] [cursor=pointer]:
+            - text: Build your perspective
+            - generic [ref=e291]: Fundamentals
+          - option "Electoral history" [selected]
+          - option "Recent calendar history"
+          - option "Refreshed history"
+          - option "Learned presidential slope"
+          - option "Relative district and national lean"
+          - option "Relative lean with presidential context"
+          - option "Standard uncertainty" [selected]
+          - option "Smaller shared polling error (× 0.5) · Needs a new calculation"
+          - option "Larger shared polling error (× 2) · Needs a new calculation"
+          - option "Smaller overall polling error (× 2/3) · Needs a new calculation"
+          - option "Larger overall polling error (× 1.5) · Needs a new calculation"
+        - region "Current House model comparison" [ref=e292]:
+          - generic [ref=e293]:
+            - generic [ref=e294]: Compare with
+            - combobox "Compare with" [ref=e295]:
+              - option "No comparison" [selected]
+              - option "Standard polling"
+              - option "Recent calendar history · without polls"
+              - option "Recent calendar history · with polls"
+              - option "Refreshed House history · without polls"
+              - option "Refreshed House history · with polls"
+              - option "Learned presidential slope · without polls"
+              - option "Learned presidential slope · with polls"
+              - option "Relative district and national lean · without polls"
+              - option "Relative district and national lean · with polls"
+              - option "Relative lean with presidential context · without polls"
+              - option "Relative lean with presidential context · with polls"
+              - 'option "Polling error: common-cycle SD × 0.5"'
+              - 'option "Polling error: common-cycle SD × 2"'
+              - 'option "Polling error: all SDs × 2/3"'
+              - 'option "Polling error: all SDs × 1.5"'
+            - paragraph [ref=e296]: Compare two current forecasts for the same districts and forecast time.
+        - region "House group-win probability ribbon" [ref=e297]:
+          - heading "House group-win chances by district" [level=2] [ref=e298]
+          - paragraph [ref=e299]: 435 districts · 435 with a usable group prediction · 0 unavailable.
+          - paragraph [ref=e300]: Each probability is the chance that a Democratic, Republican, or Other candidate group wins the district.
+          - generic [ref=e301]:
+            - strong [ref=e302]: Majority marker · 218 seats
+            - generic [ref=e305]:
+              - button "CA-22" [ref=e306] [cursor=pointer]
+              - text: from either end
+            - paragraph [ref=e307]: The bar marks the district reached by counting 218 seats inward from each end of the ranked path. This is a seat-count guide, not the chance that a district decides control. See the chamber forecast below the map.
+          - generic [ref=e308] [cursor=pointer]:
+            - checkbox "Show district labels and larger tiles" [ref=e309]
+            - text: Show district labels and larger tiles
+          - paragraph [ref=e310]:
+            - strong [ref=e311]: NY-03
+            - text: "· Democratic 48.8%, Republican 51.2%, Other 0.0%. Highest chance: Republican group."
+          - region "Democratic and Republican path" [ref=e313]:
+            - heading "Democratic and Republican path" [level=3] [ref=e314]
+            - paragraph [ref=e315]: Ordered from higher Democratic chance to higher Republican chance by the difference between those two chances. Other-group probability remains shown in each district’s detail.
+            - generic [ref=e316]:
+              - generic [ref=e317]: Higher Democratic chance
+              - generic [ref=e318]: Higher Republican chance
+            - generic [ref=e319]:
+              - 'button "CA-04; Democratic 100.0%, Republican 0.0%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e320] [cursor=pointer]'
+              - 'button "CA-07; Democratic 100.0%, Republican 0.0%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e321] [cursor=pointer]'
+              - 'button "CA-11; Democratic 100.0%, Republican 0.0%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e322] [cursor=pointer]'
+              - 'button "CA-12; Democratic 100.0%, Republican 0.0%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e323] [cursor=pointer]'
+              - 'button "CA-14; Democratic 100.0%, Republican 0.0%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e324] [cursor=pointer]'
+              - 'button "CA-29; Democratic 100.0%, Republican 0.0%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e325] [cursor=pointer]'
+              - 'button "CA-34; Democratic 100.0%, Republican 0.0%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e326] [cursor=pointer]'
+              - 'button "CA-37; Democratic 100.0%, Republican 0.0%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e327] [cursor=pointer]'
+              - 'button "FL-10; Democratic 100.0%, Republican 0.0%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e328] [cursor=pointer]'
+              - 'button "MA-02; Democratic 100.0%, Republican 0.0%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e329] [cursor=pointer]'
+              - 'button "MA-05; Democratic 100.0%, Republican 0.0%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e330] [cursor=pointer]'
+              - 'button "MA-07; Democratic 100.0%, Republican 0.0%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e331] [cursor=pointer]'
+              - 'button "PA-03; Democratic 100.0%, Republican 0.0%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e332] [cursor=pointer]'
+              - 'button "WI-02; Democratic 100.0%, Republican 0.0%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e333] [cursor=pointer]'
+              - 'button "WA-07; Democratic >99.9%, Republican <0.1%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e334] [cursor=pointer]'
+              - 'button "MD-04; Democratic >99.9%, Republican <0.1%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e335] [cursor=pointer]'
+              - 'button "GA-05; Democratic >99.9%, Republican <0.1%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e336] [cursor=pointer]'
+              - 'button "MN-05; Democratic >99.9%, Republican <0.1%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e337] [cursor=pointer]'
+              - 'button "IL-07; Democratic >99.9%, Republican <0.1%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e338] [cursor=pointer]'
+              - 'button "NY-12; Democratic >99.9%, Republican <0.1%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e339] [cursor=pointer]'
+              - 'button "MD-07; Democratic >99.9%, Republican <0.1%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e340] [cursor=pointer]'
+              - 'button "NY-10; Democratic >99.9%, Republican <0.1%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e341] [cursor=pointer]'
+              - 'button "MO-01; Democratic >99.9%, Republican <0.1%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e342] [cursor=pointer]'
+              - 'button "TX-37; Democratic >99.9%, Republican <0.1%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e343] [cursor=pointer]'
+              - 'button "MD-08; Democratic >99.9%, Republican <0.1%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e344] [cursor=pointer]'
+              - 'button "NY-13; Democratic >99.9%, Republican <0.1%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e345] [cursor=pointer]'
+              - 'button "TX-18; Democratic >99.9%, Republican <0.1%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e346] [cursor=pointer]'
+              - 'button "OH-11; Democratic >99.9%, Republican <0.1%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e347] [cursor=pointer]'
+              - 'button "CO-01; Democratic >99.9%, Republican <0.1%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e348] [cursor=pointer]'
+              - 'button "AZ-03; Democratic >99.9%, Republican <0.1%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e349] [cursor=pointer]'
+              - 'button "GA-04; Democratic >99.9%, Republican <0.1%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e350] [cursor=pointer]'
+              - 'button "WI-04; Democratic >99.9%, Republican <0.1%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e351] [cursor=pointer]'
+              - 'button "NJ-10; Democratic >99.9%, Republican <0.1%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e352] [cursor=pointer]'
+              - 'button "CA-43; Democratic >99.9%, Republican <0.1%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e353] [cursor=pointer]'
+              - 'button "VA-08; Democratic >99.9%, Republican <0.1%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e354] [cursor=pointer]'
+              - 'button "GA-06; Democratic >99.9%, Republican <0.1%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e355] [cursor=pointer]'
+              - 'button "CA-15; Democratic >99.9%, Republican <0.1%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e356] [cursor=pointer]'
+              - 'button "CA-16; Democratic >99.9%, Republican <0.1%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e357] [cursor=pointer]'
+              - 'button "NY-15; Democratic >99.9%, Republican <0.1%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e358] [cursor=pointer]'
+              - 'button "LA-02; Democratic >99.9%, Republican <0.1%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e359] [cursor=pointer]'
+              - 'button "OR-03; Democratic >99.9%, Republican <0.1%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e360] [cursor=pointer]'
+              - 'button "NC-12; Democratic >99.9%, Republican <0.1%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e361] [cursor=pointer]'
+              - 'button "NC-04; Democratic 99.9%, Republican 0.1%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e362] [cursor=pointer]'
+              - 'button "NY-08; Democratic 99.9%, Republican 0.1%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e363] [cursor=pointer]'
+              - 'button "TX-30; Democratic 99.9%, Republican 0.1%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e364] [cursor=pointer]'
+              - 'button "NY-07; Democratic 99.8%, Republican 0.2%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e365] [cursor=pointer]'
+              - 'button "NY-05; Democratic 99.8%, Republican 0.2%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e366] [cursor=pointer]'
+              - 'button "WA-09; Democratic 99.8%, Republican 0.2%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e367] [cursor=pointer]'
+              - 'button "IN-07; Democratic 99.8%, Republican 0.2%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e368] [cursor=pointer]'
+              - 'button "CA-30; Democratic 99.8%, Republican 0.2%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e369] [cursor=pointer]'
+              - 'button "NY-09; Democratic 99.8%, Republican 0.2%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e370] [cursor=pointer]'
+              - 'button "CO-02; Democratic 99.8%, Republican 0.2%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e371] [cursor=pointer]'
+              - 'button "CA-17; Democratic 99.8%, Republican 0.2%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e372] [cursor=pointer]'
+              - 'button "OH-03; Democratic 99.8%, Republican 0.2%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e373] [cursor=pointer]'
+              - 'button "CA-36; Democratic 99.8%, Republican 0.2%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e374] [cursor=pointer]'
+              - 'button "NJ-08; Democratic 99.5%, Republican 0.0%, Other 0.5%; Highest chance: Democratic group; modeled group probabilities" [ref=e375] [cursor=pointer]'
+              - 'button "MI-12; Democratic 99.7%, Republican 0.3%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e376] [cursor=pointer]'
+              - 'button "OR-01; Democratic 99.7%, Republican 0.3%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e377] [cursor=pointer]'
+              - 'button "GA-13; Democratic 99.7%, Republican 0.3%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e378] [cursor=pointer]'
+              - 'button "MI-13; Democratic 99.7%, Republican 0.3%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e379] [cursor=pointer]'
+              - 'button "FL-20; Democratic 99.7%, Republican 0.3%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e380] [cursor=pointer]'
+              - 'button "IL-05; Democratic 99.7%, Republican 0.3%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e381] [cursor=pointer]'
+              - 'button "MN-04; Democratic 99.6%, Republican 0.4%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e382] [cursor=pointer]'
+              - 'button "CA-44; Democratic 99.6%, Republican 0.4%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e383] [cursor=pointer]'
+              - 'button "PA-02; Democratic 99.6%, Republican 0.4%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e384] [cursor=pointer]'
+              - 'button "CA-19; Democratic 99.6%, Republican 0.4%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e385] [cursor=pointer]'
+              - 'button "VA-11; Democratic 99.5%, Republican 0.5%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e386] [cursor=pointer]'
+              - 'button "CA-08; Democratic 99.5%, Republican 0.5%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e387] [cursor=pointer]'
+              - 'button "FL-24; Democratic 99.5%, Republican 0.5%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e388] [cursor=pointer]'
+              - 'button "VA-03; Democratic 99.5%, Republican 0.5%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e389] [cursor=pointer]'
+              - 'button "CA-10; Democratic 99.5%, Republican 0.5%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e390] [cursor=pointer]'
+              - 'button "NC-02; Democratic 99.5%, Republican 0.5%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e391] [cursor=pointer]'
+              - 'button "NY-16; Democratic 99.4%, Republican 0.6%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e392] [cursor=pointer]'
+              - 'button "IL-09; Democratic 99.4%, Republican 0.6%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e393] [cursor=pointer]'
+              - 'button "VA-04; Democratic 99.4%, Republican 0.6%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e394] [cursor=pointer]'
+              - 'button "VT-00; Democratic 99.4%, Republican 0.6%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e395] [cursor=pointer]'
+              - 'button "IL-01; Democratic 99.3%, Republican 0.7%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e396] [cursor=pointer]'
+              - 'button "NY-14; Democratic 99.3%, Republican 0.7%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e397] [cursor=pointer]'
+              - 'button "IL-03; Democratic 99.3%, Republican 0.7%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e398] [cursor=pointer]'
+              - 'button "TX-29; Democratic 99.2%, Republican 0.8%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e399] [cursor=pointer]'
+              - 'button "MD-05; Democratic 99.0%, Republican 0.9%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e400] [cursor=pointer]'
+              - 'button "WA-01; Democratic 99.1%, Republican 0.9%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e401] [cursor=pointer]'
+              - 'button "IL-02; Democratic 99.0%, Republican 1.0%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e402] [cursor=pointer]'
+              - 'button "CA-18; Democratic 99.0%, Republican 1.0%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e403] [cursor=pointer]'
+              - 'button "TX-33; Democratic 98.9%, Republican 1.0%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e404] [cursor=pointer]'
+              - 'button "PA-05; Democratic 98.9%, Republican 1.1%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e405] [cursor=pointer]'
+              - 'button "TX-20; Democratic 98.9%, Republican 1.1%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e406] [cursor=pointer]'
+              - 'button "MA-01; Democratic 97.3%, Republican 0.0%, Other 2.7%; Highest chance: Democratic group; modeled group probabilities" [ref=e407] [cursor=pointer]'
+              - 'button "MA-08; Democratic 98.6%, Republican 1.4%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e408] [cursor=pointer]'
+              - 'button "CA-28; Democratic 98.4%, Republican 1.6%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e409] [cursor=pointer]'
+              - 'button "CA-32; Democratic 98.4%, Republican 1.6%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e410] [cursor=pointer]'
+              - 'button "CA-24; Democratic 98.4%, Republican 1.6%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e411] [cursor=pointer]'
+              - 'button "CA-02; Democratic 98.3%, Republican 1.7%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e412] [cursor=pointer]'
+              - 'button "HI-01; Democratic 98.2%, Republican 1.8%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e413] [cursor=pointer]'
+              - 'button "IL-04; Democratic 98.0%, Republican 1.9%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e414] [cursor=pointer]'
+              - 'button "MD-03; Democratic 98.1%, Republican 1.9%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e415] [cursor=pointer]'
+              - 'button "WA-02; Democratic 98.0%, Republican 2.0%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e416] [cursor=pointer]'
+              - 'button "TX-07; Democratic 97.9%, Republican 2.1%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e417] [cursor=pointer]'
+              - 'button "MI-06; Democratic 97.9%, Republican 2.1%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e418] [cursor=pointer]'
+              - 'button "CT-04; Democratic 97.8%, Republican 2.2%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e419] [cursor=pointer]'
+              - 'button "MO-05; Democratic 97.8%, Republican 2.2%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e420] [cursor=pointer]'
+              - 'button "SC-06; Democratic 97.6%, Republican 2.4%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e421] [cursor=pointer]'
+              - 'button "RI-01; Democratic 97.5%, Republican 2.5%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e422] [cursor=pointer]'
+              - 'button "AZ-07; Democratic 97.4%, Republican 2.6%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e423] [cursor=pointer]'
+              - 'button "IL-10; Democratic 97.4%, Republican 2.6%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e424] [cursor=pointer]'
+              - 'button "ME-01; Democratic 97.3%, Republican 2.7%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e425] [cursor=pointer]'
+              - 'button "HI-02; Democratic 97.3%, Republican 2.7%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e426] [cursor=pointer]'
+              - 'button "MN-03; Democratic 97.2%, Republican 2.8%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e427] [cursor=pointer]'
+              - 'button "MS-02; Democratic 96.7%, Republican 3.3%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e428] [cursor=pointer]'
+              - 'button "CO-06; Democratic 96.6%, Republican 3.4%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e429] [cursor=pointer]'
+              - 'button "NJ-12; Democratic 96.5%, Republican 3.4%, Other 0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e430] [cursor=pointer]'
+              - 'button "MA-04; Democratic 96.5%, Republican 3.5%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e431] [cursor=pointer]'
+              - 'button "UT-01; Democratic 96.4%, Republican 3.4%, Other 0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e432] [cursor=pointer]'
+              - 'button "WA-06; Democratic 96.4%, Republican 3.6%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e433] [cursor=pointer]'
+              - 'button "NY-26; Democratic 96.2%, Republican 3.8%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e434] [cursor=pointer]'
+              - 'button "MA-03; Democratic 96.1%, Republican 3.9%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e435] [cursor=pointer]'
+              - 'button "PA-12; Democratic 96.1%, Republican 3.9%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e436] [cursor=pointer]'
+              - 'button "KY-03; Democratic 96.1%, Republican 3.9%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e437] [cursor=pointer]'
+              - 'button "NJ-01; Democratic 96.0%, Republican 4.0%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e438] [cursor=pointer]'
+              - 'button "CT-01; Democratic 95.9%, Republican 4.0%, Other 0.2%; Highest chance: Democratic group; modeled group probabilities" [ref=e439] [cursor=pointer]'
+              - 'button "MD-02; Democratic 95.9%, Republican 4.1%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e440] [cursor=pointer]'
+              - 'button "CA-50; Democratic 95.9%, Republican 4.1%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e441] [cursor=pointer]'
+              - 'button "CA-51; Democratic 95.8%, Republican 4.2%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e442] [cursor=pointer]'
+              - 'button "NY-25; Democratic 95.8%, Republican 4.2%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e443] [cursor=pointer]'
+              - 'button "WA-10; Democratic 95.7%, Republican 4.3%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e444] [cursor=pointer]'
+              - 'button "CA-52; Democratic 95.4%, Republican 4.6%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e445] [cursor=pointer]'
+              - 'button "AL-07; Democratic 95.3%, Republican 4.7%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e446] [cursor=pointer]'
+              - 'button "MA-06; Democratic 94.6%, Republican 5.4%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e447] [cursor=pointer]'
+              - 'button "CA-46; Democratic 94.5%, Republican 5.5%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e448] [cursor=pointer]'
+              - 'button "TX-16; Democratic 94.4%, Republican 5.6%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e449] [cursor=pointer]'
+              - 'button "PA-04; Democratic 94.0%, Republican 6.0%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e450] [cursor=pointer]'
+              - 'button "CO-07; Democratic 93.5%, Republican 6.5%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e451] [cursor=pointer]'
+              - 'button "DE-00; Democratic 93.1%, Republican 6.9%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e452] [cursor=pointer]'
+              - 'button "CA-41; Democratic 92.8%, Republican 7.2%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e453] [cursor=pointer]'
+              - 'button "NY-20; Democratic 92.5%, Republican 7.5%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e454] [cursor=pointer]'
+              - 'button "CT-03; Democratic 92.5%, Republican 7.5%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e455] [cursor=pointer]'
+              - 'button "FL-23; Democratic 92.1%, Republican 7.9%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e456] [cursor=pointer]'
+              - 'button "CA-42; Democratic 91.8%, Republican 8.2%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e457] [cursor=pointer]'
+              - 'button "NM-01; Democratic 91.2%, Republican 8.8%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e458] [cursor=pointer]'
+              - 'button "CA-31; Democratic 90.7%, Republican 9.3%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e459] [cursor=pointer]'
+              - 'button "CA-49; Democratic 90.6%, Republican 9.4%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e460] [cursor=pointer]'
+              - 'button "OR-04; Democratic 90.5%, Republican 9.5%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e461] [cursor=pointer]'
+              - 'button "MI-11; Democratic 90.0%, Republican 9.8%, Other 0.2%; Highest chance: Democratic group; modeled group probabilities" [ref=e462] [cursor=pointer]'
+              - 'button "CA-09; Democratic 89.7%, Republican 10.3%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e463] [cursor=pointer]'
+              - 'button "OR-06; Democratic 89.7%, Republican 10.3%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e464] [cursor=pointer]'
+              - 'button "IL-11; Democratic 89.5%, Republican 10.5%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e465] [cursor=pointer]'
+              - 'button "PA-06; Democratic 89.4%, Republican 10.6%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e466] [cursor=pointer]'
+              - 'button "CA-26; Democratic 89.3%, Republican 10.7%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e467] [cursor=pointer]'
+              - 'button "MA-09; Democratic 88.6%, Republican 11.4%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e468] [cursor=pointer]'
+              - 'button "IL-13; Democratic 88.2%, Republican 11.8%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e469] [cursor=pointer]'
+              - 'button "CA-03; Democratic 88.0%, Republican 12.0%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e470] [cursor=pointer]'
+              - 'button "CA-47; Democratic 87.9%, Republican 12.1%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e471] [cursor=pointer]'
+              - 'button "CA-33; Democratic 87.3%, Republican 12.7%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e472] [cursor=pointer]'
+              - 'button "CA-27; Democratic 87.2%, Republican 12.8%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e473] [cursor=pointer]'
+              - 'button "CA-39; Democratic 86.9%, Republican 13.1%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e474] [cursor=pointer]'
+              - 'button "NJ-11; Democratic 85.3%, Republican 14.6%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e475] [cursor=pointer]'
+              - 'button "OR-05; Democratic 85.2%, Republican 14.8%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e476] [cursor=pointer]'
+              - 'button "VA-10; Democratic 84.8%, Republican 15.2%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e477] [cursor=pointer]'
+              - 'button "NJ-03; Democratic 84.6%, Republican 15.3%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e478] [cursor=pointer]'
+              - 'button "CA-38; Democratic 84.6%, Republican 15.4%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e479] [cursor=pointer]'
+              - 'button "CA-35; Democratic 83.9%, Republican 16.1%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e480] [cursor=pointer]'
+              - 'button "MI-03; Democratic 83.7%, Republican 16.3%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e481] [cursor=pointer]'
+              - 'button "CT-02; Democratic 83.5%, Republican 16.5%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e482] [cursor=pointer]'
+              - 'button "NY-22; Democratic 83.2%, Republican 16.8%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e483] [cursor=pointer]'
+              - 'button "GA-02; Democratic 83.1%, Republican 16.9%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e484] [cursor=pointer]'
+              - 'button "RI-02; Democratic 81.6%, Republican 18.3%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e485] [cursor=pointer]'
+              - 'button "CA-06; Democratic 63.3%, Republican 0.0%, Other 36.7%; Highest chance: Democratic group; modeled group probabilities" [ref=e486] [cursor=pointer]'
+              - 'button "AZ-04; Democratic 81.3%, Republican 18.6%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e487] [cursor=pointer]'
+              - 'button "NJ-06; Democratic 81.0%, Republican 19.0%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e488] [cursor=pointer]'
+              - 'button "NY-06; Democratic 80.9%, Republican 19.1%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e489] [cursor=pointer]'
+              - 'button "CA-21; Democratic 80.0%, Republican 20.0%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e490] [cursor=pointer]'
+              - 'button "WA-08; Democratic 79.7%, Republican 20.3%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e491] [cursor=pointer]'
+              - 'button "CA-25; Democratic 79.6%, Republican 20.4%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e492] [cursor=pointer]'
+              - 'button "MD-06; Democratic 79.5%, Republican 20.5%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e493] [cursor=pointer]'
+              - 'button "CT-05; Democratic 79.0%, Republican 21.0%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e494] [cursor=pointer]'
+              - 'button "IL-06; Democratic 78.7%, Republican 21.3%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e495] [cursor=pointer]'
+              - 'button "PA-17; Democratic 78.7%, Republican 21.3%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e496] [cursor=pointer]'
+              - 'button "NM-03; Democratic 78.1%, Republican 21.9%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e497] [cursor=pointer]'
+              - 'button "IL-14; Democratic 78.0%, Republican 22.0%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e498] [cursor=pointer]'
+              - 'button "IL-17; Democratic 76.9%, Republican 23.1%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e499] [cursor=pointer]'
+              - 'button "KS-03; Democratic 75.3%, Republican 24.6%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e500] [cursor=pointer]'
+              - 'button "CA-45; Democratic 75.0%, Republican 25.0%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e501] [cursor=pointer]'
+              - 'button "CA-01; Democratic 74.9%, Republican 25.1%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e502] [cursor=pointer]'
+              - 'button "NH-02; Democratic 73.9%, Republican 26.0%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e503] [cursor=pointer]'
+              - 'button "NY-18; Democratic 73.2%, Republican 26.8%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e504] [cursor=pointer]'
+              - 'button "OH-13; Democratic 73.0%, Republican 26.9%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e505] [cursor=pointer]'
+              - 'button "VA-07; Democratic 72.0%, Republican 28.0%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e506] [cursor=pointer]'
+              - 'button "IL-08; Democratic 71.3%, Republican 28.7%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e507] [cursor=pointer]'
+              - 'button "NV-04; Democratic 70.4%, Republican 29.5%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e508] [cursor=pointer]'
+              - 'button "NV-01; Democratic 70.2%, Republican 29.7%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e509] [cursor=pointer]'
+              - 'button "NY-19; Democratic 68.8%, Republican 31.2%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e510] [cursor=pointer]'
+              - 'button "MN-02; Democratic 68.2%, Republican 31.8%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e511] [cursor=pointer]'
+              - 'button "NJ-05; Democratic 67.9%, Republican 32.0%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e512] [cursor=pointer]'
+              - 'button "NY-04; Democratic 67.3%, Republican 32.6%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e513] [cursor=pointer]'
+              - 'button "IN-01; Democratic 64.6%, Republican 35.3%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e514] [cursor=pointer]'
+              - 'button "CA-13; Democratic 64.5%, Republican 35.5%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e515] [cursor=pointer]'
+              - 'button "NE-02; Democratic 64.2%, Republican 35.5%, Other 0.3%; Highest chance: Democratic group; modeled group probabilities" [ref=e516] [cursor=pointer]'
+              - 'button "NV-03; Democratic 60.9%, Republican 39.0%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e517] [cursor=pointer]'
+              - 'button "CA-48; Democratic 60.6%, Republican 39.4%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e518] [cursor=pointer]'
+              - 'button "NJ-09; Democratic 59.5%, Republican 40.4%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e519] [cursor=pointer]'
+              - 'button "NM-02; Democratic 57.3%, Republican 42.7%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e520] [cursor=pointer]'
+              - 'button "MI-08; Democratic 56.7%, Republican 43.2%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e521] [cursor=pointer]'
+              - 'button "NH-01; Democratic 55.6%, Republican 44.4%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e522] [cursor=pointer]'
+              - 'button "OH-01; Democratic 54.6%, Republican 45.3%, Other <0.1%; Highest chance: Democratic group; modeled group probabilities" [ref=e523] [cursor=pointer]'
+              - 'button "WA-03; Democratic 52.0%, Republican 48.0%, Other 0.0%; Highest chance: Democratic group; modeled group probabilities" [ref=e524] [cursor=pointer]'
+              - 'button "NY-03; Democratic 48.8%, Republican 51.2%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [pressed] [ref=e525] [cursor=pointer]'
+              - 'button "AZ-01; Democratic 38.1%, Republican 61.6%, Other 0.3%; Highest chance: Republican group; modeled group probabilities" [ref=e526] [cursor=pointer]'
+              - 'button "NY-17; Democratic 36.2%, Republican 63.8%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e527] [cursor=pointer]'
+              - 'button "PA-01; Democratic 35.5%, Republican 64.5%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e528] [cursor=pointer]'
+              - 'button "VA-02; Democratic 33.6%, Republican 66.4%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e529] [cursor=pointer]'
+              - 'button "FL-25; Democratic 32.8%, Republican 67.1%, Other 0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e530] [cursor=pointer]'
+              - 'button "AZ-06; Democratic 32.1%, Republican 67.8%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e531] [cursor=pointer]'
+              - 'button "NJ-07; Democratic 30.8%, Republican 69.1%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e532] [cursor=pointer]'
+              - 'button "MI-07; Democratic 30.5%, Republican 69.4%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e533] [cursor=pointer]'
+              - 'button "TX-34; Democratic 29.8%, Republican 70.1%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e534] [cursor=pointer]'
+              - 'button "TX-28; Democratic 29.1%, Republican 70.8%, Other 0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e535] [cursor=pointer]'
+              - 'button "CO-08; Democratic 28.9%, Republican 71.1%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e536] [cursor=pointer]'
+              - 'button "CA-22; Democratic 28.8%, Republican 71.2%, Other 0.0%; Highest chance: Republican group; modeled group probabilities; majority marker, 218 seats from either end" [ref=e537] [cursor=pointer]'
+              - 'button "FL-14; Democratic 28.7%, Republican 71.2%, Other 0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e538] [cursor=pointer]'
+              - 'button "OH-09; Democratic 28.5%, Republican 71.4%, Other 0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e539] [cursor=pointer]'
+              - 'button "MI-10; Democratic 27.5%, Republican 72.2%, Other 0.3%; Highest chance: Republican group; modeled group probabilities" [ref=e540] [cursor=pointer]'
+              - 'button "NC-01; Democratic 25.8%, Republican 74.1%, Other 0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e541] [cursor=pointer]'
+              - 'button "PA-07; Democratic 25.2%, Republican 74.8%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e542] [cursor=pointer]'
+              - 'button "IA-03; Democratic 22.1%, Republican 77.9%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e543] [cursor=pointer]'
+              - 'button "WI-01; Democratic 21.9%, Republican 78.1%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e544] [cursor=pointer]'
+              - 'button "ME-02; Democratic 21.1%, Republican 78.7%, Other 0.2%; Highest chance: Republican group; modeled group probabilities" [ref=e545] [cursor=pointer]'
+              - 'button "VA-01; Democratic 20.9%, Republican 79.1%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e546] [cursor=pointer]'
+              - 'button "NC-11; Democratic 20.2%, Republican 79.5%, Other 0.2%; Highest chance: Republican group; modeled group probabilities" [ref=e547] [cursor=pointer]'
+              - 'button "PA-10; Democratic 20.2%, Republican 79.8%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e548] [cursor=pointer]'
+              - 'button "MI-04; Democratic 19.5%, Republican 80.5%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e549] [cursor=pointer]'
+              - 'button "IA-02; Democratic 19.0%, Republican 80.8%, Other 0.2%; Highest chance: Republican group; modeled group probabilities" [ref=e550] [cursor=pointer]'
+              - 'button "AL-02; Democratic 19.1%, Republican 80.9%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e551] [cursor=pointer]'
+              - 'button "FL-22; Democratic 18.6%, Republican 81.4%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e552] [cursor=pointer]'
+              - 'button "TX-35; Democratic 18.2%, Republican 81.8%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e553] [cursor=pointer]'
+              - 'button "WI-03; Democratic 15.7%, Republican 84.2%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e554] [cursor=pointer]'
+              - 'button "MT-01; Democratic 15.5%, Republican 84.3%, Other 0.2%; Highest chance: Republican group; modeled group probabilities" [ref=e555] [cursor=pointer]'
+              - 'button "OH-10; Democratic 15.1%, Republican 84.9%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e556] [cursor=pointer]'
+              - 'button "MO-02; Democratic 14.8%, Republican 85.1%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e557] [cursor=pointer]'
+              - 'button "FL-07; Democratic 14.3%, Republican 85.5%, Other 0.2%; Highest chance: Republican group; modeled group probabilities" [ref=e558] [cursor=pointer]'
+              - 'button "PA-08; Democratic 13.9%, Republican 86.1%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e559] [cursor=pointer]'
+              - 'button "IA-01; Democratic 13.9%, Republican 86.1%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e560] [cursor=pointer]'
+              - 'button "SC-01; Democratic 13.3%, Republican 86.5%, Other 0.2%; Highest chance: Republican group; modeled group probabilities" [ref=e561] [cursor=pointer]'
+              - 'button "CO-05; Democratic 12.7%, Republican 87.3%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e562] [cursor=pointer]'
+              - 'button "FL-09; Democratic 12.6%, Republican 87.4%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e563] [cursor=pointer]'
+              - 'button "FL-16; Democratic 12.4%, Republican 87.5%, Other 0.2%; Highest chance: Republican group; modeled group probabilities" [ref=e564] [cursor=pointer]'
+              - 'button "NV-02; Democratic 11.7%, Republican 88.1%, Other 0.2%; Highest chance: Republican group; modeled group probabilities" [ref=e565] [cursor=pointer]'
+              - 'button "CO-03; Democratic 11.7%, Republican 88.3%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e566] [cursor=pointer]'
+              - 'button "OH-15; Democratic 11.5%, Republican 88.5%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e567] [cursor=pointer]'
+              - 'button "NY-01; Democratic 11.4%, Republican 88.6%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e568] [cursor=pointer]'
+              - 'button "TX-23; Democratic 10.7%, Republican 89.1%, Other 0.2%; Highest chance: Republican group; modeled group probabilities" [ref=e569] [cursor=pointer]'
+              - 'button "KY-06; Democratic 10.2%, Republican 89.6%, Other 0.2%; Highest chance: Republican group; modeled group probabilities" [ref=e570] [cursor=pointer]'
+              - 'button "WA-05; Democratic 10.2%, Republican 89.8%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e571] [cursor=pointer]'
+              - 'button "OH-07; Democratic 10.1%, Republican 89.9%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e572] [cursor=pointer]'
+              - 'button "FL-11; Democratic 9.6%, Republican 90.2%, Other 0.2%; Highest chance: Republican group; modeled group probabilities" [ref=e573] [cursor=pointer]'
+              - 'button "GA-01; Democratic 9.5%, Republican 90.5%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e574] [cursor=pointer]'
+              - 'button "FL-04; Democratic 9.2%, Republican 90.8%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e575] [cursor=pointer]'
+              - 'button "MN-01; Democratic 8.8%, Republican 91.2%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e576] [cursor=pointer]'
+              - 'button "VA-05; Democratic 8.6%, Republican 91.3%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e577] [cursor=pointer]'
+              - 'button "NJ-02; Democratic 8.3%, Republican 91.7%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e578] [cursor=pointer]'
+              - 'button "NE-01; Democratic 7.8%, Republican 92.2%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e579] [cursor=pointer]'
+              - 'button "FL-13; Democratic 7.6%, Republican 92.4%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e580] [cursor=pointer]'
+              - 'button "NC-03; Democratic 7.3%, Republican 92.7%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e581] [cursor=pointer]'
+              - 'button "TX-32; Democratic 7.2%, Republican 92.8%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e582] [cursor=pointer]'
+              - 'button "NC-07; Democratic 7.1%, Republican 92.9%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e583] [cursor=pointer]'
+              - 'button "FL-02; Democratic 7.1%, Republican 92.9%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e584] [cursor=pointer]'
+              - 'button "NY-02; Democratic 7.0%, Republican 93.0%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e585] [cursor=pointer]'
+              - 'button "SC-02; Democratic 7.0%, Republican 93.0%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e586] [cursor=pointer]'
+              - 'button "GA-12; Democratic 6.8%, Republican 93.2%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e587] [cursor=pointer]'
+              - 'button "MN-08; Democratic 6.6%, Republican 93.4%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e588] [cursor=pointer]'
+              - 'button "FL-27; Democratic 6.4%, Republican 93.6%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e589] [cursor=pointer]'
+              - 'button "AZ-02; Democratic 6.1%, Republican 93.9%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e590] [cursor=pointer]'
+              - 'button "NC-14; Democratic 6.0%, Republican 94.0%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e591] [cursor=pointer]'
+              - 'button "FL-12; Democratic 5.8%, Republican 94.2%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e592] [cursor=pointer]'
+              - 'button "TX-09; Democratic 5.6%, Republican 94.4%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e593] [cursor=pointer]'
+              - 'button "OH-08; Democratic 5.6%, Republican 94.4%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e594] [cursor=pointer]'
+              - 'button "AR-02; Democratic 5.5%, Republican 94.5%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e595] [cursor=pointer]'
+              - 'button "AZ-05; Democratic 5.4%, Republican 94.6%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e596] [cursor=pointer]'
+              - 'button "NC-09; Democratic 5.4%, Republican 94.6%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e597] [cursor=pointer]'
+              - 'button "FL-21; Democratic 5.2%, Republican 94.8%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e598] [cursor=pointer]'
+              - 'button "TX-24; Democratic 5.2%, Republican 94.8%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e599] [cursor=pointer]'
+              - 'button "FL-08; Democratic 5.1%, Republican 94.9%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e600] [cursor=pointer]'
+              - 'button "WI-08; Democratic 5.1%, Republican 94.9%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e601] [cursor=pointer]'
+              - 'button "AZ-08; Democratic 5.1%, Republican 94.9%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e602] [cursor=pointer]'
+              - 'button "NY-21; Democratic 5.0%, Republican 95.0%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e603] [cursor=pointer]'
+              - 'button "GA-10; Democratic 4.9%, Republican 95.0%, Other 0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e604] [cursor=pointer]'
+              - 'button "NC-13; Democratic 5.0%, Republican 95.0%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e605] [cursor=pointer]'
+              - 'button "WI-06; Democratic 4.9%, Republican 95.0%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e606] [cursor=pointer]'
+              - 'button "WA-04; Democratic 4.7%, Republican 95.3%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e607] [cursor=pointer]'
+              - 'button "TX-38; Democratic 4.7%, Republican 95.2%, Other 0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e608] [cursor=pointer]'
+              - 'button "FL-18; Democratic 4.7%, Republican 95.3%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e609] [cursor=pointer]'
+              - 'button "IN-05; Democratic 4.7%, Republican 95.3%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e610] [cursor=pointer]'
+              - 'button "TN-09; Democratic 4.6%, Republican 95.3%, Other 0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e611] [cursor=pointer]'
+              - 'button "MD-01; Democratic 4.6%, Republican 95.4%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e612] [cursor=pointer]'
+              - 'button "NC-06; Democratic 4.5%, Republican 95.5%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e613] [cursor=pointer]'
+              - 'button "OK-01; Democratic 4.3%, Republican 95.7%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e614] [cursor=pointer]'
+              - 'button "TX-21; Democratic 4.2%, Republican 95.8%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e615] [cursor=pointer]'
+              - 'button "NC-10; Democratic 4.2%, Republican 95.8%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e616] [cursor=pointer]'
+              - 'button "NC-05; Democratic 4.2%, Republican 95.8%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e617] [cursor=pointer]'
+              - 'button "TX-15; Democratic 4.1%, Republican 95.9%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e618] [cursor=pointer]'
+              - 'button "OK-05; Democratic 4.1%, Republican 95.9%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e619] [cursor=pointer]'
+              - 'button "FL-26; Democratic 3.9%, Republican 96.1%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e620] [cursor=pointer]'
+              - 'button "TX-22; Democratic 3.8%, Republican 96.2%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e621] [cursor=pointer]'
+              - 'button "WI-07; Democratic 3.8%, Republican 96.2%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e622] [cursor=pointer]'
+              - 'button "CO-04; Democratic 3.8%, Republican 96.2%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e623] [cursor=pointer]'
+              - 'button "TX-10; Democratic 3.8%, Republican 96.2%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e624] [cursor=pointer]'
+              - 'button "AK-00; Democratic <0.1%, Republican 92.6%, Other 7.3%; Highest chance: Republican group; modeled group probabilities" [ref=e625] [cursor=pointer]'
+              - 'button "TX-02; Democratic 3.7%, Republican 96.3%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e626] [cursor=pointer]'
+              - 'button "SC-05; Democratic 3.7%, Republican 96.3%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e627] [cursor=pointer]'
+              - 'button "TN-05; Democratic 3.5%, Republican 96.4%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e628] [cursor=pointer]'
+              - 'button "GA-11; Democratic 3.5%, Republican 96.5%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e629] [cursor=pointer]'
+              - 'button "NC-08; Democratic 3.4%, Republican 96.6%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e630] [cursor=pointer]'
+              - 'button "CA-23; Democratic 3.2%, Republican 96.8%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e631] [cursor=pointer]'
+              - 'button "MN-06; Democratic 3.2%, Republican 96.8%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e632] [cursor=pointer]'
+              - 'button "KS-02; Democratic 3.1%, Republican 96.8%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e633] [cursor=pointer]'
+              - 'button "FL-15; Democratic 3.1%, Republican 96.9%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e634] [cursor=pointer]'
+              - 'button "TN-08; Democratic 3.0%, Republican 97.0%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e635] [cursor=pointer]'
+              - 'button "OH-14; Democratic 3.0%, Republican 97.0%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e636] [cursor=pointer]'
+              - 'button "CA-05; Democratic 2.7%, Republican 97.3%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e637] [cursor=pointer]'
+              - 'button "NY-23; Democratic 2.7%, Republican 97.3%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e638] [cursor=pointer]'
+              - 'button "FL-03; Democratic 2.7%, Republican 97.3%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e639] [cursor=pointer]'
+              - 'button "TX-27; Democratic 2.6%, Republican 97.4%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e640] [cursor=pointer]'
+              - 'button "MI-01; Democratic 2.6%, Republican 97.4%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e641] [cursor=pointer]'
+              - 'button "PA-11; Democratic 2.6%, Republican 97.4%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e642] [cursor=pointer]'
+              - 'button "FL-05; Democratic 2.5%, Republican 97.5%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e643] [cursor=pointer]'
+              - 'button "TX-05; Democratic 2.5%, Republican 97.5%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e644] [cursor=pointer]'
+              - 'button "TX-17; Democratic 2.5%, Republican 97.5%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e645] [cursor=pointer]'
+              - 'button "TX-31; Democratic 2.4%, Republican 97.6%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e646] [cursor=pointer]'
+              - 'button "FL-17; Democratic 2.3%, Republican 97.6%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e647] [cursor=pointer]'
+              - 'button "GA-07; Democratic 2.3%, Republican 97.7%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e648] [cursor=pointer]'
+              - 'button "WI-05; Democratic 2.3%, Republican 97.7%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e649] [cursor=pointer]'
+              - 'button "TN-06; Democratic 2.2%, Republican 97.7%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e650] [cursor=pointer]'
+              - 'button "TN-07; Democratic 2.2%, Republican 97.8%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e651] [cursor=pointer]'
+              - 'button "PA-16; Democratic 2.1%, Republican 97.9%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e652] [cursor=pointer]'
+              - 'button "IL-16; Democratic 2.1%, Republican 97.9%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e653] [cursor=pointer]'
+              - 'button "NY-24; Democratic 2.1%, Republican 97.9%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e654] [cursor=pointer]'
+              - 'button "TX-06; Democratic 2.1%, Republican 97.9%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e655] [cursor=pointer]'
+              - 'button "KS-04; Democratic 1.9%, Republican 98.1%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e656] [cursor=pointer]'
+              - 'button "TX-08; Democratic 1.9%, Republican 98.1%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e657] [cursor=pointer]'
+              - 'button "OH-05; Democratic 1.9%, Republican 98.1%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e658] [cursor=pointer]'
+              - 'button "TX-03; Democratic 1.9%, Republican 98.1%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e659] [cursor=pointer]'
+              - 'button "SC-04; Democratic 1.9%, Republican 98.1%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e660] [cursor=pointer]'
+              - 'button "TX-26; Democratic 1.8%, Republican 98.2%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e661] [cursor=pointer]'
+              - 'button "VA-06; Democratic 1.8%, Republican 98.2%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e662] [cursor=pointer]'
+              - 'button "TX-12; Democratic 1.8%, Republican 98.2%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e663] [cursor=pointer]'
+              - 'button "TN-04; Democratic 1.8%, Republican 98.2%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e664] [cursor=pointer]'
+              - 'button "TX-25; Democratic 1.8%, Republican 98.2%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e665] [cursor=pointer]'
+              - 'button "TX-14; Democratic 1.7%, Republican 98.3%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e666] [cursor=pointer]'
+              - 'button "NY-11; Democratic 1.6%, Republican 98.4%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e667] [cursor=pointer]'
+              - 'button "TX-04; Democratic 1.6%, Republican 98.4%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e668] [cursor=pointer]'
+              - 'button "TX-36; Democratic 1.6%, Republican 98.4%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e669] [cursor=pointer]'
+              - 'button "FL-28; Democratic 1.5%, Republican 98.5%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e670] [cursor=pointer]'
+              - 'button "AR-03; Democratic 1.5%, Republican 98.5%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e671] [cursor=pointer]'
+              - 'button "SD-00; Democratic 1.5%, Republican 98.5%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e672] [cursor=pointer]'
+              - 'button "FL-19; Democratic 1.3%, Republican 98.6%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e673] [cursor=pointer]'
+              - 'button "SC-07; Democratic 1.3%, Republican 98.7%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e674] [cursor=pointer]'
+              - 'button "IN-02; Democratic 1.2%, Republican 98.7%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e675] [cursor=pointer]'
+              - 'button "MO-03; Democratic 1.2%, Republican 98.8%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e676] [cursor=pointer]'
+              - 'button "MI-05; Democratic 1.2%, Republican 98.8%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e677] [cursor=pointer]'
+              - 'button "ID-02; Democratic 1.1%, Republican 98.9%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e678] [cursor=pointer]'
+              - 'button "OR-02; Democratic 1.1%, Republican 98.9%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e679] [cursor=pointer]'
+              - 'button "IA-04; Democratic 1.1%, Republican 98.9%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e680] [cursor=pointer]'
+              - 'button "MS-03; Democratic 0.9%, Republican 99.1%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e681] [cursor=pointer]'
+              - 'button "AL-05; Democratic 0.9%, Republican 99.1%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e682] [cursor=pointer]'
+              - 'button "LA-06; Democratic 0.8%, Republican 99.1%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e683] [cursor=pointer]'
+              - 'button "UT-02; Democratic 0.8%, Republican 99.2%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e684] [cursor=pointer]'
+              - 'button "IN-04; Democratic 0.8%, Republican 99.2%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e685] [cursor=pointer]'
+              - 'button "GA-03; Democratic 0.8%, Republican 99.2%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e686] [cursor=pointer]'
+              - 'button "FL-06; Democratic 0.8%, Republican 99.2%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e687] [cursor=pointer]'
+              - 'button "OH-12; Democratic 0.8%, Republican 99.2%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e688] [cursor=pointer]'
+              - 'button "IN-09; Democratic 0.8%, Republican 99.2%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e689] [cursor=pointer]'
+              - 'button "MT-02; Democratic 0.8%, Republican 99.2%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e690] [cursor=pointer]'
+              - 'button "MI-02; Democratic 0.8%, Republican 99.2%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e691] [cursor=pointer]'
+              - 'button "NJ-04; Democratic 0.8%, Republican 99.2%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e692] [cursor=pointer]'
+              - 'button "GA-08; Democratic 0.8%, Republican 99.2%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e693] [cursor=pointer]'
+              - 'button "AZ-09; Democratic 0.7%, Republican 99.3%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e694] [cursor=pointer]'
+              - 'button "IN-03; Democratic 0.7%, Republican 99.3%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e695] [cursor=pointer]'
+              - 'button "KS-01; Democratic 0.6%, Republican 99.3%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e696] [cursor=pointer]'
+              - 'button "KY-04; Democratic 0.6%, Republican 99.4%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e697] [cursor=pointer]'
+              - 'button "AL-01; Democratic 0.6%, Republican 99.4%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e698] [cursor=pointer]'
+              - 'button "MI-09; Democratic 0.6%, Republican 99.4%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e699] [cursor=pointer]'
+              - 'button "CA-20; Democratic 0.6%, Republican 99.4%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e700] [cursor=pointer]'
+              - 'button "IN-06; Democratic 0.5%, Republican 99.5%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e701] [cursor=pointer]'
+              - 'button "UT-04; Democratic 0.5%, Republican 99.5%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e702] [cursor=pointer]'
+              - 'button "PA-14; Democratic 0.5%, Republican 99.5%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e703] [cursor=pointer]'
+              - 'button "OK-04; Democratic 0.5%, Republican 99.5%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e704] [cursor=pointer]'
+              - 'button "TN-02; Democratic 0.5%, Republican 99.5%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e705] [cursor=pointer]'
+              - 'button "GA-09; Democratic 0.5%, Republican 99.5%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e706] [cursor=pointer]'
+              - 'button "TX-11; Democratic 0.4%, Republican 99.6%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e707] [cursor=pointer]'
+              - 'button "OH-06; Democratic 0.4%, Republican 99.6%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e708] [cursor=pointer]'
+              - 'button "AL-06; Democratic 0.4%, Republican 99.6%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e709] [cursor=pointer]'
+              - 'button "LA-05; Democratic 0.4%, Republican 99.6%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e710] [cursor=pointer]'
+              - 'button "MO-06; Democratic 0.4%, Republican 99.6%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e711] [cursor=pointer]'
+              - 'button "TN-03; Democratic 0.4%, Republican 99.6%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e712] [cursor=pointer]'
+              - 'button "IN-08; Democratic 0.4%, Republican 99.6%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e713] [cursor=pointer]'
+              - 'button "MN-07; Democratic 0.3%, Republican 99.7%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e714] [cursor=pointer]'
+              - 'button "GA-14; Democratic 0.3%, Republican 99.7%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e715] [cursor=pointer]'
+              - 'button "MS-01; Democratic 0.3%, Republican 99.7%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e716] [cursor=pointer]'
+              - 'button "ND-00; Democratic 0.3%, Republican 99.7%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e717] [cursor=pointer]'
+              - 'button "FL-01; Democratic 0.3%, Republican 99.7%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e718] [cursor=pointer]'
+              - 'button "PA-09; Democratic 0.3%, Republican 99.7%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e719] [cursor=pointer]'
+              - 'button "PA-15; Democratic 0.3%, Republican 99.7%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e720] [cursor=pointer]'
+              - 'button "WV-02; Democratic 0.2%, Republican 99.8%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e721] [cursor=pointer]'
+              - 'button "AR-04; Democratic 0.2%, Republican 99.8%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e722] [cursor=pointer]'
+              - 'button "IL-15; Democratic 0.2%, Republican 99.8%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e723] [cursor=pointer]'
+              - 'button "KY-02; Democratic 0.2%, Republican 99.8%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e724] [cursor=pointer]'
+              - 'button "UT-03; Democratic 0.2%, Republican 99.8%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e725] [cursor=pointer]'
+              - 'button "OH-02; Democratic 0.2%, Republican 99.8%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e726] [cursor=pointer]'
+              - 'button "MO-04; Democratic 0.2%, Republican 99.8%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e727] [cursor=pointer]'
+              - 'button "MS-04; Democratic 0.2%, Republican 99.8%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e728] [cursor=pointer]'
+              - 'button "OH-04; Democratic 0.2%, Republican 99.8%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e729] [cursor=pointer]'
+              - 'button "MO-07; Democratic 0.1%, Republican 99.9%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e730] [cursor=pointer]'
+              - 'button "WY-00; Democratic 0.1%, Republican 99.8%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e731] [cursor=pointer]'
+              - 'button "SC-03; Democratic 0.1%, Republican 99.9%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e732] [cursor=pointer]'
+              - 'button "IL-12; Democratic 0.1%, Republican 99.9%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e733] [cursor=pointer]'
+              - 'button "VA-09; Democratic 0.1%, Republican 99.9%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e734] [cursor=pointer]'
+              - 'button "WV-01; Democratic 0.1%, Republican 99.9%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e735] [cursor=pointer]'
+              - 'button "ID-01; Democratic 0.1%, Republican 99.9%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e736] [cursor=pointer]'
+              - 'button "AR-01; Democratic <0.1%, Republican >99.9%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e737] [cursor=pointer]'
+              - 'button "OK-03; Democratic <0.1%, Republican >99.9%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e738] [cursor=pointer]'
+              - 'button "TX-13; Democratic <0.1%, Republican >99.9%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e739] [cursor=pointer]'
+              - 'button "PA-13; Democratic <0.1%, Republican >99.9%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e740] [cursor=pointer]'
+              - 'button "AL-03; Democratic <0.1%, Republican >99.9%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e741] [cursor=pointer]'
+              - 'button "KY-01; Democratic <0.1%, Republican >99.9%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e742] [cursor=pointer]'
+              - 'button "TX-19; Democratic <0.1%, Republican >99.9%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e743] [cursor=pointer]'
+              - 'button "TX-01; Democratic <0.1%, Republican >99.9%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e744] [cursor=pointer]'
+              - 'button "LA-04; Democratic <0.1%, Republican >99.9%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e745] [cursor=pointer]'
+              - 'button "LA-03; Democratic <0.1%, Republican >99.9%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e746] [cursor=pointer]'
+              - 'button "NE-03; Democratic <0.1%, Republican >99.9%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e747] [cursor=pointer]'
+              - 'button "MO-08; Democratic <0.1%, Republican >99.9%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e748] [cursor=pointer]'
+              - 'button "OK-02; Democratic <0.1%, Republican >99.9%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e749] [cursor=pointer]'
+              - 'button "LA-01; Democratic <0.1%, Republican >99.9%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e750] [cursor=pointer]'
+              - 'button "TN-01; Democratic <0.1%, Republican >99.9%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e751] [cursor=pointer]'
+              - 'button "KY-05; Democratic <0.1%, Republican >99.9%, Other <0.1%; Highest chance: Republican group; modeled group probabilities" [ref=e752] [cursor=pointer]'
+              - 'button "AL-04; Democratic <0.1%, Republican >99.9%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e753] [cursor=pointer]'
+              - 'button "CA-40; Democratic 0.0%, Republican 100.0%, Other 0.0%; Highest chance: Republican group; modeled group probabilities" [ref=e754] [cursor=pointer]'
+          - paragraph [ref=e755]: Arrow keys follow the displayed sequence; Enter or Space selects a district. Colors indicate the leading group; purple indicates no group is above 60%. Direction arrows show each row’s reading direction.
+          - list "Group forecast color key" [ref=e756]:
+            - listitem [ref=e757]: Safe Democratic
+            - listitem [ref=e759]: Likely Democratic
+            - listitem [ref=e761]: Tossup
+            - listitem [ref=e763]: Likely Republican
+            - listitem [ref=e765]: Safe Republican
+            - listitem [ref=e767]: Likely Other
+            - listitem [ref=e769]: Safe Other
+        - generic [ref=e771]:
+          - generic [ref=e772]:
+            - region "House map" [ref=e773]:
+              - generic [ref=e774]:
+                - generic [ref=e775]:
+                  - heading "District by district" [level=2] [ref=e776]
+                  - paragraph [ref=e777]: Forecast chances for all 435 current districts.
+                - generic [ref=e778]: 2026 House
+              - region [ref=e779]:
+                - generic [ref=e780]:
+                  - generic [ref=e781]:
+                    - heading "2026 House districts" [level=3] [ref=e782]
+                    - paragraph [ref=e783]: District boundaries verified for this election.
+                  - generic [ref=e784]:
+                    - generic [ref=e785]: Focus on a state
+                    - combobox "Focus on a state" [ref=e786]:
+                      - option "All states" [selected]
+                      - option "Alaska"
+                      - option "Alabama"
+                      - option "Arkansas"
+                      - option "Arizona"
+                      - option "California"
+                      - option "Colorado"
+                      - option "Connecticut"
+                      - option "Delaware"
+                      - option "Florida"
+                      - option "Georgia"
+                      - option "Hawaii"
+                      - option "Iowa"
+                      - option "Idaho"
+                      - option "Illinois"
+                      - option "Indiana"
+                      - option "Kansas"
+                      - option "Kentucky"
+                      - option "Louisiana"
+                      - option "Massachusetts"
+                      - option "Maryland"
+                      - option "Maine"
+                      - option "Michigan"
+                      - option "Minnesota"
+                      - option "Missouri"
+                      - option "Mississippi"
+                      - option "Montana"
+                      - option "North Carolina"
+                      - option "North Dakota"
+                      - option "Nebraska"
+                      - option "New Hampshire"
+                      - option "New Jersey"
+                      - option "New Mexico"
+                      - option "Nevada"
+                      - option "New York"
+                      - option "Ohio"
+                      - option "Oklahoma"
+                      - option "Oregon"
+                      - option "Pennsylvania"
+                      - option "Rhode Island"
+                      - option "South Carolina"
+                      - option "South Dakota"
+                      - option "Tennessee"
+                      - option "Texas"
+                      - option "Utah"
+                      - option "Virginia"
+                      - option "Vermont"
+                      - option "Washington"
+                      - option "Wisconsin"
+                      - option "West Virginia"
+                      - option "Wyoming"
+                - paragraph [ref=e787]: Tab to the map, use arrow keys to move between districts, and press Enter to select. Focus on a state for more detail. Small districts are easier to find in the searchable race list below.
+                - group "2026 House district map" [ref=e788]:
+                  - button "Alaska at-large district, 2026 House election, Safe, Nick Begich, 92.6% chance of winning" [ref=e789] [cursor=pointer]
+                  - button "Alabama district 01, 2026 House election, Safe, Jerry Carl, 99.4% chance of winning" [ref=e790] [cursor=pointer]
+                  - button "Alabama district 02, 2026 House election, Likely, Rhett Marques, 80.9% chance of winning" [ref=e791] [cursor=pointer]
+                  - button "Alabama district 03, 2026 House election, Safe, Mike Rogers, >99.9% chance of winning" [ref=e792] [cursor=pointer]
+                  - button "Alabama district 04, 2026 House election, Safe, Robert B. Aderholt, >99.9% chance of winning" [ref=e793] [cursor=pointer]
+                  - button "Alabama district 05, 2026 House election, Safe, Dale W. Strong, 99.1% chance of winning" [ref=e794] [cursor=pointer]
+                  - button "Alabama district 06, 2026 House election, Safe, Gary Palmer, 99.6% chance of winning" [ref=e795] [cursor=pointer]
+                  - button "Alabama district 07, 2026 House election, Safe, Terri Sewell, 95.3% chance of winning" [ref=e796] [cursor=pointer]
+                  - button "Arkansas district 01, 2026 House election, Safe, Eric Alan \"Rick\" Crawford, >99.9% chance of winning" [ref=e797] [cursor=pointer]
+                  - button "Arkansas district 02, 2026 House election, Safe, James French \"French\" Hill, 94.5% chance of winning" [ref=e798] [cursor=pointer]
+                  - button "Arkansas district 03, 2026 House election, Safe, Stephen A. \"Steve\" Womack, 98.5% chance of winning" [ref=e799] [cursor=pointer]
+                  - button "Arkansas district 04, 2026 House election, Safe, Bruce Westerman, 99.8% chance of winning" [ref=e800] [cursor=pointer]
+                  - button "Arizona district 01, 2026 House election, Likely, Thomas James \"Jay\" Feely, IV, 61.6% chance of winning" [ref=e801] [cursor=pointer]
+                  - button "Arizona district 02, 2026 House election, Safe, Eli Crane, 93.9% chance of winning" [ref=e802] [cursor=pointer]
+                  - button "Arizona district 03, 2026 House election, Safe, Yassamin Ansari, >99.9% chance of winning" [ref=e803] [cursor=pointer]
+                  - button "Arizona district 04, 2026 House election, Likely, Greg Stanton, 81.3% chance of winning" [ref=e804] [cursor=pointer]
+                  - button "Arizona district 05, 2026 House election, Safe, Mark Lamb, 94.6% chance of winning" [ref=e805] [cursor=pointer]
+                  - button "Arizona district 06, 2026 House election, Likely, Juan Ciscomani, 67.8% chance of winning" [ref=e806] [cursor=pointer]
+                  - button "Arizona district 07, 2026 House election, Safe, Adelita Grijalva, 97.4% chance of winning" [ref=e807] [cursor=pointer]
+                  - button "Arizona district 08, 2026 House election, Safe, Abraham \"Abe\" Hamadeh, 94.9% chance of winning" [ref=e808] [cursor=pointer]
+                  - button "Arizona district 09, 2026 House election, Safe, Paul Anthony Gosar, 99.3% chance of winning" [ref=e809] [cursor=pointer]
+                  - button "California district 01, 2026 House election, Likely, Mike McGuire, 74.9% chance of winning" [ref=e810] [cursor=pointer]
+                  - button "California district 02, 2026 House election, Safe, Jared Huffman, 98.3% chance of winning" [ref=e811] [cursor=pointer]
+                  - button "California district 03, 2026 House election, Likely, Ami Bera, 88.0% chance of winning" [ref=e812] [cursor=pointer]
+                  - button "California district 04, 2026 House election, Safe, Democratic candidates group outcome, 100.0% chance of winning" [ref=e813] [cursor=pointer]
+                  - button "California district 05, 2026 House election, Safe, Tom McClintock, 97.3% chance of winning" [ref=e814] [cursor=pointer]
+                  - button "California district 06, 2026 House election, Likely, Richard Pan, 63.3% chance of winning" [ref=e815] [cursor=pointer]
+                  - button "California district 07, 2026 House election, Safe, Democratic candidates group outcome, 100.0% chance of winning" [ref=e816] [cursor=pointer]
+                  - button "California district 08, 2026 House election, Safe, John Garamendi, 99.5% chance of winning" [ref=e817] [cursor=pointer]
+                  - button "California district 09, 2026 House election, Likely, Josh Harder, 89.7% chance of winning" [ref=e818] [cursor=pointer]
+                  - button "California district 10, 2026 House election, Safe, Mark DeSaulnier, 99.5% chance of winning" [ref=e819] [cursor=pointer]
+                  - button "California district 11, 2026 House election, Safe, Democratic candidates group outcome, 100.0% chance of winning" [ref=e820] [cursor=pointer]
+                  - button "California district 12, 2026 House election, Safe, Democratic candidates group outcome, 100.0% chance of winning" [ref=e821] [cursor=pointer]
+                  - button "California district 13, 2026 House election, Likely, Adam Gray, 64.5% chance of winning" [ref=e822] [cursor=pointer]
+                  - button "California district 14, 2026 House election, Safe, Democratic candidates group outcome, 100.0% chance of winning" [ref=e823] [cursor=pointer]
+                  - button "California district 15, 2026 House election, Safe, Kevin Mullin, >99.9% chance of winning" [ref=e824] [cursor=pointer]
+                  - button "California district 16, 2026 House election, Safe, Sam Liccardo, >99.9% chance of winning" [ref=e825] [cursor=pointer]
+                  - button "California district 17, 2026 House election, Safe, Ro Khanna, 99.8% chance of winning" [ref=e826] [cursor=pointer]
+                  - button "California district 18, 2026 House election, Safe, Zoe Lofgren, 99.0% chance of winning" [ref=e827] [cursor=pointer]
+                  - button "California district 19, 2026 House election, Safe, Jimmy Panetta, 99.6% chance of winning" [ref=e828] [cursor=pointer]
+                  - button "California district 20, 2026 House election, Safe, Vince Fong, 99.4% chance of winning" [ref=e829] [cursor=pointer]
+                  - button "California district 21, 2026 House election, Likely, Jim Costa, 80.0% chance of winning" [ref=e830] [cursor=pointer]
+                  - button "California district 22, 2026 House election, Likely, David G. Valadao, 71.2% chance of winning" [ref=e831] [cursor=pointer]
+                  - button "California district 23, 2026 House election, Safe, Jay Obernolte, 96.8% chance of winning" [ref=e832] [cursor=pointer]
+                  - button "California district 24, 2026 House election, Safe, Salud Carbajal, 98.4% chance of winning" [ref=e833] [cursor=pointer]
+                  - button "California district 25, 2026 House election, Likely, Raul Ruiz, 79.6% chance of winning" [ref=e834] [cursor=pointer]
+                  - button "California district 26, 2026 House election, Likely, Jacqui Irwin, 89.3% chance of winning" [ref=e835] [cursor=pointer]
+                  - button "California district 27, 2026 House election, Likely, George Whitesides, 87.2% chance of winning" [ref=e836] [cursor=pointer]
+                  - button "California district 28, 2026 House election, Safe, Judy Chu, 98.4% chance of winning" [ref=e837] [cursor=pointer]
+                  - button "California district 29, 2026 House election, Safe, Democratic candidates group outcome, 100.0% chance of winning" [ref=e838] [cursor=pointer]
+                  - button "California district 30, 2026 House election, Safe, Laura Friedman, 99.8% chance of winning" [ref=e839] [cursor=pointer]
+                  - button "California district 31, 2026 House election, Safe, Gil Cisneros, 90.7% chance of winning" [ref=e840] [cursor=pointer]
+                  - button "California district 32, 2026 House election, Safe, Brad Sherman, 98.4% chance of winning" [ref=e841] [cursor=pointer]
+                  - button "California district 33, 2026 House election, Likely, Pete Aguilar, 87.3% chance of winning" [ref=e842] [cursor=pointer]
+                  - button "California district 34, 2026 House election, Safe, Democratic candidates group outcome, 100.0% chance of winning" [ref=e843] [cursor=pointer]
+                  - button "California district 35, 2026 House election, Likely, Norma J. Torres, 83.9% chance of winning" [ref=e844] [cursor=pointer]
+                  - button "California district 36, 2026 House election, Safe, Ted W. Lieu, 99.8% chance of winning" [ref=e845] [cursor=pointer]
+                  - button "California district 37, 2026 House election, Safe, Democratic candidates group outcome, 100.0% chance of winning" [ref=e846] [cursor=pointer]
+                  - button "California district 38, 2026 House election, Likely, Hilda Solis, 84.6% chance of winning" [ref=e847] [cursor=pointer]
+                  - button "California district 39, 2026 House election, Likely, Mark Takano, 86.9% chance of winning" [ref=e848] [cursor=pointer]
+                  - button "California district 40, 2026 House election, Safe, Republican candidates group outcome, 100.0% chance of winning" [ref=e849] [cursor=pointer]
+                  - button "California district 41, 2026 House election, Safe, Linda Sánchez, 92.8% chance of winning" [ref=e850] [cursor=pointer]
+                  - button "California district 42, 2026 House election, Safe, Robert Garcia, 91.8% chance of winning" [ref=e851] [cursor=pointer]
+                  - button "California district 43, 2026 House election, Safe, Maxine Waters, >99.9% chance of winning" [ref=e852] [cursor=pointer]
+                  - button "California district 44, 2026 House election, Safe, Nanette Diaz Barragan, 99.6% chance of winning" [ref=e853] [cursor=pointer]
+                  - button "California district 45, 2026 House election, Likely, Derek Tran, 75.0% chance of winning" [ref=e854] [cursor=pointer]
+                  - button "California district 46, 2026 House election, Safe, Lou Correa, 94.5% chance of winning" [ref=e855] [cursor=pointer]
+                  - button "California district 47, 2026 House election, Likely, Dave Min, 87.9% chance of winning" [ref=e856] [cursor=pointer]
+                  - button "California district 48, 2026 House election, Likely, Marni von Wilpert, 60.6% chance of winning" [ref=e857] [cursor=pointer]
+                  - button "California district 49, 2026 House election, Safe, Mike Levin, 90.6% chance of winning" [ref=e858] [cursor=pointer]
+                  - button "California district 50, 2026 House election, Safe, Scott Peters, 95.9% chance of winning" [ref=e859] [cursor=pointer]
+                  - button "California district 51, 2026 House election, Safe, Sara Jacobs, 95.8% chance of winning" [ref=e860] [cursor=pointer]
+                  - button "California district 52, 2026 House election, Safe, Juan Vargas, 95.4% chance of winning" [ref=e861] [cursor=pointer]
+                  - button "Colorado district 01, 2026 House election, Safe, Democratic candidates group outcome, >99.9% chance of winning" [ref=e862] [cursor=pointer]
+                  - button "Colorado district 02, 2026 House election, Safe, Joe Neguse, 99.8% chance of winning" [ref=e863] [cursor=pointer]
+                  - button "Colorado district 03, 2026 House election, Likely, Jeff Hurd, 88.3% chance of winning" [ref=e864] [cursor=pointer]
+                  - button "Colorado district 04, 2026 House election, Safe, Republican candidates group outcome, 96.2% chance of winning" [ref=e865] [cursor=pointer]
+                  - button "Colorado district 05, 2026 House election, Likely, Jeff Crank, 87.3% chance of winning" [ref=e866] [cursor=pointer]
+                  - button "Colorado district 06, 2026 House election, Safe, Jason Crow, 96.6% chance of winning" [ref=e867] [cursor=pointer]
+                  - button "Colorado district 07, 2026 House election, Safe, Brittany Pettersen, 93.5% chance of winning" [ref=e868] [cursor=pointer]
+                  - button "Colorado district 08, 2026 House election, Likely, Gabe Evans, 71.1% chance of winning" [ref=e869] [cursor=pointer]
+                  - button "Connecticut district 01, 2026 House election, Safe, Luke Bronin, 95.9% chance of winning" [ref=e870] [cursor=pointer]
+                  - button "Connecticut district 02, 2026 House election, Likely, Joe Courtney, 83.5% chance of winning" [ref=e871] [cursor=pointer]
+                  - button "Connecticut district 03, 2026 House election, Safe, Rosa DeLauro, 92.5% chance of winning" [ref=e872] [cursor=pointer]
+                  - button "Connecticut district 04, 2026 House election, Safe, Jim Himes, 97.8% chance of winning" [ref=e873] [cursor=pointer]
+                  - button "Connecticut district 05, 2026 House election, Likely, Jahana Hayes, 79.0% chance of winning" [ref=e874] [cursor=pointer]
+                  - button "Delaware at-large district, 2026 House election, Safe, Sarah McBride, 93.1% chance of winning" [ref=e875] [cursor=pointer]
+                  - button "Florida district 01, 2026 House election, Safe, Jimmy Patronis, 99.7% chance of winning" [ref=e876] [cursor=pointer]
+                  - button "Florida district 02, 2026 House election, Safe, Austin Rogers, 92.9% chance of winning" [ref=e877] [cursor=pointer]
+                  - button "Florida district 03, 2026 House election, Safe, Kat Cammack, 97.3% chance of winning" [ref=e878] [cursor=pointer]
+                  - button "Florida district 04, 2026 House election, Safe, Aaron Bean, 90.8% chance of winning" [ref=e879] [cursor=pointer]
+                  - button "Florida district 05, 2026 House election, Safe, John H. Rutherford, 97.5% chance of winning" [ref=e880] [cursor=pointer]
+                  - button "Florida district 06, 2026 House election, Safe, Randy Fine, 99.2% chance of winning" [ref=e881] [cursor=pointer]
+                  - button "Florida district 07, 2026 House election, Likely, Ryan Elijah, 85.5% chance of winning" [ref=e882] [cursor=pointer]
+                  - button "Florida district 08, 2026 House election, Safe, Mike Haridopolos, 94.9% chance of winning" [ref=e883] [cursor=pointer]
+                  - button "Florida district 09, 2026 House election, Likely, Dan Green, 87.4% chance of winning" [ref=e884] [cursor=pointer]
+                  - button "Florida district 10, 2026 House election, Safe, Maxwell Alejandro Frost, 100.0% chance of winning" [ref=e885] [cursor=pointer]
+                  - button "Florida district 11, 2026 House election, Safe, Joe Strada, 90.2% chance of winning" [ref=e886] [cursor=pointer]
+                  - button "Florida district 12, 2026 House election, Safe, Gus Michael Bilirakis, 94.2% chance of winning" [ref=e887] [cursor=pointer]
+                  - button "Florida district 13, 2026 House election, Safe, Anna Paulina Luna, 92.4% chance of winning" [ref=e888] [cursor=pointer]
+                  - button "Florida district 14, 2026 House election, Likely, Mike Beltran, 71.2% chance of winning" [ref=e889] [cursor=pointer]
+                  - button "Florida district 15, 2026 House election, Safe, Laurel Lee, 96.9% chance of winning" [ref=e890] [cursor=pointer]
+                  - button "Florida district 16, 2026 House election, Likely, Sydney Gruters, 87.5% chance of winning" [ref=e891] [cursor=pointer]
+                  - button "Florida district 17, 2026 House election, Safe, Greg Steube, 97.6% chance of winning" [ref=e892] [cursor=pointer]
+                  - button "Florida district 18, 2026 House election, Safe, Scott Franklin, 95.3% chance of winning" [ref=e893] [cursor=pointer]
+                  - button "Florida district 19, 2026 House election, Safe, Jim Schwartzel, 98.6% chance of winning" [ref=e894] [cursor=pointer]
+                  - button "Florida district 20, 2026 House election, Safe, Debbie Wasserman Schultz, 99.7% chance of winning" [ref=e895] [cursor=pointer]
+                  - button "Florida district 21, 2026 House election, Safe, Brian Mast, 94.8% chance of winning" [ref=e896] [cursor=pointer]
+                  - button "Florida district 22, 2026 House election, Likely, Casey Askar, 81.4% chance of winning" [ref=e897] [cursor=pointer]
+                  - button "Florida district 23, 2026 House election, Safe, Lois Frankel, 92.1% chance of winning" [ref=e898] [cursor=pointer]
+                  - button "Florida district 24, 2026 House election, Safe, Oliver G. Gilbert III, 99.5% chance of winning" [ref=e899] [cursor=pointer]
+                  - button "Florida district 25, 2026 House election, Likely, Scott Singer, 67.1% chance of winning" [ref=e900] [cursor=pointer]
+                  - button "Florida district 26, 2026 House election, Safe, Mario Diaz-Balart, 96.1% chance of winning" [ref=e901] [cursor=pointer]
+                  - button "Florida district 27, 2026 House election, Safe, Maria Elvira Salazar, 93.6% chance of winning" [ref=e902] [cursor=pointer]
+                  - button "Florida district 28, 2026 House election, Safe, Carlos A. Gimenez, 98.5% chance of winning" [ref=e903] [cursor=pointer]
+                  - button "Georgia district 01, 2026 House election, Safe, James Morris \"Jim\" Kingston, 90.5% chance of winning" [ref=e904] [cursor=pointer]
+                  - button "Georgia district 02, 2026 House election, Likely, Sanford Dixon Bishop, Jr., 83.1% chance of winning" [ref=e905] [cursor=pointer]
+                  - button "Georgia district 03, 2026 House election, Safe, Brian Jack, 99.2% chance of winning" [ref=e906] [cursor=pointer]
+                  - button "Georgia district 04, 2026 House election, Safe, Henry Calvin \"Hank\" Johnson, Jr., >99.9% chance of winning" [ref=e907] [cursor=pointer]
+                  - button "Georgia district 05, 2026 House election, Safe, Nikema Natassha Williams, >99.9% chance of winning" [ref=e908] [cursor=pointer]
+                  - button "Georgia district 06, 2026 House election, Safe, Lucia Kay \"Lucy\" McBath, >99.9% chance of winning" [ref=e909] [cursor=pointer]
+                  - button "Georgia district 07, 2026 House election, Safe, Richard Dean \"Rich\" McCormick, 97.7% chance of winning" [ref=e910] [cursor=pointer]
+                  - button "Georgia district 08, 2026 House election, Safe, James Austin \"Austin\" Scott, 99.2% chance of winning" [ref=e911] [cursor=pointer]
+                  - button "Georgia district 09, 2026 House election, Safe, Andrew S. Clyde, 99.5% chance of winning" [ref=e912] [cursor=pointer]
+                  - button "Georgia district 10, 2026 House election, Safe, Houston Gaines, 95.0% chance of winning" [ref=e913] [cursor=pointer]
+                  - button "Georgia district 11, 2026 House election, Safe, John A. Cowan, Jr., 96.5% chance of winning" [ref=e914] [cursor=pointer]
+                  - button "Georgia district 12, 2026 House election, Safe, Richard Wallen \"Rick\" Allen, 93.2% chance of winning" [ref=e915] [cursor=pointer]
+                  - button "Georgia district 13, 2026 House election, Safe, Jasmine Clark, 99.7% chance of winning" [ref=e916] [cursor=pointer]
+                  - button "Georgia district 14, 2026 House election, Safe, Clayton McLean \"Clay\" Fuller, 99.7% chance of winning" [ref=e917] [cursor=pointer]
+                  - button "Hawaii district 01, 2026 House election, Safe, Ed CASE, 98.2% chance of winning" [ref=e918] [cursor=pointer]
+                  - button "Hawaii district 02, 2026 House election, Safe, Jill N. TOKUDA, 97.3% chance of winning" [ref=e919] [cursor=pointer]
+                  - button "Iowa district 01, 2026 House election, Likely, Mariannette Miller-Meeks, 86.1% chance of winning" [ref=e920] [cursor=pointer]
+                  - button "Iowa district 02, 2026 House election, Likely, Joe Mitchell, 80.8% chance of winning" [ref=e921] [cursor=pointer]
+                  - button "Iowa district 03, 2026 House election, Likely, Zach Nunn, 77.9% chance of winning" [ref=e922] [cursor=pointer]
+                  - button "Iowa district 04, 2026 House election, Safe, Chris McGowan, 98.9% chance of winning" [ref=e923] [cursor=pointer]
+                  - button "Idaho district 01, 2026 House election, Safe, Russell \"Russ\" Fulcher, 99.9% chance of winning" [ref=e924] [cursor=pointer]
+                  - button "Idaho district 02, 2026 House election, Safe, Michael Keith \"Mike\" Simpson, 98.9% chance of winning" [ref=e925] [cursor=pointer]
+                  - button "Illinois district 01, 2026 House election, Safe, Jonathan L. Jackson, 99.3% chance of winning" [ref=e926] [cursor=pointer]
+                  - button "Illinois district 02, 2026 House election, Safe, Donna Miller, 99.0% chance of winning" [ref=e927] [cursor=pointer]
+                  - button "Illinois district 03, 2026 House election, Safe, Delia Ramirez, 99.3% chance of winning" [ref=e928] [cursor=pointer]
+                  - button "Illinois district 04, 2026 House election, Safe, Patty Garcia, 98.0% chance of winning" [ref=e929] [cursor=pointer]
+                  - button "Illinois district 05, 2026 House election, Safe, Mike Quigley, 99.7% chance of winning" [ref=e930] [cursor=pointer]
+                  - button "Illinois district 06, 2026 House election, Likely, Sean Casten, 78.7% chance of winning" [ref=e931] [cursor=pointer]
+                  - button "Illinois district 07, 2026 House election, Safe, La Shawn K. Ford, >99.9% chance of winning" [ref=e932] [cursor=pointer]
+                  - button "Illinois district 08, 2026 House election, Likely, Melissa L. Bean, 71.3% chance of winning" [ref=e933] [cursor=pointer]
+                  - button "Illinois district 09, 2026 House election, Safe, Daniel Biss, 99.4% chance of winning" [ref=e934] [cursor=pointer]
+                  - button "Illinois district 10, 2026 House election, Safe, Brad Schneider, 97.4% chance of winning" [ref=e935] [cursor=pointer]
+                  - button "Illinois district 11, 2026 House election, Likely, Bill Foster, 89.5% chance of winning" [ref=e936] [cursor=pointer]
+                  - button "Illinois district 12, 2026 House election, Safe, Mike Bost, 99.9% chance of winning" [ref=e937] [cursor=pointer]
+                  - button "Illinois district 13, 2026 House election, Likely, Nikki Budzinski, 88.2% chance of winning" [ref=e938] [cursor=pointer]
+                  - button "Illinois district 14, 2026 House election, Likely, Lauren Underwood, 78.0% chance of winning" [ref=e939] [cursor=pointer]
+                  - button "Illinois district 15, 2026 House election, Safe, Mary E. Miller, 99.8% chance of winning" [ref=e940] [cursor=pointer]
+                  - button "Illinois district 16, 2026 House election, Safe, Darin LaHood, 97.9% chance of winning" [ref=e941] [cursor=pointer]
+                  - button "Illinois district 17, 2026 House election, Likely, Eric Sorensen, 76.9% chance of winning" [ref=e942] [cursor=pointer]
+                  - button "Indiana district 01, 2026 House election, Likely, Frank J. Mrvan, 64.6% chance of winning" [ref=e943] [cursor=pointer]
+                  - button "Indiana district 02, 2026 House election, Safe, Rudy Yakym, 98.7% chance of winning" [ref=e944] [cursor=pointer]
+                  - button "Indiana district 03, 2026 House election, Safe, Marlin A. Stutzman, 99.3% chance of winning" [ref=e945] [cursor=pointer]
+                  - button "Indiana district 04, 2026 House election, Safe, Jim Baird, 99.2% chance of winning" [ref=e946] [cursor=pointer]
+                  - button "Indiana district 05, 2026 House election, Safe, Victoria Spartz, 95.3% chance of winning" [ref=e947] [cursor=pointer]
+                  - button "Indiana district 06, 2026 House election, Safe, Jefferson Shreve, 99.5% chance of winning" [ref=e948] [cursor=pointer]
+                  - button "Indiana district 07, 2026 House election, Safe, André Carson, 99.8% chance of winning" [ref=e949] [cursor=pointer]
+                  - button "Indiana district 08, 2026 House election, Safe, Mark Messmer, 99.6% chance of winning" [ref=e950] [cursor=pointer]
+                  - button "Indiana district 09, 2026 House election, Safe, Erin Houchin, 99.2% chance of winning" [ref=e951] [cursor=pointer]
+                  - button "Kansas district 01, 2026 House election, Safe, Tracey Mann, 99.3% chance of winning" [ref=e952] [cursor=pointer]
+                  - button "Kansas district 02, 2026 House election, Safe, Derek Schmidt, 96.8% chance of winning" [ref=e953] [cursor=pointer]
+                  - button "Kansas district 03, 2026 House election, Likely, Sharice L. Davids, 75.3% chance of winning" [ref=e954] [cursor=pointer]
+                  - button "Kansas district 04, 2026 House election, Safe, Ron Estes, 98.1% chance of winning" [ref=e955] [cursor=pointer]
+                  - button "Kentucky district 01, 2026 House election, Safe, James R. Comer, >99.9% chance of winning" [ref=e956] [cursor=pointer]
+                  - button "Kentucky district 02, 2026 House election, Safe, S. Brett Guthrie, 99.8% chance of winning" [ref=e957] [cursor=pointer]
+                  - button "Kentucky district 03, 2026 House election, Safe, Morgan McGarvey, 96.1% chance of winning" [ref=e958] [cursor=pointer]
+                  - button "Kentucky district 04, 2026 House election, Safe, Ed Gallrein, 99.4% chance of winning" [ref=e959] [cursor=pointer]
+                  - button "Kentucky district 05, 2026 House election, Safe, Hal Rogers, >99.9% chance of winning" [ref=e960] [cursor=pointer]
+                  - button "Kentucky district 06, 2026 House election, Likely, Ralph Alvarado, 89.6% chance of winning" [ref=e961] [cursor=pointer]
+                  - button "Louisiana district 01, 2026 House election, Safe, Republican candidates group outcome, >99.9% chance of winning" [ref=e962] [cursor=pointer]
+                  - button "Louisiana district 02, 2026 House election, Safe, Troy A. Carter Sr., >99.9% chance of winning" [ref=e963] [cursor=pointer]
+                  - button "Louisiana district 03, 2026 House election, Safe, Republican candidates group outcome, >99.9% chance of winning" [ref=e964] [cursor=pointer]
+                  - button "Louisiana district 04, 2026 House election, Safe, Republican candidates group outcome, >99.9% chance of winning" [ref=e965] [cursor=pointer]
+                  - button "Louisiana district 05, 2026 House election, Safe, Republican candidates group outcome, 99.6% chance of winning" [ref=e966] [cursor=pointer]
+                  - button "Louisiana district 06, 2026 House election, Safe, Republican candidates group outcome, 99.1% chance of winning" [ref=e967] [cursor=pointer]
+                  - button "Massachusetts district 01, 2026 House election, Safe, Richard E. Neal, 97.3% chance of winning" [ref=e968] [cursor=pointer]
+                  - button "Massachusetts district 02, 2026 House election, Safe, James P. McGovern, 100.0% chance of winning" [ref=e969] [cursor=pointer]
+                  - button "Massachusetts district 03, 2026 House election, Safe, Lori Loureiro Trahan, 96.1% chance of winning" [ref=e970] [cursor=pointer]
+                  - button "Massachusetts district 04, 2026 House election, Safe, Jake Auchincloss, 96.5% chance of winning" [ref=e971] [cursor=pointer]
+                  - button "Massachusetts district 05, 2026 House election, Safe, Katherine M. Clark, 100.0% chance of winning" [ref=e972] [cursor=pointer]
+                  - button "Massachusetts district 06, 2026 House election, Safe, Dan Koh, 94.6% chance of winning" [ref=e973] [cursor=pointer]
+                  - button "Massachusetts district 07, 2026 House election, Safe, Ayanna S. Pressley, 100.0% chance of winning" [ref=e974] [cursor=pointer]
+                  - button "Massachusetts district 08, 2026 House election, Safe, Stephen F. Lynch, 98.6% chance of winning" [ref=e975] [cursor=pointer]
+                  - button "Massachusetts district 09, 2026 House election, Likely, Bill Keating, 88.6% chance of winning" [ref=e976] [cursor=pointer]
+                  - button "Maryland district 01, 2026 House election, Safe, Andy Harris, 95.4% chance of winning" [ref=e977] [cursor=pointer]
+                  - button "Maryland district 02, 2026 House election, Safe, John \"Johnny O\" Olszewski, Jr., 95.9% chance of winning" [ref=e978] [cursor=pointer]
+                  - button "Maryland district 03, 2026 House election, Safe, Sarah Elfreth, 98.1% chance of winning" [ref=e979] [cursor=pointer]
+                  - button "Maryland district 04, 2026 House election, Safe, Glenn F. Ivey, >99.9% chance of winning" [ref=e980] [cursor=pointer]
+                  - button "Maryland district 05, 2026 House election, Safe, Adrian Boafo, 99.0% chance of winning" [ref=e981] [cursor=pointer]
+                  - button "Maryland district 06, 2026 House election, Likely, April McClain Delaney, 79.5% chance of winning" [ref=e982] [cursor=pointer]
+                  - button "Maryland district 07, 2026 House election, Safe, Kweisi Mfume, >99.9% chance of winning" [ref=e983] [cursor=pointer]
+                  - button "Maryland district 08, 2026 House election, Safe, Jamie Raskin, >99.9% chance of winning" [ref=e984] [cursor=pointer]
+                  - button "Maine district 01, 2026 House election, Safe, Chellie Pingree, 97.3% chance of winning" [ref=e985] [cursor=pointer]
+                  - button "Maine district 02, 2026 House election, Likely, Paul R. LePage, 78.7% chance of winning" [ref=e986] [cursor=pointer]
+                  - button "Michigan district 01, 2026 House election, Safe, Jack Bergman, 97.4% chance of winning" [ref=e987] [cursor=pointer]
+                  - button "Michigan district 02, 2026 House election, Safe, John Moolenaar, 99.2% chance of winning" [ref=e988] [cursor=pointer]
+                  - button "Michigan district 03, 2026 House election, Likely, Hillary Scholten, 83.7% chance of winning" [ref=e989] [cursor=pointer]
+                  - button "Michigan district 04, 2026 House election, Likely, Bill Huizenga, 80.5% chance of winning" [ref=e990] [cursor=pointer]
+                  - button "Michigan district 05, 2026 House election, Safe, Tim Walberg, 98.8% chance of winning" [ref=e991] [cursor=pointer]
+                  - button "Michigan district 06, 2026 House election, Safe, Debbie Dingell, 97.9% chance of winning" [ref=e992] [cursor=pointer]
+                  - button "Michigan district 07, 2026 House election, Likely, Tom Barrett, 69.4% chance of winning" [ref=e993] [cursor=pointer]
+                  - button "Michigan district 08, 2026 House election, Tossup, Kristen McDonald Rivet, 56.7% chance of winning" [ref=e994] [cursor=pointer]
+                  - button "Michigan district 09, 2026 House election, Safe, Lisa McClain, 99.4% chance of winning" [ref=e995] [cursor=pointer]
+                  - button "Michigan district 10, 2026 House election, Likely, Michael Bouchard, 72.2% chance of winning" [ref=e996] [cursor=pointer]
+                  - button "Michigan district 11, 2026 House election, Likely, Jeremy Moss, 90.0% chance of winning" [ref=e997] [cursor=pointer]
+                  - button "Michigan district 12, 2026 House election, Safe, Rashida Tlaib, 99.7% chance of winning" [ref=e998] [cursor=pointer]
+                  - button "Michigan district 13, 2026 House election, Safe, Donavan McKinney, 99.7% chance of winning" [ref=e999] [cursor=pointer]
+                  - button "Minnesota district 01, 2026 House election, Safe, Brad Finstad, 91.2% chance of winning" [ref=e1000] [cursor=pointer]
+                  - button "Minnesota district 02, 2026 House election, Likely, Matt Little, 68.2% chance of winning" [ref=e1001] [cursor=pointer]
+                  - button "Minnesota district 03, 2026 House election, Safe, Kelly Louise Morrison, 97.2% chance of winning" [ref=e1002] [cursor=pointer]
+                  - button "Minnesota district 04, 2026 House election, Safe, Betty McCollum, 99.6% chance of winning" [ref=e1003] [cursor=pointer]
+                  - button "Minnesota district 05, 2026 House election, Safe, Ilhan Omar, >99.9% chance of winning" [ref=e1004] [cursor=pointer]
+                  - button "Minnesota district 06, 2026 House election, Safe, Thomas Earl \"Tom\" Emmer, Jr., 96.8% chance of winning" [ref=e1005] [cursor=pointer]
+                  - button "Minnesota district 07, 2026 House election, Safe, Michelle Fischbach, 99.7% chance of winning" [ref=e1006] [cursor=pointer]
+                  - button "Minnesota district 08, 2026 House election, Safe, Peter Allen \"Pete\" Stauber, 93.4% chance of winning" [ref=e1007] [cursor=pointer]
+                  - button "Missouri district 01, 2026 House election, Safe, Wesley Bell, >99.9% chance of winning" [ref=e1008] [cursor=pointer]
+                  - button "Missouri district 02, 2026 House election, Likely, Ann Wagner, 85.1% chance of winning" [ref=e1009] [cursor=pointer]
+                  - button "Missouri district 03, 2026 House election, Safe, Bob Onder, 98.8% chance of winning" [ref=e1010] [cursor=pointer]
+                  - button "Missouri district 04, 2026 House election, Safe, Mark Alford, 99.8% chance of winning" [ref=e1011] [cursor=pointer]
+                  - button "Missouri district 05, 2026 House election, Safe, Emanuel Cleaver, II, 97.8% chance of winning" [ref=e1012] [cursor=pointer]
+                  - button "Missouri district 06, 2026 House election, Safe, Chris Stigall, 99.6% chance of winning" [ref=e1013] [cursor=pointer]
+                  - button "Missouri district 07, 2026 House election, Safe, Eric W. Burlison, 99.9% chance of winning" [ref=e1014] [cursor=pointer]
+                  - button "Missouri district 08, 2026 House election, Safe, Jason T. Smith, >99.9% chance of winning" [ref=e1015] [cursor=pointer]
+                  - button "Mississippi district 01, 2026 House election, Safe, Trent Kelly, 99.7% chance of winning" [ref=e1016] [cursor=pointer]
+                  - button "Mississippi district 02, 2026 House election, Safe, Bennie G. Thompson, 96.7% chance of winning" [ref=e1017] [cursor=pointer]
+                  - button "Mississippi district 03, 2026 House election, Safe, Michael Guest, 99.1% chance of winning" [ref=e1018] [cursor=pointer]
+                  - button "Mississippi district 04, 2026 House election, Safe, Mike Ezell, 99.8% chance of winning" [ref=e1019] [cursor=pointer]
+                  - button "Montana district 01, 2026 House election, Likely, AARON FLINT, 84.3% chance of winning" [ref=e1020] [cursor=pointer]
+                  - button "Montana district 02, 2026 House election, Safe, TROY DOWNING, 99.2% chance of winning" [ref=e1021] [cursor=pointer]
+                  - button "North Carolina district 01, 2026 House election, Likely, Laurie Buckhout, 74.1% chance of winning" [ref=e1022] [cursor=pointer]
+                  - button "North Carolina district 02, 2026 House election, Safe, Deborah K. Ross, 99.5% chance of winning" [ref=e1023] [cursor=pointer]
+                  - button "North Carolina district 03, 2026 House election, Safe, Greg Murphy, 92.7% chance of winning" [ref=e1024] [cursor=pointer]
+                  - button "North Carolina district 04, 2026 House election, Safe, Valerie P. Foushee, 99.9% chance of winning" [ref=e1025] [cursor=pointer]
+                  - button "North Carolina district 05, 2026 House election, Safe, Virginia Foxx, 95.8% chance of winning" [ref=e1026] [cursor=pointer]
+                  - button "North Carolina district 06, 2026 House election, Safe, Addison McDowell, 95.5% chance of winning" [ref=e1027] [cursor=pointer]
+                  - button "North Carolina district 07, 2026 House election, Safe, David Rouzer, 92.9% chance of winning" [ref=e1028] [cursor=pointer]
+                  - button "North Carolina district 08, 2026 House election, Safe, Mark Harris, 96.6% chance of winning" [ref=e1029] [cursor=pointer]
+                  - button "North Carolina district 09, 2026 House election, Safe, Richard Hudson, 94.6% chance of winning" [ref=e1030] [cursor=pointer]
+                  - button "North Carolina district 10, 2026 House election, Safe, Pat Harrigan, 95.8% chance of winning" [ref=e1031] [cursor=pointer]
+                  - button "North Carolina district 11, 2026 House election, Likely, Jennifer Capps Balkcom, 79.5% chance of winning" [ref=e1032] [cursor=pointer]
+                  - button "North Carolina district 12, 2026 House election, Safe, Alma S. Adams, >99.9% chance of winning" [ref=e1033] [cursor=pointer]
+                  - button "North Carolina district 13, 2026 House election, Safe, Brad Knott, 95.0% chance of winning" [ref=e1034] [cursor=pointer]
+                  - button "North Carolina district 14, 2026 House election, Safe, Tim Moore, 94.0% chance of winning" [ref=e1035] [cursor=pointer]
+                  - button "North Dakota at-large district, 2026 House election, Safe, Julie Fedorchak, 99.7% chance of winning" [ref=e1036] [cursor=pointer]
+                  - button "Nebraska district 01, 2026 House election, Safe, Mike Flood, 92.2% chance of winning" [ref=e1037] [cursor=pointer]
+                  - button "Nebraska district 02, 2026 House election, Likely, Denise Powell, 64.2% chance of winning" [ref=e1038] [cursor=pointer]
+                  - button "Nebraska district 03, 2026 House election, Safe, Adrian Smith, >99.9% chance of winning" [ref=e1039] [cursor=pointer]
+                  - button "New Hampshire district 01, 2026 House election, Tossup, Stefany Shaheen, 55.6% chance of winning" [ref=e1040] [cursor=pointer]
+                  - button "New Hampshire district 02, 2026 House election, Likely, Maggie Goodlander, 73.9% chance of winning" [ref=e1041] [cursor=pointer]
+                  - button "New Jersey district 01, 2026 House election, Safe, DONALD NORCROSS, 96.0% chance of winning" [ref=e1042] [cursor=pointer]
+                  - button "New Jersey district 02, 2026 House election, Safe, JEFF VAN DREW, 91.7% chance of winning" [ref=e1043] [cursor=pointer]
+                  - button "New Jersey district 03, 2026 House election, Likely, HERB CONAWAY, 84.6% chance of winning" [ref=e1044] [cursor=pointer]
+                  - button "New Jersey district 04, 2026 House election, Safe, CHRISTOPHER H. SMITH, 99.2% chance of winning" [ref=e1045] [cursor=pointer]
+                  - button "New Jersey district 05, 2026 House election, Likely, JOSH GOTTHEIMER, 67.9% chance of winning" [ref=e1046] [cursor=pointer]
+                  - button "New Jersey district 06, 2026 House election, Likely, FRANK PALLONE JR., 81.0% chance of winning" [ref=e1047] [cursor=pointer]
+                  - button "New Jersey district 07, 2026 House election, Likely, THOMAS H. KEAN JR., 69.1% chance of winning" [ref=e1048] [cursor=pointer]
+                  - button "New Jersey district 08, 2026 House election, Safe, ROB MENENDEZ, 99.5% chance of winning" [ref=e1049] [cursor=pointer]
+                  - button "New Jersey district 09, 2026 House election, Tossup, NELIDA POU, 59.5% chance of winning" [ref=e1050] [cursor=pointer]
+                  - button "New Jersey district 10, 2026 House election, Safe, LAMONICA R. MCIVER, >99.9% chance of winning" [ref=e1051] [cursor=pointer]
+                  - button "New Jersey district 11, 2026 House election, Likely, ANALILIA MEJIA, 85.3% chance of winning" [ref=e1052] [cursor=pointer]
+                  - button "New Jersey district 12, 2026 House election, Safe, ADAM HAMAWY, 96.5% chance of winning" [ref=e1053] [cursor=pointer]
+                  - button "New Mexico district 01, 2026 House election, Safe, MELANIE ANN STANSBURY, 91.2% chance of winning" [ref=e1054] [cursor=pointer]
+                  - button "New Mexico district 02, 2026 House election, Tossup, GABRIEL VASQUEZ, 57.3% chance of winning" [ref=e1055] [cursor=pointer]
+                  - button "New Mexico district 03, 2026 House election, Likely, TERESA LEGER FERNANDEZ, 78.1% chance of winning" [ref=e1056] [cursor=pointer]
+                  - button "Nevada district 01, 2026 House election, Likely, Dina Titus, 70.2% chance of winning" [ref=e1057] [cursor=pointer]
+                  - button "Nevada district 02, 2026 House election, Likely, DAVID FLIPPO, 88.1% chance of winning" [ref=e1058] [cursor=pointer]
+                  - button "Nevada district 03, 2026 House election, Likely, Susie Lee, 60.9% chance of winning" [ref=e1059] [cursor=pointer]
+                  - button "Nevada district 04, 2026 House election, Likely, Steven A. Horsford, 70.4% chance of winning" [ref=e1060] [cursor=pointer]
+                  - button "New York district 01, 2026 House election, Likely, Nicholas J. Lalota, 88.6% chance of winning" [ref=e1061] [cursor=pointer]
+                  - button "New York district 02, 2026 House election, Safe, Andrew R. Garbarino, 93.0% chance of winning" [ref=e1062] [cursor=pointer]
+                  - button "New York district 03, 2026 House election, Tossup, Michael J. LiPetri Jr, 51.2% chance of winning" [pressed] [ref=e1063] [cursor=pointer]
+                  - button "New York district 04, 2026 House election, Likely, Laura A. Gillen, 67.3% chance of winning" [ref=e1064] [cursor=pointer]
+                  - button "New York district 05, 2026 House election, Safe, Gregory W. Meeks, 99.8% chance of winning" [ref=e1065] [cursor=pointer]
+                  - button "New York district 06, 2026 House election, Likely, Grace Meng, 80.9% chance of winning" [ref=e1066] [cursor=pointer]
+                  - button "New York district 07, 2026 House election, Safe, Claire Valdez, 99.8% chance of winning" [ref=e1067] [cursor=pointer]
+                  - button "New York district 08, 2026 House election, Safe, Hakeem S. Jeffries, 99.9% chance of winning" [ref=e1068] [cursor=pointer]
+                  - button "New York district 09, 2026 House election, Safe, Yvette D. Clarke, 99.8% chance of winning" [ref=e1069] [cursor=pointer]
+                  - button "New York district 10, 2026 House election, Safe, Brad Lander, >99.9% chance of winning" [ref=e1070] [cursor=pointer]
+                  - button "New York district 11, 2026 House election, Safe, Nicole Malliotakis, 98.4% chance of winning" [ref=e1071] [cursor=pointer]
+                  - button "New York district 12, 2026 House election, Safe, Micah C. Lasher, >99.9% chance of winning" [ref=e1072] [cursor=pointer]
+                  - button "New York district 13, 2026 House election, Safe, Darializa Avila Chevalier, >99.9% chance of winning" [ref=e1073] [cursor=pointer]
+                  - button "New York district 14, 2026 House election, Safe, Alexandria Ocasio-Cortez, 99.3% chance of winning" [ref=e1074] [cursor=pointer]
+                  - button "New York district 15, 2026 House election, Safe, Ritchie Torres, >99.9% chance of winning" [ref=e1075] [cursor=pointer]
+                  - button "New York district 16, 2026 House election, Safe, George S. Latimer, 99.4% chance of winning" [ref=e1076] [cursor=pointer]
+                  - button "New York district 17, 2026 House election, Likely, Mike Lawler, 63.8% chance of winning" [ref=e1077] [cursor=pointer]
+                  - button "New York district 18, 2026 House election, Likely, Pat Ryan, 73.2% chance of winning" [ref=e1078] [cursor=pointer]
+                  - button "New York district 19, 2026 House election, Likely, Josh Riley, 68.8% chance of winning" [ref=e1079] [cursor=pointer]
+                  - button "New York district 20, 2026 House election, Safe, Paul D. Tonko, 92.5% chance of winning" [ref=e1080] [cursor=pointer]
+                  - button "New York district 21, 2026 House election, Safe, Anthony Constantino, 95.0% chance of winning" [ref=e1081] [cursor=pointer]
+                  - button "New York district 22, 2026 House election, Likely, John W. Mannion, 83.2% chance of winning" [ref=e1082] [cursor=pointer]
+                  - button "New York district 23, 2026 House election, Safe, Nicholas A. Langworthy, 97.3% chance of winning" [ref=e1083] [cursor=pointer]
+                  - button "New York district 24, 2026 House election, Safe, Claudia Tenney, 97.9% chance of winning" [ref=e1084] [cursor=pointer]
+                  - button "New York district 25, 2026 House election, Safe, Joseph D. Morelle, 95.8% chance of winning" [ref=e1085] [cursor=pointer]
+                  - button "New York district 26, 2026 House election, Safe, Timothy M. Kennedy, 96.2% chance of winning" [ref=e1086] [cursor=pointer]
+                  - button "Ohio district 01, 2026 House election, Tossup, Greg Landsman, 54.6% chance of winning" [ref=e1087] [cursor=pointer]
+                  - button "Ohio district 02, 2026 House election, Safe, David J. \"Dave\" Taylor, 99.8% chance of winning" [ref=e1088] [cursor=pointer]
+                  - button "Ohio district 03, 2026 House election, Safe, Joyce B. Beatty, 99.8% chance of winning" [ref=e1089] [cursor=pointer]
+                  - button "Ohio district 04, 2026 House election, Safe, James D. \"Jim\" Jordan, 99.8% chance of winning" [ref=e1090] [cursor=pointer]
+                  - button "Ohio district 05, 2026 House election, Safe, Robert Edward \"Bob\" Latta, 98.1% chance of winning" [ref=e1091] [cursor=pointer]
+                  - button "Ohio district 06, 2026 House election, Safe, Michael A. Rulli, 99.6% chance of winning" [ref=e1092] [cursor=pointer]
+                  - button "Ohio district 07, 2026 House election, Likely, Max Miller, 89.9% chance of winning" [ref=e1093] [cursor=pointer]
+                  - button "Ohio district 08, 2026 House election, Safe, Warren Davidson, 94.4% chance of winning" [ref=e1094] [cursor=pointer]
+                  - button "Ohio district 09, 2026 House election, Likely, Derek Merrin, 71.4% chance of winning" [ref=e1095] [cursor=pointer]
+                  - button "Ohio district 10, 2026 House election, Likely, Michael R. \"Mike\" Turner, 84.9% chance of winning" [ref=e1096] [cursor=pointer]
+                  - button "Ohio district 11, 2026 House election, Safe, Shontel M. Brown, >99.9% chance of winning" [ref=e1097] [cursor=pointer]
+                  - button "Ohio district 12, 2026 House election, Safe, William Troy \"Troy\" Balderson, 99.2% chance of winning" [ref=e1098] [cursor=pointer]
+                  - button "Ohio district 13, 2026 House election, Likely, Emilia Sykes, 73.0% chance of winning" [ref=e1099] [cursor=pointer]
+                  - button "Ohio district 14, 2026 House election, Safe, David P. \"Dave\" Joyce, 97.0% chance of winning" [ref=e1100] [cursor=pointer]
+                  - button "Ohio district 15, 2026 House election, Likely, Republican candidates group outcome, 88.5% chance of winning" [ref=e1101] [cursor=pointer]
+                  - button "Oklahoma district 01, 2026 House election, Safe, MARK TEDFORD, 95.7% chance of winning" [ref=e1102] [cursor=pointer]
+                  - button "Oklahoma district 02, 2026 House election, Safe, JOSH BRECHEEN, >99.9% chance of winning" [ref=e1103] [cursor=pointer]
+                  - button "Oklahoma district 03, 2026 House election, Safe, FRANK D. LUCAS, >99.9% chance of winning" [ref=e1104] [cursor=pointer]
+                  - button "Oklahoma district 04, 2026 House election, Safe, TOM COLE, 99.5% chance of winning" [ref=e1105] [cursor=pointer]
+                  - button "Oklahoma district 05, 2026 House election, Safe, STEPHANIE BICE, 95.9% chance of winning" [ref=e1106] [cursor=pointer]
+                  - button "Oregon district 01, 2026 House election, Safe, Suzanne M. Bonamici, 99.7% chance of winning" [ref=e1107] [cursor=pointer]
+                  - button "Oregon district 02, 2026 House election, Safe, Cliff Bentz, 98.9% chance of winning" [ref=e1108] [cursor=pointer]
+                  - button "Oregon district 03, 2026 House election, Safe, Maxine E. Dexter, >99.9% chance of winning" [ref=e1109] [cursor=pointer]
+                  - button "Oregon district 04, 2026 House election, Safe, Valerie \"Val\" Hoyle, 90.5% chance of winning" [ref=e1110] [cursor=pointer]
+                  - button "Oregon district 05, 2026 House election, Likely, Janelle S. Bynum, 85.2% chance of winning" [ref=e1111] [cursor=pointer]
+                  - button "Oregon district 06, 2026 House election, Likely, Andrea Salinas, 89.7% chance of winning" [ref=e1112] [cursor=pointer]
+                  - button "Pennsylvania district 01, 2026 House election, Likely, BRIAN FITZPATRICK, 64.5% chance of winning" [ref=e1113] [cursor=pointer]
+                  - button "Pennsylvania district 02, 2026 House election, Safe, BRENDAN F BOYLE, 99.6% chance of winning" [ref=e1114] [cursor=pointer]
+                  - button "Pennsylvania district 03, 2026 House election, Safe, CHRIS RABB, 100.0% chance of winning" [ref=e1115] [cursor=pointer]
+                  - button "Pennsylvania district 04, 2026 House election, Safe, MADELEINE DEAN, 94.0% chance of winning" [ref=e1116] [cursor=pointer]
+                  - button "Pennsylvania district 05, 2026 House election, Safe, MARY GAY SCANLON, 98.9% chance of winning" [ref=e1117] [cursor=pointer]
+                  - button "Pennsylvania district 06, 2026 House election, Likely, CHRISSY HOULAHAN, 89.4% chance of winning" [ref=e1118] [cursor=pointer]
+                  - button "Pennsylvania district 07, 2026 House election, Likely, RYAN MACKENZIE, 74.8% chance of winning" [ref=e1119] [cursor=pointer]
+                  - button "Pennsylvania district 08, 2026 House election, Likely, ROB BRESNAHAN JR, 86.1% chance of winning" [ref=e1120] [cursor=pointer]
+                  - button "Pennsylvania district 09, 2026 House election, Safe, DAN MEUSER, 99.7% chance of winning" [ref=e1121] [cursor=pointer]
+                  - button "Pennsylvania district 10, 2026 House election, Likely, SCOTT PERRY, 79.8% chance of winning" [ref=e1122] [cursor=pointer]
+                  - button "Pennsylvania district 11, 2026 House election, Safe, LLOYD K SMUCKER, 97.4% chance of winning" [ref=e1123] [cursor=pointer]
+                  - button "Pennsylvania district 12, 2026 House election, Safe, SUMMER LEE, 96.1% chance of winning" [ref=e1124] [cursor=pointer]
+                  - button "Pennsylvania district 13, 2026 House election, Safe, JOHN JOYCE, >99.9% chance of winning" [ref=e1125] [cursor=pointer]
+                  - button "Pennsylvania district 14, 2026 House election, Safe, GUY RESCHENTHALER, 99.5% chance of winning" [ref=e1126] [cursor=pointer]
+                  - button "Pennsylvania district 15, 2026 House election, Safe, GLENN GT THOMPSON, 99.7% chance of winning" [ref=e1127] [cursor=pointer]
+                  - button "Pennsylvania district 16, 2026 House election, Safe, MIKE KELLY, 97.9% chance of winning" [ref=e1128] [cursor=pointer]
+                  - button "Pennsylvania district 17, 2026 House election, Likely, CHRIS DELUZIO, 78.7% chance of winning" [ref=e1129] [cursor=pointer]
+                  - button "Rhode Island district 01, 2026 House election, Safe, Gabriel Felix \"Gabe\" Amo, Jr., 97.5% chance of winning" [ref=e1130] [cursor=pointer]
+                  - button "Rhode Island district 02, 2026 House election, Likely, Seth M. Magaziner, 81.6% chance of winning" [ref=e1131] [cursor=pointer]
+                  - button "South Carolina district 01, 2026 House election, Likely, Jenny Costa Honeycutt, 86.5% chance of winning" [ref=e1132] [cursor=pointer]
+                  - button "South Carolina district 02, 2026 House election, Safe, Joe Wilson, 93.0% chance of winning" [ref=e1133] [cursor=pointer]
+                  - button "South Carolina district 03, 2026 House election, Safe, Sheri Biggs, 99.9% chance of winning" [ref=e1134] [cursor=pointer]
+                  - button "South Carolina district 04, 2026 House election, Safe, William Timmons, 98.1% chance of winning" [ref=e1135] [cursor=pointer]
+                  - button "South Carolina district 05, 2026 House election, Safe, Wes Climer, 96.3% chance of winning" [ref=e1136] [cursor=pointer]
+                  - button "South Carolina district 06, 2026 House election, Safe, James E Jim Clyburn, 97.6% chance of winning" [ref=e1137] [cursor=pointer]
+                  - button "South Carolina district 07, 2026 House election, Safe, Russell Fry, 98.7% chance of winning" [ref=e1138] [cursor=pointer]
+                  - button "South Dakota at-large district, 2026 House election, Safe, Marty Jackley, 98.5% chance of winning" [ref=e1139] [cursor=pointer]
+                  - button "Tennessee district 01, 2026 House election, Safe, Diana Lynn Harshbarger, >99.9% chance of winning" [ref=e1140] [cursor=pointer]
+                  - button "Tennessee district 02, 2026 House election, Safe, Tim Burchett, 99.5% chance of winning" [ref=e1141] [cursor=pointer]
+                  - button "Tennessee district 03, 2026 House election, Safe, Charles J. \"Chuck\" Fleischmann, 99.6% chance of winning" [ref=e1142] [cursor=pointer]
+                  - button "Tennessee district 04, 2026 House election, Safe, Scott Eugene DesJarlais, 98.2% chance of winning" [ref=e1143] [cursor=pointer]
+                  - button "Tennessee district 05, 2026 House election, Safe, Charles W. \"Charlie\" Hatcher, 96.4% chance of winning" [ref=e1144] [cursor=pointer]
+                  - button "Tennessee district 06, 2026 House election, Safe, Johnny C. Garrett, 97.7% chance of winning" [ref=e1145] [cursor=pointer]
+                  - button "Tennessee district 07, 2026 House election, Safe, Matthew Robert \"Matt\" Van Epps, 97.8% chance of winning" [ref=e1146] [cursor=pointer]
+                  - button "Tennessee district 08, 2026 House election, Safe, David Kustoff, 97.0% chance of winning" [ref=e1147] [cursor=pointer]
+                  - button "Tennessee district 09, 2026 House election, Safe, Brent Taylor, 95.3% chance of winning" [ref=e1148] [cursor=pointer]
+                  - button "Texas district 01, 2026 House election, Safe, NATHANIEL MORAN, >99.9% chance of winning" [ref=e1149] [cursor=pointer]
+                  - button "Texas district 02, 2026 House election, Safe, STEVE TOTH, 96.3% chance of winning" [ref=e1150] [cursor=pointer]
+                  - button "Texas district 03, 2026 House election, Safe, KEITH SELF, 98.1% chance of winning" [ref=e1151] [cursor=pointer]
+                  - button "Texas district 04, 2026 House election, Safe, PAT FALLON, 98.4% chance of winning" [ref=e1152] [cursor=pointer]
+                  - button "Texas district 05, 2026 House election, Safe, LANCE GOODEN, 97.5% chance of winning" [ref=e1153] [cursor=pointer]
+                  - button "Texas district 06, 2026 House election, Safe, JAKE ELLZEY, 97.9% chance of winning" [ref=e1154] [cursor=pointer]
+                  - button "Texas district 07, 2026 House election, Safe, LIZZIE PANNILL FLETCHER, 97.9% chance of winning" [ref=e1155] [cursor=pointer]
+                  - button "Texas district 08, 2026 House election, Safe, JESSICA HART STEINMANN, 98.1% chance of winning" [ref=e1156] [cursor=pointer]
+                  - button "Texas district 09, 2026 House election, Safe, ALEX MEALER, 94.4% chance of winning" [ref=e1157] [cursor=pointer]
+                  - button "Texas district 10, 2026 House election, Safe, CHRIS GOBER, 96.2% chance of winning" [ref=e1158] [cursor=pointer]
+                  - button "Texas district 11, 2026 House election, Safe, AUGUST PFLUGER, 99.6% chance of winning" [ref=e1159] [cursor=pointer]
+                  - button "Texas district 12, 2026 House election, Safe, CRAIG GOLDMAN, 98.2% chance of winning" [ref=e1160] [cursor=pointer]
+                  - button "Texas district 13, 2026 House election, Safe, RONNY JACKSON, >99.9% chance of winning" [ref=e1161] [cursor=pointer]
+                  - button "Texas district 14, 2026 House election, Safe, RANDY WEBER, 98.3% chance of winning" [ref=e1162] [cursor=pointer]
+                  - button "Texas district 15, 2026 House election, Safe, MONICA DE LA CRUZ, 95.9% chance of winning" [ref=e1163] [cursor=pointer]
+                  - button "Texas district 16, 2026 House election, Safe, VERONICA ESCOBAR, 94.4% chance of winning" [ref=e1164] [cursor=pointer]
+                  - button "Texas district 17, 2026 House election, Safe, PETE SESSIONS, 97.5% chance of winning" [ref=e1165] [cursor=pointer]
+                  - button "Texas district 18, 2026 House election, Safe, CHRISTIAN DASHAUN MENEFEE, >99.9% chance of winning" [ref=e1166] [cursor=pointer]
+                  - button "Texas district 19, 2026 House election, Safe, TOM SELL, >99.9% chance of winning" [ref=e1167] [cursor=pointer]
+                  - button "Texas district 20, 2026 House election, Safe, JOAQUIN CASTRO, 98.9% chance of winning" [ref=e1168] [cursor=pointer]
+                  - button "Texas district 21, 2026 House election, Safe, MARK TEIXEIRA, 95.8% chance of winning" [ref=e1169] [cursor=pointer]
+                  - button "Texas district 22, 2026 House election, Safe, TREVER NEHLS, 96.2% chance of winning" [ref=e1170] [cursor=pointer]
+                  - button "Texas district 23, 2026 House election, Likely, BRANDON HERRERA, 89.1% chance of winning" [ref=e1171] [cursor=pointer]
+                  - button "Texas district 24, 2026 House election, Safe, BETH VAN DUYNE, 94.8% chance of winning" [ref=e1172] [cursor=pointer]
+                  - button "Texas district 25, 2026 House election, Safe, ROGER WILLIAMS, 98.2% chance of winning" [ref=e1173] [cursor=pointer]
+                  - button "Texas district 26, 2026 House election, Safe, BRANDON GILL, 98.2% chance of winning" [ref=e1174] [cursor=pointer]
+                  - button "Texas district 27, 2026 House election, Safe, MICHAEL CLOUD, 97.4% chance of winning" [ref=e1175] [cursor=pointer]
+                  - button "Texas district 28, 2026 House election, Likely, TANO E. TIJERINA, 70.8% chance of winning" [ref=e1176] [cursor=pointer]
+                  - button "Texas district 29, 2026 House election, Safe, SYLVIA GARCIA, 99.2% chance of winning" [ref=e1177] [cursor=pointer]
+                  - button "Texas district 30, 2026 House election, Safe, FREDERICK D. HAYNES III, 99.9% chance of winning" [ref=e1178] [cursor=pointer]
+                  - button "Texas district 31, 2026 House election, Safe, JOHN CARTER, 97.6% chance of winning" [ref=e1179] [cursor=pointer]
+                  - button "Texas district 32, 2026 House election, Safe, JACE YARBROUGH, 92.8% chance of winning" [ref=e1180] [cursor=pointer]
+                  - button "Texas district 33, 2026 House election, Safe, COLIN ALLRED, 98.9% chance of winning" [ref=e1181] [cursor=pointer]
+                  - button "Texas district 34, 2026 House election, Likely, ERIC FLORES, 70.1% chance of winning" [ref=e1182] [cursor=pointer]
+                  - button "Texas district 35, 2026 House election, Likely, CARLOS DE LA CRUZ, 81.8% chance of winning" [ref=e1183] [cursor=pointer]
+                  - button "Texas district 36, 2026 House election, Safe, BRIAN BABIN, 98.4% chance of winning" [ref=e1184] [cursor=pointer]
+                  - button "Texas district 37, 2026 House election, Safe, GREG CASAR, >99.9% chance of winning" [ref=e1185] [cursor=pointer]
+                  - button "Texas district 38, 2026 House election, Safe, JON BONCK, 95.2% chance of winning" [ref=e1186] [cursor=pointer]
+                  - button "Utah district 01, 2026 House election, Safe, BEN MCADAMS, 96.4% chance of winning" [ref=e1187] [cursor=pointer]
+                  - button "Utah district 02, 2026 House election, Safe, BLAKE D. MOORE, 99.2% chance of winning" [ref=e1188] [cursor=pointer]
+                  - button "Utah district 03, 2026 House election, Safe, CELESTE MALOY, 99.8% chance of winning" [ref=e1189] [cursor=pointer]
+                  - button "Utah district 04, 2026 House election, Safe, MIKE KENNEDY, 99.5% chance of winning" [ref=e1190] [cursor=pointer]
+                  - button "Virginia district 01, 2026 House election, Likely, Robert J. \"Rob\" Wittman, 79.1% chance of winning" [ref=e1191] [cursor=pointer]
+                  - button "Virginia district 02, 2026 House election, Likely, Jen A. Kiggans, 66.4% chance of winning" [ref=e1192] [cursor=pointer]
+                  - button "Virginia district 03, 2026 House election, Safe, Robert C. \"Bobby\" Scott, 99.5% chance of winning" [ref=e1193] [cursor=pointer]
+                  - button "Virginia district 04, 2026 House election, Safe, Jennifer L. McClellan, 99.4% chance of winning" [ref=e1194] [cursor=pointer]
+                  - button "Virginia district 05, 2026 House election, Safe, John J. McGuire III, 91.3% chance of winning" [ref=e1195] [cursor=pointer]
+                  - button "Virginia district 06, 2026 House election, Safe, Ben L. Cline, 98.2% chance of winning" [ref=e1196] [cursor=pointer]
+                  - button "Virginia district 07, 2026 House election, Likely, Eugene S. Vindman, 72.0% chance of winning" [ref=e1197] [cursor=pointer]
+                  - button "Virginia district 08, 2026 House election, Safe, Donald S. Beyer, Jr., >99.9% chance of winning" [ref=e1198] [cursor=pointer]
+                  - button "Virginia district 09, 2026 House election, Safe, H. Morgan Griffith, 99.9% chance of winning" [ref=e1199] [cursor=pointer]
+                  - button "Virginia district 10, 2026 House election, Likely, Suhas Subramanyam, 84.8% chance of winning" [ref=e1200] [cursor=pointer]
+                  - button "Virginia district 11, 2026 House election, Safe, James R. Walkinshaw, 99.5% chance of winning" [ref=e1201] [cursor=pointer]
+                  - button "Vermont at-large district, 2026 House election, Safe, BECCA BALINT, 99.4% chance of winning" [ref=e1202] [cursor=pointer]
+                  - button "Washington district 01, 2026 House election, Safe, Suzan DelBene, 99.1% chance of winning" [ref=e1203] [cursor=pointer]
+                  - button "Washington district 02, 2026 House election, Safe, Rick Larsen, 98.0% chance of winning" [ref=e1204] [cursor=pointer]
+                  - button "Washington district 03, 2026 House election, Tossup, Marie Gluesenkamp Perez, 52.0% chance of winning" [ref=e1205] [cursor=pointer]
+                  - button "Washington district 04, 2026 House election, Safe, Amanda McKinney, 95.3% chance of winning" [ref=e1206] [cursor=pointer]
+                  - button "Washington district 05, 2026 House election, Likely, Michael Baumgartner, 89.8% chance of winning" [ref=e1207] [cursor=pointer]
+                  - button "Washington district 06, 2026 House election, Safe, Emily Randall, 96.4% chance of winning" [ref=e1208] [cursor=pointer]
+                  - button "Washington district 07, 2026 House election, Safe, Pramila Jayapal, >99.9% chance of winning" [ref=e1209] [cursor=pointer]
+                  - button "Washington district 08, 2026 House election, Likely, Kim Schrier, 79.7% chance of winning" [ref=e1210] [cursor=pointer]
+                  - button "Washington district 09, 2026 House election, Safe, Adam Smith, 99.8% chance of winning" [ref=e1211] [cursor=pointer]
+                  - button "Washington district 10, 2026 House election, Safe, Marilyn Strickland, 95.7% chance of winning" [ref=e1212] [cursor=pointer]
+                  - button "Wisconsin district 01, 2026 House election, Likely, Republican candidates group outcome, 78.1% chance of winning" [ref=e1213] [cursor=pointer]
+                  - button "Wisconsin district 02, 2026 House election, Safe, Mark Pocan, 100.0% chance of winning" [ref=e1214] [cursor=pointer]
+                  - button "Wisconsin district 03, 2026 House election, Likely, Derrick F. Van Orden, 84.2% chance of winning" [ref=e1215] [cursor=pointer]
+                  - button "Wisconsin district 04, 2026 House election, Safe, Gwendolynne S. \"Gwen\" Moore, >99.9% chance of winning" [ref=e1216] [cursor=pointer]
+                  - button "Wisconsin district 05, 2026 House election, Safe, Scott L. Fitzgerald, 97.7% chance of winning" [ref=e1217] [cursor=pointer]
+                  - button "Wisconsin district 06, 2026 House election, Safe, Glenn S. Grothman, 95.0% chance of winning" [ref=e1218] [cursor=pointer]
+                  - button "Wisconsin district 07, 2026 House election, Safe, Michael Alfonso, 96.2% chance of winning" [ref=e1219] [cursor=pointer]
+                  - button "Wisconsin district 08, 2026 House election, Safe, Tony Wied, 94.9% chance of winning" [ref=e1220] [cursor=pointer]
+                  - button "West Virginia district 01, 2026 House election, Safe, CAROL MILLER, 99.9% chance of winning" [ref=e1221] [cursor=pointer]
+                  - button "West Virginia district 02, 2026 House election, Safe, RILEY MOORE, 99.8% chance of winning" [ref=e1222] [cursor=pointer]
+                  - button "Wyoming at-large district, 2026 House election, Safe, Chuck Gray, 99.8% chance of winning" [ref=e1223] [cursor=pointer]
+                  - generic [ref=e1224]: Alaska and Hawaii use insets; geographic scale varies.
+                - generic [ref=e1225]:
+                  - strong [ref=e1226]: New York district 03
+                  - generic [ref=e1227]: · 2026 House election · Tossup
+                - paragraph [ref=e1228]: 435 of 435 forecast districts match this election’s district map. Every forecast district has matching boundaries.
+                - group [ref=e1229]:
+                  - generic "District boundary source" [ref=e1230] [cursor=pointer]
+              - paragraph [ref=e1231]: D and R identify Democratic and Republican modeled outcomes. O identifies an Other group and includes independently labeled candidates where applicable. Safe means above 90%; Likely means above 60% through 90%; Tossup means no outcome exceeds 60%. These are model chances, not guarantees.
+              - generic [ref=e1232]:
+                - generic [ref=e1233]: Safe D
+                - generic [ref=e1235]: Likely D
+                - generic [ref=e1237]: Tossup
+                - generic [ref=e1239]: Likely R
+                - generic [ref=e1241]: Safe R
+                - generic [ref=e1243]: Likely O
+                - generic [ref=e1245]: Safe O
+            - region [ref=e1247]:
+              - generic [ref=e1249]:
+                - heading "Who could control the chamber?" [level=2] [ref=e1250]
+                - generic [ref=e1251]: 435 seats · 218 for a majority · Other seats remain unassigned
+              - generic [ref=e1252]:
+                - generic [ref=e1253]:
+                  - generic [ref=e1254]: Democratic majority
+                  - generic [ref=e1256]: 24.0%
+                - generic [ref=e1257]:
+                  - generic [ref=e1258]: Republican majority
+                  - generic [ref=e1260]: 75.5%
+                - generic [ref=e1261]:
+                  - generic [ref=e1262]: Neither party reaches 218
+                  - generic [ref=e1264]: 0.4%
+              - paragraph [ref=e1269]: At least 218 seats for a party. Other and independent winners remain unassigned. Unresolved means neither party reaches 218; it does not predict Speaker negotiations.
+              - paragraph [ref=e1270]: “Neither party reaches 218” is the unresolved outcome. It does not mean a tied House, and this result does not model Speaker negotiations.
+              - generic [ref=e1271]:
+                - generic [ref=e1272]:
+                  - text: "D seats: 202.5 expected seats"
+                  - generic [ref=e1273]: (155–249, modeled 90% range)
+                - generic [ref=e1274]:
+                  - text: "R seats: 232.0 expected seats"
+                  - generic [ref=e1275]: (185–279, modeled 90% range)
+                - generic [ref=e1276]:
+                  - text: "Unassigned O: 0.6 expected seats"
+                  - generic [ref=e1277]: (0–2, modeled 90% range)
+              - paragraph [ref=e1278]: Expected seats are averages across simulated elections. O (Other) seats remain unassigned to either party; outcomes outside the modeled 90% range remain possible.
+            - region [ref=e1279]:
+              - generic [ref=e1280]:
+                - heading "The districts" [level=2] [ref=e1281]
+                - generic [ref=e1282]: 10 of 435 races
+              - textbox "Search districts or candidates" [ref=e1284]:
+                - /placeholder: Find a district, state, or candidate
+              - generic [ref=e1285]:
+                - button "NY-03 Thomas R. Suozzi (D) / Michael J. LiPetri Jr (R) Tossup" [pressed] [ref=e1286] [cursor=pointer]:
+                  - strong [ref=e1287]: NY-03
+                  - generic [ref=e1288]: Thomas R. Suozzi (D) / Michael J. LiPetri Jr (R)
+                  - generic [ref=e1289]: Tossup
+                - button "WA-03 Marie Gluesenkamp Perez (D) / John Braun (R) Tossup" [ref=e1290] [cursor=pointer]:
+                  - strong [ref=e1291]: WA-03
+                  - generic [ref=e1292]: Marie Gluesenkamp Perez (D) / John Braun (R)
+                  - generic [ref=e1293]: Tossup
+                - button "OH-01 Greg Landsman (D) / Eric Conroy (R) / Nathan Weise (O) Tossup" [ref=e1294] [cursor=pointer]:
+                  - strong [ref=e1295]: OH-01
+                  - generic [ref=e1296]: Greg Landsman (D) / Eric Conroy (R) / Nathan Weise (O)
+                  - generic [ref=e1297]: Tossup
+                - button "NH-01 Stefany Shaheen (D) / Anthony DiLorenzo (R) Tossup" [ref=e1298] [cursor=pointer]:
+                  - strong [ref=e1299]: NH-01
+                  - generic [ref=e1300]: Stefany Shaheen (D) / Anthony DiLorenzo (R)
+                  - generic [ref=e1301]: Tossup
+                - button "MI-08 Kristen McDonald Rivet (D) / Thomas J. Smith (R) / Other candidates and write-ins (O) Tossup" [ref=e1302] [cursor=pointer]:
+                  - strong [ref=e1303]: MI-08
+                  - generic [ref=e1304]: Kristen McDonald Rivet (D) / Thomas J. Smith (R) / Other candidates and write-ins (O)
+                  - generic [ref=e1305]: Tossup
+                - button "NM-02 GABRIEL VASQUEZ (D) / GREGORY G CUNNINGHAM (R) Tossup" [ref=e1306] [cursor=pointer]:
+                  - strong [ref=e1307]: NM-02
+                  - generic [ref=e1308]: GABRIEL VASQUEZ (D) / GREGORY G CUNNINGHAM (R)
+                  - generic [ref=e1309]: Tossup
+                - button "NJ-09 NELIDA POU (D) / ROSIE PINO (R) / TERRISA BUKOVINAC (O) Tossup" [ref=e1310] [cursor=pointer]:
+                  - strong [ref=e1311]: NJ-09
+                  - generic [ref=e1312]: NELIDA POU (D) / ROSIE PINO (R) / TERRISA BUKOVINAC (O)
+                  - generic [ref=e1313]: Tossup
+                - button "CA-48 Marni von Wilpert (D) / Jim Desmond (R) Likely" [ref=e1314] [cursor=pointer]:
+                  - strong [ref=e1315]: CA-48
+                  - generic [ref=e1316]: Marni von Wilpert (D) / Jim Desmond (R)
+                  - generic [ref=e1317]: Likely
+                - button "NV-03 Susie Lee (D) / Marty O'Donnell (R) / Jon Kamerath (O) Likely" [ref=e1318] [cursor=pointer]:
+                  - strong [ref=e1319]: NV-03
+                  - generic [ref=e1320]: Susie Lee (D) / Marty O'Donnell (R) / Jon Kamerath (O)
+                  - generic [ref=e1321]: Likely
+                - button "AZ-01 Amish Shah (D) / Thomas James \"Jay\" Feely, IV (R) / Other candidates and write-ins (O) Likely" [ref=e1322] [cursor=pointer]:
+                  - strong [ref=e1323]: AZ-01
+                  - generic [ref=e1324]: Amish Shah (D) / Thomas James "Jay" Feely, IV (R) / Other candidates and write-ins (O)
+                  - generic [ref=e1325]: Likely
+              - button "See all 435 races" [ref=e1326] [cursor=pointer]:
+                - text: See all 435 races
+                - generic [aria-hidden] [ref=e1327]: ⌄
+          - complementary "Selected House race detail" [ref=e1328]:
+            - generic [ref=e1329]: District in focus · Tossup
+            - heading "NY-03" [level=2] [ref=e1330]
+            - paragraph [ref=e1331]: New York · 2026 House election
+            - paragraph [ref=e1332]:
+              - text: Polling is switched off for this model.
+              - link "Why these polls?" [ref=e1333] [cursor=pointer]:
+                - /url: "#house-live-polling"
+            - paragraph [ref=e1334]: "Plurality: the candidate with the most votes wins; the forecast reports that candidate’s group. A vote-share estimate is conditional on the two named candidates; the group win chances remain separate."
+            - heading "Chance of winning" [level=3] [ref=e1335]
+            - paragraph [ref=e1336]: These are chances of each modeled candidate or group winning, not vote shares. A group probability is not allocated among its members.
+            - generic [ref=e1337]:
+              - generic [ref=e1338]:
+                - generic [ref=e1339]:
+                  - generic [ref=e1340]: Thomas R. Suozzi
+                  - text: Democratic (D)
+                - strong [ref=e1341]: 48.8%
+              - paragraph [ref=e1344]:
+                - text: Thomas R. Suozzi · Democratic · currently holds this seat
+                - generic [ref=e1345]:
+                  - text: ·
+                  - link "Source" [ref=e1346] [cursor=pointer]:
+                    - /url: https://clerk.house.gov/xml/lists/MemberData.xml
+                - generic [ref=e1347]:
+                  - text: ·
+                  - link "Source" [ref=e1348] [cursor=pointer]:
+                    - /url: https://elections.ny.gov/system/files/documents/2026/10/accessible-2026-general-ballot-certification-10.7.2026.pdf
+            - generic [ref=e1349]:
+              - generic [ref=e1350]:
+                - generic [ref=e1351]:
+                  - generic [ref=e1352]: Michael J. LiPetri Jr
+                  - text: Republican (R)
+                - strong [ref=e1353]: 51.2%
+              - paragraph [ref=e1356]:
+                - text: Michael J. LiPetri Jr · Republican
+                - generic [ref=e1357]:
+                  - text: ·
+                  - link "Source" [ref=e1358] [cursor=pointer]:
+                    - /url: https://elections.ny.gov/system/files/documents/2026/10/accessible-2026-general-ballot-certification-10.7.2026.pdf
+            - region "Conditional two-candidate vote share" [ref=e1359]:
+              - heading "Conditional two-candidate share" [level=3] [ref=e1360]
+              - paragraph [ref=e1361]: "Pair: Thomas R. Suozzi and Michael J. LiPetri Jr. First candidate average: 49.8%. Denominator: Share of votes for the two named principal contenders."
+              - paragraph [ref=e1362]: "Middle 90% of modeled shares: 39.2%–60.4%. First candidate exceeds half: 48.8%."
+              - paragraph [ref=e1363]: This share estimate is conditional on the named pair; it is not the candidate or group win probability above.
+              - paragraph [ref=e1364]: Share is conditional on votes for the two named principals; it is not an unconditional group-win probability.
+            - paragraph [ref=e1365]: Probabilities are conditional on the captured candidate/group support; later roster changes need a new release.
+        - region [ref=e1366]:
+          - generic [ref=e1367]: Polling inputs
+          - heading "Which polls are included?" [level=2] [ref=e1368]
+          - paragraph [ref=e1369]:
+            - strong [ref=e1370]: Polling is switched off.
+            - text: This model uses no current poll measurements.
+          - paragraph [ref=e1371]: Each result is one question used for one district. A survey covering several districts can supply several results; this is not a count of independent surveys.
+          - paragraph [ref=e1372]: The eligible source collection contains 167 question results across 98 districts. They are not used by this model.
+          - group [ref=e1373]:
+            - generic "How polls are chosen" [ref=e1374] [cursor=pointer]
+          - group [ref=e1375]:
+            - generic "Poll details for NY-03" [ref=e1376] [cursor=pointer]
+            - option "AK-00"
+            - option "AL-01"
+            - option "AL-02"
+            - option "AL-03"
+            - option "AL-04"
+            - option "AL-05"
+            - option "AL-06"
+            - option "AL-07"
+            - option "AR-01"
+            - option "AR-02"
+            - option "AR-03"
+            - option "AR-04"
+            - option "AZ-01"
+            - option "AZ-02"
+            - option "AZ-03"
+            - option "AZ-04"
+            - option "AZ-05"
+            - option "AZ-06"
+            - option "AZ-07"
+            - option "AZ-08"
+            - option "AZ-09"
+            - option "CA-01"
+            - option "CA-02"
+            - option "CA-03"
+            - option "CA-04"
+            - option "CA-05"
+            - option "CA-06"
+            - option "CA-07"
+            - option "CA-08"
+            - option "CA-09"
+            - option "CA-10"
+            - option "CA-11"
+            - option "CA-12"
+            - option "CA-13"
+            - option "CA-14"
+            - option "CA-15"
+            - option "CA-16"
+            - option "CA-17"
+            - option "CA-18"
+            - option "CA-19"
+            - option "CA-20"
+            - option "CA-21"
+            - option "CA-22"
+            - option "CA-23"
+            - option "CA-24"
+            - option "CA-25"
+            - option "CA-26"
+            - option "CA-27"
+            - option "CA-28"
+            - option "CA-29"
+            - option "CA-30"
+            - option "CA-31"
+            - option "CA-32"
+            - option "CA-33"
+            - option "CA-34"
+            - option "CA-35"
+            - option "CA-36"
+            - option "CA-37"
+            - option "CA-38"
+            - option "CA-39"
+            - option "CA-40"
+            - option "CA-41"
+            - option "CA-42"
+            - option "CA-43"
+            - option "CA-44"
+            - option "CA-45"
+            - option "CA-46"
+            - option "CA-47"
+            - option "CA-48"
+            - option "CA-49"
+            - option "CA-50"
+            - option "CA-51"
+            - option "CA-52"
+            - option "CO-01"
+            - option "CO-02"
+            - option "CO-03"
+            - option "CO-04"
+            - option "CO-05"
+            - option "CO-06"
+            - option "CO-07"
+            - option "CO-08"
+            - option "CT-01"
+            - option "CT-02"
+            - option "CT-03"
+            - option "CT-04"
+            - option "CT-05"
+            - option "DE-00"
+            - option "FL-01"
+            - option "FL-02"
+            - option "FL-03"
+            - option "FL-04"
+            - option "FL-05"
+            - option "FL-06"
+            - option "FL-07"
+            - option "FL-08"
+            - option "FL-09"
+            - option "FL-10"
+            - option "FL-11"
+            - option "FL-12"
+            - option "FL-13"
+            - option "FL-14"
+            - option "FL-15"
+            - option "FL-16"
+            - option "FL-17"
+            - option "FL-18"
+            - option "FL-19"
+            - option "FL-20"
+            - option "FL-21"
+            - option "FL-22"
+            - option "FL-23"
+            - option "FL-24"
+            - option "FL-25"
+            - option "FL-26"
+            - option "FL-27"
+            - option "FL-28"
+            - option "GA-01"
+            - option "GA-02"
+            - option "GA-03"
+            - option "GA-04"
+            - option "GA-05"
+            - option "GA-06"
+            - option "GA-07"
+            - option "GA-08"
+            - option "GA-09"
+            - option "GA-10"
+            - option "GA-11"
+            - option "GA-12"
+            - option "GA-13"
+            - option "GA-14"
+            - option "HI-01"
+            - option "HI-02"
+            - option "IA-01"
+            - option "IA-02"
+            - option "IA-03"
+            - option "IA-04"
+            - option "ID-01"
+            - option "ID-02"
+            - option "IL-01"
+            - option "IL-02"
+            - option "IL-03"
+            - option "IL-04"
+            - option "IL-05"
+            - option "IL-06"
+            - option "IL-07"
+            - option "IL-08"
+            - option "IL-09"
+            - option "IL-10"
+            - option "IL-11"
+            - option "IL-12"
+            - option "IL-13"
+            - option "IL-14"
+            - option "IL-15"
+            - option "IL-16"
+            - option "IL-17"
+            - option "IN-01"
+            - option "IN-02"
+            - option "IN-03"
+            - option "IN-04"
+            - option "IN-05"
+            - option "IN-06"
+            - option "IN-07"
+            - option "IN-08"
+            - option "IN-09"
+            - option "KS-01"
+            - option "KS-02"
+            - option "KS-03"
+            - option "KS-04"
+            - option "KY-01"
+            - option "KY-02"
+            - option "KY-03"
+            - option "KY-04"
+            - option "KY-05"
+            - option "KY-06"
+            - option "LA-01"
+            - option "LA-02"
+            - option "LA-03"
+            - option "LA-04"
+            - option "LA-05"
+            - option "LA-06"
+            - option "MA-01"
+            - option "MA-02"
+            - option "MA-03"
+            - option "MA-04"
+            - option "MA-05"
+            - option "MA-06"
+            - option "MA-07"
+            - option "MA-08"
+            - option "MA-09"
+            - option "MD-01"
+            - option "MD-02"
+            - option "MD-03"
+            - option "MD-04"
+            - option "MD-05"
+            - option "MD-06"
+            - option "MD-07"
+            - option "MD-08"
+            - option "ME-01"
+            - option "ME-02"
+            - option "MI-01"
+            - option "MI-02"
+            - option "MI-03"
+            - option "MI-04"
+            - option "MI-05"
+            - option "MI-06"
+            - option "MI-07"
+            - option "MI-08"
+            - option "MI-09"
+            - option "MI-10"
+            - option "MI-11"
+            - option "MI-12"
+            - option "MI-13"
+            - option "MN-01"
+            - option "MN-02"
+            - option "MN-03"
+            - option "MN-04"
+            - option "MN-05"
+            - option "MN-06"
+            - option "MN-07"
+            - option "MN-08"
+            - option "MO-01"
+            - option "MO-02"
+            - option "MO-03"
+            - option "MO-04"
+            - option "MO-05"
+            - option "MO-06"
+            - option "MO-07"
+            - option "MO-08"
+            - option "MS-01"
+            - option "MS-02"
+            - option "MS-03"
+            - option "MS-04"
+            - option "MT-01"
+            - option "MT-02"
+            - option "NC-01"
+            - option "NC-02"
+            - option "NC-03"
+            - option "NC-04"
+            - option "NC-05"
+            - option "NC-06"
+            - option "NC-07"
+            - option "NC-08"
+            - option "NC-09"
+            - option "NC-10"
+            - option "NC-11"
+            - option "NC-12"
+            - option "NC-13"
+            - option "NC-14"
+            - option "ND-00"
+            - option "NE-01"
+            - option "NE-02"
+            - option "NE-03"
+            - option "NH-01"
+            - option "NH-02"
+            - option "NJ-01"
+            - option "NJ-02"
+            - option "NJ-03"
+            - option "NJ-04"
+            - option "NJ-05"
+            - option "NJ-06"
+            - option "NJ-07"
+            - option "NJ-08"
+            - option "NJ-09"
+            - option "NJ-10"
+            - option "NJ-11"
+            - option "NJ-12"
+            - option "NM-01"
+            - option "NM-02"
+            - option "NM-03"
+            - option "NV-01"
+            - option "NV-02"
+            - option "NV-03"
+            - option "NV-04"
+            - option "NY-01"
+            - option "NY-02"
+            - option "NY-03" [selected]
+            - option "NY-04"
+            - option "NY-05"
+            - option "NY-06"
+            - option "NY-07"
+            - option "NY-08"
+            - option "NY-09"
+            - option "NY-10"
+            - option "NY-11"
+            - option "NY-12"
+            - option "NY-13"
+            - option "NY-14"
+            - option "NY-15"
+            - option "NY-16"
+            - option "NY-17"
+            - option "NY-18"
+            - option "NY-19"
+            - option "NY-20"
+            - option "NY-21"
+            - option "NY-22"
+            - option "NY-23"
+            - option "NY-24"
+            - option "NY-25"
+            - option "NY-26"
+            - option "OH-01"
+            - option "OH-02"
+            - option "OH-03"
+            - option "OH-04"
+            - option "OH-05"
+            - option "OH-06"
+            - option "OH-07"
+            - option "OH-08"
+            - option "OH-09"
+            - option "OH-10"
+            - option "OH-11"
+            - option "OH-12"
+            - option "OH-13"
+            - option "OH-14"
+            - option "OH-15"
+            - option "OK-01"
+            - option "OK-02"
+            - option "OK-03"
+            - option "OK-04"
+            - option "OK-05"
+            - option "OR-01"
+            - option "OR-02"
+            - option "OR-03"
+            - option "OR-04"
+            - option "OR-05"
+            - option "OR-06"
+            - option "PA-01"
+            - option "PA-02"
+            - option "PA-03"
+            - option "PA-04"
+            - option "PA-05"
+            - option "PA-06"
+            - option "PA-07"
+            - option "PA-08"
+            - option "PA-09"
+            - option "PA-10"
+            - option "PA-11"
+            - option "PA-12"
+            - option "PA-13"
+            - option "PA-14"
+            - option "PA-15"
+            - option "PA-16"
+            - option "PA-17"
+            - option "RI-01"
+            - option "RI-02"
+            - option "SC-01"
+            - option "SC-02"
+            - option "SC-03"
+            - option "SC-04"
+            - option "SC-05"
+            - option "SC-06"
+            - option "SC-07"
+            - option "SD-00"
+            - option "TN-01"
+            - option "TN-02"
+            - option "TN-03"
+            - option "TN-04"
+            - option "TN-05"
+            - option "TN-06"
+            - option "TN-07"
+            - option "TN-08"
+            - option "TN-09"
+            - option "TX-01"
+            - option "TX-02"
+            - option "TX-03"
+            - option "TX-04"
+            - option "TX-05"
+            - option "TX-06"
+            - option "TX-07"
+            - option "TX-08"
+            - option "TX-09"
+            - option "TX-10"
+            - option "TX-11"
+            - option "TX-12"
+            - option "TX-13"
+            - option "TX-14"
+            - option "TX-15"
+            - option "TX-16"
+            - option "TX-17"
+            - option "TX-18"
+            - option "TX-19"
+            - option "TX-20"
+            - option "TX-21"
+            - option "TX-22"
+            - option "TX-23"
+            - option "TX-24"
+            - option "TX-25"
+            - option "TX-26"
+            - option "TX-27"
+            - option "TX-28"
+            - option "TX-29"
+            - option "TX-30"
+            - option "TX-31"
+            - option "TX-32"
+            - option "TX-33"
+            - option "TX-34"
+            - option "TX-35"
+            - option "TX-36"
+            - option "TX-37"
+            - option "TX-38"
+            - option "UT-01"
+            - option "UT-02"
+            - option "UT-03"
+            - option "UT-04"
+            - option "VA-01"
+            - option "VA-02"
+            - option "VA-03"
+            - option "VA-04"
+            - option "VA-05"
+            - option "VA-06"
+            - option "VA-07"
+            - option "VA-08"
+            - option "VA-09"
+            - option "VA-10"
+            - option "VA-11"
+            - option "VT-00"
+            - option "WA-01"
+            - option "WA-02"
+            - option "WA-03"
+            - option "WA-04"
+            - option "WA-05"
+            - option "WA-06"
+            - option "WA-07"
+            - option "WA-08"
+            - option "WA-09"
+            - option "WA-10"
+            - option "WI-01"
+            - option "WI-02"
+            - option "WI-03"
+            - option "WI-04"
+            - option "WI-05"
+            - option "WI-06"
+            - option "WI-07"
+            - option "WI-08"
+            - option "WV-01"
+            - option "WV-02"
+            - option "WY-00"
+          - group [ref=e1377]:
+            - generic "Why 1,461 source question records were left out" [ref=e1378] [cursor=pointer]
+        - region [ref=e1379]:
+          - generic [ref=e1380]:
+            - generic [ref=e1381]: Current run evidence
+            - heading "Inputs, computation, and review." [level=2] [ref=e1382]
+          - generic [ref=e1383]:
+            - generic [ref=e1384]:
+              - heading "Input status" [level=3] [ref=e1385]
+              - paragraph [ref=e1386]: Inputs reviewed for this forecast’s stated scope. Source cutoffs are listed above.
+              - group [ref=e1387]:
+                - generic "Source capture notes (4)" [ref=e1388] [cursor=pointer]
+            - generic [ref=e1389]:
+              - heading "Numerical checks" [level=3] [ref=e1390]
+              - paragraph [ref=e1391]: Passed the stated calculation checks. 2,000,000 simulated elections across 8 independent sampling runs. The largest estimated standard errors are 0.02 seats for average seats and 0.0 percentage points for control chances. Standard error measures variation from a finite simulation; it is separate from uncertainty about the election.
+            - generic [ref=e1392]:
+              - heading "Publication review and forecast skill" [level=3] [ref=e1393]
+              - paragraph [ref=e1394]: "Reviewed for publication. Forecast skill: The 2026 election result is not yet known, so its accuracy cannot yet be measured. Numerical checks do not by themselves establish forecast accuracy."
+          - heading "Model limitations" [level=3] [ref=e1395]
+          - list [ref=e1396]:
+            - listitem [ref=e1397]: Current aggregate forecast comparison; no observed 2026 outcomes or demonstrated 2026 accuracy.
+            - listitem [ref=e1398]: Conditional shares describe only the two named principal contenders. Group win probabilities are separate, and pooled probabilities are never assigned to individual members.
+            - listitem [ref=e1399]: Alaska and CA-06 use declared independent-candidate predictor proxies. Independent and other-party winners remain unassigned for the 218-seat party-majority calculation.
+            - listitem [ref=e1400]: Ranked-choice and runoff contests use ultimate-winner approximations. Ballot transfers, runoff rounds, turnout and candidate vote counts are not simulated.
+            - listitem [ref=e1401]: The roster includes captured printed candidates and documented declared write-ins. Some districts rely on secondary sources; later filings and legal changes require a new release.
+            - listitem [ref=e1402]: Polling uses a dated reviewed question subset with an approximate ingestion-date availability rule. It is not an exhaustive polling census or a direct audit of every questionnaire.
+            - listitem [ref=e1403]: Historical posterior banks and calibrated polling-error scales are finite. Predictive simulation precision does not establish empirical calibration or integrate polling covariance-estimation uncertainty.
+            - listitem [ref=e1404]: The historical House benchmark found polling gains in many comparisons and material 2020 losses. Failed historical chamber precision remains part of that evidence.
+            - listitem [ref=e1405]: A House-specific tipping statistic is not qualified. The race list and ribbon must not be described as tipping probabilities.
+          - region [ref=e1406]:
+            - heading "Publication review notes" [level=3] [ref=e1407]
+            - list [ref=e1408]:
+              - listitem [ref=e1409]: Current aggregate forecast comparison; no observed 2026 outcomes or demonstrated 2026 accuracy.
+              - listitem [ref=e1410]: Conditional shares describe only the two named principal contenders. Group win probabilities are separate, and pooled probabilities are never assigned to individual members.
+              - listitem [ref=e1411]: Alaska and CA-06 use declared independent-candidate predictor proxies. Independent and other-party winners remain unassigned for the 218-seat party-majority calculation.
+              - listitem [ref=e1412]: Ranked-choice and runoff contests use ultimate-winner approximations. Ballot transfers, runoff rounds, turnout and candidate vote counts are not simulated.
+              - listitem [ref=e1413]: The roster includes captured printed candidates and documented declared write-ins. Some districts rely on secondary sources; later filings and legal changes require a new release.
+              - listitem [ref=e1414]: Polling uses a dated reviewed question subset with an approximate ingestion-date availability rule. It is not an exhaustive polling census or a direct audit of every questionnaire.
+              - listitem [ref=e1415]: Historical posterior banks and calibrated polling-error scales are finite. Predictive simulation precision does not establish empirical calibration or integrate polling covariance-estimation uncertainty.
+              - listitem [ref=e1416]: The historical House benchmark found polling gains in many comparisons and material 2020 losses. Failed historical chamber precision remains part of that evidence.
+              - listitem [ref=e1417]: A House-specific tipping statistic is not qualified. The race list and ribbon must not be described as tipping probabilities.
+        - region [ref=e1418]:
+          - generic [ref=e1419]:
+            - generic [ref=e1420]: Separate historical research
+            - heading "Past elections remain a different edition." [level=2] [ref=e1421]
+          - generic [ref=e1422]:
+            - paragraph [ref=e1423]: Historical performance and its tested-race coverage are reported separately from this current forecast. This 2026 view has no observed winners or historical scorecard.
+            - button "Explore historical House research" [ref=e1424] [cursor=pointer]: Explore historical House research →
+        - generic [ref=e1425]:
+          - generic [ref=e1426]: ballotmancy
+          - generic [ref=e1427]: Independent research. Visible assumptions.2026 House current forecast
+  - alert [ref=e1428]
+```
+
+# Test source
+
+```ts
+  1  | import { test, expect } from "@playwright/test";
+  2  | import { readFileSync } from "node:fs";
+  3  | import { resolve } from "node:path";
+  4  | 
+  5  | const read = (path: string) => JSON.parse(readFileSync(resolve(path), "utf8"));
+  6  | const senateRegistry = read("public/data/explorer/registry.json");
+  7  | const houseCatalog = read("data/house-live/catalog.json");
+  8  | 
+  9  | for (const chamber of ["senate", "house"] as const) {
+  10 |   test(`${chamber}: same-page guide starts standard, renders every exact model, and preserves the visitor's forecast`, async ({ page }, testInfo) => {
+  11 |     test.setTimeout(240_000);
+  12 |     const errors: string[] = [];
+  13 |     page.on("pageerror", error => errors.push(error.message));
+  14 |     const initialRun = chamber === "senate" ? "current-fundamentals" : "house-current-fundamentals";
+  15 |     const defaultId = chamber === "senate" ? senateRegistry.defaults["2026"] : houseCatalog.default_id;
+  16 |     const entries = chamber === "senate" ? senateRegistry.runs.filter((entry: { year: number }) => entry.year === 2026) : houseCatalog.entries;
+  17 |     await page.goto(chamber === "senate" ? `/?run=${initialRun}` : `/?chamber=house&edition=current&run=${initialRun}`);
+  18 |     await expect(page.locator(".hero")).toBeVisible();
+  19 |     const originalUrl = page.url();
+  20 |     const originalHero = await page.locator(".hero").textContent();
+  21 |     const trigger = page.getByRole("button", { name: "Election night scorecard", exact: true });
+  22 |     await trigger.click();
+  23 |     const panel = page.locator("#election-night-scorecard");
+  24 |     await expect(panel.getByRole("heading", { name: "Election night scorecard", exact: true })).toBeFocused();
+  25 |     await expect(panel.locator(".night-edition")).toContainText("Standard forecast");
+  26 |     await expect(panel).toHaveAttribute("aria-busy", "false");
+  27 |     await expect(panel.locator(".night-featured .night-race")).toHaveCount(6);
+  28 |     const watchIds = await panel.locator(".night-featured .night-race").evaluateAll(nodes => nodes.map(node => node.getAttribute("data-scorecard-race")));
+  29 |     await panel.locator(".night-models summary").click();
+  30 |     const select = panel.getByLabel("Scorecard model");
+  31 |     await expect(select).toHaveValue(defaultId);
+  32 |     await expect(select.locator("option")).toHaveCount(16);
+  33 |     for (const entry of entries) {
+  34 |       const raw = chamber === "senate" ? read(`public${entry.href}`) : read(`data/house-live/${entry.result.path}`);
+  35 |       const digest = chamber === "senate" ? entry.sha256 : entry.result.sha256;
+  36 |       const missed = raw.races.reduce((sum: number, race: { outcomes: { winProbability?: number; p_win?: number }[] }) => sum +
+  37 |         1 - Math.max(...race.outcomes.map(outcome => chamber === "senate" ? outcome.winProbability! : outcome.p_win!)), 0);
+  38 |       await select.selectOption(entry.id);
+  39 |       await expect(panel.locator(".night-method code")).toHaveText(digest);
+  40 |       await expect(panel.locator(".night-edition strong")).toContainText(entry.label);
+  41 |       await expect(panel.locator(".night-big-number")).toContainText(missed.toFixed(1));
+  42 |       expect(await panel.locator(".night-featured .night-race").evaluateAll(nodes => nodes.map(node => node.getAttribute("data-scorecard-race")))).toEqual(watchIds);
+  43 |       expect(page.url()).toBe(originalUrl);
+  44 |       expect(await page.locator(".hero").textContent()).toBe(originalHero);
+  45 |     }
+  46 |     await expect(panel.locator(".night-rubric")).toContainText("No letter grade assigned");
+  47 |     await expect(panel.locator(".night-edition")).toContainText("have not yet been locked");
+  48 |     await expect(panel.locator(".night-uncertainty-grid")).toContainText("not a limit or a measured accuracy record");
+  49 |     await panel.locator(".night-featured").screenshot({ path: testInfo.outputPath(`${chamber}-featured.png`) });
+  50 |     await panel.locator(".night-uncertainty-grid").screenshot({ path: testInfo.outputPath(`${chamber}-uncertainty.png`) });
+> 51 |     await panel.locator(".night-all-races summary").click();
+     |                                                     ^ Error: locator.click: Error: strict mode violation: locator('#election-night-scorecard').locator('.night-all-races summary') resolved to 11 elements:
+  52 |     await expect(panel.locator(".night-predictions .night-race")).toHaveCount(10);
+  53 |     if (chamber === "house") {
+  54 |       const defaultEntry = entries.find((entry: { id: string }) => entry.id === defaultId);
+  55 |       const unsupported = read(`data/house-live/${defaultEntry.result.path}`).races.find((race: { conditional_shares: unknown }) => race.conditional_shares === null);
+  56 |       await panel.getByLabel("Find a race or candidate").fill(unsupported.district_key);
+  57 |       await expect(panel.locator(".night-predictions .night-race")).toHaveCount(1);
+  58 |       await expect(panel.locator(".night-predictions")).toContainText("No supported two-candidate margin");
+  59 |     }
+  60 |     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  61 |     await panel.getByRole("button", { name: "Close scorecard", exact: true }).click();
+  62 |     await expect(panel).toHaveCount(0);
+  63 |     await expect(trigger).toBeFocused();
+  64 |     expect(page.url()).toBe(originalUrl);
+  65 |     await trigger.click();
+  66 |     await expect(panel.locator(".night-edition")).toContainText("Standard forecast");
+  67 |     await expect(panel.locator(".night-models select")).toHaveValue(defaultId);
+  68 |     expect(errors).toEqual([]);
+  69 |   });
+  70 | }
+  71 | 
+```

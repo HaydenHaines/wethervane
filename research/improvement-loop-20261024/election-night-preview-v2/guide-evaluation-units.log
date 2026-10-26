@@ -1,0 +1,170 @@
+
+> ballotmancy-site@0.1.0 test:election-night
+> node --experimental-strip-types --test tests/election-night-*.test.mjs
+
+TAP version 13
+# (node:1791180) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/election-night-client.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /home/hayden/projects/ballotmancy-election-night-guide-20261026/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: the scorecard default follows the current standard registry with exact bytes and independent choices
+ok 1 - the scorecard default follows the current standard registry with exact bytes and independent choices
+  ---
+  duration_ms: 30.191564
+  type: 'test'
+  ...
+# Subtest: changed artifact bytes and selected-result revisions cannot silently replace a forecast
+ok 2 - changed artifact bytes and selected-result revisions cannot silently replace a forecast
+  ---
+  duration_ms: 4.22357
+  type: 'test'
+  ...
+# Subtest: a valid hash cannot make another model's payload become the requested model
+ok 3 - a valid hash cannot make another model's payload become the requested model
+  ---
+  duration_ms: 2.104746
+  type: 'test'
+  ...
+# Subtest: untrusted registry paths, duplicate identities, and historical choices never fetch a forecast
+ok 4 - untrusted registry paths, duplicate identities, and historical choices never fetch a forecast
+  ---
+  duration_ms: 3.318365
+  type: 'test'
+  ...
+# Subtest: aborting a guide request propagates to its read and cannot manufacture a result
+ok 5 - aborting a guide request propagates to its read and cannot manufacture a result
+  ---
+  duration_ms: 1.442512
+  type: 'test'
+  ...
+# (node:1791181) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/election-night-evaluation.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /home/hayden/projects/ballotmancy-election-night-guide-20261026/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: proper categorical scores use full unordered support, natural logs and explicit binary normalization
+ok 6 - proper categorical scores use full unordered support, natural logs and explicit binary normalization
+  ---
+  duration_ms: 25.07368
+  type: 'test'
+  ...
+# Subtest: zero-probability observed outcomes retain infinite log loss through JSON without clipping
+ok 7 - zero-probability observed outcomes retain infinite log loss through JSON without clipping
+  ---
+  duration_ms: 1.964681
+  type: 'test'
+  ...
+# Subtest: central 90% interval scoring includes width, both tail penalties and inclusive endpoint coverage
+ok 8 - central 90% interval scoring includes width, both tail penalties and inclusive endpoint coverage
+  ---
+  duration_ms: 0.262989
+  type: 'test'
+  ...
+# Subtest: certified named-pair margins use observed-minus-predicted orientation and an explicit mean or median rule
+ok 9 - certified named-pair margins use observed-minus-predicted orientation and an explicit mean or median rule
+  ---
+  duration_ms: 0.61799
+  type: 'test'
+  ...
+# Subtest: called winners and final/certified margins have separate statuses and coverage counts
+ok 10 - called winners and final/certified margins have separate statuses and coverage counts
+  ---
+  duration_ms: 1.31986
+  type: 'test'
+  ...
+# Subtest: group outcome scoring preserves pooled membership without creating individual probabilities
+ok 11 - group outcome scoring preserves pooled membership without creating individual probabilities
+  ---
+  duration_ms: 0.402562
+  type: 'test'
+  ...
+# Subtest: a Senate proxy is never silently scored as full-ballot truth
+ok 12 - a Senate proxy is never silently scored as full-ballot truth
+  ---
+  duration_ms: 0.919051
+  type: 'test'
+  ...
+# Subtest: event, round, target, named candidates, denominator, scale and finality require explicit matches
+ok 13 - event, round, target, named candidates, denominator, scale and finality require explicit matches
+  ---
+  duration_ms: 2.021208
+  type: 'test'
+  ...
+# Subtest: every frozen race remains in unresolved, unsupported, mismatched or scored accounting
+ok 14 - every frozen race remains in unresolved, unsupported, mismatched or scored accounting
+  ---
+  duration_ms: 0.634211
+  type: 'test'
+  ...
+# Subtest: duplicate revisions and extra/missing target records are explicit and never silently selected
+ok 15 - duplicate revisions and extra/missing target records are explicit and never silently selected
+  ---
+  duration_ms: 0.884826
+  type: 'test'
+  ...
+# Subtest: protocol binding and source metadata fail closed; pins alone do not authorize mismatched target mappings
+ok 16 - protocol binding and source metadata fail closed; pins alone do not authorize mismatched target mappings
+  ---
+  duration_ms: 0.777001
+  type: 'test'
+  ...
+# Subtest: evaluation never mutates the forecast, protocol or result records and returns detached source references
+ok 17 - evaluation never mutates the forecast, protocol or result records and returns detached source references
+  ---
+  duration_ms: 0.549321
+  type: 'test'
+  ...
+# (node:1791187) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/hayden/projects/ballotmancy-election-night-guide-20261026/lib/election-night-forecast.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /home/hayden/projects/ballotmancy-election-night-guide-20261026/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: all 16 actual current Senate artifacts preserve exact editions, winner vectors, margins and native default scenario without mutation
+ok 18 - all 16 actual current Senate artifacts preserve exact editions, winner vectors, margins and native default scenario without mutation
+  ---
+  duration_ms: 89.266153
+  type: 'test'
+  ...
+# Subtest: all 16 actual House artifacts preserve 435 listed winner vectors, exact 412/23 pair support and saved bands without allocating group mass
+ok 19 - all 16 actual House artifacts preserve 435 listed winner vectors, exact 412/23 pair support and saved bands without allocating group mass
+  ---
+  duration_ms: 794.731655
+  type: 'test'
+  ...
+# Subtest: a replacement House artifact never inherits the old NY-21 input notice
+ok 20 - a replacement House artifact never inherits the old NY-21 input notice
+  ---
+  duration_ms: 31.786475
+  type: 'test'
+  ...
+# Subtest: exact modal ties use lexicographic outcome IDs, preserve group identity, and do not treat near ties as exact
+ok 21 - exact modal ties use lexicographic outcome IDs, preserve group identity, and do not treat near ties as exact
+  ---
+  duration_ms: 31.426232
+  type: 'test'
+  ...
+# Subtest: Senate rejects historical, cross-bound metadata, malformed support and share identities
+ok 22 - Senate rejects historical, cross-bound metadata, malformed support and share identities
+  ---
+  duration_ms: 19.675957
+  type: 'test'
+  ...
+# Subtest: House rejects wrong editions, districts, joint order, candidate allocation and unbound pair support
+ok 23 - House rejects wrong editions, districts, joint order, candidate allocation and unbound pair support
+  ---
+  duration_ms: 330.683745
+  type: 'test'
+  ...
+# Subtest: unavailable qualified House chamber remains null and input issue/cutoff dates are never replaced
+ok 24 - unavailable qualified House chamber remains null and input issue/cutoff dates are never replaced
+  ---
+  duration_ms: 37.46525
+  type: 'test'
+  ...
+1..24
+# tests 24
+# suites 0
+# pass 24
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1529.940562

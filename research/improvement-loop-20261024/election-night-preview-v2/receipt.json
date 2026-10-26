@@ -1,0 +1,40 @@
+{
+  "schema": "ElectionNightPrivatePreparationV2",
+  "date": "2026-10-26",
+  "status": "reviewed_private_preparation_not_published",
+  "commit": "b5b14af",
+  "sourceHashes": {
+    "components/ElectionNightGuide.tsx": "14d4dca5b25c3f2ef5ee8132fa24bc34fd9faa50aa95478b323e803f5cbae58e",
+    "components/ChamberExplorer.tsx": "123ffed8cc6a723f0bc61b14e72f42923b211658f90231e3a2c8365cd205acb9",
+    "lib/election-night-forecast.ts": "52f1deaf5edfc3c5ec5198deae0b1458879e7a280db6287ce91895269ae29d40",
+    "lib/election-night-client.ts": "02635e16bd4ff82b67203b97958aaf9f9f4203df6a98ebfbcc91435c72999421",
+    "lib/election-night-evaluation.ts": "e95a1f9822f68d383f49c66fa3fb3917bece8122b6c2e59125a38a72161da9c0",
+    "tests/election-night-forecast.test.mjs": "44a9e6bcf500788ae3214b363823962b7c2506fa41c27941c3e51ba6eb615eda",
+    "tests/election-night-client.test.mjs": "f06f953fe3c0898dffabc1453d3ebb6bfefa4ba0539cb7df244b80d08ce2bfa8",
+    "tests/election-night-evaluation.test.mjs": "22fb7b58dbd33e3f69edfb4b5072796722e07b597a292f7802383c84719dd872",
+    "tests/site/election-night.spec.ts": "66f468ef1335c91a2eaab2b8f0e780f97f367f22e44ce019327b37d18512811c"
+  },
+  "checks": {
+    "forecastAndLoaderUnits": 12,
+    "evaluationUnits": 13,
+    "typecheck": "passed",
+    "productionBuild": "passed_before_evaluation_module_addition_unused_by_UI",
+    "browser": "6 passed; Senate/House desktop/mobile all16 per chamber; global tabs/back/forward; exact-hash NY21 notice; pair-event wording; unsupported margins; return focus",
+    "independentEvaluationReview": "../election-night-preview-v1/evaluation-review-luna.json"
+  },
+  "changes": [
+    "Shared website NY21 notice inherited only for original16 exactresult hashes",
+    "Senate same proxy winning event distinguished from House conditional margin event",
+    "Linked source capture notes and readable signed-margin wording",
+    "Provisional called-winner scores remain separate from final margins",
+    "Full-cohort unresolved/unsupported/mismatched counts and JSON-safe infinite log loss",
+    "Modal ties explicitly tested against deterministic outcome-ID pick"
+  ],
+  "remaining": [
+    "Import refreshed Senate edition and reviewed model-implied uncertainty sidecar",
+    "House corrected release and joint-error export",
+    "Separate verified outcome ingest and target/round mapping",
+    "Frozen evaluation edition/cohorts/baselines",
+    "Pre-outcome numerical or categorical A-F rubric and public release"
+  ]
+}
