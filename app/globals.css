@@ -2980,6 +2980,15 @@ select:focus-visible {
 .edition-inputs { max-width: 480px; margin-top: 12px; text-align: left; font-size: 12px; color: var(--muted); }
 .edition-inputs summary { cursor: pointer; }
 .edition-inputs p { margin: 8px 0; font-size: 12px; line-height: 1.5; letter-spacing: normal; text-transform: none; }
+.house-ny21-notice { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin: 18px 0; padding: 15px 18px; border: 1px solid #c89f75; border-left: 4px solid #a76c3b; border-radius: 6px; background: #fff8eb; }
+.house-ny21-notice strong { font-size: 13px; }
+.house-ny21-notice p { margin: 6px 0 0; font-size: 13px; line-height: 1.55; }
+.house-ny21-notice button { flex: none; min-height: 40px; padding: 8px 13px; border: 1px solid #a76c3b; border-radius: 4px; background: #fffefa; }
+.house-ny21-notice-details { margin: 14px 0; padding: 13px 15px; border: 1px solid #c89f75; border-left: 3px solid #a76c3b; border-radius: 4px; background: #fff8eb; }
+.house-ny21-notice-details h3 { margin: 0 0 8px; font-size: 14px; }
+.house-ny21-notice-details p { margin: 7px 0; font-size: 12px; line-height: 1.6; }
+.house-ny21-notice-details a { text-decoration: underline; text-underline-offset: 2px; }
+@media (max-width: 600px) { .house-ny21-notice { align-items: stretch; flex-direction: column; gap: 10px; } .house-ny21-notice button { align-self: flex-start; } }
 @media (max-width: 800px) { .house-selection-fields { grid-template-columns: minmax(0, 1fr); gap: 18px; } }
 
 .model-slices { margin-top: 26px; }
