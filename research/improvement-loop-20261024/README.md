@@ -9,6 +9,7 @@ As of October 26, 2026 UTC:
 The first entry is the latest checkpoint. Earlier entries preserve the scope and
 remaining work recorded at their issuance; later checkpoints supersede that status.
 
+- [Checkpoint v74](checkpoints/continuation-v74.json) records the separately bounded compressed graph arm, launched against the exact audited original states. The tool handle is retained; comparison results remain pending.
 - [Checkpoint v73](checkpoints/continuation-v73.json) records the independently audited completed original graph arm and the corrected historical CPS source gate; the compressed comparison remains separate and unrun.
 - [Checkpoint v72](checkpoints/continuation-v72.json) records the independently reviewed V2 graph probe and one bounded original-arm process, observed live before any numerical result. Its exact tool handle and owner-job boundaries are retained.
 - [Checkpoint v71](checkpoints/continuation-v71.json) records the independent finding that the first prepared actual-graph worker can bypass its controller resource limits. No actual graph was run; a separately versioned correction and review are in progress.

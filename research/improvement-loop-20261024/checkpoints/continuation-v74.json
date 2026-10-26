@@ -1,0 +1,44 @@
+{
+  "schema": "ContinuousImprovementCheckpointV74",
+  "recordedAtUtc": "2026-10-26T23:16:48.011953+00:00",
+  "status": "active; original fixed-state graph audited, compressed comparison running",
+  "references": {
+    "previous": {
+      "path": "research/improvement-loop-20261024/checkpoints/continuation-v73.json",
+      "sha256": "c69cc48f71cf4f8e3ad2c991b192f0c106569a98bb15990e2861b567fcb3fe37",
+      "bytes": 3852
+    },
+    "original_return": {
+      "path": "research/improvement-loop-20261024/m01-compressed-equivalence-admission-root-v1/original-caller-return.json",
+      "sha256": "b44505470df1aeda2f4c8411c85a12c8fb48d9ec192e1f5c399becb26b582983",
+      "bytes": 1102
+    },
+    "original_audit": {
+      "path": "research/improvement-loop-20261024/m01-original-arm-audit-sol-v1/result.json",
+      "sha256": "ae66040b89c09ba88f0d33111d83b69d83e73d0afe6940289cbce5f7d6554b5d",
+      "bytes": 4582
+    },
+    "compressed_resources": {
+      "path": "research/improvement-loop-20261024/m01-compressed-equivalence-admission-root-v1/compressed-resource.json",
+      "sha256": "0343e79dc671c4af9f31a98810450154e8a64606f37ff253868fca30f615fbda",
+      "bytes": 1459
+    },
+    "compressed_launch": {
+      "path": "research/improvement-loop-20261024/m01-compressed-actual-equivalence-probe-sol-v2/attempt-v1/compressed/launch.json",
+      "sha256": "32378cb02e4c81aeb2c1363692f3f31e7116ab133045b704bb07c9d5d69e7f94",
+      "bytes": 2125
+    },
+    "compressed_entry": {
+      "path": "research/improvement-loop-20261024/m01-compressed-actual-equivalence-probe-sol-v2/attempt-v1/compressed/entry-receipt.json",
+      "sha256": "7ccf81cfd69b8c56825b6c210ac442533029b82f14e8eb18ad51193342c6e301",
+      "bytes": 481
+    }
+  },
+  "launch": "Following a retained original tool return, complete root receipt audit, independent Sol audit and fresh per-arm resource assessment, the compressed arm was launched at tool session 79247, controller PID 1990472 and child PID 1990476. The child entry receipt confirms CPU0, nice15, original hard CPU/AS/file limits, 600s wall alarm and parent-death signal. Controller adds sampled 4GiB RSS and 512MiB disk watchdogs. It uses the exact saved original states. Initial observation found the child alive in full graph construction. Do not rerun because of a timeout or absent output; poll session 79247 and/or that exact child/terminal. Both owner processes remained live at launch.",
+  "original": "Session 85285 exited 0 with caller-observed controller-success SHA 0b79a9c9cd9088ccd42e67b7abaf8ff03ce0a8272e5c98248f16e66aca95c2cf. All original source/receipt/numerical artifacts and external tool-return record are preserved and independently audited. The two full gradients and six selected finite differences passed for the first parent; no all-parent or predictive claim follows.",
+  "next": [
+    "Poll session 79247 and retain full tool return. If completion is clean, independently audit exact comparison, all gradients/factors/rates, distinct IDs and limitations.",
+    "Preserve failure/partial artifacts without retry if the run does not complete.",
+    "Continue owner-qualified House release integration and SiteGround deployment verification."
+  ]
+}
