@@ -9,6 +9,7 @@ As of October 26, 2026 UTC:
 The first entry is the latest checkpoint. Earlier entries preserve the scope and
 remaining work recorded at their issuance; later checkpoints supersede that status.
 
+- [Checkpoint v68](checkpoints/continuation-v68.json) records the House release-readiness audit and a deployed-branch metadata correction awaiting public verification. The corrected House handoff and exact-edition expected-error reference remain pending. The symbolic runner is independently tested only on toy inputs; the compressed provider awaits review.
 - [Checkpoint v67](checkpoints/continuation-v67.json) records independently reproduced fixed-input compression of the actual 4,000-component six-poll likelihood, preserving original weights and residual evidence. Full native-graph substitution and scientific qualification remain separate work.
 - [Checkpoint v66](checkpoints/continuation-v66.json) records independent paired gasoline influence accounting and a reviewed V3 selection adapter for new stores. The full-stack weakest role remains unidentified; two independent toy snapshot reviews record restart and liveness limits. Owner runs remain separate and active.
 - [Checkpoint v65](checkpoints/continuation-v65.json) records a reviewed source-only TX graph-size measurement design and an invented V4 snapshot/acknowledgment prototype awaiting review. Neither has run the model. The cross-session messaging transport failed on attempted updates; delivery was not established, and the incomplete pickle remains preserved locally.

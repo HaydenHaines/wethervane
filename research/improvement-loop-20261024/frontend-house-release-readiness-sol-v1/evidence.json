@@ -1,0 +1,40 @@
+{
+  "schema": "FrontendHouseReleaseReadinessIndependentV1",
+  "observedAt": "2026-10-26T22:50:57.718149+00:00",
+  "deployHead": "0d71d82e745c37b88abe72aca0a3369f2cb59b69",
+  "sourcePins": {
+    "scripts/import_house_live.mjs": "a94b20c8cf1a8b887bde38972b66acc5e9c30df522a2e201373e4119a019c702",
+    "scripts/import_house_election_night_references.mjs": "c96c64cb4b0e55d881c48946551ad6ac009a467a125e80619a586a2c39b3e263",
+    "scripts/export_election_night_publication_index.mjs": "419a764d68f062a938a74a468ee8f8dc160640cc5c7a95644ac1d0fdcfa87701",
+    "lib/election-night-house-reference.ts": "e44d70bab7b5f9ab0621f685c2fe66515329833003a80d5486143d70ee2e3d8b",
+    "lib/house-ny21-notice.ts": "4acde2c1ec9eaac7475cd867ffa43c29a5799a447a50dbea2683c6d0916cb408",
+    "components/ElectionNightGuide.tsx": "a62ce3be7465415e310364b576579da2f11ceb057e0a510c4be879351a43bf8b",
+    "tests/house-live-import.test.mjs": "dcb8ab140969a0b297429b884a748d7eb149fdd8fecd8e3257e504387495ae93",
+    "tests/house-election-night-import.test.mjs": "159cfb5810e193e09e80cfba954689597375145d8b5d523da8e3ab9fc745c66e",
+    "tests/election-night-house-reference.test.mjs": "c68e1484807c835a9b8a2373d8b4a67b4eb7df05510b76ce40e50bcaa45bcf84",
+    "tests/house-ny21-notice.test.mjs": "3a339921f5ee4b37ee61450aeb9414ee2021283efcebee8e2afb1941bc7405cd",
+    "tests/election-night-publication-index.test.mjs": "a47da13f154e058466c2ad47d1dcf0daec507883ce4f32e26059fa38dbdee598"
+  },
+  "tests": [
+    {
+      "command": "nice -n 15 node --experimental-strip-types --test tests/house-live-import.test.mjs tests/house-election-night-import.test.mjs tests/house-ny21-notice.test.mjs tests/election-night-house-reference.test.mjs",
+      "passed": 39,
+      "failed": 0,
+      "durationMs": 23321.345872
+    },
+    {
+      "command": "nice -n 15 node --experimental-strip-types --test tests/election-night-publication-index.test.mjs tests/election-night.test.mjs",
+      "passed": 3,
+      "failed": 0,
+      "durationMs": 272.411827,
+      "note": "Node executed three publication-index tests; do not infer extra scorecard test coverage from the second CLI pattern."
+    }
+  ],
+  "observations": [
+    "Recovered handoff-receipt.json and recovered watcher receipt.json absent at check.",
+    "Local data/election-night-house-reference-publication.json absent.",
+    "curl -fsS --max-time 20 https://ballotmancy.com/data/election-night/publication-index.json succeeded; response contained full/primary Senate descriptors and no House descriptor.",
+    "Shared deployment git status remained clean."
+  ],
+  "scope": "Read-only shared source inspection and existing synthetic tempfile tests. No scientific jobs, owner mutations, public install, build, deployment, or release qualification. No new defect demonstrated; no speculative patch."
+}

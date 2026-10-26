@@ -1,0 +1,6 @@
+means = []
+for row in block["rows"]:
+                names = [k["id"] for k in c.contest_map[row["contest_id"]]["candidates"]]
+                first, second = [names.index(row[k]) for k in ("first_candidate_id", "second_candidate_id")]
+                rates = v["category_rates"][row["contest_id"]]
+                means.append(pt.log(rates[first]) - pt.log(rates[second]))

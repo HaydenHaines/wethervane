@@ -1,0 +1,127 @@
+{
+  "schema": "SymbolicCountRunnerToyTestsV1",
+  "tests": 9,
+  "failures": 0,
+  "errors": 0,
+  "report": [
+    {
+      "test": "competing_creators",
+      "outcomes": [
+        [
+          "rejected",
+          "attempt was created by another cooperating controller"
+        ],
+        [
+          "ack",
+          0
+        ]
+      ],
+      "winner_mutated_by_loser": false
+    },
+    {
+      "test": "cap",
+      "terminal": {
+        "child_pid": 1976127,
+        "controller_pid": 1976123,
+        "intent_sha256": "32fee15739f07d040f539a3957f22aa734fd5975fd9a4c18126406cf7e880f2d",
+        "peaks": {
+          "output": 6324,
+          "rss": 31240192,
+          "threads": 1
+        },
+        "reaped": true,
+        "reason": null,
+        "returncode": 1,
+        "schema": "ObservedCountChildTerminalV1",
+        "scope": "direct child only; SIGKILL/power loss of controller and daemon escape not covered",
+        "wall_seconds": 0.12589972000569105
+      }
+    },
+    {
+      "test": "raise",
+      "terminal": {
+        "child_pid": 1976146,
+        "controller_pid": 1976123,
+        "intent_sha256": "ca68801d2bb840e18878d3447c4b7af1a085067965dc00bb27b79df905c5260c",
+        "peaks": {
+          "output": 4032,
+          "rss": 32186368,
+          "threads": 1
+        },
+        "reaped": true,
+        "reason": null,
+        "returncode": 1,
+        "schema": "ObservedCountChildTerminalV1",
+        "scope": "direct child only; SIGKILL/power loss of controller and daemon escape not covered",
+        "wall_seconds": 0.10519675491377711
+      }
+    },
+    {
+      "test": "normal",
+      "returncode": 0,
+      "reaped": true,
+      "count": {
+        "accepted_bytes": 4284,
+        "accepted_prefix_sha256": "ebc6227906a2f8b305a9bb84c746962092010ccb3f6c95a317272488cdddd038",
+        "attempted_end": 4284,
+        "buffer_callback": false,
+        "one_memo": true,
+        "pickle_loaded": false,
+        "pickle_payload_persisted": false,
+        "progress_io_seconds": 0.0013683149591088295,
+        "protocol": 5,
+        "restoration_verified": false,
+        "seconds": 0.0013995137996971607,
+        "status": "single_pickler_returned",
+        "write_calls": 1
+      },
+      "scope": "snapshot bytes remain valid, live-directory assertion absent"
+    },
+    {
+      "test": "controller_sigterm",
+      "terminal": {
+        "child_pid": 1976149,
+        "controller_pid": 1976148,
+        "intent_sha256": "097a78db7b5ec202651ec75b0d92496e1c09ddef9ec54ce9538ad6b892b82105",
+        "peaks": {
+          "output": 1960,
+          "rss": 5251072,
+          "threads": 1
+        },
+        "reaped": true,
+        "reason": "controller_exception",
+        "returncode": -15,
+        "schema": "ObservedCountChildTerminalV1",
+        "scope": "direct child only; SIGKILL/power loss of controller and daemon escape not covered",
+        "wall_seconds": 0.03599656280130148
+      },
+      "controller_returncode": 1
+    },
+    {
+      "test": "wall_watchdog",
+      "terminal": {
+        "child_pid": 1976150,
+        "controller_pid": 1976123,
+        "intent_sha256": "350027d3e71cfafa8648c9589a496888e47034bc5fd4434cd1f27f45cf8ff14e",
+        "peaks": {
+          "output": 1949,
+          "rss": 19812352,
+          "threads": 1
+        },
+        "reaped": true,
+        "reason": "wall_watchdog",
+        "returncode": -15,
+        "schema": "ObservedCountChildTerminalV1",
+        "scope": "direct child only; SIGKILL/power loss of controller and daemon escape not covered",
+        "wall_seconds": 4.017567439004779
+      }
+    },
+    {
+      "test": "uncertain_fsync",
+      "terminal_visible": true,
+      "issued_acknowledgments": 0
+    }
+  ],
+  "actual_graph_executed": false,
+  "scientific_imports": false
+}

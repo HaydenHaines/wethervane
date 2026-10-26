@@ -1,0 +1,105 @@
+{
+  "conclusion": "The frozen runner and toy tests support the narrow claim that the source-derived seven-item graph bundle can be counted through a bounded protocol-5 sink under observed direct-child control, with exact source/plan pins checked and no durable pickle. The scientific pipeline has not run. No blocker was found in the synthetic mechanics; explicit provider module-origin assertions should precede any actual-mode execution.",
+  "findings": [
+    {
+      "area": "original scientific pipeline preservation",
+      "evidence": "The test AST-compares the scientific need(...) calls in the frozen prior experiment and new pipeline, except the intentionally moved fresh-output check. It compares the original serializer argument with the count_bundle argument, and rejects pickle load/dump calls in pipeline. The seven retained bundle fields are original_cost, replaced_cost, rewritten_cost, gradient, ordered_value_vars, E, and segments. Pipeline keeps model.logp(jacobian=True) -> identity exposure replacement -> rewrite_pregrad -> gradient(rewritten, model.continuous_value_vars), and checks exact inventory/parent contract/662 coordinate order. Source checks and evidence pins match frozen bytes.",
+      "limit": "This is source/AST preservation, not runtime proof that an actual graph builds or that symbolic gradient semantics/numerical values are correct. The actual route is still unexecuted.",
+      "severity": "no_blocker_in_declared_symbolic-count_design"
+    },
+    {
+      "area": "native provider import identity",
+      "evidence": "Before scientific imports, controller/worker gate the runner and inherited source pins. pipeline inserts the frozen provider directory at sys.path[0] and then does `import provider as p`; p.selection() validates its own selection data and source pins. However pipeline does not assert Path(p.__file__).resolve() == frozen_provider_directory/provider.py, nor assert origins of loaded native modules. The provider file currently inspected is SHA-256 6154ecb3d66ad38b5ba5fa94719d1da865f3e32bdf749ef1bb4ed4250606d853.",
+      "limit": "Fresh worker process, minimal child environment and sys.path[0] insertion make the intended import likely, so this is hardening rather than a demonstrated wrong import. Explicit origin assertions should be included in any later actual-run version.",
+      "severity": "source-origin_hardening_required_before_actual_use"
+    },
+    {
+      "area": "valid technical/resource gate and full graph",
+      "evidence": "Invented tests exercise actual-mode refusal when technical evidence is missing, but do not supply a valid technical review/resource record or enter actual pipeline. Therefore they prove fail-closed refusal for that case, not successful gate acceptance, runtime provider import resolution, seven-root graph construction, full 662 gradient creation, count size, time or memory.",
+      "limit": "This is correctly disclosed in plan and README: no passing actual review/resource record is supplied and no actual graph was executed.",
+      "severity": "actual-path-unverified"
+    },
+    {
+      "area": "process/recovery and resource observation",
+      "evidence": "Fresh-root recheck is under flock and `owned` prevents the losing controller from writing failure data to the winner. Tests use real child subprocesses and record/reap direct child PIDs on normal, watchdog and controller SIGTERM paths; pidfd is used where available. Source documents explicitly limit this to one direct child, sampled RSS/output/wall watchers plus rlimits, cooperating local lock, ephemeral in-process acknowledgment, and no SIGKILL/power-loss/daemon escape guarantee.",
+      "limit": "These controls are not cgroup/process-tree containment or hostile-writer isolation. Actual caps are source-configured, not measured under an actual graph.",
+      "severity": "bounded-trust-limit"
+    }
+  ],
+  "frozen_packet_artifacts": {
+    "README.md": {
+      "bytes": 11461,
+      "sha256": "61672bf3962f16cad2e5211085c4f7badd4228eb662664022d3c56cd5dee4b92"
+    },
+    "common.py": {
+      "bytes": 2415,
+      "sha256": "bc3bdf8f69a7cfdfc958e20ba8a4a74e68fd4a69d1b3a37526fb7ed49ce611ed"
+    },
+    "controller.py": {
+      "bytes": 11459,
+      "sha256": "deb602e92590c3484b5ffab9cc4f93c9cb7f9d063d8ab99a01a3824d5872b486"
+    },
+    "count_core.py": {
+      "bytes": 1599,
+      "sha256": "4bc568bba5889eab43ef1c6a46776fd837fedaaaf9d5e0c2f55010dcbaa58b23"
+    },
+    "evidence.json": {
+      "bytes": 8193,
+      "sha256": "026399fdcfc4d4eaa74e426937973599cf0caceab40cc66cd5338aa7e1480f42"
+    },
+    "pipeline.py": {
+      "bytes": 9423,
+      "sha256": "fa114bf93ca5a5c5e02ccd23fd20baa797d090723cf21edbec868b9169c45af3"
+    },
+    "plan.json": {
+      "bytes": 9430,
+      "sha256": "de935fbcd7678dea68f0b99f8024a58ea1bc23768a14221e3c33308f92a9f8b1"
+    },
+    "test-result.json": {
+      "bytes": 3749,
+      "sha256": "cbb11c6c4a052ff1b7eca444559907b8ba899d602a2ff37a6db020246f8678e8"
+    },
+    "test_runner.py": {
+      "bytes": 8451,
+      "sha256": "290bdce187b109bc19153ef95f3f9d9d2515fd45b8002e349424d916f01fbddd"
+    },
+    "tests.log": {
+      "bytes": 1378,
+      "sha256": "31bcc4afacd892431ee456a140a5c3a02c903c6b3856a5db322bfe216555725a"
+    },
+    "worker.py": {
+      "bytes": 3693,
+      "sha256": "090ab33c3914ff362975e1c1bc42e9373881da8314a742f7b219d129cc83b447"
+    }
+  },
+  "independent_test_rerun": {
+    "actual_graph_executed": false,
+    "elapsed_seconds_approx": 4.5,
+    "failures": 0,
+    "method": "Copied only runner source/test/plan into a fresh sibling temp directory and ran test_runner.py under the project runtime. The copied fixture plan runner-source paths were rebound to the byte-identical relocated source copies; original frozen plan was not changed. All test executions use invented tiny payloads or refuse actual mode before attempt creation.",
+    "numerical_compile_or_sampler": false,
+    "observed_cases": [
+      "AST scientific guard and seven-item stream bundle parity",
+      "normal tiny single-stream count and immutable ephemeral snapshot",
+      "logical cap/serialization failures",
+      "terminal fsync uncertainty with no acknowledgment",
+      "two competing fresh-root creators with one winner and no loser mutation",
+      "actual gate refusal when technical record is absent",
+      "FIFO nonblocking capture rejection",
+      "wall watchdog direct-child termination/reap",
+      "real controller SIGTERM direct-child termination/reap"
+    ],
+    "scientific_imports": false,
+    "tests_passed": 9
+  },
+  "plan_and_inherited_pins_verified": {
+    "all_hashes_and_sizes_match": true,
+    "evidence_packet_and_upstream_entries_verified": true,
+    "inherited_source_pin_count": 12,
+    "runner_source_count": 5
+  },
+  "review_sha256_note": "New review only; Sol source/plan/evidence untouched.",
+  "reviewer": "luna",
+  "schema": "IndependentSymbolicCountRunnerReviewV1",
+  "scope": "Independent source/plan/evidence review plus bounded invented test rerun from a fresh copy. Actual TX mode was not invoked; no actual graph build, scientific import, numerical compile, sampler or forecast was performed."
+}

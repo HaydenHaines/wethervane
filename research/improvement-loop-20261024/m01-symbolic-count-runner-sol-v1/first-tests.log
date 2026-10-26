@@ -1,0 +1,20 @@
+test_actual_gate_missing_technical_evidence_creates_no_attempt (__main__.Tests.test_actual_gate_missing_technical_evidence_creates_no_attempt) ... ok
+test_exact_scientific_guard_calls_and_seven_root_single_stream (__main__.Tests.test_exact_scientific_guard_calls_and_seven_root_single_stream) ... FAIL
+test_logical_cap_and_serialization_failure_preserve_nonzero_receipts (__main__.Tests.test_logical_cap_and_serialization_failure_preserve_nonzero_receipts) ... ok
+test_nonblocking_capture_rejects_fifo (__main__.Tests.test_nonblocking_capture_rejects_fifo) ... ok
+test_normal_tiny_count_and_ephemeral_snapshot_reject_copy_restart (__main__.Tests.test_normal_tiny_count_and_ephemeral_snapshot_reject_copy_restart) ... ok
+test_real_controller_sigterm_reaps_its_direct_toy_worker (__main__.Tests.test_real_controller_sigterm_reaps_its_direct_toy_worker) ... ok
+test_uncertain_controller_terminal_fsync_has_no_reconstructable_ack (__main__.Tests.test_uncertain_controller_terminal_fsync_has_no_reconstructable_ack) ... ok
+
+======================================================================
+FAIL: test_exact_scientific_guard_calls_and_seven_root_single_stream (__main__.Tests.test_exact_scientific_guard_calls_and_seven_root_single_stream)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-symbolic-count-runner-sol-v1/test_runner.py", line 16, in test_exact_scientific_guard_calls_and_seven_root_single_stream
+    self.assertFalse(any(isinstance(n,ast.Call)and isinstance(n.func,ast.Attribute)and n.func.attr in ('dump','dumps','load','loads')for n in ast.walk(new)))
+AssertionError: True is not false
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.550s
+
+FAILED (failures=1)

@@ -1,0 +1,139 @@
+{
+  "schema": "PreparedCompressedNativeM01SelectionV1",
+  "scope": "supplied-state only; actual full graph construction not authorized by this selection",
+  "modes": [
+    "actual_calibration_bank",
+    "incumbent_reduction"
+  ],
+  "pins": {
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-native-successor-provider-sol-v1/provider.py": "6154ecb3d66ad38b5ba5fa94719d1da865f3e32bdf749ef1bb4ed4250606d853",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-native-successor-provider-sol-v1/selection.json": "03edb47049384b662cdd645053fc6083bde8fb41d972b1a07da8b71ecf6283b5",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-native-successor-provider-sol-v1/reference-mixture.npz": "856d72db3e5d01be86ee7303bb859cbbd6b2c9fee94bc8b6cc2cb049e58d18cb",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-native-successor-provider-sol-v1/reference-check.py": "a4d347b19ba9b38605c7b49cf8f54ac6b4ba0cebc1c9329eae2211e9cf5729e8",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-exact-vector-compression-sol-v1/compression.py": "dbcab9f9ae65abb1efd795d276958c94dd4dff6721d7c44cd129c65ff1ec9d0a",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-exact-vector-compression-sol-v1/coefficients.npz": "2fe3a022b42140cf5f89b2c4a4999a84199ba383ef2380d5ba6a615c8c644122",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-exact-vector-compression-sol-v1/result.json": "9279d760bae99d1b16b2210cc7865362365daf3b2105db3e56865254b0076805",
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/modular-count-graph-astra-v1/components.py": "7baf3ea8e644c025763e5a63b1721b14ddc748a94be3f1e106adf9f34f6ad2a7"
+  },
+  "native_components": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/modular-count-graph-astra-v1/components.py",
+  "mapping_ast_sha256": "8f0046f4830d0bdcbccc43900dc0a724c8eda49b4f1187a9748336137c005532",
+  "mapping_source_lines": [
+    535,
+    540
+  ],
+  "reference_bank": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-native-successor-provider-sol-v1/reference-mixture.npz",
+  "coefficients": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-exact-vector-compression-sol-v1/coefficients.npz",
+  "poll_block": {
+    "covariance": [
+      [
+        0.03242487809839725,
+        0.013393159282922956,
+        0.014061903277156458,
+        0.014730647271389957,
+        0.013393159282922956,
+        0.015399391265623457
+      ],
+      [
+        0.013393159282922956,
+        0.025737438156062248,
+        0.013393159282922956,
+        0.013393159282922956,
+        0.013393159282922956,
+        0.013393159282922956
+      ],
+      [
+        0.014061903277156458,
+        0.013393159282922956,
+        0.026406182150295752,
+        0.014061903277156458,
+        0.013393159282922956,
+        0.014061903277156458
+      ],
+      [
+        0.014730647271389957,
+        0.013393159282922956,
+        0.014061903277156458,
+        0.02707492614452925,
+        0.013393159282922956,
+        0.014730647271389957
+      ],
+      [
+        0.013393159282922956,
+        0.013393159282922956,
+        0.013393159282922956,
+        0.013393159282922956,
+        0.025737438156062248,
+        0.013393159282922956
+      ],
+      [
+        0.015399391265623457,
+        0.013393159282922956,
+        0.014061903277156458,
+        0.014730647271389957,
+        0.013393159282922956,
+        0.02774367013876275
+      ]
+    ],
+    "covariance_lineage": {
+      "coordinates": "ef1793ee6d4cef3fef398c2c10fe5fdc1fb0c6654f7c40472d818bd8c835ed03",
+      "disjoint_calibration": "953b9c4989eb565e2776f48ff7a53c34b8b135afed4ee118c6d4860bd88e3374",
+      "estimator": "9ae130b3f314d75a5255c7c92fab502ec596a7cca2960090706fa203b133e05d",
+      "exact_exclusions": "0dbcd883c5499e382cbd0d0d46467e31323c77e72543cc119db72dd6131bd08f",
+      "retained_training": "151a14846e850ff0b4537897a29faa772a5a5e0a81f8cd92f41fcdec202dcb61",
+      "route": "f745bebf7f268a7b67c4fad010346c2efd42dd4258ad611ae59adde1d9f26361"
+    },
+    "id": "polls_TX2026_disjoint_total_error",
+    "mean_target": "final_expected_named_pair_share",
+    "rows": [
+      {
+        "contest_id": "contest_tx2026_regular",
+        "first_candidate_id": "candidate_tx2026_bd088328b475",
+        "logit_value": 0.02150620522096358,
+        "observation_id": "poll_TX_9f7aa235d32bf4f0",
+        "second_candidate_id": "candidate_tx2026_b653a3943318"
+      },
+      {
+        "contest_id": "contest_tx2026_regular",
+        "first_candidate_id": "candidate_tx2026_bd088328b475",
+        "logit_value": -0.020619287202735648,
+        "observation_id": "poll_TX_d1ac322088039ac9",
+        "second_candidate_id": "candidate_tx2026_b653a3943318"
+      },
+      {
+        "contest_id": "contest_tx2026_regular",
+        "first_candidate_id": "candidate_tx2026_bd088328b475",
+        "logit_value": 0.04348511193973903,
+        "observation_id": "poll_TX_2163ad57f3c281cb",
+        "second_candidate_id": "candidate_tx2026_b653a3943318"
+      },
+      {
+        "contest_id": "contest_tx2026_regular",
+        "first_candidate_id": "candidate_tx2026_bd088328b475",
+        "logit_value": 0.07721585066738346,
+        "observation_id": "poll_TX_d1d4534c63c4fc88",
+        "second_candidate_id": "candidate_tx2026_b653a3943318"
+      },
+      {
+        "contest_id": "contest_tx2026_regular",
+        "first_candidate_id": "candidate_tx2026_bd088328b475",
+        "logit_value": 0.042559614418795855,
+        "observation_id": "poll_TX_c12a6d2d260fa073",
+        "second_candidate_id": "candidate_tx2026_b653a3943318"
+      },
+      {
+        "contest_id": "contest_tx2026_regular",
+        "first_candidate_id": "candidate_tx2026_bd088328b475",
+        "logit_value": 0.06187540371808731,
+        "observation_id": "poll_TX_4f484022e4728a2f",
+        "second_candidate_id": "candidate_tx2026_b653a3943318"
+      }
+    ],
+    "source_id": "polls_TX2026_LV_saved_six",
+    "universe": "LV"
+  },
+  "future_full_graph_gate": {
+    "independent_provider_review": null,
+    "fresh_resource_recheck": null,
+    "execution_not_selected": true
+  }
+}
