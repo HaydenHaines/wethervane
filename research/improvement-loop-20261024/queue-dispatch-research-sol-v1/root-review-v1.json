@@ -1,0 +1,25 @@
+{
+  "schema": "IndependentDispatchRootReviewV1",
+  "findings": {
+    "path": "research/improvement-loop-20261024/queue-dispatch-research-sol-v1/FINDINGS.md",
+    "sha256": "2308273fde6035698da56cb5ae33a1cec7ec12e4918088bc45339c1c17ffa8c8",
+    "bytes": 9092
+  },
+  "evidence": {
+    "path": "research/improvement-loop-20261024/queue-dispatch-research-sol-v1/evidence.json",
+    "sha256": "8008722a89bd73306dcd812354588fc0fc539febd8f26f40f177d30f157f31ce",
+    "bytes": 2666
+  },
+  "independentReview": {
+    "path": "research/improvement-loop-20261024/queue-dispatch-research-sol-v1/independent-review-sol-v1.json",
+    "sha256": "e93a62007ef142e1b2f4726014a8b69f496d8fe1b67cdd61a207094c0999ab52",
+    "bytes": 6888
+  },
+  "decision": "Accept as an isolated independent-job research prototype, not as production queue or scientific execution authority. The reviewer reproduced eight real-executor tests and path-conflict probes.",
+  "clarification": "A repeat with an authenticated successful predecessor, a fresh attempt/output and explicit reason is permitted; no failure-only retry gate is enforced. Scientific necessity and authorization of any repeat are outside the dispatcher.",
+  "limitations": [
+    "The domain trusts mutable SQLite and local config; coherent rewrites or rollback are not protected by a separately anchored immutable head.",
+    "Capacity one, independent jobs only; no DAG producer authorization, controller service, historical dispatch audit, automatic recovery, or production migration.",
+    "Unknown or corrupt reservations deliberately retain capacity and may need manual investigation. Tests are bounded crash cases, not physical power-loss or exhaustive concurrent-proof evidence."
+  ]
+}

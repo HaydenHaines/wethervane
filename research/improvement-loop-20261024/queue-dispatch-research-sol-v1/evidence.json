@@ -1,0 +1,74 @@
+{
+  "schema": "IndependentDispatchResearchEvidenceV1",
+  "recorded_at_utc": "2026-10-26T20:41:36.982508+00:00",
+  "scope": "Actual existing executor integration with independent synthetic jobs only; no production adoption or thousand-cycle claim",
+  "local": {
+    "test_dispatch.py": {
+      "sha256": "c58c5f18087bece122e2847ab34d6bac060aacf6c8d422f35a76074a571e2fb9",
+      "bytes": 9187
+    },
+    "tests-fixed-sleep-failure.log": {
+      "sha256": "cc9fa056a235f4d41a6a93b027601f94f44511a51ec94e5bf1283e6542759fe0",
+      "bytes": 3505
+    },
+    "tests.log": {
+      "sha256": "dff979acac947fb030919fc50b8f6d8ffd3742432e50a8ac00ac814b471a9aac",
+      "bytes": 1190
+    },
+    "FINDINGS.md": {
+      "sha256": "2308273fde6035698da56cb5ae33a1cec7ec12e4918088bc45339c1c17ffa8c8",
+      "bytes": 9092
+    },
+    "tests-pre-gate-kill-failure.log": {
+      "sha256": "15d48dea9f118dee389d492e987dea24432dd3be4c1beeaaf684efa287fc5dd4",
+      "bytes": 2417
+    },
+    "dispatch.py": {
+      "sha256": "726b687d20fb9678c1d3814c6a944e219166abc62202c24d3cebc84bc2d91e58",
+      "bytes": 8898
+    }
+  },
+  "upstream": {
+    "queue-incremental-index-sol-v2/core.py": {
+      "sha256": "207cfa6a85757b8d1d70aac056a96f45476b0a898f692b1ed5b5f5bf7709d9b2",
+      "bytes": 7646
+    },
+    "queue-incremental-index-sol-v2/independent-review-sol-v1.json": {
+      "sha256": "6369f3c816f64862edb0c4347116a08e54cb727e8206949faa79a2e5f0fa8cb7",
+      "bytes": 7285
+    },
+    "experiment_queue.py": {
+      "sha256": "6995febe73a5c1c2a317849416a58cc25130b9bbda44161f6a7624b321a8415f",
+      "bytes": 35468
+    },
+    "execution.py": {
+      "sha256": "ce02f4c4b9be397b299c2219092fdd355db1695798af07c4974bc63cb6bbbc93",
+      "bytes": 36273
+    },
+    "ledger.py": {
+      "sha256": "d65cea890ecf9b456f8b9625d173f15dac1e7fa94bb618d3407e26f368ee220a",
+      "bytes": 13115
+    },
+    "run_receipts.py": {
+      "sha256": "a7e78b822207109e0257adce9abb6493c53a0d93158177131ade76c0d874e73e",
+      "bytes": 30383
+    },
+    "test_experiment_queue.py": {
+      "sha256": "8e3bc176f52567eaf3dfd371b234437cd49fa5bd38cd24cffb11a2610131f831",
+      "bytes": 33722
+    },
+    "checkpoints/continuation-v51.json": {
+      "sha256": "97e402d375fda5c782ccd42bd4e3826295fc0707e9f563b22b329712f71dcd23",
+      "bytes": 7228
+    }
+  },
+  "trust": "mutable SQLite and cooperating local writers; operational observation is not historical audit",
+  "tests": "nice -n 15 python3 -B -m unittest test_dispatch -v",
+  "unsupported": [
+    "DAG/dependency binding",
+    "prelaunch new-plan resumption",
+    "automatic stop/recover",
+    "protected historical audit anchor",
+    "production controller"
+  ]
+}

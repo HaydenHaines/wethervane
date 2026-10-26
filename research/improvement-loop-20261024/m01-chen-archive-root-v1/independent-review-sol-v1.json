@@ -1,0 +1,192 @@
+{
+  "schema": "Chen2018CandidateScreenIndependentSolReviewV1",
+  "recorded_at_utc": "2026-10-26T20:45:19.212867+00:00",
+  "verdict": "pass_for_metadata_screen_only",
+  "source_admission": false,
+  "scope": "Read-only local SHA256/Git blob and independent CSV screening reconstruction; stdout reproducer and tiny synthetic predicate probes. Only this review written. No model/owner changes or target-outcome analysis.",
+  "pins": {
+    "README.md": {
+      "sha256": "feb0448cb03428ccaedad643ffddf7fba64d2a7c19d936b8646f8ba5ff782819",
+      "bytes": 4167
+    },
+    "compare_2018.py": {
+      "sha256": "2c5d740df762b2d329eba6e1d58f98de7fcaeef35bc844da3cb192ff0b81b89c",
+      "bytes": 4556
+    },
+    "2018-candidate-screen.json": {
+      "sha256": "44a8977633e8c6258003bc23ee3530bdd77979595bf5dae2750a092c88259063",
+      "bytes": 65893
+    },
+    "2019-file-metadata.json": {
+      "sha256": "90ef974f307542142be814016e91c5ad8b5834a6b89400066cba9a249c71eafe",
+      "bytes": 205
+    },
+    "2021-file-metadata.json": {
+      "sha256": "4044057fddfd6e7a5e87240c4918929303eff245afe2972cc46fecb2e5af9b48",
+      "bytes": 205
+    },
+    "raw/CNNData2018-20191120.csv": {
+      "sha256": "23e22ac1a64962d21d2f31fdfb8ca903dd3ecd9b7c9514661c726be610000c6c",
+      "bytes": 120901
+    },
+    "raw/CNNdata2018-20210223.csv": {
+      "sha256": "b6fb022254df4a3fe0624b050e04c6e7911c2e3ba593bf3ff9333f798c5a1ea3",
+      "bytes": 124114
+    }
+  },
+  "training_pin": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-calibration-preparation-sol-v1/prepared-v1/2020/selected-training-polls.csv",
+    "sha256": "22d1e4f6b325fe28a53b97a0d4a4bcd9102ff48e869d4667dbe75f14fb454a56",
+    "bytes": 1039080
+  },
+  "reproducer": {
+    "cwd": "/tmp",
+    "stdout_exact_json_equal": true,
+    "result_not_overwritten": true
+  },
+  "independent_recomputation": {
+    "2019": {
+      "source_rows": 1613,
+      "counts": {
+        "matching_coarse_key": 8,
+        "at_least_one_candidate_pair": 2,
+        "one_candidate_pair_on_screen": 2
+      },
+      "exclusions": {},
+      "distinct_pairs": 2,
+      "source_vs_prepared_N_equal": 0,
+      "source_vs_prepared_N_different": 2,
+      "N_mismatches": [
+        {
+          "tierney_observation_id": "tierney_cnn:row:4670",
+          "source_dem_line": 2,
+          "source_rep_line": 3,
+          "source_sample_size": 827,
+          "tierney_reported_n": 785
+        },
+        {
+          "tierney_observation_id": "tierney_cnn:row:4726",
+          "source_dem_line": 139,
+          "source_rep_line": 140,
+          "source_sample_size": 1202,
+          "tierney_reported_n": 1064
+        }
+      ],
+      "positive_days_states": {},
+      "source_git_blob_sha1": "f1cf31fb72a1011e1df777dda4797bb583bf28c7"
+    },
+    "2021": {
+      "source_rows": 1200,
+      "counts": {
+        "matching_coarse_key": 288,
+        "at_least_one_candidate_pair": 288,
+        "one_candidate_pair_on_screen": 288
+      },
+      "exclusions": {
+        "positive_days_excluded": 8
+      },
+      "distinct_pairs": 288,
+      "source_vs_prepared_N_equal": 281,
+      "source_vs_prepared_N_different": 7,
+      "N_mismatches": [
+        {
+          "tierney_observation_id": "tierney_cnn:row:4711",
+          "source_dem_line": 98,
+          "source_rep_line": 99,
+          "source_sample_size": 408,
+          "tierney_reported_n": 359
+        },
+        {
+          "tierney_observation_id": "tierney_cnn:row:4726",
+          "source_dem_line": 131,
+          "source_rep_line": 132,
+          "source_sample_size": 1164,
+          "tierney_reported_n": 1064
+        },
+        {
+          "tierney_observation_id": "tierney_cnn:row:4738",
+          "source_dem_line": 158,
+          "source_rep_line": 159,
+          "source_sample_size": 932,
+          "tierney_reported_n": 813
+        },
+        {
+          "tierney_observation_id": "tierney_cnn:row:4816",
+          "source_dem_line": 330,
+          "source_rep_line": 331,
+          "source_sample_size": 891,
+          "tierney_reported_n": 743
+        },
+        {
+          "tierney_observation_id": "tierney_cnn:row:4830",
+          "source_dem_line": 361,
+          "source_rep_line": 362,
+          "source_sample_size": 396,
+          "tierney_reported_n": 308
+        },
+        {
+          "tierney_observation_id": "tierney_cnn:row:4968",
+          "source_dem_line": 691,
+          "source_rep_line": 692,
+          "source_sample_size": 859,
+          "tierney_reported_n": 705
+        },
+        {
+          "tierney_observation_id": "tierney_cnn:row:5014",
+          "source_dem_line": 798,
+          "source_rep_line": 799,
+          "source_sample_size": 348,
+          "tierney_reported_n": 246
+        }
+      ],
+      "positive_days_states": {
+        "Hawaii": 2,
+        "Nebraska": 2,
+        "MinnesotaS": 2,
+        "MississippiS": 2
+      },
+      "source_git_blob_sha1": "6f141436e7242ae2cae7f00be88b19bc079b617f"
+    }
+  },
+  "primary_commit_metadata": {
+    "2019": {
+      "commit_sha": "50a27498cd264950127ace0b4da572870ad6759a",
+      "commit_api_url": "https://api.github.com/repos/yahoochen97/CNNForecasting/git/commits/50a27498cd264950127ace0b4da572870ad6759a",
+      "author_date": "2019-11-20T01:34:58Z",
+      "committer_date": "2019-11-20T01:34:58Z",
+      "tree_sha": "d4585e2a17a81092dd533e46bfc855b08d312d0f",
+      "scope": "Present-day primary Git metadata; not an independently witnessed historical retrieval"
+    },
+    "2021": {
+      "commit_sha": "c8a6ed318989a6428c110aa749b4b859dda29c2d",
+      "commit_api_url": "https://api.github.com/repos/yahoochen97/CNNForecasting/git/commits/c8a6ed318989a6428c110aa749b4b859dda29c2d",
+      "author_date": "2021-02-23T04:09:21Z",
+      "committer_date": "2021-02-23T04:09:21Z",
+      "tree_sha": "a7ea1c2b9a98a30e6143631c748fec8c14385ebe",
+      "scope": "Present-day primary Git metadata; not an independently witnessed historical retrieval"
+    }
+  },
+  "behavior_probes": {
+    "equal_source_pair_N_required": true,
+    "equal_source_vs_Tierney_N_not_required": true,
+    "positive_days_excluded_without_absolute_value_reinterpretation": true
+  },
+  "assessment": "Counts and exact-N explanation match. 2019 gives 8 coarse keys but only 2 support-pair candidates; 2021 gives 288 unique screen pairs, 281 with equal source/prepared N and 7 different. Eight positive-days candidate rows are excluded. These results authenticate a deterministic metadata screen, not actual same-poll links.",
+  "false_link_characterization": [
+    "The six unmatched 2019 coarse-key rows illustrate that year/state/day/pollster coincidence does not imply matching support-pair content; they are rejected candidates, not proved same-poll transformations.",
+    "Even a unique support pair can join unrelated releases/questions/populations sharing coarse fields and integer support values; no unique sample/question ID, release/date verification or candidate-roster validation exists. The test establishes no observed confirmed physical false-link count.",
+    "State is obtained from candidate-ID prefix, not a verified contest key; regular/special elections and candidate-name/population differences require independent joins. Pollster punctuation normalization can merge distinct strings.",
+    "Source D/R N equality is a within-pair constraint only; it does not authenticate original respondent N or Tierney transformation. Both 2019 candidate links and 7 later links have source/prepared N discrepancies."
+  ],
+  "chronology_limits": [
+    "Commit dates are mutable recorded Git metadata and present public availability is not a contemporaneous capture.",
+    "The 2021 version postdates the 2020 election and cannot establish that version was available at 2020 forecast time. The 2019 date alone does not prove the later version or Tierney 2023 bytes existed then.",
+    "The local file metadata records download URL, blob SHA1 and size, not a trusted commit-time/publication certificate.",
+    "No original Tierney historical byte version, original poll release, respondent identity, legal reuse rights, source admission or scientific qualification follows."
+  ],
+  "limitations": [
+    "No complete repository license/tree review repeated; README rights statements remain qualifications.",
+    "The existing separate 2020 AZ lineage review was read as context; this review does not independently rerun its remote download/source linkage.",
+    "Earlier 2018 outcome columns are present in raw CSVs but were not used by the screen or these predicate checks; no 2020 target outcome analysis performed."
+  ]
+}

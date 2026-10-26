@@ -1,0 +1,60 @@
+{
+  "schema": "M01ShareNormalizationIndependentReviewLunaV1",
+  "reviewed_at": "2026-10-26",
+  "scope": "Independent review of check.py, result.json, README.md; low-priority reproduction; no fitting or model mutation.",
+  "verdict": "Numerical check is internally consistent within its narrow stated scope. No material arithmetic or Jacobian-sign defect found. It does not demonstrate normalization of the full 4,000-component bank, an integrated/native symbolic factor, or a fitted model.",
+  "review_checks": {
+    "scalar_prototype_vs_scipy": {
+      "status": "pass",
+      "method": "Ran the pinned-environment checker; its selected-point scalar SharedVectorMixture.log-density evaluations agree with scipy.stats.multivariate_normal/logsumexp.",
+      "saved_max_absolute_error": 3.9968028886505635e-15,
+      "reproduced_max_absolute_error": 3.9968028886505635e-15,
+      "limit": "This checks scalar NumPy prototype evaluation, not the PyTensor symbolic expression or the production/native provider."
+    },
+    "share_jacobian": {
+      "status": "correct",
+      "derivation": "For z=logit(p), dz/dp=1/(p(1-p)); hence log f_P(p)=log f_Z(logit(p))-sum(log(p)+log(1-p)). The script uses -sum(log(shares*(1-shares))) for both target and proposal share densities.",
+      "ratio": "The common Jacobian cancels in the exact target-share/proposal-share importance ratio, while being included in both densities is still the correct transformation.",
+      "scope_caveat": "The checker tests a continuous logistic-normal share density. It does not turn rounded published poll shares into unrounded respondent-level data."
+    },
+    "proposal_vs_target": {
+      "status": "distinct construction",
+      "method": "The target is a four-component Gaussian mixture with fixed invented weights [0.1,0.2,0.3,0.4] on selected actual six-poll covariances. The proposal is one Gaussian with covariance 1.5 times the weighted covariance sum. These are different distributional forms; the weight vector is explicitly invented and is not the bank's 4,000 weights.",
+      "saved_qmc_mean": 1.0000944392889377,
+      "reproduced_qmc_mean": 1.0000944392889377,
+      "scramble_sd": 0.00012548167812188776,
+      "interpretation": "Eight scrambled Sobol estimates give a randomized QMC approximation near one for this supplied six-dimensional case. The between-scramble SD is descriptive, not a deterministic error bound or proof of exact normalization."
+    },
+    "missing_jacobian_control": {
+      "status": "discriminating negative control",
+      "saved_estimates": [0.0002272668665409899,0.00022734420403263712,0.00022729721808030772,0.00022728028749069423,0.00022726765683252166,0.00022731612233750463,0.000227334785994698,0.00022729296726686107],
+      "reproduced_estimates_match_saved": true,
+      "interpretation": "Dropping the target share Jacobian while retaining the proposal's share Jacobian produces a value far from one. This is a useful sign/error counterexample to treating a logit density as a share density; it is not a separate estimate of a calibrated empirical target."
+    },
+    "source_and_manifest_pins": {
+      "status": "verified for observed files",
+      "checks": [
+        "Recomputed SHA-256 for prototype.py (244c8214b8e004bb84ad14adb7a0ac27c439bc6283705db532413a4efe015d07), consumer.py (f2f28207125b9474ddc92b22b75b814c962e415c3152df6a9170a15e4dd1fd70), input-manifest.json (0fbec6366c2640f30a17c2fc576b87303d9f4065a632b1488b9a72311345fcb8), and check.py (3f46b05d9571959ed905ab312d710840f368d76295b81b682740058d9bcc8654); values equal result.json pins.",
+        "Prototype loader hard-pins the consumer source and input manifest, invokes the consumer's snapshot verifier, and invokes bank loading with the pinned independent-review hash and fixed target cycle/cutoff/target label.",
+        "Consumer snapshot verification checks manifest bytes and each manifested source snapshot; bank loader checks bank/plan/terminal/review receipts and digest-linked payload before use."
+      ],
+      "limitation": "check.py records its own and prototype hashes in emitted JSON but does not self-enforce a precommitted expected hash for check.py/prototype.py. The independent review records the observed hashes, and result.json is an output receipt; this is not an external signature or immutable attestation."
+    },
+    "side_effects": {
+      "status": "none observed",
+      "details": "Ran the documented command in its isolated calibration environment with BLAS threading set to one and PYTHONDONTWRITEBYTECODE=1. The script prints JSON and does not write the supplied result.json. Its temporary sys.path/module state is process-local. Saved result file was not redirected over or modified. No current model, registry, owner worktree, or active fit was changed."
+    }
+  },
+  "scope_limits": [
+    "Only four selected covariance components (indices 0, 1333, 2666, 3999) and invented weights are used; no full 4,000-component importance integration is demonstrated.",
+    "The mean is a supplied illustrative constant vector; no posterior integration or fit is performed.",
+    "The tested implementation is the reconstructed/vectorized NumPy calculation and sampled scalar prototype. No native PyTensor symbolic integration or production factor execution is demonstrated.",
+    "The QMC mean and scramble SD do not constitute an exact normalization proof, empirical calibration result, predictive validation, or publication qualification."
+  ],
+  "reproduction": {
+    "command": "OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 PYTHONDONTWRITEBYTECODE=1 .improvement-ledger/runtime/calibration-v1-env/bin/python research/improvement-loop-20261024/m01-share-normalization-root-v1/check.py",
+    "exit_code": 0,
+    "runtime": {"python":"3.12.3","numpy":"2.5.4","scipy":"1.18.1"},
+    "saved_result_file_sha256_before_or_after_review": "6adaea02376cd9e534d95e360076f7dd55a1d91c157f58510ee04e6ecf6e0bb0"
+  }
+}

@@ -1,0 +1,183 @@
+{
+  "schema": "ChenArchiveIndependentPrimarySourceReviewSolV1",
+  "reviewed_at_utc": "2026-10-26T20:42:42.238766+00:00",
+  "verdict": "primary_Chen_blob_and_content_authenticated_Tierney_link_remains_candidate",
+  "scope": "Independent primary GitHub API commit/path/blob verification plus one bounded 1.286 MB raw download, 2012 AZ poll-only row comparison. No 2020 election outcomes used, no large download, no owner writes. Only this review JSON written.",
+  "primary_sources": {
+    "commit_url": "https://github.com/yahoochen97/CNNForecasting/commit/0b63a81a5f89f2373966dc9b35e0faa337aa4ae1",
+    "commit_api_url": "https://api.github.com/repos/yahoochen97/CNNForecasting/git/commits/0b63a81a5f89f2373966dc9b35e0faa337aa4ae1",
+    "contents_api_url": "https://api.github.com/repos/yahoochen97/CNNForecasting/contents/data/CNNdata1992-2016.csv?ref=0b63a81a5f89f2373966dc9b35e0faa337aa4ae1",
+    "raw_url": "https://raw.githubusercontent.com/yahoochen97/CNNForecasting/0b63a81a5f89f2373966dc9b35e0faa337aa4ae1/data/CNNdata1992-2016.csv",
+    "commit_sha": "0b63a81a5f89f2373966dc9b35e0faa337aa4ae1",
+    "commit_author_date": "2020-10-12T19:13:09Z",
+    "commit_committer_date": "2020-10-12T19:13:09Z",
+    "tree_sha": "c8b11b35a76b14a8823045b57c2393b0ca16ff5d",
+    "path": "data/CNNdata1992-2016.csv",
+    "blob_sha": "b95e977e4390fade41e157b80775b96d1cea350e",
+    "size": 1286178,
+    "local_git_blob_sha1": "b95e977e4390fade41e157b80775b96d1cea350e",
+    "remote_raw_matches_local_bytes": true,
+    "local_file": {
+      "path": "research/improvement-loop-20261024/m01-chen-archive-root-v1/raw/CNNdata1992-2016-20201012.csv",
+      "sha256": "0ae4bdcc20712d2248b0d0d144a8c86076ab3133f021af8fcfe770b05253ca44",
+      "bytes": 1286178
+    },
+    "timing_limit": "GitHub primary history reports 2020-10-12T19:13:09Z, before the 2020 election. Git commit dates are recorded metadata, not independent trusted timestamps; no 2020 result data are needed for this finding."
+  },
+  "actual_chen_rows": [
+    {
+      "csv_line": 9426,
+      "cycle": "2012",
+      "state": "Arizona",
+      "Candidateidentifier": "2012AZFlake",
+      "samplesize": "500",
+      "daysLeft": "-16",
+      "numberSupport": "250",
+      "pollster": "Rasmussen Reports/Pulse Opinion Research",
+      "Republican": "1",
+      "Democrat": "0",
+      "pvi": "-8.004806",
+      "experienced": "1"
+    },
+    {
+      "csv_line": 10021,
+      "cycle": "2012",
+      "state": "Arizona",
+      "Candidateidentifier": "2012AZCarmona",
+      "samplesize": "500",
+      "daysLeft": "-16",
+      "numberSupport": "220",
+      "pollster": "Rasmussen Reports/Pulse Opinion Research",
+      "Republican": "0",
+      "Democrat": "1",
+      "pvi": "-8.004806",
+      "experienced": "0"
+    }
+  ],
+  "actual_tierney_poll_row": {
+    "csv_line": 3318,
+    "election": "Sen",
+    "state": "AZ",
+    "year": "2012",
+    "pollName": "Rasmussen Reports/Pulse Opinion Research",
+    "endDate": "2012-10-21",
+    "numberOfRespondents": "470",
+    "democratic": "220",
+    "republican": "250",
+    "electionDate": "2012-11-06",
+    "startDate": "NA",
+    "someoneElse": "NA",
+    "undecided": "NA",
+    "refuseToAnswer": "NA",
+    "populationType": "NA",
+    "Mode": "NA",
+    "check": "NA"
+  },
+  "prepared_tierney_row": {
+    "state": "AZ",
+    "source_row_number": "3318",
+    "cycle": "2012",
+    "race_id": "2012:AZ:senate:regular",
+    "source_race_id": "1473",
+    "dem_candidate_id": "1977",
+    "rep_candidate_id": "1976",
+    "dem_candidate_name": "Richard Carmona",
+    "rep_candidate_name": "Jeff Flake",
+    "election_date": "2012-11-06",
+    "start_date": "",
+    "end_date": "2012-10-21",
+    "source_election_date": "2012-11-06",
+    "election_date_correction": "none",
+    "source_democratic_value": "220",
+    "source_republican_value": "250",
+    "reported_n": "470",
+    "dem_share": "0.4680851063829787",
+    "first_candidate_conditional_share": "0.4680851063829787",
+    "first_candidate_id": "1977",
+    "second_candidate_id": "1976",
+    "first_candidate_name": "Richard Carmona",
+    "second_candidate_name": "Jeff Flake",
+    "source_id": "tierney_cnn",
+    "source_path": "research/polling-layer-implementation-20261020/historical-intake-sol/raw/tierney-polls_cnn_dataset.csv",
+    "source_value_basis": "author_derived_D_R_values_not_verified_raw_counts",
+    "reported_n_basis": "author_two_party_total_original_nominal_sample_unknown",
+    "effective_n": "",
+    "variance": "",
+    "pollster": "Rasmussen Reports/Pulse Opinion Research",
+    "population": "unknown",
+    "methodology": "unknown",
+    "publication_date": "",
+    "available_date": "2012-10-21",
+    "availability_basis": "field_end_date_proxy_only_NOT_verified_publication",
+    "publication_date_verified": "False",
+    "historical_version_verified": "False",
+    "strict_asof_qualified": "False",
+    "candidate_join_basis": "unique_eligible_state_cycle_D_R_roster_pair_no_author_candidate_names",
+    "source_candidate_names_verified": "False",
+    "sample_overlap_status": "unknown_no_author_sample_ID_or_field_start",
+    "observation_id": "tierney_cnn:row:3318",
+    "sample_id": "unknown:tierney_cnn:row:3318",
+    "potential_overlap_group": "tierney_cnn:2012:Rasmussen Reports/Pulse Opinion Research",
+    "days_to_election": "16",
+    "forecast_target": "Democratic_share_conditional_on_D_R",
+    "pollster_key": "rasmussen reports/pulse opinion research",
+    "lead_bin": "1"
+  },
+  "arithmetic_checks": {
+    "nominal_sample_size": 500,
+    "D_value": 220,
+    "R_value": 250,
+    "D_percent_of_500": 44.0,
+    "R_percent_of_500": 50.0,
+    "D_plus_R": 470,
+    "conditional_D_share": 0.46808510638297873,
+    "conditional_R_share": 0.5319148936170213,
+    "date_if_daysLeft_is_election_relative": "2012-11-06 minus 16 days = 2012-10-21",
+    "date_limit": "Chen rows supply daysLeft, not a field interval or exact release date; conversion uses the known 2012 general election date.",
+    "N_interpretation": "Chen samplesize 500 and candidate values 220/250 are directly observed archive fields. Tierney numberOfRespondents 470 equals D+R. This supports a two-party denominator interpretation and is compatible with dropping 6% other/undecided; it does not prove an actual respondent-count transformation or a separate N470 survey."
+  },
+  "lineage_assessment": {
+    "proved": [
+      "The saved Chen bytes exactly match the raw GitHub content at the named commit and Git blob, including Git object framing hash.",
+      "The archive contains one selected Arizona 2012 Rasmussen -16 pair with explicit Flake/Carmona identifiers, N500 and R250/D220.",
+      "Literal Tierney source CSV line3318 contains AZ2012 same pollster/date, D220/R250 and numberOfRespondents470; the selected prepared row preserves those fields. Source_row_number3318 means CSV line number including header, not zero-based row index.",
+      "The observed fields are arithmetically compatible with the publisher/538 44/50 result and a two-party conditioning operation."
+    ],
+    "not_proved": [
+      "No source transformation script, literal upstream row foreign key, original questionnaire identifier, respondent/sample identity, field start or chain of custody from this Chen pair to Tierney line3318 has been established here.",
+      "Candidate names are explicit in Chen but absent from the literal Tierney row; prepared candidate identities come from a later roster join.",
+      "Same state/cycle/pollster/date and exact derived values strongly constrain a candidate link, but do not authenticate common respondents, release, fieldwork or the actual transformation.",
+      "The October2020 Chen archive cannot establish original 2012 publication timing or the historical vintage of the March2023 Tierney file."
+    ],
+    "claim_to_use": "Strong content-compatible source-lineage candidate; transformation and physical poll identity remain unverified.",
+    "claim_to_reject": "Verified Tierney transformation from the N500 release solely because 220+250=470, or treating N470 as original poll respondent N."
+  },
+  "pins": [
+    {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/historical-intake-sol/raw/tierney-polls_cnn_dataset.csv",
+      "sha256": "61e1141f5ed84cfbbec487115742f59c6e20ebd04ba99a0a32f08d8fa2b20322",
+      "bytes": 688043
+    },
+    {
+      "path": "research/improvement-loop-20261024/momentum-calibration-preparation-sol-v1/prepared-v1/2024/selected-training-polls.csv",
+      "sha256": "2cfe745917c250bd128fd3664357abaefa3e74fadd54b12f24d4cb914ef70a79",
+      "bytes": 1287949
+    },
+    {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/historical-intake-sol/normalize_historical.py",
+      "sha256": "980c9c5b41c4f94076520be2d2daeea240b19096e0dd583e5c467384b69322ab",
+      "bytes": 12993
+    },
+    {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/historical-intake-sol/source_receipt.json",
+      "sha256": "2fd7ba167d48a68d92adbee11a47a7c92bda8f789fd7cc6847ab0804dbfe7173",
+      "bytes": 2798
+    },
+    {
+      "path": "research/improvement-loop-20261024/m01-release-linkage-luna-v1/tierney-identity-addendum-v1.md",
+      "sha256": "8aa698329e04fd877fed318ef683b0efefc6128ff03d7d8d67a12b0f80a91da5",
+      "bytes": 2629
+    }
+  ],
+  "reproduction": "Use GitHub git/commits and contents endpoints above; compute SHA1(b\"blob \"+ASCII(byte_length)+b\"\\0\"+raw_bytes); compare raw bytes. Filter Chen cycle2012/stateArizona/pollsterRasmussen/daysLeft-16. Filter Tierney year2012/stateAZ/endDate2012-10-21/pollNameRasmussen, retaining poll fields only. No outcome columns are required."
+}

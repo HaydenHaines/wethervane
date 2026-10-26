@@ -1,0 +1,67 @@
+{
+  "schema": "M01OriginalSourceLinkageLunaV2",
+  "reviewed_at": "2026-10-26",
+  "scope": "Author-level Tierney/Chen source chain and candidate-row provenance; read-only, no fit or data admission.",
+  "prior_packet": {
+    "directory": "research/improvement-loop-20261024/m01-release-linkage-luna-v1",
+    "preserved": true,
+    "conclusion_after_addendum": "Rasmussen original release to 538 poll 5385932 is verified event correspondence; Tierney row 3318 is strong but unverified. Emerson release to 538 poll 75213 is supported; Tierney row 4550 is ambiguous."
+  },
+  "tierney": {
+    "repository": "https://github.com/g-tierney/polling_errors_replication",
+    "commit": "4aba5bc539dde8157bb2eeae9f3330a01439c19d",
+    "commit_date": "2023-03-08T15:12:51Z",
+    "signature": "unsigned",
+    "data_path": "data/polls_cnn_dataset.csv",
+    "git_blob_sha1": "2b397788b99435522a7f051a4040bcd913c693f6",
+    "bytes": 688043,
+    "sha256": "61e1141f5ed84cfbbec487115742f59c6e20ebd04ba99a0a32f08d8fa2b20322",
+    "local_receipt": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/historical-intake-sol/source_receipt.json",
+    "rights": "No LICENSE file found in inspected upstream tree; no data copied into this packet.",
+    "README_url": "https://github.com/g-tierney/polling_errors_replication/blob/4aba5bc539dde8157bb2eeae9f3330a01439c19d/README.md",
+    "preparation_script_url": "https://github.com/g-tierney/polling_errors_replication/blob/4aba5bc539dde8157bb2eeae9f3330a01439c19d/scripts/01_model_prepare_input.R",
+    "lineage_limit": "Repository and script establish author package and table selection, but not row-to-release lineage; raw table has no poll URL/question/publication date/unique sample identifier."
+  },
+  "chen": {
+    "paper": "Polls, Context, and Time: A Dynamic Hierarchical Bayesian Forecasting Model for US Senate Elections",
+    "paper_url": "https://doi.org/10.1017/pan.2021.42",
+    "data_source_claim": "Paper says Senate polling data came from FiveThirtyEight and CNN; acknowledgment thanks Harry Enten at CNN for providing data.",
+    "NSF_PAR_pdf": "https://par.nsf.gov/servlets/purl/10394195",
+    "indexed_pdf_text_reference": "web search result turn486search12",
+    "code_ocean": "https://doi.org/10.24433/CO.4154884.v1",
+    "harvard_dataverse": "https://doi.org/10.7910/DVN/GNHESM",
+    "dataset_version": "1.0; catalog/search metadata reports 6 MB capsule and 26.8 GB results archive",
+    "access_attempts": [
+      {"method": "web dataset page", "url": "https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/GNHESM", "result": "Bot-verification/JavaScript challenge; page data not inspectable."},
+      {"method": "direct Dataverse API", "result": "HTTP 403 from shell for attempted API routes; no capsule downloaded."},
+      {"method": "NSF PAR paper", "url": "https://par.nsf.gov/servlets/purl/10394195", "result": "Search-indexed PDF text available; direct page open returned 502 in prior inspection."}
+    ],
+    "lineage_limit": "Acknowledged CNN data provision is collection-level evidence. No source row, URL, questionnaire or sample identity exposed by inspected material."
+  },
+  "tierney_later_paper": {
+    "title": "Bias and Excess Variance in Election Polling: A Not-So-Hidden Markov Model",
+    "url": "https://doi.org/10.1093/jrsssa/qnae066",
+    "claim": "Describes 1992-2020 Senate poll data and reliance on Chen et al. (2022) Senate data.",
+    "lineage_limit": "Supports collection-level dependency; not poll-specific crosswalk."
+  },
+  "candidate_rows": [
+    {
+      "status": "strong_candidate_unverified",
+      "race": "2012_Sen_AZ",
+      "csv_physical_line": 3318,
+      "row": {"pollName":"Rasmussen Reports/Pulse Opinion Research","endDate":"2012-10-21","numberOfRespondents":470,"democratic":220,"republican":250,"startDate":"NA","populationType":"NA","Mode":"NA"},
+      "comparison": "Rasmussen original release reports N=500 and D/R 44/50, plus other=3 and undecided=3. Tierney integer values equal 44% and 50% of 500 and sum to 470. This is numerically compatible with reconstructing the D/R respondents from the release, but source lineage and shared sample/instrument are not established."
+    },
+    {
+      "status": "ambiguous_do_not_join",
+      "race": "2016_Sen_MO",
+      "csv_physical_line": 4550,
+      "row": {"pollName":"Emerson College","endDate":"2016-10-30","numberOfRespondents":676,"democratic":341,"republican":335,"electionDate":"2016-11-03","startDate":"NA","populationType":"NA","Mode":"NA"},
+      "comparison": "Emerson 2016-11-02 release reports likely voters, field dates Oct 28-31, N=650 and D/R 294/294. This differs in end date and counts from Tierney row; evidence neither identifies the row as this sample nor identifies its actual alternative source."
+    }
+  ],
+  "next_source": {
+    "priority": "Inspect the small Harvard Dataverse capsule (not the 26.8 GB results archive) for Chen poll table crosswalk/source notes; access was blocked in this pass.",
+    "if_no_crosswalk": "Request/locate Chen et al.'s original CNN-delivered Senate data or its acquisition record, attributed in the article acknowledgment to Harry Enten."
+  }
+}

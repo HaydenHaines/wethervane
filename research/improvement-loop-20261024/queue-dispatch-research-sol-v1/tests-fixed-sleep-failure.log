@@ -1,0 +1,43 @@
+test_active_input_and_reservation_corruption_retain_capacity (test_dispatch.DispatchTests.test_active_input_and_reservation_corruption_retain_capacity) ... ok
+test_capacity_and_unverified_cleanup_are_retained (test_dispatch.DispatchTests.test_capacity_and_unverified_cleanup_are_retained) ... ERROR
+test_dependencies_and_old_receipts_not_adopted (test_dispatch.DispatchTests.test_dependencies_and_old_receipts_not_adopted) ... ok
+test_live_source_and_terminal_drift_keep_capacity (test_dispatch.DispatchTests.test_live_source_and_terminal_drift_keep_capacity) ... ERROR
+test_process_failure_and_explicit_executor_retry (test_dispatch.DispatchTests.test_process_failure_and_explicit_executor_retry) ... ok
+test_real_launch_cleanup_and_atomic_caller_crashes (test_dispatch.DispatchTests.test_real_launch_cleanup_and_atomic_caller_crashes) ... ok
+test_registered_spec_identity_drift_and_partial_scaffold (test_dispatch.DispatchTests.test_registered_spec_identity_drift_and_partial_scaffold) ... ok
+test_unknown_exit_never_releases (test_dispatch.DispatchTests.test_unknown_exit_never_releases) ... ok
+
+======================================================================
+ERROR: test_capacity_and_unverified_cleanup_are_retained (test_dispatch.DispatchTests.test_capacity_and_unverified_cleanup_are_retained)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-dispatch-research-sol-v1/test_dispatch.py", line 121, in test_capacity_and_unverified_cleanup_are_retained
+    old=path.read_text();terminal=json.loads(old)
+        ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1029, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/tmpoc3gst_c/queue/executions/attempts/first/terminal.json'
+
+======================================================================
+ERROR: test_live_source_and_terminal_drift_keep_capacity (test_dispatch.DispatchTests.test_live_source_and_terminal_drift_keep_capacity)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-dispatch-research-sol-v1/test_dispatch.py", line 69, in test_live_source_and_terminal_drift_keep_capacity
+    old=terminal.read_text();value=json.loads(old);value['attempt_id']='wrong';terminal.write_text(json.dumps(value))
+        ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1029, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/tmp64rjs84f/queue/executions/attempts/held/terminal.json'
+
+----------------------------------------------------------------------
+Ran 8 tests in 5.596s
+
+FAILED (errors=2)

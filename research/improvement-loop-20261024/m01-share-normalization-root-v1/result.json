@@ -1,0 +1,80 @@
+{
+  "schema": "M01SixPollShareImportanceNormalizationV1",
+  "sourcePins": {
+    "prototype": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-count-measurement-prototype-sol-v1/prototype.py",
+      "sha256": "244c8214b8e004bb84ad14adb7a0ac27c439bc6283705db532413a4efe015d07",
+      "bytes": 10812
+    },
+    "consumer": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/calibration-consumer-v1/consumer.py",
+      "sha256": "f2f28207125b9474ddc92b22b75b814c962e415c3152df6a9170a15e4dd1fd70",
+      "bytes": 15198
+    },
+    "manifest": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/calibration-consumer-v1/input-manifest.json",
+      "sha256": "0fbec6366c2640f30a17c2fc576b87303d9f4065a632b1488b9a72311345fcb8",
+      "bytes": 4410
+    },
+    "script": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-share-normalization-root-v1/check.py",
+      "sha256": "3f46b05d9571959ed905ab312d710840f368d76295b81b682740058d9bcc8654",
+      "bytes": 4904
+    }
+  },
+  "runtime": {
+    "python": "3.12.3",
+    "numpy": "2.5.4",
+    "scipy": "1.18.1"
+  },
+  "dimension": 6,
+  "components": [
+    0,
+    1333,
+    2666,
+    3999
+  ],
+  "subset_weights": [
+    0.1,
+    0.2,
+    0.3,
+    0.4
+  ],
+  "proposal": "one logistic-normal with covariance 1.5 times the weighted mixture covariance; not the target mixture",
+  "points_per_scramble": 16384,
+  "scramble_seeds": [
+    31,
+    47,
+    59,
+    71,
+    83,
+    97,
+    101,
+    127
+  ],
+  "integral_estimates": [
+    0.9999537169295821,
+    1.0002769007675254,
+    1.0000992629518368,
+    1.0000064902348225,
+    0.9999416548757551,
+    1.000165564640536,
+    1.000237798114501,
+    1.0000741257969423
+  ],
+  "mean_estimate": 1.0000944392889377,
+  "between_scramble_sd": 0.00012548167812188776,
+  "missing_jacobian_estimates": [
+    0.0002272668665409899,
+    0.00022734420403263712,
+    0.00022729721808030772,
+    0.00022728028749069423,
+    0.00022726765683252166,
+    0.00022731612233750463,
+    0.000227334785994698,
+    0.00022729296726686107
+  ],
+  "scalar_scipy_max_abs_error": 3.9968028886505635e-15,
+  "logit_roundtrip_max_abs_error": 6.661338147750939e-16,
+  "scope": "Numerical integration of an invented four-component reweighting of actual six-poll covariance components, at a supplied constant mean. Proposal differs from target. Tests the reconstructed share-measure mixture and sampled scalar implementation; it is not the full 4000-row bank, a fitted posterior, native factor, source admission, or empirical forecast validation."
+}

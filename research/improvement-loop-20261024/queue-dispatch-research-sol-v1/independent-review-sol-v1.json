@@ -1,0 +1,106 @@
+{
+  "schema": "IndependentDispatchResearchIndependentReviewSolV1",
+  "reviewed_at": "2026-10-26",
+  "verdict": "bounded_executor_dispatch_checks_pass_with_scope_limits",
+  "production_approval": false,
+  "blockers": [],
+  "scope": "Read-only source review plus all 8 actual executor fixture tests, 6 independent nested-path permutations and two tiny fixture executions checking successful-predecessor repeat. All runs nice15 in temporary domains. Only this review JSON written.",
+  "source_integrity": {
+    "authored_local_pins_match": {
+      "test_dispatch.py": true,
+      "tests-fixed-sleep-failure.log": true,
+      "tests.log": true,
+      "FINDINGS.md": true,
+      "tests-pre-gate-kill-failure.log": true,
+      "dispatch.py": true
+    },
+    "authored_upstream_pins_match": {
+      "queue-incremental-index-sol-v2/core.py": true,
+      "queue-incremental-index-sol-v2/independent-review-sol-v1.json": true,
+      "experiment_queue.py": true,
+      "execution.py": true,
+      "ledger.py": true,
+      "run_receipts.py": true,
+      "test_experiment_queue.py": true,
+      "checkpoints/continuation-v51.json": true
+    },
+    "original_sources_match_prior_v2_independent_review": {
+      "../experiment_queue.py": true,
+      "../execution.py": true,
+      "../ledger.py": true
+    },
+    "pins": {
+      "dispatch.py": {
+        "sha256": "726b687d20fb9678c1d3814c6a944e219166abc62202c24d3cebc84bc2d91e58",
+        "bytes": 8898
+      },
+      "test_dispatch.py": {
+        "sha256": "c58c5f18087bece122e2847ab34d6bac060aacf6c8d422f35a76074a571e2fb9",
+        "bytes": 9187
+      },
+      "FINDINGS.md": {
+        "sha256": "2308273fde6035698da56cb5ae33a1cec7ec12e4918088bc45339c1c17ffa8c8",
+        "bytes": 9092
+      },
+      "evidence.json": {
+        "sha256": "8008722a89bd73306dcd812354588fc0fc539febd8f26f40f177d30f157f31ce",
+        "bytes": 2666
+      },
+      "tests.log": {
+        "sha256": "dff979acac947fb030919fc50b8f6d8ffd3742432e50a8ac00ac814b471a9aac",
+        "bytes": 1190
+      },
+      "tests-fixed-sleep-failure.log": {
+        "sha256": "cc9fa056a235f4d41a6a93b027601f94f44511a51ec94e5bf1283e6542759fe0",
+        "bytes": 3505
+      },
+      "tests-pre-gate-kill-failure.log": {
+        "sha256": "15d48dea9f118dee389d492e987dea24432dd3be4c1beeaaf684efa287fc5dd4",
+        "bytes": 2417
+      }
+    }
+  },
+  "executed_tests": {
+    "command": "nice -n 15 python3 -B -m unittest test_dispatch -v",
+    "passed": 8,
+    "seconds": 6.861,
+    "actual_executor_used": true,
+    "independent_nested_permutations": {
+      "count": 6,
+      "result": "All rejected through dispatch.enqueue; no launches from invalid plans."
+    },
+    "successful_predecessor_repeat": {
+      "result": "Explicit same-job repeat with accepted_execution predecessor, exact terminal pin, new attempt/output and reason was admitted, launched and released accepted_execution.",
+      "meaning": "Predecessor lineage is authenticated; failure-only retry policy is not enforced. No scientific approval follows."
+    }
+  },
+  "critical_checks": [
+    "Reservation commits before executor preparation. Domain flock serializes cooperating callers. Actual caller-death probes after reservation/preparation/launch/release insert/release commit pass. Release and capacity transition are one SQLite record transaction.",
+    "Exact registered unused preparation resumes within same reservation only before launch intent. Partial scaffolds retain; launch intent prevents automatic relaunch. Dispatcher contains no stop/recover calls.",
+    "Active canonical reservation and selected admission/spec/source/input/ownership checks execute synchronously. Tested source/input/reservation/specification/predecessor-terminal/terminal drift retains capacity.",
+    "Release uses original executor inspect, validated terminal and evidence pins, verified cleanup, no held job lock, no live recorded process/session and known return code. Actual unknown exit remains reserved after fixture supervisor kill and explicit stop/recover.",
+    "Duplicate attempts/output paths use V2 admission. Six independent same-plan nonadjacent nested cases rejected; authored capacity test prevents second job preparation while first live or cleanup unverified.",
+    "Current config/V2/original executor dependency hashes verified. Original queue/executor/ledger agree with prior independent V2 pins. Tests launch and signal only temp fixture identities, not real owner jobs."
+  ],
+  "preserved_failure_assessment": {
+    "fixed_sleep": "Two terminal FileNotFoundErrors occurred with insufficient fixed delay. Current tests poll actual terminal and process/lock/session settlement; original executor gates unchanged.",
+    "pre_gate_kill": "Explicit stop correctly refused unresolved ownership when supervisor killed before recorded child anchor. Current test waits for actual child receipt, proving a later crash boundary only. Earlier failure remains preserved.",
+    "limit": "No arbitrary fsync/power-loss crash proof or exhaustive pre-gate lifecycle coverage."
+  },
+  "nonblocking_findings": [
+    {
+      "id": "SOL-D1",
+      "finding": "Explicit retries/repeats after successful predecessor are allowed, independently reproduced.",
+      "recommendation": "Clarify documentation so retry-after-failure wording is not mistaken for a failure-status gate; add such policy only if intended."
+    }
+  ],
+  "retained_limitations": [
+    "Trusted mutable SQLite/config can be coherently rewritten/rolled back. Installed triggers and digests are not independent historical protection. Consistent forged release rows can defeat historical capacity; explicitly outside contract.",
+    "Released history is not revalidated at every tick; no dispatch-wide historical audit or protected head.",
+    "No DAG dependency/producer result authority, controller service, migration, cancellation or automatic repair/recovery. Partial/unknown reservations can block forever.",
+    "No scale claim; current selected plan validation can inspect siblings. No comprehensive concurrent-dispatch adversarial campaign or physical crash durability proof.",
+    "Source/config pinning is local integrity, not scientific authorization. Actual-input approval and meaningful forecast qualification are absent."
+  ],
+  "owner_noninterference": "Source hashes match authored/available prior independent pins. Fixture cleanup enumerates only temp executor/controllers substores and signals their recorded identities. No owner path, production queue, global stop or real-job operation used. This is scoped evidence, not a global filesystem forensic proof.",
+  "conclusion": "No blocking defect found within the explicit independent-job/cooperative mutable-storage research contract. Actual subprocess lifecycle and bounded crash/reconciliation behavior pass. V1 path failure remains preserved; no production or scientific adoption supported."
+}

@@ -1,0 +1,106 @@
+{
+  "schema": "M01ChenAuthorArchivePollRowReviewLunaV1",
+  "reviewed_at": "2026-10-26",
+  "scope": "Read-only GitHub primary-source review of Yehu Chen repository snapshots, row structure, and AZ2012/MO2016 data correspondences; no fitting or target admission.",
+  "repository": {
+    "url": "https://github.com/yahoochen97/CNNForecasting",
+    "author": "Yehu Chen (GitHub account yahoochen97; README contact chenyehu@wustl.edu)",
+    "readme": "https://github.com/yahoochen97/CNNForecasting/blob/0b63a81a5f89f2373966dc9b35e0faa337aa4ae1/README.md",
+    "readme_claim": "Forecasting U.S. 2020 Senate Election; says distributed under MIT License and points to LICENSE.",
+    "license_caveat": "Raw LICENSE at the inspected commit returned 404; recursive Git tree had no repository-root LICENSE; GitHub repository API reported license=null. Dataset rights remain unclear; local captures only.",
+    "commit_signature": "The relevant commits are not established as signed/authenticated timestamps; GitHub API commit objects show author timestamps and immutable commit IDs."
+  },
+  "snapshots": [
+    {
+      "name": "CNNdata1992-2016-first",
+      "path": "data/CNNdata1992-2016.csv",
+      "commit": "f6f5cd77362c192217f4dfa6c4f8e8cf88c5f1a7",
+      "author_timestamp": "2020-09-23T15:35:28Z",
+      "commit_message": "add no poll races",
+      "git_blob_sha1": "c64f25f2aed5c97d456f9c5cbe966f52719020af",
+      "local_capture": "CNNdata1992-2016-2020-09-23.csv",
+      "bytes": 1294263,
+      "sha256": "4c5d8822962f53b535818b40e5f9af622d9b33071524831920338ff87aa5cd0a",
+      "rows": 13611,
+      "candidate_matches_already_present": true,
+      "url": "https://raw.githubusercontent.com/yahoochen97/CNNForecasting/f6f5cd77362c192217f4dfa6c4f8e8cf88c5f1a7/data/CNNdata1992-2016.csv"
+    },
+    {
+      "name": "CNNdata1992-2016-later",
+      "path": "data/CNNdata1992-2016.csv",
+      "commit": "0b63a81a5f89f2373966dc9b35e0faa337aa4ae1",
+      "author_timestamp": "2020-10-12T19:13:09Z",
+      "commit_message": "normalize brw",
+      "git_blob_sha1": "b95e977e4390fade41e157b80775b96d1cea350e",
+      "local_capture": "CNNdata1992-2016.csv",
+      "bytes": 1286178,
+      "sha256": "0ae4bdcc20712d2248b0d0d144a8c86076ab3133f021af8fcfe770b05253ca44",
+      "candidate_values_match_first_snapshot": true,
+      "url": "https://raw.githubusercontent.com/yahoochen97/CNNForecasting/0b63a81a5f89f2373966dc9b35e0faa337aa4ae1/data/CNNdata1992-2016.csv"
+    },
+    {
+      "name": "CNNData2018-2019-rename-snapshot",
+      "path": "data/CNNData2018.csv",
+      "commit": "50a27498cd264950127ace0b4da572870ad6759a",
+      "author_timestamp": "2019-11-20T01:34:58Z",
+      "commit_message": "rename data",
+      "git_blob_sha1": "f1cf31fb72a1011e1df777dda4797bb583bf28c7",
+      "local_capture": "CNNData2018.csv",
+      "bytes": 120901,
+      "sha256": "23e22ac1a64962d21d2f31fdfb8ca903dd3ecd9b7c9514661c726be610000c6c",
+      "rows": 1613,
+      "header_only_reviewed_for_requested_schema": true,
+      "outcome_values_used": false,
+      "url": "https://raw.githubusercontent.com/yahoochen97/CNNForecasting/50a27498cd264950127ace0b4da572870ad6759a/data/CNNData2018.csv"
+    },
+    {
+      "name": "later-2018-snapshot-metadata-only",
+      "path": "data/CNNdata2018.csv",
+      "commit": "c8a6ed318989a6428c110aa749b4b859dda29c2d",
+      "author_timestamp": "2021-02-23T04:09:21Z",
+      "commit_message": "add cnndata2018 files",
+      "git_blob_sha1": "6f141436e7242ae2cae7f00be88b19bc079b617f",
+      "data_row_values_inspected": false,
+      "timing": "Post-2020 election; not a pre-2020 data vintage."
+    }
+  ],
+  "historical_schema": ["cycle","state","Candidateidentifier","Percentage_of_Vote_won_x","samplesize","daysLeft","numberSupport","pollster","Republican","Democrat","pvi","experienced"],
+  "generated_2018_2020_code": {
+    "source": "https://github.com/yahoochen97/CNNForecasting/blob/0b63a81a5f89f2373966dc9b35e0faa337aa4ae1/data/generateData.py",
+    "behavior": "Reads FiveThirtyEight current Senate poll CSV; creates candidate-level rows; computes support as samplesize*pct//100; computes daysLeft via negative inclusive date_range(start_date,election_date); removes start/end dates, candidate percentage, name and party; subsequent handling refers to poll_id/question_id.",
+    "limitation": "Script only documents generating 2018 and 2020 data, not legacy CNNdata1992-2016.csv; do not apply its date/count semantics to legacy rows as established fact."
+  },
+  "candidate_rows": [
+    {
+      "race": "2012_Sen_AZ",
+      "chen_first_snapshot_rows": [
+        {"candidate":"2012AZFlake","pollster":"Rasmussen Reports/Pulse Opinion Research","samplesize":500,"daysLeft":-16,"numberSupport":250},
+        {"candidate":"2012AZCarmona","pollster":"Rasmussen Reports/Pulse Opinion Research","samplesize":500,"daysLeft":-16,"numberSupport":220}
+      ],
+      "present_unchanged_in_2020_10_12_snapshot": true,
+      "tierney_raw_record": {"physical_line":3318,"pollName":"Rasmussen Reports/Pulse Opinion Research","endDate":"2012-10-21","numberOfRespondents":470,"democratic":220,"republican":250,"startDate":"NA","populationType":"NA","Mode":"NA"},
+      "primary_release": {"release_url":"https://www.rasmussenreports.com/public_content/politics/elections/election_2012/election_2012_senate_elections/arizona/election_2012_arizona_senate","question_url":"https://www.rasmussenreports.com/public_content/politics/elections/election_2012/election_2012_senate_elections/arizona/questions/questions_arizona_senate_october_21_2012","field_date":"2012-10-21","N":500,"likely_voter_population":true,"reported_toplines":{"Flake_R":50,"Carmona_D":44,"other":3,"undecided":3}},
+      "five_thirtyeight": {"pollno":"5385932","polldate_median":"2012-10-21","samplesize":500,"democrat":44,"republican":50},
+      "assessment": "Strong content/source-row candidate: exact pollster, state/cycle/candidates, N and support counts triangulate with primary release and 538. Yet Chen has no poll ID/question/link; Tierney has no row-source ID, population, start, question or unique sample ID. N=470 in Tierney is the two-party count sum, not primary total N. Same questionnaire/respondents not proven."
+    },
+    {
+      "race": "2016_Sen_MO",
+      "chen_first_snapshot_rows": [
+        {"candidate":"2016MOKander","pollster":"Emerson College","samplesize":750,"daysLeft":-4,"numberSupport":341},
+        {"candidate":"2016MOBlunt","pollster":"Emerson College","samplesize":750,"daysLeft":-4,"numberSupport":335}
+      ],
+      "present_unchanged_in_2020_10_12_snapshot": true,
+      "tierney_raw_record": {"physical_line":4550,"pollName":"Emerson College","endDate":"2016-10-30","numberOfRespondents":676,"democratic":341,"republican":335,"startDate":"NA","populationType":"NA","Mode":"NA"},
+      "earlier_release": {"release_url":"https://www.realclearpolitics.com/docs/2016/ECP_Final_Press_Release_and_Toplines_4_States.11_.2_.pdf","release_date":"2016-11-02","field_dates":"2016-10-28 through 2016-10-31","N":650,"Kander_Blunt":"294 each = 45.2% each"},
+      "later_release": {"url":"https://www.prnewswire.com/news-releases/emerson-college-polls-emerson-map-shows-many-tight-races-but-a-lopsided-win-for-clinton-in-the-electoral-college-300358284.html","publisher":"Emerson College Polling Society","release_date":"2016-11-07","field_dates":"2016-11-04 through 2016-11-05","N":750,"population":"likely general election voters","Kander_pct":46,"Blunt_pct":45,"mode":"landline IVR","MOE":3.5},
+      "five_thirtyeight_later_poll": {"pollno":"76050","polldate_median":"2016-11-05","samplesize":750,"Kander_pct":45.5,"Blunt_pct":44.8},
+      "assessment": "Chen 750/341/335 record strongly content-matches Emerson's later Nov 4-5 poll, not the Oct 28-31 n650 poll. Tierney's D/R support counts equal Chen's candidate-level numberSupport but its endDate Oct 30 conflicts with Nov 4-5; Tierney n=676 is the D/R sum rather than N750. No question/sample identifier/crosswalk establishes that Tierney row is the later survey. Leave ambiguous, do not join."
+    }
+  ],
+  "literature": {
+    "chen_paper": {"title":"Polls, Context, and Time: A Dynamic Hierarchical Bayesian Forecasting Model for US Senate Elections","doi":"10.1017/pan.2021.42","doi_url":"https://doi.org/10.1017/pan.2021.42","data_source":"Paper states Senate polling data came from CNN and FiveThirtyEight; acknowledges Harry Enten at CNN for providing data.","replication_code_ocean":"https://doi.org/10.24433/CO.4154884.v1","replication_dataverse":"https://doi.org/10.7910/DVN/GNHESM"},
+    "tierney_paper": {"title":"Bias and Excess Variance in Election Polling: A Not-So-Hidden Markov Model","doi":"10.1093/jrsssa/qnae066","doi_url":"https://doi.org/10.1093/jrsssa/qnae066","data_chain":"Article relies on Chen et al. Senate dataset for its 1992-2020 Senate analysis; supports collection-level lineage, not poll-row identity."}
+  },
+  "handling_note": "During setup, initial `head -3` inspection of the 2019 CNNData2018.csv printed its first two poll rows, including the outcome-share field. Those outcome values are intentionally not reproduced or used in this analysis. No other 2018 row values were inspected.",
+  "conclusion": "Author archive exact candidate-count matches materially strengthen the Tierney/Chen data-row candidate linkage. Exact sample/question identity remains unproven because row identifiers and question/source crosswalks are absent and MO date conflicts with the likely original release."
+}
