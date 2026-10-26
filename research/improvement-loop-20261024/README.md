@@ -9,6 +9,7 @@ As of October 26, 2026 UTC:
 The first entry is the latest checkpoint. Earlier entries preserve the scope and
 remaining work recorded at their issuance; later checkpoints supersede that status.
 
+- [Checkpoint v64](checkpoints/continuation-v64.json) records the successful GitHub web workflow for `98c5e23`: 200 generic end-to-end cases passed, with ten opt-in cases run successfully in the separate published-House verification. Counting and TX measurement work remain research preparation; no scientific fit or promotion follows.
 - [Checkpoint v63](checkpoints/continuation-v63.json) records independent review of the invented counting prototype V3: all 15 tests reproduced, but uncertain supervisor acknowledgments and concurrent file mutation remain explicit risks. A V4 and a separate actual-graph measurement design are under preparation; neither has run the model. GitHub's full end-to-end step is still active.
 - [Checkpoint v62](checkpoints/continuation-v62.json) preserves exact first-reviewed V2/V3 queue source snapshots reconstructed and checked against their original hashes. The counting-sink V2 completion-state flaw remains unresolved pending a separate V3. GitHub's full end-to-end run is still active.
 - [Checkpoint v61](checkpoints/continuation-v61.json) records an independently reproduced completion-marker gap in the invented counting prototype V2; a separate V3 is being prepared and no TX graph was run. The current House year selector's stale test was corrected after the previous GitHub run; a new run remains in progress.
