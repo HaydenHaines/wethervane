@@ -1,0 +1,139 @@
+{
+  "status": "passed_original_only",
+  "scope": "read-only JSON/hash and allow_pickle=False numerical audit; no graph/model import",
+  "contract": {
+    "sha256": "aeec9de81deeeae0de8d66338d5536b0bdf24eab4d9e1ef7d4b908f1145e5b88",
+    "bytes": 24669
+  },
+  "review": {
+    "sha256": "39c75c9e7d7dd0da07afe5551985c098fe6d3e4527f44b42cf113d06281be783",
+    "bytes": 1900
+  },
+  "controllerSuccess": {
+    "sha256": "0b79a9c9cd9088ccd42e67b7abaf8ff03ce0a8272e5c98248f16e66aca95c2cf",
+    "bytes": 374
+  },
+  "sourcePinsVerified": 90,
+  "artifactPinsVerified": 7,
+  "pidAbsentAtAudit": [
+    1987686,
+    1987682
+  ],
+  "shapes": {
+    "logp": [
+      2
+    ],
+    "gradient": [
+      2,
+      662
+    ],
+    "poll_logp": [
+      2
+    ],
+    "rates": [
+      2,
+      10
+    ],
+    "factor_logp": [
+      2,
+      103
+    ]
+  },
+  "logp": [
+    -920789.3648686935,
+    -798519.7399597162
+  ],
+  "maxFactorSumError": 2.3283064365386963e-10,
+  "fdChecks": 6,
+  "fdAdditionalFullFunctionEvaluations": 12,
+  "baseFunctionEvaluations": 2,
+  "terminal": {
+    "arm": "original",
+    "pid": 1987686,
+    "returncode": 0,
+    "reason": null,
+    "controller_error": null,
+    "seconds": 264.2972578399349,
+    "peak_rss_bytes": 3109978112,
+    "peak_threads": 1,
+    "peak_disk_bytes": 483930,
+    "no_retry": true
+  },
+  "runtime": {
+    "numpy": {
+      "version": "2.5.4",
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/lib/python3.12/site-packages/numpy/__init__.py"
+    },
+    "pytensor": {
+      "version": "2.38.2",
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/lib/python3.12/site-packages/pytensor/__init__.py"
+    },
+    "pymc": {
+      "version": "5.28.0",
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/lib/python3.12/site-packages/pymc/__init__.py"
+    },
+    "numba": {
+      "version": "0.68.0",
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/lib/python3.12/site-packages/numba/__init__.py"
+    },
+    "llvmlite": {
+      "version": "0.50.0",
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/lib/python3.12/site-packages/llvmlite/__init__.py"
+    },
+    "arviz": {
+      "version": "0.22.0",
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/lib/python3.12/site-packages/arviz/__init__.py"
+    },
+    "pydantic": {
+      "version": "2.12.5",
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-native-successor-provider-sol-v1/schema-overlay/pydantic/__init__.py"
+    },
+    "pydantic_core": {
+      "version": "2.41.5",
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-native-successor-provider-sol-v1/schema-overlay/pydantic_core/__init__.py"
+    }
+  },
+  "receiptPins": {
+    "authorization.json": {
+      "sha256": "ad530812543d696368c7e675d2ba320d877b8284b1158984c0ad7b0bd32715e7",
+      "bytes": 3666
+    },
+    "launch.json": {
+      "sha256": "d4137fcb95701c3ec3661fed33a41a2ddf73e56d516ce9dbe66bf72e8475e6fb",
+      "bytes": 2118
+    },
+    "entry-receipt.json": {
+      "sha256": "e36036ce8294301ca4fef09cc7bb3ff762f29c1616c17ec9ff4d2e9314c4a29f",
+      "bytes": 481
+    },
+    "result.json": {
+      "sha256": "6c340bd23490c1acc52baaf4fff628aaa61ecc3b570d4a0fd4b8372e017a67b0",
+      "bytes": 5396
+    },
+    "terminal.json": {
+      "sha256": "efbf9620428c96f6ca0cbbc66287da71ef1c7730b7a76c7d8c289f2b0ee48025",
+      "bytes": 241
+    },
+    "controller-success.json": {
+      "sha256": "0b79a9c9cd9088ccd42e67b7abaf8ff03ce0a8272e5c98248f16e66aca95c2cf",
+      "bytes": 374
+    },
+    "evaluation-receipt.json": {
+      "sha256": "6dbd6bdd6a4d871c7d5410565dc6fd480b886e2f6072b234581709834bc3f56f",
+      "bytes": 420
+    },
+    "model-envelope.json": {
+      "sha256": "3110a9d8454159f2cc0868b964cc0f5a2a3bc395bc861b35d1744d3f596312fb",
+      "bytes": 387638
+    },
+    "stage.json": {
+      "sha256": "3b92971c1d086ce583b628179447b55fff145d15dfc27ce1af2dc9ca69e8a584",
+      "bytes": 77
+    },
+    "child.log": {
+      "sha256": "46fd0145862079688e97a5e3fa1328f6e30f30984ec91336c00df3629fe4af15",
+      "bytes": 236
+    }
+  },
+  "callerToolReturn": "Parent-provided retained session 85285 exit 0 and acknowledgment digest; not independently accessible in this process."
+}

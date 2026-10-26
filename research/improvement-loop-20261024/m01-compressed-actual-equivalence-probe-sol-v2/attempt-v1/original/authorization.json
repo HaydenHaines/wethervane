@@ -1,0 +1,67 @@
+{
+  "controller_pid": 1987682,
+  "contract_sha256": "aeec9de81deeeae0de8d66338d5536b0bdf24eab4d9e1ef7d4b908f1145e5b88",
+  "review": {
+    "schema": "CompressedActualProbeIndependentReviewV1",
+    "decision": "allow_one_bounded_attempt",
+    "contract_sha256": "aeec9de81deeeae0de8d66338d5536b0bdf24eab4d9e1ef7d4b908f1145e5b88",
+    "packet_pins": {
+      "common.py": "710eb717a4f4de7e5088815dfb510940826521ab7fd0a47e110dbad6f3dd1a7d",
+      "child.py": "b6cd61aa6db23d9e538843df7e9b4c6d9c9935ebd3bf01d9454dcc01f7aa810a",
+      "launch.py": "0a4dd1988524dc8efea67a01cebf56458f38931e93f6b246700ebfaec720e21c",
+      "compare.py": "9b892b5cf11b60fb8e106105b50067e65267971a23dd18a4496932f9b9e6c30d",
+      "test_tiny.py": "95883f99ac4a43f3697fc4df5796ce3172184f823df9a5e78f21a8b73a92e25e",
+      "contract.json": "aeec9de81deeeae0de8d66338d5536b0bdf24eab4d9e1ef7d4b908f1145e5b88",
+      "entry.py": "559c826aa70a349ae3cc4a12bb80d49236495a3a772cd2e3f9f48d36ac188d99"
+    },
+    "recommended_authorized_arm": "original_only",
+    "defer_compressed_until": "fresh per-arm resource check and audit of retained original caller/tool return plus result, terminal, and controller-success pins",
+    "caller_observation_caveat": "The CLI validates the supplied original acknowledgment digest against the visible on-disk marker; it cannot prove the digest came from retained stdout. The caller must retain the actual tool return as an external workflow condition.",
+    "same_user_trust_boundary": "No hostile same-user filesystem/code threat is claimed; V2 protects against accidental direct child invocation and applies child-side hard limits before graph imports.",
+    "actual_graph_executed_by_reviewer": false,
+    "tiny_reproduction": "23/23 invented/source checks pass in isolated copy; details in README and reproduced-tiny-result.json",
+    "not_established": [
+      "actual graph build/compile success under caps",
+      "actual numerical logp or 662-gradient parity",
+      "all-parent normalization",
+      "predictive benefit",
+      "two-invocation caller receipt audit"
+    ]
+  },
+  "review_digest": "99b97788b1596d8e014cb76db007ffb0a46373fc9df7e6f492d9f0213337c42c",
+  "resource_receipt": {
+    "schema": "CompressedActualProbeFreshResourcesV1",
+    "contract_sha256": "aeec9de81deeeae0de8d66338d5536b0bdf24eab4d9e1ef7d4b908f1145e5b88",
+    "independent_review_sha256": "99b97788b1596d8e014cb76db007ffb0a46373fc9df7e6f492d9f0213337c42c",
+    "checked_unix": 1793056168.307112,
+    "observer": "root local process and resource observation",
+    "exclusive_actual_probe_slot": true,
+    "resource_conflicts": [],
+    "overlap_assessment": "no_conflict_for_this_one_cpu_job",
+    "cpu": 3,
+    "protected_jobs": [
+      {
+        "pid": 1906964,
+        "start_time_ticks": 118207990
+      },
+      {
+        "pid": 1966453,
+        "start_time_ticks": 118876313
+      },
+      {
+        "pid": 1980171,
+        "start_time_ticks": 119049215
+      }
+    ],
+    "minimum_mem_available_bytes": 6442450944,
+    "minimum_disk_free_bytes": 2147483648,
+    "observed_mem_available_bytes": 45420265472,
+    "observed_disk_free_bytes": 214699933696,
+    "assessment": "CPU 3 is physical core 3; GPU host 10-11 are cores 4-5 and active House combine is restricted to CPU 2/core 2. No same-family probe process was observed; one CPU, 4 GiB RSS watchdog and 512 MiB per-arm staging cap. Other unrelated jobs may be scheduled concurrently; no global exclusivity is claimed. Existing 2018/2022 owner scheduling remains untouched."
+  },
+  "resources_digest": "957465cc07e507123eb6c8bd6b74fbc6202c8a6a9a03a83ef8bfcce1570bffdd",
+  "arms": [
+    "original",
+    "compressed"
+  ]
+}

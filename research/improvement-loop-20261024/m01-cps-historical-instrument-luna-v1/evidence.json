@@ -1,0 +1,61 @@
+{
+  "packet": "m01-cps-historical-instrument-luna-v1",
+  "date": "2026-10-26",
+  "readme_sha256": "083adabb6b50a919754e503af6f3e039f7a2cef9f21170f188fdd44e5a57118f",
+  "method": "Read official Census technical documentation PDFs and current year-specific archive pages in browser; no microdata download, model fit, or owner-store access.",
+  "primary_sources": [
+    {
+      "year": 2018,
+      "url": "https://www2.census.gov/programs-surveys/cps/techdocs/cpsnov18.pdf",
+      "page_refs": ["printed p. 3-1 / PDF p. 9: data collection, self/proxy, PWSSWGT", "printed p. 7-2 / PDF p. 113: PES1/PES2 edited universes and codes", "printed pp. 9-1–9-2 / PDF pp. 118–119: question wording and routing"],
+      "archive_url": "https://www.census.gov/data/datasets/time-series/demo/cps/cps-supp_cps-repwgt/cps-voting.2018.html",
+      "archive_observation": "current year-specific page lists supplement files but has no distinct Replicate Weights section; page says revised March 21, 2025",
+      "release_context_url": "https://www.census.gov/newsroom/press-releases/2019/voting-registration.html",
+      "release_context": "Census release of 2018 voting/registration tables dated April 23, 2019; not proof of exact raw microdata or replicate-weight first availability"
+    },
+    {
+      "year": 2020,
+      "url": "https://www2.census.gov/programs-surveys/cps/techdocs/cpsnov20.pdf",
+      "page_refs": ["printed p. 3-1 / PDF p. 9: data collection, self/proxy, PWSSWGT", "printed pp. 7-2–7-3 / PDF pp. 113–114: PES1/PES2 edited universes and codes", "printed pp. 9-1–9-2 / PDF pp. 118–119: question wording and routing"],
+      "archive_url": "https://www.census.gov/data/datasets/time-series/demo/cps/cps-supp_cps-repwgt/cps-voting.2020.html",
+      "archive_observation": "current year-specific page lists supplement files but has no distinct Replicate Weights section; page says revised March 21, 2025",
+      "release_context_url": "https://www.census.gov/newsroom/press-releases/2021/2020-presidential-election-voting-and-registration-tables-now-available.html",
+      "release_context": "Census release of 2020 voting/registration tables dated April 29, 2021; post-election summary release and not proof of exact raw microdata or replicate-weight first availability"
+    },
+    {
+      "year": 2022,
+      "url": "https://www2.census.gov/programs-surveys/cps/techdocs/cpsnov22.pdf",
+      "page_refs": ["printed p. 3-1 / PDF p. 9: data collection, self/proxy, PWSSWGT", "printed pp. 7-2–7-3 / PDF pp. 113–114: PRSUPINT/PES1/PES2 layout", "printed pp. 9-1–9-2 / PDF pp. 118–119: question wording and routing"],
+      "archive_url": "https://www.census.gov/data/datasets/time-series/demo/cps/cps-supp_cps-repwgt/cps-voting.2022.html",
+      "archive_observation": "current page lists a distinct Replicate Weights section and files; page says revised May 2, 2023",
+      "release_context_url": "https://www.census.gov/newsroom/press-releases/2023/2022-voting-registration.html",
+      "release_context": "Census release dated May 2, 2023; not independently established as first availability timestamp for exact microdata/replicate files"
+    }
+  ],
+  "key_findings": [
+    "Questionnaire paths for S1 are the same in 2018, 2020, 2022: Yes skips S2 and proceeds to S5; No/DK/Refused routes to S2. No explicit no-response interviewer route is documented.",
+    "Record-layout PES2 edited universe includes PES1=-9, but this does not prove PES2 was asked or answered for those records.",
+    "The 2022 PES1 valid-value listing omits -9 while PES2 edited universe includes it; treated as documentation inconsistency, not a changed question path.",
+    "The year-specific 2018/2020 pages inspected do not list a distinct replicate-weight section; this does not prove such files do not exist elsewhere. The 2022 page does list one.",
+    "No supplement weight/use PWSSWGT is point-weight guidance and does not resolve replicate-weight availability.",
+    "Previous blanket claim about person replicate weights in all 2018–2024 supplements is superseded as unsupported. Older year availability/vintage requires separate source check."
+  ],
+  "supersedes": {
+    "path": "research/improvement-loop-20261024/m01-registration-transition-luna-v1/README.md",
+    "sha256": "213674dfc42176e537220bff4e23e15aabc6e521fb4d8ee4f65cc536f8003027",
+    "claim": "CPS Voting Supplement microdata are available for election years including 2018–2024, with state identifiers and person replicate weights.",
+    "correction": "The all-years replicate-weight assertion is unsupported by the inspected year-specific pages and must not be used as established. No claim of nonexistence is made."
+  },
+  "independent_crosscheck": {
+    "path": "research/improvement-loop-20261024/cps-historical-source-gate-sol-v1/README.md",
+    "sha256": "669d0555488e30ce157bcca58d227797cf3764726390a0f675572916227ed5f0",
+    "source_pins_path": "research/improvement-loop-20261024/cps-historical-source-gate-sol-v1/source-pins.json",
+    "source_pins_sha256": "90ad73a5489d8b3930583c906d8a3db5a49168ed2fc66621665e0f6ad9929a81"
+  },
+  "limits": [
+    "No microdata or replicate-weight payload was acquired, hashed, or inspected.",
+    "Current archive listing and page revision metadata do not prove original file-release dates or exact past vintages.",
+    "Published summary-table release dates do not certify raw-file release timing.",
+    "Record layouts describe edited values/universes; questionnaire routing describes asked paths. Neither alone proves every field was observed for every eligible record."
+  ]
+}
