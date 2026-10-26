@@ -2,6 +2,7 @@
 from __future__ import annotations
 import copy
 import hashlib
+import io
 import json
 from pathlib import Path
 import struct
@@ -9,6 +10,7 @@ import sys
 import tempfile
 import unittest
 import zipfile
+from types import SimpleNamespace
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 import scripts.house_live_conditional_storage as adapter
 
@@ -123,6 +125,27 @@ class ConditionalStorageTests(unittest.TestCase):
     def test_local_draw_permutation_is_rejected_even_if_archive_and_manifest_rehashed(self):
         m=json.loads((self.root/self.f['manifest']['path']).read_text());members=copy.deepcopy(self.f['sourceArrays'][0]);members['joint_draw_id']=array('<i8',(2,),[1,0]);pin=self.f['archive'](m['sources'][0]['path'],members);m['sources'][0]['sha256']=pin['sha256'];manifest=self.f['put']('permuted.json',m)
         with self.assertRaisesRegex(adapter.StorageError,'draw/chain order'):adapter.ConditionalStorage(self.root,manifest)
+
+    def test_npy_header_accepts_bounded_seven_million_rows_without_allocating_payload(self):
+        def synthetic_header(rows):
+            encoded=repr({'descr':'<i8','fortran_order':False,'shape':(rows,)}).encode('latin1')
+            padding=(-(6+2+2+len(encoded)+1))%16;header=encoded+b' '*padding+b'\n'
+            prefix=b'\x93NUMPY\x01\x00'+struct.pack('<H',len(header))+header
+            info=SimpleNamespace(file_size=len(prefix)+rows*8)
+            return prefix,info
+        prefix,info=synthetic_header(7_000_000)
+        parsed=adapter.header(io.BytesIO(prefix),info)
+        self.assertEqual(parsed,{'dtype':'<i8','shape':[7_000_000]})
+        prefix,info=synthetic_header(7_000_001)
+        with self.assertRaisesRegex(adapter.StorageError,'oversized'):
+            adapter.header(io.BytesIO(prefix),info)
+
+    def test_segmented_manifest_total_is_also_bounded_at_seven_million(self):
+        manifest=json.loads((self.root/self.f['manifest']['path']).read_text())
+        manifest['total_rows']=7_000_001
+        pin=self.f['put']('oversized-total.json',manifest)
+        with self.assertRaisesRegex(adapter.StorageError,'manifest totals'):
+            adapter.ConditionalStorage(self.root,pin)
 
 if __name__=='__main__':
     if '--fixture' in sys.argv:

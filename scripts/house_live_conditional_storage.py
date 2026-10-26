@@ -17,6 +17,7 @@ import zipfile
 
 SCHEMA = 'ConditionalSegmentsManifestV1'
 WEIGHTS = 'equal_weight_per_original_joint_row'
+MAX_ROWS = 7_000_000
 SHA = re.compile(r'^[0-9a-f]{64}$')
 PATH = re.compile(r'^[A-Za-z0-9][A-Za-z0-9._/-]*$')
 LAW_KEYS = ('configuration','polling_error_scales','exact_electoral_rule_simulation','source_2026_outcomes_loaded','group_completion')
@@ -77,7 +78,7 @@ def header(stream,info):
     raw=stream.read(length);need(len(raw)==length,'Truncated NPY header')
     value=ast.literal_eval(raw.decode('utf-8' if version[0]==3 else 'latin1').strip())
     need(isinstance(value,dict) and set(value)=={'descr','fortran_order','shape'} and value['fortran_order'] is False,'Only primitive native C-order arrays supported')
-    shape=value['shape'];need(isinstance(shape,tuple) and shape and all(integer(x) for x in shape) and shape[0]<=5_000_000,'Invalid or oversized native array shape')
+    shape=value['shape'];need(isinstance(shape,tuple) and shape and all(integer(x) for x in shape) and shape[0]<=MAX_ROWS,'Invalid or oversized native array shape')
     size=dtype_size(value['descr']);need(size*math.prod(shape[1:])<=16384,'Native row exceeds bounded block width');need(info.file_size==8+length_bytes+length+math.prod(shape)*size,'NPY payload length differs')
     return {'dtype':value['descr'],'shape':list(shape)}
 
@@ -132,7 +133,7 @@ class ConditionalStorage:
             need(set(m)=={'schema','source_count','total_rows','member_names','members','race_ids','sources'} and m['schema']==SCHEMA,'Unsupported manifest schema/fields')
             self.files=m['member_names'];self.members=m['members'];self.total_rows=m['total_rows'];self.race_ids=m['race_ids'];self.sources=m['sources']
             need(isinstance(self.files,list) and self.files and len(set(self.files))==len(self.files) and all(isinstance(x,str) and x for x in self.files),'Invalid member order')
-            need(isinstance(self.members,dict) and set(self.members)==set(self.files) and isinstance(self.sources,list) and self.sources and integer(m['source_count'],1) and m['source_count']==len(self.sources) and integer(self.total_rows,1),'Invalid manifest totals/support')
+            need(isinstance(self.members,dict) and set(self.members)==set(self.files) and isinstance(self.sources,list) and self.sources and integer(m['source_count'],1) and m['source_count']==len(self.sources) and integer(self.total_rows,1) and self.total_rows<=MAX_ROWS,'Invalid manifest totals/support')
             offset=0;seen_paths=set();seen_hashes=set();first=None
             for source in self.sources:
                 need(isinstance(source,dict) and set(source)=={'path','sha256','rows','row_offset','row_stop','members'},'Invalid manifest source fields')

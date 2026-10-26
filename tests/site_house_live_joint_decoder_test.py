@@ -12,6 +12,7 @@ import tempfile
 import unittest
 import warnings
 import zipfile
+from unittest.mock import patch
 from pathlib import Path
 
 
@@ -128,9 +129,9 @@ class JointDecoderTest(unittest.TestCase):
                 self.assertEqual(result.stdout, b"".join(ROWS))
                 self.assertEqual(result.stderr, b"")
 
-    def test_five_million_draw_plan_still_requires_bound_rows_and_sources(self) -> None:
+    def test_seven_million_draw_plan_is_admitted_by_request_bound_but_archive_rows_are_still_proven(self) -> None:
         plan = combined_plan()
-        plan["settings"] = {"chains": 20, "draws": 250_000, "warmup_per_source": 5000}
+        plan["settings"] = {"chains": 20, "draws": 350_000, "warmup_per_source": 5000}
         template = plan["source_runs"][0]
         plan["source_runs"] = []
         for index in range(5):
@@ -139,21 +140,42 @@ class JointDecoderTest(unittest.TestCase):
             prefix = f"research/house-live-20261025/{source['directory']}"
             source["receipt"]["path"] = f"{prefix}/receipt.json"
             source["plan"]["path"] = f"{prefix}/plan.json"
-            source["settings"] = {"chains": 4, "draws": 250_000, "warmup": 5000, "seed": 100 + index}
-            source["joint_draw_offset"] = index * 1_000_000
+            source["settings"] = {"chains": 4, "draws": 350_000, "warmup": 5000, "seed": 100 + index}
+            source["joint_draw_offset"] = index * 1_400_000
             source["predictive_chain_offset"] = index * 4
             plan["source_runs"].append(source)
         plan["inputs"] = [source["receipt"] for source in plan["source_runs"]]
         artifact = self.archive(combined_members())
         request = self.combined_request(artifact, plan)
-        request.update(count=5_000_000, chainCount=20)
-        # The declared size is accepted, but four actual rows cannot prove 5M.
+        request.update(count=7_000_000, chainCount=20)
+        # The declared size is accepted, but four actual rows cannot prove 7M.
         self.rejected(request, "dtype, shape, or order")
         plan["source_runs"][4]["settings"]["seed"] = 100
         request["combinedPlan"] = self.plan_pin(plan)
         self.rejected(request, "layout or seed")
-        self.rejected({**request, "count": 5_000_001, "chainCount": 1}, "Draw count or chain count")
+        self.rejected({**request, "count": 7_000_001, "chainCount": 1}, "Draw count or chain count")
         self.rejected({**request, "chainCount": 21}, "Draw count or chain count")
+
+    def test_zip64_local_headers_and_zip64_end_directory_are_supported(self) -> None:
+        path = self.directory / "joint-zip64.npz"
+        with patch.object(zipfile, "ZIP64_LIMIT", 1024):
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore", UserWarning)
+                with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+                    for name, value in members().items():
+                        with archive.open(name, "w", force_zip64=True) as stream:
+                            stream.write(value)
+        archive_bytes = path.read_bytes()
+        self.assertIn(b"PK\x06\x06", archive_bytes, "fixture must contain the ZIP64 end-of-central-directory record")
+        self.assertEqual(archive_bytes[:4], b"PK\x03\x04")
+        self.assertEqual(struct.unpack_from("<II", archive_bytes, 18), (0xFFFFFFFF, 0xFFFFFFFF))
+        name_length, extra_length = struct.unpack_from("<HH", archive_bytes, 26)
+        local_extra = archive_bytes[30 + name_length:30 + name_length + extra_length]
+        self.assertIn(b"\x01\x00", local_extra, "fixture must contain a local ZIP64 extra field")
+        artifact = {"path": path.name, "sha256": hashlib.sha256(archive_bytes).hexdigest()}
+        result = self.run_decoder(self.request(artifact))
+        self.assertEqual(result.returncode, 0, result.stderr.decode())
+        self.assertEqual(result.stdout, b"".join(ROWS))
 
     def test_hash_and_path_binding(self) -> None:
         artifact = self.archive()
