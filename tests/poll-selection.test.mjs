@@ -6,11 +6,15 @@ import { fileURLToPath } from "node:url";
 import test from "node:test";
 
 const root = new URL("../", import.meta.url);
+// Audit the preserved October 20 receipt against its original edition, not the
+// mutable current aliases, which now refer to the October 26 refresh.
+const edition = new URL("public/data/explorer/editions/2026-10-20/", root);
+const savedBundle = (entry) => new URL(`${entry.id}.json`, edition);
 const receipt = JSON.parse(
   readFileSync(new URL("data/polling-selection-20261020.json", root)),
 );
 const registry = JSON.parse(
-  readFileSync(new URL("public/data/explorer/registry.json", root)),
+  readFileSync(new URL("registry.json", edition)),
 );
 const byId = new Map(receipt.records.map((row) => [row.id, row]));
 const record = (id) => {
@@ -126,7 +130,7 @@ test("exact artifact fingerprints gate all ten polling runs and every race count
   for (const [runId, digest] of Object.entries(receipt.applicableRuns)) {
     const entry = registry.runs.find((run) => run.id === runId);
     assert.equal(digest, entry.sha256);
-    const bytes = readFileSync(new URL(`public${entry.href}`, root));
+    const bytes = readFileSync(savedBundle(entry));
     assert.equal(createHash("sha256").update(bytes).digest("hex"), digest);
     const bundle = JSON.parse(bytes);
     assert.equal(bundle.run.cutoffAt, receipt.cutoffAt);
@@ -202,7 +206,7 @@ test("new polling comparisons preserve exact admitted evidence and public source
   for (const entry of comparisons) {
     const prefix = entry.id.replaceAll("_", "-");
     const bundle = JSON.parse(
-      readFileSync(new URL(`public${entry.href}`, root)),
+      readFileSync(savedBundle(entry)),
     );
     assert.equal(
       receipt.sourceHashes[`${prefix}:observations`],

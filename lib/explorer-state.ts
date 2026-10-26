@@ -75,26 +75,49 @@ export function serializeSelection(selection: ExplorerSelection): string {
   return `?${params.toString()}`;
 }
 
-/** Select a saved combination; never synthesize an unsupported forecast. */
+/** Component intent may select another current edition; explicit dated requests use the exact resolver instead. */
 export function selectRunForComponents(
   registry: ExplorerRegistry,
   currentRun: ExplorerRun,
   patch: Partial<ExplorerRun["components"]>,
 ): RunChoice {
   const desired = { ...currentRun.components, ...patch };
-  const candidates = availableRuns(registry, currentRun.year, currentRun.dateId);
+  const dated = availableRuns(registry, currentRun.year, currentRun.dateId);
   const fields = ["base", "polling", "uncertainty"] as const;
-  const exact = candidates.find((run) =>
-    fields.every((field) => run.components[field] === desired[field]),
-  );
+  const matches = (run: ExplorerRunEntry) => fields.every((field) => run.components[field] === desired[field]);
+  const exact = dated.find(matches);
   if (exact) return { run: exact, notice: null };
 
+  const candidates = availableRuns(registry, currentRun.year);
   const retained = candidates.find((run) => run.id === currentRun.id);
   if (!retained) throw new Error("The selected forecast is no longer in the catalog.");
+  if (currentRun.year === 2026 && !currentRun.historical) {
+    const otherEditions = candidates.filter(run => !run.historical && matches(run));
+    if (otherEditions.length === 1) {
+      const run = otherEditions[0];
+      return { run, notice: `These components use the saved ${run.dateLabel || run.dateId} edition (${run.dateId}), rather than ${currentRun.dateLabel || currentRun.dateId}. Its original input cutoff is preserved.` };
+    }
+    if (otherEditions.length > 1) return { run: retained,
+      notice: "These components have more than one saved edition. Choose a forecast date; your displayed stack is unchanged." };
+  }
   return {
     run: retained,
     notice: "That exact combination has no saved forecast. Your displayed stack is unchanged.",
   };
+}
+
+/** A date choice is constrained to that date, even when it changes the available components. */
+export function selectRunForDate(registry: ExplorerRegistry, currentRun: ExplorerRun, dateId: string): RunChoice {
+  const candidates = availableRuns(registry, currentRun.year, dateId).sort((a, b) => a.id < b.id ? -1 : a.id > b.id ? 1 : 0);
+  const fields = ["base", "polling", "uncertainty"] as const;
+  const run = candidates.find(r => fields.every(field => r.components[field] === currentRun.components[field])) ||
+    candidates.find(r => r.components.base === currentRun.components.base && r.components.uncertainty === currentRun.components.uncertainty) ||
+    candidates.find(r => r.components.base === currentRun.components.base) ||
+    candidates.find(r => r.id === registry.defaults[String(currentRun.year)]) || candidates[0];
+  if (run) return { run, notice: `Showing a saved forecast from the requested ${run.dateLabel || dateId} edition (${dateId}).` };
+  const retained = registry.runs.find(r => r.id === currentRun.id);
+  if (!retained) throw new Error("The selected forecast is no longer in the catalog.");
+  return { run: retained, notice: "No saved forecast is available for the requested date. Your displayed stack is unchanged." };
 }
 
 export function selectRunForYear(
