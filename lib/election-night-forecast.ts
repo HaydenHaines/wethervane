@@ -36,12 +36,13 @@ export interface ElectionNightForecast {
     targetId: string | null; lawId: string | null;
   };
   qualification: string[]; sourceUrls: string[]; sourceHashes: Record<string, string>;
+  houseJointDraws?: { rowCount: number; chainCount: number; identitySemantics: string };
   sourceNotes: { label: string; url: string; notes: string[] }[];
   inputNotices: ElectionNightInputNotice[];
   races: ElectionNightRace[]; chamberScenario: ExplorerScenario | null;
   summary: {
     raceCount: number; pairRaceCount: number; expectedModalMisses: number; topTieRaceCount: number;
-    tiePolicy: "lexicographic_outcome_id"; interpretation: string;
+    tiePolicy: "lexicographic_outcome_id" | "house_declared_D_R_O_party_order"; interpretation: string;
   };
 }
 const DENOMINATOR = "Share of votes for the two named principal contenders";
@@ -89,8 +90,12 @@ function winnerRace(race: ExplorerRace, chamber: "senate" | "house"): ElectionNi
   }
   requireValue(near(race.outcomes.reduce((s, o) => s + o.winProbability, 0), 1), "winner probabilities must sum to one");
   const maximum = Math.max(...race.outcomes.map(o => o.winProbability));
-  // Exact equality identifies exact top ties. Sorting uses code-unit order, never locale or input order.
-  const ties = race.outcomes.filter(o => o.winProbability === maximum).map(o => o.id).sort();
+  // House native joint diagnostics select tied modal groups in declared D/R/O
+  // order. Senate retains its separately reviewed outcome-ID order.
+  const ties = race.outcomes.filter(o => o.winProbability === maximum)
+    .sort((a, b) => chamber === "house"
+      ? "DRO".indexOf(a.party) - "DRO".indexOf(b.party) : a.id < b.id ? -1 : a.id > b.id ? 1 : 0)
+    .map(o => o.id);
   const picked = race.outcomes.find(o => o.id === ties[0])!;
   return { id: race.id, state: race.state, seatId: race.seatId, electionLabel: race.electionLabel,
     ruleFamily: null, method: null, notes: [...race.notes], sourceUrls: candidateUrls(race.outcomes),
@@ -125,7 +130,7 @@ function finish(value: Omit<ElectionNightForecast, "schema" | "editionStatus" | 
     summary: { raceCount: value.races.length, pairRaceCount: value.races.filter(r => r.pair !== null).length,
       expectedModalMisses: value.races.reduce((sum, r) => sum + (1 - r.modalPick.probability), 0),
       topTieRaceCount: value.races.filter(r => r.modalPick.tiedOutcomeIds.length > 1).length,
-      tiePolicy: "lexicographic_outcome_id",
+      tiePolicy: value.chamber === "house" ? "house_declared_D_R_O_party_order" : "lexicographic_outcome_id",
       interpretation: "Model-implied expected number of modal-outcome misses across the listed races. Linearity of expectation requires no independence assumption. This is not expected margin error or a predictive interval for misses." } };
 }
 function senateConfiguration(entry: ExplorerRunEntry): void {
@@ -225,6 +230,9 @@ export function toHouseElectionNightForecast(view: HouseLiveView): ElectionNight
   });
   requireValue(view.chamber === null || view.chamber.id === "party_majority_others_unassigned" && !("performance" in view.chamber), "unexpected House chamber scenario");
   requireValue(hash(view.jointDraws.sha256) && hash(view.geographySha256) &&
+    Number.isSafeInteger(view.jointDraws.count) && view.jointDraws.count > 0 &&
+    Number.isSafeInteger(view.jointDraws.chainCount) && view.jointDraws.chainCount > 0 &&
+    view.jointDraws.count % view.jointDraws.chainCount === 0 && text(view.jointDraws.identitySemantics) &&
     normalized(view.jointDraws.orderedRaceIds) === normalized(view.races.map(r => r.id)), "House joint/race identity mismatch");
   const sourceHashes: Record<string, string> = { jointDrawsSha256: view.jointDraws.sha256, geographySha256: view.geographySha256 };
   view.sources.forEach(s => { requireValue(hash(s.sha256) && /^https?:\/\//.test(s.url), "invalid House provenance"); sourceHashes[s.id] = s.sha256; });
@@ -238,5 +246,6 @@ export function toHouseElectionNightForecast(view: HouseLiveView): ElectionNight
     sourceUrls: [...new Set([...races.flatMap(r => r.sourceUrls), ...view.sources.map(s => s.url), ...view.historicalEvidence.map(h => h.url)])],
     sourceNotes: view.sources.filter(s => s.limitations?.length).map(s => ({ label: s.label, url: s.url, notes: [...s.limitations!] })),
     inputNotices: houseNy21NoticeFor(view) ? [structuredClone(houseNy21NoticeFor(view)!)] : [],
-    sourceHashes, races, chamberScenario: structuredClone(view.chamber) });
+    sourceHashes, houseJointDraws: { rowCount: view.jointDraws.count, chainCount: view.jointDraws.chainCount,
+      identitySemantics: view.jointDraws.identitySemantics }, races, chamberScenario: structuredClone(view.chamber) });
 }

@@ -136,6 +136,17 @@ test("pre-aborted published load never starts an independent reference-index fet
   assert.ok(!calls.includes("/data/election-night/publication-index.json"));
 });
 
+test("malformed optional House publication does not suppress exact Senate references", async () => {
+  const index = structuredClone(runtimeIndex);
+  index.house = { schemaVersion: 1, href: "https://wrong.example/house.json", editions: null };
+  servePublished({ index });
+  const loaded = await loadPublishedElectionNightForecast({ chamber: "senate", runId: null }, new AbortController().signal);
+  assert.equal(loaded.reference?.resultSha256, entry.sha256);
+  assert.equal(loaded.primaryReference?.resultSha256, entry.sha256);
+  assert.equal(loaded.houseReference, null);
+  assert.equal(loaded.houseReferenceError, null);
+});
+
 test("the scorecard default follows the current standard registry with exact bytes and independent choices", async () => {
   const calls = serve();
   const value = await loadElectionNightForecast({ chamber: "senate", runId: null }, new AbortController().signal);

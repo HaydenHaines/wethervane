@@ -30,7 +30,7 @@ function assertSummary(result, original) {
   const expected = probabilities.map(p => 1 - [...p].sort((a, b) => b - a)[0]).reduce((a, b) => a + b, 0);
   near(result.summary.expectedModalMisses, expected, "expected modal misses by linearity");
   assert.equal(result.summary.raceCount, original.length);
-  assert.equal(result.summary.tiePolicy, "lexicographic_outcome_id");
+  assert.equal(result.summary.tiePolicy, result.chamber === "house" ? "house_declared_D_R_O_party_order" : "lexicographic_outcome_id");
   assert.equal(result.editionStatus, "dated_snapshot");
   assert.ok(!("evaluationLocked" in result));
   assert.ok(!("expectedMarginError" in result.summary));
@@ -150,7 +150,7 @@ test("a replacement House artifact never inherits the old NY-21 input notice", (
   assert.deepEqual(toSenateElectionNightForecast(bundle, entry).inputNotices, []);
 });
 
-test("exact modal ties use lexicographic outcome IDs, preserve group identity, and do not treat near ties as exact", () => {
+test("Senate outcome-ID and House declared D/R/O modal ties preserve groups without treating near ties as exact", () => {
   const { bundle, entry } = senate();
   const race = bundle.races[0]; race.outcomes.forEach(o => o.winProbability = 0.5);
   race.outcomes.reverse();
@@ -165,8 +165,8 @@ test("exact modal ties use lexicographic outcome IDs, preserve group identity, a
   const { view } = house(); const alaska = view.races.find(r => r.seatId === "AK-00");
   alaska.outcomes.forEach(o => o.winProbability = o.party === "D" ? 0 : 0.5);
   const projected = toHouseElectionNightForecast(view).races.find(r => r.seatId === "AK-00");
-  assert.equal(projected.modalPick.kind, "group"); assert.equal(projected.modalPick.outcomeId, `${alaska.id}:O`);
-  assert.deepEqual(projected.modalPick.tiedOutcomeIds, [`${alaska.id}:O`, `${alaska.id}:R`]);
+  assert.equal(projected.modalPick.kind, "candidate"); assert.equal(projected.modalPick.outcomeId, `${alaska.id}:R`);
+  assert.deepEqual(projected.modalPick.tiedOutcomeIds, [`${alaska.id}:R`, `${alaska.id}:O`]);
   assert.equal(projected.outcomes.find(o => o.party === "O").members.length, 2);
   assert.notEqual(projected.pair.firstExceedsHalf, projected.modalPick.probability);
 });

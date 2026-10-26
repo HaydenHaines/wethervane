@@ -10,6 +10,74 @@ const standardReference = read("public/data/election-night/references.json").ent
 const coreReferences = read("public/data/election-night/core-references.json").entries;
 const displayProbability = (p: number) => p > 0 && p < .001 ? "<0.1%" : p < 1 && p > .999 ? ">99.9%" : `${(100 * p).toFixed(1)}%`;
 
+test("House expected errors stay separate for 435 winner groups and 412 named pairs across a same-run revision", async ({ page }, testInfo) => {
+  // Compatibility sidecar is a synthetic browser fixture, never an admitted publication.
+  const sidecar = read("tests/fixtures/election-night/house-compatibility-sidecar.json");
+  const run = houseCatalog.entries.find((row: { id: string }) => row.id === "house-current-fundamentals");
+  const digest = (body: string) => createHash("sha256").update(body).digest("hex");
+  const h = (digit: string) => digit.repeat(64);
+  const pins = { collectionSha256: h("a"), collectionReceiptSha256: h("b"), nativeCatalogSha256: sidecar.catalog.sha256,
+    readyPacketSha256: sidecar.ready_packet.sha256, referenceSha256: h("c"), sidecarReceiptSha256: h("d"),
+    reviewSha256: h("e"), auditorSha256: h("f"), sourceReceiptSha256: sidecar.source_receipt.sha256,
+    jointDrawsSha256: sidecar.joint_draws.sha256, sourcePlanSha256: sidecar.source_plan.sha256,
+    conditionalSharesSha256: sidecar.conditional_shares.sha256, jointMetricArchiveSha256: sidecar.joint_metric_archive.sha256,
+    scientificReviewSha256: sidecar.scientific_review.sha256, nativeNumericalReviewSha256: sidecar.native_numerical_review.sha256,
+    qualificationSha256: sidecar.qualification.sha256, selectionSha256: sidecar.selection.sha256,
+    builderSha256: sidecar.builder.sha256, operatorReviewSha256: h("1") };
+  const record = { chamber: "house", runId: run.id, resultSha256: run.result.sha256,
+    configuration: run.configuration, forecastIssuedAt: sidecar.forecast_issued_at,
+    forecastCutoffAt: sidecar.forecast_cutoff, referenceIssuedAt: sidecar.issued_at,
+    rows: sidecar.draw_layout.rows, chains: sidecar.draw_layout.chains,
+    winnerRaceCount: 435, pairRaceCount: 412, pairInapplicableRaceCount: 23, sourcePins: pins, reference: sidecar };
+  const catalog = { schema: "HouseExpectedErrorPublicCatalogV1", schemaVersion: 1, chamber: "house",
+    defaultRunId: run.id, sourceCatalogSha256: pins.collectionSha256,
+    nativeCatalogSha256: pins.nativeCatalogSha256, readyPacketSha256: pins.readyPacketSha256,
+    evaluationLock: false, observedResultsConsumed: false, entries: [record] };
+  const { reference: unused, chamber, runId, resultSha256, ...qualification } = record;
+  const index = read("public/data/election-night/publication-index.json");
+  const catalogBody = () => JSON.stringify(catalog);
+  const updateIndex = () => { index.house = { schemaVersion: 1, href: "/data/election-night/house-references.json",
+    sha256: digest(catalogBody()), editions: [{ chamber, runId, resultSha256: record.resultSha256, qualification }] }; };
+  updateIndex();
+  let revised = false;
+  await page.route("**/data/election-night/publication-index.json", route => route.fulfill({ contentType: "application/json", body: JSON.stringify(index) }));
+  await page.route("**/data/election-night/house-references.json", route => route.fulfill({ contentType: "application/json", body: catalogBody() }));
+  await page.route("**/api/chambers/house/live**", async route => {
+    const response = await route.fetch();
+    if (!revised) return route.fulfill({ response });
+    const body = await response.json();
+    if (!body.view) return route.fulfill({ response });
+    body.view.run.resultSha256 = h("2");
+    body.catalog.entries.find((entry: { id: string }) => entry.id === run.id).resultSha256 = h("2");
+    if (body.polling) body.polling.resultSha256 = h("2");
+    return route.fulfill({ response, body: JSON.stringify(body) });
+  });
+  await page.goto("/?chamber=house");
+  await page.getByRole("button", { name: "Election night scorecard", exact: true }).click();
+  const panel = page.locator("#election-night-scorecard");
+  await panel.locator(".night-models summary").click();
+  await panel.getByLabel("Scorecard model").selectOption(run.id);
+  await expect(panel.locator(".night-edition")).toHaveAttribute("data-scorecard-result-sha", run.result.sha256);
+  await expect(panel.locator(".night-reference-value")).toContainText("9.1");
+  await expect(panel.locator(".night-miss-reference .night-reference-band")).toContainText("17 to 66 wrong choices");
+  await expect(panel.locator(".night-race-expected-error")).not.toHaveCount(0);
+  await panel.locator(".night-house-reference-details > summary").click();
+  await expect(panel.locator(".night-house-reference-details")).toContainText("412 supported");
+  await expect(panel.locator(".night-house-reference-details")).toContainText("23 contests have no pair error");
+  await expect(panel.locator(".night-house-reference-details")).toContainText("separately qualified against a precision threshold");
+  await panel.locator(".night-uncertainty-grid").first().screenshot({ path: testInfo.outputPath("house-expected-errors-synthetic.png") });
+  revised = true;
+  await page.evaluate(() => window.dispatchEvent(new Event("focus")));
+  await expect(panel.locator(".night-edition")).toHaveAttribute("data-scorecard-result-sha", h("2"));
+  await expect(panel.locator(".night-reference-value")).toHaveCount(0);
+  record.resultSha256 = h("2"); sidecar.native_result.sha256 = h("2");
+  updateIndex();
+  await page.evaluate(() => window.dispatchEvent(new Event("focus")));
+  await expect(panel.locator(".night-reference-value")).toContainText("9.1");
+  await expect(panel.locator(".night-edition")).toHaveAttribute("data-scorecard-result-sha", h("2"));
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+});
+
 test("open scorecard follows a revised same-ID public forecast, then its separately published exact references", async ({ page }) => {
   const old = senateRegistry.runs.find((row: { id: string }) => row.id === senateRegistry.defaults["2026"]);
   const nextRegistry = structuredClone(senateRegistry);
@@ -268,7 +336,7 @@ test("the separate fixed32 grading-group reference keeps exact F and FP values b
     await expect(panel.locator(".night-featured .night-race")).toHaveCount(6);
     if (id === "current-polling") {
       await expect(panel.locator(".night-margin-reference .night-reference-value")).toContainText("5.6");
-      await expect(panel.locator(".night-margin-reference")).toContainText("across 35 races");
+      await expect(panel.locator(".night-margin-reference")).toContainText("across 35 supported named pairs");
     } else {
       await expect(panel.locator(".night-margin-reference")).toContainText("No reviewed error reference for this edition");
       await expect(panel.locator(".night-reference-value")).toHaveCount(0);

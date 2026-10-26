@@ -1,15 +1,17 @@
 #!/usr/bin/env node
 /** Build the runtime scorecard reference index from published, byte-pinned catalogs. */
 import { createHash } from "node:crypto";
-import { readFileSync, mkdirSync, writeFileSync } from "node:fs";
-import { dirname, join } from "node:path";
+import { readFileSync, mkdirSync, writeFileSync, existsSync } from "node:fs";
+import { dirname, join, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
 export const REPO = fileURLToPath(new URL("../", import.meta.url));
 export const FULL = "data/election-night-reference-publication.json";
 export const PRIMARY = "data/election-night-core-reference-publication.json";
+export const HOUSE = "data/election-night-house-reference-publication.json";
 export const OUTPUT = "public/data/election-night/publication-index.json";
-export const HREFS = { full: "/data/election-night/references.json", primary: "/data/election-night/core-references.json" };
+export const HREFS = { full: "/data/election-night/references.json", primary: "/data/election-night/core-references.json",
+  house: "/data/election-night/house-references.json" };
 
 function requireValue(value, message) {
   if (!value) throw Error(`Election-night publication index: ${message}`);
@@ -21,6 +23,14 @@ function readJson(path) {
 }
 const hash = value => typeof value === "string" && /^[a-f0-9]{64}$/.test(value);
 const digest = bytes => createHash("sha256").update(bytes).digest("hex");
+const canonical = value => Array.isArray(value) ? value.map(canonical) : value && typeof value === "object"
+  ? Object.fromEntries(Object.entries(value).sort(([a], [b]) => a.localeCompare(b)).map(([key, item]) => [key, canonical(item)])) : value;
+const sameObject = (a, b) => JSON.stringify(canonical(a)) === JSON.stringify(canonical(b));
+const HOUSE_PIN_KEYS = ["collectionSha256", "collectionReceiptSha256", "nativeCatalogSha256", "readyPacketSha256",
+  "referenceSha256", "sidecarReceiptSha256", "reviewSha256", "auditorSha256", "sourceReceiptSha256",
+  "jointDrawsSha256", "sourcePlanSha256", "conditionalSharesSha256", "jointMetricArchiveSha256",
+  "scientificReviewSha256", "nativeNumericalReviewSha256", "qualificationSha256", "selectionSha256",
+  "builderSha256", "operatorReviewSha256"];
 
 export function publication(repo, role, manifestName) {
   const value = readJson(join(repo, manifestName));
@@ -101,8 +111,64 @@ export function publication(repo, role, manifestName) {
 }
 
 export function build(repo = REPO) {
-  return { schemaVersion: 1, full: publication(repo, "full", FULL),
+  const index = { schemaVersion: 1, full: publication(repo, "full", FULL),
     primary: publication(repo, "primary", PRIMARY) };
+  const houseManifest = existsSync(join(repo, HOUSE)), houseCatalog = existsSync(join(repo, "public", HREFS.house.slice(1)));
+  requireValue(houseManifest === houseCatalog, "House publication manifest/catalog must be installed together");
+  if (houseManifest) index.house = housePublication(repo);
+  return index;
+}
+
+export function housePublication(repo) {
+  const value = readJson(join(repo, HOUSE));
+  requireValue(value.schemaVersion === 1 && value.href === HREFS.house && hash(value.sha256) &&
+    Array.isArray(value.editions), "Invalid House publication manifest");
+  const bytes = readFileSync(join(repo, "public", HREFS.house.slice(1)));
+  requireValue(digest(bytes) === value.sha256, "Changed House catalog bytes");
+  const catalog = JSON.parse(bytes.toString("utf8"));
+  requireValue(catalog.schema === "HouseExpectedErrorPublicCatalogV1" && catalog.schemaVersion === 1 &&
+    catalog.chamber === "house" && catalog.evaluationLock === false &&
+    catalog.observedResultsConsumed === false && Array.isArray(catalog.entries), "Invalid House catalog");
+  const current = readJson(join(repo, "data/house-live/catalog.json"));
+  const runs = new Map(current.entries.map(entry => [entry.id, entry]));
+  const editions = catalog.entries.map(entry => {
+    requireValue(entry.chamber === "house" && typeof entry.runId === "string" && hash(entry.resultSha256) &&
+      entry.configuration && typeof entry.configuration === "object" &&
+      [entry.configuration.base, entry.configuration.polling, entry.configuration.uncertainty,
+        entry.forecastIssuedAt, entry.forecastCutoffAt, entry.referenceIssuedAt].every(v => typeof v === "string" && v) &&
+      Number.isSafeInteger(entry.rows) && entry.rows > 0 && Number.isSafeInteger(entry.chains) && entry.chains > 0 &&
+      entry.rows % entry.chains === 0 && entry.winnerRaceCount === 435 && entry.pairRaceCount === 412 &&
+      entry.pairInapplicableRaceCount === 23 && entry.sourcePins &&
+      HOUSE_PIN_KEYS.every(key => hash(entry.sourcePins[key])) &&
+      Object.values(entry.sourcePins).every(hash) &&
+      Number.isFinite(Date.parse(entry.forecastIssuedAt)) && Number.isFinite(Date.parse(entry.forecastCutoffAt)) &&
+      Number.isFinite(Date.parse(entry.referenceIssuedAt)) &&
+      Date.parse(entry.forecastCutoffAt) <= Date.parse(entry.forecastIssuedAt) &&
+      Date.parse(entry.forecastIssuedAt) <= Date.parse(entry.referenceIssuedAt), "Invalid House reference entry");
+    const run = runs.get(entry.runId);
+    if (run && run.result.sha256 === entry.resultSha256) {
+      requireValue(sameObject(run.configuration, entry.configuration) &&
+        /^results\/[A-Za-z0-9_-]+\.json$/.test(run.result.path), "House current reference configuration changed");
+      const root = resolve(repo, "data/house-live"), source = resolve(root, run.result.path);
+      requireValue(source.startsWith(`${root}${sep}`), "House current result path escaped its root");
+      const nativeBytes = readFileSync(source), native = JSON.parse(nativeBytes.toString("utf8"));
+      requireValue(digest(nativeBytes) === run.result.sha256 && native.id === entry.runId &&
+        native.issued_at === entry.forecastIssuedAt && native.forecast_cutoff === entry.forecastCutoffAt &&
+        native.joint_draws.sha256 === entry.sourcePins.jointDrawsSha256 &&
+        native.joint_draws.count === entry.rows && native.joint_draws.chain_count === entry.chains,
+      "House current native result/reference identity changed");
+    }
+    return { chamber: "house", runId: entry.runId, resultSha256: entry.resultSha256,
+      qualification: { configuration: entry.configuration, forecastIssuedAt: entry.forecastIssuedAt,
+        forecastCutoffAt: entry.forecastCutoffAt, referenceIssuedAt: entry.referenceIssuedAt,
+        rows: entry.rows, chains: entry.chains, winnerRaceCount: entry.winnerRaceCount,
+        pairRaceCount: entry.pairRaceCount, pairInapplicableRaceCount: entry.pairInapplicableRaceCount,
+        sourcePins: entry.sourcePins } };
+  });
+  requireValue(new Set(editions.map(e => `${e.runId}:${e.resultSha256}`)).size === editions.length &&
+    sameObject(value.editions, editions),
+  "House publication editions differ from the catalog");
+  return { ...value, editions };
 }
 export function exportIndex(repo = REPO, output = join(repo, OUTPUT)) {
   const value = build(repo);

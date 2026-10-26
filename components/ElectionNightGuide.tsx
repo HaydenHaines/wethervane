@@ -5,6 +5,7 @@ import type { ChamberId } from "../lib/chamber";
 import { loadPublishedElectionNightForecast, type ElectionNightLoaded, type ElectionNightRequest } from "../lib/election-night-client";
 import type { ElectionNightInputNotice, ElectionNightPair, ElectionNightRace } from "../lib/election-night-forecast";
 import type { ElectionNightReference } from "../lib/election-night-reference";
+import type { HouseExpectedErrorReference } from "../lib/election-night-house-reference";
 import ElectionNightRubric from "./ElectionNightRubric";
 import senateResultPolicy from "../data/election-night-senate-result-policy.json";
 import { probability, STATE_NAMES } from "../lib/presentation";
@@ -43,9 +44,11 @@ function InputNotice({ notice, detail = false }: { notice: ElectionNightInputNot
   </aside>;
 }
 
-function RacePrediction({ race, extent, featured = false, notice, reference }: { race: ElectionNightRace; extent: number; featured?: boolean; notice?: ElectionNightInputNotice; reference?: ElectionNightReference["perRace"][number] }) {
+function RacePrediction({ race, extent, featured = false, notice, reference, houseReference }: { race: ElectionNightRace; extent: number;
+  featured?: boolean; notice?: ElectionNightInputNotice; reference?: ElectionNightReference["perRace"][number];
+  houseReference?: HouseExpectedErrorReference["perRace"][number] }) {
   const pair = race.pair;
-  const expectedError = reference?.expectedAbsoluteMarginErrorPp;
+  const expectedError = reference?.expectedAbsoluteMarginErrorPp ?? houseReference?.expectedAbsoluteMarginErrorPp ?? undefined;
   const closeChance = reference?.closeWithin2Pp ?? pair?.closeWithin2Pp ?? null;
   const firstDecisive = reference?.firstAtLeast10Pp ?? pair?.firstAtLeast10Pp ?? null;
   const secondDecisive = reference?.secondAtLeast10Pp ?? pair?.secondAtLeast10Pp ?? null;
@@ -58,7 +61,7 @@ function RacePrediction({ race, extent, featured = false, notice, reference }: {
       <div><dt>Final result / prediction error</dt><dd>Awaiting verified result</dd></div>
     </dl>
     {featured && pair && <MarginRange pair={pair} extent={extent} />}
-    {expectedError !== undefined && <p className="night-race-expected-error">For this race, the model expects its predicted margin to miss by <strong>{expectedError.toFixed(1)} percentage points</strong> on average, ignoring the direction of the miss. This is a simulation-based expectation, not an error limit.</p>}
+    {expectedError !== undefined && <p className="night-race-expected-error">For this race, the model expects its predicted margin to miss by <strong>{expectedError.toFixed(1)} percentage points</strong> on average, ignoring the direction of the miss. This is the mean across saved simulation draws, not an error limit.</p>}
     {featured && pair && closeChance !== null && firstDecisive !== null && secondDecisive !== null && <div className="night-margin-chances">
       <p className="small">These margins count only votes for the two named candidates.</p>
       <p className="night-close-chance"><strong>{probability(closeChance)}</strong> chance that these two candidates finish within 2 points of each other.</p>
@@ -165,6 +168,7 @@ export default function ElectionNightGuide({ chamber, onClose }: { chamber: Cham
   const forecast = displayed?.forecast;
   const reference = displayed?.reference;
   const primaryReference = displayed?.primaryReference;
+  const houseReference = displayed?.houseReference;
   const senateScope = forecast?.chamber === "senate" && forecast.run.configuration.polling === "standard" && primaryReference &&
     primaryReference.sourcePins.policySha256 === senateResultPolicy.sourceHashes.policySha256 &&
     JSON.stringify(forecast.races.map(race => race.id)) === JSON.stringify(senateResultPolicy.fixedCohorts.full35) &&
@@ -218,11 +222,11 @@ export default function ElectionNightGuide({ chamber, onClose }: { chamber: Cham
           <div><strong>{forecast.summary.pairRaceCount}</strong><span>with a two-candidate margin</span></div>
           <div><strong>Not scored</strong><span>verified election results have not been added</span></div></div>
         <h4>Races to watch</h4><p>{watchIsStandard ? "These six examples have the least certain winners in the dated standard forecast. The same races stay here when you inspect another stack." : "These six examples have the least certain winners in the selected model. Choose Standard to see its latest set."} Their margins show whether an even win chance also means a close expected race.</p>
-        <div className="night-featured">{featured.map(race => <RacePrediction key={race.id} race={race} extent={extent} featured notice={forecast.inputNotices.find(note => note.raceId === race.id)} reference={reference?.perRace.find(row => row.raceId === race.id)} />)}</div>
+        <div className="night-featured">{featured.map(race => <RacePrediction key={race.id} race={race} extent={extent} featured notice={forecast.inputNotices.find(note => note.raceId === race.id)} reference={reference?.perRace.find(row => row.raceId === race.id)} houseReference={houseReference?.perRace.find(row => row.raceId === race.id)} />)}</div>
         <details className="night-all-races"><summary>All {forecast.summary.raceCount} predictions</summary>
           <label>Find a race or candidate <input value={query} onChange={event => { setQuery(event.target.value); setAllExpanded(false); }} /></label>
           <p className="small">Showing {shown.length} of {filtered.length} matching contests.</p>
-          <div className="night-predictions">{shown.map(race => <RacePrediction key={race.id} race={race} extent={100} notice={forecast.inputNotices.find(note => note.raceId === race.id)} reference={reference?.perRace.find(row => row.raceId === race.id)} />)}</div>
+          <div className="night-predictions">{shown.map(race => <RacePrediction key={race.id} race={race} extent={100} notice={forecast.inputNotices.find(note => note.raceId === race.id)} reference={reference?.perRace.find(row => row.raceId === race.id)} houseReference={houseReference?.perRace.find(row => row.raceId === race.id)} />)}</div>
           {filtered.length > 10 && <button type="button" onClick={() => setAllExpanded(value => !value)}>{allExpanded ? "Show fewer predictions" : `See all ${filtered.length} predictions`}</button>}
           {!filtered.length && <p>No matching races or candidates.</p>}
         </details>
@@ -231,16 +235,18 @@ export default function ElectionNightGuide({ chamber, onClose }: { chamber: Cham
       <section className="night-section" aria-labelledby="night-uncertainty-title">
         <div className="eyebrow">2 · Uncertainty</div><h3 id="night-uncertainty-title">What the forecast expects to get wrong</h3>
         {displayed.referenceError && <div className="night-reference-error" role="status"><p>{displayed.referenceError}</p><button type="button" onClick={() => setAttempt(value => value + 1)}>Retry uncertainty reference</button></div>}
+        {displayed.houseReferenceError && <div className="night-reference-error" role="status"><p>{displayed.houseReferenceError}</p><button type="button" onClick={() => setAttempt(value => value + 1)}>Retry House expected-error reference</button></div>}
         <h4>All {forecast.summary.raceCount} modeled contests</h4>
+        {forecast.chamber === "house" && <p className="small">Winner or group top-choice misses cover all {forecast.summary.raceCount} districts. Margin errors and range coverage cover the {forecast.summary.pairRaceCount} districts where the model estimates a margin between two named contenders; the other {forecast.summary.raceCount - forecast.summary.pairRaceCount} have no such estimate.</p>}
         <div className="night-uncertainty-grid"><article className="night-miss-reference"><h4>Wrong top choices</h4><div className="night-big-number">{forecast.summary.expectedModalMisses.toFixed(1)} <small>of {forecast.summary.raceCount}</small></div>
           <p>The expected number of incorrect top choices under the model’s own probabilities. This is an average, not a limit or a measured accuracy record.</p>
-          {reference && <p className="night-reference-band">Across its simulated elections, the middle 90% runs from <strong>{reference.summary.modalWinnerMissCount.range90.lower} to {reference.summary.modalWinnerMissCount.range90.upper} wrong choices</strong>. Shared errors let several races miss together.</p>}
-          <p className="small">{forecast.chamber === "house" ? "A top choice may be a candidate group; its chance is not divided among the members." : "These choices cover the two named principal contenders under each race’s stated assumptions."} {forecast.summary.topTieRaceCount > 0 && `${forecast.summary.topTieRaceCount} contests have tied top chances; a fixed outcome-ID order breaks those ties for this count.`}</p>
-        </article><article className="night-margin-reference"><h4>Expected average margin error</h4>{reference ? <>
-          <div className="night-reference-value">{reference.summary.meanAbsoluteMarginError.mean.toFixed(1)} <small>percentage points</small></div>
-          <p>The model expects its predicted margins to miss by this much on average across {reference.perRace.length} races, ignoring the direction of each miss. Every race counts equally.</p>
-          <p className="night-reference-band">The middle 90% of simulated elections has an average error of <strong>{reference.summary.meanAbsoluteMarginError.range90.lower.toFixed(1)} to {reference.summary.meanAbsoluteMarginError.range90.upper.toFixed(1)} points</strong>.</p>
-          <p>This is the model’s own expectation, not measured accuracy or a ±{reference.summary.meanAbsoluteMarginError.mean.toFixed(1)}-point range for each race. Individual races have different expected errors, shown with their predictions.</p>
+          {(reference || houseReference) && <p className="night-reference-band">Across its simulated elections, the middle 90% runs from <strong>{reference?.summary.modalWinnerMissCount.range90.lower ?? houseReference?.summary.modalGroupMissCount.range90.lower} to {reference?.summary.modalWinnerMissCount.range90.upper ?? houseReference?.summary.modalGroupMissCount.range90.upper} wrong choices</strong>. Shared errors let several races miss together.</p>}
+          <p className="small">{forecast.chamber === "house" ? "A top choice may be a candidate group; its chance is not divided among the members." : "These choices cover the two named principal contenders under each race’s stated assumptions."} {forecast.summary.topTieRaceCount > 0 && `${forecast.summary.topTieRaceCount} contests have tied top chances; ${forecast.chamber === "house" ? "the declared Democratic, Republican, Other order" : "a fixed outcome-ID order"} breaks those ties for this count.`}</p>
+        </article><article className="night-margin-reference"><h4>Expected average margin error</h4>{reference || houseReference ? <>
+          <div className="night-reference-value">{(reference?.summary.meanAbsoluteMarginError.mean ?? houseReference!.summary.meanAbsolutePairMarginError.mean).toFixed(1)} <small>percentage points</small></div>
+          <p>The model expects its predicted margins to miss by this much on average across {reference ? reference.perRace.length : houseReference!.pairRaceCount} supported named pairs, ignoring the direction of each miss. Every pair counts equally.</p>
+          <p className="night-reference-band">The middle 90% of simulated elections has an average error of <strong>{(reference?.summary.meanAbsoluteMarginError.range90.lower ?? houseReference!.summary.meanAbsolutePairMarginError.range90.lower).toFixed(1)} to {(reference?.summary.meanAbsoluteMarginError.range90.upper ?? houseReference!.summary.meanAbsolutePairMarginError.range90.upper).toFixed(1)} points</strong>.</p>
+          <p>This is the model’s own expectation, not measured accuracy or an error limit for each race. Individual races have different expected errors, shown with their predictions where a named pair exists.</p>
         </> : <><p className="night-pending">No reviewed error reference for this edition</p><p>Individual margin ranges are shown above. A reviewed expected average margin error and shared range for the number of misses are not available for this exact model and date.</p></>}</article></div>
         {displayed.primaryReferenceError && <div className="night-reference-error" role="status"><p>{displayed.primaryReferenceError}</p><button type="button" onClick={() => setAttempt(value => value + 1)}>Retry grading-group reference</button></div>}
         {forecast.chamber === "senate" && !primaryReference && !displayed.primaryReferenceError &&
@@ -258,6 +264,15 @@ export default function ElectionNightGuide({ chamber, onClose }: { chamber: Cham
           </div></div>
           <p className="small">These are this model’s expectations, not observed errors or grades. The calculation preserves shared errors across races and uses this forecast’s own saved simulations. It does not combine simulations from different models.</p>
         </article>}
+        {houseReference && <details className="night-reference-details night-house-reference-details"><summary>How the House expected errors were calculated</summary>
+          <p>One saved simulation row covers all {houseReference.winnerRaceCount} winner or group outcomes and {houseReference.pairRaceCount} supported conditional named-pair margins. The other {houseReference.pairInapplicableRaceCount} contests have no pair error or range coverage. Each supported pair counts equally, and shared errors stay together within this model.</p>
+          <p>The expected number of pair margins inside their own middle-90% ranges is <strong>{houseReference.summary.central90PairIntervalCoverageCount.mean.toFixed(1)} of {houseReference.pairRaceCount}</strong>. Across simulated elections, the middle 90% of that count runs from {houseReference.summary.central90PairIntervalCoverageCount.range90.lower} to {houseReference.summary.central90PairIntervalCoverageCount.range90.upper}.</p>
+          <p>Average signed pair margin error has a simulated middle 90% from {signed(houseReference.summary.meanSignedPairMarginError.range90.lower)} to {signed(houseReference.summary.meanSignedPairMarginError.range90.upper)} points. Positive means the first named contender does better than predicted; negative means the second does better. This self-reference is centered near zero by construction; it does not establish real-world accuracy.</p>
+          <p>These estimates come from a finite set of simulated elections. Numerical diagnostics are reported, but these error summaries were not separately qualified against a precision threshold. The middle-90% endpoints have no separate precision claim.</p>
+          <details><summary>Technical precision note</summary><p>{houseReference.precisionScope}</p></details>
+          <p>Reference calculated {date(houseReference.referenceIssuedAt)} for this exact forecast edition. It contains no observed results or grade.</p>
+          <ul>{houseReference.qualifications.map((note, i) => <li key={i}>{note}</li>)}</ul>
+        </details>}
         {reference && <details className="night-reference-details"><summary>How these expected errors were calculated</summary>
           <p>Each saved simulation describes one possible election across all {reference.perRace.length} named candidate pairs. We compare its margins with the forecast’s predicted averages, then average the error sizes across races. The calculation keeps shared errors together; it does not treat races as independent.</p>
           <p>These are margins between the two named contenders under the forecast’s stated rules. They are not full-ballot shares or a national popular-vote margin.</p>
