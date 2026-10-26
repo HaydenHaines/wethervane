@@ -1,0 +1,29 @@
+{
+  "schema": "ContinuousImprovementCheckpointV59",
+  "recordedAtUtc": "2026-10-26T21:48:27.647404+00:00",
+  "status": "active; no new model fit or promotion",
+  "references": {
+    "previous": {
+      "path": "research/improvement-loop-20261024/checkpoints/continuation-v58.json",
+      "sha256": "624271bb07075a490a5b2eeb7b9a0707cf70161118fd52f06d030e29610fe287",
+      "bytes": 3070
+    },
+    "persistence_review": {
+      "path": "research/improvement-loop-20261024/m01-gradient-persistence-design-sol-v1/independent-review-luna-v1.json",
+      "sha256": "106d4b56b04fd4929768314a2de2638b21282daac04ad9f5723a76ddda66ae68",
+      "bytes": 4403
+    },
+    "persistence_proposal": {
+      "path": "research/improvement-loop-20261024/m01-gradient-persistence-design-sol-v1/proposal.json",
+      "sha256": "f4df2a738e34a03c77525372ef08cc853c0ee82abf5551531366c25f10eb92a8",
+      "bytes": 1440
+    }
+  },
+  "persistence": "Independent review supports a bounded counting-sink prototype on invented objects, not actual numerical equivalence. Hash matching alone does not authorize pickle deserialization; source-bound provenance, complete receipts and separate chunk restoration tests remain necessary. The original incomplete 64 MiB pickle remains local and must not be loaded. A small, invented-object-only prototype is being prepared; no new TX graph or forecast launched.",
+  "site_ci": "GitHub run 40405501764 passed export, House-live, build and typecheck, but its opt-in House browser tests failed because the initial JSON import-attribute fix was not understood by the browser bundler. The test helper was revised to generate JavaScript modules from JSON for both Node and bundled tests; all ten focused tests, including four browser cases, passed locally. Commit 69f5d7d is pushed; GitHub run 40407404636 job 121868619029 is queued. Earlier issue diagnoses were confirmed with actual GitHub job logs.",
+  "next": [
+    "Independently review/test the counting-sink prototype before any actual TX work; preserve full resource and provenance boundaries.",
+    "Monitor GitHub job 121868619029 through all steps and fix evidenced failures without assuming a queued job passed.",
+    "Continue count-model owner coordination, preserve V1 queue stores and keep unqualified candidate and county outputs unavailable."
+  ]
+}
