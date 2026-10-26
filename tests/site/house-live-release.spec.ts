@@ -448,6 +448,7 @@ test.describe("actual staged 2026 House release", () => {
     await expect(page.getByRole("region", { name: "Current House model comparison" }))
       .toContainText(withPoll!.district_key);
     await page.goto(`/?chamber=house&edition=current&run=${onEntry.id}&race=${encodeURIComponent(zeroLocal!.race_id)}`);
+    await expect(page.locator("#house-live-race-detail")).toContainText("No local poll questions were included in this forecast. Other polls may exist.");
     await page.locator("#house-live-polling .poll-records > summary").click();
     await expect(page.locator("#house-live-polling")).toContainText(`No eligible local poll question was selected for ${zeroLocal!.district_key}`);
     if (mixedOther) {

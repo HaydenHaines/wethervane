@@ -80,7 +80,10 @@ function HouseLiveRaceDetail({ race, detailRef, pollingEnabled, notice }: { race
     <h2 id="house-live-detail-title" tabIndex={-1}>{race.district.districtKey}</h2>
     <p className="small">{STATE_NAMES[race.state] || race.state} · {race.electionLabel}</p>
     {notice && race.id === notice.raceId && <HouseNy21NoticeDetails notice={notice} ariaLabel="NY-21 forecast input detail" />}
-    <p className="detail-note">{pollingEnabled ? `${race.pollCount} selected local poll-question ${race.pollCount === 1 ? "result" : "results"}` : "Polling is switched off for this model"}. <a href="#house-live-polling">Why these polls?</a></p>
+    <p className="detail-note">{pollingEnabled ? race.pollCount === 0
+      ? "No local poll questions were included in this forecast. Other polls may exist."
+      : `${race.pollCount} selected local poll-question ${race.pollCount === 1 ? "result" : "results"} included in this forecast. Other polls may exist.`
+      : "Polling is switched off for this model."} <a href="#house-live-polling">Why these polls?</a></p>
     <p className="detail-note">{rule} {method}</p>
     <h3 className="detail-label">Chance of winning</h3>
     <p className="detail-note">These are chances of each modeled candidate or group winning, not vote shares. A group probability is not allocated among its members.</p>
