@@ -9,6 +9,7 @@ As of October 26, 2026 UTC:
 The first entry is the latest checkpoint. Earlier entries preserve the scope and
 remaining work recorded at their issuance; later checkpoints supersede that status.
 
+- [Checkpoint v78](checkpoints/continuation-v78.json) records independent all-parent binding review: V2 prevents the V1 accidental parent relabeling but is metadata-only and cannot authenticate numerical results. No all-parent graph has run.
 - [Checkpoint v77](checkpoints/continuation-v77.json) records GitHub workflow success for the metadata fix, while the public domain still serves the old description and SiteGround status remains unknown.
 - [Checkpoint v76](checkpoints/continuation-v76.json) corrects a proposed all-parent test: population-cut predictions retain the original parent masses and normalize only within each parent. The completed two-state graph result is unchanged.
 - [Checkpoint v75](checkpoints/continuation-v75.json) records an independently audited full-graph comparison: original and compressed polling factors agree across every saved gradient/factor at two states of one parent. Other-parent normalization, inference, predictive value and publication remain unproven.

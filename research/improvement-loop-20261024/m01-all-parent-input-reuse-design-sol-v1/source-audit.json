@@ -1,0 +1,38 @@
+{
+  "schema": "ProtectedInputSourceInspectionV1",
+  "files": [
+    {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/modular-count-graph-astra-v1/graph.py",
+      "sha256": "f8c9417c371e405cc24c884035cded3598746a043b74f183079e297d72108131",
+      "protected_subscript_reads": [
+        {
+          "line": 532,
+          "expression": "ctx.protected[\"upstream_identity\"]"
+        },
+        {
+          "line": 533,
+          "expression": "ctx.protected[\"parent_id\"]"
+        },
+        {
+          "line": 534,
+          "expression": "ctx.protected[\"mass\"]"
+        },
+        {
+          "line": 455,
+          "expression": "ctx.protected[\"exposure\"]"
+        }
+      ]
+    },
+    {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/modular-count-graph-astra-v1/components.py",
+      "sha256": "7baf3ea8e644c025763e5a63b1721b14ddc748a94be3f1e106adf9f34f6ad2a7",
+      "protected_subscript_reads": [
+        {
+          "line": 56,
+          "expression": "c.protected[\"exposure\"]"
+        }
+      ]
+    }
+  ],
+  "scope": "Direct protected[...] syntax only; not an exhaustive dynamic attribute/alias proof. Existing selection/compiler/provider gates and per-parent numerical baselines remain required."
+}

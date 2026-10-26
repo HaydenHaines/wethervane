@@ -1,0 +1,34 @@
+{
+  "schema": "IndependentAllParentBindingV2ReviewV1",
+  "date": "2026-10-26",
+  "source_pins": {
+    "v2_design": {"path":"research/improvement-loop-20261024/m01-all-parent-input-reuse-design-sol-v2/DESIGN.md","sha256":"da08a2f27851da3ddfca8e30b94f754bb70df950094e647ce0f957464e895f0e"},
+    "v2_binding": {"path":"research/improvement-loop-20261024/m01-all-parent-input-reuse-design-sol-v2/binding.py","sha256":"2f2d3557d4ef725b3023f8c8c6c97054a027e9587d7aa30f3e25405ac16647c0"},
+    "v2_manifest": {"path":"research/improvement-loop-20261024/m01-all-parent-input-reuse-design-sol-v2/parents-manifest.json","sha256":"2fe2801107c96ab16c7d5d1134bb4ea8c4ffc4c19aff9853b38c2b5e2d8eb000"},
+    "v2_tests": {"path":"research/improvement-loop-20261024/m01-all-parent-input-reuse-design-sol-v2/test_tiny.py","sha256":"142c69d255fc90c3f74075727e8a9587b90cce28e9049aac989e37d8d5a50add"},
+    "v2_result": {"path":"research/improvement-loop-20261024/m01-all-parent-input-reuse-design-sol-v2/tiny-result.json","sha256":"0276560bb79b5f49c7699ffec8cfc8c9ce2247ca184dd6424cdedf38d2b65f7c"},
+    "v2_evidence": {"path":"research/improvement-loop-20261024/m01-all-parent-input-reuse-design-sol-v2/evidence.json","sha256":"30f45df018dbcd79519c1b71d3fd0a20e34c81c14d6259e1f7066124277d351c"},
+    "v1_review_preserved": {"path":"research/improvement-loop-20261024/m01-all-parent-input-reuse-review-luna-v1/review.json","sha256":"91e445ca221331b0dc1cbeb2379b071d95fd603b7d85ffb84f2282be11ff2b18"},
+    "v1_cut_counterexample": {"path":"research/improvement-loop-20261024/m01-parent-cut-challenge-sol-v1/README.md","sha256":"b76dcc3c289201a62a072c89fe46129011f357fb7b9f70849e71ffd370982d56"},
+    "cut_contract": {"path":"/home/hayden/projects/wethervane-redesign-20261006/integration/research/handoffs-20261009/cut-contract-v1.json","sha256":"5d2dea9b54fc081099e819e594504721761358047194f97b1bdb95c9f9d320b2"},
+    "bank_implementation": {"path":"/home/hayden/projects/wethervane-redesign-20261006/integration/src/senate_count_stack_v1/banks.py","sha256":"3b47727fde988ab9be41519a2c02522f60c9d681488eb06081863b47898165b8"}
+  },
+  "assessment": {
+    "verdict": "V2 closes the concrete accidental metadata-relabeling gap found in V1 for its declared metadata-consistency purpose. It still does not establish that a numerical evaluator ran, consumed the supplied exposure, evaluated the claimed point, or computed a normalized parent conditional; the packet labels these boundaries explicitly.",
+    "envelope_and_exposure": "BoundParent is frozen and carries canonical full-record/envelope bytes plus an immutable tuple exposure. seal_output revalidates against the exact eight-row manifest, checks supplied exposure and envelope claim against the bound parent, and emits canonical output bytes. verify_output rebinds the serialized parent and checks its envelope and exposure digest. Tiny tests reject frozen field assignment, bypassed frozen mutation, decoded claim edits for parent/row/mass/reference target/input digest/identity, wrong exposure, exposure tampering, serialized mass/digest/identity tampering, and post-seal mutation of a caller claim.",
+    "fixed_cut_semantics": "Every manifest row has exact original mass 0.125. Envelope labels population_cut_v1, parent_mass_used_in_logp=false, and conditional_normalization=unverified. The cut contract's q_i=K_i/Z_i applies within parent; outer masses remain fixed. The exact-rational toy demonstrates that unequal invented Z values must not change the eight masses. No actual conditional normalization or inference is provided.",
+    "preserved_v1_counterexample": "V1's returned envelope was a mutable dict and I independently changed its parent_id after binding while leaving the exposure tuple from the original row. That counterexample is recorded in m01-all-parent-input-reuse-review-luna-v1/review.json and remains a valid V1 finding. V2 is separately versioned and does not overwrite V1."
+  },
+  "independent_reproduction": {
+    "command_scope": "Copied V2 binding.py, parents-manifest.json, and test_tiny.py to a fresh /tmp directory; ran the 26-test stdlib suite with the calibration Python, one-thread env, nice 15, and 20-second timeout. No actual model imports.",
+    "result": "All 26 tests passed. Fresh tiny-result SHA-256 0276560bb79b5f49c7699ffec8cfc8c9ce2247ca184dd6424cdedf38d2b65f7c matched frozen result.",
+    "additional_boundary_test": "Created an invented sealed output, changed only its result.logp payload, retained the valid envelope, recanonicalized, and called verify_output. It accepted and returned the bound parent. This confirms verify_output authenticates metadata consistency only, not result bytes/origin; that is expected under the explicit evaluator_authenticated=false and receipt_scope disclaimer."
+  },
+  "limits_and_next_gate": [
+    "The `exposure_used`, `caller_kernel_id`, `caller_point_id`, and result payload are caller declarations. There is no evaluator wrapper or independently authenticated execution receipt.",
+    "An output can be metadata-consistent while its result is invented or edited; do not call this a trusted numerical result or model-evaluation receipt.",
+    "No graph build, symbolic substitution, compile, evaluation, fit, sampler, conditional normalization, or forecast occurred.",
+    "Before numerical outputs are attributed, a future wrapper must own the call from a source-bound kernel, authenticate exact point/input bytes, bind outputs to that invocation and preserve independent process/return evidence. It must still compare parent0 to its saved baseline and a preselected parent B against an independently formed fixed-parent oracle; all other rows remain unverified without an exhaustive reviewed source proof or additional baselines.",
+    "For population_cut_v1, normalize each parent's conditional law separately and aggregate with fixed .125 masses; never evidence-reweight the protected outer masses."
+  ]
+}

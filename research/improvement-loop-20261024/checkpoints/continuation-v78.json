@@ -1,0 +1,40 @@
+{
+  "schema": "ContinuousImprovementCheckpointV78",
+  "recordedAtUtc": "2026-10-26T23:32:10.427599+00:00",
+  "status": "active; all-parent design reviewed, no dynamic graph evaluated",
+  "references": {
+    "previous": {
+      "path": "research/improvement-loop-20261024/checkpoints/continuation-v77.json",
+      "sha256": "ac85ab7459a4761fa29aabfe530e61ed8e5531e84db05992fd8fbf71540803d5",
+      "bytes": 1981
+    },
+    "design_v1": {
+      "path": "research/improvement-loop-20261024/m01-all-parent-input-reuse-design-sol-v1/evidence.json",
+      "sha256": "cbdd412e897339ba9da5f1c632675aff4d9deec67f3109c778d8aa71ebfd1720",
+      "bytes": 1755
+    },
+    "review_v1": {
+      "path": "research/improvement-loop-20261024/m01-all-parent-input-reuse-review-luna-v1/review.json",
+      "sha256": "91e445ca221331b0dc1cbeb2379b071d95fd603b7d85ffb84f2282be11ff2b18",
+      "bytes": 9306
+    },
+    "design_v2": {
+      "path": "research/improvement-loop-20261024/m01-all-parent-input-reuse-design-sol-v2/evidence.json",
+      "sha256": "30f45df018dbcd79519c1b71d3fd0a20e34c81c14d6259e1f7066124277d351c",
+      "bytes": 1388
+    },
+    "review_v2": {
+      "path": "research/improvement-loop-20261024/m01-all-parent-input-reuse-review-luna-v2/review.json",
+      "sha256": "e55f3de19ab9c4d556491b3f5733f35aaeab75b7dca6e17f2dc8f2cb8d65f36f",
+      "bytes": 5933
+    }
+  },
+  "parent_reuse": "V1 source-only design preserved the eight fixed .125 masses and required parent-specific envelopes, but Luna independently demonstrated the returned envelope could be relabeled after binding. V1 is not a trusted evaluation receipt. V2 retains immutable canonical parent and envelope bytes, revalidates complete parent and exposure immediately at sealing, and independently passed 26 synthetic tests including identity/mass/exposure mutations. Fixed-cut semantics remain. An independent deliberate numeric result edit still passes V2 verify_output: this is explicitly metadata consistency, not authenticated evaluator execution or result bytes. A separate evaluator must own input selection and source/point/output binding; it is being prepared. No actual dynamic graph, all-parent fixed oracle, conditional normalization, fit or forecast was executed.",
+  "existing_evidence": "First parent original/compressed full graph parity at two saved states remains independently checked as in v75. It does not establish other parents or normalizers. The selected cut normalizes conditional laws within each parent and uses original fixed outer masses; per-parent evidence cannot reweight them.",
+  "frontend": "GitHub run for metadata commit 0d71d82 passed as recorded in v77; public SiteGround still showed old description at last check. Corrected House handoff and matching expected-error reference remain pending; v68 has release readiness steps.",
+  "next": [
+    "Independently review a separate source-bound evaluator that owns the numerical kernel call and atomically binds exact parent, exposure, point and result; V2 metadata alone cannot authenticate numbers.",
+    "Develop an actual parent0 and native fixed-parent B oracle comparison with explicit remaining-six coverage and preserved fixed cut; no premature posterior claim.",
+    "Continue matched model evaluation and integrate owner-qualified House release when available."
+  ]
+}

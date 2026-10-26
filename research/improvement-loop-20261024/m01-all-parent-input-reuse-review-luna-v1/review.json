@@ -1,0 +1,48 @@
+{
+  "schema": "IndependentAllParentInputReuseDesignReviewV1",
+  "date": "2026-10-26",
+  "packet_under_review": "research/improvement-loop-20261024/m01-all-parent-input-reuse-design-sol-v1",
+  "source_pins": {
+    "design": {"path":"research/improvement-loop-20261024/m01-all-parent-input-reuse-design-sol-v1/DESIGN.md","sha256":"d762c1b958474f601127d5644f45492e67ddd185857b7deb0a92d73bd7a4dcdb"},
+    "binding": {"path":"research/improvement-loop-20261024/m01-all-parent-input-reuse-design-sol-v1/binding.py","sha256":"ba0cce9ad668e5134530ea2c9db24111d5d96263d6191176394b00ade93dbaf9"},
+    "parents_manifest": {"path":"research/improvement-loop-20261024/m01-all-parent-input-reuse-design-sol-v1/parents-manifest.json","sha256":"2fe2801107c96ab16c7d5d1134bb4ea8c4ffc4c19aff9853b38c2b5e2d8eb000"},
+    "source_audit": {"path":"research/improvement-loop-20261024/m01-all-parent-input-reuse-design-sol-v1/source-audit.json","sha256":"94308e04d98e2ad444524e3919570976bc7aeb5702643886e5bcf470621487b1"},
+    "tiny_tests": {"path":"research/improvement-loop-20261024/m01-all-parent-input-reuse-design-sol-v1/test_tiny.py","sha256":"24cb5dbc315c295be6a55ffaeafade8ab391cd94aa90f66fcbef72b920097358"},
+    "tiny_result": {"path":"research/improvement-loop-20261024/m01-all-parent-input-reuse-design-sol-v1/tiny-result.json","sha256":"41e2ae8c83a6869a1216e7b8036af7de41534b8bd3d96e98396ae9da4c0d366d"},
+    "cut_contract": {"path":"/home/hayden/projects/wethervane-redesign-20261006/integration/research/handoffs-20261009/cut-contract-v1.json","sha256":"5d2dea9b54fc081099e819e594504721761358047194f97b1bdb95c9f9d320b2"},
+    "bank_implementation": {"path":"/home/hayden/projects/wethervane-redesign-20261006/integration/src/senate_count_stack_v1/banks.py","sha256":"3b47727fde988ab9be41519a2c02522f60c9d681488eb06081863b47898165b8"},
+    "selected_joint_source": {"path":"/home/hayden/projects/wethervane-redesign-20261006/integration/src/senate_count_stack_v1/joint.py","sha256":"5e5b609a2b90c121a6250bf252960cf4442da1e2a09a5913c528f73a1b905eeb"},
+    "native_graph_source": {"path":"/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/modular-count-graph-astra-v1/graph.py","sha256":"f8c9417c371e405cc24c884035cded3598746a043b74f183079e297d72108131"},
+    "native_components_source": {"path":"/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/modular-count-graph-astra-v1/components.py","sha256":"7baf3ea8e644c025763e5a63b1721b14ddc748a94be3f1e106adf9f34f6ad2a7"},
+    "first_parent_actual_comparison": {"path":"research/improvement-loop-20261024/m01-compressed-actual-equivalence-probe-sol-v2/attempt-v1/comparison.json","sha256":"79bc079ae74bf3e2779dfbdbe17bfd5809d732a4c82d8a5667c183334d2950cc"}
+  },
+  "verdict": "The design correctly separates a reusable numerical input/kernel from a parent-specific target envelope, and correctly leaves conditional normalization unverified. It preserves the population cut semantics. The proposed actual experiment is explicitly only pointwise reuse feasibility at two shared target-coordinate states, not all-parent conditional or predictive equivalence. One concrete provenance gap remains in the current binding helper: returned envelopes are mutable dictionaries, so caller-visible metadata can be reassigned after authentication unless the future executor freezes/rechecks them before publication.",
+  "verified_scope": {
+    "masses_and_cut": "The frozen manifest has eight exact full parent records, each mass 0.125. The contract defines q_i=K_i/Z_i within each protected parent and p_cut=w_i*q_i; it forbids global evidence reweighting of w_i. banks.py declares marginal_likelihood_reweighting=False. Design D/F retains these masses and says conditional_normalization=unverified; this is correct.",
+    "source_ownership": "The design calls for preserving complete factors, rates, source observations, nonmeasurement providers, and parent0 parity. It correctly states that no actual input-substituted kernel has yet been evaluated. The direct-protected-subscript audit found exposure in selected graph/provider code but explicitly is not proof against aliases or configuration-dependent parent reads. The independent native fixed-parent B anchor and source proof are appropriately required before stronger equivalence claims.",
+    "identity_and_coordinates": "binding.py canonical-hashes the entire record, accepts only one exact manifest match, checks fixed mass and complete positive finite 3x24 exposure, and separately labels target IDs as formula references only. Design D calls for retaining parent IDs/axes/lineage, checking target coordinate roster and support at the saved points, and persisting output under parent-specific envelopes. These avoid equating a reusable exposure array with a switched native parent contract.",
+    "normalization_boundary": "Pointwise evaluations at two target-coordinate vectors cannot establish Z_i, q_i, conditional sampler convergence, or a predictive aggregate. Under the cut, any future aggregate must combine independently normalized q_i predictions with the original fixed masses; Z_i must not reweight those masses."
+  },
+  "concrete_gap": {
+    "location": "binding.py:22-23",
+    "finding": "bind(record) returns an immutable nested-tuple exposure but a mutable plain dict envelope. The envelope parent_id, row_id, mass, parent identity, target-reference field, input hash, and inference label can be overwritten after bind without reauthentication. That permits a later result writer to associate one parent's numerical input/output with another parent's metadata if it trusts the dict.",
+    "reproduction": "Copied only binding.py and parents-manifest.json into a fresh /tmp directory; invoked bind on manifest row 0, then assigned envelope['parent_id'] from row 1. Assignment succeeded and the exposure tuple still came from row 0. No model/library import and no author file mutation.",
+    "severity": "This does not invalidate the frozen manifest or tiny input-record rejection tests, and no actual executor/output exists in this packet. It is a gap in any claim that the returned envelope itself remains authenticated after binding. Before any actual output is trusted, serialize/freeze a canonical envelope or recompute/verify its parent and exposure digests immediately before storing the evaluation receipt; add mutation rejection tests for parent_id, row_id, mass, target ID, input digest, and inference target."
+  },
+  "independent_tiny_reproduction": {
+    "command_scope": "Copied binding.py, parents-manifest.json, and test_tiny.py to a fresh /tmp directory and ran the pure-stdlib test under the calibration Python with one-thread environment, nice 15, and 20-second timeout. No actual model code was imported.",
+    "result": "15 tests passed; eight full records authenticated; reproduced tiny-result SHA-256 41e2ae8c83a6869a1216e7b8036af7de41534b8bd3d96e98396ae9da4c0d366d.",
+    "limits": "Tiny tests establish manifest/record binding and invented finite-state cut arithmetic. They do not execute the actual dynamic kernel, establish real per-parent conditional normalization, or validate a real output receipt."
+  },
+  "numerical_tests_that_distinguish_errors": [
+    "For the proposed actual dynamic kernel, run the same complete saved target-coordinate points with A->B->A ordering and all eight parents. Key every output to the full immutable parent envelope and exposure digest. Require parent0 to match its saved fixed-provider baseline and the preselected farthest-exposure B parent to match a separately built native fixed-parent oracle at both shared points, one additional valid perturbed point, all factors/rates, and selected finite differences. A→B→A alone is only state-isolation evidence.",
+    "Before execution, pass a whole valid parent through binding, then tamper each envelope field or swap the envelope while keeping the original exposure tuple. Every attempt to publish must reject or re-derive the envelope from the whole parent. Also test reordered outputs, mismatched event/cell axes, mass change, same exposure under another parent ID, and mixed-event exposures.",
+    "Use an exact finite-state test with unequal per-parent normalizers but identical within-parent laws: verify each q_i sums to one and the final cut prediction is the fixed-mass sum sum_i .125*q_i. A diagnostic implementation using w_i*Z_i/sum_j(w_j*Z_j) must fail. The packet's current toy covers this algebra; retain it as a contract test, not actual-model normalization evidence.",
+    "If actual per-parent predictive laws are later claimed, independently validate conditional sampling/importance weights separately for each parent, normalize importance weights only within i, verify support/tail coverage, ESS/error, and then form predictions with .125. Do not use conditional evidence to update protected masses."
+  ],
+  "nonclaims": [
+    "No full model graph was built, compiled, evaluated, or fit in this review.",
+    "No conditional normalizer, conditional posterior, all-parent predictive distribution, or forecast calibration was established.",
+    "The design is not a run authorization; the future graph/resource/output protocol still needs independent review."
+  ]
+}
