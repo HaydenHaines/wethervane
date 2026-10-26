@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import type { ChamberId } from "../lib/chamber";
 import { loadPublishedElectionNightForecast, type ElectionNightLoaded, type ElectionNightRequest } from "../lib/election-night-client";
 import type { ElectionNightInputNotice, ElectionNightPair, ElectionNightRace } from "../lib/election-night-forecast";
+import { electionNightCalls } from "../lib/election-night-calls";
 import type { ElectionNightReference } from "../lib/election-night-reference";
 import type { HouseExpectedErrorReference } from "../lib/election-night-house-reference";
 import ElectionNightEvaluation from "./ElectionNightEvaluation";
@@ -44,6 +45,18 @@ function InputNotice({ notice, detail = false }: { notice: ElectionNightInputNot
       <a href={source.url} target="_blank" rel="noreferrer">{source.label}</a> · {source.date}
     </li>)}</ul></>}
   </aside>;
+}
+
+function RaceCallRow({ race, notice }: { race: ElectionNightRace; notice?: ElectionNightInputNotice }) {
+  const outcome = race.outcomes.find(item => item.id === race.modalPick.outcomeId)!;
+  const call = outcome.kind === "candidate" ? outcome.name : outcome.members.length === 1
+    ? `${outcome.members[0].name} (${outcome.name})` : `${outcome.name} (individual winner not distinguished: ${outcome.members.map(member => member.name).join(", ")})`;
+  const category = outcome.winProbability <= .6 ? "Tossup" : outcome.winProbability <= .9 ? "Likely" : "Safe";
+  return <article className="night-call-row" data-call-race={race.id}>
+    <div><span>{label(race)} · {race.modalPick.tiedOutcomeIds.length > 1 ? "Tied top chances · fixed-order call" : "Our call"}</span><strong>{call}</strong><small>{probability(outcome.winProbability)}{outcome.kind === "group" ? " chance for the group" : " chance to win"} · {category}</small></div>
+    <div><span>Predicted two-candidate margin</span><strong>{race.pair ? pointPrediction(race.pair) : "Not available"}</strong>{race.pair?.winnerRelationship === "separate_conditional_event" && <small>This pair margin is separate from the winner-group call.</small>}</div>
+    {notice && <InputNotice notice={notice} />}
+  </article>;
 }
 
 function RacePrediction({ race, extent, featured = false, notice, reference, houseReference, resultStatus }: { race: ElectionNightRace; extent: number;
@@ -108,6 +121,7 @@ export default function ElectionNightGuide({ chamber, onClose }: { chamber: Cham
   const [watchIsStandard, setWatchIsStandard] = useState(true);
   const [query, setQuery] = useState("");
   const [allExpanded, setAllExpanded] = useState(false);
+  const [otherExpanded, setOtherExpanded] = useState(false);
   useEffect(() => {
     heading.current?.focus({ preventScroll: true });
     heading.current?.scrollIntoView({ block: "start", behavior: "instant" });
@@ -169,6 +183,7 @@ export default function ElectionNightGuide({ chamber, onClose }: { chamber: Cham
   }, [request, attempt]);
   const displayed = loaded?.forecast.chamber === chamber ? loaded : null;
   const forecast = displayed?.forecast;
+  const calls = useMemo(() => forecast ? electionNightCalls(forecast) : null, [forecast]);
   const reference = displayed?.reference;
   const primaryReference = displayed?.primaryReference;
   const houseReference = displayed?.houseReference;
@@ -189,6 +204,10 @@ export default function ElectionNightGuide({ chamber, onClose }: { chamber: Cham
     ? [Math.abs(race.pair.range90.lower), Math.abs(race.pair.range90.upper), Math.abs(race.pair.meanMarginPp)] : [])) / 5) * 5);
   const filtered = useMemo(() => forecast?.races.filter(race => `${label(race)} ${race.outcomes.map(outcome => outcome.name).join(" ")} ${forecast.inputNotices.find(notice => notice.raceId === race.id)?.publicWording ?? ""}`.toLowerCase().includes(query.toLowerCase().trim())) ?? [], [forecast, query]);
   const shown = allExpanded ? filtered : filtered.slice(0, 10);
+  const otherCalls = useMemo(() => {
+    const competitive = new Set(calls?.competitive.map(race => race.id) ?? []);
+    return forecast?.races.filter(race => !competitive.has(race.id)).sort((a, b) => a.modalPick.probability - b.modalPick.probability || a.id.localeCompare(b.id)) ?? [];
+  }, [calls, forecast]);
   return <section id="election-night-scorecard" className="night-guide" data-scorecard-chamber={chamber} aria-labelledby="night-guide-title" aria-busy={busy}>
     <div className="night-guide-heading"><div><div className="eyebrow">An election-night watcher’s guide</div>
       <h2 id="night-guide-title" ref={heading} tabIndex={-1}>Election night scorecard</h2>
@@ -219,6 +238,24 @@ export default function ElectionNightGuide({ chamber, onClose }: { chamber: Cham
       <section className="night-section" aria-labelledby="night-results-title">
         <div className="eyebrow">1 · Results and predictive power</div><h3 id="night-results-title">The predictions we can check</h3>
         <p>{forecast.chamber === "senate" ? "This Senate edition covers each race’s two named principal contenders, under the stated election-rule approximations." : "Winner chances cover the listed modeled candidates or groups. A group’s chance does not identify which member wins."}</p>
+        <article className="night-hard-call" aria-label="Point prediction for chamber control">
+          <div className="eyebrow">Our point prediction</div>
+          {calls?.seats && calls.control ? <>
+            <h4>{calls.control === "U" ? `Control of the ${forecast.chamber === "house" ? "House" : "Senate"} is unresolved` : `${calls.control === "D" ? "Democrats" : "Republicans"} control the ${forecast.chamber === "house" ? "House" : "Senate"} with ${calls.seats[calls.control]} seats`}</h4>
+            <p><strong>{calls.seats.D} Democratic · {calls.seats.R} Republican{calls.seats.U > 0 ? ` · ${calls.seats.U} other / unassigned` : ""}</strong></p>
+            <p>We pick the highest-chance outcome in each race and add those calls{forecast.chamber === "senate" ? " to the seats not up for election. A 50–50 Senate gives Republicans control under the current vice-presidential tie-break" : ". A House majority requires 218 seats"}. Independent and other winners remain unassigned in this scenario.</p>
+            <p>This is one concrete prediction, not a guarantee or the most common simulated outcome. The model’s control chances and shared uncertainty are shown below. {forecast.summary.topTieRaceCount > 0 && `For ${forecast.summary.topTieRaceCount} exact top-chance ties, a fixed ordering selects the point call.`}</p>
+          </> : <p>A complete seat-by-seat point prediction is unavailable for this forecast’s chamber scenario.</p>}
+        </article>
+        <div className="night-competitive" aria-labelledby="night-competitive-title">
+          <h4 id="night-competitive-title">Every competitive race · {calls?.competitive.length ?? 0}</h4>
+          <p>Includes every race where the leading outcome has at most a 90% win chance, plus any race with an estimated two-candidate margin of 5 points or less. Closest win chances come first.</p>
+          <p>We make a call even in a tossup. A win chance measures uncertainty about the winner; the predicted margin is a separate estimate of the vote gap.</p>
+          <div className="night-call-list">{calls?.competitive.map(race => <RaceCallRow key={race.id} race={race} notice={forecast.inputNotices.find(notice => notice.raceId === race.id)} />)}</div>
+          {!calls?.competitive.length && <p>No races meet these criteria in this edition.</p>}
+          {otherCalls.length > 0 && <><button type="button" aria-expanded={otherExpanded} onClick={() => setOtherExpanded(value => !value)}>{otherExpanded ? "Hide the other race calls" : `See all ${otherCalls.length} other race calls`}</button>
+            {otherExpanded && <div className="night-call-list">{otherCalls.map(race => <RaceCallRow key={race.id} race={race} notice={forecast.inputNotices.find(notice => notice.raceId === race.id)} />)}</div>}</>}
+        </div>
         {senateScope && <aside className="night-cohort-note" aria-label="Senate evaluation coverage">
           <strong>All {senateScope.fixedCohorts.full35.length} predictions stay visible. The primary grade covers {senateScope.fixedCohorts.pluralityCore32.length} candidate pairs.</strong>
           <p>Alaska and Maine may require ranked-choice rounds; Georgia may require a runoff. They remain on the scoreboard with their own status. This grouping is chosen before election results arrive.</p>

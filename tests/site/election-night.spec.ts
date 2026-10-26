@@ -440,3 +440,23 @@ test("an invalid fixed32 attachment preserves the forecast and35 reference, then
   await expect(panel.locator(".night-margin-reference .night-reference-value")).toContainText("5.6");
   await expect(panel.locator(".night-reference-error")).toHaveCount(0);
 });
+
+test("the scorecard calls every race and gives a matching chamber point prediction", async ({ page }) => {
+  for (const [chamber, count] of [["senate", 35], ["house", 435]] as const) {
+    await page.goto(`/?chamber=${chamber}`);
+    await page.getByRole("button", { name: "Election night scorecard", exact: true }).click();
+    const panel = page.locator("#election-night-scorecard");
+    await expect(panel.locator(".night-hard-call h4")).toContainText(/control|unresolved/i);
+    await expect(panel.locator(".night-hard-call")).toContainText("not a guarantee");
+    await expect(panel.locator("#night-competitive-title")).toBeVisible();
+    const expand = panel.getByRole("button", { name: /See all \d+ other race calls/ });
+    if (await expand.count()) await expand.click();
+    await expect(panel.locator("[data-call-race]")).toHaveCount(count);
+    await expect(panel.locator("[data-call-race]").first()).toContainText("Our call");
+    if (chamber === "house") {
+      await expect(panel.locator('[data-call-race="2026:NY-21:house:regular"]')).toContainText("inputs under review");
+      await expect(panel.locator("[data-call-race]").filter({ hasText: "individual winner not distinguished" }).first()).toBeVisible();
+    }
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  }
+});
