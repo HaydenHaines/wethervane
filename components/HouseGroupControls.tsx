@@ -5,6 +5,7 @@ import type { HouseReviewedPublication as HouseGroupPublication } from "../lib/h
 import { houseFundamentalsLabel } from "../lib/house-group-presentation.ts";
 import { houseGroupModelSlices } from "../lib/house-reviewed-model-slices.ts";
 import ModelSliceControls from "./ModelSliceControls";
+import HouseElectionYear from "./HouseElectionYear";
 
 export default function HouseGroupControls({ selectionKey, expanded, onExpandedChange, publication, busy, error, onChoose, onRetry, onLegacy, children }: {
   selectionKey: string;
@@ -42,14 +43,8 @@ export default function HouseGroupControls({ selectionKey, expanded, onExpandedC
     <details className="control-card house-configuration" open={expanded} onToggle={event => onExpandedChange(event.currentTarget.open)} aria-busy={busy}>
       <summary>Build your perspective <span className="small">{currentLabel} · Full 435 D/R/O group forecasts{busy ? " · Loading selection…" : ""}</span></summary>
       <p>Choose an election year and saved House model. This research result estimates which Democratic, Republican, or Other candidate group wins each district. It does not assign each candidate a separate win chance or predict House control.</p>
-      <div className="house-selection-fields">
-        <div className="stack-field">
-          <span className="control-field-label" id="house-group-election-year-label">Election year</span>
-          <div className="segmented year-control" role="group" aria-labelledby="house-group-election-year-label">
-            {years.map(year => <button key={year} disabled={busy || year === result.cycle} aria-pressed={year === result.cycle} onClick={() => chooseYear(year)}>{year}</button>)}
-          </div>
-        </div>
-      </div>
+      <HouseElectionYear year={result.cycle} years={years} busy={busy}
+        isYearAvailable={year => catalog.runs.some(run => run.cycle === year && run.fundamentalsId === fundamentals && run.polling === entry.polling)} onYear={chooseYear} />
       <p className="small">Changing year keeps {houseFundamentalsLabel(fundamentals)} and your polling choice.</p>
       <div className="stack-actions">
         <button disabled={busy || entry.id === catalog.initialRunId} onClick={() => onChoose(catalog.initialRunId)}>Reset group view</button>

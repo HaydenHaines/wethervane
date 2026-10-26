@@ -590,10 +590,11 @@ test("browser House router: publication availability, edition links, failures, h
     await expect(historicalHero).toBeVisible();
     assert.equal(requests.live, 0);
     assert.ok(requests.historical > 0);
-    await expect(page.getByRole("button", { name: "Current · 2026" })).toBeDisabled();
+    await page.locator(".house-configuration > summary").click();
+    await expect(page.getByRole("group", { name: "Election year", exact: true }).getByRole("button", { name: "2026", exact: true })).toBeDisabled();
     await page.setViewportSize({ width: 390, height: 844 });
     assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
-    await expect(page.getByRole("group", { name: "House election edition" })).toBeVisible();
+    await expect(page.getByRole("group", { name: "Election year", exact: true })).toBeVisible();
 
     available = true;
     await page.setViewportSize({ width: 1440, height: 900 });
@@ -602,18 +603,28 @@ test("browser House router: publication availability, edition links, failures, h
     await expect(page.getByRole("region", { name: "Publication review notes" }))
       .toContainText(current.publicationReview.limitations[0]);
     const historicalBeforeSwitch = requests.historical;
-    await page.getByRole("button", { name: "Historical elections" }).click();
+    await page.locator(".house-configuration > summary").click();
+    await page.getByRole("group", { name: "Election year", exact: true }).getByRole("button", { name: "2022", exact: true }).click();
     await expect(historicalHero).toBeVisible();
     assert.ok(requests.historical > historicalBeforeSwitch);
     await page.goBack();
     await expect(currentHero).toBeVisible();
-    await expect(page.getByRole("button", { name: "Current · 2026" })).toHaveAttribute("aria-pressed", "true");
+    await page.locator(".house-configuration > summary").click();
+    await expect(page.getByRole("group", { name: "Election year", exact: true }).getByRole("button", { name: "2026", exact: true })).toHaveAttribute("aria-pressed", "true");
     await page.setViewportSize({ width: 390, height: 844 });
     assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
     if (process.env.BALLOTMANCY_LIVE_HOUSE_SCREENSHOT_DIR) {
       mkdirSync(process.env.BALLOTMANCY_LIVE_HOUSE_SCREENSHOT_DIR, { recursive: true });
       await page.screenshot({ path: join(process.env.BALLOTMANCY_LIVE_HOUSE_SCREENSHOT_DIR, "edition-navigation-mobile.png") });
     }
+
+    // The same year control supports both directions, rather than a separate edition strip.
+    await page.getByRole("group", { name: "Election year", exact: true }).getByRole("button", { name: "2022", exact: true }).click();
+    await expect(historicalHero).toBeVisible();
+    await page.locator(".house-configuration > summary").click();
+    await page.getByRole("group", { name: "Election year", exact: true }).getByRole("button", { name: "2026", exact: true }).click();
+    await expect(currentHero).toBeVisible();
+    await expect(page.getByRole("group", { name: "House election edition", exact: true })).toHaveCount(0);
 
     // A failing availability check is an error, never an unpublished signal.
     await page.setViewportSize({ width: 1440, height: 900 });

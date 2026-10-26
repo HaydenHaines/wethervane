@@ -71,8 +71,9 @@ test("chamber heading and active tab track forecast control and keep a House rac
   await expect(heading).toHaveCSS("color", "rgb(62, 102, 131)");
   await expect(senate).toHaveCSS("color", "rgb(62, 102, 131)");
   await page.getByRole("tab", { name: "House", exact: true }).click();
-  await page.getByRole("group", { name: "House election edition", exact: true })
-    .getByRole("button", { name: "Historical elections", exact: true }).click();
+  await page.locator(".house-configuration > summary").click();
+  await page.getByRole("group", { name: "Election year", exact: true })
+    .getByRole("button", { name: "2024", exact: true }).click();
   await expect(page.getByRole("heading", { name: /The House,.*in perspective/ })).toBeVisible();
   await expect(heading).toHaveAttribute("data-chamber-outlook", "unavailable");
   await expect(heading).toHaveCSS("color", "rgb(33, 57, 75)");

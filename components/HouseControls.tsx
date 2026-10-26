@@ -4,6 +4,7 @@ import type { HouseResult } from "../lib/house-result";
 import { houseRunForYear } from "../lib/house-selection";
 import { houseModelSlices } from "../lib/house-model-slices";
 import ModelSliceControls from "./ModelSliceControls";
+import HouseElectionYear from "./HouseElectionYear";
 import { houseEvidenceLabel, houseSelectionNote } from "../lib/house-copy";
 
 export default function HouseControls({ selectionKey, expanded, onExpandedChange, result, catalog, busy, requestedId, error, onSelect, onRetry, onGroups, children }: {
@@ -38,17 +39,10 @@ export default function HouseControls({ selectionKey, expanded, onExpandedChange
         <p>Choose an election year and a saved model. Each choice loads its own reviewed results, race coverage and testing evidence. Changing the year does not assume that district boundaries stayed the same.</p>
         {catalog ? (
           <>
-            <div className="house-selection-fields">
-              <div className="stack-field">
-                <span className="control-field-label" id="house-election-year-label">Election year</span>
-                <div className="segmented year-control" role="group" aria-labelledby="house-election-year-label">
-                  {years.map((year) => <button key={year} disabled={busy || !houseRunForYear(catalog, result.run.id, year)} aria-pressed={result.run.year === year} onClick={() => {
-                    const id = houseRunForYear(catalog, result.run.id, year);
-                    if (id) onSelect(id);
-                  }}>{year}</button>)}
-                </div>
-              </div>
-            </div>
+            <HouseElectionYear year={result.run.year} years={years} busy={busy} isYearAvailable={year => !!houseRunForYear(catalog, result.run.id, year)} onYear={year => {
+              const id = houseRunForYear(catalog, result.run.id, year);
+              if (id) onSelect(id);
+            }} />
             {choices.some((run) => !run.available) && <details className="assumptions"><summary>Why some choices are unavailable</summary>{choices.filter((run) => !run.available).map((run) => <p key={run.id}><strong>{run.label}:</strong> {run.unavailableReason}</p>)}</details>}
             <p className="small">{houseSelectionNote(catalog.selectionNote)} The initial selection is a reference, not a model chosen for having the best historical score.</p>
             {catalog.capabilities?.polling === false && <p className="small">This saved forecast uses electoral history without polls. Historical polling options are available in the all-district model builder.</p>}

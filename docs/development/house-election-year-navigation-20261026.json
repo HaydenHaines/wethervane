@@ -1,0 +1,33 @@
+{
+  "schema": "HouseElectionYearNavigationReviewV1",
+  "scope": "Frontend navigation only; no scientific data or owner worktree changed.",
+  "baseCommit": "d4f3eaa3e553613fe50fcd68b839b98e7daab951",
+  "behavior": [
+    "Loaded House pages show the Election year segmented control inside Build your perspective, matching Senate placement and styles.",
+    "Current/historical routing continues through existing exact edition resolver. Historical selections within a collection retain catalog-owned family and polling selection.",
+    "Unavailable current forecasts disable 2026 with an explanation; unsupported historical combinations remain disabled or explicitly unavailable, never replaced with another year.",
+    "Error and pending pages retain recovery navigation; historical and current source/result identities remain separate."
+  ],
+  "validation": {
+    "houseLiveRenderAndBrowserSuite": {
+      "passed": 10,
+      "failed": 0,
+      "skipped": 0,
+      "log": "/tmp/house-perspective-all.tap"
+    },
+    "finalRoundtripRouterBrowser": {
+      "passed": 1,
+      "failed": 0,
+      "log": "/tmp/house-perspective-router-final.tap"
+    },
+    "typecheck": "passed; tsc --noEmit --incremental false",
+    "diffCheck": "passed",
+    "mobileScreenshot": "/tmp/house-perspective-slider-screenshots/edition-navigation-mobile.png",
+    "mobileScreenshotReviewed": true
+  },
+  "limits": [
+    "Browser checks use explicitly invented fixtures.",
+    "No deployment performed.",
+    "Full Next production build and unrelated suites were not run."
+  ]
+}

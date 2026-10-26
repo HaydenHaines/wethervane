@@ -7,6 +7,7 @@ import { houseLiveModelSlices } from "../lib/house-live-model-slices";
 import { resolveHouseLiveSelection, sameHouseLiveConfiguration } from "../lib/house-live-selection";
 import { houseLiveStatusLabel, houseLiveCutoffRole } from "../lib/house-live-copy";
 import ModelSliceControls from "./ModelSliceControls";
+import HouseElectionYear from "./HouseElectionYear";
 
 const controlSlots = { "house-live-base": "base", "house-live-polling": "polling",
   "house-live-uncertainty": "uncertainty" } as const;
@@ -73,6 +74,7 @@ export default function HouseLiveControls({ view, catalog, expanded, onExpandedC
       onToggle={event => onExpandedChange(event.currentTarget.open)} aria-busy={busy}>
       <summary>Build your perspective <span className="small">{view.run.label}{busy ? " · Loading selection…" : ""}</span></summary>
       <p>Choose an electoral-history model, current polling, and uncertainty setting. An exact saved choice loads immediately. Each result keeps its own list of candidates, assumptions about how districts move together, and evidence.</p>
+      <HouseElectionYear year={2026} years={[2024, 2022, 2020, 2018]} busy={busy} onYear={() => {}} />
       <ModelSliceControls slices={houseLiveModelSlices(catalog, selected)} busy={busy}
         explain={(_slot, _value, fallback) => fallback} onChange={update} />
       <div className="stack-actions">

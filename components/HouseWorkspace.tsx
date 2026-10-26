@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { loadHouseLiveAvailability } from "../lib/house-live-client";
 import { resolveHouseEdition, type HouseAvailabilityInput } from "../lib/house-live-edition";
 import HouseExplorer from "./HouseExplorer";
+import { HouseEditionContext } from "./HouseElectionYear";
 import HouseLiveWorkspace from "./HouseLiveWorkspace";
 
 /** Keep edition intent in the URL; current publication errors never imply historical data. */
@@ -42,9 +43,9 @@ export default function HouseWorkspace({ onReturn }: { onReturn: () => void }) {
   const currentAvailable = availability.state === "response" &&
     (availability.body as { available: boolean }).available;
   const unpublished = availability.state === "response" && !currentAvailable;
-  function select(next: "current" | "historical") {
-    if (next === edition) return;
-    const url = `/?chamber=house&edition=${next}`;
+  function select(next: "current" | "historical", year?: number) {
+    if (next === edition && year === undefined) return;
+    const url = `/?chamber=house&edition=${next}${year === undefined ? "" : `&year=${year}`}`;
     history.pushState(null, "", url);
     setSearch(location.search);
   }
@@ -54,8 +55,9 @@ export default function HouseWorkspace({ onReturn }: { onReturn: () => void }) {
     setAttempt(value => value + 1);
   }
 
-  return <>
-    <div className="house-edition-navigation">
+  return <HouseEditionContext.Provider value={{ currentAvailable, availabilityPending: availability.state === "pending",
+    onCurrent: () => select("current"), onHistorical: year => select("historical", year) }}>
+    {!edition && <div className="house-edition-navigation">
       <div className="chamber-tabs" role="group" aria-label="House election edition">
         <button type="button" aria-pressed={edition === "current"}
           disabled={unpublished && edition !== "current"} onClick={() => select("current")}>Current · 2026</button>
@@ -63,10 +65,8 @@ export default function HouseWorkspace({ onReturn }: { onReturn: () => void }) {
           onClick={() => select("historical")}>Historical elections</button>
       </div>
       {unpublished && edition !== "current" ? <p className="small">The 2026 forecast is awaiting publication review. Historical results are available below.</p> : null}
-      {availability.state === "error" && edition ? <p className="small" role="status">
-        Current forecast availability could not be checked. <button type="button" onClick={retry}>Check again</button>
-      </p> : null}
-    </div>
+    </div>}
+    {availability.state === "error" && edition && <p className="small" role="status">Current forecast availability could not be checked. <button type="button" onClick={retry}>Check again</button></p>}
     {edition === "current" ? <HouseLiveWorkspace onHistorical={() => select("historical")} onReturn={onReturn} />
       : edition === "historical" ? <HouseExplorer onReturn={onReturn} />
       : resolution?.status === "invalid" || resolution?.status === "error" || resolution?.status === "not_house"
@@ -79,5 +79,5 @@ export default function HouseWorkspace({ onReturn }: { onReturn: () => void }) {
           <button type="button" onClick={onReturn}>Explore the Senate</button>
         </div></main>
         : <main className="load-page" role="status">Checking the House forecast…</main>}
-  </>;
+  </HouseEditionContext.Provider>;
 }
