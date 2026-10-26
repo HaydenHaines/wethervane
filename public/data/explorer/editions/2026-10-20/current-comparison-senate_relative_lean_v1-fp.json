@@ -1,0 +1,4378 @@
+{
+  "schemaVersion": 1,
+  "run": {
+    "id": "current-comparison-senate_relative_lean_v1-fp",
+    "year": 2026,
+    "label": "Relative state and national lean · with polls",
+    "targetId": "senate2026_principal_pair_fundamentals_comparison_v1",
+    "lawId": "principal_pair_empirical_logit_shared_normal_student_t5_v1",
+    "dateId": "2026-10-20",
+    "dateLabel": "October 20, 2026",
+    "forecastAt": "2026-10-20T16:21:44Z",
+    "issuedAt": "2026-10-20T19:39:03.226759+00:00",
+    "cutoffAt": "2026-10-20T16:21:44Z",
+    "horizonDays": null,
+    "components": {
+      "base": "senate_relative_lean_v1",
+      "polling": "standard",
+      "uncertainty": "standard"
+    },
+    "uncertaintyLabel": "Saved fitted joint uncertainty",
+    "uncertaintyDescription": "Shared national shifts and race-specific variation from this exact saved comparison.",
+    "historical": false,
+    "sensitivity": true,
+    "simulationCount": 80000,
+    "strictAsOf": false,
+    "inputCutoffs": [
+      {
+        "label": "Nonpoll inputs",
+        "at": "2026-10-20T15:21:23Z"
+      },
+      {
+        "label": "Polling data",
+        "at": "2026-10-20T16:21:44Z"
+      }
+    ],
+    "researchEvidence": {
+      "status": "experimental",
+      "numericalStatus": "passed",
+      "forecastSkill": "unobserved_2026",
+      "qualification": "Saved current comparison, not a replacement for the preserved default and not arbitrary custom chamber execution."
+    }
+  },
+  "races": [
+    {
+      "id": "2026:AK:senate:regular",
+      "state": "AK",
+      "seatId": "US-SEN-AK-CLASS-2",
+      "electionLabel": "Regular election",
+      "outcomes": [
+        {
+          "id": "contender:AK:peltola-mary",
+          "name": "Peltola, Mary",
+          "party": "D",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:AK:peltola-mary",
+              "name": "Peltola, Mary",
+              "party": "D",
+              "incumbent": false,
+              "sourceUrls": [
+                "https://www.elections.alaska.gov/election/2026/General/SampleBallots/Tagalog%20HD5%20JD3.pdf",
+                "https://www.elections.alaska.gov/election-information/",
+                "https://www.elections.alaska.gov/doc/forms/Updated/B05W-F.pdf"
+              ]
+            }
+          ],
+          "winProbability": 0.412525,
+          "share": {
+            "mean": 0.49284549116087556,
+            "quantiles": {
+              "p05": 0.43859108110170403,
+              "p50": 0.49249142927648715,
+              "p95": 0.5488459104768765
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        },
+        {
+          "id": "contender:AK:sullivan-dan-s",
+          "name": "Sullivan, Dan S.",
+          "party": "R",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:AK:sullivan-dan-s",
+              "name": "Sullivan, Dan S.",
+              "party": "R",
+              "incumbent": true,
+              "sourceUrls": [
+                "https://www.elections.alaska.gov/election/2026/General/SampleBallots/Tagalog%20HD5%20JD3.pdf",
+                "https://www.elections.alaska.gov/election-information/",
+                "https://www.elections.alaska.gov/doc/forms/Updated/B05W-F.pdf"
+              ]
+            }
+          ],
+          "winProbability": 0.587475,
+          "share": {
+            "mean": 0.5071545088391245,
+            "quantiles": {
+              "p05": 0.4511540895231235,
+              "p50": 0.5075085707235129,
+              "p95": 0.561408918898296
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        }
+      ],
+      "pollCount": 1,
+      "notes": [
+        "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support. For RCV, transfer/exhaustion rounds are approximated by head-to-head final-preference share; not a first-round share forecast.",
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim."
+      ]
+    },
+    {
+      "id": "2026:AL:senate:regular",
+      "state": "AL",
+      "seatId": "US-SEN-AL-CLASS-2",
+      "electionLabel": "Regular election",
+      "outcomes": [
+        {
+          "id": "contender:AL:everett-wess",
+          "name": "Everett Wess",
+          "party": "D",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:AL:everett-wess",
+              "name": "Everett Wess",
+              "party": "D",
+              "incumbent": false,
+              "sourceUrls": [
+                "https://www.sos.alabama.gov/sites/default/files/sample-ballots/2026/gen/Autauga-Sample.pdf",
+                "https://www.sos.alabama.gov/alabama-votes/2026-general-election-sample-ballots",
+                "https://www.sos.alabama.gov/sites/default/files/election-2026/2026GeneralElectionStateCertificationofDemocraticCandidates.pdf",
+                "https://www.sos.alabama.gov/sites/default/files/election-2026/2026GeneralElectionStateCertificationofRepublicanCandidates.pdf",
+                "https://www.sos.alabama.gov/sites/default/files/election-2026/2026GeneralElection-StateCertificationofIndependentCandidate.pdf"
+              ]
+            }
+          ],
+          "winProbability": 0.0007625,
+          "share": {
+            "mean": 0.3919112632660864,
+            "quantiles": {
+              "p05": 0.33827649625220735,
+              "p50": 0.391704486387221,
+              "p95": 0.4462769256002977
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        },
+        {
+          "id": "contender:AL:barry-moore",
+          "name": "Barry Moore",
+          "party": "R",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:AL:barry-moore",
+              "name": "Barry Moore",
+              "party": "R",
+              "incumbent": false,
+              "sourceUrls": [
+                "https://www.sos.alabama.gov/sites/default/files/sample-ballots/2026/gen/Autauga-Sample.pdf",
+                "https://www.sos.alabama.gov/alabama-votes/2026-general-election-sample-ballots",
+                "https://www.sos.alabama.gov/sites/default/files/election-2026/2026GeneralElectionStateCertificationofDemocraticCandidates.pdf",
+                "https://www.sos.alabama.gov/sites/default/files/election-2026/2026GeneralElectionStateCertificationofRepublicanCandidates.pdf",
+                "https://www.sos.alabama.gov/sites/default/files/election-2026/2026GeneralElection-StateCertificationofIndependentCandidate.pdf"
+              ]
+            }
+          ],
+          "winProbability": 0.9992375,
+          "share": {
+            "mean": 0.6080887367339136,
+            "quantiles": {
+              "p05": 0.5537230743997024,
+              "p50": 0.608295513612779,
+              "p95": 0.6617235037477927
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        }
+      ],
+      "pollCount": 1,
+      "notes": [
+        "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support.",
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim."
+      ]
+    },
+    {
+      "id": "2026:AR:senate:regular",
+      "state": "AR",
+      "seatId": "US-SEN-AR-CLASS-2",
+      "electionLabel": "Regular election",
+      "outcomes": [
+        {
+          "id": "contender:AR:hallie-shoffner",
+          "name": "Hallie Shoffner",
+          "party": "D",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:AR:hallie-shoffner",
+              "name": "Hallie Shoffner",
+              "party": "D",
+              "incumbent": false,
+              "sourceUrls": [
+                "https://bentoncountyar.gov/vote/elections/",
+                "https://bentoncountyar.gov/vote/wp-content/documents/sites/37/2026/09/2026-General-Election-Sample-26-4-1-10-13-36-Copy.pdf"
+              ]
+            }
+          ],
+          "winProbability": 0.0170375,
+          "share": {
+            "mean": 0.4240011932780846,
+            "quantiles": {
+              "p05": 0.3687775261448553,
+              "p50": 0.42317486923349623,
+              "p95": 0.4822330936044918
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        },
+        {
+          "id": "contender:AR:tom-cotton",
+          "name": "Tom Cotton",
+          "party": "R",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:AR:tom-cotton",
+              "name": "Tom Cotton",
+              "party": "R",
+              "incumbent": true,
+              "sourceUrls": [
+                "https://bentoncountyar.gov/vote/elections/",
+                "https://bentoncountyar.gov/vote/wp-content/documents/sites/37/2026/09/2026-General-Election-Sample-26-4-1-10-13-36-Copy.pdf"
+              ]
+            }
+          ],
+          "winProbability": 0.9829625,
+          "share": {
+            "mean": 0.5759988067219154,
+            "quantiles": {
+              "p05": 0.5177669063955082,
+              "p50": 0.5768251307665038,
+              "p95": 0.6312224738551446
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        }
+      ],
+      "pollCount": 1,
+      "notes": [
+        "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support.",
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim."
+      ]
+    },
+    {
+      "id": "2026:CO:senate:regular",
+      "state": "CO",
+      "seatId": "US-SEN-CO-CLASS-2",
+      "electionLabel": "Regular election",
+      "outcomes": [
+        {
+          "id": "contender:CO:john-hickenlooper",
+          "name": "John Hickenlooper",
+          "party": "D",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:CO:john-hickenlooper",
+              "name": "John Hickenlooper",
+              "party": "D",
+              "incumbent": true,
+              "sourceUrls": [
+                "https://www.sos.state.co.us/pubs/elections/vote/generalCandidates.html",
+                "https://www.sos.state.co.us/pubs/elections/vote/files/2026/2026GeneralCandidateListOfficial.xlsx",
+                "https://www.sos.state.co.us/pubs/elections/calendars/2026ElectionCalendar.pdf"
+              ]
+            }
+          ],
+          "winProbability": 0.9767375,
+          "share": {
+            "mean": 0.6490123734308195,
+            "quantiles": {
+              "p05": 0.5347016194588937,
+              "p50": 0.6520115630462939,
+              "p95": 0.7533270195875177
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        },
+        {
+          "id": "contender:CO:mark-baisley",
+          "name": "Mark Baisley",
+          "party": "R",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:CO:mark-baisley",
+              "name": "Mark Baisley",
+              "party": "R",
+              "incumbent": false,
+              "sourceUrls": [
+                "https://www.sos.state.co.us/pubs/elections/vote/generalCandidates.html",
+                "https://www.sos.state.co.us/pubs/elections/vote/files/2026/2026GeneralCandidateListOfficial.xlsx",
+                "https://www.sos.state.co.us/pubs/elections/calendars/2026ElectionCalendar.pdf"
+              ]
+            }
+          ],
+          "winProbability": 0.023262499999999964,
+          "share": {
+            "mean": 0.3509876265691805,
+            "quantiles": {
+              "p05": 0.2466729804124823,
+              "p50": 0.34798843695370607,
+              "p95": 0.4652983805411063
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        }
+      ],
+      "pollCount": 0,
+      "notes": [
+        "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support.",
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim."
+      ]
+    },
+    {
+      "id": "2026:DE:senate:regular",
+      "state": "DE",
+      "seatId": "US-SEN-DE-CLASS-2",
+      "electionLabel": "Regular election",
+      "outcomes": [
+        {
+          "id": "contender:DE:chris-coons",
+          "name": "Chris Coons",
+          "party": "D",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:DE:chris-coons",
+              "name": "Chris Coons",
+              "party": "D",
+              "incumbent": true,
+              "sourceUrls": [
+                "https://elections.delaware.gov/candidates/candidatelist/genl_fcddt_2026.html",
+                "https://elections.delaware.gov/candidates/candidatelist/genl_wcddt_2026.html",
+                "https://elections.delaware.gov/candidates/candidatelist/genl_fcddt_2026.html"
+              ]
+            }
+          ],
+          "winProbability": 0.9819625,
+          "share": {
+            "mean": 0.6613822968749107,
+            "quantiles": {
+              "p05": 0.5494329919259636,
+              "p50": 0.6644921181146214,
+              "p95": 0.7637211269040792
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        },
+        {
+          "id": "contender:DE:michael-dr-mike-katz",
+          "name": "Michael \"Dr. Mike\" Katz",
+          "party": "R",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:DE:michael-dr-mike-katz",
+              "name": "Michael \"Dr. Mike\" Katz",
+              "party": "R",
+              "incumbent": false,
+              "sourceUrls": [
+                "https://elections.delaware.gov/candidates/candidatelist/genl_fcddt_2026.html",
+                "https://elections.delaware.gov/candidates/candidatelist/genl_wcddt_2026.html",
+                "https://elections.delaware.gov/candidates/candidatelist/genl_fcddt_2026.html"
+              ]
+            }
+          ],
+          "winProbability": 0.01803750000000004,
+          "share": {
+            "mean": 0.3386177031250893,
+            "quantiles": {
+              "p05": 0.23627887309592077,
+              "p50": 0.3355078818853786,
+              "p95": 0.4505670080740364
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        }
+      ],
+      "pollCount": 0,
+      "notes": [
+        "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support.",
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim."
+      ]
+    },
+    {
+      "id": "2026:FL:senate:special",
+      "state": "FL",
+      "seatId": "US-SEN-FL-CLASS-3",
+      "electionLabel": "Special election",
+      "outcomes": [
+        {
+          "id": "contender:FL:angie-nixon",
+          "name": "Angie Nixon",
+          "party": "D",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:FL:angie-nixon",
+              "name": "Angie Nixon",
+              "party": "D",
+              "incumbent": false,
+              "sourceUrls": [
+                "https://www.volusiaelections.gov/elections/election-results/2026-election-results/november-3-2026-general-election.stml",
+                "https://dos.elections.myflorida.com/candidates/CanList.asp?elecid=20261103-GEN&status=All"
+              ]
+            }
+          ],
+          "winProbability": 0.0806,
+          "share": {
+            "mean": 0.45630303240269887,
+            "quantiles": {
+              "p05": 0.40597172632102174,
+              "p50": 0.456013731027499,
+              "p95": 0.5076906442754998
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        },
+        {
+          "id": "contender:FL:ashley-moody",
+          "name": "Ashley Moody",
+          "party": "R",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:FL:ashley-moody",
+              "name": "Ashley Moody",
+              "party": "R",
+              "incumbent": true,
+              "sourceUrls": [
+                "https://www.volusiaelections.gov/elections/election-results/2026-election-results/november-3-2026-general-election.stml",
+                "https://dos.elections.myflorida.com/candidates/CanList.asp?elecid=20261103-GEN&status=All"
+              ]
+            }
+          ],
+          "winProbability": 0.9194,
+          "share": {
+            "mean": 0.5436969675973011,
+            "quantiles": {
+              "p05": 0.4923093557245002,
+              "p50": 0.543986268972501,
+              "p95": 0.5940282736789783
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        }
+      ],
+      "pollCount": 2,
+      "notes": [
+        "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support. Class III unexpired-term special is treated with regular-race discrepancy; this is an unvalidated transfer.",
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim."
+      ]
+    },
+    {
+      "id": "2026:GA:senate:regular",
+      "state": "GA",
+      "seatId": "US-SEN-GA-CLASS-2",
+      "electionLabel": "Regular election",
+      "outcomes": [
+        {
+          "id": "contender:GA:jon-ossoff",
+          "name": "Jon Ossoff",
+          "party": "D",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:GA:jon-ossoff",
+              "name": "Jon Ossoff",
+              "party": "D",
+              "incumbent": true,
+              "sourceUrls": [
+                "https://assets.cobbcounty.gov/files/2026-09/SAMPLE%20BALLOT%20DRAFT%20v4%20WEB.pdf",
+                "https://assets.cobbcounty.gov/files/2026-09/2026%20Certified%20Write-In%20Candidates_2.pdf",
+                "https://www.cobbcounty.gov/elections/voting/election-day"
+              ]
+            }
+          ],
+          "winProbability": 0.9462875,
+          "share": {
+            "mean": 0.5509665674979768,
+            "quantiles": {
+              "p05": 0.49888786430987303,
+              "p50": 0.5513975391581509,
+              "p95": 0.6015731014637
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        },
+        {
+          "id": "contender:GA:mike-collins",
+          "name": "Mike Collins",
+          "party": "R",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:GA:mike-collins",
+              "name": "Mike Collins",
+              "party": "R",
+              "incumbent": false,
+              "sourceUrls": [
+                "https://assets.cobbcounty.gov/files/2026-09/SAMPLE%20BALLOT%20DRAFT%20v4%20WEB.pdf",
+                "https://assets.cobbcounty.gov/files/2026-09/2026%20Certified%20Write-In%20Candidates_2.pdf",
+                "https://www.cobbcounty.gov/elections/voting/election-day"
+              ]
+            }
+          ],
+          "winProbability": 0.05371250000000005,
+          "share": {
+            "mean": 0.4490334325020232,
+            "quantiles": {
+              "p05": 0.3984268985363,
+              "p50": 0.44860246084184907,
+              "p95": 0.5011121356901269
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        }
+      ],
+      "pollCount": 2,
+      "notes": [
+        "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support. General/runoff sequence is collapsed to an eventual two-principal majority proxy; runoff turnout and calendar are unmodeled.",
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim."
+      ]
+    },
+    {
+      "id": "2026:IA:senate:regular",
+      "state": "IA",
+      "seatId": "US-SEN-IA-CLASS-2",
+      "electionLabel": "Regular election",
+      "outcomes": [
+        {
+          "id": "contender:IA:josh-turek",
+          "name": "Josh Turek",
+          "party": "D",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:IA:josh-turek",
+              "name": "Josh Turek",
+              "party": "D",
+              "incumbent": false,
+              "sourceUrls": [
+                "https://sos.iowa.gov/sites/default/files/2026-08/2026%20General%20-%20Candidate%20List%20Database%20-%20All%20Elections_1.pdf",
+                "https://sos.iowa.gov/sites/default/files/2026-05/2026%20General%20-%20Candidate%20List%20Database%20-%20All%20Elections_0.pdf"
+              ]
+            }
+          ],
+          "winProbability": 0.403225,
+          "share": {
+            "mean": 0.49328529517612424,
+            "quantiles": {
+              "p05": 0.448502453286797,
+              "p50": 0.4932739006209265,
+              "p95": 0.5378649904045995
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        },
+        {
+          "id": "contender:IA:ashley-hinson",
+          "name": "Ashley Hinson",
+          "party": "R",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:IA:ashley-hinson",
+              "name": "Ashley Hinson",
+              "party": "R",
+              "incumbent": false,
+              "sourceUrls": [
+                "https://sos.iowa.gov/sites/default/files/2026-08/2026%20General%20-%20Candidate%20List%20Database%20-%20All%20Elections_1.pdf",
+                "https://sos.iowa.gov/sites/default/files/2026-05/2026%20General%20-%20Candidate%20List%20Database%20-%20All%20Elections_0.pdf"
+              ]
+            }
+          ],
+          "winProbability": 0.596775,
+          "share": {
+            "mean": 0.5067147048238758,
+            "quantiles": {
+              "p05": 0.46213500959540055,
+              "p50": 0.5067260993790734,
+              "p95": 0.5514975467132031
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        }
+      ],
+      "pollCount": 5,
+      "notes": [
+        "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support.",
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim."
+      ]
+    },
+    {
+      "id": "2026:ID:senate:regular",
+      "state": "ID",
+      "seatId": "US-SEN-ID-CLASS-2",
+      "electionLabel": "Regular election",
+      "outcomes": [
+        {
+          "id": "contender:ID:todd-achilles",
+          "name": "Todd Achilles",
+          "party": "I",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:ID:todd-achilles",
+              "name": "Todd Achilles",
+              "party": "I",
+              "incumbent": false,
+              "sourceUrls": [
+                "https://camascounty.id.gov/wp-content/uploads/2026/09/01.pdf",
+                "https://camascounty.id.gov/county-clerk/elections/",
+                "https://voteidaho.gov/calendar/list/?eventDisplay=past&tribe-bar-date=2026-09-04"
+              ]
+            }
+          ],
+          "winProbability": 0.40875,
+          "share": {
+            "mean": 0.49053265875837204,
+            "quantiles": {
+              "p05": 0.4207521762473251,
+              "p50": 0.48987279353486446,
+              "p95": 0.5622954359598774
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        },
+        {
+          "id": "contender:ID:jim-risch",
+          "name": "Jim Risch",
+          "party": "R",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:ID:jim-risch",
+              "name": "Jim Risch",
+              "party": "R",
+              "incumbent": true,
+              "sourceUrls": [
+                "https://camascounty.id.gov/wp-content/uploads/2026/09/01.pdf",
+                "https://camascounty.id.gov/county-clerk/elections/",
+                "https://voteidaho.gov/calendar/list/?eventDisplay=past&tribe-bar-date=2026-09-04"
+              ]
+            }
+          ],
+          "winProbability": 0.59125,
+          "share": {
+            "mean": 0.509467341241628,
+            "quantiles": {
+              "p05": 0.4377045640401226,
+              "p50": 0.5101272064651355,
+              "p95": 0.5792478237526749
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        }
+      ],
+      "pollCount": 1,
+      "notes": [
+        "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support.",
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim. Independent opposition remains I. Prior Democratic presidential offset and historical D/R coefficients are borrowed as an unvalidated opposition proxy; no independent-specific advantage is added."
+      ]
+    },
+    {
+      "id": "2026:IL:senate:regular",
+      "state": "IL",
+      "seatId": "US-SEN-IL-CLASS-2",
+      "electionLabel": "Regular election",
+      "outcomes": [
+        {
+          "id": "contender:IL:juliana-stratton",
+          "name": "Juliana Stratton",
+          "party": "D",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:IL:juliana-stratton",
+              "name": "Juliana Stratton",
+              "party": "D",
+              "incumbent": false,
+              "sourceUrls": [
+                "https://www.peoriaelections.gov/201/Sample-Ballots",
+                "https://www.peoriaelections.gov/DocumentCenter/View/1454/2026-General-Election---Sample-Ballot"
+              ]
+            }
+          ],
+          "winProbability": 0.9820625,
+          "share": {
+            "mean": 0.5741481437007571,
+            "quantiles": {
+              "p05": 0.5166713451160225,
+              "p50": 0.574785701835005,
+              "p95": 0.6294818384849273
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        },
+        {
+          "id": "contender:IL:don-tracy",
+          "name": "Don Tracy",
+          "party": "R",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:IL:don-tracy",
+              "name": "Don Tracy",
+              "party": "R",
+              "incumbent": false,
+              "sourceUrls": [
+                "https://www.peoriaelections.gov/201/Sample-Ballots",
+                "https://www.peoriaelections.gov/DocumentCenter/View/1454/2026-General-Election---Sample-Ballot"
+              ]
+            }
+          ],
+          "winProbability": 0.01793750000000005,
+          "share": {
+            "mean": 0.42585185629924294,
+            "quantiles": {
+              "p05": 0.37051816151507266,
+              "p50": 0.425214298164995,
+              "p95": 0.48332865488397747
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        }
+      ],
+      "pollCount": 1,
+      "notes": [
+        "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support.",
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim."
+      ]
+    },
+    {
+      "id": "2026:KS:senate:regular",
+      "state": "KS",
+      "seatId": "US-SEN-KS-CLASS-2",
+      "electionLabel": "Regular election",
+      "outcomes": [
+        {
+          "id": "contender:KS:adam-hamilton",
+          "name": "Adam Hamilton",
+          "party": "D",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:KS:adam-hamilton",
+              "name": "Adam Hamilton",
+              "party": "D",
+              "incumbent": false,
+              "sourceUrls": [
+                "https://labettecounty.com/2026-notices",
+                "https://labettecounty.com/documents/260/2026_Official_General_Publication_Notice__1_.pdf_OCR.pdf"
+              ]
+            }
+          ],
+          "winProbability": 0.3345375,
+          "share": {
+            "mean": 0.48746742957135175,
+            "quantiles": {
+              "p05": 0.4387978688577726,
+              "p50": 0.4871717238586284,
+              "p95": 0.5370448871847029
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        },
+        {
+          "id": "contender:KS:roger-marshall",
+          "name": "Roger Marshall",
+          "party": "R",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:KS:roger-marshall",
+              "name": "Roger Marshall",
+              "party": "R",
+              "incumbent": true,
+              "sourceUrls": [
+                "https://labettecounty.com/2026-notices",
+                "https://labettecounty.com/documents/260/2026_Official_General_Publication_Notice__1_.pdf_OCR.pdf"
+              ]
+            }
+          ],
+          "winProbability": 0.6654625000000001,
+          "share": {
+            "mean": 0.5125325704286483,
+            "quantiles": {
+              "p05": 0.4629551128152971,
+              "p50": 0.5128282761413716,
+              "p95": 0.5612021311422274
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        }
+      ],
+      "pollCount": 3,
+      "notes": [
+        "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support.",
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim."
+      ]
+    },
+    {
+      "id": "2026:KY:senate:regular",
+      "state": "KY",
+      "seatId": "US-SEN-KY-CLASS-2",
+      "electionLabel": "Regular election",
+      "outcomes": [
+        {
+          "id": "contender:KY:charles-booker",
+          "name": "Charles BOOKER",
+          "party": "D",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:KY:charles-booker",
+              "name": "Charles BOOKER",
+              "party": "D",
+              "incumbent": false,
+              "sourceUrls": [
+                "https://c3fcc0c6-f15c-4c65-ab9b-bd6acedc3b04.usrfiles.com/ugd/c3fcc0_5c3576092ecf4546b5a0a596a159d45f.pdf",
+                "https://www.madisoncountyclerk.us/post/2026-general-election-information-mcky"
+              ]
+            }
+          ],
+          "winProbability": 0.1722125,
+          "share": {
+            "mean": 0.43783386027112164,
+            "quantiles": {
+              "p05": 0.3216993594286049,
+              "p50": 0.4364773552037535,
+              "p95": 0.5585080788602503
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        },
+        {
+          "id": "contender:KY:andy-barr",
+          "name": "Andy BARR",
+          "party": "R",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:KY:andy-barr",
+              "name": "Andy BARR",
+              "party": "R",
+              "incumbent": false,
+              "sourceUrls": [
+                "https://c3fcc0c6-f15c-4c65-ab9b-bd6acedc3b04.usrfiles.com/ugd/c3fcc0_5c3576092ecf4546b5a0a596a159d45f.pdf",
+                "https://www.madisoncountyclerk.us/post/2026-general-election-information-mcky"
+              ]
+            }
+          ],
+          "winProbability": 0.8277875,
+          "share": {
+            "mean": 0.5621661397288784,
+            "quantiles": {
+              "p05": 0.44149192113974967,
+              "p50": 0.5635226447962465,
+              "p95": 0.6783006405713952
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        }
+      ],
+      "pollCount": 0,
+      "notes": [
+        "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support.",
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim."
+      ]
+    },
+    {
+      "id": "2026:LA:senate:regular",
+      "state": "LA",
+      "seatId": "US-SEN-LA-CLASS-2",
+      "electionLabel": "Regular election",
+      "outcomes": [
+        {
+          "id": "contender:LA:jamie-davis",
+          "name": "'Jamie' Davis",
+          "party": "D",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:LA:jamie-davis",
+              "name": "'Jamie' Davis",
+              "party": "D",
+              "incumbent": false,
+              "sourceUrls": [
+                "https://voterportal.sos.la.gov/CandidateInquiry/StatewideCandidate/Export"
+              ]
+            }
+          ],
+          "winProbability": 0.3204,
+          "share": {
+            "mean": 0.4701229914877107,
+            "quantiles": {
+              "p05": 0.35231853649267053,
+              "p50": 0.4691674125868225,
+              "p95": 0.5909436276297511
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        },
+        {
+          "id": "contender:LA:julia-letlow",
+          "name": "Julia Letlow",
+          "party": "R",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:LA:julia-letlow",
+              "name": "Julia Letlow",
+              "party": "R",
+              "incumbent": false,
+              "sourceUrls": [
+                "https://voterportal.sos.la.gov/CandidateInquiry/StatewideCandidate/Export"
+              ]
+            }
+          ],
+          "winProbability": 0.6796,
+          "share": {
+            "mean": 0.5298770085122892,
+            "quantiles": {
+              "p05": 0.40905637237024894,
+              "p50": 0.5308325874131775,
+              "p95": 0.6476814635073295
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        }
+      ],
+      "pollCount": 0,
+      "notes": [
+        "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support. Louisiana 2026 U.S.Senate general is a plurality contest under current official election guidance; no inherited jungle-primary/runoff rule is applied.",
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim."
+      ]
+    },
+    {
+      "id": "2026:MA:senate:regular",
+      "state": "MA",
+      "seatId": "US-SEN-MA-CLASS-2",
+      "electionLabel": "Regular election",
+      "outcomes": [
+        {
+          "id": "contender:MA:edward-j-markey",
+          "name": "Edward J. Markey",
+          "party": "D",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:MA:edward-j-markey",
+              "name": "Edward J. Markey",
+              "party": "D",
+              "incumbent": true,
+              "sourceUrls": [
+                "https://www.sec.state.ma.us/divisions/elections/research-and-statistics/2026-state-election-candidates.htm",
+                "https://www.sec.state.ma.us/WhereDoIVoteMA/ShowBallot/ViewMyBallot/BallotOut/ST/314/0/2",
+                "https://www.sec.state.ma.us/WhereDoIVoteMA/ShowBallot/ViewMyBallot/BallotOut/ST/314/0/2",
+                "https://www.sec.state.ma.us/divisions/elections/getting-on-the-ballot/how-to-run-as-a-write-in-candidate.htm"
+              ]
+            }
+          ],
+          "winProbability": 1.0,
+          "share": {
+            "mean": 0.6537037289969185,
+            "quantiles": {
+              "p05": 0.6032413891756163,
+              "p50": 0.6545845356705886,
+              "p95": 0.7011044441520997
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        },
+        {
+          "id": "contender:MA:john-deaton",
+          "name": "John Deaton",
+          "party": "R",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:MA:john-deaton",
+              "name": "John Deaton",
+              "party": "R",
+              "incumbent": false,
+              "sourceUrls": [
+                "https://www.sec.state.ma.us/divisions/elections/research-and-statistics/2026-state-election-candidates.htm",
+                "https://www.sec.state.ma.us/WhereDoIVoteMA/ShowBallot/ViewMyBallot/BallotOut/ST/314/0/2",
+                "https://www.sec.state.ma.us/WhereDoIVoteMA/ShowBallot/ViewMyBallot/BallotOut/ST/314/0/2",
+                "https://www.sec.state.ma.us/divisions/elections/getting-on-the-ballot/how-to-run-as-a-write-in-candidate.htm"
+              ]
+            }
+          ],
+          "winProbability": 0.0,
+          "share": {
+            "mean": 0.34629627100308147,
+            "quantiles": {
+              "p05": 0.2988955558479003,
+              "p50": 0.3454154643294114,
+              "p95": 0.3967586108243837
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        }
+      ],
+      "pollCount": 1,
+      "notes": [
+        "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support.",
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim."
+      ]
+    },
+    {
+      "id": "2026:ME:senate:regular",
+      "state": "ME",
+      "seatId": "US-SEN-ME-CLASS-2",
+      "electionLabel": "Regular election",
+      "outcomes": [
+        {
+          "id": "contender:ME:jackson-troy-d",
+          "name": "Jackson, Troy D.",
+          "party": "D",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:ME:jackson-troy-d",
+              "name": "Jackson, Troy D.",
+              "party": "D",
+              "incumbent": false,
+              "sourceUrls": [
+                "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/Sample%201.pdf",
+                "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/2026%20Post%20Primary%20Withdrawals%20%26%20Replacement%20Candidates%20-%20Updated%209.22.26_0.pdf",
+                "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/Nov26%20Declared%20Write%20in%20List.pdf",
+                "https://www.maine.gov/sos/elections-voting/upcoming-elections",
+                "https://www.maine.gov/sos/elections-voting/resources-for-ranked-choice-voting",
+                "https://www.fec.gov/help-candidates-and-committees/dates-and-deadlines/2026-reporting-dates/federal-election-activity-periods-each-state-2026/"
+              ]
+            }
+          ],
+          "winProbability": 0.5718125,
+          "share": {
+            "mean": 0.5049943472384885,
+            "quantiles": {
+              "p05": 0.45818336615918803,
+              "p50": 0.5050574913702652,
+              "p95": 0.5518145033814644
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        },
+        {
+          "id": "contender:ME:collins-susan-m",
+          "name": "Collins, Susan M.",
+          "party": "R",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:ME:collins-susan-m",
+              "name": "Collins, Susan M.",
+              "party": "R",
+              "incumbent": true,
+              "sourceUrls": [
+                "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/Sample%201.pdf",
+                "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/2026%20Post%20Primary%20Withdrawals%20%26%20Replacement%20Candidates%20-%20Updated%209.22.26_0.pdf",
+                "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/Nov26%20Declared%20Write%20in%20List.pdf",
+                "https://www.maine.gov/sos/elections-voting/upcoming-elections",
+                "https://www.maine.gov/sos/elections-voting/resources-for-ranked-choice-voting",
+                "https://www.fec.gov/help-candidates-and-committees/dates-and-deadlines/2026-reporting-dates/federal-election-activity-periods-each-state-2026/"
+              ]
+            }
+          ],
+          "winProbability": 0.42818750000000005,
+          "share": {
+            "mean": 0.49500565276151154,
+            "quantiles": {
+              "p05": 0.4481854966185356,
+              "p50": 0.49494250862973477,
+              "p95": 0.5418166338408119
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        }
+      ],
+      "pollCount": 3,
+      "notes": [
+        "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support. For RCV, transfer/exhaustion rounds are approximated by head-to-head final-preference share; not a first-round share forecast.",
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim."
+      ]
+    },
+    {
+      "id": "2026:MI:senate:regular",
+      "state": "MI",
+      "seatId": "US-SEN-MI-CLASS-2",
+      "electionLabel": "Regular election",
+      "outcomes": [
+        {
+          "id": "contender:MI:abdul-el-sayed",
+          "name": "Abdul El-Sayed",
+          "party": "D",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:MI:abdul-el-sayed",
+              "name": "Abdul El-Sayed",
+              "party": "D",
+              "incumbent": false,
+              "sourceUrls": [
+                "https://www.isabellacounty.org/departments/county-clerk/services/general-election-information/",
+                "https://www.isabellacounty.org/wp-content/uploads/2026/09/Isabella-November-2026-PROOFS-FINAL-APPROVED.pdf"
+              ]
+            }
+          ],
+          "winProbability": 0.679475,
+          "share": {
+            "mean": 0.513597757583517,
+            "quantiles": {
+              "p05": 0.4654309495909795,
+              "p50": 0.5136947763222298,
+              "p95": 0.5614371639758219
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        },
+        {
+          "id": "contender:MI:mike-rogers",
+          "name": "Mike Rogers",
+          "party": "R",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:MI:mike-rogers",
+              "name": "Mike Rogers",
+              "party": "R",
+              "incumbent": false,
+              "sourceUrls": [
+                "https://www.isabellacounty.org/departments/county-clerk/services/general-election-information/",
+                "https://www.isabellacounty.org/wp-content/uploads/2026/09/Isabella-November-2026-PROOFS-FINAL-APPROVED.pdf"
+              ]
+            }
+          ],
+          "winProbability": 0.32052499999999995,
+          "share": {
+            "mean": 0.486402242416483,
+            "quantiles": {
+              "p05": 0.4385628360241781,
+              "p50": 0.4863052236777702,
+              "p95": 0.5345690504090205
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        }
+      ],
+      "pollCount": 4,
+      "notes": [
+        "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support.",
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim."
+      ]
+    },
+    {
+      "id": "2026:MN:senate:regular",
+      "state": "MN",
+      "seatId": "US-SEN-MN-CLASS-2",
+      "electionLabel": "Regular election",
+      "outcomes": [
+        {
+          "id": "contender:MN:peggy-flanagan",
+          "name": "Peggy Flanagan",
+          "party": "D",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:MN:peggy-flanagan",
+              "name": "Peggy Flanagan",
+              "party": "D",
+              "incumbent": false,
+              "sourceUrls": [
+                "https://pollfinder.sos.mn.gov/results?houseNumber=3026&id=107627",
+                "https://sos.mn.gov/election-administration-campaigns/become-a-candidate/filing-for-us-senator/"
+              ]
+            }
+          ],
+          "winProbability": 0.7390125,
+          "share": {
+            "mean": 0.5190807078250227,
+            "quantiles": {
+              "p05": 0.46939284350314636,
+              "p50": 0.519354963776967,
+              "p95": 0.567972892195325
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        },
+        {
+          "id": "contender:MN:michele-tafoya",
+          "name": "Michele Tafoya",
+          "party": "R",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:MN:michele-tafoya",
+              "name": "Michele Tafoya",
+              "party": "R",
+              "incumbent": false,
+              "sourceUrls": [
+                "https://pollfinder.sos.mn.gov/results?houseNumber=3026&id=107627",
+                "https://sos.mn.gov/election-administration-campaigns/become-a-candidate/filing-for-us-senator/"
+              ]
+            }
+          ],
+          "winProbability": 0.26098750000000004,
+          "share": {
+            "mean": 0.4809192921749773,
+            "quantiles": {
+              "p05": 0.432027107804675,
+              "p50": 0.480645036223033,
+              "p95": 0.5306071564968536
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        }
+      ],
+      "pollCount": 2,
+      "notes": [
+        "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support.",
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim."
+      ]
+    },
+    {
+      "id": "2026:MS:senate:regular",
+      "state": "MS",
+      "seatId": "US-SEN-MS-CLASS-2",
+      "electionLabel": "Regular election",
+      "outcomes": [
+        {
+          "id": "contender:MS:scott-colom",
+          "name": "Scott Colom",
+          "party": "D",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:MS:scott-colom",
+              "name": "Scott Colom",
+              "party": "D",
+              "incumbent": false,
+              "sourceUrls": [
+                "https://sos.ms.gov/content/documents/Elections/2026/Sample%20Ballot%209-9-26.pdf",
+                "https://sos.ms.gov/content/CandidateQualifying/default.aspx",
+                "https://www.sos.ms.gov/links/elections/home/tab5/2010CountyElectionHandbook.pdf"
+              ]
+            }
+          ],
+          "winProbability": 0.082525,
+          "share": {
+            "mean": 0.40416191499496074,
+            "quantiles": {
+              "p05": 0.29156057354783943,
+              "p50": 0.40217783457692535,
+              "p95": 0.52352429668781
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        },
+        {
+          "id": "contender:MS:cindy-hyde-smith",
+          "name": "Cindy Hyde-Smith",
+          "party": "R",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:MS:cindy-hyde-smith",
+              "name": "Cindy Hyde-Smith",
+              "party": "R",
+              "incumbent": true,
+              "sourceUrls": [
+                "https://sos.ms.gov/content/documents/Elections/2026/Sample%20Ballot%209-9-26.pdf",
+                "https://sos.ms.gov/content/CandidateQualifying/default.aspx",
+                "https://www.sos.ms.gov/links/elections/home/tab5/2010CountyElectionHandbook.pdf"
+              ]
+            }
+          ],
+          "winProbability": 0.917475,
+          "share": {
+            "mean": 0.5958380850050393,
+            "quantiles": {
+              "p05": 0.47647570331219,
+              "p50": 0.5978221654230746,
+              "p95": 0.7084394264521605
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        }
+      ],
+      "pollCount": 0,
+      "notes": [
+        "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support.",
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim."
+      ]
+    },
+    {
+      "id": "2026:MT:senate:regular",
+      "state": "MT",
+      "seatId": "US-SEN-MT-CLASS-2",
+      "electionLabel": "Regular election",
+      "outcomes": [
+        {
+          "id": "contender:MT:seth-bodnar",
+          "name": "SETH BODNAR",
+          "party": "I",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:MT:seth-bodnar",
+              "name": "SETH BODNAR",
+              "party": "I",
+              "incumbent": false,
+              "sourceUrls": [
+                "https://www.co.sanders.mt.us/DocumentCenter/View/20416",
+                "https://www.co.sanders.mt.us/201/Elections",
+                "https://sosmt.gov/wp-content/uploads/wpfd/preview_files/Information-for-Write-in-Candidates%28898aa9a42b6cf3701792807fbfe3608d%29.pdf",
+                "https://sosmt.gov/elections/montana-ballot-layout-guide/"
+              ]
+            }
+          ],
+          "winProbability": 0.37715,
+          "share": {
+            "mean": 0.489589437545755,
+            "quantiles": {
+              "p05": 0.43446081003773124,
+              "p50": 0.48937769423576233,
+              "p95": 0.54572838728668
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        },
+        {
+          "id": "contender:MT:kurt-alme",
+          "name": "KURT ALME",
+          "party": "R",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:MT:kurt-alme",
+              "name": "KURT ALME",
+              "party": "R",
+              "incumbent": false,
+              "sourceUrls": [
+                "https://www.co.sanders.mt.us/DocumentCenter/View/20416",
+                "https://www.co.sanders.mt.us/201/Elections",
+                "https://sosmt.gov/wp-content/uploads/wpfd/preview_files/Information-for-Write-in-Candidates%28898aa9a42b6cf3701792807fbfe3608d%29.pdf",
+                "https://sosmt.gov/elections/montana-ballot-layout-guide/"
+              ]
+            }
+          ],
+          "winProbability": 0.62285,
+          "share": {
+            "mean": 0.510410562454245,
+            "quantiles": {
+              "p05": 0.45427161271331995,
+              "p50": 0.5106223057642376,
+              "p95": 0.5655391899622688
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        }
+      ],
+      "pollCount": 1,
+      "notes": [
+        "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support.",
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim. Independent opposition remains I. Prior Democratic presidential offset and historical D/R coefficients are borrowed as an unvalidated opposition proxy; no independent-specific advantage is added."
+      ]
+    },
+    {
+      "id": "2026:NC:senate:regular",
+      "state": "NC",
+      "seatId": "US-SEN-NC-CLASS-2",
+      "electionLabel": "Regular election",
+      "outcomes": [
+        {
+          "id": "contender:NC:roy-cooper",
+          "name": "Roy Cooper",
+          "party": "D",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:NC:roy-cooper",
+              "name": "Roy Cooper",
+              "party": "D",
+              "incumbent": false,
+              "sourceUrls": [
+                "https://s3.amazonaws.com/dl.ncsbe.gov/Elections/2026/Candidate%20Filing/2026_general_candidate_list_by_contest_federal_and_state.pdf",
+                "https://www.ncsbe.gov/results-data/candidate-lists",
+                "https://www.ncsbe.gov/candidates/petitions/write-candidate-petitions"
+              ]
+            }
+          ],
+          "winProbability": 0.92265,
+          "share": {
+            "mean": 0.5413158481104636,
+            "quantiles": {
+              "p05": 0.49330996981461595,
+              "p50": 0.5413926182509117,
+              "p95": 0.5888940850912251
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        },
+        {
+          "id": "contender:NC:michael-whatley",
+          "name": "Michael Whatley",
+          "party": "R",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:NC:michael-whatley",
+              "name": "Michael Whatley",
+              "party": "R",
+              "incumbent": false,
+              "sourceUrls": [
+                "https://s3.amazonaws.com/dl.ncsbe.gov/Elections/2026/Candidate%20Filing/2026_general_candidate_list_by_contest_federal_and_state.pdf",
+                "https://www.ncsbe.gov/results-data/candidate-lists",
+                "https://www.ncsbe.gov/candidates/petitions/write-candidate-petitions"
+              ]
+            }
+          ],
+          "winProbability": 0.07735000000000003,
+          "share": {
+            "mean": 0.4586841518895364,
+            "quantiles": {
+              "p05": 0.4111059149087749,
+              "p50": 0.4586073817490883,
+              "p95": 0.506690030185384
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        }
+      ],
+      "pollCount": 3,
+      "notes": [
+        "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support.",
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim."
+      ]
+    },
+    {
+      "id": "2026:NE:senate:regular",
+      "state": "NE",
+      "seatId": "US-SEN-NE-CLASS-2",
+      "electionLabel": "Regular election",
+      "outcomes": [
+        {
+          "id": "contender:NE:dan-osborn",
+          "name": "Dan Osborn",
+          "party": "I",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:NE:dan-osborn",
+              "name": "Dan Osborn",
+              "party": "I",
+              "incumbent": false,
+              "sourceUrls": [
+                "https://sos.nebraska.gov/sites/default/files/doc/elections/2026/Final_Statewide_General_Candidate_Filing_List_9.11.26.pdf",
+                "https://sos.nebraska.gov/sites/default/files/doc/news-releases/Secretary%20of%20State%20certifies%20ballot%20for%202026%20general%20election.pdf",
+                "https://sos.nebraska.gov/elections",
+                "https://sos.nebraska.gov/elections-division"
+              ]
+            }
+          ],
+          "winProbability": 0.1780625,
+          "share": {
+            "mean": 0.470449279201207,
+            "quantiles": {
+              "p05": 0.4184801548011383,
+              "p50": 0.4699765722458359,
+              "p95": 0.5241330407099454
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        },
+        {
+          "id": "contender:NE:pete-ricketts",
+          "name": "Pete Ricketts",
+          "party": "R",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:NE:pete-ricketts",
+              "name": "Pete Ricketts",
+              "party": "R",
+              "incumbent": true,
+              "sourceUrls": [
+                "https://sos.nebraska.gov/sites/default/files/doc/elections/2026/Final_Statewide_General_Candidate_Filing_List_9.11.26.pdf",
+                "https://sos.nebraska.gov/sites/default/files/doc/news-releases/Secretary%20of%20State%20certifies%20ballot%20for%202026%20general%20election.pdf",
+                "https://sos.nebraska.gov/elections",
+                "https://sos.nebraska.gov/elections-division"
+              ]
+            }
+          ],
+          "winProbability": 0.8219375,
+          "share": {
+            "mean": 0.5295507207987931,
+            "quantiles": {
+              "p05": 0.4758669592900546,
+              "p50": 0.5300234277541641,
+              "p95": 0.5815198451988617
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        }
+      ],
+      "pollCount": 2,
+      "notes": [
+        "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support.",
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim. Independent opposition remains I. Prior Democratic presidential offset and historical D/R coefficients are borrowed as an unvalidated opposition proxy; no independent-specific advantage is added."
+      ]
+    },
+    {
+      "id": "2026:NH:senate:regular",
+      "state": "NH",
+      "seatId": "US-SEN-NH-CLASS-2",
+      "electionLabel": "Regular election",
+      "outcomes": [
+        {
+          "id": "contender:NH:chris-pappas",
+          "name": "Chris Pappas",
+          "party": "D",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:NH:chris-pappas",
+              "name": "Chris Pappas",
+              "party": "D",
+              "incumbent": false,
+              "sourceUrls": [
+                "https://newhampshirebulletin.com/voter-guides/contests/2026-general-u-s-senate/"
+              ]
+            }
+          ],
+          "winProbability": 0.909675,
+          "share": {
+            "mean": 0.5414560378129892,
+            "quantiles": {
+              "p05": 0.49058104783417733,
+              "p50": 0.5418817416614937,
+              "p95": 0.591600134183036
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        },
+        {
+          "id": "contender:NH:john-sununu",
+          "name": "John Sununu",
+          "party": "R",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:NH:john-sununu",
+              "name": "John Sununu",
+              "party": "R",
+              "incumbent": false,
+              "sourceUrls": [
+                "https://newhampshirebulletin.com/voter-guides/contests/2026-general-u-s-senate/"
+              ]
+            }
+          ],
+          "winProbability": 0.09032499999999999,
+          "share": {
+            "mean": 0.45854396218701077,
+            "quantiles": {
+              "p05": 0.40839986581696397,
+              "p50": 0.4581182583385063,
+              "p95": 0.5094189521658227
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        }
+      ],
+      "pollCount": 2,
+      "notes": [
+        "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support.",
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim."
+      ]
+    },
+    {
+      "id": "2026:NJ:senate:regular",
+      "state": "NJ",
+      "seatId": "US-SEN-NJ-CLASS-2",
+      "electionLabel": "Regular election",
+      "outcomes": [
+        {
+          "id": "contender:NJ:cory-booker",
+          "name": "CORY BOOKER",
+          "party": "D",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:NJ:cory-booker",
+              "name": "CORY BOOKER",
+              "party": "D",
+              "incumbent": true,
+              "sourceUrls": [
+                "https://www.nj.gov/state/elections/assets/pdf/election-results/2026/2026-official-general-candidates-us-senate.pdf",
+                "https://www.nj.gov/state/elections/assets/pdf/election-results/2026/2026-official-general-candidates-us-senate.pdf",
+                "https://www.nj.gov/state/elections/assets/pdf/election-results/2026/2026-certification-of-general-election-nominees_us-senate_us-house.pdf",
+                "https://www.nj.gov/state/elections/election-information-2026.shtml"
+              ]
+            }
+          ],
+          "winProbability": 0.9644375,
+          "share": {
+            "mean": 0.6319034614574673,
+            "quantiles": {
+              "p05": 0.5161661704235846,
+              "p50": 0.6343175849481797,
+              "p95": 0.7401460807834507
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        },
+        {
+          "id": "contender:NJ:justin-murphy",
+          "name": "JUSTIN MURPHY",
+          "party": "R",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:NJ:justin-murphy",
+              "name": "JUSTIN MURPHY",
+              "party": "R",
+              "incumbent": false,
+              "sourceUrls": [
+                "https://www.nj.gov/state/elections/assets/pdf/election-results/2026/2026-official-general-candidates-us-senate.pdf",
+                "https://www.nj.gov/state/elections/assets/pdf/election-results/2026/2026-official-general-candidates-us-senate.pdf",
+                "https://www.nj.gov/state/elections/assets/pdf/election-results/2026/2026-certification-of-general-election-nominees_us-senate_us-house.pdf",
+                "https://www.nj.gov/state/elections/election-information-2026.shtml"
+              ]
+            }
+          ],
+          "winProbability": 0.03556250000000005,
+          "share": {
+            "mean": 0.36809653854253266,
+            "quantiles": {
+              "p05": 0.2598539192165493,
+              "p50": 0.3656824150518203,
+              "p95": 0.4838338295764154
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        }
+      ],
+      "pollCount": 0,
+      "notes": [
+        "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support.",
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim."
+      ]
+    },
+    {
+      "id": "2026:NM:senate:regular",
+      "state": "NM",
+      "seatId": "US-SEN-NM-CLASS-2",
+      "electionLabel": "Regular election",
+      "outcomes": [
+        {
+          "id": "contender:NM:ben-r-lujan",
+          "name": "BEN R LUJAN",
+          "party": "D",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:NM:ben-r-lujan",
+              "name": "BEN R LUJAN",
+              "party": "D",
+              "incumbent": true,
+              "sourceUrls": [
+                "https://co.otero.nm.us/225/Clerk",
+                "https://co.otero.nm.us/DocumentCenter/View/10361"
+              ]
+            }
+          ],
+          "winProbability": 0.9958125,
+          "share": {
+            "mean": 0.5951501605132554,
+            "quantiles": {
+              "p05": 0.538294763146331,
+              "p50": 0.5959990770862216,
+              "p95": 0.649234923170413
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        },
+        {
+          "id": "contender:NM:larry-e-marker",
+          "name": "LARRY E MARKER",
+          "party": "R",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:NM:larry-e-marker",
+              "name": "LARRY E MARKER",
+              "party": "R",
+              "incumbent": false,
+              "sourceUrls": [
+                "https://co.otero.nm.us/225/Clerk",
+                "https://co.otero.nm.us/DocumentCenter/View/10361"
+              ]
+            }
+          ],
+          "winProbability": 0.004187500000000011,
+          "share": {
+            "mean": 0.4048498394867446,
+            "quantiles": {
+              "p05": 0.350765076829587,
+              "p50": 0.4040009229137784,
+              "p95": 0.46170523685366904
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        }
+      ],
+      "pollCount": 1,
+      "notes": [
+        "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support.",
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim."
+      ]
+    },
+    {
+      "id": "2026:OH:senate:special",
+      "state": "OH",
+      "seatId": "US-SEN-OH-CLASS-3",
+      "electionLabel": "Special election",
+      "outcomes": [
+        {
+          "id": "contender:OH:sherrod-brown",
+          "name": "Sherrod Brown",
+          "party": "D",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:OH:sherrod-brown",
+              "name": "Sherrod Brown",
+              "party": "D",
+              "incumbent": false,
+              "sourceUrls": [
+                "https://www.boe.ohio.gov/abmt/oh12/20261103/X001___2_CITY_1.html",
+                "https://www.ohiosos.gov/globalassets/elections/directives/2025/directive-2025-54---writ-of-special-election-for-united-states-senate-election.pdf"
+              ]
+            }
+          ],
+          "winProbability": 0.461625,
+          "share": {
+            "mean": 0.49748711761164305,
+            "quantiles": {
+              "p05": 0.450398133315311,
+              "p50": 0.4972070942688936,
+              "p95": 0.545378565860144
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        },
+        {
+          "id": "contender:OH:jon-husted",
+          "name": "Jon Husted",
+          "party": "R",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:OH:jon-husted",
+              "name": "Jon Husted",
+              "party": "R",
+              "incumbent": true,
+              "sourceUrls": [
+                "https://www.boe.ohio.gov/abmt/oh12/20261103/X001___2_CITY_1.html",
+                "https://www.ohiosos.gov/globalassets/elections/directives/2025/directive-2025-54---writ-of-special-election-for-united-states-senate-election.pdf"
+              ]
+            }
+          ],
+          "winProbability": 0.538375,
+          "share": {
+            "mean": 0.5025128823883569,
+            "quantiles": {
+              "p05": 0.454621434139856,
+              "p50": 0.5027929057311065,
+              "p95": 0.549601866684689
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        }
+      ],
+      "pollCount": 4,
+      "notes": [
+        "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support. Class III unexpired-term special is treated with regular-race discrepancy; this is an unvalidated transfer.",
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim."
+      ]
+    },
+    {
+      "id": "2026:OK:senate:regular",
+      "state": "OK",
+      "seatId": "US-SEN-OK-CLASS-2",
+      "electionLabel": "Regular election",
+      "outcomes": [
+        {
+          "id": "contender:OK:n-kiyla-jasmine-thomas",
+          "name": "N'KIYLA JASMINE THOMAS",
+          "party": "D",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:OK:n-kiyla-jasmine-thomas",
+              "name": "N'KIYLA JASMINE THOMAS",
+              "party": "D",
+              "incumbent": false,
+              "sourceUrls": [
+                "https://hosting.okelections.gov/electionlist.html",
+                "https://hosting.okelections.us/electionlist.html",
+                "https://oklahoma.gov/elections/elections-results/next-election.html"
+              ]
+            }
+          ],
+          "winProbability": 0.1258875,
+          "share": {
+            "mean": 0.42256590462439697,
+            "quantiles": {
+              "p05": 0.30839819344926145,
+              "p50": 0.4207458971045181,
+              "p95": 0.5433238334039416
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        },
+        {
+          "id": "contender:OK:kevin-hern",
+          "name": "KEVIN HERN",
+          "party": "R",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:OK:kevin-hern",
+              "name": "KEVIN HERN",
+              "party": "R",
+              "incumbent": false,
+              "sourceUrls": [
+                "https://hosting.okelections.gov/electionlist.html",
+                "https://hosting.okelections.us/electionlist.html",
+                "https://oklahoma.gov/elections/elections-results/next-election.html"
+              ]
+            }
+          ],
+          "winProbability": 0.8741125,
+          "share": {
+            "mean": 0.577434095375603,
+            "quantiles": {
+              "p05": 0.45667616659605836,
+              "p50": 0.5792541028954818,
+              "p95": 0.6916018065507386
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        }
+      ],
+      "pollCount": 0,
+      "notes": [
+        "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support.",
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim."
+      ]
+    },
+    {
+      "id": "2026:OR:senate:regular",
+      "state": "OR",
+      "seatId": "US-SEN-OR-CLASS-2",
+      "electionLabel": "Regular election",
+      "outcomes": [
+        {
+          "id": "contender:OR:jeff-merkley",
+          "name": "Jeff Merkley",
+          "party": "D",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:OR:jeff-merkley",
+              "name": "Jeff Merkley",
+              "party": "D",
+              "incumbent": true,
+              "sourceUrls": [
+                "https://multco.us/file/2801-1-s-non-en.pdf-2/download",
+                "https://multco.us/file/ballot_content_-_nov._2026/download",
+                "https://multco.us/file/ballot_content_-_nov._2026/download",
+                "https://multco.us/info/sample-ballots-november-2026-general-election",
+                "https://sos.oregon.gov/voting/Pages/current-election.aspx"
+              ]
+            }
+          ],
+          "winProbability": 0.9806125,
+          "share": {
+            "mean": 0.6606182570827185,
+            "quantiles": {
+              "p05": 0.547669111475311,
+              "p50": 0.6640975176753003,
+              "p95": 0.7630172671527966
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        },
+        {
+          "id": "contender:OR:david-brock-smith",
+          "name": "David Brock Smith",
+          "party": "R",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:OR:david-brock-smith",
+              "name": "David Brock Smith",
+              "party": "R",
+              "incumbent": false,
+              "sourceUrls": [
+                "https://multco.us/file/2801-1-s-non-en.pdf-2/download",
+                "https://multco.us/file/ballot_content_-_nov._2026/download",
+                "https://multco.us/file/ballot_content_-_nov._2026/download",
+                "https://multco.us/info/sample-ballots-november-2026-general-election",
+                "https://sos.oregon.gov/voting/Pages/current-election.aspx"
+              ]
+            }
+          ],
+          "winProbability": 0.019387500000000002,
+          "share": {
+            "mean": 0.3393817429172815,
+            "quantiles": {
+              "p05": 0.2369827328472034,
+              "p50": 0.33590248232469966,
+              "p95": 0.45233088852468895
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        }
+      ],
+      "pollCount": 0,
+      "notes": [
+        "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support.",
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim."
+      ]
+    },
+    {
+      "id": "2026:RI:senate:regular",
+      "state": "RI",
+      "seatId": "US-SEN-RI-CLASS-2",
+      "electionLabel": "Regular election",
+      "outcomes": [
+        {
+          "id": "contender:RI:john-francis-reed",
+          "name": "JOHN FRANCIS REED",
+          "party": "D",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:RI:john-francis-reed",
+              "name": "JOHN FRANCIS REED",
+              "party": "D",
+              "incumbent": true,
+              "sourceUrls": [
+                "https://vote.sos.ri.gov/Candidates/CandidateSearchSummary?Election=18144&OfficeType=620"
+              ]
+            }
+          ],
+          "winProbability": 1.0,
+          "share": {
+            "mean": 0.6893083582268755,
+            "quantiles": {
+              "p05": 0.6420904120828663,
+              "p50": 0.6897306652596689,
+              "p95": 0.7346181568163878
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        },
+        {
+          "id": "contender:RI:raymond-t-mckay",
+          "name": "RAYMOND T MCKAY",
+          "party": "R",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:RI:raymond-t-mckay",
+              "name": "RAYMOND T MCKAY",
+              "party": "R",
+              "incumbent": false,
+              "sourceUrls": [
+                "https://vote.sos.ri.gov/Candidates/CandidateSearchSummary?Election=18144&OfficeType=620"
+              ]
+            }
+          ],
+          "winProbability": 0.0,
+          "share": {
+            "mean": 0.31069164177312447,
+            "quantiles": {
+              "p05": 0.26538184318361224,
+              "p50": 0.31026933474033114,
+              "p95": 0.3579095879171337
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        }
+      ],
+      "pollCount": 1,
+      "notes": [
+        "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support.",
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim."
+      ]
+    },
+    {
+      "id": "2026:SC:senate:regular",
+      "state": "SC",
+      "seatId": "US-SEN-SC-CLASS-2",
+      "electionLabel": "Regular election",
+      "outcomes": [
+        {
+          "id": "contender:SC:annie-andrews",
+          "name": "Annie Andrews",
+          "party": "D",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:SC:annie-andrews",
+              "name": "Annie Andrews",
+              "party": "D",
+              "incumbent": false,
+              "sourceUrls": [
+                "https://vrems.scvotes.sc.gov/Candidate/CandidateSearch/",
+                "https://vrems.scvotes.sc.gov/Candidate/CandidateSearch?electionId=22596"
+              ]
+            }
+          ],
+          "winProbability": 0.1415875,
+          "share": {
+            "mean": 0.46563700984484074,
+            "quantiles": {
+              "p05": 0.41392088483841905,
+              "p50": 0.4652000053015236,
+              "p95": 0.5189931931071304
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        },
+        {
+          "id": "contender:SC:darline-graham",
+          "name": "Darline Graham",
+          "party": "R",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:SC:darline-graham",
+              "name": "Darline Graham",
+              "party": "R",
+              "incumbent": true,
+              "sourceUrls": [
+                "https://vrems.scvotes.sc.gov/Candidate/CandidateSearch/",
+                "https://vrems.scvotes.sc.gov/Candidate/CandidateSearch?electionId=22596"
+              ]
+            }
+          ],
+          "winProbability": 0.8584125,
+          "share": {
+            "mean": 0.5343629901551592,
+            "quantiles": {
+              "p05": 0.48100680689286957,
+              "p50": 0.5347999946984764,
+              "p95": 0.586079115161581
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        }
+      ],
+      "pollCount": 1,
+      "notes": [
+        "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support.",
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim."
+      ]
+    },
+    {
+      "id": "2026:SD:senate:regular",
+      "state": "SD",
+      "seatId": "US-SEN-SD-CLASS-2",
+      "electionLabel": "Regular election",
+      "outcomes": [
+        {
+          "id": "contender:SD:brian-l-bengs",
+          "name": "Brian L Bengs",
+          "party": "I",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:SD:brian-l-bengs",
+              "name": "Brian L Bengs",
+              "party": "I",
+              "incumbent": false,
+              "sourceUrls": [
+                "https://vip.sdsos.gov/candidatelist.aspx?eid=774",
+                "https://www.sdsos.gov/elections-voting/upcoming-elections/general-information/2026%20Election%20Information/2026-offices-to-be-filled.aspx"
+              ]
+            }
+          ],
+          "winProbability": 0.047525,
+          "share": {
+            "mean": 0.38025541387994627,
+            "quantiles": {
+              "p05": 0.27159753823125365,
+              "p50": 0.3774858115917328,
+              "p95": 0.49753299791223343
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        },
+        {
+          "id": "contender:SD:mike-rounds",
+          "name": "Mike Rounds",
+          "party": "R",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:SD:mike-rounds",
+              "name": "Mike Rounds",
+              "party": "R",
+              "incumbent": true,
+              "sourceUrls": [
+                "https://vip.sdsos.gov/candidatelist.aspx?eid=774",
+                "https://www.sdsos.gov/elections-voting/upcoming-elections/general-information/2026%20Election%20Information/2026-offices-to-be-filled.aspx"
+              ]
+            }
+          ],
+          "winProbability": 0.952475,
+          "share": {
+            "mean": 0.6197445861200537,
+            "quantiles": {
+              "p05": 0.5024670020877666,
+              "p50": 0.6225141884082672,
+              "p95": 0.7284024617687463
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        }
+      ],
+      "pollCount": 0,
+      "notes": [
+        "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support.",
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim. Independent opposition remains I. Prior Democratic presidential offset and historical D/R coefficients are borrowed as an unvalidated opposition proxy; no independent-specific advantage is added."
+      ]
+    },
+    {
+      "id": "2026:TN:senate:regular",
+      "state": "TN",
+      "seatId": "US-SEN-TN-CLASS-2",
+      "electionLabel": "Regular election",
+      "outcomes": [
+        {
+          "id": "contender:TN:marquita-bradshaw",
+          "name": "Marquita Bradshaw",
+          "party": "D",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:TN:marquita-bradshaw",
+              "name": "Marquita Bradshaw",
+              "party": "D",
+              "incumbent": false,
+              "sourceUrls": [
+                "https://www.nashville.gov/sites/default/files/2026-09/Sample_Ballot_November_3_2026_State_Fed_Gen_Mun_Elections.pdf?ct=1790110765",
+                "https://www.nashville.gov/departments/elections/voters/sample-ballots",
+                "https://williamsoncounty-tn.gov/2136/Candidate-FAQ",
+                "https://sos.tn.gov/elections/services/2026-election-information"
+              ]
+            }
+          ],
+          "winProbability": 0.00015,
+          "share": {
+            "mean": 0.36328217168324056,
+            "quantiles": {
+              "p05": 0.3062442347180467,
+              "p50": 0.3626517937136011,
+              "p95": 0.42228669697755933
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        },
+        {
+          "id": "contender:TN:bill-hagerty",
+          "name": "Bill Hagerty",
+          "party": "R",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:TN:bill-hagerty",
+              "name": "Bill Hagerty",
+              "party": "R",
+              "incumbent": true,
+              "sourceUrls": [
+                "https://www.nashville.gov/sites/default/files/2026-09/Sample_Ballot_November_3_2026_State_Fed_Gen_Mun_Elections.pdf?ct=1790110765",
+                "https://www.nashville.gov/departments/elections/voters/sample-ballots",
+                "https://williamsoncounty-tn.gov/2136/Candidate-FAQ",
+                "https://sos.tn.gov/elections/services/2026-election-information"
+              ]
+            }
+          ],
+          "winProbability": 0.99985,
+          "share": {
+            "mean": 0.6367178283167594,
+            "quantiles": {
+              "p05": 0.5777133030224406,
+              "p50": 0.6373482062863989,
+              "p95": 0.6937557652819533
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        }
+      ],
+      "pollCount": 1,
+      "notes": [
+        "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support.",
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim."
+      ]
+    },
+    {
+      "id": "2026:TX:senate:regular",
+      "state": "TX",
+      "seatId": "US-SEN-TX-CLASS-2",
+      "electionLabel": "Regular election",
+      "outcomes": [
+        {
+          "id": "contender:TX:james-talarico",
+          "name": "JAMES TALARICO",
+          "party": "D",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:TX:james-talarico",
+              "name": "JAMES TALARICO",
+              "party": "D",
+              "incumbent": false,
+              "sourceUrls": [
+                "https://www.sos.state.tx.us/elections/forms/2026-ballot-cert.pdf",
+                "https://www.sos.texas.gov/elections/forms/2026-write-In-ballot-cert.pdf",
+                "https://www.sos.texas.gov/elections/forms/proclamation-general-election-2026.pdf",
+                "https://statutes.capitol.texas.gov/GetStatute.aspx?Code=EL&Value=2",
+                "https://statutes.capitol.texas.gov/Docs/EL/pdf/EL.146.pdf"
+              ]
+            }
+          ],
+          "winProbability": 0.4994875,
+          "share": {
+            "mean": 0.500063581118137,
+            "quantiles": {
+              "p05": 0.45491884013728545,
+              "p50": 0.4999726646938089,
+              "p95": 0.5453052088750717
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        },
+        {
+          "id": "contender:TX:ken-paxton",
+          "name": "KEN PAXTON",
+          "party": "R",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:TX:ken-paxton",
+              "name": "KEN PAXTON",
+              "party": "R",
+              "incumbent": false,
+              "sourceUrls": [
+                "https://www.sos.state.tx.us/elections/forms/2026-ballot-cert.pdf",
+                "https://www.sos.texas.gov/elections/forms/2026-write-In-ballot-cert.pdf",
+                "https://www.sos.texas.gov/elections/forms/proclamation-general-election-2026.pdf",
+                "https://statutes.capitol.texas.gov/GetStatute.aspx?Code=EL&Value=2",
+                "https://statutes.capitol.texas.gov/Docs/EL/pdf/EL.146.pdf"
+              ]
+            }
+          ],
+          "winProbability": 0.5005125,
+          "share": {
+            "mean": 0.499936418881863,
+            "quantiles": {
+              "p05": 0.4546947911249283,
+              "p50": 0.500027335306191,
+              "p95": 0.5450811598627145
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        }
+      ],
+      "pollCount": 6,
+      "notes": [
+        "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support.",
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim."
+      ]
+    },
+    {
+      "id": "2026:VA:senate:regular",
+      "state": "VA",
+      "seatId": "US-SEN-VA-CLASS-2",
+      "electionLabel": "Regular election",
+      "outcomes": [
+        {
+          "id": "contender:VA:mark-r-warner",
+          "name": "Mark R. Warner",
+          "party": "D",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:VA:mark-r-warner",
+              "name": "Mark R. Warner",
+              "party": "D",
+              "incumbent": true,
+              "sourceUrls": [
+                "https://www.elections.virginia.gov/casting-a-ballot/candidate-list/november-3-2026-gen-elect-federal-offices/",
+                "https://www.elections.virginia.gov/casting-a-ballot/candidate-list/",
+                "https://law.lis.virginia.gov/vacode/title24.2/chapter6/section24.2-644/"
+              ]
+            }
+          ],
+          "winProbability": 0.9649625,
+          "share": {
+            "mean": 0.6320534459029049,
+            "quantiles": {
+              "p05": 0.5165918412773185,
+              "p50": 0.634685376508425,
+              "p95": 0.739474299548445
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        },
+        {
+          "id": "contender:VA:bert-mizusawa",
+          "name": "Bert Mizusawa",
+          "party": "R",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:VA:bert-mizusawa",
+              "name": "Bert Mizusawa",
+              "party": "R",
+              "incumbent": false,
+              "sourceUrls": [
+                "https://www.elections.virginia.gov/casting-a-ballot/candidate-list/november-3-2026-gen-elect-federal-offices/",
+                "https://www.elections.virginia.gov/casting-a-ballot/candidate-list/",
+                "https://law.lis.virginia.gov/vacode/title24.2/chapter6/section24.2-644/"
+              ]
+            }
+          ],
+          "winProbability": 0.035037500000000055,
+          "share": {
+            "mean": 0.3679465540970951,
+            "quantiles": {
+              "p05": 0.260525700451555,
+              "p50": 0.36531462349157495,
+              "p95": 0.4834081587226815
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        }
+      ],
+      "pollCount": 0,
+      "notes": [
+        "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support.",
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim."
+      ]
+    },
+    {
+      "id": "2026:WV:senate:regular",
+      "state": "WV",
+      "seatId": "US-SEN-WV-CLASS-2",
+      "electionLabel": "Regular election",
+      "outcomes": [
+        {
+          "id": "contender:WV:rachel-fetty-anderson",
+          "name": "RACHEL FETTY ANDERSON",
+          "party": "D",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:WV:rachel-fetty-anderson",
+              "name": "RACHEL FETTY ANDERSON",
+              "party": "D",
+              "incumbent": false,
+              "sourceUrls": [
+                "https://apps.sos.wv.gov/elections/SampleBallots/Home/GetBallot?County=Barbour",
+                "https://sos.wv.gov/govotewv",
+                "https://candidates.wvsos.gov/",
+                "https://apps.sos.wv.gov/elections/SampleBallots",
+                "https://sos.wv.gov/elections/election-information/write-candidate-information"
+              ]
+            }
+          ],
+          "winProbability": 0.0159375,
+          "share": {
+            "mean": 0.3322747624639581,
+            "quantiles": {
+              "p05": 0.2314285068466539,
+              "p50": 0.32880899170682687,
+              "p95": 0.44425418952879053
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        },
+        {
+          "id": "contender:WV:shelley-moore-capito",
+          "name": "SHELLEY MOORE CAPITO",
+          "party": "R",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:WV:shelley-moore-capito",
+              "name": "SHELLEY MOORE CAPITO",
+              "party": "R",
+              "incumbent": true,
+              "sourceUrls": [
+                "https://apps.sos.wv.gov/elections/SampleBallots/Home/GetBallot?County=Barbour",
+                "https://sos.wv.gov/govotewv",
+                "https://candidates.wvsos.gov/",
+                "https://apps.sos.wv.gov/elections/SampleBallots",
+                "https://sos.wv.gov/elections/election-information/write-candidate-information"
+              ]
+            }
+          ],
+          "winProbability": 0.9840625,
+          "share": {
+            "mean": 0.6677252375360418,
+            "quantiles": {
+              "p05": 0.5557458104712094,
+              "p50": 0.6711910082931731,
+              "p95": 0.768571493153346
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        }
+      ],
+      "pollCount": 0,
+      "notes": [
+        "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support.",
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim."
+      ]
+    },
+    {
+      "id": "2026:WY:senate:regular",
+      "state": "WY",
+      "seatId": "US-SEN-WY-CLASS-2",
+      "electionLabel": "Regular election",
+      "outcomes": [
+        {
+          "id": "contender:WY:james-byrd",
+          "name": "James Byrd",
+          "party": "D",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:WY:james-byrd",
+              "name": "James Byrd",
+              "party": "D",
+              "incumbent": false,
+              "sourceUrls": [
+                "https://sos.wyo.gov/Elections/Docs/2026/2026_WY_General_Election_Candidates.pdf",
+                "https://sos.wyo.gov/elections/default.aspx",
+                "https://sos.wyo.gov/forms/Publications/ElectionCode_8.5x11.pdf"
+              ]
+            }
+          ],
+          "winProbability": 0.0424875,
+          "share": {
+            "mean": 0.3744814787818352,
+            "quantiles": {
+              "p05": 0.26587273807641026,
+              "p50": 0.37156292484273956,
+              "p95": 0.4920881193937255
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        },
+        {
+          "id": "contender:WY:harriet-hageman",
+          "name": "Harriet Hageman",
+          "party": "R",
+          "kind": "candidate",
+          "members": [
+            {
+              "id": "contender:WY:harriet-hageman",
+              "name": "Harriet Hageman",
+              "party": "R",
+              "incumbent": false,
+              "sourceUrls": [
+                "https://sos.wyo.gov/Elections/Docs/2026/2026_WY_General_Election_Candidates.pdf",
+                "https://sos.wyo.gov/elections/default.aspx",
+                "https://sos.wyo.gov/forms/Publications/ElectionCode_8.5x11.pdf"
+              ]
+            }
+          ],
+          "winProbability": 0.9575125,
+          "share": {
+            "mean": 0.6255185212181649,
+            "quantiles": {
+              "p05": 0.5079118806062746,
+              "p50": 0.6284370751572604,
+              "p95": 0.7341272619235897
+            },
+            "denominator": "Share of votes for the two named principal contenders"
+          }
+        }
+      ],
+      "pollCount": 0,
+      "notes": [
+        "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support.",
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim."
+      ]
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "campaign_pledge_unaligned",
+      "label": "Independents unaligned",
+      "description": "Existing King and Sanders remain in Democratic caucus; all four modeled independent opposition contenders unassigned, matching stated campaign pledges without treating pledges as certain future conduct.",
+      "thresholds": {
+        "D": 51,
+        "R": 50
+      },
+      "retainedSeats": {
+        "D": 34,
+        "R": 31,
+        "U": 0
+      },
+      "control": {
+        "description": "Existing King and Sanders remain in Democratic caucus; all four modeled independent opposition contenders unassigned, matching stated campaign pledges without treating pledges as certain future conduct.",
+        "democraticMajorityProbability": 0.527775,
+        "republicanMajorityProbability": 0.3602125,
+        "unresolvedOrganizingProbability": 0.1120125
+      },
+      "seats": {
+        "D": {
+          "expectedSeats": 50.7264875,
+          "seatQuantiles": {
+            "p05": 46.0,
+            "p50": 51.0,
+            "p95": 55.0
+          },
+          "pmf": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.25e-05,
+            0.0003,
+            0.0014,
+            0.005025,
+            0.0157,
+            0.035,
+            0.06245,
+            0.0928625,
+            0.1225125,
+            0.1369625,
+            0.1379,
+            0.1265875,
+            0.1045625,
+            0.073525,
+            0.0467625,
+            0.0242125,
+            0.0099375,
+            0.00325,
+            0.0008625,
+            0.0001625,
+            1.25e-05,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "R": {
+          "expectedSeats": 48.262025,
+          "seatQuantiles": {
+            "p05": 43.0,
+            "p50": 48.0,
+            "p95": 53.0
+          },
+          "pmf": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0001,
+            0.000425,
+            0.00145,
+            0.0039125,
+            0.0100125,
+            0.0203,
+            0.0333375,
+            0.05245,
+            0.0742625,
+            0.0944375,
+            0.1095375,
+            0.1176375,
+            0.121925,
+            0.1111,
+            0.0923625,
+            0.068775,
+            0.046025,
+            0.0255125,
+            0.0113375,
+            0.003725,
+            0.0011375,
+            0.000225,
+            1.25e-05,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "U": {
+          "expectedSeats": 1.0114875,
+          "seatQuantiles": {
+            "p05": 0.0,
+            "p50": 1.0,
+            "p95": 3.0
+          },
+          "pmf": [
+            0.32395,
+            0.400275,
+            0.2190125,
+            0.0538625,
+            0.0029,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      }
+    },
+    {
+      "id": "independent_opposition_caucuses_D",
+      "label": "Independents caucus with Democrats",
+      "description": "Counterfactual: all four modeled independent opposition contenders join Democratic caucus; King and Sanders remain there.",
+      "thresholds": {
+        "D": 51,
+        "R": 50
+      },
+      "retainedSeats": {
+        "D": 34,
+        "R": 31,
+        "U": 0
+      },
+      "control": {
+        "description": "Counterfactual: all four modeled independent opposition contenders join Democratic caucus; King and Sanders remain there.",
+        "democraticMajorityProbability": 0.6397875,
+        "republicanMajorityProbability": 0.3602125,
+        "unresolvedOrganizingProbability": 0.0
+      },
+      "seats": {
+        "D": {
+          "expectedSeats": 51.737975,
+          "seatQuantiles": {
+            "p05": 47.0,
+            "p50": 52.0,
+            "p95": 57.0
+          },
+          "pmf": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.25e-05,
+            0.000225,
+            0.0011375,
+            0.003725,
+            0.0113375,
+            0.0255125,
+            0.046025,
+            0.068775,
+            0.0923625,
+            0.1111,
+            0.121925,
+            0.1176375,
+            0.1095375,
+            0.0944375,
+            0.0742625,
+            0.05245,
+            0.0333375,
+            0.0203,
+            0.0100125,
+            0.0039125,
+            0.00145,
+            0.000425,
+            0.0001,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "R": {
+          "expectedSeats": 48.262025,
+          "seatQuantiles": {
+            "p05": 43.0,
+            "p50": 48.0,
+            "p95": 53.0
+          },
+          "pmf": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0001,
+            0.000425,
+            0.00145,
+            0.0039125,
+            0.0100125,
+            0.0203,
+            0.0333375,
+            0.05245,
+            0.0742625,
+            0.0944375,
+            0.1095375,
+            0.1176375,
+            0.121925,
+            0.1111,
+            0.0923625,
+            0.068775,
+            0.046025,
+            0.0255125,
+            0.0113375,
+            0.003725,
+            0.0011375,
+            0.000225,
+            1.25e-05,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "U": {
+          "expectedSeats": 0.0,
+          "seatQuantiles": {
+            "p05": 0.0,
+            "p50": 0.0,
+            "p95": 0.0
+          },
+          "pmf": [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      }
+    },
+    {
+      "id": "independent_opposition_caucuses_R",
+      "label": "Independents caucus with Republicans",
+      "description": "Counterfactual: all four modeled independent opposition contenders join Republican caucus; King and Sanders remain Democratic.",
+      "thresholds": {
+        "D": 51,
+        "R": 50
+      },
+      "retainedSeats": {
+        "D": 34,
+        "R": 31,
+        "U": 0
+      },
+      "control": {
+        "description": "Counterfactual: all four modeled independent opposition contenders join Republican caucus; King and Sanders remain Democratic.",
+        "democraticMajorityProbability": 0.527775,
+        "republicanMajorityProbability": 0.472225,
+        "unresolvedOrganizingProbability": 0.0
+      },
+      "seats": {
+        "D": {
+          "expectedSeats": 50.7264875,
+          "seatQuantiles": {
+            "p05": 46.0,
+            "p50": 51.0,
+            "p95": 55.0
+          },
+          "pmf": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.25e-05,
+            0.0003,
+            0.0014,
+            0.005025,
+            0.0157,
+            0.035,
+            0.06245,
+            0.0928625,
+            0.1225125,
+            0.1369625,
+            0.1379,
+            0.1265875,
+            0.1045625,
+            0.073525,
+            0.0467625,
+            0.0242125,
+            0.0099375,
+            0.00325,
+            0.0008625,
+            0.0001625,
+            1.25e-05,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "R": {
+          "expectedSeats": 49.2735125,
+          "seatQuantiles": {
+            "p05": 45.0,
+            "p50": 49.0,
+            "p95": 54.0
+          },
+          "pmf": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.25e-05,
+            0.0001625,
+            0.0008625,
+            0.00325,
+            0.0099375,
+            0.0242125,
+            0.0467625,
+            0.073525,
+            0.1045625,
+            0.1265875,
+            0.1379,
+            0.1369625,
+            0.1225125,
+            0.0928625,
+            0.06245,
+            0.035,
+            0.0157,
+            0.005025,
+            0.0014,
+            0.0003,
+            1.25e-05,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "U": {
+          "expectedSeats": 0.0,
+          "seatQuantiles": {
+            "p05": 0.0,
+            "p50": 0.0,
+            "p95": 0.0
+          },
+          "pmf": [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      }
+    }
+  ],
+  "defaultScenarioId": "campaign_pledge_unaligned",
+  "tipping": {
+    "simulationCount": 80000,
+    "raceOrder": [
+      "2026:RI:senate:regular",
+      "2026:DE:senate:regular",
+      "2026:OR:senate:regular",
+      "2026:MA:senate:regular",
+      "2026:CO:senate:regular",
+      "2026:VA:senate:regular",
+      "2026:NJ:senate:regular",
+      "2026:NM:senate:regular",
+      "2026:IL:senate:regular",
+      "2026:GA:senate:regular",
+      "2026:NH:senate:regular",
+      "2026:NC:senate:regular",
+      "2026:MN:senate:regular",
+      "2026:MI:senate:regular",
+      "2026:ME:senate:regular",
+      "2026:TX:senate:regular",
+      "2026:OH:senate:special",
+      "2026:IA:senate:regular",
+      "2026:AK:senate:regular",
+      "2026:ID:senate:regular",
+      "2026:MT:senate:regular",
+      "2026:KS:senate:regular",
+      "2026:NE:senate:regular",
+      "2026:LA:senate:regular",
+      "2026:SC:senate:regular",
+      "2026:FL:senate:special",
+      "2026:KY:senate:regular",
+      "2026:AR:senate:regular",
+      "2026:OK:senate:regular",
+      "2026:MS:senate:regular",
+      "2026:AL:senate:regular",
+      "2026:SD:senate:regular",
+      "2026:WY:senate:regular",
+      "2026:TN:senate:regular",
+      "2026:WV:senate:regular"
+    ],
+    "scenarios": {
+      "campaign_pledge_unaligned": {
+        "D": {
+          "thresholdSeats": 51,
+          "retainedSeats": 34,
+          "guaranteedRaceIds": [],
+          "eligibleRaceIds": [
+            "2026:AK:senate:regular",
+            "2026:AL:senate:regular",
+            "2026:AR:senate:regular",
+            "2026:CO:senate:regular",
+            "2026:DE:senate:regular",
+            "2026:FL:senate:special",
+            "2026:GA:senate:regular",
+            "2026:IA:senate:regular",
+            "2026:IL:senate:regular",
+            "2026:KS:senate:regular",
+            "2026:KY:senate:regular",
+            "2026:LA:senate:regular",
+            "2026:MA:senate:regular",
+            "2026:ME:senate:regular",
+            "2026:MI:senate:regular",
+            "2026:MN:senate:regular",
+            "2026:MS:senate:regular",
+            "2026:NC:senate:regular",
+            "2026:NH:senate:regular",
+            "2026:NJ:senate:regular",
+            "2026:NM:senate:regular",
+            "2026:OH:senate:special",
+            "2026:OK:senate:regular",
+            "2026:OR:senate:regular",
+            "2026:RI:senate:regular",
+            "2026:SC:senate:regular",
+            "2026:TN:senate:regular",
+            "2026:TX:senate:regular",
+            "2026:VA:senate:regular",
+            "2026:WV:senate:regular",
+            "2026:WY:senate:regular"
+          ],
+          "eligibleCandidateByRace": {
+            "2026:AK:senate:regular": "contender:AK:peltola-mary",
+            "2026:AL:senate:regular": "contender:AL:everett-wess",
+            "2026:AR:senate:regular": "contender:AR:hallie-shoffner",
+            "2026:CO:senate:regular": "contender:CO:john-hickenlooper",
+            "2026:DE:senate:regular": "contender:DE:chris-coons",
+            "2026:FL:senate:special": "contender:FL:angie-nixon",
+            "2026:GA:senate:regular": "contender:GA:jon-ossoff",
+            "2026:IA:senate:regular": "contender:IA:josh-turek",
+            "2026:IL:senate:regular": "contender:IL:juliana-stratton",
+            "2026:KS:senate:regular": "contender:KS:adam-hamilton",
+            "2026:KY:senate:regular": "contender:KY:charles-booker",
+            "2026:LA:senate:regular": "contender:LA:jamie-davis",
+            "2026:MA:senate:regular": "contender:MA:edward-j-markey",
+            "2026:ME:senate:regular": "contender:ME:jackson-troy-d",
+            "2026:MI:senate:regular": "contender:MI:abdul-el-sayed",
+            "2026:MN:senate:regular": "contender:MN:peggy-flanagan",
+            "2026:MS:senate:regular": "contender:MS:scott-colom",
+            "2026:NC:senate:regular": "contender:NC:roy-cooper",
+            "2026:NH:senate:regular": "contender:NH:chris-pappas",
+            "2026:NJ:senate:regular": "contender:NJ:cory-booker",
+            "2026:NM:senate:regular": "contender:NM:ben-r-lujan",
+            "2026:OH:senate:special": "contender:OH:sherrod-brown",
+            "2026:OK:senate:regular": "contender:OK:n-kiyla-jasmine-thomas",
+            "2026:OR:senate:regular": "contender:OR:jeff-merkley",
+            "2026:RI:senate:regular": "contender:RI:john-francis-reed",
+            "2026:SC:senate:regular": "contender:SC:annie-andrews",
+            "2026:TN:senate:regular": "contender:TN:marquita-bradshaw",
+            "2026:TX:senate:regular": "contender:TX:james-talarico",
+            "2026:VA:senate:regular": "contender:VA:mark-r-warner",
+            "2026:WV:senate:regular": "contender:WV:rachel-fetty-anderson",
+            "2026:WY:senate:regular": "contender:WY:james-byrd"
+          },
+          "requiredContestedWins": 17,
+          "status": "reachable",
+          "statusReason": null,
+          "projectedTippingRaceId": "2026:OH:senate:special",
+          "projectedMarginPp": -0.5025764776713904,
+          "frequencyByRace": {
+            "2026:AK:senate:regular": 0.081,
+            "2026:AL:senate:regular": 0.000175,
+            "2026:AR:senate:regular": 0.0050625,
+            "2026:CO:senate:regular": 0.003275,
+            "2026:DE:senate:regular": 0.0021125,
+            "2026:FL:senate:special": 0.022725,
+            "2026:GA:senate:regular": 0.017375,
+            "2026:IA:senate:regular": 0.1044625,
+            "2026:ID:senate:regular": 0.0,
+            "2026:IL:senate:regular": 0.0065125,
+            "2026:KS:senate:regular": 0.083725,
+            "2026:KY:senate:regular": 0.0214125,
+            "2026:LA:senate:regular": 0.035225,
+            "2026:MA:senate:regular": 0.0,
+            "2026:ME:senate:regular": 0.103525,
+            "2026:MI:senate:regular": 0.086925,
+            "2026:MN:senate:regular": 0.0749,
+            "2026:MS:senate:regular": 0.0097,
+            "2026:MT:senate:regular": 0.0,
+            "2026:NC:senate:regular": 0.0276,
+            "2026:NE:senate:regular": 0.0,
+            "2026:NH:senate:regular": 0.0300625,
+            "2026:NJ:senate:regular": 0.0044,
+            "2026:NM:senate:regular": 0.0013625,
+            "2026:OH:senate:special": 0.1009625,
+            "2026:OK:senate:regular": 0.0152875,
+            "2026:OR:senate:regular": 0.002225,
+            "2026:RI:senate:regular": 0.0,
+            "2026:SC:senate:regular": 0.037775,
+            "2026:SD:senate:regular": 0.0,
+            "2026:TN:senate:regular": 3.75e-05,
+            "2026:TX:senate:regular": 0.1106625,
+            "2026:VA:senate:regular": 0.0045625,
+            "2026:WV:senate:regular": 0.00175,
+            "2026:WY:senate:regular": 0.0052
+          }
+        },
+        "R": {
+          "thresholdSeats": 50,
+          "retainedSeats": 31,
+          "guaranteedRaceIds": [],
+          "eligibleRaceIds": [
+            "2026:AK:senate:regular",
+            "2026:AL:senate:regular",
+            "2026:AR:senate:regular",
+            "2026:CO:senate:regular",
+            "2026:DE:senate:regular",
+            "2026:FL:senate:special",
+            "2026:GA:senate:regular",
+            "2026:IA:senate:regular",
+            "2026:ID:senate:regular",
+            "2026:IL:senate:regular",
+            "2026:KS:senate:regular",
+            "2026:KY:senate:regular",
+            "2026:LA:senate:regular",
+            "2026:MA:senate:regular",
+            "2026:ME:senate:regular",
+            "2026:MI:senate:regular",
+            "2026:MN:senate:regular",
+            "2026:MS:senate:regular",
+            "2026:MT:senate:regular",
+            "2026:NC:senate:regular",
+            "2026:NE:senate:regular",
+            "2026:NH:senate:regular",
+            "2026:NJ:senate:regular",
+            "2026:NM:senate:regular",
+            "2026:OH:senate:special",
+            "2026:OK:senate:regular",
+            "2026:OR:senate:regular",
+            "2026:RI:senate:regular",
+            "2026:SC:senate:regular",
+            "2026:SD:senate:regular",
+            "2026:TN:senate:regular",
+            "2026:TX:senate:regular",
+            "2026:VA:senate:regular",
+            "2026:WV:senate:regular",
+            "2026:WY:senate:regular"
+          ],
+          "eligibleCandidateByRace": {
+            "2026:AK:senate:regular": "contender:AK:sullivan-dan-s",
+            "2026:AL:senate:regular": "contender:AL:barry-moore",
+            "2026:AR:senate:regular": "contender:AR:tom-cotton",
+            "2026:CO:senate:regular": "contender:CO:mark-baisley",
+            "2026:DE:senate:regular": "contender:DE:michael-dr-mike-katz",
+            "2026:FL:senate:special": "contender:FL:ashley-moody",
+            "2026:GA:senate:regular": "contender:GA:mike-collins",
+            "2026:IA:senate:regular": "contender:IA:ashley-hinson",
+            "2026:ID:senate:regular": "contender:ID:jim-risch",
+            "2026:IL:senate:regular": "contender:IL:don-tracy",
+            "2026:KS:senate:regular": "contender:KS:roger-marshall",
+            "2026:KY:senate:regular": "contender:KY:andy-barr",
+            "2026:LA:senate:regular": "contender:LA:julia-letlow",
+            "2026:MA:senate:regular": "contender:MA:john-deaton",
+            "2026:ME:senate:regular": "contender:ME:collins-susan-m",
+            "2026:MI:senate:regular": "contender:MI:mike-rogers",
+            "2026:MN:senate:regular": "contender:MN:michele-tafoya",
+            "2026:MS:senate:regular": "contender:MS:cindy-hyde-smith",
+            "2026:MT:senate:regular": "contender:MT:kurt-alme",
+            "2026:NC:senate:regular": "contender:NC:michael-whatley",
+            "2026:NE:senate:regular": "contender:NE:pete-ricketts",
+            "2026:NH:senate:regular": "contender:NH:john-sununu",
+            "2026:NJ:senate:regular": "contender:NJ:justin-murphy",
+            "2026:NM:senate:regular": "contender:NM:larry-e-marker",
+            "2026:OH:senate:special": "contender:OH:jon-husted",
+            "2026:OK:senate:regular": "contender:OK:kevin-hern",
+            "2026:OR:senate:regular": "contender:OR:david-brock-smith",
+            "2026:RI:senate:regular": "contender:RI:raymond-t-mckay",
+            "2026:SC:senate:regular": "contender:SC:darline-graham",
+            "2026:SD:senate:regular": "contender:SD:mike-rounds",
+            "2026:TN:senate:regular": "contender:TN:bill-hagerty",
+            "2026:TX:senate:regular": "contender:TX:ken-paxton",
+            "2026:VA:senate:regular": "contender:VA:bert-mizusawa",
+            "2026:WV:senate:regular": "contender:WV:shelley-moore-capito",
+            "2026:WY:senate:regular": "contender:WY:harriet-hageman"
+          },
+          "requiredContestedWins": 19,
+          "status": "reachable",
+          "statusReason": null,
+          "projectedTippingRaceId": "2026:OH:senate:special",
+          "projectedMarginPp": 0.5025764776714015,
+          "frequencyByRace": {
+            "2026:AK:senate:regular": 0.0656375,
+            "2026:AL:senate:regular": 0.0001125,
+            "2026:AR:senate:regular": 0.0031875,
+            "2026:CO:senate:regular": 0.00275,
+            "2026:DE:senate:regular": 0.00205,
+            "2026:FL:senate:special": 0.014775,
+            "2026:GA:senate:regular": 0.020025,
+            "2026:IA:senate:regular": 0.080675,
+            "2026:ID:senate:regular": 0.0488,
+            "2026:IL:senate:regular": 0.007025,
+            "2026:KS:senate:regular": 0.0628875,
+            "2026:KY:senate:regular": 0.0169625,
+            "2026:LA:senate:regular": 0.0284375,
+            "2026:MA:senate:regular": 0.0,
+            "2026:ME:senate:regular": 0.08955,
+            "2026:MI:senate:regular": 0.0829125,
+            "2026:MN:senate:regular": 0.0725375,
+            "2026:MS:senate:regular": 0.008,
+            "2026:MT:senate:regular": 0.0608,
+            "2026:NC:senate:regular": 0.0322875,
+            "2026:NE:senate:regular": 0.0327125,
+            "2026:NH:senate:regular": 0.0325625,
+            "2026:NJ:senate:regular": 0.00415,
+            "2026:NM:senate:regular": 0.00185,
+            "2026:OH:senate:special": 0.0831375,
+            "2026:OK:senate:regular": 0.0122625,
+            "2026:OR:senate:regular": 0.0020125,
+            "2026:RI:senate:regular": 0.0,
+            "2026:SC:senate:regular": 0.027025,
+            "2026:SD:senate:regular": 0.0045625,
+            "2026:TN:senate:regular": 2.5e-05,
+            "2026:TX:senate:regular": 0.0902875,
+            "2026:VA:senate:regular": 0.0044125,
+            "2026:WV:senate:regular": 0.0013625,
+            "2026:WY:senate:regular": 0.004225
+          }
+        }
+      },
+      "independent_opposition_caucuses_D": {
+        "D": {
+          "thresholdSeats": 51,
+          "retainedSeats": 34,
+          "guaranteedRaceIds": [],
+          "eligibleRaceIds": [
+            "2026:AK:senate:regular",
+            "2026:AL:senate:regular",
+            "2026:AR:senate:regular",
+            "2026:CO:senate:regular",
+            "2026:DE:senate:regular",
+            "2026:FL:senate:special",
+            "2026:GA:senate:regular",
+            "2026:IA:senate:regular",
+            "2026:ID:senate:regular",
+            "2026:IL:senate:regular",
+            "2026:KS:senate:regular",
+            "2026:KY:senate:regular",
+            "2026:LA:senate:regular",
+            "2026:MA:senate:regular",
+            "2026:ME:senate:regular",
+            "2026:MI:senate:regular",
+            "2026:MN:senate:regular",
+            "2026:MS:senate:regular",
+            "2026:MT:senate:regular",
+            "2026:NC:senate:regular",
+            "2026:NE:senate:regular",
+            "2026:NH:senate:regular",
+            "2026:NJ:senate:regular",
+            "2026:NM:senate:regular",
+            "2026:OH:senate:special",
+            "2026:OK:senate:regular",
+            "2026:OR:senate:regular",
+            "2026:RI:senate:regular",
+            "2026:SC:senate:regular",
+            "2026:SD:senate:regular",
+            "2026:TN:senate:regular",
+            "2026:TX:senate:regular",
+            "2026:VA:senate:regular",
+            "2026:WV:senate:regular",
+            "2026:WY:senate:regular"
+          ],
+          "eligibleCandidateByRace": {
+            "2026:AK:senate:regular": "contender:AK:peltola-mary",
+            "2026:AL:senate:regular": "contender:AL:everett-wess",
+            "2026:AR:senate:regular": "contender:AR:hallie-shoffner",
+            "2026:CO:senate:regular": "contender:CO:john-hickenlooper",
+            "2026:DE:senate:regular": "contender:DE:chris-coons",
+            "2026:FL:senate:special": "contender:FL:angie-nixon",
+            "2026:GA:senate:regular": "contender:GA:jon-ossoff",
+            "2026:IA:senate:regular": "contender:IA:josh-turek",
+            "2026:ID:senate:regular": "contender:ID:todd-achilles",
+            "2026:IL:senate:regular": "contender:IL:juliana-stratton",
+            "2026:KS:senate:regular": "contender:KS:adam-hamilton",
+            "2026:KY:senate:regular": "contender:KY:charles-booker",
+            "2026:LA:senate:regular": "contender:LA:jamie-davis",
+            "2026:MA:senate:regular": "contender:MA:edward-j-markey",
+            "2026:ME:senate:regular": "contender:ME:jackson-troy-d",
+            "2026:MI:senate:regular": "contender:MI:abdul-el-sayed",
+            "2026:MN:senate:regular": "contender:MN:peggy-flanagan",
+            "2026:MS:senate:regular": "contender:MS:scott-colom",
+            "2026:MT:senate:regular": "contender:MT:seth-bodnar",
+            "2026:NC:senate:regular": "contender:NC:roy-cooper",
+            "2026:NE:senate:regular": "contender:NE:dan-osborn",
+            "2026:NH:senate:regular": "contender:NH:chris-pappas",
+            "2026:NJ:senate:regular": "contender:NJ:cory-booker",
+            "2026:NM:senate:regular": "contender:NM:ben-r-lujan",
+            "2026:OH:senate:special": "contender:OH:sherrod-brown",
+            "2026:OK:senate:regular": "contender:OK:n-kiyla-jasmine-thomas",
+            "2026:OR:senate:regular": "contender:OR:jeff-merkley",
+            "2026:RI:senate:regular": "contender:RI:john-francis-reed",
+            "2026:SC:senate:regular": "contender:SC:annie-andrews",
+            "2026:SD:senate:regular": "contender:SD:brian-l-bengs",
+            "2026:TN:senate:regular": "contender:TN:marquita-bradshaw",
+            "2026:TX:senate:regular": "contender:TX:james-talarico",
+            "2026:VA:senate:regular": "contender:VA:mark-r-warner",
+            "2026:WV:senate:regular": "contender:WV:rachel-fetty-anderson",
+            "2026:WY:senate:regular": "contender:WY:james-byrd"
+          },
+          "requiredContestedWins": 17,
+          "status": "reachable",
+          "statusReason": null,
+          "projectedTippingRaceId": "2026:OH:senate:special",
+          "projectedMarginPp": -0.5025764776713904,
+          "frequencyByRace": {
+            "2026:AK:senate:regular": 0.0656375,
+            "2026:AL:senate:regular": 0.0001125,
+            "2026:AR:senate:regular": 0.0031875,
+            "2026:CO:senate:regular": 0.00275,
+            "2026:DE:senate:regular": 0.00205,
+            "2026:FL:senate:special": 0.014775,
+            "2026:GA:senate:regular": 0.020025,
+            "2026:IA:senate:regular": 0.080675,
+            "2026:ID:senate:regular": 0.0488,
+            "2026:IL:senate:regular": 0.007025,
+            "2026:KS:senate:regular": 0.0628875,
+            "2026:KY:senate:regular": 0.0169625,
+            "2026:LA:senate:regular": 0.0284375,
+            "2026:MA:senate:regular": 0.0,
+            "2026:ME:senate:regular": 0.08955,
+            "2026:MI:senate:regular": 0.0829125,
+            "2026:MN:senate:regular": 0.0725375,
+            "2026:MS:senate:regular": 0.008,
+            "2026:MT:senate:regular": 0.0608,
+            "2026:NC:senate:regular": 0.0322875,
+            "2026:NE:senate:regular": 0.0327125,
+            "2026:NH:senate:regular": 0.0325625,
+            "2026:NJ:senate:regular": 0.00415,
+            "2026:NM:senate:regular": 0.00185,
+            "2026:OH:senate:special": 0.0831375,
+            "2026:OK:senate:regular": 0.0122625,
+            "2026:OR:senate:regular": 0.0020125,
+            "2026:RI:senate:regular": 0.0,
+            "2026:SC:senate:regular": 0.027025,
+            "2026:SD:senate:regular": 0.0045625,
+            "2026:TN:senate:regular": 2.5e-05,
+            "2026:TX:senate:regular": 0.0902875,
+            "2026:VA:senate:regular": 0.0044125,
+            "2026:WV:senate:regular": 0.0013625,
+            "2026:WY:senate:regular": 0.004225
+          }
+        },
+        "R": {
+          "thresholdSeats": 50,
+          "retainedSeats": 31,
+          "guaranteedRaceIds": [],
+          "eligibleRaceIds": [
+            "2026:AK:senate:regular",
+            "2026:AL:senate:regular",
+            "2026:AR:senate:regular",
+            "2026:CO:senate:regular",
+            "2026:DE:senate:regular",
+            "2026:FL:senate:special",
+            "2026:GA:senate:regular",
+            "2026:IA:senate:regular",
+            "2026:ID:senate:regular",
+            "2026:IL:senate:regular",
+            "2026:KS:senate:regular",
+            "2026:KY:senate:regular",
+            "2026:LA:senate:regular",
+            "2026:MA:senate:regular",
+            "2026:ME:senate:regular",
+            "2026:MI:senate:regular",
+            "2026:MN:senate:regular",
+            "2026:MS:senate:regular",
+            "2026:MT:senate:regular",
+            "2026:NC:senate:regular",
+            "2026:NE:senate:regular",
+            "2026:NH:senate:regular",
+            "2026:NJ:senate:regular",
+            "2026:NM:senate:regular",
+            "2026:OH:senate:special",
+            "2026:OK:senate:regular",
+            "2026:OR:senate:regular",
+            "2026:RI:senate:regular",
+            "2026:SC:senate:regular",
+            "2026:SD:senate:regular",
+            "2026:TN:senate:regular",
+            "2026:TX:senate:regular",
+            "2026:VA:senate:regular",
+            "2026:WV:senate:regular",
+            "2026:WY:senate:regular"
+          ],
+          "eligibleCandidateByRace": {
+            "2026:AK:senate:regular": "contender:AK:sullivan-dan-s",
+            "2026:AL:senate:regular": "contender:AL:barry-moore",
+            "2026:AR:senate:regular": "contender:AR:tom-cotton",
+            "2026:CO:senate:regular": "contender:CO:mark-baisley",
+            "2026:DE:senate:regular": "contender:DE:michael-dr-mike-katz",
+            "2026:FL:senate:special": "contender:FL:ashley-moody",
+            "2026:GA:senate:regular": "contender:GA:mike-collins",
+            "2026:IA:senate:regular": "contender:IA:ashley-hinson",
+            "2026:ID:senate:regular": "contender:ID:jim-risch",
+            "2026:IL:senate:regular": "contender:IL:don-tracy",
+            "2026:KS:senate:regular": "contender:KS:roger-marshall",
+            "2026:KY:senate:regular": "contender:KY:andy-barr",
+            "2026:LA:senate:regular": "contender:LA:julia-letlow",
+            "2026:MA:senate:regular": "contender:MA:john-deaton",
+            "2026:ME:senate:regular": "contender:ME:collins-susan-m",
+            "2026:MI:senate:regular": "contender:MI:mike-rogers",
+            "2026:MN:senate:regular": "contender:MN:michele-tafoya",
+            "2026:MS:senate:regular": "contender:MS:cindy-hyde-smith",
+            "2026:MT:senate:regular": "contender:MT:kurt-alme",
+            "2026:NC:senate:regular": "contender:NC:michael-whatley",
+            "2026:NE:senate:regular": "contender:NE:pete-ricketts",
+            "2026:NH:senate:regular": "contender:NH:john-sununu",
+            "2026:NJ:senate:regular": "contender:NJ:justin-murphy",
+            "2026:NM:senate:regular": "contender:NM:larry-e-marker",
+            "2026:OH:senate:special": "contender:OH:jon-husted",
+            "2026:OK:senate:regular": "contender:OK:kevin-hern",
+            "2026:OR:senate:regular": "contender:OR:david-brock-smith",
+            "2026:RI:senate:regular": "contender:RI:raymond-t-mckay",
+            "2026:SC:senate:regular": "contender:SC:darline-graham",
+            "2026:SD:senate:regular": "contender:SD:mike-rounds",
+            "2026:TN:senate:regular": "contender:TN:bill-hagerty",
+            "2026:TX:senate:regular": "contender:TX:ken-paxton",
+            "2026:VA:senate:regular": "contender:VA:bert-mizusawa",
+            "2026:WV:senate:regular": "contender:WV:shelley-moore-capito",
+            "2026:WY:senate:regular": "contender:WY:harriet-hageman"
+          },
+          "requiredContestedWins": 19,
+          "status": "reachable",
+          "statusReason": null,
+          "projectedTippingRaceId": "2026:OH:senate:special",
+          "projectedMarginPp": 0.5025764776714015,
+          "frequencyByRace": {
+            "2026:AK:senate:regular": 0.0656375,
+            "2026:AL:senate:regular": 0.0001125,
+            "2026:AR:senate:regular": 0.0031875,
+            "2026:CO:senate:regular": 0.00275,
+            "2026:DE:senate:regular": 0.00205,
+            "2026:FL:senate:special": 0.014775,
+            "2026:GA:senate:regular": 0.020025,
+            "2026:IA:senate:regular": 0.080675,
+            "2026:ID:senate:regular": 0.0488,
+            "2026:IL:senate:regular": 0.007025,
+            "2026:KS:senate:regular": 0.0628875,
+            "2026:KY:senate:regular": 0.0169625,
+            "2026:LA:senate:regular": 0.0284375,
+            "2026:MA:senate:regular": 0.0,
+            "2026:ME:senate:regular": 0.08955,
+            "2026:MI:senate:regular": 0.0829125,
+            "2026:MN:senate:regular": 0.0725375,
+            "2026:MS:senate:regular": 0.008,
+            "2026:MT:senate:regular": 0.0608,
+            "2026:NC:senate:regular": 0.0322875,
+            "2026:NE:senate:regular": 0.0327125,
+            "2026:NH:senate:regular": 0.0325625,
+            "2026:NJ:senate:regular": 0.00415,
+            "2026:NM:senate:regular": 0.00185,
+            "2026:OH:senate:special": 0.0831375,
+            "2026:OK:senate:regular": 0.0122625,
+            "2026:OR:senate:regular": 0.0020125,
+            "2026:RI:senate:regular": 0.0,
+            "2026:SC:senate:regular": 0.027025,
+            "2026:SD:senate:regular": 0.0045625,
+            "2026:TN:senate:regular": 2.5e-05,
+            "2026:TX:senate:regular": 0.0902875,
+            "2026:VA:senate:regular": 0.0044125,
+            "2026:WV:senate:regular": 0.0013625,
+            "2026:WY:senate:regular": 0.004225
+          }
+        }
+      },
+      "independent_opposition_caucuses_R": {
+        "D": {
+          "thresholdSeats": 51,
+          "retainedSeats": 34,
+          "guaranteedRaceIds": [],
+          "eligibleRaceIds": [
+            "2026:AK:senate:regular",
+            "2026:AL:senate:regular",
+            "2026:AR:senate:regular",
+            "2026:CO:senate:regular",
+            "2026:DE:senate:regular",
+            "2026:FL:senate:special",
+            "2026:GA:senate:regular",
+            "2026:IA:senate:regular",
+            "2026:IL:senate:regular",
+            "2026:KS:senate:regular",
+            "2026:KY:senate:regular",
+            "2026:LA:senate:regular",
+            "2026:MA:senate:regular",
+            "2026:ME:senate:regular",
+            "2026:MI:senate:regular",
+            "2026:MN:senate:regular",
+            "2026:MS:senate:regular",
+            "2026:NC:senate:regular",
+            "2026:NH:senate:regular",
+            "2026:NJ:senate:regular",
+            "2026:NM:senate:regular",
+            "2026:OH:senate:special",
+            "2026:OK:senate:regular",
+            "2026:OR:senate:regular",
+            "2026:RI:senate:regular",
+            "2026:SC:senate:regular",
+            "2026:TN:senate:regular",
+            "2026:TX:senate:regular",
+            "2026:VA:senate:regular",
+            "2026:WV:senate:regular",
+            "2026:WY:senate:regular"
+          ],
+          "eligibleCandidateByRace": {
+            "2026:AK:senate:regular": "contender:AK:peltola-mary",
+            "2026:AL:senate:regular": "contender:AL:everett-wess",
+            "2026:AR:senate:regular": "contender:AR:hallie-shoffner",
+            "2026:CO:senate:regular": "contender:CO:john-hickenlooper",
+            "2026:DE:senate:regular": "contender:DE:chris-coons",
+            "2026:FL:senate:special": "contender:FL:angie-nixon",
+            "2026:GA:senate:regular": "contender:GA:jon-ossoff",
+            "2026:IA:senate:regular": "contender:IA:josh-turek",
+            "2026:IL:senate:regular": "contender:IL:juliana-stratton",
+            "2026:KS:senate:regular": "contender:KS:adam-hamilton",
+            "2026:KY:senate:regular": "contender:KY:charles-booker",
+            "2026:LA:senate:regular": "contender:LA:jamie-davis",
+            "2026:MA:senate:regular": "contender:MA:edward-j-markey",
+            "2026:ME:senate:regular": "contender:ME:jackson-troy-d",
+            "2026:MI:senate:regular": "contender:MI:abdul-el-sayed",
+            "2026:MN:senate:regular": "contender:MN:peggy-flanagan",
+            "2026:MS:senate:regular": "contender:MS:scott-colom",
+            "2026:NC:senate:regular": "contender:NC:roy-cooper",
+            "2026:NH:senate:regular": "contender:NH:chris-pappas",
+            "2026:NJ:senate:regular": "contender:NJ:cory-booker",
+            "2026:NM:senate:regular": "contender:NM:ben-r-lujan",
+            "2026:OH:senate:special": "contender:OH:sherrod-brown",
+            "2026:OK:senate:regular": "contender:OK:n-kiyla-jasmine-thomas",
+            "2026:OR:senate:regular": "contender:OR:jeff-merkley",
+            "2026:RI:senate:regular": "contender:RI:john-francis-reed",
+            "2026:SC:senate:regular": "contender:SC:annie-andrews",
+            "2026:TN:senate:regular": "contender:TN:marquita-bradshaw",
+            "2026:TX:senate:regular": "contender:TX:james-talarico",
+            "2026:VA:senate:regular": "contender:VA:mark-r-warner",
+            "2026:WV:senate:regular": "contender:WV:rachel-fetty-anderson",
+            "2026:WY:senate:regular": "contender:WY:james-byrd"
+          },
+          "requiredContestedWins": 17,
+          "status": "reachable",
+          "statusReason": null,
+          "projectedTippingRaceId": "2026:OH:senate:special",
+          "projectedMarginPp": -0.5025764776713904,
+          "frequencyByRace": {
+            "2026:AK:senate:regular": 0.081,
+            "2026:AL:senate:regular": 0.000175,
+            "2026:AR:senate:regular": 0.0050625,
+            "2026:CO:senate:regular": 0.003275,
+            "2026:DE:senate:regular": 0.0021125,
+            "2026:FL:senate:special": 0.022725,
+            "2026:GA:senate:regular": 0.017375,
+            "2026:IA:senate:regular": 0.1044625,
+            "2026:ID:senate:regular": 0.0,
+            "2026:IL:senate:regular": 0.0065125,
+            "2026:KS:senate:regular": 0.083725,
+            "2026:KY:senate:regular": 0.0214125,
+            "2026:LA:senate:regular": 0.035225,
+            "2026:MA:senate:regular": 0.0,
+            "2026:ME:senate:regular": 0.103525,
+            "2026:MI:senate:regular": 0.086925,
+            "2026:MN:senate:regular": 0.0749,
+            "2026:MS:senate:regular": 0.0097,
+            "2026:MT:senate:regular": 0.0,
+            "2026:NC:senate:regular": 0.0276,
+            "2026:NE:senate:regular": 0.0,
+            "2026:NH:senate:regular": 0.0300625,
+            "2026:NJ:senate:regular": 0.0044,
+            "2026:NM:senate:regular": 0.0013625,
+            "2026:OH:senate:special": 0.1009625,
+            "2026:OK:senate:regular": 0.0152875,
+            "2026:OR:senate:regular": 0.002225,
+            "2026:RI:senate:regular": 0.0,
+            "2026:SC:senate:regular": 0.037775,
+            "2026:SD:senate:regular": 0.0,
+            "2026:TN:senate:regular": 3.75e-05,
+            "2026:TX:senate:regular": 0.1106625,
+            "2026:VA:senate:regular": 0.0045625,
+            "2026:WV:senate:regular": 0.00175,
+            "2026:WY:senate:regular": 0.0052
+          }
+        },
+        "R": {
+          "thresholdSeats": 50,
+          "retainedSeats": 31,
+          "guaranteedRaceIds": [
+            "2026:ID:senate:regular",
+            "2026:MT:senate:regular",
+            "2026:NE:senate:regular",
+            "2026:SD:senate:regular"
+          ],
+          "eligibleRaceIds": [
+            "2026:AK:senate:regular",
+            "2026:AL:senate:regular",
+            "2026:AR:senate:regular",
+            "2026:CO:senate:regular",
+            "2026:DE:senate:regular",
+            "2026:FL:senate:special",
+            "2026:GA:senate:regular",
+            "2026:IA:senate:regular",
+            "2026:IL:senate:regular",
+            "2026:KS:senate:regular",
+            "2026:KY:senate:regular",
+            "2026:LA:senate:regular",
+            "2026:MA:senate:regular",
+            "2026:ME:senate:regular",
+            "2026:MI:senate:regular",
+            "2026:MN:senate:regular",
+            "2026:MS:senate:regular",
+            "2026:NC:senate:regular",
+            "2026:NH:senate:regular",
+            "2026:NJ:senate:regular",
+            "2026:NM:senate:regular",
+            "2026:OH:senate:special",
+            "2026:OK:senate:regular",
+            "2026:OR:senate:regular",
+            "2026:RI:senate:regular",
+            "2026:SC:senate:regular",
+            "2026:TN:senate:regular",
+            "2026:TX:senate:regular",
+            "2026:VA:senate:regular",
+            "2026:WV:senate:regular",
+            "2026:WY:senate:regular"
+          ],
+          "eligibleCandidateByRace": {
+            "2026:AK:senate:regular": "contender:AK:sullivan-dan-s",
+            "2026:AL:senate:regular": "contender:AL:barry-moore",
+            "2026:AR:senate:regular": "contender:AR:tom-cotton",
+            "2026:CO:senate:regular": "contender:CO:mark-baisley",
+            "2026:DE:senate:regular": "contender:DE:michael-dr-mike-katz",
+            "2026:FL:senate:special": "contender:FL:ashley-moody",
+            "2026:GA:senate:regular": "contender:GA:mike-collins",
+            "2026:IA:senate:regular": "contender:IA:ashley-hinson",
+            "2026:IL:senate:regular": "contender:IL:don-tracy",
+            "2026:KS:senate:regular": "contender:KS:roger-marshall",
+            "2026:KY:senate:regular": "contender:KY:andy-barr",
+            "2026:LA:senate:regular": "contender:LA:julia-letlow",
+            "2026:MA:senate:regular": "contender:MA:john-deaton",
+            "2026:ME:senate:regular": "contender:ME:collins-susan-m",
+            "2026:MI:senate:regular": "contender:MI:mike-rogers",
+            "2026:MN:senate:regular": "contender:MN:michele-tafoya",
+            "2026:MS:senate:regular": "contender:MS:cindy-hyde-smith",
+            "2026:NC:senate:regular": "contender:NC:michael-whatley",
+            "2026:NH:senate:regular": "contender:NH:john-sununu",
+            "2026:NJ:senate:regular": "contender:NJ:justin-murphy",
+            "2026:NM:senate:regular": "contender:NM:larry-e-marker",
+            "2026:OH:senate:special": "contender:OH:jon-husted",
+            "2026:OK:senate:regular": "contender:OK:kevin-hern",
+            "2026:OR:senate:regular": "contender:OR:david-brock-smith",
+            "2026:RI:senate:regular": "contender:RI:raymond-t-mckay",
+            "2026:SC:senate:regular": "contender:SC:darline-graham",
+            "2026:TN:senate:regular": "contender:TN:bill-hagerty",
+            "2026:TX:senate:regular": "contender:TX:ken-paxton",
+            "2026:VA:senate:regular": "contender:VA:bert-mizusawa",
+            "2026:WV:senate:regular": "contender:WV:shelley-moore-capito",
+            "2026:WY:senate:regular": "contender:WY:harriet-hageman"
+          },
+          "requiredContestedWins": 15,
+          "status": "reachable",
+          "statusReason": null,
+          "projectedTippingRaceId": "2026:OH:senate:special",
+          "projectedMarginPp": 0.5025764776714015,
+          "frequencyByRace": {
+            "2026:AK:senate:regular": 0.081,
+            "2026:AL:senate:regular": 0.000175,
+            "2026:AR:senate:regular": 0.0050625,
+            "2026:CO:senate:regular": 0.003275,
+            "2026:DE:senate:regular": 0.0021125,
+            "2026:FL:senate:special": 0.022725,
+            "2026:GA:senate:regular": 0.017375,
+            "2026:IA:senate:regular": 0.1044625,
+            "2026:ID:senate:regular": 0.0,
+            "2026:IL:senate:regular": 0.0065125,
+            "2026:KS:senate:regular": 0.083725,
+            "2026:KY:senate:regular": 0.0214125,
+            "2026:LA:senate:regular": 0.035225,
+            "2026:MA:senate:regular": 0.0,
+            "2026:ME:senate:regular": 0.103525,
+            "2026:MI:senate:regular": 0.086925,
+            "2026:MN:senate:regular": 0.0749,
+            "2026:MS:senate:regular": 0.0097,
+            "2026:MT:senate:regular": 0.0,
+            "2026:NC:senate:regular": 0.0276,
+            "2026:NE:senate:regular": 0.0,
+            "2026:NH:senate:regular": 0.0300625,
+            "2026:NJ:senate:regular": 0.0044,
+            "2026:NM:senate:regular": 0.0013625,
+            "2026:OH:senate:special": 0.1009625,
+            "2026:OK:senate:regular": 0.0152875,
+            "2026:OR:senate:regular": 0.002225,
+            "2026:RI:senate:regular": 0.0,
+            "2026:SC:senate:regular": 0.037775,
+            "2026:SD:senate:regular": 0.0,
+            "2026:TN:senate:regular": 3.75e-05,
+            "2026:TX:senate:regular": 0.1106625,
+            "2026:VA:senate:regular": 0.0045625,
+            "2026:WV:senate:regular": 0.00175,
+            "2026:WY:senate:regular": 0.0052
+          }
+        }
+      }
+    }
+  },
+  "limitations": [
+    "Explicit35-principal-pair approximation with65 fixed non-up holders; preserved rule and omitted-option assumptions.",
+    "Four independent first contenders in ID/MT/NE/SD retain I party labels. D/R-trained candidate and national/context coefficients are borrowed for their opposition-share proxies without empirical transfer qualification.",
+    "This current proxy chamber target is separate from the matched historical ordinary-D/R plus categorical-fallback chamber law.",
+    "Poll likelihood and covariance are the exact saved49-observation fixed empirical comparator; covariance estimation uncertainty is not integrated.",
+    "Additional future draws do not improve the finite historical posterior bank effective sample size.",
+    "No2026 outcome or accuracy claim; historical final-roster proxy and source revision qualifications remain in the panel receipt.",
+    "Frozen nonpoll inputs have2026-10-20T15:21:23Z cutoff; the preserved49-poll batch has its separate saved acquisition cutoff. These timestamps are not collapsed."
+  ],
+  "historicalNote": null,
+  "provenance": {
+    "sources": {
+      "interfaceReceiptSha256": "85f38310f650fc7eb0b18739f36e36a3a7457602cb5e42f328a89f1b58bb1ece",
+      "comparisonIndexSha256": "5509cb76888ca329728c299052d764370fd98551dc65e62e8ffda0723d96a357",
+      "executionSealSha256": "e5b904a2d4cd10cd30d702bd883db99238711a5c441835522b02563a17e8906d",
+      "receiptSha256": "93b975223f7e7a61804ffb1b0859b99a11e76c2a5bd4e0f083c9c9a9a2bfaf94",
+      "planSha256": "740b1c24c38bdcd252b8b77a931c9f58a444efa960718c15ab6fc25c6e347c40",
+      "frozenInputsSha256": "49d175f0c442b911e92710bb8f6d2082bf4ed8fdb675e2c57f306a194266262c",
+      "chamber-draws_npz": "b72dcdffc7517026da7d3f65d20d8ac70844b5eb7af5dc57e1f34f0b6daea5b8",
+      "diagnostics_json": "c6308ef00d42348e3b584eda524ddb0fc2f67a78332d4a4500db868429eb15a6",
+      "forecast_json": "9187620287e9c7282deaa907b565bd4e830babd58f79de425690a6c30843cee5",
+      "joint-draws_npz": "fc10fdffa3d4ac00abca171d6956bfe20290f01d414fb2dbe03413ad445a4ecd",
+      "numerical-gates_json": "b95ce089b2c889951079a2e2618f505f9cab288ad03be7ffb8aa25661026075a",
+      "race-forecast_csv": "0305bc257769a6eb2921411b35660c97ae7d5fee198097efee3fb2cd76c0a2bd",
+      "forecastSha256": "9187620287e9c7282deaa907b565bd4e830babd58f79de425690a6c30843cee5",
+      "jointDrawsSha256": "fc10fdffa3d4ac00abca171d6956bfe20290f01d414fb2dbe03413ad445a4ecd",
+      "chamberDrawsSha256": "b72dcdffc7517026da7d3f65d20d8ac70844b5eb7af5dc57e1f34f0b6daea5b8"
+    }
+  }
+}

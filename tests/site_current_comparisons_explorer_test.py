@@ -41,7 +41,8 @@ class SavedComparisonTests(unittest.TestCase):
             self.assertEqual(len(entry["inputCutoffs"]), 2 if entry["components"]["polling"] == "standard" else 1)
             self.assertEqual(entry["inputCutoffs"][0]["at"], "2026-10-20T15:21:23Z")
             if len(entry["inputCutoffs"]) == 2:
-                self.assertEqual(entry["inputCutoffs"][1]["at"], "2026-10-20T16:21:44Z")
+                self.assertEqual(entry["inputCutoffs"][1]["at"], "2026-10-26T15:03:57.212405+00:00")
+                self.assertEqual(entry["dateId"], "2026-10-26")
             self.assertEqual(
                 [r["state"] for r in bundle["races"] if r["outcomes"][0]["party"] == "I"], ["ID", "MT", "NE", "SD"]
             )
@@ -91,13 +92,15 @@ class SavedComparisonTests(unittest.TestCase):
                     adapter.build_one(SOURCE, entry, {})
 
     @unittest.skipUnless((SOURCE / "research").is_dir(), "Pinned research checkout not available")
-    def test_replaying_source_projection_reproduces_public_bytes(self):
+    def test_replaying_original_source_projection_reproduces_preserved_bytes(self):
         # Re-derives all tipping frequencies and checks all source PMFs/quantiles
         # directly from existing joint arrays, without random draws or fitting.
         with tempfile.TemporaryDirectory() as d:
             export(SOURCE, Path(d))
             for generated in Path(d).glob("*.json"):
-                self.assertEqual(generated.read_bytes(), (DATA / generated.name).read_bytes(), generated.name)
+                archived = DATA / "editions/2026-10-20" / generated.name
+                original = archived if archived.exists() else DATA / generated.name
+                self.assertEqual(generated.read_bytes(), original.read_bytes(), generated.name)
 
 
 if __name__ == "__main__":

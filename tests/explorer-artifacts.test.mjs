@@ -137,7 +137,7 @@ test("historical party groups never manufacture individual candidate probabiliti
   );
 });
 
-test("the published default 2026 forecast and tipping frequencies remain exactly unchanged", () => {
+test("the original October 20 forecast and tipping frequencies remain exactly preserved", () => {
   const original = JSON.parse(
     fs.readFileSync(path.join(root, "public/data/forecast.json")),
   );
@@ -148,7 +148,9 @@ test("the published default 2026 forecast and tipping frequencies remain exactly
     ["current-polling", "polling"],
     ["current-fundamentals", "fundamentals"],
   ]) {
-    const bundle = load(registry.runs.find((run) => run.id === id));
+    const bundle = id === "current-polling"
+      ? JSON.parse(fs.readFileSync(path.join(root, "public/data/explorer/editions/2026-10-20/current-polling.json")))
+      : load(registry.runs.find((run) => run.id === id));
     assert.deepEqual(bundle.tipping, tipping.models[key]);
     for (const race of bundle.races) {
       const previous = original.models[key].races.find(

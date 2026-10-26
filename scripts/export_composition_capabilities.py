@@ -26,6 +26,22 @@ EXPECTED_EXPERIMENTAL_BASES = {
     "senate_relative_lean_v1",
     "senate_relative_context_v1",
 }
+REFRESH_HANDOFF_REL = Path("research/senate-polling-refresh-20261026/frontend-handoff-v2.json")
+REFRESH_HANDOFF_SHA256 = "53ecb8ea7c322932a64784453a00bd4181c7e95cea474c2f843e5b0e0bcd356b"
+REFRESH_PRESET_ID = "best_guess_polling_20261026_v1"
+REFRESH_ARMS = {
+    "standard": "current-polling",
+    "standard_all_low": "current-error-low",
+    "standard_all_high": "current-error-high",
+    "standard_cycle_low": "current-cycle-low",
+    "standard_cycle_high": "current-cycle-high",
+    **{base: f"current-comparison-{base}-fp" for base in (
+        "recent_calendar_history", "senate_history_refreshed_v1", "senate_presidential_slope_v1",
+        "senate_relative_lean_v1", "senate_relative_context_v1",
+    )},
+}
+REFRESH_POLL_CUTOFF = "2026-10-26T15:03:57.212405+00:00"
+REFRESH_STRUCTURAL_CUTOFF = "2026-10-20T15:21:23Z"
 
 
 class ExportError(ValueError):
@@ -57,6 +73,61 @@ def _relative_bundle_path(href: str) -> Path:
     if relative.is_absolute() or ".." in relative.parts or len(relative.parts) != 1:
         raise ExportError(f"Unsafe saved-run href: {href}")
     return relative
+
+
+def _read_pinned_research(source_root: Path, reference: dict[str, str]) -> dict[str, Any]:
+    relative = Path(reference["path"])
+    if relative.is_absolute() or ".." in relative.parts:
+        raise ExportError("Unsafe refresh research path")
+    path = source_root / relative
+    if not path.resolve().is_relative_to(source_root.resolve()):
+        raise ExportError("Unsafe refresh research path")
+    if not path.is_file() or _sha256(path.read_bytes()) != reference["sha256"]:
+        raise ExportError(f"Refresh research hash mismatch: {relative}")
+    result = _load_json(path)
+    if not isinstance(result, dict):
+        raise ExportError(f"Refresh research document is not an object: {relative}")
+    return result
+
+
+def _verify_refresh_runs(registry: dict[str, Any], bundles: dict[str, dict[str, Any]],
+                         refresh: dict[str, Any], source_hashes: dict[str, str]) -> str:
+    if source_hashes.get("refreshHandoff") != REFRESH_HANDOFF_SHA256:
+        raise ExportError("Reviewed refresh handoff hash is missing or changed")
+    if refresh.get("status") != "numerically_qualified_and_independently_reviewed_not_published" or \
+            refresh.get("polling_input_cutoff_utc") != REFRESH_POLL_CUTOFF or \
+            refresh.get("structural_input_cutoff_utc") != REFRESH_STRUCTURAL_CUTOFF:
+        raise ExportError("Reviewed refresh status or cutoffs changed")
+    arms = refresh.get("arms")
+    if not isinstance(arms, list) or len(arms) != 10 or {arm.get("arm") for arm in arms} != set(REFRESH_ARMS):
+        raise ExportError("Reviewed refresh arm set changed")
+    by_run = {run["id"]: run for run in registry["runs"]}
+    for arm in arms:
+        name = arm["arm"]
+        run_id = REFRESH_ARMS[name]
+        run = by_run.get(run_id)
+        bundle = bundles.get(run_id)
+        forecast_pin = arm.get("files", {}).get("forecast.json", {}).get("sha256")
+        if not run or not bundle or not isinstance(forecast_pin, str) or \
+                bundle.get("provenance", {}).get("sources", {}).get("forecastSha256") != forecast_pin:
+            raise ExportError(f"Reviewed refresh forecast hash mismatch: {name}")
+        comparison = name not in {"standard", "standard_all_low", "standard_all_high",
+                                  "standard_cycle_low", "standard_cycle_high"}
+        target = ("senate2026_principal_pair_fundamentals_comparison_v1" if comparison
+                  else "national_senate_aggregate_poll_v1")
+        law = ("principal_pair_empirical_logit_shared_normal_student_t5_v1" if comparison
+               else "senate_principal_pair_aggregate_v1")
+        expected_components = {"base": name if comparison else "fundamentals", "polling": "standard",
+                               "uncertainty": {"standard": "standard", "standard_all_low": "error-low",
+                                               "standard_all_high": "error-high", "standard_cycle_low": "cycle-low",
+                                               "standard_cycle_high": "cycle-high"}.get(name, "standard")}
+        if run.get("dateId") != "2026-10-26" or run.get("cutoffAt") != REFRESH_POLL_CUTOFF or \
+                run.get("targetId") != arm.get("target_id") or run.get("targetId") != target or \
+                run.get("lawId") != law or run.get("components") != expected_components or \
+                _cutoffs(run) != [{"label": "Structural inputs", "at": REFRESH_STRUCTURAL_CUTOFF},
+                                  {"label": "Polling inputs", "at": REFRESH_POLL_CUTOFF}]:
+            raise ExportError(f"Reviewed refresh run contract mismatch: {name}")
+    return next(arm["files"]["forecast.json"]["sha256"] for arm in arms if arm["arm"] == "standard")
 
 
 def _cutoffs(run: dict[str, Any]) -> list[dict[str, str]]:
@@ -229,6 +300,7 @@ def build_manifest(
     catalog: dict[str, Any],
     handoff: dict[str, Any],
     source_hashes: dict[str, str],
+    refresh_handoff: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     runs = registry.get("runs")
     if not isinstance(runs, list) or len(runs) < 38:
@@ -247,8 +319,9 @@ def build_manifest(
     catalog_presets = {entry["preset_id"]: entry for entry in catalog.get("preserved_forecasts", [])}
     required_presets = {
         "basic_electoral_history_v5_20261020": ("current-fundamentals", "national_senate_aggregate_baseline_v1"),
-        "best_guess_polling_20261020_v2": ("current-polling", "national_senate_aggregate_poll_v1"),
     }
+    if refresh_handoff is None:
+        required_presets["best_guess_polling_20261020_v2"] = ("current-polling", "national_senate_aggregate_poll_v1")
     presets = []
     run_by_id = {run["id"]: run for run in runs}
     for preset_id, (run_id, target_id) in required_presets.items():
@@ -271,6 +344,16 @@ def build_manifest(
             raise ExportError(f"Preserved preset components changed for {preset_id}")
         presets.append({"id": preset_id, "label": choice["label"], "description": choice["limitations"][0],
                         "runId": run_id, "forecastSha256": expected_hash})
+
+    if refresh_handoff is not None:
+        refreshed_hash = _verify_refresh_runs(registry, bundles, refresh_handoff, source_hashes)
+        presets.append({
+            "id": REFRESH_PRESET_ID,
+            "label": "Best guess with October 26 polling",
+            "description": "Reviewed saved Senate aggregate forecast using qualified polling through October 26; historical calibration is reused and no 2026 outcome has been scored.",
+            "runId": "current-polling",
+            "forecastSha256": refreshed_hash,
+        })
 
     configurations = []
     for run in runs:
@@ -307,10 +390,12 @@ def build_manifest(
     ]
     return {
         "schemaVersion": 1,
-        "id": "composition-capabilities-2026-10-20-v2",
+        "id": "composition-capabilities-2026-10-26-v1" if refresh_handoff is not None
+              else "composition-capabilities-2026-10-20-v2",
         "sourceCatalog": {"id": catalog["catalog_id"], "sha256": catalog_sha},
         "sources": source_hashes,
-        "defaultPresetId": handoff["current_best_guess_preset_id"],
+        "defaultPresetId": REFRESH_PRESET_ID if refresh_handoff is not None
+                           else handoff["current_best_guess_preset_id"],
         "execution": {"available": False,
                       "reason": "This static site can load saved bundles only; it has no authenticated fit or forecast job service."},
         "presets": presets,
@@ -321,7 +406,8 @@ def build_manifest(
     }
 
 
-def export(source_root: Path, output: Path, registry_path: Path, bundle_root: Path) -> dict[str, Any]:
+def export(source_root: Path, output: Path, registry_path: Path, bundle_root: Path,
+           refresh_handoff_path: Path | None = None) -> dict[str, Any]:
     catalog_path = source_root / CATALOG_REL
     handoff_path = source_root / HANDOFF_REL
     preparation_path = source_root / PREPARATION_REL
@@ -371,7 +457,27 @@ def export(source_root: Path, output: Path, registry_path: Path, bundle_root: Pa
     if any(run.get("researchEvidence") for run in registry["runs"]):
         source_hashes["currentComparisonIndex"] = _sha256(comparison_index.read_bytes())
         source_hashes["compositionInterfaceReceipt"] = _sha256((comparison_index.parent / "receipt.json").read_bytes())
-    manifest = build_manifest(registry, bundles, catalog, handoff, source_hashes)
+    refresh = None
+    if refresh_handoff_path is not None:
+        if refresh_handoff_path != REFRESH_HANDOFF_REL:
+            raise ExportError("Only the exact reviewed October 26 refresh handoff is supported")
+        path = source_root / refresh_handoff_path
+        if not path.resolve().is_relative_to(source_root.resolve()) or not path.is_file() or \
+                _sha256(path.read_bytes()) != REFRESH_HANDOFF_SHA256:
+            raise ExportError("Reviewed refresh handoff hash changed")
+        refresh = _load_json(path)
+        source_review = _read_pinned_research(source_root, refresh["root_source_review"])
+        output_review = _read_pinned_research(source_root, refresh["independent_output_review"])
+        if source_review.get("status") != "admitted_for_existing_aggregate_target" or \
+                source_review.get("candidate_selection_approved") is not True or \
+                output_review.get("status") != "passed" or \
+                set(output_review.get("arms", {})) != set(REFRESH_ARMS) or \
+                any(item.get("status") != "passed" for item in output_review["arms"].values()):
+            raise ExportError("Reviewed refresh source or all-arm output review failed")
+        source_hashes["refreshHandoff"] = REFRESH_HANDOFF_SHA256
+        source_hashes["refreshSourceAdmissionReview"] = refresh["root_source_review"]["sha256"]
+        source_hashes["refreshAllArmOutputReview"] = refresh["independent_output_review"]["sha256"]
+    manifest = build_manifest(registry, bundles, catalog, handoff, source_hashes, refresh)
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     return manifest
@@ -384,8 +490,10 @@ def main() -> None:
     parser.add_argument("--output", type=Path, default=Path("public/data/explorer/capabilities.json"))
     parser.add_argument("--registry", type=Path, default=Path("public/data/explorer/registry.json"))
     parser.add_argument("--bundle-root", type=Path, default=Path("public/data/explorer"))
+    parser.add_argument("--refresh-handoff", type=Path,
+                        help="Explicit reviewed October 26 handoff; omitted for archived October 20 projection")
     args = parser.parse_args()
-    manifest = export(args.source_root, args.output, args.registry, args.bundle_root)
+    manifest = export(args.source_root, args.output, args.registry, args.bundle_root, args.refresh_handoff)
     print(f"wrote {args.output} with {len(manifest['saved'])} saved configs and {len(manifest['computation'])} metadata-only options")
 
 

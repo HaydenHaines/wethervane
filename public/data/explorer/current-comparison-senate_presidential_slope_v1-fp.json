@@ -6,11 +6,11 @@
     "label": "Learned presidential slope · with polls",
     "targetId": "senate2026_principal_pair_fundamentals_comparison_v1",
     "lawId": "principal_pair_empirical_logit_shared_normal_student_t5_v1",
-    "dateId": "2026-10-20",
-    "dateLabel": "October 20, 2026",
-    "forecastAt": "2026-10-20T16:21:44Z",
-    "issuedAt": "2026-10-20T19:37:04.369159+00:00",
-    "cutoffAt": "2026-10-20T16:21:44Z",
+    "dateId": "2026-10-26",
+    "dateLabel": "October 26, 2026",
+    "forecastAt": "2026-10-26T15:03:57.212405+00:00",
+    "issuedAt": "2026-10-26T15:10:40.691980+00:00",
+    "cutoffAt": "2026-10-26T15:03:57.212405+00:00",
     "horizonDays": null,
     "components": {
       "base": "senate_presidential_slope_v1",
@@ -18,26 +18,26 @@
       "uncertainty": "standard"
     },
     "uncertaintyLabel": "Saved fitted joint uncertainty",
-    "uncertaintyDescription": "Shared national shifts and race-specific variation from this exact saved comparison.",
+    "uncertaintyDescription": "Shares, winners, chamber seats and tipping derive from the same saved joint rows; polling covariance reuses historical calibration without retraining.",
     "historical": false,
     "sensitivity": true,
     "simulationCount": 80000,
     "strictAsOf": false,
     "inputCutoffs": [
       {
-        "label": "Nonpoll inputs",
+        "label": "Structural inputs",
         "at": "2026-10-20T15:21:23Z"
       },
       {
-        "label": "Polling data",
-        "at": "2026-10-20T16:21:44Z"
+        "label": "Polling inputs",
+        "at": "2026-10-26T15:03:57.212405+00:00"
       }
     ],
     "researchEvidence": {
       "status": "experimental",
       "numericalStatus": "passed",
       "forecastSkill": "unobserved_2026",
-      "qualification": "Saved current comparison, not a replacement for the preserved default and not arbitrary custom chamber execution."
+      "qualification": "Saved current comparison. Conservative availability bounds include 22 selected observations without exact posting dates; strict as-of is not established."
     }
   },
   "races": [
@@ -65,13 +65,13 @@
               ]
             }
           ],
-          "winProbability": 0.4153625,
+          "winProbability": 0.3820125,
           "share": {
-            "mean": 0.4929519426386496,
+            "mean": 0.49088815649061873,
             "quantiles": {
-              "p05": 0.43704041611890015,
-              "p50": 0.4925823553875381,
-              "p95": 0.5501893367233543
+              "p05": 0.4398471963925245,
+              "p50": 0.49073274006441403,
+              "p95": 0.5425101332410678
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
@@ -94,22 +94,23 @@
               ]
             }
           ],
-          "winProbability": 0.5846374999999999,
+          "winProbability": 0.6179875,
           "share": {
-            "mean": 0.5070480573613504,
+            "mean": 0.5091118435093813,
             "quantiles": {
-              "p05": 0.44981066327664565,
-              "p50": 0.5074176446124619,
-              "p95": 0.5629595838810999
+              "p05": 0.4574898667589322,
+              "p50": 0.509267259935586,
+              "p95": 0.5601528036074754
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
         }
       ],
-      "pollCount": 1,
+      "pollCount": 2,
       "notes": [
         "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support. For RCV, transfer/exhaustion rounds are approximated by head-to-head final-preference share; not a first-round share forecast.",
-        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim."
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim.",
+        "Democratic candidate's share among the two named contenders (democratic_two_party)."
       ]
     },
     {
@@ -138,13 +139,13 @@
               ]
             }
           ],
-          "winProbability": 0.0009,
+          "winProbability": 0.0006,
           "share": {
-            "mean": 0.3926303284725072,
+            "mean": 0.40243856902722364,
             "quantiles": {
-              "p05": 0.337604828032886,
-              "p50": 0.3923466304664368,
-              "p95": 0.44877742526699355
+              "p05": 0.3540978051166345,
+              "p50": 0.4022188884871517,
+              "p95": 0.4515546308036856
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
@@ -169,22 +170,23 @@
               ]
             }
           ],
-          "winProbability": 0.9991,
+          "winProbability": 0.9994,
           "share": {
-            "mean": 0.6073696715274928,
+            "mean": 0.5975614309727764,
             "quantiles": {
-              "p05": 0.5512225747330064,
-              "p50": 0.6076533695335632,
-              "p95": 0.662395171967114
+              "p05": 0.5484453691963145,
+              "p50": 0.5977811115128483,
+              "p95": 0.6459021948833654
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
         }
       ],
-      "pollCount": 1,
+      "pollCount": 2,
       "notes": [
         "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support.",
-        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim."
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim.",
+        "Democratic candidate's share among the two named contenders (democratic_two_party)."
       ]
     },
     {
@@ -210,13 +212,13 @@
               ]
             }
           ],
-          "winProbability": 0.0192625,
+          "winProbability": 0.0182875,
           "share": {
-            "mean": 0.4244645727188257,
+            "mean": 0.4244925179859343,
             "quantiles": {
-              "p05": 0.36792845196178253,
-              "p50": 0.4236428829350797,
-              "p95": 0.4836921656031829
+              "p05": 0.36862999310182615,
+              "p50": 0.4234501148302348,
+              "p95": 0.48308629913084516
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
@@ -238,13 +240,13 @@
               ]
             }
           ],
-          "winProbability": 0.9807375,
+          "winProbability": 0.9817125,
           "share": {
-            "mean": 0.5755354272811743,
+            "mean": 0.5755074820140658,
             "quantiles": {
-              "p05": 0.516307834396817,
-              "p50": 0.5763571170649203,
-              "p95": 0.6320715480382175
+              "p05": 0.5169137008691549,
+              "p50": 0.5765498851697652,
+              "p95": 0.6313700068981738
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
@@ -253,7 +255,8 @@
       "pollCount": 1,
       "notes": [
         "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support.",
-        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim."
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim.",
+        "Democratic candidate's share among the two named contenders (democratic_two_party)."
       ]
     },
     {
@@ -280,13 +283,13 @@
               ]
             }
           ],
-          "winProbability": 0.975825,
+          "winProbability": 0.9763,
           "share": {
-            "mean": 0.6493394314842988,
+            "mean": 0.6500447653419428,
             "quantiles": {
-              "p05": 0.5338535023883632,
-              "p50": 0.6524524348781073,
-              "p95": 0.7550407080006312
+              "p05": 0.5352145524715276,
+              "p50": 0.6534245625899469,
+              "p95": 0.7547492139240985
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
@@ -309,13 +312,13 @@
               ]
             }
           ],
-          "winProbability": 0.024174999999999947,
+          "winProbability": 0.023700000000000054,
           "share": {
-            "mean": 0.35066056851570115,
+            "mean": 0.3499552346580572,
             "quantiles": {
-              "p05": 0.24495929199936883,
-              "p50": 0.34754756512189267,
-              "p95": 0.46614649761163685
+              "p05": 0.24525078607590145,
+              "p50": 0.34657543741005314,
+              "p95": 0.4647854475284724
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
@@ -324,7 +327,8 @@
       "pollCount": 0,
       "notes": [
         "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support.",
-        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim."
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim.",
+        "Democratic candidate's share among the two named contenders (democratic_two_party)."
       ]
     },
     {
@@ -351,13 +355,13 @@
               ]
             }
           ],
-          "winProbability": 0.9812375,
+          "winProbability": 0.9818875,
           "share": {
-            "mean": 0.6614109456178879,
+            "mean": 0.6614477237982509,
             "quantiles": {
-              "p05": 0.547597796213643,
-              "p50": 0.6647844200967483,
-              "p95": 0.7647166648423658
+              "p05": 0.548776152618437,
+              "p50": 0.6646497270023237,
+              "p95": 0.7649712129067212
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
@@ -380,13 +384,13 @@
               ]
             }
           ],
-          "winProbability": 0.018762500000000015,
+          "winProbability": 0.018112499999999976,
           "share": {
-            "mean": 0.33858905438211206,
+            "mean": 0.3385522762017491,
             "quantiles": {
-              "p05": 0.23528333515763422,
-              "p50": 0.3352155799032517,
-              "p95": 0.452402203786357
+              "p05": 0.2350287870932788,
+              "p50": 0.3353502729976763,
+              "p95": 0.45122384738156296
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
@@ -395,7 +399,8 @@
       "pollCount": 0,
       "notes": [
         "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support.",
-        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim."
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim.",
+        "Democratic candidate's share among the two named contenders (democratic_two_party)."
       ]
     },
     {
@@ -421,13 +426,13 @@
               ]
             }
           ],
-          "winProbability": 0.0878125,
+          "winProbability": 0.0536375,
           "share": {
-            "mean": 0.45639222160684983,
+            "mean": 0.4569832845004571,
             "quantiles": {
-              "p05": 0.40435772244049917,
-              "p50": 0.45612540089802756,
-              "p95": 0.5093321128289497
+              "p05": 0.41347237291245426,
+              "p50": 0.45680953741410174,
+              "p95": 0.5009577490188967
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
@@ -449,22 +454,23 @@
               ]
             }
           ],
-          "winProbability": 0.9121875,
+          "winProbability": 0.9463625,
           "share": {
-            "mean": 0.5436077783931501,
+            "mean": 0.5430167154995429,
             "quantiles": {
-              "p05": 0.49066788717105025,
-              "p50": 0.5438745991019724,
-              "p95": 0.5956422775595008
+              "p05": 0.49904225098110333,
+              "p50": 0.5431904625858983,
+              "p95": 0.5865276270875457
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
         }
       ],
-      "pollCount": 2,
+      "pollCount": 10,
       "notes": [
         "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support. Class III unexpired-term special is treated with regular-race discrepancy; this is an unvalidated transfer.",
-        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim."
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim.",
+        "Democratic candidate's share among the two named contenders (democratic_two_party)."
       ]
     },
     {
@@ -491,13 +497,13 @@
               ]
             }
           ],
-          "winProbability": 0.94255,
+          "winProbability": 0.9427125,
           "share": {
-            "mean": 0.5513156225501796,
+            "mean": 0.5457233980669279,
             "quantiles": {
-              "p05": 0.49759731585980493,
-              "p50": 0.551797649863919,
-              "p95": 0.6034859013961689
+              "p05": 0.4980439984461712,
+              "p50": 0.5460901744594183,
+              "p95": 0.5925777364235669
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
@@ -520,22 +526,23 @@
               ]
             }
           ],
-          "winProbability": 0.05745,
+          "winProbability": 0.05728750000000005,
           "share": {
-            "mean": 0.44868437744982037,
+            "mean": 0.45427660193307207,
             "quantiles": {
-              "p05": 0.39651409860383113,
-              "p50": 0.448202350136081,
-              "p95": 0.5024026841401951
+              "p05": 0.4074222635764331,
+              "p50": 0.4539098255405817,
+              "p95": 0.5019560015538288
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
         }
       ],
-      "pollCount": 2,
+      "pollCount": 4,
       "notes": [
         "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support. General/runoff sequence is collapsed to an eventual two-principal majority proxy; runoff turnout and calendar are unmodeled.",
-        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim."
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim.",
+        "Democratic candidate's share among the two named contenders (democratic_two_party)."
       ]
     },
     {
@@ -561,13 +568,13 @@
               ]
             }
           ],
-          "winProbability": 0.41025,
+          "winProbability": 0.3773,
           "share": {
-            "mean": 0.4936153877048364,
+            "mean": 0.49161159219855416,
             "quantiles": {
-              "p05": 0.4469539089302087,
-              "p50": 0.49362584186586517,
-              "p95": 0.5402553025824424
+              "p05": 0.4477522079956304,
+              "p50": 0.49168081520138973,
+              "p95": 0.5360112598489287
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
@@ -589,22 +596,23 @@
               ]
             }
           ],
-          "winProbability": 0.58975,
+          "winProbability": 0.6227,
           "share": {
-            "mean": 0.5063846122951636,
+            "mean": 0.5083884078014458,
             "quantiles": {
-              "p05": 0.45974469741755764,
-              "p50": 0.5063741581341348,
-              "p95": 0.5530460910697913
+              "p05": 0.4639887401510713,
+              "p50": 0.5083191847986103,
+              "p95": 0.5522477920043696
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
         }
       ],
-      "pollCount": 5,
+      "pollCount": 12,
       "notes": [
         "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support.",
-        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim."
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim.",
+        "Democratic candidate's share among the two named contenders (democratic_two_party)."
       ]
     },
     {
@@ -631,13 +639,13 @@
               ]
             }
           ],
-          "winProbability": 0.4111875,
+          "winProbability": 0.1480125,
           "share": {
-            "mean": 0.4907436768376808,
+            "mean": 0.46474094279658773,
             "quantiles": {
-              "p05": 0.42009882892240646,
-              "p50": 0.4899803723952607,
-              "p95": 0.5631999284691894
+              "p05": 0.4100316630738537,
+              "p50": 0.46428266962187426,
+              "p95": 0.5207549291169108
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
@@ -660,22 +668,23 @@
               ]
             }
           ],
-          "winProbability": 0.5888125,
+          "winProbability": 0.8519875,
           "share": {
-            "mean": 0.5092563231623193,
+            "mean": 0.5352590572034123,
             "quantiles": {
-              "p05": 0.4368000715308106,
-              "p50": 0.5100196276047393,
-              "p95": 0.5799011710775935
+              "p05": 0.4792450708830892,
+              "p50": 0.5357173303781257,
+              "p95": 0.5899683369261464
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
         }
       ],
-      "pollCount": 1,
+      "pollCount": 2,
       "notes": [
         "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support.",
-        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim. Independent opposition remains I. Prior Democratic presidential offset and historical D/R coefficients are borrowed as an unvalidated opposition proxy; no independent-specific advantage is added."
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim. Independent opposition remains I. Prior Democratic presidential offset and historical D/R coefficients are borrowed as an unvalidated opposition proxy; no independent-specific advantage is added.",
+        "Named opposition contender's share against the Republican among the two named contenders; this contender is independent, not a Democrat (opposition_proxy)."
       ]
     },
     {
@@ -701,13 +710,13 @@
               ]
             }
           ],
-          "winProbability": 0.9795,
+          "winProbability": 0.9952875,
           "share": {
-            "mean": 0.5739715884530849,
+            "mean": 0.5769832802150586,
             "quantiles": {
-              "p05": 0.5152930457865434,
-              "p50": 0.5746227486152122,
-              "p95": 0.630791480373131
+              "p05": 0.5284829682358358,
+              "p50": 0.5773159701202547,
+              "p95": 0.624631800754242
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
@@ -729,22 +738,23 @@
               ]
             }
           ],
-          "winProbability": 0.020499999999999963,
+          "winProbability": 0.004712500000000008,
           "share": {
-            "mean": 0.42602841154691506,
+            "mean": 0.4230167197849414,
             "quantiles": {
-              "p05": 0.36920851962686896,
-              "p50": 0.42537725138478777,
-              "p95": 0.48470695421345655
+              "p05": 0.37536819924575804,
+              "p50": 0.4226840298797453,
+              "p95": 0.47151703176416415
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
         }
       ],
-      "pollCount": 1,
+      "pollCount": 2,
       "notes": [
         "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support.",
-        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim."
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim.",
+        "Democratic candidate's share among the two named contenders (democratic_two_party)."
       ]
     },
     {
@@ -770,13 +780,13 @@
               ]
             }
           ],
-          "winProbability": 0.342225,
+          "winProbability": 0.295375,
           "share": {
-            "mean": 0.48763005447819413,
+            "mean": 0.48393118510017896,
             "quantiles": {
-              "p05": 0.43729337085904796,
-              "p50": 0.487398067201712,
-              "p95": 0.5387613052502123
+              "p05": 0.43552187270260834,
+              "p50": 0.48350544316937705,
+              "p95": 0.5332026662636529
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
@@ -798,22 +808,23 @@
               ]
             }
           ],
-          "winProbability": 0.657775,
+          "winProbability": 0.7046250000000001,
           "share": {
-            "mean": 0.5123699455218058,
+            "mean": 0.516068814899821,
             "quantiles": {
-              "p05": 0.46123869474978774,
-              "p50": 0.512601932798288,
-              "p95": 0.562706629140952
+              "p05": 0.46679733373634713,
+              "p50": 0.516494556830623,
+              "p95": 0.5644781272973917
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
         }
       ],
-      "pollCount": 3,
+      "pollCount": 6,
       "notes": [
         "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support.",
-        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim."
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim.",
+        "Democratic candidate's share among the two named contenders (democratic_two_party)."
       ]
     },
     {
@@ -839,13 +850,13 @@
               ]
             }
           ],
-          "winProbability": 0.1869875,
+          "winProbability": 0.1899375,
           "share": {
-            "mean": 0.4405828262739627,
+            "mean": 0.4418130084237469,
             "quantiles": {
-              "p05": 0.3226000574625634,
-              "p50": 0.43911590646586685,
-              "p95": 0.5634016539558995
+              "p05": 0.32534510290315916,
+              "p50": 0.4404673674372346,
+              "p95": 0.5641454764074241
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
@@ -867,13 +878,13 @@
               ]
             }
           ],
-          "winProbability": 0.8130125,
+          "winProbability": 0.8100625,
           "share": {
-            "mean": 0.5594171737260373,
+            "mean": 0.5581869915762532,
             "quantiles": {
-              "p05": 0.4365983460441005,
-              "p50": 0.5608840935341332,
-              "p95": 0.6773999425374366
+              "p05": 0.4358545235925759,
+              "p50": 0.5595326325627654,
+              "p95": 0.6746548970968409
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
@@ -882,7 +893,8 @@
       "pollCount": 0,
       "notes": [
         "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support.",
-        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim."
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim.",
+        "Democratic candidate's share among the two named contenders (democratic_two_party)."
       ]
     },
     {
@@ -907,13 +919,13 @@
               ]
             }
           ],
-          "winProbability": 0.3361375,
+          "winProbability": 0.3391125,
           "share": {
-            "mean": 0.4720860235284085,
+            "mean": 0.47321510644990505,
             "quantiles": {
-              "p05": 0.3523453132767234,
-              "p50": 0.47143531975633635,
-              "p95": 0.5937357189047858
+              "p05": 0.35391095311938137,
+              "p50": 0.4724035172883531,
+              "p95": 0.5945589247603627
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
@@ -934,13 +946,13 @@
               ]
             }
           ],
-          "winProbability": 0.6638625,
+          "winProbability": 0.6608875000000001,
           "share": {
-            "mean": 0.5279139764715914,
+            "mean": 0.526784893550095,
             "quantiles": {
-              "p05": 0.4062642810952142,
-              "p50": 0.5285646802436637,
-              "p95": 0.6476546867232766
+              "p05": 0.40544107523963735,
+              "p50": 0.5275964827116468,
+              "p95": 0.6460890468806186
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
@@ -949,7 +961,8 @@
       "pollCount": 0,
       "notes": [
         "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support. Louisiana 2026 U.S.Senate general is a plurality contest under current official election guidance; no inherited jungle-primary/runoff rule is applied.",
-        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim."
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim.",
+        "Democratic candidate's share among the two named contenders (democratic_two_party)."
       ]
     },
     {
@@ -979,11 +992,11 @@
           ],
           "winProbability": 1.0,
           "share": {
-            "mean": 0.653618845726858,
+            "mean": 0.6509672632877124,
             "quantiles": {
-              "p05": 0.6017921477216281,
-              "p50": 0.6544843273184395,
-              "p95": 0.702563468018694
+              "p05": 0.6055720247008187,
+              "p50": 0.651424689521164,
+              "p95": 0.6944975578735436
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
@@ -1009,20 +1022,21 @@
           ],
           "winProbability": 0.0,
           "share": {
-            "mean": 0.346381154273142,
+            "mean": 0.34903273671228763,
             "quantiles": {
-              "p05": 0.29743653198130604,
-              "p50": 0.34551567268156047,
-              "p95": 0.39820785227837185
+              "p05": 0.3055024421264564,
+              "p50": 0.34857531047883605,
+              "p95": 0.3944279752991813
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
         }
       ],
-      "pollCount": 1,
+      "pollCount": 3,
       "notes": [
         "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support.",
-        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim."
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim.",
+        "Democratic candidate's share among the two named contenders (democratic_two_party)."
       ]
     },
     {
@@ -1052,13 +1066,13 @@
               ]
             }
           ],
-          "winProbability": 0.564025,
+          "winProbability": 0.4837875,
           "share": {
-            "mean": 0.5047455958571497,
+            "mean": 0.49891866151568104,
             "quantiles": {
-              "p05": 0.4561683496591955,
-              "p50": 0.5047113517481777,
-              "p95": 0.5534881111430692
+              "p05": 0.454370368180556,
+              "p50": 0.498944468826253,
+              "p95": 0.5434525525272452
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
@@ -1084,22 +1098,23 @@
               ]
             }
           ],
-          "winProbability": 0.435975,
+          "winProbability": 0.5162125,
           "share": {
-            "mean": 0.49525440414285027,
+            "mean": 0.5010813384843189,
             "quantiles": {
-              "p05": 0.4465118888569308,
-              "p50": 0.4952886482518223,
-              "p95": 0.5438316503408045
+              "p05": 0.4565474474727548,
+              "p50": 0.501055531173747,
+              "p95": 0.545629631819444
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
         }
       ],
-      "pollCount": 3,
+      "pollCount": 7,
       "notes": [
         "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support. For RCV, transfer/exhaustion rounds are approximated by head-to-head final-preference share; not a first-round share forecast.",
-        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim."
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim.",
+        "Democratic candidate's share among the two named contenders (democratic_two_party)."
       ]
     },
     {
@@ -1125,13 +1140,13 @@
               ]
             }
           ],
-          "winProbability": 0.67535,
+          "winProbability": 0.6669625,
           "share": {
-            "mean": 0.5137446343176955,
+            "mean": 0.5117231523474224,
             "quantiles": {
-              "p05": 0.4640461764544898,
-              "p50": 0.5137981134841616,
-              "p95": 0.56338854901631
+              "p05": 0.4670179411784256,
+              "p50": 0.5118161017448398,
+              "p95": 0.5561095278388258
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
@@ -1153,22 +1168,23 @@
               ]
             }
           ],
-          "winProbability": 0.32465,
+          "winProbability": 0.3330375,
           "share": {
-            "mean": 0.48625536568230454,
+            "mean": 0.4882768476525776,
             "quantiles": {
-              "p05": 0.43661145098369003,
-              "p50": 0.4862018865158384,
-              "p95": 0.5359538235455101
+              "p05": 0.44389047216117417,
+              "p50": 0.4881838982551602,
+              "p95": 0.5329820588215743
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
         }
       ],
-      "pollCount": 4,
+      "pollCount": 11,
       "notes": [
         "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support.",
-        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim."
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim.",
+        "Democratic candidate's share among the two named contenders (democratic_two_party)."
       ]
     },
     {
@@ -1194,13 +1210,13 @@
               ]
             }
           ],
-          "winProbability": 0.7321,
+          "winProbability": 0.759875,
           "share": {
-            "mean": 0.5191639442052108,
+            "mean": 0.5200182360761604,
             "quantiles": {
-              "p05": 0.46763325306323666,
-              "p50": 0.5194054802610861,
-              "p95": 0.5699904338639921
+              "p05": 0.4736060701280188,
+              "p50": 0.5202482023205668,
+              "p95": 0.5660804153321439
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
@@ -1222,22 +1238,23 @@
               ]
             }
           ],
-          "winProbability": 0.2679,
+          "winProbability": 0.24012500000000003,
           "share": {
-            "mean": 0.48083605579478916,
+            "mean": 0.4799817639238396,
             "quantiles": {
-              "p05": 0.43000956613600794,
-              "p50": 0.4805945197389139,
-              "p95": 0.5323667469367633
+              "p05": 0.4339195846678561,
+              "p50": 0.4797517976794332,
+              "p95": 0.5263939298719812
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
         }
       ],
-      "pollCount": 2,
+      "pollCount": 7,
       "notes": [
         "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support.",
-        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim."
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim.",
+        "Democratic candidate's share among the two named contenders (democratic_two_party)."
       ]
     },
     {
@@ -1264,13 +1281,13 @@
               ]
             }
           ],
-          "winProbability": 0.0866125,
+          "winProbability": 0.0571875,
           "share": {
-            "mean": 0.404801310940248,
+            "mean": 0.4364633330345885,
             "quantiles": {
-              "p05": 0.29090017713588673,
-              "p50": 0.4028399134167434,
-              "p95": 0.5255366436990467
+              "p05": 0.37368055108905585,
+              "p50": 0.43542229308863395,
+              "p95": 0.5027173783942627
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
@@ -1293,22 +1310,23 @@
               ]
             }
           ],
-          "winProbability": 0.9133875,
+          "winProbability": 0.9428125,
           "share": {
-            "mean": 0.595198689059752,
+            "mean": 0.5635366669654115,
             "quantiles": {
-              "p05": 0.47446335630095327,
-              "p50": 0.5971600865832566,
-              "p95": 0.7090998228641132
+              "p05": 0.49728262160573733,
+              "p50": 0.564577706911366,
+              "p95": 0.6263194489109442
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
         }
       ],
-      "pollCount": 0,
+      "pollCount": 1,
       "notes": [
         "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support.",
-        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim."
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim.",
+        "Democratic candidate's share among the two named contenders (democratic_two_party)."
       ]
     },
     {
@@ -1336,13 +1354,13 @@
               ]
             }
           ],
-          "winProbability": 0.3871375,
+          "winProbability": 0.1655625,
           "share": {
-            "mean": 0.49022401352390715,
+            "mean": 0.46898918789236366,
             "quantiles": {
-              "p05": 0.433373634976722,
-              "p50": 0.4898588202878179,
-              "p95": 0.547942511155698
+              "p05": 0.4166813078770923,
+              "p50": 0.46885140610084186,
+              "p95": 0.5213155367547154
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
@@ -1366,22 +1384,23 @@
               ]
             }
           ],
-          "winProbability": 0.6128625,
+          "winProbability": 0.8344374999999999,
           "share": {
-            "mean": 0.5097759864760929,
+            "mean": 0.5310108121076363,
             "quantiles": {
-              "p05": 0.45205748884430197,
-              "p50": 0.5101411797121821,
-              "p95": 0.566626365023278
+              "p05": 0.4786844632452846,
+              "p50": 0.5311485938991581,
+              "p95": 0.5833186921229077
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
         }
       ],
-      "pollCount": 1,
+      "pollCount": 2,
       "notes": [
         "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support.",
-        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim. Independent opposition remains I. Prior Democratic presidential offset and historical D/R coefficients are borrowed as an unvalidated opposition proxy; no independent-specific advantage is added."
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim. Independent opposition remains I. Prior Democratic presidential offset and historical D/R coefficients are borrowed as an unvalidated opposition proxy; no independent-specific advantage is added.",
+        "Named opposition contender's share against the Republican among the two named contenders; this contender is independent, not a Democrat (opposition_proxy)."
       ]
     },
     {
@@ -1408,13 +1427,13 @@
               ]
             }
           ],
-          "winProbability": 0.91485,
+          "winProbability": 0.947325,
           "share": {
-            "mean": 0.5415043230751136,
+            "mean": 0.5431584548947794,
             "quantiles": {
-              "p05": 0.49168121631192646,
-              "p50": 0.5416316630790474,
-              "p95": 0.5907876710186639
+              "p05": 0.49931733730022687,
+              "p50": 0.5432704468002552,
+              "p95": 0.5867393363639447
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
@@ -1437,22 +1456,23 @@
               ]
             }
           ],
-          "winProbability": 0.08514999999999995,
+          "winProbability": 0.05267500000000003,
           "share": {
-            "mean": 0.45849567692488635,
+            "mean": 0.45684154510522057,
             "quantiles": {
-              "p05": 0.4092123289813361,
-              "p50": 0.4583683369209526,
-              "p95": 0.5083187836880736
+              "p05": 0.4132606636360553,
+              "p50": 0.45672955319974484,
+              "p95": 0.5006826626997731
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
         }
       ],
-      "pollCount": 3,
+      "pollCount": 10,
       "notes": [
         "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support.",
-        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim."
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim.",
+        "Democratic candidate's share among the two named contenders (democratic_two_party)."
       ]
     },
     {
@@ -1480,13 +1500,13 @@
               ]
             }
           ],
-          "winProbability": 0.1866125,
+          "winProbability": 0.205775,
           "share": {
-            "mean": 0.4706878154363104,
+            "mean": 0.47670203463905647,
             "quantiles": {
-              "p05": 0.41725792031865866,
-              "p50": 0.47031763336258564,
-              "p95": 0.5257514444758614
+              "p05": 0.43017643541965456,
+              "p50": 0.4764720573513994,
+              "p95": 0.5239879287929439
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
@@ -1510,22 +1530,23 @@
               ]
             }
           ],
-          "winProbability": 0.8133875,
+          "winProbability": 0.794225,
           "share": {
-            "mean": 0.5293121845636897,
+            "mean": 0.5232979653609435,
             "quantiles": {
-              "p05": 0.4742485555241386,
-              "p50": 0.5296823666374144,
-              "p95": 0.5827420796813414
+              "p05": 0.47601207120705613,
+              "p50": 0.5235279426486006,
+              "p95": 0.5698235645803454
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
         }
       ],
-      "pollCount": 2,
+      "pollCount": 5,
       "notes": [
         "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support.",
-        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim. Independent opposition remains I. Prior Democratic presidential offset and historical D/R coefficients are borrowed as an unvalidated opposition proxy; no independent-specific advantage is added."
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim. Independent opposition remains I. Prior Democratic presidential offset and historical D/R coefficients are borrowed as an unvalidated opposition proxy; no independent-specific advantage is added.",
+        "Named opposition contender's share against the Republican among the two named contenders; this contender is independent, not a Democrat (opposition_proxy)."
       ]
     },
     {
@@ -1550,13 +1571,13 @@
               ]
             }
           ],
-          "winProbability": 0.902525,
+          "winProbability": 0.893675,
           "share": {
-            "mean": 0.5415166862709518,
+            "mean": 0.5354694511734315,
             "quantiles": {
-              "p05": 0.48888181225897975,
-              "p50": 0.5417799903774079,
-              "p95": 0.5934753668316941
+              "p05": 0.48837657851501787,
+              "p50": 0.5355925217775979,
+              "p95": 0.5818111864670786
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
@@ -1577,22 +1598,23 @@
               ]
             }
           ],
-          "winProbability": 0.09747499999999998,
+          "winProbability": 0.106325,
           "share": {
-            "mean": 0.45848331372904816,
+            "mean": 0.4645305488265685,
             "quantiles": {
-              "p05": 0.4065246331683059,
-              "p50": 0.45822000962259213,
-              "p95": 0.5111181877410202
+              "p05": 0.41818881353292137,
+              "p50": 0.46440747822240214,
+              "p95": 0.5116234214849822
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
         }
       ],
-      "pollCount": 2,
+      "pollCount": 6,
       "notes": [
         "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support.",
-        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim."
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim.",
+        "Democratic candidate's share among the two named contenders (democratic_two_party)."
       ]
     },
     {
@@ -1620,13 +1642,13 @@
               ]
             }
           ],
-          "winProbability": 0.9634875,
+          "winProbability": 0.9659375,
           "share": {
-            "mean": 0.6326533277200654,
+            "mean": 0.6335274984400298,
             "quantiles": {
-              "p05": 0.5151275041651675,
-              "p50": 0.6353534397980783,
-              "p95": 0.7417134657101058
+              "p05": 0.5170782130539928,
+              "p50": 0.6363234451640141,
+              "p95": 0.7415090480464677
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
@@ -1650,13 +1672,13 @@
               ]
             }
           ],
-          "winProbability": 0.03651249999999995,
+          "winProbability": 0.034062499999999996,
           "share": {
-            "mean": 0.36734667227993456,
+            "mean": 0.36647250155997024,
             "quantiles": {
-              "p05": 0.25828653428989423,
-              "p50": 0.36464656020192165,
-              "p95": 0.4848724958348325
+              "p05": 0.25849095195353233,
+              "p50": 0.36367655483598593,
+              "p95": 0.4829217869460072
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
@@ -1665,7 +1687,8 @@
       "pollCount": 0,
       "notes": [
         "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support.",
-        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim."
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim.",
+        "Democratic candidate's share among the two named contenders (democratic_two_party)."
       ]
     },
     {
@@ -1691,13 +1714,13 @@
               ]
             }
           ],
-          "winProbability": 0.995125,
+          "winProbability": 0.996,
           "share": {
-            "mean": 0.595449431044254,
+            "mean": 0.5954287587002495,
             "quantiles": {
-              "p05": 0.5373613513886197,
-              "p50": 0.5962330819484327,
-              "p95": 0.6508761735295844
+              "p05": 0.5371113797828994,
+              "p50": 0.5962895310338037,
+              "p95": 0.6506407319239101
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
@@ -1719,13 +1742,13 @@
               ]
             }
           ],
-          "winProbability": 0.004874999999999963,
+          "winProbability": 0.0040000000000000036,
           "share": {
-            "mean": 0.40455056895574604,
+            "mean": 0.40457124129975053,
             "quantiles": {
-              "p05": 0.3491238264704156,
-              "p50": 0.4037669180515673,
-              "p95": 0.46263864861138027
+              "p05": 0.34935926807608986,
+              "p50": 0.40371046896619633,
+              "p95": 0.46288862021710064
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
@@ -1734,7 +1757,8 @@
       "pollCount": 1,
       "notes": [
         "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support.",
-        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim."
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim.",
+        "Democratic candidate's share among the two named contenders (democratic_two_party)."
       ]
     },
     {
@@ -1760,13 +1784,13 @@
               ]
             }
           ],
-          "winProbability": 0.4658125,
+          "winProbability": 0.4867,
           "share": {
-            "mean": 0.4976079614402681,
+            "mean": 0.4992165731087671,
             "quantiles": {
-              "p05": 0.44857740036072613,
-              "p50": 0.49744214346402094,
-              "p95": 0.546802865669326
+              "p05": 0.4552565370325775,
+              "p50": 0.49905488019432265,
+              "p95": 0.5438688946721532
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
@@ -1788,22 +1812,23 @@
               ]
             }
           ],
-          "winProbability": 0.5341875,
+          "winProbability": 0.5133,
           "share": {
-            "mean": 0.5023920385597319,
+            "mean": 0.5007834268912329,
             "quantiles": {
-              "p05": 0.453197134330674,
-              "p50": 0.5025578565359791,
-              "p95": 0.5514225996392739
+              "p05": 0.45613110532784684,
+              "p50": 0.5009451198056774,
+              "p95": 0.5447434629674225
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
         }
       ],
-      "pollCount": 4,
+      "pollCount": 11,
       "notes": [
         "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support. Class III unexpired-term special is treated with regular-race discrepancy; this is an unvalidated transfer.",
-        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim."
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim.",
+        "Democratic candidate's share among the two named contenders (democratic_two_party)."
       ]
     },
     {
@@ -1830,13 +1855,13 @@
               ]
             }
           ],
-          "winProbability": 0.1375375,
+          "winProbability": 0.1397,
           "share": {
-            "mean": 0.42566054474016685,
+            "mean": 0.4274332224038682,
             "quantiles": {
-              "p05": 0.3097149297424114,
-              "p50": 0.4236550910250417,
-              "p95": 0.5479342360193101
+              "p05": 0.31145577163221994,
+              "p50": 0.4258650846450669,
+              "p95": 0.5482158081672504
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
@@ -1859,13 +1884,13 @@
               ]
             }
           ],
-          "winProbability": 0.8624625,
+          "winProbability": 0.8603000000000001,
           "share": {
-            "mean": 0.5743394552598331,
+            "mean": 0.5725667775961318,
             "quantiles": {
-              "p05": 0.45206576398068987,
-              "p50": 0.5763449089749584,
-              "p95": 0.6902850702575887
+              "p05": 0.45178419183274965,
+              "p50": 0.5741349153549331,
+              "p95": 0.6885442283677801
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
@@ -1874,7 +1899,8 @@
       "pollCount": 0,
       "notes": [
         "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support.",
-        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim."
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim.",
+        "Democratic candidate's share among the two named contenders (democratic_two_party)."
       ]
     },
     {
@@ -1903,13 +1929,13 @@
               ]
             }
           ],
-          "winProbability": 0.9798,
+          "winProbability": 0.9817625,
           "share": {
-            "mean": 0.6606607721575767,
+            "mean": 0.6614559287416957,
             "quantiles": {
-              "p05": 0.5457009667957969,
-              "p50": 0.6642918790826293,
-              "p95": 0.7645873230609697
+              "p05": 0.5474792656469996,
+              "p50": 0.6645437457787164,
+              "p95": 0.7652969837980034
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
@@ -1934,13 +1960,13 @@
               ]
             }
           ],
-          "winProbability": 0.020199999999999996,
+          "winProbability": 0.018237500000000018,
           "share": {
-            "mean": 0.3393392278424233,
+            "mean": 0.3385440712583043,
             "quantiles": {
-              "p05": 0.23541267693903034,
-              "p50": 0.3357081209173707,
-              "p95": 0.45429903320420306
+              "p05": 0.23470301620199663,
+              "p50": 0.33545625422128356,
+              "p95": 0.45252073435300044
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
@@ -1949,7 +1975,8 @@
       "pollCount": 0,
       "notes": [
         "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support.",
-        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim."
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim.",
+        "Democratic candidate's share among the two named contenders (democratic_two_party)."
       ]
     },
     {
@@ -1976,11 +2003,11 @@
           ],
           "winProbability": 1.0,
           "share": {
-            "mean": 0.689428512959623,
+            "mean": 0.6648549988226865,
             "quantiles": {
-              "p05": 0.6407860712910645,
-              "p50": 0.6898330051749229,
-              "p95": 0.736038979396815
+              "p05": 0.6185317101140232,
+              "p50": 0.6653151384195838,
+              "p95": 0.7092538194452938
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
@@ -2003,20 +2030,21 @@
           ],
           "winProbability": 0.0,
           "share": {
-            "mean": 0.31057148704037696,
+            "mean": 0.3351450011773135,
             "quantiles": {
-              "p05": 0.26396102060318505,
-              "p50": 0.31016699482507715,
-              "p95": 0.35921392870893554
+              "p05": 0.29074618055470625,
+              "p50": 0.3346848615804162,
+              "p95": 0.3814682898859768
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
         }
       ],
-      "pollCount": 1,
+      "pollCount": 2,
       "notes": [
         "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support.",
-        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim."
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim.",
+        "Democratic candidate's share among the two named contenders (democratic_two_party)."
       ]
     },
     {
@@ -2042,13 +2070,13 @@
               ]
             }
           ],
-          "winProbability": 0.14995,
+          "winProbability": 0.2086375,
           "share": {
-            "mean": 0.46583568309403534,
+            "mean": 0.4760328063467759,
             "quantiles": {
-              "p05": 0.41241433275849426,
-              "p50": 0.46543379033022847,
-              "p95": 0.5206813570449136
+              "p05": 0.42747812029915194,
+              "p50": 0.4758513286346916,
+              "p95": 0.5254374509320939
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
@@ -2070,22 +2098,23 @@
               ]
             }
           ],
-          "winProbability": 0.85005,
+          "winProbability": 0.7913625,
           "share": {
-            "mean": 0.5341643169059647,
+            "mean": 0.5239671936532241,
             "quantiles": {
-              "p05": 0.4793186429550864,
-              "p50": 0.5345662096697715,
-              "p95": 0.5875856672415057
+              "p05": 0.47456254906790607,
+              "p50": 0.5241486713653084,
+              "p95": 0.572521879700848
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
         }
       ],
-      "pollCount": 1,
+      "pollCount": 2,
       "notes": [
         "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support.",
-        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim."
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim.",
+        "Democratic candidate's share among the two named contenders (democratic_two_party)."
       ]
     },
     {
@@ -2111,13 +2140,13 @@
               ]
             }
           ],
-          "winProbability": 0.05,
+          "winProbability": 0.001375,
           "share": {
-            "mean": 0.3814550632893709,
+            "mean": 0.41568533106452904,
             "quantiles": {
-              "p05": 0.27087303331010804,
-              "p50": 0.37881801916010704,
-              "p95": 0.49998413685495835
+              "p05": 0.3711822864427629,
+              "p50": 0.4152171249347343,
+              "p95": 0.4613775703925522
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
@@ -2139,22 +2168,23 @@
               ]
             }
           ],
-          "winProbability": 0.95,
+          "winProbability": 0.998625,
           "share": {
-            "mean": 0.618544936710629,
+            "mean": 0.584314668935471,
             "quantiles": {
-              "p05": 0.5000158631450417,
-              "p50": 0.621181980839893,
-              "p95": 0.729126966689892
+              "p05": 0.5386224296074478,
+              "p50": 0.5847828750652657,
+              "p95": 0.628817713557237
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
         }
       ],
-      "pollCount": 0,
+      "pollCount": 4,
       "notes": [
         "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support.",
-        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim. Independent opposition remains I. Prior Democratic presidential offset and historical D/R coefficients are borrowed as an unvalidated opposition proxy; no independent-specific advantage is added."
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim. Independent opposition remains I. Prior Democratic presidential offset and historical D/R coefficients are borrowed as an unvalidated opposition proxy; no independent-specific advantage is added.",
+        "Named opposition contender's share against the Republican among the two named contenders; this contender is independent, not a Democrat (opposition_proxy)."
       ]
     },
     {
@@ -2182,13 +2212,13 @@
               ]
             }
           ],
-          "winProbability": 0.0001875,
+          "winProbability": 0.00015,
           "share": {
-            "mean": 0.3638337261625,
+            "mean": 0.3684169060145215,
             "quantiles": {
-              "p05": 0.30543999469297595,
-              "p50": 0.3631383084386376,
-              "p95": 0.4243237432735566
+              "p05": 0.3107802538915178,
+              "p50": 0.36797423540652485,
+              "p95": 0.42792482205856136
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
@@ -2212,13 +2242,13 @@
               ]
             }
           ],
-          "winProbability": 0.9998125,
+          "winProbability": 0.99985,
           "share": {
-            "mean": 0.6361662738375,
+            "mean": 0.6315830939854785,
             "quantiles": {
-              "p05": 0.5756762567264434,
-              "p50": 0.6368616915613624,
-              "p95": 0.694560005307024
+              "p05": 0.5720751779414386,
+              "p50": 0.6320257645934751,
+              "p95": 0.6892197461084821
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
@@ -2227,7 +2257,8 @@
       "pollCount": 1,
       "notes": [
         "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support.",
-        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim."
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim.",
+        "Democratic candidate's share among the two named contenders (democratic_two_party)."
       ]
     },
     {
@@ -2256,13 +2287,13 @@
               ]
             }
           ],
-          "winProbability": 0.5049,
+          "winProbability": 0.4981875,
           "share": {
-            "mean": 0.5004106703200245,
+            "mean": 0.4999451399217015,
             "quantiles": {
-              "p05": 0.45341645462004043,
-              "p50": 0.5003584664115948,
-              "p95": 0.5475480502804752
+              "p05": 0.4567325019033357,
+              "p50": 0.4998720159320381,
+              "p95": 0.5431288099366124
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
@@ -2287,22 +2318,23 @@
               ]
             }
           ],
-          "winProbability": 0.4951,
+          "winProbability": 0.5018125,
           "share": {
-            "mean": 0.4995893296799755,
+            "mean": 0.5000548600782986,
             "quantiles": {
-              "p05": 0.45245194971952485,
-              "p50": 0.49964153358840524,
-              "p95": 0.5465835453799596
+              "p05": 0.4568711900633876,
+              "p50": 0.5001279840679619,
+              "p95": 0.5432674980966643
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
         }
       ],
-      "pollCount": 6,
+      "pollCount": 17,
       "notes": [
         "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support.",
-        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim."
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim.",
+        "Democratic candidate's share among the two named contenders (democratic_two_party)."
       ]
     },
     {
@@ -2329,13 +2361,13 @@
               ]
             }
           ],
-          "winProbability": 0.963875,
+          "winProbability": 0.964875,
           "share": {
-            "mean": 0.6328145752800312,
+            "mean": 0.6329830088742802,
             "quantiles": {
-              "p05": 0.5155184702306039,
-              "p50": 0.6355727737723135,
-              "p95": 0.7413730279519011
+              "p05": 0.5164534748665899,
+              "p50": 0.6360102913261405,
+              "p95": 0.7407272995423826
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
@@ -2358,13 +2390,13 @@
               ]
             }
           ],
-          "winProbability": 0.03612499999999996,
+          "winProbability": 0.03512499999999996,
           "share": {
-            "mean": 0.36718542471996884,
+            "mean": 0.36701699112571984,
             "quantiles": {
-              "p05": 0.2586269720480989,
-              "p50": 0.36442722622768653,
-              "p95": 0.48448152976939607
+              "p05": 0.2592727004576174,
+              "p50": 0.3639897086738595,
+              "p95": 0.4835465251334101
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
@@ -2373,7 +2405,8 @@
       "pollCount": 0,
       "notes": [
         "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support.",
-        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim."
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim.",
+        "Democratic candidate's share among the two named contenders (democratic_two_party)."
       ]
     },
     {
@@ -2402,13 +2435,13 @@
               ]
             }
           ],
-          "winProbability": 0.0170875,
+          "winProbability": 0.018175,
           "share": {
-            "mean": 0.33456045291594366,
+            "mean": 0.33625012108038693,
             "quantiles": {
-              "p05": 0.23198259019809417,
-              "p50": 0.33101401789666474,
-              "p95": 0.44811509432569546
+              "p05": 0.23354106529338106,
+              "p50": 0.3328081749748115,
+              "p95": 0.4499979570359318
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
@@ -2433,13 +2466,13 @@
               ]
             }
           ],
-          "winProbability": 0.9829125,
+          "winProbability": 0.981825,
           "share": {
-            "mean": 0.6654395470840564,
+            "mean": 0.663749878919613,
             "quantiles": {
-              "p05": 0.5518849056743045,
-              "p50": 0.6689859821033353,
-              "p95": 0.7680174098019058
+              "p05": 0.5500020429640682,
+              "p50": 0.6671918250251885,
+              "p95": 0.766458934706619
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
@@ -2448,7 +2481,8 @@
       "pollCount": 0,
       "notes": [
         "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support.",
-        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim."
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim.",
+        "Democratic candidate's share among the two named contenders (democratic_two_party)."
       ]
     },
     {
@@ -2475,13 +2509,13 @@
               ]
             }
           ],
-          "winProbability": 0.0483,
+          "winProbability": 0.0482,
           "share": {
-            "mean": 0.37863496848844286,
+            "mean": 0.3795327528383478,
             "quantiles": {
-              "p05": 0.2682850202131642,
-              "p50": 0.3758015492348348,
-              "p95": 0.4984750310913867
+              "p05": 0.26861252152155235,
+              "p50": 0.3767878697841335,
+              "p95": 0.49861524046240896
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
@@ -2504,13 +2538,13 @@
               ]
             }
           ],
-          "winProbability": 0.9517,
+          "winProbability": 0.9518,
           "share": {
-            "mean": 0.6213650315115571,
+            "mean": 0.6204672471616521,
             "quantiles": {
-              "p05": 0.5015249689086133,
-              "p50": 0.6241984507651652,
-              "p95": 0.7317149797868359
+              "p05": 0.5013847595375911,
+              "p50": 0.6232121302158665,
+              "p95": 0.7313874784784477
             },
             "denominator": "Share of votes for the two named principal contenders"
           }
@@ -2519,7 +2553,8 @@
       "pollCount": 0,
       "notes": [
         "Conditional two-principal plurality proxy; omitted valid options are excluded from modeled winner support.",
-        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim."
+        "Conditional principal-contender support; listed omitted candidates and valid write-ins/nonresponse are not modeled. No full-ballot vote share or candidate-count claim.",
+        "Democratic candidate's share among the two named contenders (democratic_two_party)."
       ]
     }
   ],
@@ -2539,13 +2574,13 @@
       },
       "control": {
         "description": "Existing King and Sanders remain in Democratic caucus; all four modeled independent opposition contenders unassigned, matching stated campaign pledges without treating pledges as certain future conduct.",
-        "democraticMajorityProbability": 0.532825,
-        "republicanMajorityProbability": 0.3662375,
-        "unresolvedOrganizingProbability": 0.1009375
+        "democraticMajorityProbability": 0.516525,
+        "republicanMajorityProbability": 0.4401875,
+        "unresolvedOrganizingProbability": 0.0432875
       },
       "seats": {
         "D": {
-          "expectedSeats": 50.779575,
+          "expectedSeats": 50.6695875,
           "seatQuantiles": {
             "p05": 46.0,
             "p50": 51.0,
@@ -2593,27 +2628,27 @@
             0.0,
             0.0,
             2.5e-05,
-            6.25e-05,
-            0.0006375,
-            0.0027375,
-            0.0085,
-            0.021375,
-            0.0406,
-            0.0667125,
-            0.0901875,
-            0.1117125,
-            0.124625,
-            0.126075,
-            0.1175375,
-            0.1020125,
-            0.0772875,
-            0.053825,
-            0.0320125,
-            0.015625,
-            0.0062875,
-            0.001725,
-            0.0004,
-            3.75e-05,
+            0.0001375,
+            0.0006,
+            0.0027875,
+            0.0092,
+            0.022525,
+            0.0441,
+            0.0708125,
+            0.0973375,
+            0.1131125,
+            0.1228375,
+            0.1232875,
+            0.1147875,
+            0.0984625,
+            0.075825,
+            0.0507875,
+            0.0301125,
+            0.0152,
+            0.0058375,
+            0.0018,
+            0.0003,
+            0.000125,
             0.0,
             0.0,
             0.0,
@@ -2656,10 +2691,10 @@
           ]
         },
         "R": {
-          "expectedSeats": 48.1854875,
+          "expectedSeats": 48.8096875,
           "seatQuantiles": {
-            "p05": 42.0,
-            "p50": 48.0,
+            "p05": 43.0,
+            "p50": 49.0,
             "p95": 54.0
           },
           "pmf": [
@@ -2698,31 +2733,31 @@
             0.0,
             0.0,
             0.0,
-            1.25e-05,
-            3.75e-05,
-            0.000175,
-            0.00105,
-            0.0033125,
-            0.0071375,
-            0.01475,
-            0.0269875,
-            0.04055,
-            0.0572375,
-            0.074625,
-            0.0883125,
-            0.1017,
-            0.110225,
-            0.10765,
-            0.10115,
-            0.0878625,
-            0.070525,
-            0.050075,
-            0.030775,
-            0.016525,
-            0.0064375,
-            0.0023,
-            0.0005125,
-            5e-05,
+            0.0,
+            2.5e-05,
+            0.000225,
+            0.0005,
+            0.002225,
+            0.0047125,
+            0.009975,
+            0.0179125,
+            0.0292625,
+            0.044425,
+            0.060825,
+            0.079,
+            0.0945125,
+            0.106175,
+            0.1100375,
+            0.1100125,
+            0.102625,
+            0.0885,
+            0.0649,
+            0.0406,
+            0.0213875,
+            0.0086625,
+            0.0027375,
+            0.0006125,
+            0.000125,
             2.5e-05,
             0.0,
             0.0,
@@ -2767,18 +2802,18 @@
           ]
         },
         "U": {
-          "expectedSeats": 1.0349375,
+          "expectedSeats": 0.520725,
           "seatQuantiles": {
             "p05": 0.0,
-            "p50": 1.0,
-            "p95": 3.0
+            "p50": 0.0,
+            "p95": 2.0
           },
           "pmf": [
-            0.3236,
-            0.3876375,
-            0.2228625,
-            0.062025,
-            0.003875,
+            0.6079875,
+            0.2813375,
+            0.0928625,
+            0.0175875,
+            0.000225,
             0.0,
             0.0,
             0.0,
@@ -2894,17 +2929,17 @@
       },
       "control": {
         "description": "Counterfactual: all four modeled independent opposition contenders join Democratic caucus; King and Sanders remain there.",
-        "democraticMajorityProbability": 0.6337625,
-        "republicanMajorityProbability": 0.3662375,
+        "democraticMajorityProbability": 0.5598125,
+        "republicanMajorityProbability": 0.4401875,
         "unresolvedOrganizingProbability": 0.0
       },
       "seats": {
         "D": {
-          "expectedSeats": 51.8145125,
+          "expectedSeats": 51.1903125,
           "seatQuantiles": {
             "p05": 46.0,
-            "p50": 52.0,
-            "p95": 58.0
+            "p50": 51.0,
+            "p95": 57.0
           },
           "pmf": [
             0.0,
@@ -2948,31 +2983,31 @@
             0.0,
             0.0,
             2.5e-05,
-            5e-05,
-            0.0005125,
-            0.0023,
-            0.0064375,
-            0.016525,
-            0.030775,
-            0.050075,
-            0.070525,
-            0.0878625,
-            0.10115,
-            0.10765,
-            0.110225,
-            0.1017,
-            0.0883125,
-            0.074625,
-            0.0572375,
-            0.04055,
-            0.0269875,
-            0.01475,
-            0.0071375,
-            0.0033125,
-            0.00105,
-            0.000175,
-            3.75e-05,
-            1.25e-05,
+            0.000125,
+            0.0006125,
+            0.0027375,
+            0.0086625,
+            0.0213875,
+            0.0406,
+            0.0649,
+            0.0885,
+            0.102625,
+            0.1100125,
+            0.1100375,
+            0.106175,
+            0.0945125,
+            0.079,
+            0.060825,
+            0.044425,
+            0.0292625,
+            0.0179125,
+            0.009975,
+            0.0047125,
+            0.002225,
+            0.0005,
+            0.000225,
+            2.5e-05,
+            0.0,
             0.0,
             0.0,
             0.0,
@@ -3011,10 +3046,10 @@
           ]
         },
         "R": {
-          "expectedSeats": 48.1854875,
+          "expectedSeats": 48.8096875,
           "seatQuantiles": {
-            "p05": 42.0,
-            "p50": 48.0,
+            "p05": 43.0,
+            "p50": 49.0,
             "p95": 54.0
           },
           "pmf": [
@@ -3053,31 +3088,31 @@
             0.0,
             0.0,
             0.0,
-            1.25e-05,
-            3.75e-05,
-            0.000175,
-            0.00105,
-            0.0033125,
-            0.0071375,
-            0.01475,
-            0.0269875,
-            0.04055,
-            0.0572375,
-            0.074625,
-            0.0883125,
-            0.1017,
-            0.110225,
-            0.10765,
-            0.10115,
-            0.0878625,
-            0.070525,
-            0.050075,
-            0.030775,
-            0.016525,
-            0.0064375,
-            0.0023,
-            0.0005125,
-            5e-05,
+            0.0,
+            2.5e-05,
+            0.000225,
+            0.0005,
+            0.002225,
+            0.0047125,
+            0.009975,
+            0.0179125,
+            0.0292625,
+            0.044425,
+            0.060825,
+            0.079,
+            0.0945125,
+            0.106175,
+            0.1100375,
+            0.1100125,
+            0.102625,
+            0.0885,
+            0.0649,
+            0.0406,
+            0.0213875,
+            0.0086625,
+            0.0027375,
+            0.0006125,
+            0.000125,
             2.5e-05,
             0.0,
             0.0,
@@ -3249,13 +3284,13 @@
       },
       "control": {
         "description": "Counterfactual: all four modeled independent opposition contenders join Republican caucus; King and Sanders remain Democratic.",
-        "democraticMajorityProbability": 0.532825,
-        "republicanMajorityProbability": 0.467175,
+        "democraticMajorityProbability": 0.516525,
+        "republicanMajorityProbability": 0.483475,
         "unresolvedOrganizingProbability": 0.0
       },
       "seats": {
         "D": {
-          "expectedSeats": 50.779575,
+          "expectedSeats": 50.6695875,
           "seatQuantiles": {
             "p05": 46.0,
             "p50": 51.0,
@@ -3303,27 +3338,27 @@
             0.0,
             0.0,
             2.5e-05,
-            6.25e-05,
-            0.0006375,
-            0.0027375,
-            0.0085,
-            0.021375,
-            0.0406,
-            0.0667125,
-            0.0901875,
-            0.1117125,
-            0.124625,
-            0.126075,
-            0.1175375,
-            0.1020125,
-            0.0772875,
-            0.053825,
-            0.0320125,
-            0.015625,
-            0.0062875,
-            0.001725,
-            0.0004,
-            3.75e-05,
+            0.0001375,
+            0.0006,
+            0.0027875,
+            0.0092,
+            0.022525,
+            0.0441,
+            0.0708125,
+            0.0973375,
+            0.1131125,
+            0.1228375,
+            0.1232875,
+            0.1147875,
+            0.0984625,
+            0.075825,
+            0.0507875,
+            0.0301125,
+            0.0152,
+            0.0058375,
+            0.0018,
+            0.0003,
+            0.000125,
             0.0,
             0.0,
             0.0,
@@ -3366,7 +3401,7 @@
           ]
         },
         "R": {
-          "expectedSeats": 49.220425,
+          "expectedSeats": 49.3304125,
           "seatQuantiles": {
             "p05": 44.0,
             "p50": 49.0,
@@ -3412,27 +3447,27 @@
             0.0,
             0.0,
             0.0,
-            3.75e-05,
-            0.0004,
-            0.001725,
-            0.0062875,
-            0.015625,
-            0.0320125,
-            0.053825,
-            0.0772875,
-            0.1020125,
-            0.1175375,
-            0.126075,
-            0.124625,
-            0.1117125,
-            0.0901875,
-            0.0667125,
-            0.0406,
-            0.021375,
-            0.0085,
-            0.0027375,
-            0.0006375,
-            6.25e-05,
+            0.000125,
+            0.0003,
+            0.0018,
+            0.0058375,
+            0.0152,
+            0.0301125,
+            0.0507875,
+            0.075825,
+            0.0984625,
+            0.1147875,
+            0.1232875,
+            0.1228375,
+            0.1131125,
+            0.0973375,
+            0.0708125,
+            0.0441,
+            0.022525,
+            0.0092,
+            0.0027875,
+            0.0006,
+            0.0001375,
             2.5e-05,
             0.0,
             0.0,
@@ -3595,37 +3630,37 @@
     "simulationCount": 80000,
     "raceOrder": [
       "2026:RI:senate:regular",
-      "2026:DE:senate:regular",
       "2026:OR:senate:regular",
+      "2026:DE:senate:regular",
       "2026:MA:senate:regular",
       "2026:CO:senate:regular",
-      "2026:VA:senate:regular",
       "2026:NJ:senate:regular",
+      "2026:VA:senate:regular",
       "2026:NM:senate:regular",
       "2026:IL:senate:regular",
       "2026:GA:senate:regular",
-      "2026:NH:senate:regular",
       "2026:NC:senate:regular",
+      "2026:NH:senate:regular",
       "2026:MN:senate:regular",
       "2026:MI:senate:regular",
-      "2026:ME:senate:regular",
       "2026:TX:senate:regular",
       "2026:OH:senate:special",
+      "2026:ME:senate:regular",
       "2026:IA:senate:regular",
       "2026:AK:senate:regular",
-      "2026:ID:senate:regular",
-      "2026:MT:senate:regular",
       "2026:KS:senate:regular",
-      "2026:LA:senate:regular",
       "2026:NE:senate:regular",
       "2026:SC:senate:regular",
+      "2026:LA:senate:regular",
+      "2026:MT:senate:regular",
+      "2026:ID:senate:regular",
       "2026:FL:senate:special",
       "2026:KY:senate:regular",
+      "2026:MS:senate:regular",
       "2026:OK:senate:regular",
       "2026:AR:senate:regular",
-      "2026:MS:senate:regular",
-      "2026:AL:senate:regular",
       "2026:SD:senate:regular",
+      "2026:AL:senate:regular",
       "2026:WY:senate:regular",
       "2026:TN:senate:regular",
       "2026:WV:senate:regular"
@@ -3705,44 +3740,44 @@
           "requiredContestedWins": 17,
           "status": "reachable",
           "statusReason": null,
-          "projectedTippingRaceId": "2026:OH:senate:special",
-          "projectedMarginPp": -0.47840771194638254,
+          "projectedTippingRaceId": "2026:ME:senate:regular",
+          "projectedMarginPp": -0.2162676968637922,
           "frequencyByRace": {
-            "2026:AK:senate:regular": 0.0804875,
-            "2026:AL:senate:regular": 0.0001625,
-            "2026:AR:senate:regular": 0.0053,
-            "2026:CO:senate:regular": 0.003325,
-            "2026:DE:senate:regular": 0.0021375,
-            "2026:FL:senate:special": 0.022225,
-            "2026:GA:senate:regular": 0.0179875,
-            "2026:IA:senate:regular": 0.1048,
+            "2026:AK:senate:regular": 0.084275,
+            "2026:AL:senate:regular": 0.000125,
+            "2026:AR:senate:regular": 0.0043875,
+            "2026:CO:senate:regular": 0.0027125,
+            "2026:DE:senate:regular": 0.0021875,
+            "2026:FL:senate:special": 0.01475,
+            "2026:GA:senate:regular": 0.0176875,
+            "2026:IA:senate:regular": 0.10035,
             "2026:ID:senate:regular": 0.0,
-            "2026:IL:senate:regular": 0.006675,
-            "2026:KS:senate:regular": 0.08235,
-            "2026:KY:senate:regular": 0.0217375,
-            "2026:LA:senate:regular": 0.0359375,
+            "2026:IL:senate:regular": 0.0013,
+            "2026:KS:senate:regular": 0.0734625,
+            "2026:KY:senate:regular": 0.0211375,
+            "2026:LA:senate:regular": 0.0334875,
             "2026:MA:senate:regular": 0.0,
-            "2026:ME:senate:regular": 0.1034375,
-            "2026:MI:senate:regular": 0.0867125,
-            "2026:MN:senate:regular": 0.07585,
-            "2026:MS:senate:regular": 0.0101625,
+            "2026:ME:senate:regular": 0.1092625,
+            "2026:MI:senate:regular": 0.0944875,
+            "2026:MN:senate:regular": 0.0693,
+            "2026:MS:senate:regular": 0.0124,
             "2026:MT:senate:regular": 0.0,
-            "2026:NC:senate:regular": 0.027675,
+            "2026:NC:senate:regular": 0.01605,
             "2026:NE:senate:regular": 0.0,
-            "2026:NH:senate:regular": 0.0294625,
-            "2026:NJ:senate:regular": 0.0042,
-            "2026:NM:senate:regular": 0.001325,
-            "2026:OH:senate:special": 0.1,
-            "2026:OK:senate:regular": 0.016025,
-            "2026:OR:senate:regular": 0.00205,
+            "2026:NH:senate:regular": 0.0326125,
+            "2026:NJ:senate:regular": 0.003975,
+            "2026:NM:senate:regular": 0.001275,
+            "2026:OH:senate:special": 0.1068125,
+            "2026:OK:senate:regular": 0.016625,
+            "2026:OR:senate:regular": 0.0022125,
             "2026:RI:senate:regular": 0.0,
-            "2026:SC:senate:regular": 0.0372625,
+            "2026:SC:senate:regular": 0.0546625,
             "2026:SD:senate:regular": 0.0,
             "2026:TN:senate:regular": 2.5e-05,
-            "2026:TX:senate:regular": 0.11085,
-            "2026:VA:senate:regular": 0.004575,
-            "2026:WV:senate:regular": 0.0016125,
-            "2026:WY:senate:regular": 0.00565
+            "2026:TX:senate:regular": 0.112275,
+            "2026:VA:senate:regular": 0.004425,
+            "2026:WV:senate:regular": 0.002325,
+            "2026:WY:senate:regular": 0.0054125
           }
         },
         "R": {
@@ -3826,44 +3861,44 @@
           "requiredContestedWins": 19,
           "status": "reachable",
           "statusReason": null,
-          "projectedTippingRaceId": "2026:OH:senate:special",
-          "projectedMarginPp": 0.47840771194638254,
+          "projectedTippingRaceId": "2026:ME:senate:regular",
+          "projectedMarginPp": 0.21626769686380332,
           "frequencyByRace": {
-            "2026:AK:senate:regular": 0.0649125,
-            "2026:AL:senate:regular": 0.0001,
-            "2026:AR:senate:regular": 0.003025,
-            "2026:CO:senate:regular": 0.002825,
-            "2026:DE:senate:regular": 0.0024,
-            "2026:FL:senate:special": 0.0142375,
-            "2026:GA:senate:regular": 0.0199625,
-            "2026:IA:senate:regular": 0.0804125,
-            "2026:ID:senate:regular": 0.0488625,
-            "2026:IL:senate:regular": 0.00735,
-            "2026:KS:senate:regular": 0.0616125,
-            "2026:KY:senate:regular": 0.0176125,
-            "2026:LA:senate:regular": 0.0301,
+            "2026:AK:senate:regular": 0.0714625,
+            "2026:AL:senate:regular": 7.5e-05,
+            "2026:AR:senate:regular": 0.0036125,
+            "2026:CO:senate:regular": 0.002575,
+            "2026:DE:senate:regular": 0.0018375,
+            "2026:FL:senate:special": 0.0112875,
+            "2026:GA:senate:regular": 0.01785,
+            "2026:IA:senate:regular": 0.08495,
+            "2026:ID:senate:regular": 0.029675,
+            "2026:IL:senate:regular": 0.0016625,
+            "2026:KS:senate:regular": 0.0621,
+            "2026:KY:senate:regular": 0.0173875,
+            "2026:LA:senate:regular": 0.0302625,
             "2026:MA:senate:regular": 0.0,
-            "2026:ME:senate:regular": 0.08825,
-            "2026:MI:senate:regular": 0.08345,
-            "2026:MN:senate:regular": 0.0724375,
-            "2026:MS:senate:regular": 0.0087375,
-            "2026:MT:senate:regular": 0.061,
-            "2026:NC:senate:regular": 0.032725,
-            "2026:NE:senate:regular": 0.033225,
-            "2026:NH:senate:regular": 0.0330375,
-            "2026:NJ:senate:regular": 0.00395,
-            "2026:NM:senate:regular": 0.0017625,
-            "2026:OH:senate:special": 0.0816875,
-            "2026:OK:senate:regular": 0.012525,
-            "2026:OR:senate:regular": 0.002475,
+            "2026:ME:senate:regular": 0.0974625,
+            "2026:MI:senate:regular": 0.0882375,
+            "2026:MN:senate:regular": 0.0659125,
+            "2026:MS:senate:regular": 0.01065,
+            "2026:MT:senate:regular": 0.0347625,
+            "2026:NC:senate:regular": 0.0166125,
+            "2026:NE:senate:regular": 0.0455125,
+            "2026:NH:senate:regular": 0.0338125,
+            "2026:NJ:senate:regular": 0.0039,
+            "2026:NM:senate:regular": 0.0012375,
+            "2026:OH:senate:special": 0.094275,
+            "2026:OK:senate:regular": 0.0138,
+            "2026:OR:senate:regular": 0.002075,
             "2026:RI:senate:regular": 0.0,
-            "2026:SC:senate:regular": 0.0262875,
-            "2026:SD:senate:regular": 0.00435,
-            "2026:TN:senate:regular": 2.5e-05,
-            "2026:TX:senate:regular": 0.089975,
-            "2026:VA:senate:regular": 0.00465,
-            "2026:WV:senate:regular": 0.001575,
-            "2026:WY:senate:regular": 0.0044625
+            "2026:SC:senate:regular": 0.046075,
+            "2026:SD:senate:regular": 7.5e-05,
+            "2026:TN:senate:regular": 1.25e-05,
+            "2026:TX:senate:regular": 0.09995,
+            "2026:VA:senate:regular": 0.0040875,
+            "2026:WV:senate:regular": 0.0020625,
+            "2026:WY:senate:regular": 0.00475
           }
         }
       },
@@ -3949,44 +3984,44 @@
           "requiredContestedWins": 17,
           "status": "reachable",
           "statusReason": null,
-          "projectedTippingRaceId": "2026:OH:senate:special",
-          "projectedMarginPp": -0.47840771194638254,
+          "projectedTippingRaceId": "2026:ME:senate:regular",
+          "projectedMarginPp": -0.2162676968637922,
           "frequencyByRace": {
-            "2026:AK:senate:regular": 0.0649125,
-            "2026:AL:senate:regular": 0.0001,
-            "2026:AR:senate:regular": 0.003025,
-            "2026:CO:senate:regular": 0.002825,
-            "2026:DE:senate:regular": 0.0024,
-            "2026:FL:senate:special": 0.0142375,
-            "2026:GA:senate:regular": 0.0199625,
-            "2026:IA:senate:regular": 0.0804125,
-            "2026:ID:senate:regular": 0.0488625,
-            "2026:IL:senate:regular": 0.00735,
-            "2026:KS:senate:regular": 0.0616125,
-            "2026:KY:senate:regular": 0.0176125,
-            "2026:LA:senate:regular": 0.0301,
+            "2026:AK:senate:regular": 0.0714625,
+            "2026:AL:senate:regular": 7.5e-05,
+            "2026:AR:senate:regular": 0.0036125,
+            "2026:CO:senate:regular": 0.002575,
+            "2026:DE:senate:regular": 0.0018375,
+            "2026:FL:senate:special": 0.0112875,
+            "2026:GA:senate:regular": 0.01785,
+            "2026:IA:senate:regular": 0.08495,
+            "2026:ID:senate:regular": 0.029675,
+            "2026:IL:senate:regular": 0.0016625,
+            "2026:KS:senate:regular": 0.0621,
+            "2026:KY:senate:regular": 0.0173875,
+            "2026:LA:senate:regular": 0.0302625,
             "2026:MA:senate:regular": 0.0,
-            "2026:ME:senate:regular": 0.08825,
-            "2026:MI:senate:regular": 0.08345,
-            "2026:MN:senate:regular": 0.0724375,
-            "2026:MS:senate:regular": 0.0087375,
-            "2026:MT:senate:regular": 0.061,
-            "2026:NC:senate:regular": 0.032725,
-            "2026:NE:senate:regular": 0.033225,
-            "2026:NH:senate:regular": 0.0330375,
-            "2026:NJ:senate:regular": 0.00395,
-            "2026:NM:senate:regular": 0.0017625,
-            "2026:OH:senate:special": 0.0816875,
-            "2026:OK:senate:regular": 0.012525,
-            "2026:OR:senate:regular": 0.002475,
+            "2026:ME:senate:regular": 0.0974625,
+            "2026:MI:senate:regular": 0.0882375,
+            "2026:MN:senate:regular": 0.0659125,
+            "2026:MS:senate:regular": 0.01065,
+            "2026:MT:senate:regular": 0.0347625,
+            "2026:NC:senate:regular": 0.0166125,
+            "2026:NE:senate:regular": 0.0455125,
+            "2026:NH:senate:regular": 0.0338125,
+            "2026:NJ:senate:regular": 0.0039,
+            "2026:NM:senate:regular": 0.0012375,
+            "2026:OH:senate:special": 0.094275,
+            "2026:OK:senate:regular": 0.0138,
+            "2026:OR:senate:regular": 0.002075,
             "2026:RI:senate:regular": 0.0,
-            "2026:SC:senate:regular": 0.0262875,
-            "2026:SD:senate:regular": 0.00435,
-            "2026:TN:senate:regular": 2.5e-05,
-            "2026:TX:senate:regular": 0.089975,
-            "2026:VA:senate:regular": 0.00465,
-            "2026:WV:senate:regular": 0.001575,
-            "2026:WY:senate:regular": 0.0044625
+            "2026:SC:senate:regular": 0.046075,
+            "2026:SD:senate:regular": 7.5e-05,
+            "2026:TN:senate:regular": 1.25e-05,
+            "2026:TX:senate:regular": 0.09995,
+            "2026:VA:senate:regular": 0.0040875,
+            "2026:WV:senate:regular": 0.0020625,
+            "2026:WY:senate:regular": 0.00475
           }
         },
         "R": {
@@ -4070,44 +4105,44 @@
           "requiredContestedWins": 19,
           "status": "reachable",
           "statusReason": null,
-          "projectedTippingRaceId": "2026:OH:senate:special",
-          "projectedMarginPp": 0.47840771194638254,
+          "projectedTippingRaceId": "2026:ME:senate:regular",
+          "projectedMarginPp": 0.21626769686380332,
           "frequencyByRace": {
-            "2026:AK:senate:regular": 0.0649125,
-            "2026:AL:senate:regular": 0.0001,
-            "2026:AR:senate:regular": 0.003025,
-            "2026:CO:senate:regular": 0.002825,
-            "2026:DE:senate:regular": 0.0024,
-            "2026:FL:senate:special": 0.0142375,
-            "2026:GA:senate:regular": 0.0199625,
-            "2026:IA:senate:regular": 0.0804125,
-            "2026:ID:senate:regular": 0.0488625,
-            "2026:IL:senate:regular": 0.00735,
-            "2026:KS:senate:regular": 0.0616125,
-            "2026:KY:senate:regular": 0.0176125,
-            "2026:LA:senate:regular": 0.0301,
+            "2026:AK:senate:regular": 0.0714625,
+            "2026:AL:senate:regular": 7.5e-05,
+            "2026:AR:senate:regular": 0.0036125,
+            "2026:CO:senate:regular": 0.002575,
+            "2026:DE:senate:regular": 0.0018375,
+            "2026:FL:senate:special": 0.0112875,
+            "2026:GA:senate:regular": 0.01785,
+            "2026:IA:senate:regular": 0.08495,
+            "2026:ID:senate:regular": 0.029675,
+            "2026:IL:senate:regular": 0.0016625,
+            "2026:KS:senate:regular": 0.0621,
+            "2026:KY:senate:regular": 0.0173875,
+            "2026:LA:senate:regular": 0.0302625,
             "2026:MA:senate:regular": 0.0,
-            "2026:ME:senate:regular": 0.08825,
-            "2026:MI:senate:regular": 0.08345,
-            "2026:MN:senate:regular": 0.0724375,
-            "2026:MS:senate:regular": 0.0087375,
-            "2026:MT:senate:regular": 0.061,
-            "2026:NC:senate:regular": 0.032725,
-            "2026:NE:senate:regular": 0.033225,
-            "2026:NH:senate:regular": 0.0330375,
-            "2026:NJ:senate:regular": 0.00395,
-            "2026:NM:senate:regular": 0.0017625,
-            "2026:OH:senate:special": 0.0816875,
-            "2026:OK:senate:regular": 0.012525,
-            "2026:OR:senate:regular": 0.002475,
+            "2026:ME:senate:regular": 0.0974625,
+            "2026:MI:senate:regular": 0.0882375,
+            "2026:MN:senate:regular": 0.0659125,
+            "2026:MS:senate:regular": 0.01065,
+            "2026:MT:senate:regular": 0.0347625,
+            "2026:NC:senate:regular": 0.0166125,
+            "2026:NE:senate:regular": 0.0455125,
+            "2026:NH:senate:regular": 0.0338125,
+            "2026:NJ:senate:regular": 0.0039,
+            "2026:NM:senate:regular": 0.0012375,
+            "2026:OH:senate:special": 0.094275,
+            "2026:OK:senate:regular": 0.0138,
+            "2026:OR:senate:regular": 0.002075,
             "2026:RI:senate:regular": 0.0,
-            "2026:SC:senate:regular": 0.0262875,
-            "2026:SD:senate:regular": 0.00435,
-            "2026:TN:senate:regular": 2.5e-05,
-            "2026:TX:senate:regular": 0.089975,
-            "2026:VA:senate:regular": 0.00465,
-            "2026:WV:senate:regular": 0.001575,
-            "2026:WY:senate:regular": 0.0044625
+            "2026:SC:senate:regular": 0.046075,
+            "2026:SD:senate:regular": 7.5e-05,
+            "2026:TN:senate:regular": 1.25e-05,
+            "2026:TX:senate:regular": 0.09995,
+            "2026:VA:senate:regular": 0.0040875,
+            "2026:WV:senate:regular": 0.0020625,
+            "2026:WY:senate:regular": 0.00475
           }
         }
       },
@@ -4185,44 +4220,44 @@
           "requiredContestedWins": 17,
           "status": "reachable",
           "statusReason": null,
-          "projectedTippingRaceId": "2026:OH:senate:special",
-          "projectedMarginPp": -0.47840771194638254,
+          "projectedTippingRaceId": "2026:ME:senate:regular",
+          "projectedMarginPp": -0.2162676968637922,
           "frequencyByRace": {
-            "2026:AK:senate:regular": 0.0804875,
-            "2026:AL:senate:regular": 0.0001625,
-            "2026:AR:senate:regular": 0.0053,
-            "2026:CO:senate:regular": 0.003325,
-            "2026:DE:senate:regular": 0.0021375,
-            "2026:FL:senate:special": 0.022225,
-            "2026:GA:senate:regular": 0.0179875,
-            "2026:IA:senate:regular": 0.1048,
+            "2026:AK:senate:regular": 0.084275,
+            "2026:AL:senate:regular": 0.000125,
+            "2026:AR:senate:regular": 0.0043875,
+            "2026:CO:senate:regular": 0.0027125,
+            "2026:DE:senate:regular": 0.0021875,
+            "2026:FL:senate:special": 0.01475,
+            "2026:GA:senate:regular": 0.0176875,
+            "2026:IA:senate:regular": 0.10035,
             "2026:ID:senate:regular": 0.0,
-            "2026:IL:senate:regular": 0.006675,
-            "2026:KS:senate:regular": 0.08235,
-            "2026:KY:senate:regular": 0.0217375,
-            "2026:LA:senate:regular": 0.0359375,
+            "2026:IL:senate:regular": 0.0013,
+            "2026:KS:senate:regular": 0.0734625,
+            "2026:KY:senate:regular": 0.0211375,
+            "2026:LA:senate:regular": 0.0334875,
             "2026:MA:senate:regular": 0.0,
-            "2026:ME:senate:regular": 0.1034375,
-            "2026:MI:senate:regular": 0.0867125,
-            "2026:MN:senate:regular": 0.07585,
-            "2026:MS:senate:regular": 0.0101625,
+            "2026:ME:senate:regular": 0.1092625,
+            "2026:MI:senate:regular": 0.0944875,
+            "2026:MN:senate:regular": 0.0693,
+            "2026:MS:senate:regular": 0.0124,
             "2026:MT:senate:regular": 0.0,
-            "2026:NC:senate:regular": 0.027675,
+            "2026:NC:senate:regular": 0.01605,
             "2026:NE:senate:regular": 0.0,
-            "2026:NH:senate:regular": 0.0294625,
-            "2026:NJ:senate:regular": 0.0042,
-            "2026:NM:senate:regular": 0.001325,
-            "2026:OH:senate:special": 0.1,
-            "2026:OK:senate:regular": 0.016025,
-            "2026:OR:senate:regular": 0.00205,
+            "2026:NH:senate:regular": 0.0326125,
+            "2026:NJ:senate:regular": 0.003975,
+            "2026:NM:senate:regular": 0.001275,
+            "2026:OH:senate:special": 0.1068125,
+            "2026:OK:senate:regular": 0.016625,
+            "2026:OR:senate:regular": 0.0022125,
             "2026:RI:senate:regular": 0.0,
-            "2026:SC:senate:regular": 0.0372625,
+            "2026:SC:senate:regular": 0.0546625,
             "2026:SD:senate:regular": 0.0,
             "2026:TN:senate:regular": 2.5e-05,
-            "2026:TX:senate:regular": 0.11085,
-            "2026:VA:senate:regular": 0.004575,
-            "2026:WV:senate:regular": 0.0016125,
-            "2026:WY:senate:regular": 0.00565
+            "2026:TX:senate:regular": 0.112275,
+            "2026:VA:senate:regular": 0.004425,
+            "2026:WV:senate:regular": 0.002325,
+            "2026:WY:senate:regular": 0.0054125
           }
         },
         "R": {
@@ -4303,76 +4338,100 @@
           "requiredContestedWins": 15,
           "status": "reachable",
           "statusReason": null,
-          "projectedTippingRaceId": "2026:OH:senate:special",
-          "projectedMarginPp": 0.47840771194638254,
+          "projectedTippingRaceId": "2026:ME:senate:regular",
+          "projectedMarginPp": 0.21626769686380332,
           "frequencyByRace": {
-            "2026:AK:senate:regular": 0.0804875,
-            "2026:AL:senate:regular": 0.0001625,
-            "2026:AR:senate:regular": 0.0053,
-            "2026:CO:senate:regular": 0.003325,
-            "2026:DE:senate:regular": 0.0021375,
-            "2026:FL:senate:special": 0.022225,
-            "2026:GA:senate:regular": 0.0179875,
-            "2026:IA:senate:regular": 0.1048,
+            "2026:AK:senate:regular": 0.084275,
+            "2026:AL:senate:regular": 0.000125,
+            "2026:AR:senate:regular": 0.0043875,
+            "2026:CO:senate:regular": 0.0027125,
+            "2026:DE:senate:regular": 0.0021875,
+            "2026:FL:senate:special": 0.01475,
+            "2026:GA:senate:regular": 0.0176875,
+            "2026:IA:senate:regular": 0.10035,
             "2026:ID:senate:regular": 0.0,
-            "2026:IL:senate:regular": 0.006675,
-            "2026:KS:senate:regular": 0.08235,
-            "2026:KY:senate:regular": 0.0217375,
-            "2026:LA:senate:regular": 0.0359375,
+            "2026:IL:senate:regular": 0.0013,
+            "2026:KS:senate:regular": 0.0734625,
+            "2026:KY:senate:regular": 0.0211375,
+            "2026:LA:senate:regular": 0.0334875,
             "2026:MA:senate:regular": 0.0,
-            "2026:ME:senate:regular": 0.1034375,
-            "2026:MI:senate:regular": 0.0867125,
-            "2026:MN:senate:regular": 0.07585,
-            "2026:MS:senate:regular": 0.0101625,
+            "2026:ME:senate:regular": 0.1092625,
+            "2026:MI:senate:regular": 0.0944875,
+            "2026:MN:senate:regular": 0.0693,
+            "2026:MS:senate:regular": 0.0124,
             "2026:MT:senate:regular": 0.0,
-            "2026:NC:senate:regular": 0.027675,
+            "2026:NC:senate:regular": 0.01605,
             "2026:NE:senate:regular": 0.0,
-            "2026:NH:senate:regular": 0.0294625,
-            "2026:NJ:senate:regular": 0.0042,
-            "2026:NM:senate:regular": 0.001325,
-            "2026:OH:senate:special": 0.1,
-            "2026:OK:senate:regular": 0.016025,
-            "2026:OR:senate:regular": 0.00205,
+            "2026:NH:senate:regular": 0.0326125,
+            "2026:NJ:senate:regular": 0.003975,
+            "2026:NM:senate:regular": 0.001275,
+            "2026:OH:senate:special": 0.1068125,
+            "2026:OK:senate:regular": 0.016625,
+            "2026:OR:senate:regular": 0.0022125,
             "2026:RI:senate:regular": 0.0,
-            "2026:SC:senate:regular": 0.0372625,
+            "2026:SC:senate:regular": 0.0546625,
             "2026:SD:senate:regular": 0.0,
             "2026:TN:senate:regular": 2.5e-05,
-            "2026:TX:senate:regular": 0.11085,
-            "2026:VA:senate:regular": 0.004575,
-            "2026:WV:senate:regular": 0.0016125,
-            "2026:WY:senate:regular": 0.00565
+            "2026:TX:senate:regular": 0.112275,
+            "2026:VA:senate:regular": 0.004425,
+            "2026:WV:senate:regular": 0.002325,
+            "2026:WY:senate:regular": 0.0054125
           }
         }
       }
     }
   },
   "limitations": [
-    "Explicit35-principal-pair approximation with65 fixed non-up holders; preserved rule and omitted-option assumptions.",
-    "Four independent first contenders in ID/MT/NE/SD retain I party labels. D/R-trained candidate and national/context coefficients are borrowed for their opposition-share proxies without empirical transfer qualification.",
-    "This current proxy chamber target is separate from the matched historical ordinary-D/R plus categorical-fallback chamber law.",
-    "Poll likelihood and covariance are the exact saved49-observation fixed empirical comparator; covariance estimation uncertainty is not integrated.",
-    "Additional future draws do not improve the finite historical posterior bank effective sample size.",
-    "No2026 outcome or accuracy claim; historical final-roster proxy and source revision qualifications remain in the panel receipt.",
-    "Frozen nonpoll inputs have2026-10-20T15:21:23Z cutoff; the preserved49-poll batch has its separate saved acquisition cutoff. These timestamps are not collapsed."
+    "Unchanged fundamentals reference: Explicit35-principal-pair approximation with65 fixed non-up holders; preserved rule and omitted-option assumptions.",
+    "Unchanged fundamentals reference: Four independent first contenders in ID/MT/NE/SD retain I party labels. D/R-trained candidate and national/context coefficients are borrowed for their opposition-share proxies without empirical transfer qualification.",
+    "Unchanged fundamentals reference: This current proxy chamber target is separate from the matched historical ordinary-D/R plus categorical-fallback chamber law.",
+    "Unchanged fundamentals reference: Poll likelihood and covariance are the exact saved49-observation fixed empirical comparator; covariance estimation uncertainty is not integrated.",
+    "Unchanged fundamentals reference: Additional future draws do not improve the finite historical posterior bank effective sample size.",
+    "Unchanged fundamentals reference: No2026 outcome or accuracy claim; historical final-roster proxy and source revision qualifications remain in the panel receipt.",
+    "Unchanged fundamentals reference: Frozen nonpoll inputs have2026-10-20T15:21:23Z cutoff; the preserved49-poll batch has its separate saved acquisition cutoff. These timestamps are not collapsed.",
+    "Superseded polling edition: Explicit35-principal-pair approximation with65 fixed non-up holders; preserved rule and omitted-option assumptions.",
+    "Superseded polling edition: Four independent first contenders in ID/MT/NE/SD retain I party labels. D/R-trained candidate and national/context coefficients are borrowed for their opposition-share proxies without empirical transfer qualification.",
+    "Superseded polling edition: This current proxy chamber target is separate from the matched historical ordinary-D/R plus categorical-fallback chamber law.",
+    "Superseded polling edition: Poll likelihood and covariance are the exact saved49-observation fixed empirical comparator; covariance estimation uncertainty is not integrated.",
+    "Superseded polling edition: Additional future draws do not improve the finite historical posterior bank effective sample size.",
+    "Superseded polling edition: No2026 outcome or accuracy claim; historical final-roster proxy and source revision qualifications remain in the panel receipt.",
+    "Superseded polling edition: Frozen nonpoll inputs have2026-10-20T15:21:23Z cutoff; the preserved49-poll batch has its separate saved acquisition cutoff. These timestamps are not collapsed.",
+    "Original posterior qualification: Explicit35-principal-pair approximation with65 fixed non-up holders; preserved rule and omitted-option assumptions.",
+    "Original posterior qualification: Four independent first contenders in ID/MT/NE/SD retain I party labels. D/R-trained candidate and national/context coefficients are borrowed for their opposition-share proxies without empirical transfer qualification.",
+    "Original posterior qualification: This current proxy chamber target is separate from the matched historical ordinary-D/R plus categorical-fallback chamber law.",
+    "Original posterior qualification: Poll likelihood and covariance are the exact saved49-observation fixed empirical comparator; covariance estimation uncertainty is not integrated.",
+    "Original posterior qualification: Additional future draws do not improve the finite historical posterior bank effective sample size.",
+    "Original posterior qualification: No2026 outcome or accuracy claim; historical final-roster proxy and source revision qualifications remain in the panel receipt.",
+    "Original posterior qualification: Frozen nonpoll inputs have2026-10-20T15:21:23Z cutoff; the preserved49-poll batch has its separate saved acquisition cutoff. These timestamps are not collapsed.",
+    "Original posterior qualification: Existing principal-pair aggregate approximation and omitted-option/rule qualifications retained.",
+    "Original posterior qualification: Historical conditional calibration and structural priors reused without retraining or covariance uncertainty integration.",
+    "Original posterior qualification: No F outputs redrawn; each alternative FP is an independently selected fundamentals/polling combination.",
+    "Original posterior qualification: Source admission belongs to the separately pinned root review, not this execution adapter.",
+    "Existing principal-pair aggregate approximation and omitted-option/rule qualifications retained.",
+    "Historical conditional calibration and structural priors reused without retraining or covariance uncertainty integration.",
+    "No F outputs redrawn; each alternative FP is an independently selected fundamentals/polling combination.",
+    "Source admission belongs to the separately pinned root review, not this execution adapter.",
+    "Historical calibration retains its original training plan and cutoff. This refresh changes only current polling observations; it is not recalibration.",
+    "All35 contests audited;131 qualified observations are a bounded primary-source subset, not every public polling release. Discovery-only and access/measurement holds remain in candidate/source catalogs.",
+    "Public primary evidence is chiefly preserved web-rendered content. Original primary HTML/PDF bytes generally unavailable; raw derivative CSV bytes have separate immutable Git provenance.",
+    "Exact posting dates remain unknown for22 selected observations; conservative availability bounds are preserved rather than fabricated release dates.",
+    "Historic conditional poll-error calibration reused, including parameter-uncertainty and mixed-universe approximations. This update is not retraining or empirical validation."
   ],
   "historicalNote": null,
   "provenance": {
     "sources": {
-      "interfaceReceiptSha256": "85f38310f650fc7eb0b18739f36e36a3a7457602cb5e42f328a89f1b58bb1ece",
-      "comparisonIndexSha256": "5509cb76888ca329728c299052d764370fd98551dc65e62e8ffda0723d96a357",
-      "executionSealSha256": "e5b904a2d4cd10cd30d702bd883db99238711a5c441835522b02563a17e8906d",
-      "receiptSha256": "67c6d75ece01c8e04a3bd7632f7249d4850c9c9899385fb822007e027b4198a7",
-      "planSha256": "7c15088764631b03adf31d8b31c88ecfcdd8985bec2094ac55c0ac866dc87f4c",
+      "handoffSha256": "53ecb8ea7c322932a64784453a00bd4181c7e95cea474c2f843e5b0e0bcd356b",
+      "sourceAdmissionReviewSha256": "1e877076277427215e503f575ce555c3c8a49bbacd6923e8affb58c9c9a45568",
+      "independentAllArmReviewSha256": "bba67ec05628647a1bfd66fbede6359e93713a0730339567084ba92f1b4a8217",
+      "forecastSha256": "81d6a553197300d8a21dc605982c5b3b29c63b8795701ac5268dacc9dca9a256",
+      "jointDrawsSha256": "4f9aba7a84ffc96acb21e0ed8e52fe4b1a1cf1572aa061efc88cb414ac097f1c",
+      "chamberDrawsSha256": "0e0ef5271c910b6bd3162dc4c698c25fc022af0892e96f381426487dc58ee7b2",
+      "runSpecificationSha256": "4c7e9e97019fdd2b2c30e137201c32a1027ee28c216f5695abac07f41c959f0f",
+      "numericalGatesSha256": "b95ce089b2c889951079a2e2618f505f9cab288ad03be7ffb8aa25661026075a",
+      "receiptSha256": "9841293a2c9f9846f47e828967bab6f8f4745f8aa4cbbbf34de486dc750b1289",
       "frozenInputsSha256": "49d175f0c442b911e92710bb8f6d2082bf4ed8fdb675e2c57f306a194266262c",
-      "chamber-draws_npz": "5d799b12bfced49fa15c21fe5d2f3603e97ac963653c5c6d82240b47d053cfbf",
-      "diagnostics_json": "2b7da8c874bd78d6b59a45aa56ec6849af589b315e9a0087919bad383a84ccdd",
-      "forecast_json": "8e9865405e77716ee09fdbdc6fbadc6990c84540e51f93927f3bf07dd07af2b7",
-      "joint-draws_npz": "6bafe2af09d4ddf95eaa0323f0f4d09ddfa097be27692138e1fa5919f80a2dfd",
-      "numerical-gates_json": "b95ce089b2c889951079a2e2618f505f9cab288ad03be7ffb8aa25661026075a",
-      "race-forecast_csv": "e928e93728f858124490fb7d977a759243af3580e735c2cdf2089862ebeb01b3",
-      "forecastSha256": "8e9865405e77716ee09fdbdc6fbadc6990c84540e51f93927f3bf07dd07af2b7",
-      "jointDrawsSha256": "6bafe2af09d4ddf95eaa0323f0f4d09ddfa097be27692138e1fa5919f80a2dfd",
-      "chamberDrawsSha256": "5d799b12bfced49fa15c21fe5d2f3603e97ac963653c5c6d82240b47d053cfbf"
+      "unchangedFundamentalsSha256": "8645590b55a8dec64e80d5d991303128f2b2306bc3890d6db4f1ff3d41ab8f2c",
+      "supersededForecastSha256": "8e9865405e77716ee09fdbdc6fbadc6990c84540e51f93927f3bf07dd07af2b7"
     }
   }
 }

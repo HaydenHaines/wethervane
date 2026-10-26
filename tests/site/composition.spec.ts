@@ -8,7 +8,11 @@ async function expandControls(page: Page) {
   await expect(controls).toHaveAttribute("open", "");
 }
 
-test("saved current research comparisons update the forecast and compare only matching definitions", async ({ page }) => {
+test("saved current research comparisons update the forecast and reject cross-date comparisons", async ({ page, request }) => {
+  const pollingEdition = await (await request.get("/data/explorer/current-comparison-senate_relative_context_v1-fp.json")).json();
+  const inputTimes = pollingEdition.run.inputCutoffs.map((cutoff: { label: string; at: string }) =>
+    `${cutoff.label}: ${new Date(cutoff.at).toUTCString()}`,
+  );
   await page.goto("/?run=current-polling");
   await expandControls(page);
   await page.getByLabel("Base model", { exact: true }).selectOption("senate_relative_context_v1");
@@ -18,12 +22,15 @@ test("saved current research comparisons update the forecast and compare only ma
   await expect(page.getByRole("region", { name: "The path to a majority", exact: true })).toBeVisible();
   await expect(page.getByRole("region", { name: "Who could control the chamber?", exact: true })).toBeVisible();
   await page.getByText("Input and publication times", { exact: true }).click();
-  await expect(page.locator(".edition-inputs")).toContainText("15:21:23 GMT");
-  await expect(page.locator(".edition-inputs")).toContainText("16:21:44 GMT");
+  for (const inputTime of inputTimes) await expect(page.locator(".edition-inputs")).toContainText(inputTime);
+  await expect(page.locator(".edition-inputs")).toContainText("Polling inputs: Mon, 26 Oct 2026 15:03:57 GMT");
   await page.getByRole("checkbox", { name: "Compare default", exact: true }).check();
   await expect(page.locator(".compare-banner").filter({ hasText: "Comparing with" })).toContainText("different forecast definitions");
-  await page.getByLabel("Comparison baseline", { exact: true }).selectOption("current-comparison-senate_relative_context_v1-f");
-  await expect(page.locator(".compare-banner").filter({ hasText: "Comparing with" })).toContainText("Changes compare the same races");
+  const baseline = page.getByLabel("Comparison baseline", { exact: true });
+  await expect(baseline.locator('option[value="current-comparison-senate_relative_context_v1-f"]')).toHaveCount(0);
+  await baseline.selectOption("current-comparison-senate_history_refreshed_v1-fp");
+  const compatibleComparison = page.locator(".compare-banner").filter({ hasText: "Comparing with" });
+  await expect(compatibleComparison).toContainText("Changes compare the same races");
   await page.getByRole("checkbox", { name: "Include polling evidence", exact: true }).uncheck();
   await expect(page).toHaveURL(/run=current-comparison-senate_relative_context_v1-f(?:&|$)/);
   await expect(page.getByRole("region", { name: "How this model did", exact: true })).toHaveCount(0);
@@ -73,6 +80,10 @@ test("historical scorecard distinguishes outcome hits, probability error, and ac
 
 test("an explicitly uncomputed fixture stays separate from the saved result and cannot be saved as ready", async ({ page, request }) => {
   const catalog = await (await request.get("/api/configurations/catalog")).json() as CompositionCatalog;
+  const currentEdition = await (await request.get("/data/explorer/current-polling.json")).json();
+  const nebraskaProbability = currentEdition.races
+    .find((race: { id: string }) => race.id === "2026:NE:senate:regular")
+    .outcomes.find((outcome: { name: string }) => outcome.name === "Dan Osborn").winProbability;
   const experimental = catalog.computation.find((entry) => entry.years.includes(2026))!;
   // All currently supported 2026 combinations are now saved. Exercise future
   // pending-result behavior explicitly, without mislabeling a live configuration.
@@ -87,9 +98,10 @@ test("an explicitly uncomputed fixture stays separate from the saved result and 
       outputs: ["race-probabilities"], executionAvailable: false,
     } });
   });
+  const unresolvedControl = `${(100 * currentEdition.scenarios.find((item: { id: string }) => item.id === currentEdition.defaultScenarioId).control.unresolvedOrganizingProbability).toFixed(1)}%`;
   await page.goto("/?run=current-polling&race=2026%3ANE%3Asenate%3Aregular");
   const chamber = page.getByRole("region", { name: "Who could control the chamber?", exact: true });
-  await expect(chamber).toContainText("8.3%");
+  await expect(chamber.getByText(unresolvedControl, { exact: true })).toBeVisible();
   const savedChamber = await chamber.innerText();
   await expandControls(page);
   await page.getByLabel("Base model", { exact: true }).selectOption(experimental.baseId);
@@ -98,7 +110,7 @@ test("an explicitly uncomputed fixture stays separate from the saved result and 
   await expect(state).toContainText("Still displaying");
   await expect(page).toHaveURL(/run=current-polling/);
   await expect(chamber).toHaveText(savedChamber, {useInnerText:true});
-  await expect(page.getByRole("complementary").getByText("14.2%", { exact: true })).toBeVisible();
+  await expect(page.getByRole("complementary").getByText(`${(100 * nebraskaProbability).toFixed(1)}%`, { exact: true })).toBeVisible();
   await expect(page.locator(".stack-builder-summary")).toContainText("Requires computation");
   await page.locator("details.composition-saved > summary").click();
   await page.getByLabel("Name this view", { exact: true }).fill("Uncomputed request");

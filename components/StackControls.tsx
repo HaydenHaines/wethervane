@@ -268,7 +268,7 @@ export default function StackControls({
             <p>
               {dates.length === 1
                 ? "One saved forecast date is available."
-                : "Choose an available forecast date."}
+                : "Choose an available forecast date. Each date has its own saved component combinations; changing a component can switch to its saved edition."}
               {year === run.year && run.horizonDays !== null
                 ? ` ${run.horizonDays} days before the election.`
                 : ""}
@@ -315,7 +315,7 @@ export default function StackControls({
             {run.historical
               ? " · Historical reconstruction"
               : " · Research preview"}
-            .
+            {` · ${run.dateLabel} (${run.dateId}).`}
           </p>
           {resolution && !matchesDisplayed && <details className="selection-explanation">
             <summary>{resolution.state === "requires_computation" ? "Why this needs a new calculation" : resolution.state === "incompatible" ? "Why these choices cannot be combined" : "About the requested result"}</summary>
@@ -354,7 +354,7 @@ export default function StackControls({
               disabled={busy}
               onChange={(e) => onBaseline(e.target.value || null)}
             >
-              <option value="" disabled={!defaultComparable}>{run.year} default{defaultComparable ? "" : " · Different forecast definition"}</option>
+              <option value="" disabled={!defaultComparable}>{run.year} default{defaultComparable ? "" : " · Different edition or forecast definition"}</option>
               {unknownBaseline && (
                 <option value={baselineRunId!} disabled>
                   Unavailable comparison
@@ -372,7 +372,7 @@ export default function StackControls({
               date. The historical scorecard uses this reference; the checkbox
               adds comparison details below.
             </p>
-            {!defaultComparable && <p>The default uses a different forecast definition. Select one of the matching saved comparisons here to see changes between models.</p>}
+            {!defaultComparable && <p>The default uses a different saved edition or forecast definition. Comparisons require the same date, target and outcome rules; select a matching saved comparison when one is available.</p>}
           </div>
           <details className="composition-saved">
             <summary>

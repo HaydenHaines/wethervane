@@ -9,9 +9,10 @@ import type {
 } from "../lib/explorer-types";
 import type { RaceForecast } from "../lib/site-types";
 import {
-  availableRuns,
   defaultRun,
   parseSelection,
+  selectRunForComponents,
+  selectRunForDate,
   selectRunForYear,
   serializeSelection,
   validateExplorerBundle,
@@ -379,10 +380,10 @@ export default function SenateExplorer({ onStudy }: { onStudy: () => void }) {
         message,
       );
   }
-  async function resolveRequest(request: CompositionRequest) {
+  async function resolveRequest(request: CompositionRequest, message: string | null = null) {
     if (!registry || !selection) return;
     const ticket = ++requestId.current;
-    setDraft(request); setResolution(null); setBusy(true); setError(""); setNotice(null);
+    setDraft(request); setResolution(null); setBusy(true); setError(""); setNotice(message);
     try {
       const response = await fetch("/api/configurations/resolve", {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(request)});
       if (!response.ok) throw Error("The selected configuration could not be checked. Try again or reset the stack.");
@@ -390,7 +391,7 @@ export default function SenateExplorer({ onStudy }: { onStudy: () => void }) {
       if (ticket !== requestId.current) return;
       setResolution(result); setDraft(result.request);
       if (result.state === "ready" && result.run) {
-        await open(registry, {...selection,runId:result.run.id}, "push");
+        await open(registry, {...selection,runId:result.run.id}, "push", message);
       } else setBusy(false);
     } catch (e) {
       if (ticket === requestId.current) {
@@ -399,7 +400,15 @@ export default function SenateExplorer({ onStudy }: { onStudy: () => void }) {
     }
   }
   function components(values: Record<string,string>) {
-    if (capabilities && draft) void resolveRequest({...draft,presetId:undefined,components:{...draft.components,...values}});
+    if (!capabilities || !draft || !registry || !bundle) return;
+    const desired = { ...draft.components, ...values };
+    const choice = selectRunForComponents(registry, bundle.run, desired);
+    const exact = choice.run.year === draft.year &&
+      ["base", "polling", "uncertainty"].every(field => choice.run.components[field as keyof typeof choice.run.components] === desired[field]);
+    // Construct a new explicit request from the actual saved run. The server
+    // resolver continues to require the exact date; it never substitutes one.
+    void resolveRequest(exact ? requestForRun(capabilities, choice.run) :
+      { ...draft, presetId: undefined, components: desired }, choice.notice);
   }
   function preset(id: string) {
     const entry = capabilities?.presets.find(p => p.id === id);
@@ -516,15 +525,12 @@ export default function SenateExplorer({ onStudy }: { onStudy: () => void }) {
               choose(c.run, c.notice);
             }}
             onDate={(id) => {
-              const choices = availableRuns(registry, bundle.run.year, id);
-              const run =
-                choices.find(
-                  (r) =>
-                    JSON.stringify(r.components) ===
-                    JSON.stringify(bundle.run.components),
-                ) || choices[0];
-              if (run)
-                choose(run, "Showing an available saved stack for this date.");
+              const choice = selectRunForDate(registry, bundle.run, id);
+              const components = capabilities?.slots.map(slot => {
+                const value = choice.run.components[slot.id as keyof typeof choice.run.components];
+                return `${slot.label}: ${slot.options.find(option => option.id === value)?.label || value}`;
+              }).join("; ");
+              choose(choice.run, [choice.notice, components ? `Selected components: ${components}.` : null].filter(Boolean).join(" "));
             }}
             onComponents={components}
             onCompare={(compare) => patch({ compare })}
@@ -568,7 +574,7 @@ export default function SenateExplorer({ onStudy }: { onStudy: () => void }) {
                     ? forecastLabel(reference.run.label) +
                       ". Changes compare the same races, possible winners and party-alliance assumptions. A percentage point (pp) is the difference between two percentages."
                     : baseline
-                      ? "Comparison unavailable: these results use different forecast definitions or assumptions. Choose a matching saved comparison in Build your perspective."
+                      ? "Comparison unavailable: these results use different forecast definitions, saved dates or assumptions. Choose a matching saved comparison in Build your perspective."
                       : "Loading the selected comparison…"}
               </span>
               {reference && !referenceScenario && (
