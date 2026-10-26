@@ -28,19 +28,19 @@ function compile(relative) {
   compiled.add(relative);
   const source = join(root, relative);
   if (relative.endsWith(".json")) {
-    const destination = join(directory, relative);
+    const destination = join(directory, `${relative}.js`);
     mkdirSync(dirname(destination), { recursive: true });
-    writeFileSync(destination, readFileSync(source));
+    writeFileSync(destination, `export default JSON.parse(${JSON.stringify(readFileSync(source, "utf8"))});\n`);
     return;
   }
   let output = ts.transpileModule(readFileSync(source, "utf8"), { fileName: source,
     compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext, jsx: ts.JsxEmit.ReactJSX } }).outputText;
-  output = output.replace(/(from\s*|import\s*)(["'])(\.[^"']+)\2/g, (match, prefix, quote, specifier) => {
+  output = output.replace(/(from\s*|import\s*)(["'])(\.[^"']+)\2(?:\s+with\s*\{\s*type\s*:\s*["']json["']\s*\})?/g, (match, prefix, quote, specifier) => {
     const target = resolve(dirname(source), specifier);
     const filename = [target, `${target}.ts`, `${target}.tsx`].find(path => existsSync(path));
     assert.ok(filename, `Cannot resolve ${specifier} from ${source}`);
     compile(filename.slice(root.length + 1));
-    return `${prefix}${quote}${filename.endsWith(".json") ? specifier : `${specifier.replace(/\.tsx?$/, "")}.js`}${quote}${filename.endsWith(".json") ? ' with { type: "json" }' : ""}`;
+    return `${prefix}${quote}${filename.endsWith(".json") ? `${specifier}.js` : `${specifier.replace(/\.tsx?$/, "")}.js`}${quote}`;
   });
   const destination = join(directory, relative.replace(/\.tsx?$/, ".js"));
   mkdirSync(dirname(destination), { recursive: true });
