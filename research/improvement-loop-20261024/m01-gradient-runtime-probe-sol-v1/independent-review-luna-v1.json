@@ -1,0 +1,31 @@
+{
+  "schema": "TinyGradientRuntimeProbeIndependentReviewV1",
+  "reviewer": "luna",
+  "verdict": "microprobe_reproduced_and_scoped_correctly",
+  "artifacts": {
+    "probe.py": "44708be6adab2496d381fdf25cda01014c565815439ef41922fca8b8f0ae881e",
+    "result.json": "a344534642508c8fe5fe1b348f2c9acfbf2fa530f62cf042c156630f8b720d79",
+    "probe.log": "8b6d92d57042974b1d32f37570343e1e81234ffa0f3d01ac7b3ee2f29e529b70",
+    "fast_compile-failure.log": "86cf9c800bfcf6909ebc4d90e6077799dc38d4b7f1f6cea045386953e6d33d07",
+    "FINDINGS.md": "d505b92a736b2b03f0a9cde3a335a1ad047d8b8eb400b912adbdfc70ed1b92da"
+  },
+  "findings": [
+    "All hashes in evidence.json match the saved files. The probe SHA in result.json also matches probe.py.",
+    "The FAST_COMPILE traceback identifies a 40-input Add whose inputs are the 40 derivative contributions (0.74, 0.54, ..., -7.06). Symbolic gradient construction succeeds; evaluation through the no-C FAST_COMPILE linker fails with Scratchpad missing ufunc. This is a faithful reproduction of the small large-Add failure mode.",
+    "I copied probe.py to an isolated /tmp directory and ran it with the documented calibration interpreter, cxx=, float64, one-thread environment, and PyTensor/Numba caches confined to that temporary directory. FAST_COMPILE failed on the same 40-input Add; NUMBA passed with loss 153.15599999999998 and gradient -126.39999999999999. The original evidence files were not overwritten.",
+    "The independent closed forms are loss=40*x^2 - 2*x*sum(a) + sum(a^2)=153.156 and derivative=80*x-2*sum(a)=-126.4 for x=0.37 and a=0,0.1,...,3.9. The Numba values agree to floating-point precision.",
+    "Runtime evidence records Python executable, NumPy 2.5.4, PyTensor 2.38.2, Numba 0.68.0, llvmlite 0.50.0, import paths, cxx='', and one-thread settings. The probe does not import or rebuild the native model and does not invoke C compilation. cxx='' establishes that PyTensor C compilation is disabled for this run; it does not prove no C compiler is installed on the host."
+  ],
+  "relevance_and_limit": [
+    "This is relevant evidence that an already installed PyTensor Numba linker can evaluate and differentiate one scalar graph containing a 40-way Add that fails under the no-C FAST_COMPILE linker.",
+    "It is insufficient evidence for the actual 662-coordinate model gradient. The fixture has one scalar and only quadratic terms; it does not cover the native graph's operations, transformations, custom factors, memory/runtime behavior, or full-gradient correctness. Numba support and parity for the real graph remain untested."
+  ],
+  "defects": [],
+  "independent_execution": {
+    "performed": true,
+    "scope": "One tiny scalar fixture copied to an isolated temporary directory; no native graph, fit, sampler, owner file, or original probe artifact was modified.",
+    "fast_compile": "failed on 40-input Add as recorded",
+    "numba": "passed; same loss and gradient as closed form",
+    "numba_elapsed_seconds": 0.558
+  }
+}

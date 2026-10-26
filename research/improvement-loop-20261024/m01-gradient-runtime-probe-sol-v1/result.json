@@ -1,0 +1,55 @@
+{
+  "schema": "TinyGradientRuntimeProbeV1",
+  "scope": "40-contribution scalar fixture only. No actual M01 graph/model build or full662 gradient claim.",
+  "fixture": {
+    "contributions": 40,
+    "point": 0.37,
+    "expected_loss": 153.15599999999998,
+    "expected_gradient": -126.39999999999999
+  },
+  "results": [
+    {
+      "mode": "FAST_COMPILE",
+      "status": "failed",
+      "error": "AttributeError('\\'Scratchpad\\' object has no attribute \\'ufunc\\'\\nApply node that caused the error: Add(Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0)\\nToposort index: 79\\nInputs types: [TensorType(float64, shape=()), TensorType(float64, shape=()), TensorType(float64, shape=()), TensorType(float64, shape=()), TensorType(float64, shape=()), TensorType(float64, shape=()), TensorType(float64, shape=()), TensorType(float64, shape=()), TensorType(float64, shape=()), TensorType(float64, shape=()), TensorType(float64, shape=()), TensorType(float64, shape=()), TensorType(float64, shape=()), TensorType(float64, shape=()), TensorType(float64, shape=()), TensorType(float64, shape=()), TensorType(float64, shape=()), TensorType(float64, shape=()), TensorType(float64, shape=()), TensorType(float64, shape=()), TensorType(float64, shape=()), TensorType(float64, shape=()), TensorType(float64, shape=()), TensorType(float64, shape=()), TensorType(float64, shape=()), TensorType(float64, shape=()), TensorType(float64, shape=()), TensorType(float64, shape=()), TensorType(float64, shape=()), TensorType(float64, shape=()), TensorType(float64, shape=()), TensorType(float64, shape=()), TensorType(float64, shape=()), TensorType(float64, shape=()), TensorType(float64, shape=()), TensorType(float64, shape=()), TensorType(float64, shape=()), TensorType(float64, shape=()), TensorType(float64, shape=()), TensorType(float64, shape=())]\\nInputs shapes: [(), (), (), (), (), (), (), (), (), (), (), (), (), (), (), (), (), (), (), (), (), (), (), (), (), (), (), (), (), (), (), (), (), (), (), (), (), (), (), ()]\\nInputs strides: [(), (), (), (), (), (), (), (), (), (), (), (), (), (), (), (), (), (), (), (), (), (), (), (), (), (), (), (), (), (), (), (), (), (), (), (), (), (), (), ()]\\nInputs values: [array(0.74), array(0.54), array(0.34), array(0.14), array(-0.06), array(-0.26), array(-0.46), array(-0.66), array(-0.86), array(-1.06), array(-1.26), array(-1.46), array(-1.66), array(-1.86), array(-2.06), array(-2.26), array(-2.46), array(-2.66), array(-2.86), array(-3.06), array(-3.26), array(-3.46), array(-3.66), array(-3.86), array(-4.06), array(-4.26), array(-4.46), array(-4.66), array(-4.86), array(-5.06), array(-5.26), array(-5.46), array(-5.66), array(-5.86), array(-6.06), array(-6.26), array(-6.46), array(-6.66), array(-6.86), array(-7.06)]\\nOutputs clients: [[output[1](Add.0)]]\\n\\nBacktrace when the node is created (use PyTensor flag traceback__limit=N to make it longer):\\n  File \"/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-gradient-runtime-probe-sol-v1/probe.py\", line 10, in <module>\\n    terms=[(x-float(a))**2 for a in offsets];loss=pt.add(*terms);gradient=pt.grad(loss,x)\\n  File \"/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/lib/python3.12/site-packages/pytensor/gradient.py\", line 747, in grad\\n    _rval: Sequence[Variable] = _populate_grad_dict(\\n  File \"/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/lib/python3.12/site-packages/pytensor/gradient.py\", line 1541, in _populate_grad_dict\\n    rval = [access_grad_cache(elem) for elem in wrt]\\n  File \"/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/lib/python3.12/site-packages/pytensor/gradient.py\", line 1528, in access_grad_cache\\n    grad_dict[var] = reduce(lambda x, y: x + y, terms)\\n  File \"/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/lib/python3.12/site-packages/pytensor/gradient.py\", line 1528, in <lambda>\\n    grad_dict[var] = reduce(lambda x, y: x + y, terms)\\n\\nHINT: Use the PyTensor flag `exception_verbosity=high` for a debug print-out and storage map footprint of this Apply node.')",
+      "seconds": 0.1412517239805311,
+      "failure_log": "fast_compile-failure.log"
+    },
+    {
+      "mode": "NUMBA",
+      "status": "passed",
+      "loss": 153.15599999999998,
+      "gradient": -126.39999999999999,
+      "seconds": 2.08452586713247
+    }
+  ],
+  "runtime": {
+    "executable": "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/bin/python",
+    "numpy": {
+      "version": "2.5.4",
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/lib/python3.12/site-packages/numpy/__init__.py"
+    },
+    "pytensor": {
+      "version": "2.38.2",
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/lib/python3.12/site-packages/pytensor/__init__.py"
+    },
+    "numba_available": true,
+    "cxx": "",
+    "threads": {
+      "OPENBLAS_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "NUMEXPR_NUM_THREADS": "1",
+      "NUMBA_NUM_THREADS": "1"
+    },
+    "numba": {
+      "version": "0.68.0",
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/lib/python3.12/site-packages/numba/__init__.py"
+    },
+    "llvmlite": {
+      "version": "0.50.0",
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/lib/python3.12/site-packages/llvmlite/__init__.py"
+    }
+  },
+  "probe_sha256": "44708be6adab2496d381fdf25cda01014c565815439ef41922fca8b8f0ae881e"
+}

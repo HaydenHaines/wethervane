@@ -1,0 +1,34 @@
+{
+  "schema": "ContinuousImprovementCheckpointV54",
+  "recordedAtUtc": "2026-10-26T21:02:24.969570+00:00",
+  "previous": {
+    "path": "research/improvement-loop-20261024/checkpoints/continuation-v53.json",
+    "sha256": "eae1540447c4cd44a2c99280c5bd22df846bca26c79c11ca556458919fdac12e",
+    "bytes": 8389
+  },
+  "goal": "active; no promoted model or supported weakest layer",
+  "gradientMicroprobe": {
+    "findings": {
+      "path": "research/improvement-loop-20261024/m01-gradient-runtime-probe-sol-v1/FINDINGS.md",
+      "sha256": "d505b92a736b2b03f0a9cde3a335a1ad047d8b8eb400b912adbdfc70ed1b92da",
+      "bytes": 1954
+    },
+    "result": {
+      "path": "research/improvement-loop-20261024/m01-gradient-runtime-probe-sol-v1/result.json",
+      "sha256": "a344534642508c8fe5fe1b348f2c9acfbf2fa530f62cf042c156630f8b720d79",
+      "bytes": 6070
+    },
+    "review": {
+      "path": "research/improvement-loop-20261024/m01-gradient-runtime-probe-sol-v1/independent-review-luna-v1.json",
+      "sha256": "af6b96a47385f1ee03114f5e77e4005c7776e5ebc26549ac4482a97c7e3fe955",
+      "bytes": 2995
+    },
+    "scope": "In a synthetic 40-contribution scalar loss, no-C FAST_COMPILE reproduced the oversized-Add failure while installed NUMBA produced the same closed-form loss and gradient. Independent reviewer reproduced both in an isolated copy. No actual 662-dimensional model was tested; Numba operation support, numerical parity, compilation resources and full gradient are unknown. PyTensor C compilation was disabled; this does not mean a C compiler is absent."
+  },
+  "next": [
+    "Inspect actual successor gradient op coverage and resource bounds for the Numba linker, then run a contained independently checked comparison only if safe; preserve all failures and current owner jobs.",
+    "Continue v53 matched-source, native inference, dependency scheduler and owner-qualified forecast release work.",
+    "After owner handoff, integrate available clearly identified count-model options independently of comparative ranking; preserve diagnostic limits. Promote a default only with evidence of best performance, and pursue House if best."
+  ],
+  "releaseClarification": "GPU owner relayed Hayden clarification superseding v53 release wording: new models may be published online as clearly identified options regardless of comparative results. Change the default only if evidence supports the new model as most performant; if best, also pursue this approach for House. Explicitly show model/diagnostic status and never represent unavailable results as ready."
+}
