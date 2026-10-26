@@ -1,0 +1,23 @@
+{
+  "schema": "HouseGreatLakesDisplayGeometryV1",
+  "purpose": "Display-only water mask drawn above forecast district paths; not a district assignment or election boundary.",
+  "sourceName": "Natural Earth 1:10m Lakes + Reservoirs",
+  "sourceVersion": "5.0.0",
+  "sourceUrl": "https://www.naturalearthdata.com/downloads/10m-physical-vectors/10m-lakes/",
+  "downloadUrl": "https://naciscdn.org/naturalearth/10m/physical/ne_10m_lakes.zip",
+  "sourceArchiveSha256": "0803a06f9c3cb4671d89b68c48b142aad9366ba40f665245e12a913fbc61722a",
+  "sourceNote": "Selected the five named Great Lakes from the Natural Earth 5.0.0 1:10m natural/artificial lake dataset. Geometry is generalized for small-scale cartographic display. Natural Earth describes the basic lakes dataset as suitable to approximately 1:30,000,000; verify shoreline precision against a more detailed official source for legal or analytical uses.",
+  "license": "Public domain; Natural Earth data is public domain.",
+  "features": [
+    "Lake Erie",
+    "Lake Huron",
+    "Lake Michigan",
+    "Lake Ontario",
+    "Lake Superior"
+  ],
+  "file": "great-lakes-display.json",
+  "sha256": "0d6b9b01862ccb959d815b2568cde309ae4623f0cdfce542f3d97186529e3e4e",
+  "featureCount": 5,
+  "builder": "scripts/build_great_lakes_display.py",
+  "rendering": "Each lake feature is passed through lib/district-projection.ts for D3 ring winding normalization on a display copy; source geometry bytes and district identity are unchanged."
+}

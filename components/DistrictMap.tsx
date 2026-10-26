@@ -2,6 +2,8 @@
 
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { geoAlbersUsa, geoPath } from "d3-geo";
+import type { FeatureCollection, MultiPolygon, Polygon } from "geojson";
+import greatLakesDisplay from "../data/house-live/geography/great-lakes-display.json";
 import type {
   DistrictFeatureCollection,
   DistrictGeography,
@@ -22,6 +24,9 @@ import {
   raceColor,
   raceRating,
 } from "../lib/presentation";
+
+const GREAT_LAKES_STATES = new Set(["IL", "IN", "MI", "MN", "NY", "OH", "PA", "WI"]);
+const GREAT_LAKES = greatLakesDisplay as unknown as FeatureCollection<Polygon | MultiPolygon, { name: string }>;
 
 export interface DistrictMapProps {
   races: readonly DistrictRace[];
@@ -103,6 +108,7 @@ export default function DistrictMap({
     [displayed],
   );
   const path = geoPath(projection);
+  const showGreatLakes = !focusState || GREAT_LAKES_STATES.has(focusState);
   const projected = new Map(
     displayed.features.map((feature) => [
       feature.properties.districtKey,
@@ -209,7 +215,8 @@ export default function DistrictMap({
       <p className="district-map-instructions" id={`${uniqueId}-instructions`}>
         Tab to the map, use arrow keys to move between districts, and press
         Enter to select. Focus on a state for more detail. Small districts are
-        easier to find in the searchable race list below.
+        easier to find in the searchable race list below. Great Lakes water is
+        shown as nonselectable water; selectable map shapes represent districts.
       </p>
       {displayed.features.length > 0 ? (
         <svg
@@ -285,6 +292,19 @@ export default function DistrictMap({
               </path>
             );
           })}
+          {showGreatLakes && GREAT_LAKES.features.map((lake) => (
+            <path
+              key={lake.properties.name}
+              data-great-lake={lake.properties.name}
+              d={path(districtForProjection(lake)) || undefined}
+              fill="var(--map-water, #dce9ed)"
+              stroke="var(--paper, #f7f5ef)"
+              strokeWidth="1"
+              pointerEvents="visiblePainted"
+              aria-hidden="true"
+              focusable="false"
+            />
+          ))}
           {!focusState && (
             <text x="24" y="580" fill="var(--muted, #707975)" fontSize="10">
               Alaska and Hawaii use insets; geographic scale varies.
