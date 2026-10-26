@@ -27,8 +27,11 @@ test("actual publication fingerprint and exact standard forecast expose the revi
   const result = matchElectionNightReference(forecast, catalog);
   assert.ok(result); assert.equal(result.runId, "current-polling");
   assert.equal(result.resultSha256, forecast.run.artifactSha256);
-  assert.equal(result.sourcePins.referenceSha256, "48d36fdce404a74569553c859a8b8d66bb9790c0eef614950bfa98ca5da058db");
-  assert.equal(result.sourcePins.reviewSha256, "4ba519f76c03852659c69eec96e84913c0fbcd00c8e8e3d82de6e9e7d845fe05");
+  assert.equal(result.sourcePins.referenceSha256, "64df0b35a79e46d7d838b5aba70dbd678d110b19392ce30fa720c0ae3840a983");
+  assert.equal(result.sourcePins.reviewSha256, "b5f793d959c484fc977e46f92afc63bc0375b8817708cd771fe9ae637e5f14e0");
+  assert.equal(result.sourcePins.reviewManifestSha256, "b4cae1844dce11bc9bee0ed287cc0eb8e461142bce91359408207d3e6e0c6ab9");
+  assert.equal(result.sourcePins.previousReferenceSha256, "48d36fdce404a74569553c859a8b8d66bb9790c0eef614950bfa98ca5da058db");
+  assert.equal(result.sourcePins.previousReviewSha256, "4ba519f76c03852659c69eec96e84913c0fbcd00c8e8e3d82de6e9e7d845fe05");
   assert.equal(result.sourcePins.forecastSha256, forecast.sourceHashes.forecastSha256);
   assert.equal(result.sourcePins.jointDrawsSha256, forecast.sourceHashes.jointDrawsSha256);
   assert.equal(result.forecastIssuedAt, forecast.run.issuedAt); assert.equal(result.forecastCutoffAt, forecast.run.cutoffAt);
@@ -45,7 +48,12 @@ test("actual publication fingerprint and exact standard forecast expose the revi
     near(row.meanMarginPp, pair.meanMarginPp); near(row.range90.lower, pair.range90.lower); near(row.range90.upper, pair.range90.upper);
     assert.equal(row.expectedAbsoluteMarginErrorPp, native.expected_absolute_margin_error_pp);
     assert.equal(row.modalOutcomeId, forecast.races[i].modalPick.outcomeId);
-    assert.equal(row.closeWithin2Pp, null); assert.equal(row.firstAtLeast10Pp, null); assert.equal(row.secondAtLeast10Pp, null);
+    assert.equal(row.marginEventDrawDenominator, 40000);
+    assert.deepEqual(row.marginEventDrawCounts, native.margin_event_draw_counts);
+    near(row.closeWithin2Pp, native.close_margin_probability_2pp);
+    near(row.firstAtLeast10Pp, native.first_decisive_margin_probability_10pp);
+    near(row.secondAtLeast10Pp, native.second_decisive_margin_probability_10pp);
+    assert.equal(forecast.races[i].pair.closeWithin2Pp, null, "The dated public bundle has no tail probability field; the V2 reference supplies it");
   }
   // Independently reviewed native numerical anchors, not freshly calculated from displayed summaries.
   near(result.perRace[0].expectedAbsoluteMarginErrorPp, 4.729417948029316);
@@ -65,18 +73,31 @@ test("actual publication fingerprint and exact standard forecast expose the revi
 });
 
 const ownerRoot = process.env.BALLOTMANCY_RESEARCH_ROOT || "/home/hayden/projects/wethervane-redesign-20261006/integration";
-const nativePath = join(ownerRoot, "research/senate-polling-refresh-20261026/standard-scorecard-reference-v1/reference.json");
-const reviewPath = join(ownerRoot, "research/senate-polling-refresh-20261026/scorecard-review-sol/review-v1.json");
-test("available actual owner reference/review pins and rows match the shipped public catalog verbatim", { skip: !existsSync(nativePath) || !existsSync(reviewPath) }, () => {
+const nativePath = join(ownerRoot, "research/senate-polling-refresh-20261026/standard-scorecard-reference-v2/reference.json");
+const reviewPath = join(ownerRoot, "research/senate-polling-refresh-20261026/scorecard-tail-review-sol/review-v1.json");
+const previousPath = join(ownerRoot, "research/senate-polling-refresh-20261026/standard-scorecard-reference-v1/reference.json");
+const previousReviewPath = join(ownerRoot, "research/senate-polling-refresh-20261026/scorecard-review-sol/review-v1.json");
+test("available actual owner V2 reference, tail review and preserved V1 diagnostics match the shipped catalog", { skip: !existsSync(nativePath) || !existsSync(reviewPath) || !existsSync(previousPath) || !existsSync(previousReviewPath) }, () => {
   assert.equal(sha(readFileSync(nativePath)), originalCatalog.entries[0].sourcePins.referenceSha256);
   assert.equal(sha(readFileSync(reviewPath)), originalCatalog.entries[0].sourcePins.reviewSha256);
-  const native = read(nativePath), publicRef = originalCatalog.entries[0].reference;
+  assert.equal(sha(readFileSync(previousPath)), originalCatalog.entries[0].sourcePins.previousReferenceSha256);
+  assert.equal(sha(readFileSync(previousReviewPath)), originalCatalog.entries[0].sourcePins.previousReviewSha256);
+  const native = read(nativePath), previous = read(previousPath), publicRef = originalCatalog.entries[0].reference;
   assert.deepEqual(publicRef.cohort, native.cohort);
   assert.deepEqual(publicRef.drawIdentity, native.draw_identity);
   assert.deepEqual(publicRef.metricDefinitions, native.metric_definitions);
   assert.deepEqual(publicRef.distributions, native.distributions);
   assert.deepEqual(publicRef.qualifications, native.qualifications);
   assert.equal(publicRef.cohortSha256, native.cohort_sha256);
+  assert.deepEqual(publicRef.raceMarginProbabilityDefinitions, native.race_margin_probability_definitions);
+  assert.deepEqual(native.metric_definitions, previous.metric_definitions);
+  assert.deepEqual(native.distributions, previous.distributions);
+  for (let i = 0; i < 35; i++) {
+    for (const key of Object.keys(previous.cohort[i])) assert.deepEqual(native.cohort[i][key], previous.cohort[i][key]);
+    for (const key of ["margin_event_draw_counts", "margin_event_draw_denominator", "close_margin_probability_2pp",
+      "first_decisive_margin_probability_10pp", "second_decisive_margin_probability_10pp"])
+      assert.deepEqual(publicRef.cohort[i][key], native.cohort[i][key]);
+  }
 });
 
 test("only one of all16 actual current Senate models matches; House and historical/locked editions never borrow it", () => {
@@ -204,15 +225,41 @@ test("draw identity, metric definitions, numerical support and cross-summary ide
   assert.equal(matchElectionNightReference(f.forecast, f.catalog), null);
 });
 
-test("no v1 close/decisive values are borrowed and authenticated catalog bytes remain a required separate boundary", () => {
+test("V2 native event rows match count fractions and authenticated catalog bytes remain a separate boundary", () => {
   const { forecast, catalog } = fixture();
-  forecast.races[0].pair.closeWithin2Pp = 0.99; forecast.races[0].pair.firstAtLeast10Pp = 0.77;
-  catalog.entries[0].reference.cohort[0].p_margin_within_2pp = 0.88;
-  const result = matchElectionNightReference(forecast, catalog);
-  assert.ok(result); assert.equal(result.perRace[0].closeWithin2Pp, null); assert.equal(result.perRace[0].firstAtLeast10Pp, null);
+  const result = matchElectionNightReference(forecast, catalog); assert.ok(result);
+  const first = result.perRace[0], raw = catalog.entries[0].reference.cohort[0];
+  for (const key of ["closeWithin2Pp", "firstAtLeast10Pp", "secondAtLeast10Pp"])
+    assert.equal(first[key], raw[{ closeWithin2Pp: "close_margin_probability_2pp", firstAtLeast10Pp: "first_decisive_margin_probability_10pp",
+      secondAtLeast10Pp: "second_decisive_margin_probability_10pp" }[key]]);
+  assert.equal(first.marginEventDrawDenominator, 40000);
+  assert.equal(first.marginEventDrawCounts.close_margin_probability_2pp / 40000, first.closeWithin2Pp);
   // This changed catalog has no matching publication fingerprint even if a
-  // caller's semantic matcher accepts extra fields; loaders must authenticate it.
+  // caller's semantic matcher accepts extra fields; loaders authenticate bytes.
+  catalog.entries[0].reference.cohort[0].unreviewedExtra = 0.88;
   assert.notEqual(sha(Buffer.from(JSON.stringify(catalog))), publication.sha256);
+});
+
+test("tail counts, probabilities, candidate ordering and foreign editions fail closed", () => {
+  const changes = [
+    (_f, c) => c.entries[0].reference.cohort[0].close_margin_probability_2pp += 0.01,
+    (_f, c) => c.entries[0].reference.cohort[0].margin_event_draw_counts.close_margin_probability_2pp += 1,
+    (_f, c) => c.entries[0].reference.cohort[0].margin_event_draw_denominator = 39999,
+    (_f, c) => c.entries[0].reference.cohort[0].first_decisive_margin_probability_10pp = 0.99,
+    (_f, c) => c.entries[0].reference.cohort[0].second_decisive_margin_probability_10pp = 0.99,
+    (_f, c) => c.entries[0].reference.cohort[0].margin_event_draw_counts.close_margin_probability_2pp = Infinity,
+    (_f, c) => c.entries[0].reference.raceMarginProbabilityDefinitions.partition = "exhaustive",
+    (_f, c) => c.entries[0].sourcePins.previousReviewSha256 = "0".repeat(64),
+  ];
+  for (const change of changes) {
+    const { forecast, catalog } = fixture(); change(forecast, catalog);
+    assert.equal(matchElectionNightReference(forecast, catalog), null, String(change));
+  }
+  const { forecast, catalog } = fixture();
+  forecast.races[0].pair.closeWithin2Pp = 0.5;
+  assert.equal(matchElectionNightReference(forecast, catalog), null);
+  const foreign = fixture(); foreign.forecast.run.id = "current-error-low";
+  assert.equal(matchElectionNightReference(foreign.forecast, foreign.catalog), null);
 });
 
 test("matcher does not mutate inputs and normalized arrays, sources, ranges and qualifications are detached", () => {

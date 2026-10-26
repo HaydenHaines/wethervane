@@ -1,7 +1,7 @@
 /**
  * Exact-edition projection of an authenticated reference catalog. The caller must
  * verify catalog bytes against the publication manifest. Pin existence alone is
- * neither byte authentication nor scientific admission. This v1 supports only the
+ * neither byte authentication nor scientific admission. This v2 supports only the
  * independently reviewed standard Senate native reference, not observed accuracy.
  */
 import type { ElectionNightForecast } from "./election-night-forecast.ts";
@@ -19,6 +19,10 @@ export interface NativeReferenceRow {
   interval_90_lower_margin_pp: number; interval_90_upper_margin_pp: number;
   expected_absolute_margin_error_pp: number; first_pair_win_probability: number; modal_pair_winner_id: string;
   forecast_probability_exact_half: boolean; included_in_native_diagnostic_cohort: boolean;
+  margin_event_draw_counts: { close_margin_probability_2pp: number; first_decisive_margin_probability_10pp: number;
+    second_decisive_margin_probability_10pp: number };
+  margin_event_draw_denominator: number; close_margin_probability_2pp: number;
+  first_decisive_margin_probability_10pp: number; second_decisive_margin_probability_10pp: number;
 }
 export interface NativeReferenceDistribution {
   mean: number; standard_deviation: number;
@@ -35,7 +39,8 @@ export interface ElectionNightReferenceCatalogEntry {
       shared_across_all_races: true; resampling_or_independence_reconstruction: false };
     cohortSha256: string; cohort: NativeReferenceRow[];
     metricDefinitions: Record<ElectionNightReferenceMetric, string>;
-    distributions: Record<ElectionNightReferenceMetric, NativeReferenceDistribution>; qualifications: string[];
+    distributions: Record<ElectionNightReferenceMetric, NativeReferenceDistribution>;
+    raceMarginProbabilityDefinitions: Record<string, string>; qualifications: string[];
   };
 }
 export interface ElectionNightReferenceCatalog { schemaVersion: 1; entries: ElectionNightReferenceCatalogEntry[] }
@@ -54,9 +59,9 @@ export interface ElectionNightReference {
     denominator: string; nativeDenominator: string; units: "percentage_points"; orientation: "first_minus_second"; pointRule: "mean";
     meanMarginPp: number; range90: { lower: number; upper: number }; expectedAbsoluteMarginErrorPp: number;
     firstPairWinProbability: number; modalOutcomeId: string; nativeExactHalfTie: boolean;
+    closeWithin2Pp: number; firstAtLeast10Pp: number; secondAtLeast10Pp: number;
+    marginEventDrawCounts: NativeReferenceRow["margin_event_draw_counts"]; marginEventDrawDenominator: 40000;
     ruleProxy: string; shareInterpretation: string; excludedOptionsAssumption: string;
-    /** V1 exports no per-race close/decisive probabilities. */
-    closeWithin2Pp: null; firstAtLeast10Pp: null; secondAtLeast10Pp: null;
   }[];
   summary: {
     meanAbsoluteMarginError: ElectionNightReferenceDistribution;
@@ -68,8 +73,11 @@ export interface ElectionNightReference {
   evaluationLock: false; observedResultsConsumed: false; interpretation: string;
 }
 const TRUSTED = {
-  referenceSha256: "48d36fdce404a74569553c859a8b8d66bb9790c0eef614950bfa98ca5da058db",
-  reviewSha256: "4ba519f76c03852659c69eec96e84913c0fbcd00c8e8e3d82de6e9e7d845fe05",
+  referenceSha256: "64df0b35a79e46d7d838b5aba70dbd678d110b19392ce30fa720c0ae3840a983",
+  reviewSha256: "b5f793d959c484fc977e46f92afc63bc0375b8817708cd771fe9ae637e5f14e0",
+  reviewManifestSha256: "b4cae1844dce11bc9bee0ed287cc0eb8e461142bce91359408207d3e6e0c6ab9",
+  previousReferenceSha256: "48d36fdce404a74569553c859a8b8d66bb9790c0eef614950bfa98ca5da058db",
+  previousReviewSha256: "4ba519f76c03852659c69eec96e84913c0fbcd00c8e8e3d82de6e9e7d845fe05",
   forecastSha256: "a1ffba60d937bfc81d06df51af6ed917a7ddc71fd9860c1d702de7c7c5db67cb",
   jointDrawsSha256: "a7240d654861078c7850e3d0c10c1f287604035de531abf14d82821aa4d5cc31",
   jointRowsSha256: "40e003ab4c7bf6aee9463d78ac3123e0ae702a325412763aec6f28ea3d2693ba",
@@ -77,10 +85,24 @@ const TRUSTED = {
   numericalGatesSha256: "77b1f90ef1399fda8cc44c79d01edcd92fb8f422a014ea9c27980e62a1da2044",
   ownerOutputReviewSha256: "f3fcaf56656187f71ab62756307265d05568077186d75479de37f4607e6855f1",
 };
-const COHORT_SHA = "a97bd621a64170dc8ded1b818adadd4bfaa1ddb27e0a9870d9f69e282010b914";
+const COHORT_SHA = "6b85e77001ce6e432624022810d69a2a541bf19159be5f3a1e046318adbe231f";
 const NATIVE_DENOMINATOR = "sum_of_named_principal_candidate_votes_under_declared_rule_proxy";
 const DISPLAY_DENOMINATOR = "Share of votes for the two named principal contenders";
 const ORDER = "unchanged native chain, within-chain draw; C-order flattening";
+const MARGIN_EVENT_DEFINITIONS = {
+  margin: "M = 100*(V_first-V_second)/(V_first+V_second) = 200*first_share-100, under each row's declared principal-pair rule proxy.",
+  units: "percentage_points_of_named_principal_pair_vote_margin",
+  close_margin_probability_2pp: "Uniform fraction of retained joint rows with abs(M) <= 2; both boundaries inclusive.",
+  first_decisive_margin_probability_10pp: "Uniform fraction of retained joint rows with M >= 10; boundary inclusive.",
+  second_decisive_margin_probability_10pp: "Uniform fraction of retained joint rows with M <= -10; boundary inclusive.",
+  candidate_identity: "First/second refer to the named candidate IDs in each cohort row. An independent first candidate is not recoded Democratic.",
+  partition: "The three events are mutually exclusive but not exhaustive. Margins between 2 and 10 points in either direction belong to none of them.",
+};
+const REQUIRED_QUALIFICATIONS = [
+  "Close and decisive probabilities are model-implied retained-draw fractions, not observed accuracy, A-F grades or a new tossup classification rule.",
+  "These probabilities retain Monte Carlo uncertainty and inherit model limitations. Zero retained occurrences do not establish an impossible outcome.",
+  "Original v1 cohort fields, distributions, chain/draw ordering and joint diagnostic array bytes are unchanged; joint_rows intentionally points to the preserved v1 archive.",
+];
 const METRICS: Record<ElectionNightReferenceMetric, string> = {
   mean_signed_margin_error_pp: "Equal-race mean of joint native margin minus frozen predicted mean margin.",
   mean_absolute_margin_error_pp: "Equal-race mean absolute difference between joint native margin and frozen predicted mean margin.",
@@ -117,7 +139,7 @@ export function matchElectionNightReference(forecast: ElectionNightForecast, cat
     requireValue(entry.targetId === forecast.run.targetId && entry.lawId === forecast.run.lawId && entry.evaluationLock === false &&
       entry.observedResultsConsumed === false && entry.forecastCutoffAt === forecast.run.cutoffAt && entry.forecastIssuedAt === forecast.run.issuedAt &&
       entry.forecastCutoffAt === "2026-10-26T15:03:57.212405+00:00" && entry.structuralCutoffAt === "2026-10-20T15:21:23Z" &&
-      entry.referenceIssuedAt === "2026-10-26T15:12:19.773307+00:00");
+      entry.referenceIssuedAt === "2026-10-26T16:32:02.440509+00:00");
     requireValue(forecast.run.sourceCutoffs.length === 2 &&
       forecast.run.sourceCutoffs.find(s => s.label === "Structural inputs")?.at === entry.structuralCutoffAt &&
       forecast.run.sourceCutoffs.find(s => s.label === "Polling inputs")?.at === entry.forecastCutoffAt);
@@ -127,7 +149,8 @@ export function matchElectionNightReference(forecast: ElectionNightForecast, cat
       requireValue(entry.sourcePins[key] === forecast.sourceHashes[key]);
     requireValue(ref.cohortSha256 === COHORT_SHA && draw.shape.length === 2 && draw.shape[0] === 4 && draw.shape[1] === 10000 &&
       draw.weight_per_row === 1 / 40000 && draw.order === ORDER && draw.shared_across_all_races === true &&
-      draw.resampling_or_independence_reconstruction === false);
+      draw.resampling_or_independence_reconstruction === false &&
+      JSON.stringify(ref.raceMarginProbabilityDefinitions) === JSON.stringify(MARGIN_EVENT_DEFINITIONS));
     requireValue(Array.isArray(ref.cohort) && ref.cohort.length === 35 && forecast.races.length === 35 &&
       new Set(ref.cohort.map(row => row.race_id)).size === 35 && new Set(forecast.races.map(r => r.id)).size === 35 &&
       forecast.summary.raceCount === 35 && forecast.summary.pairRaceCount === 35 && forecast.summary.tiePolicy === "lexicographic_outcome_id");
@@ -161,6 +184,21 @@ export function matchElectionNightReference(forecast: ElectionNightForecast, cat
         close(row.interval_90_upper_margin_pp, pair.range90.upper) && pair.range90.lower <= pair.range90.upper &&
         [row.point_margin_mean_pp, row.interval_90_lower_margin_pp, row.interval_90_upper_margin_pp].every(x => finite(x) && Math.abs(x) <= 100) &&
         finite(row.expected_absolute_margin_error_pp) && row.expected_absolute_margin_error_pp >= 0 && row.expected_absolute_margin_error_pp <= 200);
+      const eventKeys = ["close_margin_probability_2pp", "first_decisive_margin_probability_10pp", "second_decisive_margin_probability_10pp"] as const;
+      const eventProbabilities = eventKeys.map(key => row[key]);
+      const eventCounts = row.margin_event_draw_counts;
+      requireValue(row.margin_event_draw_denominator === 40000 && eventCounts &&
+        Object.keys(eventCounts).length === eventKeys.length &&
+        eventKeys.every(key => Number.isInteger(eventCounts[key]) && eventCounts[key] >= 0 && eventCounts[key] <= 40000 &&
+          finite(row[key]) && row[key] >= 0 && row[key] <= 1 && close(row[key], eventCounts[key] / 40000)) &&
+        eventCounts.close_margin_probability_2pp + eventCounts.first_decisive_margin_probability_10pp +
+          eventCounts.second_decisive_margin_probability_10pp <= 40000 &&
+        row.first_decisive_margin_probability_10pp <= p + 1e-12 &&
+        row.second_decisive_margin_probability_10pp <= 1 - p + 1e-12 &&
+        eventProbabilities[0] + eventProbabilities[1] + eventProbabilities[2] <= 1 + 1e-12 &&
+        (pair.closeWithin2Pp === null || close(pair.closeWithin2Pp, row.close_margin_probability_2pp)) &&
+        (pair.firstAtLeast10Pp === null || close(pair.firstAtLeast10Pp, row.first_decisive_margin_probability_10pp)) &&
+        (pair.secondAtLeast10Pp === null || close(pair.secondAtLeast10Pp, row.second_decisive_margin_probability_10pp)));
       requireValue(typeof row.rule_proxy === "string" && row.rule_proxy.length > 0 && typeof row.excluded_options_assumption === "string" &&
         row.excluded_options_assumption.length > 0 && race.notes.includes(row.rule_proxy) && race.notes.includes(row.excluded_options_assumption) &&
         pair.qualifications.includes(row.rule_proxy) && pair.qualifications.includes(row.excluded_options_assumption) &&
@@ -169,8 +207,11 @@ export function matchElectionNightReference(forecast: ElectionNightForecast, cat
         denominator: pair.denominator, nativeDenominator: row.denominator, units: "percentage_points", orientation: "first_minus_second", pointRule: "mean",
         meanMarginPp: row.point_margin_mean_pp, range90: { lower: row.interval_90_lower_margin_pp, upper: row.interval_90_upper_margin_pp },
         expectedAbsoluteMarginErrorPp: row.expected_absolute_margin_error_pp, firstPairWinProbability: p, modalOutcomeId: nativeModal,
+        closeWithin2Pp: row.close_margin_probability_2pp, firstAtLeast10Pp: row.first_decisive_margin_probability_10pp,
+        secondAtLeast10Pp: row.second_decisive_margin_probability_10pp,
+        marginEventDrawCounts: { ...eventCounts }, marginEventDrawDenominator: 40000,
         nativeExactHalfTie: row.forecast_probability_exact_half, ruleProxy: row.rule_proxy, shareInterpretation: row.share_interpretation,
-        excludedOptionsAssumption: row.excluded_options_assumption, closeWithin2Pp: null, firstAtLeast10Pp: null, secondAtLeast10Pp: null };
+        excludedOptionsAssumption: row.excluded_options_assumption };
     });
     requireValue(close(expectedMisses, forecast.summary.expectedModalMisses) && exactTies === forecast.summary.topTieRaceCount);
     requireValue(Object.keys(ref.distributions).length === 4 && Object.keys(ref.metricDefinitions).length === 4 &&
@@ -183,7 +224,8 @@ export function matchElectionNightReference(forecast: ElectionNightForecast, cat
     };
     requireValue(close(summary.modalWinnerMissCount.mean, expectedMisses) &&
       close(summary.meanAbsoluteMarginError.mean, perRace.reduce((sum, r) => sum + r.expectedAbsoluteMarginErrorPp, 0) / perRace.length) &&
-      close(summary.meanSignedMarginError.mean, 0) && strings(ref.qualifications));
+      close(summary.meanSignedMarginError.mean, 0) && strings(ref.qualifications) &&
+      REQUIRED_QUALIFICATIONS.every(item => ref.qualifications.includes(item)));
     return { chamber: "senate", runId: entry.runId, resultSha256: entry.resultSha256, targetId: entry.targetId, lawId: entry.lawId,
       forecastCutoffAt: entry.forecastCutoffAt, structuralCutoffAt: entry.structuralCutoffAt, forecastIssuedAt: entry.forecastIssuedAt,
       referenceIssuedAt: entry.referenceIssuedAt, sourcePins: { ...entry.sourcePins }, cohortSha256: ref.cohortSha256,

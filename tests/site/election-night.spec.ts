@@ -5,6 +5,8 @@ import { resolve } from "node:path";
 const read = (path: string) => JSON.parse(readFileSync(resolve(path), "utf8"));
 const senateRegistry = read("public/data/explorer/registry.json");
 const houseCatalog = read("data/house-live/catalog.json");
+const standardReference = read("public/data/election-night/references.json").entries[0].reference;
+const displayProbability = (p: number) => p > 0 && p < .001 ? "<0.1%" : p < 1 && p > .999 ? ">99.9%" : `${(100 * p).toFixed(1)}%`;
 
 test("reviewed expected errors follow only their exact Senate edition and remain distinct from observed scores", async ({ page }) => {
   await page.goto("/");
@@ -17,6 +19,22 @@ test("reviewed expected errors follow only their exact Senate edition and remain
   await expect(margin).toContainText("not measured accuracy");
   await expect(panel.locator(".night-miss-reference .night-reference-band")).toContainText("1 to 7 wrong choices");
   await expect(panel.locator(".night-featured .night-race-expected-error")).toHaveCount(6);
+  await expect(panel.locator(".night-featured .night-margin-chances")).toHaveCount(6);
+  for (const card of await panel.locator(".night-featured .night-race").all()) {
+    const id = await card.getAttribute("data-scorecard-race");
+    const row = standardReference.cohort.find((item: { race_id: string }) => item.race_id === id);
+    await expect(card.locator(".night-close-chance strong")).toHaveText(displayProbability(row.close_margin_probability_2pp));
+    await expect(card.locator(".night-margin-chances dd")).toHaveText([
+      displayProbability(row.first_decisive_margin_probability_10pp), displayProbability(row.second_decisive_margin_probability_10pp),
+    ]);
+  }
+  await expect(panel.locator(".night-rubric-table tbody tr")).toHaveCount(5);
+  await expect(panel.locator(".night-rubric-table tbody td")).toHaveText([
+    "At least 20% lower", "10% to less than 20% lower", "0% to less than 10% lower", "More than 0%, up to 10% higher", "More than 10% higher",
+  ]);
+  await expect(panel.locator(".night-baseline-note")).toContainText("October 20 edition (earlier issued)");
+  await expect(panel.locator(".night-rubric")).toContainText("no better than D");
+  await expect(panel.locator(".night-rubric")).toContainText("An F stays an F");
   await panel.locator(".night-reference-details > summary").click();
   await expect(panel.locator(".night-reference-details")).toContainText("31.5 of 35");
   await expect(panel.locator(".night-reference-details")).toContainText("26 to 35");
@@ -27,9 +45,12 @@ test("reviewed expected errors follow only their exact Senate edition and remain
   await expect(margin).toContainText("No reviewed error reference for this edition");
   await expect(panel.locator(".night-race-expected-error")).toHaveCount(0);
   await expect(panel.locator(".night-reference-details")).toHaveCount(0);
+  await expect(panel.locator(".night-margin-chances")).toHaveCount(0);
+  await expect(panel.locator(".night-baseline-note")).toHaveCount(0);
   await panel.getByLabel("Scorecard model").selectOption("current-polling");
   await expect(margin.locator(".night-reference-value")).toContainText("5.6");
   await expect(panel.locator(".night-summary")).toContainText("Not scored");
+  await expect(panel.locator(".night-featured .night-margin-chances")).toHaveCount(6);
   await expect(panel.locator(".night-edition")).toContainText("have not yet been locked");
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });

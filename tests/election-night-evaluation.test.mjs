@@ -1,6 +1,11 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import test from "node:test";
-import { multicategoryBrier, categoricalLogLoss, central90IntervalScore, evaluateElectionNightForecast } from "../lib/election-night-evaluation.ts";
+import { multicategoryBrier, categoricalLogLoss, central90IntervalScore, evaluateElectionNightForecast,
+  projectHousePartyWinner, HOUSE_PARTY_WINNER_INTERPRETATION_SHA256 } from "../lib/election-night-evaluation.ts";
+import { toHouseElectionNightForecast } from "../lib/election-night-forecast.ts";
+import { houseLiveView } from "../lib/house-live-view.ts";
+import { parseHouseLiveResult } from "../lib/house-live-result.ts";
 
 // All forecast numbers, people, results, source pins and protocol reviews below are
 // INVENTED software fixtures. They are not real returns or scientific admission.
@@ -48,7 +53,23 @@ function fixture(count = 1) {
   return { forecast, protocol, records };
 }
 function evaluate(f) { return evaluateElectionNightForecast(f.forecast, f.protocol, f.records); }
+function housePartyFixture() {
+  const f = fixture(), race = f.forecast.races[0], target = f.protocol.races[0].winner, truth = f.records[0].winner;
+  for (const outcome of race.outcomes) {
+    outcome.id = `${race.id}:${outcome.party}`;
+    outcome.members.forEach(member => { member.party = outcome.party; });
+  }
+  target.estimand = truth.estimand = "house_official_party_winner";
+  target.outcomeIds = ["D", "R", "O"];
+  target.resultRuleId = truth.resultRuleId = "INVENTED-certified-winning-round-rule";
+  target.denominator = truth.denominator = "INVENTED-contest-winning-candidate";
+  target.interpretationSha256 = HOUSE_PARTY_WINNER_INTERPRETATION_SHA256;
+  target.minimumStatus = "final";
+  truth.outcomeId = "D"; truth.kind = "group";
+  return f;
+}
 function coverageTotal(c) { assert.equal(c.total, c.scored + c.unresolved + c.unsupported + c.mismatched); assert.equal(c.scored, c.scoredCalled + c.scoredFinal + c.scoredCertified); }
+const read = relative => JSON.parse(readFileSync(new URL(`../${relative}`, import.meta.url), "utf8"));
 
 test("proper categorical scores use full unordered support, natural logs and explicit binary normalization", () => {
   const p = [{ id: "A", winProbability: 0.5 }, { id: "B", winProbability: 0.3 }, { id: "C", winProbability: 0.2 }];
@@ -73,6 +94,106 @@ test("zero-probability observed outcomes retain infinite log loss through JSON w
   const result = JSON.parse(JSON.stringify(evaluate(f)));
   assert.deepEqual(result.rows[0].winner.score.logLoss, { status: "infinite", value: null });
   assert.equal(result.rows[0].winner.status, "scored");
+});
+
+test("fixed House D/R/O projection preserves native masses and labels absent versus present zero", () => {
+  const f = housePartyFixture(), race = f.forecast.races[0];
+  race.outcomes = race.outcomes.filter(outcome => outcome.party !== "O");
+  race.outcomes[0].winProbability = 0.6; race.outcomes[1].winProbability = 0.4;
+  const before = JSON.stringify(race), projected = projectHousePartyWinner(race);
+  assert.deepEqual(projected.probabilities, { D: 0.6, R: 0.4, O: 0 });
+  assert.deepEqual(projected.zeroOrigin, { D: "positive", R: "positive", O: "structural_absent" });
+  assert.equal(projected.nativeOutcomeIds.O, null);
+  assert.equal(JSON.stringify(race), before);
+  race.outcomes.push({ id: `${race.id}:O`, name: "INVENTED other", party: "O", kind: "candidate",
+    members: [{ id: "INVENTED-other-candidate", name: "INVENTED other", party: "O", sourceUrls: [] }], winProbability: 0 });
+  assert.equal(projectHousePartyWinner(race).zeroOrigin.O, "present_finite_draw_zero");
+  race.outcomes[2].members[0].id = race.outcomes[0].members[0].id;
+  assert.throws(() => projectHousePartyWinner(race), /candidate ID occurs in multiple/);
+  race.outcomes[2].members[0].id = "INVENTED-other-candidate";
+  race.outcomes[2].party = "R";
+  assert.throws(() => projectHousePartyWinner(race), /House native winner group/);
+});
+
+test("official Other winner stays in House party score when native Other group was absent", () => {
+  const f = housePartyFixture(), race = f.forecast.races[0], truth = f.records[0].winner;
+  race.outcomes = race.outcomes.filter(outcome => outcome.party !== "O");
+  race.pair = null; f.protocol.races[0].margin = null;
+  race.outcomes[0].winProbability = 0.6; race.outcomes[1].winProbability = 0.4;
+  truth.outcomeId = "O"; truth.candidateId = "INVENTED-late-write-in";
+  const score = evaluate(f).rows[0].winner.score;
+  assert.equal(score.estimand, "house_official_party_winner");
+  assert.equal(score.outcomeId, "O");
+  near(score.brierSum, 1.52); near(score.housePartyWinner.brierDividedByTwo, 0.76);
+  assert.deepEqual(score.logLoss, { status: "infinite", value: null });
+  assert.deepEqual(score.housePartyWinner.candidateRoster, { candidateId: "INVENTED-late-write-in",
+    listedInFrozenRoster: false, listedForecastGroup: null, matchesOfficialGroup: null });
+  assert.deepEqual(JSON.parse(JSON.stringify(score)).logLoss, { status: "infinite", value: null });
+  assert.equal(evaluate(f).coverage.winner.scoredCertified, 1);
+  assert.equal(evaluate(f).rows[0].margin.status, "unsupported");
+});
+
+test("House party accuracy and omitted candidate ID remain separate even within the same party", () => {
+  const f = housePartyFixture(), race = f.forecast.races[0], truth = f.records[0].winner;
+  race.outcomes = [race.outcomes[0]]; race.outcomes[0].winProbability = 1;
+  truth.candidateId = "INVENTED-new-D-candidate";
+  let score = evaluate(f).rows[0].winner.score;
+  assert.equal(score.housePartyWinner.brierDividedByTwo, 0);
+  assert.equal(score.housePartyWinner.candidateRoster.listedInFrozenRoster, false);
+  assert.equal(score.housePartyWinner.candidateRoster.matchesOfficialGroup, null);
+  truth.outcomeId = "R";
+  score = evaluate(f).rows[0].winner.score;
+  assert.equal(score.housePartyWinner.brierDividedByTwo, 1);
+  assert.deepEqual(score.logLoss, { status: "infinite", value: null });
+  truth.candidateId = race.outcomes[0].members[0].id;
+  score = evaluate(f).rows[0].winner.score;
+  assert.equal(score.housePartyWinner.candidateRoster.listedForecastGroup, "D");
+  assert.equal(score.housePartyWinner.candidateRoster.matchesOfficialGroup, false);
+});
+
+test("House official winner needs exact admitted mapping fields and final or certified result", () => {
+  const f = housePartyFixture();
+  for (const [field, value] of [["eventId", "INVENTED-other-event"], ["roundId", "INVENTED-other-round"],
+    ["ruleFamily", "ranked_choice"], ["resultRuleId", "INVENTED-other-rule"],
+    ["denominator", "INVENTED-other-denominator"], ["estimand", "listed_modeled_winner"]]) {
+    const altered = clone(f); altered.records[0].winner[field] = value;
+    assert.equal(evaluate(altered).rows[0].winner.status, "mismatched", field);
+  }
+  for (const [field, value] of [["outcomeIds", ["D", "R"]], ["outcomeIds", ["D", "O", "R"]], ["interpretationSha256", H],
+    ["minimumStatus", "called"], ["resultRuleId", ""], ["denominator", ""]]) {
+    const altered = clone(f); altered.protocol.races[0].winner[field] = value;
+    assert.equal(evaluate(altered).rows[0].winner.status, "mismatched", field);
+  }
+  for (const status of ["unreported", "provisional", "called", "unresolved"]) {
+    const altered = clone(f); altered.records[0].winner.status = status;
+    assert.equal(evaluate(altered).rows[0].winner.status, "unresolved", status);
+  }
+  const unsupported = clone(f); unsupported.records[0].winner.status = "unsupported";
+  assert.equal(evaluate(unsupported).rows[0].winner.status, "unsupported");
+  const missingCandidate = clone(f); missingCandidate.records[0].winner.candidateId = null;
+  assert.equal(evaluate(missingCandidate).rows[0].winner.status, "mismatched");
+  const senate = clone(f); senate.forecast.chamber = senate.protocol.forecast.chamber = "senate";
+  assert.equal(evaluate(senate).rows[0].winner.status, "mismatched");
+});
+
+test("actual issued House polling edition has 435 fixed party projections independent of 412 named pairs", () => {
+  const catalog = read("data/house-live/catalog.json"), entry = catalog.entries.find(row => row.id === "house-current-polling");
+  const native = read(`data/house-live/${entry.result.path}`);
+  assert.ok(parseHouseLiveResult(native));
+  const forecast = toHouseElectionNightForecast(houseLiveView(native, entry));
+  assert.equal(forecast.races.length, 435); assert.equal(forecast.summary.pairRaceCount, 412);
+  const support = { DR: 0, DOR: 0, D: 0, DO: 0, R: 0 };
+  for (const race of forecast.races) {
+    const projected = projectHousePartyWinner(race);
+    near(Object.values(projected.probabilities).reduce((sum, p) => sum + p, 0), 1);
+    for (const group of projected.outcomeIds) {
+      const nativeGroup = race.outcomes.find(outcome => outcome.party === group);
+      assert.equal(projected.probabilities[group], nativeGroup?.winProbability ?? 0);
+      assert.equal(projected.zeroOrigin[group] === "structural_absent", nativeGroup === undefined);
+    }
+    support[race.outcomes.map(outcome => outcome.party).sort().join("")]++;
+  }
+  assert.deepEqual(support, { DR: 226, DOR: 191, D: 13, DO: 4, R: 1 });
 });
 
 test("a tied modal call grades the fixed outcome-ID choice, not any equally probable winner", () => {

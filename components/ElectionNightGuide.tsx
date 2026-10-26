@@ -4,6 +4,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import type { ChamberId } from "../lib/chamber";
 import { loadElectionNightForecast, type ElectionNightLoaded, type ElectionNightRequest } from "../lib/election-night-client";
 import type { ElectionNightInputNotice, ElectionNightPair, ElectionNightRace } from "../lib/election-night-forecast";
+import type { ElectionNightReference } from "../lib/election-night-reference";
+import ElectionNightRubric from "./ElectionNightRubric";
 import referencePublication from "../data/election-night-reference-publication.json";
 import { probability, STATE_NAMES } from "../lib/presentation";
 
@@ -41,8 +43,12 @@ function InputNotice({ notice, detail = false }: { notice: ElectionNightInputNot
   </aside>;
 }
 
-function RacePrediction({ race, extent, featured = false, notice, expectedError }: { race: ElectionNightRace; extent: number; featured?: boolean; notice?: ElectionNightInputNotice; expectedError?: number }) {
+function RacePrediction({ race, extent, featured = false, notice, reference }: { race: ElectionNightRace; extent: number; featured?: boolean; notice?: ElectionNightInputNotice; reference?: ElectionNightReference["perRace"][number] }) {
   const pair = race.pair;
+  const expectedError = reference?.expectedAbsoluteMarginErrorPp;
+  const closeChance = reference?.closeWithin2Pp ?? pair?.closeWithin2Pp ?? null;
+  const firstDecisive = reference?.firstAtLeast10Pp ?? pair?.firstAtLeast10Pp ?? null;
+  const secondDecisive = reference?.secondAtLeast10Pp ?? pair?.secondAtLeast10Pp ?? null;
   return <article className="night-race" data-scorecard-race={race.id}>
     <div className="night-race-heading"><h4>{label(race)}</h4></div>
     {notice && <InputNotice notice={notice} detail />}
@@ -53,9 +59,12 @@ function RacePrediction({ race, extent, featured = false, notice, expectedError 
     </dl>
     {featured && pair && <MarginRange pair={pair} extent={extent} />}
     {expectedError !== undefined && <p className="night-race-expected-error">For this race, the model expects its predicted margin to miss by <strong>{expectedError.toFixed(1)} percentage points</strong> on average, ignoring the direction of the miss. This is a simulation-based expectation, not an error limit.</p>}
-    {featured && pair?.closeWithin2Pp !== null && pair?.closeWithin2Pp !== undefined && <p className="night-close-chance">
-      <strong>{probability(pair.closeWithin2Pp)}</strong> chance that these two candidates finish within 2 points of each other.
-    </p>}
+    {featured && pair && closeChance !== null && firstDecisive !== null && secondDecisive !== null && <div className="night-margin-chances">
+      <p className="small">These margins count only votes for the two named candidates.</p>
+      <p className="night-close-chance"><strong>{probability(closeChance)}</strong> chance that these two candidates finish within 2 points of each other.</p>
+      <dl><div><dt>{pair.firstCandidateName} ahead by at least 10 points</dt><dd>{probability(firstDecisive)}</dd></div>
+        <div><dt>{pair.secondCandidateName} ahead by at least 10 points</dt><dd>{probability(secondDecisive)}</dd></div></dl>
+    </div>}
     <details className="night-race-definitions"><summary>Prediction details and what is covered</summary>
       <ul>{race.outcomes.map(outcome => <li key={outcome.id}>{outcome.name}: {probability(outcome.winProbability)}{outcome.kind === "group" ? " for this group, not for each member" : ""}.
         {outcome.kind === "group" && <> Members: {outcome.members.map(member => member.name).join("; ")}.</>}
@@ -66,9 +75,10 @@ function RacePrediction({ race, extent, featured = false, notice, expectedError 
         <p>{pair.firstCandidateName} exceeds half of the pair’s votes in {probability(pair.firstExceedsHalf)} of the model’s predictions. {pair.winnerRelationship === "same_event"
           ? "That is the winning event used by this model’s two-contender approximation."
           : "This pair event is separate from the winner chances above."}</p>
-        {pair.closeWithin2Pp === null ? <p>The saved forecast does not report the chance of a margin within 2 points. The range alone cannot supply that probability.</p> : <>
-          <p>Within 2 points: {probability(pair.closeWithin2Pp)}.</p>
-          <p>A lead of at least 10 points: {pair.firstCandidateName} {probability(pair.firstAtLeast10Pp!)}; {pair.secondCandidateName} {probability(pair.secondAtLeast10Pp!)}.</p>
+        {closeChance === null || firstDecisive === null || secondDecisive === null ? <p>The saved forecast does not report the chance of a margin within 2 points. The range alone cannot supply that probability.</p> : <>
+          <p>Within 2 points: {probability(closeChance)}.</p>
+          <p>A lead of at least 10 points: {pair.firstCandidateName} {probability(firstDecisive)}; {pair.secondCandidateName} {probability(secondDecisive)}.</p>
+          <p>These thresholds include exactly 2 and 10 points. Margins between 2 and 10 points fall outside all three categories, so the chances need not add to 100%. A zero in the saved simulations does not mean an outcome is impossible.</p>
         </>}
         {pair.qualifications.length > 0 && <ul>{pair.qualifications.map((note, index) => <li key={index}>{note}</li>)}</ul>}
       </>}
@@ -143,11 +153,11 @@ export default function ElectionNightGuide({ chamber, onClose }: { chamber: Cham
           <div><strong>{forecast.summary.pairRaceCount}</strong><span>with a two-candidate margin</span></div>
           <div><strong>Not scored</strong><span>verified election results have not been added</span></div></div>
         <h4>Races to watch</h4><p>These six examples have the least certain winners in the dated standard forecast. The same races stay here when you inspect another stack. Their margins show whether an even win chance also means a close expected race.</p>
-        <div className="night-featured">{featured.map(race => <RacePrediction key={race.id} race={race} extent={extent} featured notice={forecast.inputNotices.find(note => note.raceId === race.id)} expectedError={reference?.perRace.find(row => row.raceId === race.id)?.expectedAbsoluteMarginErrorPp} />)}</div>
+        <div className="night-featured">{featured.map(race => <RacePrediction key={race.id} race={race} extent={extent} featured notice={forecast.inputNotices.find(note => note.raceId === race.id)} reference={reference?.perRace.find(row => row.raceId === race.id)} />)}</div>
         <details className="night-all-races"><summary>All {forecast.summary.raceCount} predictions</summary>
           <label>Find a race or candidate <input value={query} onChange={event => { setQuery(event.target.value); setAllExpanded(false); }} /></label>
           <p className="small">Showing {shown.length} of {filtered.length} matching contests.</p>
-          <div className="night-predictions">{shown.map(race => <RacePrediction key={race.id} race={race} extent={100} notice={forecast.inputNotices.find(note => note.raceId === race.id)} expectedError={reference?.perRace.find(row => row.raceId === race.id)?.expectedAbsoluteMarginErrorPp} />)}</div>
+          <div className="night-predictions">{shown.map(race => <RacePrediction key={race.id} race={race} extent={100} notice={forecast.inputNotices.find(note => note.raceId === race.id)} reference={reference?.perRace.find(row => row.raceId === race.id)} />)}</div>
           {filtered.length > 10 && <button type="button" onClick={() => setAllExpanded(value => !value)}>{allExpanded ? "Show fewer predictions" : `See all ${filtered.length} predictions`}</button>}
           {!filtered.length && <p>No matching races or candidates.</p>}
         </details>
@@ -188,17 +198,7 @@ export default function ElectionNightGuide({ chamber, onClose }: { chamber: Cham
         </article>}
         <p><strong>50/50 does not tell us the margin.</strong> It can mean a narrow contest, or uncertainty about which candidate wins comfortably. Use the separate margin range and close-race chances where available.</p>
       </section>
-      <section className="night-section night-rubric" aria-labelledby="night-rubric-title">
-        <div className="eyebrow">The evaluation rubric</div><h3 id="night-rubric-title">How the forecast will be judged</h3>
-        <p className="small">Grade bands under review</p>
-        <div className="night-grade-scale" aria-label="A through F grade bands under review; no grade assigned">{["A", "B", "C", "D", "F"].map(grade => <span key={grade}>{grade}</span>)}</div>
-        <p><strong>No letter grade assigned.</strong> The thresholds, comparison forecasts and rules for combining scores are still under review. They must be published before outcomes are scored.</p>
-        <dl><div><dt>Specific predictions</dt><dd>Compare the named candidate margins with verified final results, using the same vote definition. Show the size and direction of each error.</dd></div>
-          <div><dt>Useful probabilities</dt><dd>Score confident mistakes more heavily and compare performance with simple forecasts on the same races. An uninformative forecast must not pass as demonstrated skill. A 50/50 reference applies to two-outcome contests; contests with more outcomes need a reference covering those same outcomes.</dd></div>
-          <div><dt>Honest ranges</dt><dd>Check both how often results fall inside the ranges and how wide those ranges were. Very broad ranges do not earn a high grade merely by containing the results.</dd></div>
-          <div><dt>Shared misses</dt><dd>Check coordinated shifts against the model’s joint predictions. Many misses in one election are not many independent elections.</dd></div></dl>
-        <p>A result having been possible does not excuse poor performance. One surprising result also does not settle whether the model is reliable across elections. Both the individual misses and the comparison scores need to stay visible.</p>
-      </section>
+      <ElectionNightRubric standardSenate={forecast.chamber === "senate" && forecast.run.id === "current-polling"} />
       <details className="night-method"><summary>Edition, sources and evaluation definitions</summary>
         <p>Result fingerprint: <code>{forecast.run.artifactSha256}</code>. This identifies the saved forecast bytes; it is not a claim that the inputs are complete or the model is accurate.</p>
         <p>{forecast.run.strictAsOf ? "Inputs were checked against their stated cutoff." : "This edition does not establish that every input was available at its forecast cutoff."}</p>

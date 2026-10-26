@@ -51,17 +51,28 @@ class ElectionNightReferenceTests(unittest.TestCase):
             self.assertEqual(entry["structuralCutoffAt"], adapter.STRUCTURAL_CUTOFF)
             self.assertEqual(entry["sourcePins"]["referenceSha256"], adapter.REFERENCE_SHA256)
             self.assertEqual(entry["sourcePins"]["reviewSha256"], adapter.REVIEW_SHA256)
+            self.assertEqual(entry["sourcePins"]["reviewManifestSha256"], adapter.REVIEW_MANIFEST_SHA256)
+            self.assertEqual(entry["sourcePins"]["previousReferenceSha256"], adapter.PREVIOUS_REFERENCE_SHA256)
+            self.assertEqual(entry["sourcePins"]["previousReviewSha256"], adapter.PREVIOUS_REVIEW_SHA256)
             self.assertFalse(entry["evaluationLock"])
             self.assertFalse(entry["observedResultsConsumed"])
             self.assertEqual(entry["reference"]["drawIdentity"]["shape"], [4, 10000])
             self.assertEqual(entry["reference"]["drawIdentity"]["weight_per_row"], 1 / 40000)
             self.assertEqual(len(entry["reference"]["cohort"]), 35)
+            self.assertEqual(entry["reference"]["cohortSha256"], "6b85e77001ce6e432624022810d69a2a541bf19159be5f3a1e046318adbe231f")
             self.assertEqual(set(entry["reference"]["distributions"]), adapter.METRICS)
             for row in entry["reference"]["cohort"]:
                 self.assertTrue(row["included_in_native_diagnostic_cohort"])
                 self.assertEqual(row["margin_sign"], "first_candidate_minus_second_candidate")
                 self.assertGreaterEqual(row["expected_absolute_margin_error_pp"], 0)
                 self.assertIn(row["modal_pair_winner_id"], [row["first_candidate_id"], row["second_candidate_id"]])
+                self.assertEqual(row["margin_event_draw_denominator"], 40000)
+                self.assertEqual(set(row["margin_event_draw_counts"]), set(adapter.MARGIN_EVENT_KEYS))
+                self.assertLessEqual(sum(row["margin_event_draw_counts"].values()), 40000)
+                for key in adapter.MARGIN_EVENT_KEYS:
+                    self.assertEqual(row[key], row["margin_event_draw_counts"][key] / 40000)
+                self.assertLessEqual(row["first_decisive_margin_probability_10pp"], row["first_pair_win_probability"])
+                self.assertLessEqual(row["second_decisive_margin_probability_10pp"], 1 - row["first_pair_win_probability"])
             self.assertEqual(read(output), result)
             self.assertEqual(read(manifest), {"schemaVersion": 1, "href": "/data/election-night/references.json",
                                               "sha256": hashlib.sha256(output.read_bytes()).hexdigest(),
@@ -86,8 +97,10 @@ class ElectionNightReferenceTests(unittest.TestCase):
         original_read = adapter.read
         reference_path = SOURCE / adapter.REFERENCE_REL
         for mutate, message in (
-            (lambda r: r["cohort"][0].__setitem__("first_candidate_id", "wrong-candidate"), "pair rule/denominator/support mismatch"),
+            (lambda r: r["cohort"][0].__setitem__("first_candidate_id", "wrong-candidate"), "prior V1 values or independent review identity changed"),
             (lambda r: r["draw_identity"].__setitem__("shape", [1, 40000]), "Original shared-row identity"),
+            (lambda r: r["cohort"][0]["margin_event_draw_counts"].__setitem__("close_margin_probability_2pp", 0), "event counts or denominator changed"),
+            (lambda r: r["cohort"][0].__setitem__("first_decisive_margin_probability_10pp", 1.0), "Tail-event definitions changed|count fraction|independent fraction"),
         ):
             def changed(path):
                 result = original_read(path)

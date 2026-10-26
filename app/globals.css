@@ -3181,6 +3181,10 @@ select:focus-visible {
 .night-range-point { fill: var(--ink); stroke: #fff; stroke-width: 1; }
 .night-margin-range p { font-size: 12px; margin: 7px 0; }
 .night-close-chance { font-size: 12px; }
+.night-margin-chances { border-left: 3px solid var(--competitive, #80709c); padding: 1px 12px; margin: 16px 0; background: var(--paper); }
+.night-margin-chances dl { display: grid; gap: 8px; margin: 12px 0; }
+.night-margin-chances dl > div { display: flex; justify-content: space-between; gap: 14px; font-size: 12px; line-height: 1.5; }
+.night-margin-chances dd { margin: 0; font-weight: 600; white-space: nowrap; }
 .night-race-definitions { border-top: 1px solid var(--line); margin-top: 12px; overflow-wrap: anywhere; }
 .night-race-definitions ul { padding-left: 18px; line-height: 1.6; }
 .night-race-definitions li { margin: 5px 0; }
@@ -3204,6 +3208,13 @@ select:focus-visible {
 .night-chamber dd, .night-rubric dd { margin: 5px 0 0; font-size: 13px; line-height: 1.6; }
 .night-grade-scale { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; max-width: 500px; margin: 24px 0 16px; }
 .night-grade-scale span { padding: 14px; background: #efeee9; color: var(--muted); text-align: center; font-weight: 700; font-size: 22px; border-bottom: 2px solid var(--line); }
+.night-rubric-table { width: 100%; max-width: 760px; border-collapse: collapse; font-size: 13px; line-height: 1.5; margin: 24px 0 12px; }
+.night-rubric-table caption { text-align: left; font-weight: 600; padding-bottom: 12px; }
+.night-rubric-table th, .night-rubric-table td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--line); }
+.night-rubric-table thead { background: var(--paper); }
+.night-rubric-table th[scope="row"] { font-size: 18px; }
+.night-rubric-details { font-size: 13px; line-height: 1.65; }
+.night-baseline-note { padding: 14px; border-left: 3px solid var(--line); background: var(--paper); }
 .night-method { margin: 18px 0; }
 .night-method code { overflow-wrap: anywhere; }
 .night-method ul { font-size: 12px; line-height: 1.7; padding-left: 20px; }

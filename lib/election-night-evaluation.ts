@@ -12,11 +12,15 @@ export interface EvaluationForecastBinding {
   chamber: "senate" | "house"; runId: string; artifactSha256: string; issuedAt: string; cutoffAt: string;
 }
 export type EvaluationResultStatus = "unreported" | "provisional" | "called" | "final" | "certified" | "unresolved" | "unsupported";
-export type WinnerEstimand = "conditional_principal_pair_winner" | "listed_modeled_winner";
+export type WinnerEstimand = "conditional_principal_pair_winner" | "listed_modeled_winner" | "house_official_party_winner";
+export type HousePartyGroup = "D" | "R" | "O";
+export const HOUSE_PARTY_WINNER_INTERPRETATION_SHA256 = "70de07db3a0bbb5b637f10daf9b484ccc6d678c6b7dd08a781a8056fcf5f70fa";
 export interface EvaluationWinnerTarget {
   estimand: WinnerEstimand; eventId: string; roundId: string; ruleFamily: string | null;
-  /** Exactly the listed forecast outcome IDs; no subset selection or renormalization. */
+  /** Legacy targets use listed IDs; House official party winner uses exactly D/R/O. */
   outcomeIds: string[]; minimumStatus: "called" | "final" | "certified";
+  /** Required for the fixed House party-winner target, including its official result mapping. */
+  resultRuleId?: string; denominator?: string; interpretationSha256?: string;
 }
 export interface EvaluationMarginTarget {
   estimand: "named_pair_margin"; eventId: string; roundId: string; ruleFamily: string | null;
@@ -35,6 +39,7 @@ export interface EvaluationWinnerObservation {
   status: EvaluationResultStatus; estimand: string; eventId: string; roundId: string; ruleFamily: string | null;
   outcomeId: string | null; kind: "candidate" | "group" | null; candidateId: string | null;
   reason: string | null;
+  resultRuleId?: string; denominator?: string;
 }
 export interface EvaluationMarginObservation {
   status: EvaluationResultStatus; estimand: string; eventId: string; roundId: string; ruleFamily: string | null;
@@ -53,6 +58,22 @@ export interface WinnerEvaluationScore {
   outcomeId: string; kind: "candidate" | "group"; candidateId: string | null; modalPickCorrect: boolean;
   /** Unnormalized multicategory Brier: sum_k (p_k - indicator_k)^2, range 0–2. Binary two-class sum is twice binary one-event Brier. */
   brierSum: number; logLoss: ElectionNightLogLoss;
+  /** House fixed D/R/O only. This is a party score, not a named-candidate probability. */
+  housePartyWinner?: HousePartyWinnerDetail;
+}
+export interface HousePartyWinnerProjection {
+  outcomeIds: readonly ["D", "R", "O"];
+  probabilities: Record<HousePartyGroup, number>;
+  /** Structural means absent from native listed support, not physically impossible in the election. */
+  zeroOrigin: Record<HousePartyGroup, "structural_absent" | "present_finite_draw_zero" | "positive">;
+  nativeOutcomeIds: Record<HousePartyGroup, string | null>;
+}
+export interface HousePartyWinnerDetail extends HousePartyWinnerProjection {
+  interpretationSha256: string; resultRuleId: string; denominator: string;
+  /** The fixed three-class Brier sum divided by two, range 0–1. */
+  brierDividedByTwo: number;
+  candidateRoster: { candidateId: string; listedInFrozenRoster: boolean;
+    listedForecastGroup: HousePartyGroup | null; matchesOfficialGroup: boolean | null };
 }
 export interface MarginEvaluationScore {
   estimand: "named_pair_margin"; eventId: string; roundId: string; ruleFamily: string | null;
@@ -105,6 +126,37 @@ function distribution(outcomes: readonly { id: string; winProbability: number }[
     Math.abs(outcomes.reduce((s, o) => s + o.winProbability, 0) - 1) <= 1e-8, "invalid categorical forecast distribution");
   requireValue(outcomes.some(o => o.id === observedId), "observed outcome is outside declared support");
 }
+const HOUSE_PARTY_GROUPS = ["D", "R", "O"] as const;
+const isHousePartyGroup = (value: unknown): value is HousePartyGroup =>
+  typeof value === "string" && HOUSE_PARTY_GROUPS.some(group => group === value);
+/** Complete the issued House aggregation on the fixed exhaustive party event, without changing any native mass. */
+export function projectHousePartyWinner(race: ElectionNightRace): HousePartyWinnerProjection {
+  requireValue(text(race.id) && Array.isArray(race.outcomes) && race.outcomes.length > 0,
+    "invalid House race for fixed party-winner projection");
+  const probabilities: Record<HousePartyGroup, number> = { D: 0, R: 0, O: 0 };
+  const zeroOrigin: HousePartyWinnerProjection["zeroOrigin"] =
+    { D: "structural_absent", R: "structural_absent", O: "structural_absent" };
+  const nativeOutcomeIds: HousePartyWinnerProjection["nativeOutcomeIds"] = { D: null, R: null, O: null };
+  const memberIds = new Set<string>();
+  for (const outcome of race.outcomes) {
+    requireValue(isHousePartyGroup(outcome.party) && outcome.id === `${race.id}:${outcome.party}` &&
+      nativeOutcomeIds[outcome.party] === null && ["candidate", "group"].includes(outcome.kind) &&
+      Array.isArray(outcome.members) && outcome.members.length > 0 &&
+      outcome.members.every(member => text(member.id) && member.party === outcome.party) &&
+      finite(outcome.winProbability) && outcome.winProbability >= 0 && outcome.winProbability <= 1,
+    "House native winner group, membership or probability is invalid");
+    for (const member of outcome.members) {
+      requireValue(!memberIds.has(member.id), "House candidate ID occurs in multiple frozen winner groups");
+      memberIds.add(member.id);
+    }
+    probabilities[outcome.party] = outcome.winProbability;
+    zeroOrigin[outcome.party] = outcome.winProbability === 0 ? "present_finite_draw_zero" : "positive";
+    nativeOutcomeIds[outcome.party] = outcome.id;
+  }
+  requireValue(Math.abs(HOUSE_PARTY_GROUPS.reduce((sum, group) => sum + probabilities[group], 0) - 1) <= 1e-8,
+    "House native winner masses do not sum to one");
+  return { outcomeIds: HOUSE_PARTY_GROUPS, probabilities, zeroOrigin, nativeOutcomeIds };
+}
 export function multicategoryBrier(outcomes: readonly { id: string; winProbability: number }[], observedId: string): number {
   distribution(outcomes, observedId);
   return outcomes.reduce((s, o) => s + (o.winProbability - Number(o.id === observedId)) ** 2, 0);
@@ -134,8 +186,50 @@ function availability<T>(observation: { status: EvaluationResultStatus; reason: 
     return blocked("unresolved", observation.reason || `Result has not reached the declared ${minimum} status.`, observation.status);
   return null;
 }
+function housePartyWinnerScore(race: ElectionNightRace, target: EvaluationWinnerTarget,
+  observed: EvaluationWinnerObservation | null): EvaluationPart<WinnerEvaluationScore> {
+  if (!target || target.estimand !== "house_official_party_winner" || !text(target.eventId) || !text(target.roundId) ||
+    target.ruleFamily !== race.ruleFamily || !Array.isArray(target.outcomeIds) ||
+    target.outcomeIds.length !== HOUSE_PARTY_GROUPS.length ||
+    !target.outcomeIds.every((id, i) => id === HOUSE_PARTY_GROUPS[i]) ||
+    !text(target.resultRuleId) || !text(target.denominator) ||
+    target.interpretationSha256 !== HOUSE_PARTY_WINNER_INTERPRETATION_SHA256 ||
+    !["final", "certified"].includes(target.minimumStatus))
+    return blocked("mismatched", "Protocol does not declare the fixed House D/R/O official winner, owner interpretation, result rule, denominator and finality.", observed?.status ?? null);
+  if (observed && (observed.estimand !== target.estimand || observed.eventId !== target.eventId ||
+    observed.roundId !== target.roundId || observed.ruleFamily !== target.ruleFamily ||
+    observed.resultRuleId !== target.resultRuleId || observed.denominator !== target.denominator))
+    return blocked("mismatched", "Observed House official winner target, event, round, rule or denominator differs from the protocol.", observed.status);
+  const unavailable = availability<WinnerEvaluationScore>(observed, target.minimumStatus);
+  if (unavailable) return unavailable;
+  const truth = observed!;
+  if (!isHousePartyGroup(truth.outcomeId) || truth.kind !== "group" || !text(truth.candidateId))
+    return blocked("mismatched", "Final House party-winner record needs a D/R/O group and official winning candidate ID.", truth.status);
+  const projection = projectHousePartyWinner(race);
+  const groups = HOUSE_PARTY_GROUPS.map(id => ({ id, winProbability: projection.probabilities[id] }));
+  const brierSum = multicategoryBrier(groups, truth.outcomeId);
+  const listed = race.outcomes.flatMap(outcome => outcome.members.map(member => ({ id: member.id, group: outcome.party })));
+  const matches = listed.filter(member => member.id === truth.candidateId);
+  if (matches.length > 1) return blocked("mismatched", "Official winner candidate ID occurs more than once in the frozen roster.", truth.status);
+  const listedGroup = matches.length ? matches[0].group as HousePartyGroup : null;
+  const maximum = Math.max(...groups.map(group => group.winProbability));
+  const modalGroup = groups.filter(group => group.winProbability === maximum).map(group => group.id).sort()[0];
+  return { status: "scored", reason: null, resultStatus: truth.status, provisional: false,
+    score: { estimand: target.estimand, eventId: target.eventId, roundId: target.roundId, ruleFamily: target.ruleFamily,
+      outcomeId: truth.outcomeId, kind: "group", candidateId: truth.candidateId, modalPickCorrect: modalGroup === truth.outcomeId,
+      brierSum, logLoss: categoricalLogLoss(groups, truth.outcomeId),
+      housePartyWinner: { ...projection, interpretationSha256: HOUSE_PARTY_WINNER_INTERPRETATION_SHA256,
+        resultRuleId: target.resultRuleId!, denominator: target.denominator!, brierDividedByTwo: brierSum / 2,
+        candidateRoster: { candidateId: truth.candidateId, listedInFrozenRoster: listedGroup !== null,
+          listedForecastGroup: listedGroup, matchesOfficialGroup: listedGroup === null ? null : listedGroup === truth.outcomeId } } } };
+}
 function winnerScore(forecast: ElectionNightForecast, race: ElectionNightRace, target: EvaluationWinnerTarget,
   observed: EvaluationWinnerObservation | null): EvaluationPart<WinnerEvaluationScore> {
+  if (target?.estimand === "house_official_party_winner") {
+    if (forecast.chamber !== "house")
+      return blocked("mismatched", "The fixed official party-winner target applies only to House races.", observed?.status ?? null);
+    return housePartyWinnerScore(race, target, observed);
+  }
   const expectedEstimand = forecast.chamber === "senate" ? "conditional_principal_pair_winner" : "listed_modeled_winner";
   if (forecast.chamber === "senate" && (!race.pair || race.outcomes.length !== 2 ||
     !sameIds(race.outcomes.map(o => o.members.length === 1 && o.kind === "candidate" ? o.members[0].id : ""),
