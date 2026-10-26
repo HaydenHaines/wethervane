@@ -1,0 +1,55 @@
+{
+  "schema": "ActualParentSymbolicSubstitutionIndependentReviewLunaV1",
+  "review_date": "2026-10-26",
+  "verdict": "logp_control_flow_success_and_prederived_dlogp_exact_node_absence_supported; gradient_after_logp_route_plausible_but_untested",
+  "scope": "Static source/pin and trace review only. No rerun, no actual graph import/build/compile, no numeric model evaluation, no sampler/forecast.",
+  "pin_audit": {
+    "packet_files_checked": 10,
+    "packet_file_hash_and_size_mismatches": 0,
+    "provider_and_selection_pins_match": true,
+    "postmortem_dependency_pins_checked": 62,
+    "dependency_hash_mismatches": 0,
+    "selection_authenticates_dependency_bytes_before_original_import": true
+  },
+  "control_flow": {
+    "actual_source_script": "research/improvement-loop-20261024/m01-parent-symbolic-substitution-sol-v1/symbolic.py",
+    "preconditions_before_symbolic_work": [
+      "provider SHA and selection SHA checked",
+      "provider selection validates all pinned dependency bytes",
+      "full problem and exact first parent validated against selection",
+      "original role manifest rebound and original graph constructed",
+      "parent identity, mass 0.125, population_cut_v1 and mass-outside-logp checked",
+      "scientific target digest equation checked",
+      "typed exposure port exactly equals original 3x24 parent exposure"
+    ],
+    "logp_branch": "Complete model.logp(jacobian=True) was constructed. Loop reaches strict_replace_complete_logp. The exact typed port is checked in ancestors, graph_replace(strict=True) is called, then explicit E-input, original-port-removal and transformed-value-input assertions run. The success result is appended only after those assertions; control then proceeds to dlogp. No try/except error log was written for complete_logp.",
+    "dlogp_branch": "At strict_replace_complete_dlogp, the same ancestor precondition `assert port in before` executes outside the try and fails. Thus graph_replace is not called for dlogp.",
+    "failure_interpretation": "Exact original port identity absent from the already-derived gradient graph. This does not show the gradient lacks an equivalent clone/value dependency or is numerically independent of exposure.",
+    "persistence_limit": "The in-memory outcomes list and substituted logp were not serialized; no result.json or replaced graph exists. Logp success is inferred from pinned control flow plus final stage/trace, not independently inspected as an artifact. Postmortem labels itself a reconstruction."
+  },
+  "execution_audit": {
+    "terminal_exit_code": 1,
+    "elapsed_seconds": 26.7942198489327,
+    "termination_reason": null,
+    "peak_observed_rss_bytes": 593014784,
+    "peak_threads": 1,
+    "peak_cache_bytes": 0,
+    "launcher_caps": {"wall_seconds": 120, "cpu_seconds": 90, "rss_watchdog_bytes": 2147483648, "address_space_bytes": 6442450944, "per_file_bytes": 16777216, "cache_watchdog_bytes": 67108864},
+    "environment": "float64, cxx disabled, numba fastmath false, one thread per listed backend, fresh packet-local caches, nice15",
+    "numerical_compile_or_sampling": false
+  },
+  "gradient_after_logp_review": {
+    "assessment": "Structurally plausible and untested; replacing exact port in complete logp first can avoid relying on its identity in a prederived gradient.",
+    "jacobian_risk": "Must retain `model.logp(jacobian=True)` and PyMC's pre-gradient rewrite. Pinned PyMC Model.dlogp applies `pymc.pytensorf.rewrite_pregrad(cost)` before differentiating. Raw `pt.grad` of replaced logp is not shown to reproduce that path.",
+    "coordinate_risk": "PyMC dlogp flattens each gradient in order of continuous value_vars and concatenates. Any replacement gradient must match the exact ordered segments/vector length and transformed coordinate names.",
+    "input_identity_risk": "After rewrite/gradient derivation, must prove explicit exposure E remains an input, original port/stale parent constant is not retained in ways that create mixed parents, and original value inputs are retained.",
+    "parent_target_risk": "Only original first-parent graph was built. Changing E does not reauthenticate parent ID, mass, row, axes, upstream source or target envelope. The first parent's contract cannot label another parent call.",
+    "normalization": "No conditional normalization evidence; parent masses stay outside conditional logp and require outer parent mixture handling.",
+    "required_later_evidence": ["actual row-0 replaced density/full gradient parity versus fixed-parent baseline", "Jacobian-inclusive full factor list", "saved point and complete ordered vectors", "additional perturbed points", "separately authenticated parent envelope for any other exposure", "no scientific qualification from symbolic pass alone"]
+  },
+  "overall_limits": [
+    "No reason for exact identity failure established; cloning/rewriting/constant transformations remain hypotheses.",
+    "No numerical equivalence, linker behavior, full gradient, second-parent execution or target normalization was tested.",
+    "Review did not rerun the attempt or inspect/modify caches."
+  ]
+}

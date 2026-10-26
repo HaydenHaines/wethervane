@@ -1,0 +1,40 @@
+{
+  "schema": "IndependentPreparedGradientReplacementReviewV1",
+  "reviewer": "luna",
+  "review_date": "2026-10-26",
+  "scope": "source inspection only; no full graph construction, compiler, sampler, or forecast",
+  "pins": {
+    "experiment.py": "b5f9ebab4a6f3605dd007ca81a540180f522bf186338ec98677af09b29e4b438",
+    "launch_once.py": "4a1e9abf26f1c72ed5dfed7a54ad629c0fdfb08cf65f88989bc6c20bfe177ade",
+    "plan.json": "see evidence.json; reviewed current bytes"
+  },
+  "verdict": "technically_reviewable_as_a_separately_authorized_bounded_symbolic_experiment_but_unexecuted_and_not_a_result",
+  "supported": [
+    "The proposed derivative order matches pinned PyMC Model.dlogp: model.logp(jacobian=True), rewrite_pregrad(cost), then gradient(cost, continuous_value_vars). The helper ravels each variable and concatenates in input order. This is an exact source-level API-path match, conditional on pinned code remaining unchanged.",
+    "The proposal replaces the exact typed exposure node in the complete logp before rewrite/gradient, checks preservation of original value inputs, requires E as an input after each stage, disallows the old node, and constrains exposure to shape (3,24) and positive finite values.",
+    "First-parent mass/target contract and component inventory are checked and persisted; parent mass is asserted unused in logp. Shape witness, name set, 662 total coordinates, and native variable ordering are compared. This is a first-parent-specific derivation; it does not authenticate arbitrary later-parent labels or prove normalized all-parent inference.",
+    "Resource gates are meaningful if executed through launch_once: child hard CPU/address-space/file caps, parent watchdog, one-thread backend environment, fresh packet-local cache/output and output/RSS/wall watchdog. No operational test or resource receipt currently exists."
+  ],
+  "corrections_and_gaps": [
+    {
+      "severity": "medium",
+      "finding": "The receipt is caller-selected metadata verified by its supplied SHA, not an independent approval/authentication system. A caller able to create and pass the receipt can authorize the graph build. Keep the README's trusted-caller caveat; do not describe this as cryptographic scientific authorization or an automatic user-permission gate."
+    },
+    {
+      "severity": "medium",
+      "finding": "The stale-exposure scan catches equal (3,24) constants matching any selected parent, but cannot establish that all exposure influence flows through E, nor rule out transformed/stale constants or semantically wrong candidate/row wiring. It is a useful tripwire only; inspect graph lineage and later numerical dependence separately."
+    },
+    {
+      "severity": "low",
+      "finding": "The code records a symbolic graph pickle without a schema/runtime restore test. Hash it and treat as untrusted; do not load it before verifying all source/runtime pins. Serialization failure is correctly retained as failure."
+    },
+    {
+      "severity": "low",
+      "finding": "A killed process may leave partial output without failure.log, but launch_once is designed to preserve process.log and terminal.json; these files must be checked together and partial attempt must never be reused. Polling-based RSS/disk caps can overshoot by one 250 ms interval."
+    }
+  ],
+  "parent_and_target_envelope": "Source shows selection and first parent are pinned through the provider/selection inputs; p.validate(problem,parent,selection), parent identity digest, mass, population_cut_v1, scientific target digest, factor inventory and coordinate witness are checked. This is adequate for the specific frozen first-parent hypothesis as written, but no generalized full-parent envelope API is implemented and no inference over other parent masses is established.",
+  "native_equivalence": "Source-level derivative construction is equivalent to PyMC Model.dlogp path. A separate explicit call to model.dlogp is not made, but its exact body was inspected and the same pinned rewrite_pregrad/gradient helpers are called. This supports implementation-path equivalence, not numerical parity or symbolic pass.",
+  "failure_preservation": "Stage receipts are atomically replaced at each successful checkpoint and exception handling writes traceback and a failed stage. Abrupt kill/power loss can interrupt a stage; launcher terminal receipt is therefore mandatory. No original project outputs are targeted by the launcher.",
+  "recommendation": "The symbolic-only experiment is technically reviewable within the planned narrow scope after an explicit caller-selected receipt and fresh resource observation. Maintain one attempt, inspect terminal and every stage, preserve any failure, and do not proceed to numerical compilation/sampling without a new scope."
+}

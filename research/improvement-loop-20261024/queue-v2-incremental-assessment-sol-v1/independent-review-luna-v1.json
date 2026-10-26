@@ -1,0 +1,34 @@
+{
+  "schema": "IndependentQueueV2IncrementalAssessmentReviewV1",
+  "reviewer": "luna",
+  "review_date": "2026-10-26",
+  "packet_sha256": {
+    "dispatch.py": "4a55b1fd276d143cccd8aaf997d97c6c2d8c7873c0a7b0239d1b9f107807417c",
+    "measure.py": "caf169f43c7132964670339b14082710cf5217e9134fa50faaea9a9800baf2f1",
+    "test_source_bound.py": "f88380bbeec91f1c4b98644e2602860b6246cb67a6920f2d6cb9e008f9a82f13",
+    "FINDINGS.md": "dfab5bcf4fdc6846fe0ed19981ae5d6224e964fd9fa886464a66e970487c145d"
+  },
+  "verdict": "bounded_assessment_supported_with_scope_limits; do_not_integrate_or_claim_thousands_cycle_readiness",
+  "independent_reproduction": {
+    "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=.:../queue-dependency-research-sol-v1:../queue-v2-integration-review-sol-v1 python3 test_source_bound.py",
+    "result": "9 selected tests passed in 6.910 seconds",
+    "scope": "test fixtures create TemporaryDirectory stores and tiny commands; no authoritative store or scientific job accessed"
+  },
+  "methodology_review": [
+    "Measure.py instruments actual V2 pin/checked/history/directory functions while preserving and returning underlying results. Temporary stores contain 64 pending admissions and a separate sequence of eight real capacity-one tiny commands. Counts and timing are bounded direct observations, not extrapolated benchmarks.",
+    "Fixed source pin calls/bytes are correctly separated from history-dependent authenticated plan reads. Instrumentation, warm cache, fixture construction and lack of physical I/O counters limit performance interpretation; no cold-cache or throughput claim follows.",
+    "Query plan inspection is an empty fresh schema only. It supports the literal optimizer SCAN operations shown, not actual large-history query latency. The thousands-cycle objective remains unproven."
+  ],
+  "source_and_crash_review": [
+    "Dispatcher source roster pins current dispatcher, incremental admission core and V2 queue/execution/ledger/receipt sources; module path identity checks guard mixed imports. Tests reproduced refusal of changed roster, mixed imports, and V2-domain reuse before lock/root mutation.",
+    "Nine tests reproduced: transaction crash before/after evidence and claims plus exact retry, competing admission ownership/one launch, source mismatch and import/domain rejection, consumer launch recheck, crash points around dependency publication, nonzero/unknown predecessor retention, and tamper checks. This supports bounded failure handling under the trusted local process/filesystem model.",
+    "Atomic SQLite transaction prevents a half-published admission claim in tested crashes. Existing filesystem scaffold publication and recovery follows exact-equality checks; no automatic scaffold repair or cancellation is provided."
+  ],
+  "remaining_gaps": [
+    "Mutable SQLite/config/evidence trust boundary remains explicit: a party able to rewrite database and files can forge/change the asserted local state; digests are not signatures or external historical audit.",
+    "SQL still scans historical reservation and owner rows; query plans were measured at empty-store only. Recursive shared-ancestor work and repeated whole-plan validation can expand with DAGs.",
+    "Tests cover small synthetic chains and fault points, not large scale, crash/power-loss/filesystem guarantees, malicious concurrent same-UID actors, or thousands of cycles.",
+    "No V2 integration, unattended controller, scientific result, performance improvement, qualification or production adoption is demonstrated."
+  ],
+  "recommendation": "Retain as isolated research evidence. Any integration requires separate review of SQL indexing/frontier design and trust contract, then scale and recovery tests at representative non-scientific sizes before adoption."
+}

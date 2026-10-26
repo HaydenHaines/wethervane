@@ -1,0 +1,38 @@
+{
+  "schema": "SymbolicAttemptRootAuditV1",
+  "recordedAtUtc": "2026-10-26T21:42:45.149924+00:00",
+  "terminal": {
+    "path": "research/improvement-loop-20261024/m01-parent-gradient-after-replacement-plan-sol-v1/attempt-root-v1/terminal.json",
+    "sha256": "1251095b93d83cd33bb9767ea21ba11f953f9e0f9e2c4841b054db19a3f8d023",
+    "bytes": 557
+  },
+  "stages": {
+    "path": "research/improvement-loop-20261024/m01-parent-gradient-after-replacement-plan-sol-v1/attempt-root-v1/receipts/stages.json",
+    "sha256": "336d71124280f122a6a76001f64d82f1c4fcb636bc25e16c1a50e4f275ddf700",
+    "bytes": 19056
+  },
+  "failure": {
+    "path": "research/improvement-loop-20261024/m01-parent-gradient-after-replacement-plan-sol-v1/attempt-root-v1/receipts/failure.log",
+    "sha256": "36482d59d7aed22e425aadf28ebb92d0d9ab1b7ded3cc6f6226057bafd7e2df4",
+    "bytes": 684
+  },
+  "coordinate_order": {
+    "path": "research/improvement-loop-20261024/m01-parent-gradient-after-replacement-plan-sol-v1/attempt-root-v1/receipts/coordinate-order.json",
+    "sha256": "367faee46e306590683052d08d5b9e374dea7bef76a36797f72205d2414017e9",
+    "bytes": 8866
+  },
+  "incomplete_pickle": {
+    "path": "research/improvement-loop-20261024/m01-parent-gradient-after-replacement-plan-sol-v1/attempt-root-v1/receipts/symbolic-graphs.pkl",
+    "sha256": "7214811bb5497fe59cbca93d0824762af71bb7427ab111c137f8383015729006",
+    "bytes": 67108864,
+    "git_tracked": false,
+    "safe_to_load": false
+  },
+  "status": "failed_closed_on_64MiB_per_file_cap",
+  "interpretation": "Structural input and coordinate checks passed through symbolic gradient construction; the partial pickle is not a valid saved graph. No numerical parity, fit or forecast was evaluated.",
+  "limits": [
+    "Source/stage audit does not independently reconstruct the graph.",
+    "Pickle bytes were hashed, never deserialized.",
+    "Persistence must be repaired by a new independently reviewed, bounded attempt; this attempt is not retried."
+  ]
+}

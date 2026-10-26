@@ -1,0 +1,115 @@
+{
+  "schema": "QueueV2IncrementalAssessmentEvidenceV1",
+  "recorded_at_utc": "2026-10-26T21:40:14.398787+00:00",
+  "frozen": true,
+  "scope": "Bounded V2 synthetic scale measurements plus isolated source-bound incremental dependency derivative; no authoritative/store/owner changes or production adoption",
+  "packet": {
+    "test_source_bound.py": {
+      "sha256": "f88380bbeec91f1c4b98644e2602860b6246cb67a6920f2d6cb9e008f9a82f13",
+      "bytes": 5281
+    },
+    "incremental-tests.log": {
+      "sha256": "0f533e70f978901fe3f315955787f1919636d65abb806aceba6e6f7dcebb6b18",
+      "bytes": 1496
+    },
+    "query_plans.py": {
+      "sha256": "54c5ffb5fa6b395db27c55411a7c420c68d088d520fc419f96a0f3925a3c9704",
+      "bytes": 921
+    },
+    "measurements.json": {
+      "sha256": "b36c7850132e9a10aa4298184efc162441b7131ec4667b1a4c8dda57941c5ee6",
+      "bytes": 32740
+    },
+    "FINDINGS.md": {
+      "sha256": "dfab5bcf4fdc6846fe0ed19981ae5d6224e964fd9fa886464a66e970487c145d",
+      "bytes": 10990
+    },
+    "test_dependency.py": {
+      "sha256": "1408637a11afd8a470fa21a83fd5683f56e83f57b12969fb1450071a5a97a018",
+      "bytes": 10720
+    },
+    "measure.py": {
+      "sha256": "caf169f43c7132964670339b14082710cf5217e9134fa50faaea9a9800baf2f1",
+      "bytes": 4211
+    },
+    "dispatch.py": {
+      "sha256": "4a55b1fd276d143cccd8aaf997d97c6c2d8c7873c0a7b0239d1b9f107807417c",
+      "bytes": 14294
+    },
+    "query-plans.json": {
+      "sha256": "119fea8dda07fe95b0ca66db3027947f2eaac68db4bb01a3f896432c09f02bbe",
+      "bytes": 2561
+    }
+  },
+  "upstream": {
+    "queue-v2/experiment_queue.py": {
+      "sha256": "27195955c52e0ae06909b93d16be46f0db136841f57fd610d4773955d6443471",
+      "bytes": 37397
+    },
+    "queue-v2/execution.py": {
+      "sha256": "ce02f4c4b9be397b299c2219092fdd355db1695798af07c4974bc63cb6bbbc93",
+      "bytes": 36273
+    },
+    "queue-v2/ledger.py": {
+      "sha256": "d65cea890ecf9b456f8b9625d173f15dac1e7fa94bb618d3407e26f368ee220a",
+      "bytes": 13115
+    },
+    "queue-v2/run_receipts.py": {
+      "sha256": "a7e78b822207109e0257adce9abb6493c53a0d93158177131ade76c0d874e73e",
+      "bytes": 30383
+    },
+    "queue-v2/test_experiment_queue.py": {
+      "sha256": "3c1d9a0db83766bccf6f3293808a74be466add5583489c3260c5872999051f36",
+      "bytes": 40239
+    },
+    "queue-incremental-index-sol-v2/core.py": {
+      "sha256": "207cfa6a85757b8d1d70aac056a96f45476b0a898f692b1ed5b5f5bf7709d9b2",
+      "bytes": 7646
+    },
+    "queue-incremental-index-sol-v2/independent-review-sol-v1.json": {
+      "sha256": "6369f3c816f64862edb0c4347116a08e54cb727e8206949faa79a2e5f0fa8cb7",
+      "bytes": 7285
+    },
+    "queue-dependency-research-sol-v1/dispatch.py": {
+      "sha256": "77020ef59046df5106379e669e18c3ebfda7b96f0503e88bf588eb71ba408674",
+      "bytes": 13757
+    },
+    "queue-dependency-research-sol-v1/independent-review-luna-v1.json": {
+      "sha256": "dffae1570896b7b989ae4c38327393b157737308bed8586b0f98d5cf7946d083",
+      "bytes": 10826
+    },
+    "queue-adaptive-scale-sol-v1/FINDINGS.md": {
+      "sha256": "4b8b6505edfe884070350f54a0eeaec8decd580426a925e4d00af73f1135b0ed",
+      "bytes": 6511
+    },
+    "queue-adaptive-scale-sol-v1/result.json": {
+      "sha256": "cf7f244113a1597c12f8176ffa720b0a7ac6362d9be3a3803c47b196acd7aa1b",
+      "bytes": 33673
+    },
+    "queue-v2-integration-review-sol-v1/work-validation-addendum-sol-v1.json": {
+      "sha256": "a9ce850f88525f27855a7d78aa05ab7d7d9fa787dcb27793c52469423c011ffd",
+      "bytes": 4475
+    },
+    "checkpoints/continuation-v54.json": {
+      "sha256": "d183b9e978cdaf8b8c4efe679fb52de93f7cf97ee7364911ace237d50adcfec7",
+      "bytes": 2566
+    }
+  },
+  "measured_limits": {
+    "pending_admissions": 64,
+    "real_scale_commands": 8,
+    "capacity": 1,
+    "nice": 15,
+    "source_bound_tests": 9,
+    "incremental_test_real_commands": 9,
+    "scientific_jobs": 0
+  },
+  "trust": "trusted_mutable_index_no_historical_audit; V2 full-history implementation separate",
+  "remaining_bottlenecks": [
+    "V2 linear historical authentication per enqueue/tick",
+    "derivative SQL historical reservation/owner scans",
+    "repeated recursive ancestor authentication"
+  ],
+  "thousands_cycle_readiness": false,
+  "integrated_into_queue_v2": false
+}

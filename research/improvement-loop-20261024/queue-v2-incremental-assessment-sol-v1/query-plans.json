@@ -1,0 +1,73 @@
+{
+  "schema": "IncrementalDispatchSQLPlanInspectionV1",
+  "empty_fresh_store": true,
+  "jobs_executed": 0,
+  "queries": {
+    "active_reservations": {
+      "sql": "SELECT r.attempt FROM reservations r LEFT JOIN releases l ON l.attempt=r.attempt WHERE l.attempt IS NULL",
+      "optimizer_rows": [
+        [
+          3,
+          0,
+          0,
+          "SCAN r USING COVERING INDEX sqlite_autoindex_reservations_1"
+        ],
+        [
+          5,
+          0,
+          0,
+          "SEARCH l USING COVERING INDEX sqlite_autoindex_releases_1 (attempt=?) LEFT-JOIN"
+        ]
+      ]
+    },
+    "pending_candidates": {
+      "sql": "SELECT o.attempt FROM owners o LEFT JOIN reservations r ON r.attempt=o.attempt WHERE r.attempt IS NULL ORDER BY o.rowid",
+      "optimizer_rows": [
+        [
+          4,
+          0,
+          0,
+          "SCAN o"
+        ],
+        [
+          6,
+          0,
+          0,
+          "SEARCH r USING COVERING INDEX sqlite_autoindex_reservations_1 (attempt=?) LEFT-JOIN"
+        ]
+      ]
+    }
+  },
+  "source_pins": [
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-v2-incremental-assessment-sol-v1/dispatch.py",
+      "sha256": "4a55b1fd276d143cccd8aaf997d97c6c2d8c7873c0a7b0239d1b9f107807417c",
+      "size": 14294
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-incremental-index-sol-v2/core.py",
+      "sha256": "207cfa6a85757b8d1d70aac056a96f45476b0a898f692b1ed5b5f5bf7709d9b2",
+      "size": 7646
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-v2/experiment_queue.py",
+      "sha256": "27195955c52e0ae06909b93d16be46f0db136841f57fd610d4773955d6443471",
+      "size": 37397
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-v2/execution.py",
+      "sha256": "ce02f4c4b9be397b299c2219092fdd355db1695798af07c4974bc63cb6bbbc93",
+      "size": 36273
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-v2/ledger.py",
+      "sha256": "d65cea890ecf9b456f8b9625d173f15dac1e7fa94bb618d3407e26f368ee220a",
+      "size": 13115
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-v2/run_receipts.py",
+      "sha256": "a7e78b822207109e0257adce9abb6493c53a0d93158177131ade76c0d874e73e",
+      "size": 30383
+    }
+  ]
+}
