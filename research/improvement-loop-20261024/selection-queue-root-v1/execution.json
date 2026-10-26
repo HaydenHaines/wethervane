@@ -1,0 +1,92 @@
+{
+  "schema": "ActualPendingSelectionQueueRootExecutionV1",
+  "startedAt": "2026-10-26T13:48:20.600975+00:00",
+  "journalBefore": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/ledger.sqlite3",
+    "sha256": "bf751df599c6630c922a80ebd4c1597595994263218881c16ca3fdb629d4afeb",
+    "size": 5287936
+  },
+  "status": "commands_completed",
+  "steps": [
+    {
+      "command": [
+        "python3",
+        "-B",
+        "experiment_queue.py",
+        "--root",
+        "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/selection-queue-root-v1/queue-store",
+        "initialize",
+        "--capacity",
+        "1"
+      ],
+      "returnCode": 0,
+      "elapsedSeconds": 0.05172487813979387,
+      "log": {
+        "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/selection-queue-root-v1/step1.log",
+        "sha256": "6126d4a1c262540195f9058d727d7686e7e19f4c5917220abd8d08232d76749f",
+        "size": 231
+      }
+    },
+    {
+      "command": [
+        "python3",
+        "-B",
+        "experiment_queue.py",
+        "--root",
+        "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/selection-queue-root-v1/queue-store",
+        "enqueue",
+        "--plan",
+        "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/selection-queue-sol-v1/actual-pending-recipe/plan.json",
+        "--sha256",
+        "73a2fa33c4722531a2524f47ee9bbf71d8a262a16db197e2fd8256395384fdca"
+      ],
+      "returnCode": 0,
+      "elapsedSeconds": 0.058490166207775474,
+      "log": {
+        "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/selection-queue-root-v1/step2.log",
+        "sha256": "c4e2ab9e660979c709d2227349e5e65609ef8a451adab02e7e0bca36a56c206b",
+        "size": 276
+      }
+    },
+    {
+      "command": [
+        "python3",
+        "-B",
+        "experiment_queue.py",
+        "--root",
+        "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/selection-queue-root-v1/queue-store",
+        "work",
+        "--output",
+        "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/selection-queue-root-v1/worker",
+        "--poll-seconds",
+        "1",
+        "--max-runtime",
+        "240"
+      ],
+      "returnCode": 0,
+      "elapsedSeconds": 41.61205280106515,
+      "log": {
+        "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/selection-queue-root-v1/step3.log",
+        "sha256": "1ed092962f2b5b667f82063f12f47493f897b8fd38252d101528383d0a1dcb75",
+        "size": 352
+      }
+    }
+  ],
+  "journalAfter": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/ledger.sqlite3",
+    "sha256": "bf751df599c6630c922a80ebd4c1597595994263218881c16ca3fdb629d4afeb",
+    "size": 5287936
+  },
+  "finishedAt": "2026-10-26T13:49:02.328623+00:00",
+  "preparation": {
+    "receipt": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/selection-queue-sol-v1/actual-pending-owner-output/receipt.json",
+      "sha256": "8861511cd6a2c3773882fb4d1c102a5fdcb522cda1fc7a3d8d866ee2879b7e9d",
+      "size": 15154
+    },
+    "status": "blocked_requires_computation",
+    "selectionEstablished": false,
+    "publicationAuthorized": false,
+    "empiricalStatus": "unassessed"
+  }
+}

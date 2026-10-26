@@ -1,0 +1,45 @@
+{
+  "schema": "TexasGpuTerminalOwnerObservationV1",
+  "observedAt": "2026-10-26T13:43:44.159604+00:00",
+  "ownerThread": "01a173a3-fc75-7233-af2c-69be726131fc",
+  "audit": {
+    "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/gpu-backend-implementation-20261025/texas-gpu-production-two-host-cores-v2/completed-run-audit-v1.json",
+    "sha256": "631c3c1f982063d94e9f5e920c005eb1f78c936a06f85b3f8f2786cc09ce25e7"
+  },
+  "failureSha256": "39f350d7a9ef04284fb226ddb8183ac7e6d07d3540acbcb57244e5c217e8bee4",
+  "service": "MainPID=0\nExecMainStatus=1\nActiveState=failed\nSubState=failed\n",
+  "samplingComplete": {
+    "elapsed_seconds": 53631.76867367304,
+    "latest_checkpoint": {
+      "file": "sampling-001000-checkpoint.json",
+      "sha256": "617fb8b4b67ee963ae9e3b78ddbd44996faa04def601ddb80144dadd2b0aa204"
+    },
+    "warmup": 1500,
+    "retained": 1000,
+    "parent_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "chains_per_parent": 4
+  },
+  "retainedDiagnostics": {
+    "transitions_per_chain": 1000,
+    "chain_transitions": 32000,
+    "compute_seconds": 21333.03383606882,
+    "copy_seconds": 2.907932446571067,
+    "median_batch_seconds": 21.33263998955954,
+    "divergent": 24,
+    "depth_saturation": 31167
+  },
+  "allParentsRhatEssPass": true,
+  "originalFullDiagnosticGatesPass": false,
+  "completeCut": false,
+  "forecastQualified": false,
+  "scope": "Owner audit and terminal service authenticated read-only. Not a GPU crash; full budget completed but original sampler gates failed. No job restart, retry, artifact mutation, count selection, or scientific promotion. Retrospective TX2018 is separate from the current TX2026 catalog. Earlier warmup134 update is superseded."
+}

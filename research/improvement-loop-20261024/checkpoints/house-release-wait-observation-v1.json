@@ -1,0 +1,94 @@
+{
+  "schema": "HouseReleaseWaitObservationV1",
+  "observed_at_utc": "2026-10-25T20:00:28.371835+00:00",
+  "scope": "Read-only process and small JSON/source metadata observation; no raw joint arrays examined.",
+  "owner_root": "/home/hayden/projects/ballotmancy-house-benchmark",
+  "ui_source_head": "6a2a7abde53d95af4065eca9a4834080c2a088ba",
+  "source_pins": [
+    {
+      "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-20261025/selection-plan-v6.json",
+      "sha256": "e161e97a4d9aab4d11aa1ac633b57e0a5d4ab4b1960ac85853c0f914c043a47c"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-20261025/release-preparation-plan-v6.json",
+      "sha256": "061f7fd1b9c467776d6203041d3d35bc0abb754a6f46823a815fbfaa583a411f"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-20261025/queue-plan-v7.json",
+      "sha256": "532d9d43ba605925b827ac351948d6c0756f0c4bb0c6b490b10b6810a5630a11"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-20261025/review-queue-plan-v7.json",
+      "sha256": "35bd1221fb8a38903fef8f25dc9e74d6ff5f30f5c302fd5604ab88611f585d94"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-20261025/prepare_release_when_ready.py",
+      "sha256": "7ef830efe00ed60f0c0818d2a6c613e2112b9503638debdcc0bb5b076fcd78c5"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-house-live-ui-20261025/tests/site/house-live-release.spec.ts",
+      "sha256": "1d602f2a607ea0a60f4c26f51dd19f1c6cf03cc60bdf904c03c4738efa157b64"
+    }
+  ],
+  "selected_passed_with_both_review_files": [
+    "house-current-fundamentals",
+    "house-current-polling",
+    "house-current-comparison-recent_calendar_history-f",
+    "house-current-comparison-recent_calendar_history-fp",
+    "house-current-comparison-house_history_refreshed_v1-f",
+    "house-current-comparison-house_history_refreshed_v1-fp",
+    "house-current-comparison-house_presidential_slope_v1-f",
+    "house-current-comparison-house_presidential_slope_v1-fp",
+    "house-current-comparison-house_relative_lean_v1-f",
+    "house-current-comparison-house_relative_lean_v1-fp",
+    "house-current-comparison-house_relative_context_v1-f",
+    "house-current-cycle-low",
+    "house-current-error-low"
+  ],
+  "selected_pending": [
+    "house-current-comparison-house_relative_context_v1-fp",
+    "house-current-cycle-high",
+    "house-current-error-high"
+  ],
+  "release_v6_receipt_exists": false,
+  "release_v6_catalog_exists": false,
+  "live_process_handles": [
+    {
+      "pid": 1723943,
+      "pidfd_opened": false
+    },
+    {
+      "pid": 1724556,
+      "pidfd_opened": true,
+      "state": "R",
+      "start_ticks": 109275905,
+      "executable": "/usr/bin/python3.12",
+      "command": "/home/hayden/projects/ballotmancy-house-benchmark/.venv/bin/python research/house-live-20261025/forecast.py house-current-cycle-high predictions-v3/house-current-cycle-high --draws 250000 --warmup 5000 --seed 2026102605"
+    },
+    {
+      "pid": 1725428,
+      "pidfd_opened": true,
+      "state": "S",
+      "start_ticks": 109300165,
+      "executable": "/usr/bin/python3.12",
+      "command": "/home/hayden/projects/ballotmancy-house-benchmark/.venv/bin/python /home/hayden/projects/ballotmancy-house-benchmark/research/house-live-20261025/run_queue.py /home/hayden/projects/ballotmancy-house-benchmark/research/house-live-20261025/queue-plan-v7.json /home/hayden/projects/ballotmancy-house-benchmark/research/house-live-20261025/queue-v7"
+    },
+    {
+      "pid": 1725429,
+      "pidfd_opened": true,
+      "state": "S",
+      "start_ticks": 109300165,
+      "executable": "/usr/bin/python3.12",
+      "command": "/home/hayden/projects/ballotmancy-house-benchmark/.venv/bin/python /home/hayden/projects/ballotmancy-house-benchmark/research/house-live-20261025/watch_reviews.py /home/hayden/projects/ballotmancy-house-benchmark/research/house-live-20261025/review-queue-plan-v7.json /home/hayden/projects/ballotmancy-house-benchmark/research/house-live-20261025/review-queue-v7"
+    },
+    {
+      "pid": 1725430,
+      "pidfd_opened": true,
+      "state": "S",
+      "start_ticks": 109300165,
+      "executable": "/usr/bin/python3.12",
+      "command": "/home/hayden/projects/ballotmancy-house-benchmark/.venv/bin/python /home/hayden/projects/ballotmancy-house-benchmark/research/house-live-20261025/prepare_release_when_ready.py /home/hayden/projects/ballotmancy-house-benchmark/research/house-live-20261025/release-preparation-plan-v6.json /home/hayden/projects/ballotmancy-house-benchmark/research/house-live-20261025/release-v6"
+    }
+  ],
+  "qualification": "No new scientific or publication qualification inferred from process liveness, receipt existence, or this observation."
+}

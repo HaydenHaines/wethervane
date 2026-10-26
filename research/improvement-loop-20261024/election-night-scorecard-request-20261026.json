@@ -1,0 +1,55 @@
+{
+  "schema": "ElectionNightScorecardQueuedRequestV1",
+  "status": "queued_after_house_release",
+  "requestedOn": "2026-10-26",
+  "priorityDependency": "Complete qualified current House import, browser verification, deployment and served checks first.",
+  "entryPoint": "Election night scorecard link at the top right of the existing one-page website.",
+  "defaultSelection": "Standard forecast first; other model stacks selectable, explicitly confirmed by Hayden.",
+  "primaryPurposeClarification": "An election-night watcher's guide to the preferred model's specific, informative and testable predictions. Falsification and accountability are central. Other stacks are secondary inspection, not a tool for creating or printing personal predictions.",
+  "falsificationResearchRequirements": [
+    "State before the election which observations would count as evidence against the model, its explanations and its uncertainty claims. Do not excuse misses solely because the observed outcome had nonzero probability.",
+    "Compare informative probability forecasts against always-50/50 and strong simple forecast baselines on the same contests and horizons; define competitive subsets before observing outcomes.",
+    "Distinguish a 50/50 win probability from a narrow margin distribution. An even win chance can represent a nail-biter or uncertainty about which side wins comfortably. Show expected margin, intervals and probabilities of close versus decisive outcomes; do not falsely label broad uncertainty a tight race.",
+    "Select a few illustrative states from forecast-time evidence and explain why they matter to the preferred forecast, without cherry-picking favorable states after results arrive or inventing causal attribution.",
+    "Describe shared national/state errors and joint chamber expectations. Define what coordinated misses would challenge, rather than treating correlated state outcomes as independent evidence.",
+    "Research an explicit rubric that penalizes both confident errors and uninformative vagueness. Proper scores, coverage plus width, and baseline skill should constrain letter grades.",
+    "Explain the distinction between one surprising outcome, a failed point prediction, systematic probability errors and an unsupported model mechanism. Do not claim one election proves universal calibration or conclusively falsifies every probabilistic claim."
+  ],
+  "requiredSections": {
+    "resultsAndPredictivePower": "A straightforward scoreboard: concrete candidate and margin prediction, observed result and error; calls correct and unresolved coverage. The user's Talarico +0.5 example is illustrative, not an actual forecast to fabricate.",
+    "uncertainty": "Plain-language standard predictive evaluation, including how wrong the model expects to be, useful precision, probability performance and shared uncertainty across contests.",
+    "grading": "A visible A-to-F scale at the bottom with an explicit rubric. Criteria and thresholds require research and review before implementation; no invented numerical thresholds or grades."
+  },
+  "beforeImplementation": {
+    "delegation": "User explicitly requests recurrent Luna research sessions before writing the scorecard.",
+    "researchThreads": [
+      "Evaluating predictive models: point accuracy, proper probability/distribution scores, calibration, sharpness, baseline comparisons and dependence.",
+      "Presenting forecast evaluation to a non-expert public without jargon or misleading letter grades.",
+      "Primary evidence and public backlash around the 2016 election forecasts and the meaning of a model miss. Distinguish event surprise, point error, calibration failure, model shortcomings and communication failure."
+    ],
+    "recursion": "Initial Luna findings feed a critique round; later Luna rounds examine unresolved weaknesses and refine the rubric against examples. Verify consequential claims against primary sources; preserve counterevidence. Review with modeling owners before implementation."
+  },
+  "implementationPrinciplesToValidate": [
+    "Freeze a dated pre-election forecast for evaluation; do not move predictions after outcomes arrive.",
+    "Show predicted and observed quantities with identical denominators and contest rules; label conditional-pair shares and pooled groups honestly.",
+    "Show result source, timestamp and provisional/called/final status; do not grade incomplete margins as final outcomes.",
+    "Keep predictive accuracy and uncertainty assessments separately visible; any combined grade needs a defined, reviewed aggregation rule.",
+    "Use joint draws for expected error and chamber-wide uncertainty where supported; many races are not independent election cycles.",
+    "Include coverage, interval width and proper scoring so a very vague forecast cannot earn an excellent grade merely by covering everything.",
+    "Preserve the one-page site, responsive layout, current component selectors and existing historical scoreboards.",
+    "Do not introduce user configuration saving; that requirement was withdrawn as a typo."
+  ],
+  "openQuestionsForResearchAndOwners": [
+    "Which frozen forecast horizon and result source/status support each scored quantity?",
+    "Which joint predictive artifacts can support expected scoreboard error and dependence-aware diagnostics for Senate and House?",
+    "Which public A-F rubric is fair, understandable and justified before observing the election?"
+  ],
+  "implementationStarted": false,
+  "researchStarted": false,
+  "researchGuardrails": [
+    "Use binary always-50/50 only for a genuinely binary target. House candidate/group outcomes may require categorical reference probabilities and scores on the same outcome space.",
+    "Do not turn one-election calibration frequencies into claims based on hundreds of independent national shocks. Preserve dependence and finite-sample limits.",
+    "State definitions, selected states, scoring cohorts, point prediction rules, baselines and rubric before observing results; keep unresolved and rule-dependent outcomes explicit.",
+    "Use primary research and contemporaneous original forecast methodology/data when discussing 2016. Separate documented forecast performance from documented public reactions and later interpretations."
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "schema": "SelectionQueueIndependentReviewSolV1",
+  "reviewedAtUtc": "2026-10-26T13:43:25.915240+00:00",
+  "status": "qualified_software_mechanics_pass",
+  "sourceHashes": {
+    "selection_queue.py": "3b068766b388c3a7a87802ce7911e379add12c0ae0492139040d27f146d984ba",
+    "selection_queue.md": "1e82c33bc61e7a434e426b1630bcc53e638a7aefac728adf5159550ace935e09",
+    "test_selection_queue.py": "90f820b83478208077966f5273f015c030a701042c3365d77deb3ec074cb4e9e",
+    "experiment_queue.py": "6995febe73a5c1c2a317849416a58cc25130b9bbda44161f6a7624b321a8415f",
+    "execution.py": "ce02f4c4b9be397b299c2219092fdd355db1695798af07c4974bc63cb6bbbc93",
+    "scoped_selection.py": "5006cdea38e036bd5b84b94278f83548035e5e2c434f651ef519b6a30f3fed4b",
+    "selection-queue-sol-v1/author-verification-v1.json": "437baa3461175c7087533e76f5c18bf828ef9dcb565f83bf3ac4b2f0f84d5d21"
+  },
+  "authorPinnedSourceHashesMatch": true,
+  "focusedSyntheticChecks": [
+    "compile-only preparation emitted plan and receipt, no owner output",
+    "pinned native spec drift rejected",
+    "pending preparation application rejected",
+    "no synthetic registry or journal directory created"
+  ],
+  "actualRegistryMutation": false,
+  "actualJournalMutation": false,
+  "actualNativeInvocation": false,
+  "actualQueueEnqueue": false,
+  "empiricalQualification": "unassessed",
+  "publicationAuthorized": false,
+  "limitations": [
+    "Store ownership for retry and resume checked at enqueue, not recipe compilation",
+    "Author tests use invented temporary science inputs",
+    "Exactly-once selection event does not imply zero precommit filesystem side effects"
+  ]
+}
