@@ -1,0 +1,94 @@
+{
+  "schema": "M01Earlier538ArchiveIndependentReviewV1",
+  "verdict": "pass_with_scope_limits",
+  "reviewedFiles": [
+    {
+      "path": "research/improvement-loop-20261024/m01-538-archive-root-v1/audit.py",
+      "sha256": "9dbfcc6c6a14e13b7a420a5247eed1b0e5a4b3476b75235eccefbb380dd6946a",
+      "size": 3606
+    },
+    {
+      "path": "research/improvement-loop-20261024/m01-538-archive-root-v1/candidate-inventory.json",
+      "sha256": "e37131147f9f3e6671bc3d2bdb984b1134973e37639f0296d481df430c335aae",
+      "size": 5510
+    },
+    {
+      "path": "research/improvement-loop-20261024/m01-538-archive-root-v1/README.md",
+      "sha256": "3c17e2acc73ef56cc83c1017deb7043d0b9d7d2e86d056cdfa5a28d39dde6733",
+      "size": 3515
+    },
+    {
+      "path": "research/improvement-loop-20261024/m01-538-archive-root-v1/raw-polls-20180530.csv",
+      "sha256": "79489a9d7f796d8f50841e91d8dcb858679ada75690812d4757f095a107efb91",
+      "size": 1326873
+    },
+    {
+      "path": "research/improvement-loop-20261024/m01-538-archive-root-v1/metadata.json",
+      "sha256": "c3d6901b6db3c4cf8992b8e2e48059e195a8c20ad6bd3bd7d8c60f59b1e42c74",
+      "size": 210
+    },
+    {
+      "path": "research/improvement-loop-20261024/m01-538-archive-root-v1/commit-metadata.json",
+      "sha256": "38d1bed7efa2c213b62da8a45507653c7e0d261cb499e5f2f37beb205bf7ebc7",
+      "size": 430
+    },
+    {
+      "path": "research/improvement-loop-20261024/momentum-calibration-preparation-sol-v1/prepared-v1/2018/selected-training-polls.csv",
+      "sha256": "df682ca44d043cdc9ff6372448f205769bf763197ddfaa17c109aaaa21974e21",
+      "size": 799816
+    }
+  ],
+  "independentChecks": {
+    "archiveRows": 465,
+    "trainingRows": 930,
+    "matchingCounts": [
+      144,
+      31,
+      30,
+      30
+    ],
+    "uniqueCandidatePairs": 30,
+    "allCandidateInventoryBytesReproducedSemantically": true,
+    "archiveElectionDates": [
+      "11/6/12",
+      "11/8/16",
+      "12/10/16"
+    ],
+    "dateParsing": "Independent split-to-integer month/day/year conversion agrees. Recorded election dates include 2012-11-06, 2016-11-08 and Louisiana 2016-12-10 runoff; recorded poll dates are 2\u201321 days prior. No poll fieldwork-end or publication-date semantics established.",
+    "gitBlobSha1": "39675528c20d57e88fbb1147ee10f6295f7061da",
+    "primaryCommitAuthorAndCommitterUtc": "2018-05-30T14:41:12Z",
+    "liveGitHubVerification": "GitHub API reports verified=true, valid signature, verified_at=2024-01-16T19:59:59Z. This does not independently establish 2018 public availability.",
+    "december2016RunoffRows": 4
+  },
+  "findings": [
+    {
+      "severity": "limitation",
+      "detail": "Unique key means one archive candidate for each training row; independent review also confirms 30 distinct archive poll numbers and training IDs here. It is not proof of sample identity or an estimated false-positive rate."
+    },
+    {
+      "severity": "limitation",
+      "detail": "Normalized-name exact matching and share agreement are heuristic screening conditions. Conservative denotes selectivity only; no validated precision/recall or false-positive bound is supplied. README properly disclaims an identity join."
+    },
+    {
+      "severity": "limitation",
+      "detail": "README calls this late-poll selection and does not claim a representative series. Support mismatch and transformations remain unresolved; no admission or fitting authorized by this review."
+    },
+    {
+      "severity": "minor",
+      "detail": "Inventory pins input CSVs but does not self-pin audit.py or README. This separate review supplies exact current file hashes; trust still depends on independent review of code and source provenance."
+    },
+    {
+      "severity": "minor",
+      "detail": "audit.py accepts float NaN/Inf and does not validate dates/ranges generically. Exact pinned inputs and independently reproduced finite candidates bound this run; do not reuse as an unpinned production validator."
+    },
+    {
+      "severity": "minor",
+      "detail": "The 465-row Sen-G subset includes 4 Louisiana December 10, 2016 runoff records. README's broad general-election wording follows source type_simple, but a future cohort specification must explicitly handle runoff election dates rather than assume all 2016 polls refer to November 8."
+    }
+  ],
+  "primaryUrls": [
+    "https://api.github.com/repos/fivethirtyeight/data/commits/142cad5610ed6b3468e730199034b280b9e805d5",
+    "https://api.github.com/repos/fivethirtyeight/data/contents/pollster-ratings/raw-polls.csv?ref=142cad5610ed6b3468e730199034b280b9e805d5"
+  ],
+  "scope": "Independent bounded local rederivation and live GitHub primary metadata check. No owner worktree changes; no original artifacts modified; no scientific admission, source-availability proof, model fit or forecast qualification."
+}

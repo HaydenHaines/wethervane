@@ -1,0 +1,122 @@
+{
+  "schema": "AdaptiveQueueScaleIndependentMeasurementReviewSolV1",
+  "status": "qualified_pass_with_measurement_limitations",
+  "scope": "Read-only source, result and archive audit plus two read-only status calls; no process launch, admission, tick, tamper mutation or rerun of 16-command probe. Only this new review file written.",
+  "pins": {
+    "probe.py": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-adaptive-scale-sol-v1/probe.py",
+      "sha256": "ad738a7cc7a100af4f2638e271179d5ae765905d0c0ef10b82d21c56d2912637",
+      "bytes": 3706
+    },
+    "result.json": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-adaptive-scale-sol-v1/result.json",
+      "sha256": "cf7f244113a1597c12f8176ffa720b0a7ac6362d9be3a3803c47b196acd7aa1b",
+      "bytes": 33673
+    },
+    "FINDINGS.md": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-adaptive-scale-sol-v1/FINDINGS.md",
+      "sha256": "4b8b6505edfe884070350f54a0eeaec8decd580426a925e4d00af73f1135b0ed",
+      "bytes": 6511
+    },
+    "fixture-stores-v1.manifest.json": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-adaptive-scale-sol-v1/fixture-stores-v1.manifest.json",
+      "sha256": "19a656614dae5b291cabb336e5e98953d6ac688920e37c59b8fb23658fc4d211",
+      "bytes": 133669
+    },
+    "fixture-stores-v1.zip": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-adaptive-scale-sol-v1/fixture-stores-v1.zip",
+      "sha256": "d602ac8cfea181626bb45ce0ff78e390992f36404b615b6f9bb2136e8be3b3f6",
+      "bytes": 400703
+    },
+    "experiment_queue.py": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/experiment_queue.py",
+      "sha256": "6995febe73a5c1c2a317849416a58cc25130b9bbda44161f6a7624b321a8415f",
+      "bytes": 35468
+    },
+    "execution.py": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/execution.py",
+      "sha256": "ce02f4c4b9be397b299c2219092fdd355db1695798af07c4974bc63cb6bbbc93",
+      "bytes": 36273
+    },
+    "test_experiment_queue.py": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/test_experiment_queue.py",
+      "sha256": "8e3bc176f52567eaf3dfd371b234437cd49fa5bd38cd24cffb11a2610131f831",
+      "bytes": 33722
+    }
+  },
+  "verified": {
+    "sourcePinsMatch": true,
+    "archiveSha256MatchesManifest": true,
+    "manifestMembersVerified": 694,
+    "archiveMembersEqualCurrentFixtureFiles": true,
+    "archiveMembershipCompleteAndUnique": true,
+    "cycle0PlanMatchesOriginalAdmissionFingerprint": true,
+    "recordedOperationCountFormulasHold": true,
+    "readOnlyStatus": {
+      "pending-store": {
+        "queues": 160,
+        "reserved": 0,
+        "all_jobs_recorded": false,
+        "quarantined_admissions": [],
+        "historyScans": 1,
+        "pinCalls": 164,
+        "checkedCalls": 160,
+        "outcomes": {
+          "waiting": 160
+        }
+      },
+      "incremental-store": {
+        "queues": 16,
+        "reserved": 0,
+        "all_jobs_recorded": true,
+        "quarantined_admissions": [],
+        "historyScans": 1,
+        "pinCalls": 132,
+        "checkedCalls": 32,
+        "outcomes": {
+          "accepted_execution": 16
+        }
+      }
+    },
+    "recomputedTimings": {
+      "pendingAdmissionTotalSeconds": 5.5389124841894954,
+      "pendingMediansMs": {
+        "0-19": 19.78363050147891,
+        "70-89": 31.259929994121194,
+        "140-159": 53.46075398847461
+      },
+      "pendingEnqueuePinFormula": "existingPlans + 11",
+      "completedIdleTickPinFormula": "17 * completedPlans + 4",
+      "dispatchPinFormula": "17 * completedPlans + 9"
+    }
+  },
+  "findings": [
+    {
+      "severity": "qualification",
+      "claim": "Operation counters",
+      "assessment": "historyScans counts entries generator invocations, not entries yielded or total history I/O. pinCalls counts in-process execution.pin invocations, including calls via verify_pin; execution.checked independently hashes bytes and is not counted. Child-process pin calls are outside this instrumentation. Counts are valid as labeled, not total hashing/system-operation counts."
+    },
+    {
+      "severity": "qualification",
+      "claim": "Tamper detection and restoration",
+      "assessment": "probe.py appends one whitespace byte only to cycle-0 plan, calls tick, asserts some admission quarantine plus incomplete status, and restores bytes in finally. Current cycle-0 bytes authenticate against original admission and all 16 clean outcomes independently verify. The transient bad status is not persisted; retrospective review cannot independently replay its exact quarantine queue/error without mutation. The asserted historical gate is supported by source and run result, not a separately preserved tamper receipt."
+    },
+    {
+      "severity": "qualification",
+      "claim": "Scale interpretation",
+      "assessment": "Recorded counts grow linearly per operation; enqueue performs one complete history scan plus J-by-H ownership search. Serial N one-job admissions therefore accumulate quadratic history work. Each normal tick scans entries twice; repeated verified_result paths rehash completed artifacts. Existing findings appropriately restrict measurements to 160 pending plans and 16 serial synthetic executions. No proof of thousand-cycle durability, science throughput or automatic adaptive planning."
+    },
+    {
+      "severity": "minor",
+      "claim": "Reproducer and runtime bounds",
+      "assessment": "probe.py creates fixed fixture directories with mkdir and does not support rerunning in place; preserving fixtures is intentional but reproducing requires a fresh copied package/path. Its 45-second deadline is checked only in the reconciliation loop, after dispatch calls, and is not a hard interrupt for blocking queue operations. The preceding 160 admissions are outside the deadline. Findings call this an incremental-loop deadline, which is consistent with this scope."
+    },
+    {
+      "severity": "qualification",
+      "claim": "Archive portability",
+      "assessment": "All 694 archived members match manifest and current fixture bytes exactly. Embedded absolute paths and source pins make archive evidence capture rather than a portable executable store restore, as its manifest already discloses."
+    }
+  ],
+  "materialBlockers": [],
+  "recommendedNextStep": "Keep these measured formulas and the immediate historical-tamper detection contract explicit when reviewing an opt-in incremental design. Do not equate pinCalls with total hashing work; separately count checked calls/bytes if later benchmarking is needed."
+}

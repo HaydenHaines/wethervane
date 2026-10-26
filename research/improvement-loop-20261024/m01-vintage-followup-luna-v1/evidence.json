@@ -1,0 +1,78 @@
+{
+  "schema": "M01VintageFollowupEvidenceLunaV1",
+  "scope": "Primary-source provenance lead and exact existing-row comparison; no admission, fit, or predictive claim.",
+  "checkpoint": {
+    "path": "research/improvement-loop-20261024/checkpoints/continuation-v48.json",
+    "sha256": "22913b650de5a09b34def32bf3975776d2d47e615b5c9ac13ba92769e3c1e888",
+    "next_item": "Pursue earlier-only M01 source provenance and joint evidence ownership; do not infer historic vintage."
+  },
+  "existing_source": {
+    "path": "research/improvement-loop-20261024/momentum-calibration-preparation-sol-v1/snapshots/20-tierney-polls_cnn_dataset.csv",
+    "sha256": "61e1141f5ed84cfbbec487115742f59c6e20ebd04ba99a0a32f08d8fa2b20322",
+    "row_count": 5465,
+    "row_numbers_include_header": true
+  },
+  "primary_source_candidate": {
+    "publisher": "Fox News",
+    "article_url": "https://www.foxnews.com/politics/fox-news-poll-republicans-make-gains-in-top-senate-races",
+    "article_title": "Fox News Poll: Republicans make gains in top Senate races",
+    "published_local": "2018-10-03 18:00 EDT",
+    "article_claim": "Arizona Senate Sinema 47%, McSally 45%",
+    "topline_url": "https://static.foxnews.com/foxnews.com/content/uploads/2020/07/Fox_Arizona_October-2018_Complete_Topline_October-3-Release.pdf",
+    "topline_release_instruction": "All results are for release after 6PM/ET Wednesday, October 3, 2018.",
+    "field_dates": "2018-09-29 through 2018-10-02",
+    "sample": "806 Arizona registered voters; 716 likely-voter subsample",
+    "election_date": "2018-11-06",
+    "lead_days_before_election": 34,
+    "raw_files": [
+      {
+        "path": "research/improvement-loop-20261024/m01-vintage-followup-luna-v1/raw/fox_article.html",
+        "bytes": 510116,
+        "sha256": "42e617394a05751e35ab8983153b33d3490acae79254db7df54bb1808701436c"
+      },
+      {
+        "path": "research/improvement-loop-20261024/m01-vintage-followup-luna-v1/raw/fox_poll_topline.pdf",
+        "bytes": 180492,
+        "sha256": "2801ec8f5d059b09df4dc027f1d862b617b6aa0501c44bdb64f1b93e27c41693"
+      }
+    ]
+  },
+  "candidate_rows": [
+    {
+      "physical_csv_line": 4903,
+      "key": "AZ-2018-Sen-Fox-end-2018-09-28",
+      "N": 658,
+      "D": 336,
+      "R": 322,
+      "mismatch": "Fox October 3 release fielded Sep 29-Oct 2; its sample is 806 RV / 716 LV, and its reported 47/45 LV (45/44 RV) does not equal normalized row D/R 51.06/48.94. No exact link established."
+    },
+    {
+      "physical_csv_line": 4788,
+      "key": "AZ-2018-Sen-Fox-end-2018-10-26",
+      "N": 590,
+      "D": 295,
+      "R": 295,
+      "mismatch": "Field dates and values not supported by October 3 source."
+    },
+    {
+      "physical_csv_line": 4974,
+      "key": "AZ-2018-Sen-Fox-end-2018-09-07",
+      "N": 645,
+      "D": 333,
+      "R": 312,
+      "mismatch": "Field dates and values not supported by October 3 source."
+    }
+  ],
+  "qualification": {
+    "pre_election_release_existence_proved": true,
+    "specific_tierney_row_vintage_proved": false,
+    "dataset_historical_byte_vintage_proved": false,
+    "fit_or_predictive_benefit_claimed": false,
+    "limitations": [
+      "The live Fox article/PDF are current publisher-hosted copies. Their published/release dates are primary-source claims; no independently timestamped 2018 capture was obtained.",
+      "The source poll's field dates, sample sizes and toplines do not match the apparent Tierney row; no row linkage is asserted.",
+      "No coverage beyond this single source lead is inferred."
+    ]
+  },
+  "next_experiment": "Audit the exact Fox September 8-11 release referenced by the October 3 article against the AZ 2018 endDate 2018-09-07 candidate and upstream Chen/Garnett/Montgomery/Tierney lineage; retain discrepancies and require exact row identity before cutoff-ledger admission."
+}

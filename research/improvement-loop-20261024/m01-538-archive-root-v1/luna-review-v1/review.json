@@ -1,0 +1,109 @@
+{
+  "schema": "M01FiveThirtyEightArchiveIndependentReviewLunaV1",
+  "reviewed_at": "2026-10-26",
+  "scope": "Independent provenance, contents, candidate-link and use-limit review. No fit, source admission or model effect evaluated.",
+  "verdict": {
+    "commit_snapshot_identity_verified": true,
+    "commit_predates_2018_general_election_cutoffs": true,
+    "distinct_pre_2018_target_source_candidate": true,
+    "individual_tierney_row_identity_verified": false,
+    "tierney_source_byte_lineage_verified": false,
+    "strict_per_poll_publication_timestamp_verified": false,
+    "recommended_status": "Promising supplementary training-source candidate for earlier cycles, subject to row-level provenance and target-safe filtering; not a replacement authenticated Tierney vintage or a qualified M01 dataset."
+  },
+  "source_identity": {
+    "repository": "https://github.com/fivethirtyeight/data",
+    "commit": "142cad5610ed6b3468e730199034b280b9e805d5",
+    "commit_url": "https://github.com/fivethirtyeight/data/commit/142cad5610ed6b3468e730199034b280b9e805d5",
+    "author_and_committer_date_utc": "2018-05-30T14:41:12Z",
+    "commit_message": "update pollster-ratings",
+    "commit_metadata": "Repository API metadata marks the commit signature verified; commit metadata records author Dhrumil Mehta and the 2018-05-30 timestamp.",
+    "raw_file_url": "https://raw.githubusercontent.com/fivethirtyeight/data/142cad5610ed6b3468e730199034b280b9e805d5/pollster-ratings/raw-polls.csv",
+    "repository_file_size_bytes": 1326873,
+    "local_file_size_bytes": 1326873,
+    "repository_git_blob_sha1": "39675528c20d57e88fbb1147ee10f6295f7061da",
+    "recomputed_local_git_blob_sha1": "39675528c20d57e88fbb1147ee10f6295f7061da",
+    "local_file_sha1_plain_bytes": "3c91d0a5ea5ffcad1b54cf08ff63e2c03c428f77",
+    "local_file_sha256": "79489a9d7f796d8f50841e91d8dcb858679ada75690812d4757f095a107efb91",
+    "path": "research/improvement-loop-20261024/m01-538-archive-root-v1/raw-polls-20180530.csv",
+    "commit_metadata_path": "research/improvement-loop-20261024/m01-538-archive-root-v1/commit-metadata.json",
+    "metadata_path": "research/improvement-loop-20261024/m01-538-archive-root-v1/metadata.json",
+    "identity_assessment": "The byte count and Git blob SHA-1 exactly match repository metadata at the pinned commit. This establishes the local bytes equal the file object in that Git tree, not an independent contemporaneous retrieval log."
+  },
+  "dated_availability_evidence": {
+    "five_thirty_eight_article": {
+      "url": "https://fivethirtyeight.com/features/the-polls-are-all-right/",
+      "title": "The Polls Are All Right",
+      "published": "2018-05-30 11:00 AM (page-local time; no timezone inferred)",
+      "article_claim": "The pollster ratings database is downloadable and covers the stated historical polling domains.",
+      "current_access_limitation": "As of this review, direct page navigation redirects to the current ABC News politics landing page. Search indexing preserves the article title, date and text snippet; the contemporaneous Git commit supplies an independently inspectable dated repository object. The redirect does not establish when the exact file was publicly downloadable.",
+      "interpretation": "The article plus a repository commit timestamped the same day supports a strong lead that this 538 dataset family was made public before the 2018 general-election cutoff. It is not a server access log or proof that every raw poll record's original release occurred by that date."
+    },
+    "commit_vs_cutoff": "The pinned commit date is May 30, 2018; the 2018 federal general election was November 6, 2018. It therefore predates the target election by more than five months. This supports a possible as-of training-source vintage for a 2018 target, conditional on using only genuinely earlier-cycle observations and excluding future/outcome leakage."
+  },
+  "contents_and_selection": {
+    "file_rows": 8512,
+    "columns": ["pollno", "race", "year", "location", "type_simple", "type_detail", "pollster", "partisan", "polldate", "samplesize", "cand1_name", "cand1_pct", "cand2_name", "cand2_pct", "cand3_pct", "margin_poll", "electiondate", "cand1_actual", "cand2_actual", "margin_actual", "error", "bias", "rightcall", "comment"],
+    "source_readme_url_at_pinned_commit": "https://raw.githubusercontent.com/fivethirtyeight/data/142cad5610ed6b3468e730199034b280b9e805d5/pollster-ratings/README.md",
+    "published_description": "FiveThirtyEight README says raw-polls.csv contains polls analyzed for pollster grades; it includes gubernatorial/congressional polls in the final 21 days and presidential primary/general polls over its described domain. `polldate` is median field date, not original release timestamp. The file can include estimated sample sizes; candidate labels #1/#2 are defined by election finish order; actual results and derived error/bias/rightcall are embedded.",
+    "observed_rows_by_year": {"2012": 1042, "2016": 1311, "2018": 7},
+    "observed_2018_rows": "All seven rows are House special elections (PA-18 and AZ-8), not 2018 U.S. Senate general polls. For the 2018 Senate target, this archive contributes prior-cycle source candidates, not current-cycle polls.",
+    "audit_subset": "The supplied audit selects type_simple=Sen-G and election year 2012 or 2016: 465 538 rows. Those are matched against the existing 2018 prepared Tierney training rows (930 rows). 538 source poll date is 2 to 21 days before the associated election; this is poll-to-election lead, not proven publication lead or a 2-to-21-day difference from Tierney rows.",
+    "selection_limit": "This is an accuracy/pollster-rating analysis sample, not a census of all poll releases. Its own article/README scope, 21-day inclusion design, missing/estimated N, and limited date resolution make source coverage selective and unlike the M01 full source bank."
+  },
+  "candidate_inventory_review": {
+    "audit_script": "research/improvement-loop-20261024/m01-538-archive-root-v1/audit.py",
+    "candidate_inventory": "research/improvement-loop-20261024/m01-538-archive-root-v1/candidate-inventory.json",
+    "reproduction": "Ran audit.py against its hash-pinned archive and selected-training input; recomputed JSON was identical to candidate-inventory.json.",
+    "candidate_counts": {
+      "archive_2012_2016_senate_general_rows": 465,
+      "existing_2018_training_rows": 930,
+      "same_state_cycle_exact_median_field_date": 144,
+      "same_state_cycle_date_and_normalized_pollster": 31,
+      "unique_candidate_on_state_cycle_date_name": 30,
+      "also_democratic_two_party_share_absolute_difference_below_0_005": 30
+    },
+    "meaning": "These are candidate links only. The criteria compare election year, location, median field date, normalized pollster label, and normalized Democratic two-party share. They do not establish identical respondents, survey instrument/question, universe, original published release, whether multiple questions from one poll are represented, or lineage from the 538 row to the Tierney row. Exact share equality can arise from rounded or reused published toplines and does not authenticate raw source bytes. The 538 README explicitly warns that source categories can differ and that sample sizes may be estimated."
+  },
+  "spot_checks": [
+    {
+      "archive_pollno": "5385932",
+      "tierney_observation_id": "tierney_cnn:row:3318",
+      "538_record": {"race": "2012_Sen-G_AZ", "pollster": "Rasmussen Reports/Pulse Opinion Research", "median_field_date": "2012-10-21", "N": "500", "reported_D_R": "44/50", "normalized_D_share": 0.4680851063829787, "electiondate": "2012-11-06"},
+      "tierney_record": {"state": "AZ", "cycle": "2012", "pollster": "Rasmussen Reports/Pulse Opinion Research", "end_date": "2012-10-21", "dem_share": 0.4680851063829787},
+      "assessment": "Good candidate key and derived share match. Still no sample identity or release/source-byte proof; Tierney end date alone may not equal the source's median field date convention."
+    },
+    {
+      "archive_pollno": "5385934",
+      "tierney_observation_id": "tierney_cnn:row:3344",
+      "538_record": {"race": "2012_Sen-G_CT", "pollster": "Rasmussen Reports/Pulse Opinion Research", "median_field_date": "2012-10-21", "N": "500", "reported_D_R": "48/47", "normalized_D_share": 0.5052631578947369, "electiondate": "2012-11-06"},
+      "tierney_record": {"state": "CT", "cycle": "2012", "pollster": "Rasmussen Reports/Pulse Opinion Research", "end_date": "2012-10-21", "dem_share": 0.5052631578947369},
+      "assessment": "Good candidate key and derived share match. Same identity/vintage limitations apply."
+    },
+    {
+      "archive_pollno": "75213",
+      "tierney_observation_id": "tierney_cnn:row:4550",
+      "538_record": {"race": "2016_Sen-G_MO", "pollster": "Emerson College", "median_field_date": "2016-10-30", "N": "650", "reported_D_R": "45/45", "normalized_D_share": 0.5, "electiondate": "2016-11-08"},
+      "tierney_record": {"state": "MO", "cycle": "2016", "pollster": "Emerson College", "end_date": "2016-10-30", "dem_share": 0.5044378698224852},
+      "absolute_share_difference": 0.004437869822485174,
+      "assessment": "Inside the audit threshold but not equal. It demonstrates that a candidate can pass on dates/name and a relatively permissive share threshold despite a noticeable derived-share difference."
+    },
+    {
+      "archive_pollno": "74326",
+      "tierney_observation_id": "tierney_cnn:row:4454",
+      "538_record": {"race": "2016_Sen-G_UT", "pollster": "Rasmussen Reports/Pulse Opinion Research", "median_field_date": "2016-10-24", "N": "750", "reported_D_R": "26/56", "normalized_D_share": 0.3170731707317073, "electiondate": "2016-11-08"},
+      "tierney_record": {"state": "UT", "cycle": "2016", "pollster": "Rasmussen Reports/Pulse Opinion Research", "end_date": "2016-10-24", "dem_share": 0.3136645962732919},
+      "absolute_share_difference": 0.003408574458415414,
+      "assessment": "Inside the threshold but not exact. Further evidence is required to determine if this is rounding, a different population/question, a source transformation or a false pair."
+    }
+  ],
+  "target_safety_and_source_limits": {
+    "target_cutoff": "A May 30, 2018 snapshot can predate 2018 election day, but target safety is not automatic: use only completed earlier cycles for 2018 forecasting and remove any rows, labels or results not available at the specific forecast cutoff. The file contains only final poll values, election outcome shares, margin_actual, error, bias and rightcall; these retrospective outcomes must never enter pre-election features or calibration as if available at cutoff.",
+    "distinct_source": "538 is a distinct archived compilation/data artifact. It is not automatically an independent survey sample: many candidate rows may describe the same underlying public polls as Tierney and must not be concatenated as extra observations absent event/row deduplication and dependency treatment.",
+    "release_vintage": "The 538 median field date is not publication date. A commit-created snapshot gives a defensible dataset-level time bound for the snapshot if GitHub public accessibility by then is accepted; it does not give per-poll release time, prove no earlier/later revisions upstream, or prove Tierney file bytes existed in that form.",
+    "source_url_and_sample_identity": "Rows do not carry original release URLs, source capture timestamps, explicit field intervals, question text, or a stable respondent/sample identifier. `samplesize` may be imputed and source conventions differ.",
+    "legal_and_attribution": "Pinned repository root LICENSE is CC BY 4.0; reuse should retain attribution to FiveThirtyEight, link the pinned source/version, identify changes and retain the license notice. This license review is not legal advice, and the license does not establish that FiveThirtyEight cleared third-party rights in all underlying poll facts or source instruments; inspect any distribution/use constraints that apply to constituent material. Preserve the article/README context.",
+    "publication_vintage_confidence": "Avoid phrasing that every poll was individually available by the target cutoff. Narrowly state that the archive snapshot is committed May 30, 2018 and contains historical 2012/2016 records, making it a candidate pre-election dataset vintage. The exact public-download timestamp and row-level lineage are unverified."
+  },
+  "next_experiment": "For the 30 candidate pairs, consult original publisher/pollster releases and source records for field interval, universe, question/candidate form and value convention; resolve Tierney end date versus 538 median field date; record matched, ambiguous and rejected links with exact release URL/dated evidence. Then derive an earlier-only snapshot with election outcomes and derived error fields physically excluded, deduplicate overlapping polls and quantify coverage against the existing 2018 selected training set before considering any authorized M01 comparison."
+}

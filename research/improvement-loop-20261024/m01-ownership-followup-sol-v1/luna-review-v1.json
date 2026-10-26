@@ -1,0 +1,116 @@
+{
+  "schema": "M01OwnershipFollowupIndependentReviewLunaV1",
+  "reviewed_at": "2026-10-26",
+  "scope": "Independent read-only challenge of FINDINGS.md, check.py, verification.json, event-ownership.csv and their pinned lab inputs. No owner-worktree changes, refit or model claim.",
+  "overall": {
+    "event_overlap_counts_reproduced": true,
+    "material_counting_error_found": false,
+    "toy_conditional_factor_math_valid_for_declared_fixture": true,
+    "event_key_overlap_alone_proves_duplicate_likelihood": false,
+    "actual_project_factorization_verified": false,
+    "review_assessment": "The ownership packet is careful and internally consistent for its stated scope. The main limitation is evidentiary: event membership is computed from supplied bank-compatibility/preflight artifacts, and the toy fixture demonstrates one possible conditional factorization rather than the actual native joint model."
+  },
+  "input_integrity": {
+    "result": "All 14 path/hash/byte-size pins in verification.json matched the files currently in the lab.",
+    "pinned_inputs": [
+      "momentum-preflight-bank-compatibility-sol-v1/compatibility.json",
+      "momentum-preflight-coverage-luna-v1/f0-training-race-support.csv",
+      "momentum-calibration-preparation-sol-v1/README.md",
+      "calibration-consumer-v1/snapshot-source/src/forecasting/poll_covariance_v1.py",
+      "m01-count-measurement-prototype-sol-v1/prototype.py",
+      "momentum-calibration-preparation-sol-v1/prepared-v1/{2018,2020,2022,2024}/selected-training-polls.csv",
+      "momentum-calibration-preparation-sol-v1/prepared-v1/{2018,2020,2022,2024}/earlier-outcomes.csv",
+      "calibration-consumer-v1/inputs/target-coordinates.json"
+    ],
+    "method_note": "I did not execute check.py because it rewrites verification.json and event-ownership.csv. I independently recomputed all intersections from the pinned CSV/JSON files and compared the generated ledger's F0 event union."
+  },
+  "independent_event_recomputation": [
+    {
+      "target_cycle": 2018,
+      "calibration_rows": 930,
+      "used_calibration_events": 59,
+      "earlier_outcomes_table_rows": 62,
+      "H0_training_events": 299,
+      "F0_training_events": 299,
+      "used_events_in_H0": 59,
+      "used_events_in_F0": 59,
+      "calibration_rows_using_shared_keys_in_each_arm": 930,
+      "used_events_missing_from_each_training_set": 0,
+      "used_events_intersecting_target_labels": 0,
+      "all_poll_cycles_before_target": true,
+      "event_ownership_csv_F0_union_rows": 299
+    },
+    {
+      "target_cycle": 2020,
+      "calibration_rows": 1218,
+      "used_calibration_events": 85,
+      "earlier_outcomes_table_rows": 90,
+      "H0_training_events": 329,
+      "F0_training_events": 329,
+      "used_events_in_H0": 85,
+      "used_events_in_F0": 85,
+      "calibration_rows_using_shared_keys_in_each_arm": 1218,
+      "used_events_missing_from_each_training_set": 0,
+      "used_events_intersecting_target_labels": 0,
+      "all_poll_cycles_before_target": true,
+      "event_ownership_csv_F0_union_rows": 329
+    },
+    {
+      "target_cycle": 2022,
+      "calibration_rows": 1514,
+      "used_calibration_events": 106,
+      "earlier_outcomes_table_rows": 118,
+      "H0_training_events": 357,
+      "F0_training_events": 357,
+      "used_events_in_H0": 106,
+      "used_events_in_F0": 106,
+      "calibration_rows_using_shared_keys_in_each_arm": 1514,
+      "used_events_missing_from_each_training_set": 0,
+      "used_events_intersecting_target_labels": 0,
+      "all_poll_cycles_before_target": true,
+      "event_ownership_csv_F0_union_rows": 357
+    },
+    {
+      "target_cycle": 2024,
+      "calibration_rows": 1514,
+      "used_calibration_events": 106,
+      "earlier_outcomes_table_rows": 118,
+      "H0_training_events": 357,
+      "F0_training_events": 387,
+      "used_events_in_H0": 106,
+      "used_events_in_F0": 106,
+      "calibration_rows_using_shared_keys_in_each_arm": 1514,
+      "used_events_missing_from_each_training_set": 0,
+      "used_events_intersecting_target_labels": 0,
+      "all_poll_cycles_before_target": true,
+      "event_ownership_csv_F0_union_rows": 387,
+      "H0_F0_training_event_set_symmetric_difference": 30
+    }
+  ],
+  "ledger_scope_check": {
+    "finding": "event-ownership.csv exactly represents used calibration event keys union F0 training event keys for each fold; its `in_f0_training` column is explicitly F0-only. It is not a full per-key H0/F0 membership ledger.",
+    "impact": "The verification.json aggregates H0 and F0 intersections independently from compatibility.json, and these aggregates reproduce. For 2018/2020/2022, H0/F0 training event sets are equal. For 2024, they differ by 30 keys, though all 106 used calibration keys are common to both; thus the reported intersection counts remain right, but the CSV cannot inspect those 30 arm-specific keys. This is a documentation/scope limitation, not a contradiction."
+  },
+  "factor_fixture_review": {
+    "fixture": "p(beta,theta,Y,P)=p(beta)p(theta)p(Y|beta)p(P|Y,theta), with uniform two-state priors; observed Y=1 and P=1; p(Y=1|beta)=[0.2,0.8], p(P=1|Y=1,theta)=[0.7,0.3].",
+    "independent_calculation": {
+      "posterior_beta_given_Y_once": [0.2, 0.8],
+      "posterior_theta_given_P_and_Y": [0.7, 0.3],
+      "factorized_joint": [[0.14, 0.06], [0.56, 0.24]],
+      "posterior_beta_if_p_Y_is_multiplied_twice": [0.058823529411764705, 0.9411764705882353]
+    },
+    "assessment": "The packet's numerical identity and 0.941176... duplicated-label example are mathematically correct. The equality follows because the stipulated joint law gives conditionally separate factors and normalized p(P|Y,theta); it shows shared observed Y can be used once as a conditioned value in the second factor without multiplying p(Y|beta) twice.",
+    "limits": [
+      "The fixture is invented and only tests that declared factorization; it does not recover the actual calibration or bank joint density.",
+      "The real model still needs an explicit normalized conditional residual law and a factor-owner ledger at the exact native ports. Shared latent states, uncertain outcomes, dependent priors, feedback or common errors could invalidate the simple factorization.",
+      "A training_race_id in a bank compatibility list establishes event membership in that reviewed artifact, not by itself the precise density/factor ownership or multiplicity in the full native Problem. The findings correctly stop short of calling this a doubled likelihood."
+    ]
+  },
+  "other_material_boundaries": {
+    "sample_overlap": "Unknown sample identity for the selected calibration rows means the event-key audit establishes shared outcome-event ownership only, not respondent overlap or duplicated polling observations.",
+    "source_vintage": "Earlier poll/election cycles do not establish original poll release times, historic dataset byte vintage or strict as-of availability; the findings state this.",
+    "zero_rows_after_filter": "Given the supplied event sets, deleting every calibration event whose outcome key appears in H0/F0 training does leave zero selected calibration rows in all four folds. This is a design consequence of these particular bank membership lists, not proof that event-disjointness is impossible under a redesigned training/source split.",
+    "movement_kernel": "The same-kernel variance split is an algebraic non-identifiability under the exact same covariance kernel and port. The five fractions are a tautological budget split; they do not establish an identical second latent movement process in the native model. The findings state that a full compiler trace is required."
+  },
+  "recommended_next_step": "Preserve this as a key-overlap/design result. For any comparison, bind the complete native Problem and show each canonical outcome factor exactly once or provide a normalized conditional adapter, with a direct fixed-state factorization test on the real law. Make an expanded ownership export include both H0 and F0 per-event membership, especially for 2024. Keep source-vintage and respondent-overlap questions separate."
+}
