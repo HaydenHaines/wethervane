@@ -2,12 +2,10 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { ChamberId } from "../lib/chamber";
-import { loadElectionNightForecast, type ElectionNightLoaded, type ElectionNightRequest } from "../lib/election-night-client";
+import { loadPublishedElectionNightForecast, type ElectionNightLoaded, type ElectionNightRequest } from "../lib/election-night-client";
 import type { ElectionNightInputNotice, ElectionNightPair, ElectionNightRace } from "../lib/election-night-forecast";
 import type { ElectionNightReference } from "../lib/election-night-reference";
 import ElectionNightRubric from "./ElectionNightRubric";
-import referencePublication from "../data/election-night-reference-publication.json";
-import coreReferencePublication from "../data/election-night-core-reference-publication.json";
 import senateResultPolicy from "../data/election-night-senate-result-policy.json";
 import { probability, STATE_NAMES } from "../lib/presentation";
 
@@ -93,12 +91,15 @@ function RacePrediction({ race, extent, featured = false, notice, reference }: {
 /** Same-page preparation view. Final-result ingestion and an evaluation lock are separate contracts. */
 export default function ElectionNightGuide({ chamber, onClose }: { chamber: ChamberId; onClose: () => void }) {
   const heading = useRef<HTMLHeadingElement>(null);
+  const standardWatchEdition = useRef<string | null>(null);
+  const standardWatchNeedsRefresh = useRef(false);
   const [loaded, setLoaded] = useState<ElectionNightLoaded | null>(null);
   const [request, setRequest] = useState<ElectionNightRequest>({ chamber, runId: null });
   const [attempt, setAttempt] = useState(0);
   const [busy, setBusy] = useState(true);
   const [error, setError] = useState("");
   const [watchIds, setWatchIds] = useState<string[]>([]);
+  const [watchIsStandard, setWatchIsStandard] = useState(true);
   const [query, setQuery] = useState("");
   const [allExpanded, setAllExpanded] = useState(false);
   useEffect(() => {
@@ -106,23 +107,69 @@ export default function ElectionNightGuide({ chamber, onClose }: { chamber: Cham
     heading.current?.scrollIntoView({ block: "start", behavior: "instant" });
   }, []);
   useEffect(() => {
-    const controller = new AbortController();
-    setBusy(true); setError("");
-    loadElectionNightForecast(request, controller.signal, referencePublication, coreReferencePublication).then(value => {
-      if (controller.signal.aborted) return;
-      if (request.runId === null) setWatchIds([...value.forecast.races]
-        .sort((a, b) => a.modalPick.probability - b.modalPick.probability || a.id.localeCompare(b.id))
-        .slice(0, 6).map(race => race.id));
-      setLoaded(value); setBusy(false);
-    }).catch(reason => {
-      if (!controller.signal.aborted) { setError(reason instanceof Error ? reason.message : "The scorecard forecast could not be loaded."); setBusy(false); }
-    });
-    return () => controller.abort();
+    let active: AbortController | null = null;
+    let disposed = false;
+    const refresh = async (background: boolean) => {
+      if (disposed || active) return;
+      const controller = new AbortController(); active = controller;
+      if (!background) { setBusy(true); setError(""); }
+      try {
+        // A dropdown SHA guards the immediate click. Later checks follow that
+        // stable model ID if the site republishes it with new verified bytes.
+        const current = background ? { chamber: request.chamber, runId: request.runId } : request;
+        let value: ElectionNightLoaded;
+        try { value = await loadPublishedElectionNightForecast(current, controller.signal); }
+        catch (reason) {
+          if (!background && request.expectedResultSha256 && reason instanceof Error &&
+            /edition changed|published forecast changed while loading/i.test(reason.message))
+            value = await loadPublishedElectionNightForecast({ chamber: request.chamber, runId: request.runId }, controller.signal);
+          else throw reason;
+        }
+        if (controller.signal.aborted || disposed) return;
+        const standard = value.choices.find(choice => choice.id === value.defaultRunId);
+        const standardEdition = standard ? `${value.forecast.chamber}:${standard.id}:${standard.resultSha256}` : null;
+        const standardChanged = standardEdition !== standardWatchEdition.current;
+        standardWatchEdition.current = standardEdition;
+        const showingStandard = value.forecast.run.id === value.defaultRunId;
+        if (standardChanged && !showingStandard) standardWatchNeedsRefresh.current = true;
+        const recompute = standardChanged || (showingStandard && standardWatchNeedsRefresh.current);
+        if (showingStandard) standardWatchNeedsRefresh.current = false;
+        if (recompute) setWatchIsStandard(showingStandard);
+        setWatchIds(currentIds => {
+          const roster = new Set(value.forecast.races.map(race => race.id));
+          const kept = recompute ? [] : currentIds.filter(id => roster.has(id)).slice(0, 6);
+          const ranked = [...value.forecast.races]
+            .sort((a, b) => a.modalPick.probability - b.modalPick.probability || a.id.localeCompare(b.id))
+            .map(race => race.id);
+          for (const id of ranked) if (kept.length < 6 && !kept.includes(id)) kept.push(id);
+          return kept.join("|") === currentIds.join("|") ? currentIds : kept;
+        });
+        setLoaded(value); setError(""); setBusy(false);
+      } catch (reason) {
+        if (!controller.signal.aborted && !disposed) {
+          setError(reason instanceof Error ? reason.message : "The scorecard forecast could not be loaded.");
+          setBusy(false);
+        }
+      } finally { if (active === controller) active = null; }
+    };
+    void refresh(false);
+    const timer = window.setInterval(() => { if (document.visibilityState === "visible") void refresh(true); }, 60_000);
+    const onVisible = () => { if (document.visibilityState === "visible") void refresh(true); };
+    const onFocus = () => { void refresh(true); };
+    document.addEventListener("visibilitychange", onVisible);
+    window.addEventListener("focus", onFocus);
+    return () => { disposed = true; active?.abort(); window.clearInterval(timer);
+      document.removeEventListener("visibilitychange", onVisible); window.removeEventListener("focus", onFocus); };
   }, [request, attempt]);
-  const forecast = loaded?.forecast;
-  const reference = loaded?.reference;
-  const primaryReference = loaded?.primaryReference;
-  const senateScope = forecast?.chamber === "senate" && forecast.run.artifactSha256 === senateResultPolicy.sourceHashes.FPPublicSha256
+  const displayed = loaded?.forecast.chamber === chamber ? loaded : null;
+  const forecast = displayed?.forecast;
+  const reference = displayed?.reference;
+  const primaryReference = displayed?.primaryReference;
+  const senateScope = forecast?.chamber === "senate" && forecast.run.configuration.polling === "standard" && primaryReference &&
+    primaryReference.sourcePins.policySha256 === senateResultPolicy.sourceHashes.policySha256 &&
+    JSON.stringify(forecast.races.map(race => race.id)) === JSON.stringify(senateResultPolicy.fixedCohorts.full35) &&
+    JSON.stringify(primaryReference.perRace.map(race => race.raceId)) === JSON.stringify(senateResultPolicy.fixedCohorts.pluralityCore32) &&
+    JSON.stringify(primaryReference.excludedRaceIds) === JSON.stringify(senateResultPolicy.fixedCohorts.conditional3)
     ? senateResultPolicy : null;
   const featured = useMemo(() => watchIds.flatMap(id => forecast?.races.find(race => race.id === id) ?? []), [watchIds, forecast]);
   const extent = Math.max(10, Math.ceil(Math.max(0, ...featured.flatMap(race => race.pair
@@ -135,19 +182,21 @@ export default function ElectionNightGuide({ chamber, onClose }: { chamber: Cham
       <p>What the model predicts, how wrong it expects to be, and what the results can tell us.</p>
     </div><button type="button" className="night-close" onClick={onClose}>Close scorecard</button></div>
     {error && <div className="error-box" role="alert"><p>{error}</p>{loaded && <p>The previously verified forecast is still shown below.</p>}<button type="button" onClick={() => setAttempt(value => value + 1)}>Try again</button></div>}
-    {!forecast || !loaded ? !error && <p role="status">Loading the standard {chamber === "house" ? "House" : "Senate"} forecast…</p> : <>
-      <div className="night-edition"><strong>{forecast.chamber === "house" ? "House" : "Senate"} · {forecast.run.label}</strong>
-        <span>{forecast.run.id === loaded.defaultRunId ? "Standard forecast" : "Alternative model"} · Dated snapshot</span>
+    {!forecast || !displayed ? !error && <p role="status">Loading the standard {chamber === "house" ? "House" : "Senate"} forecast…</p> : <>
+      <div className="night-edition" data-scorecard-result-sha={forecast.run.artifactSha256}><strong>{forecast.chamber === "house" ? "House" : "Senate"} · {forecast.run.label}</strong>
+        <span>{forecast.run.id === displayed.defaultRunId ? "Standard forecast" : "Alternative model"} · Dated snapshot</span>
         <p>Inputs through {date(forecast.run.cutoffAt)}. Forecast issued {date(forecast.run.issuedAt)}.</p>
+        <p>Updates automatically from the published forecast while this scorecard is open.</p>
         <p>This is a saved forecast edition. The final election-night evaluation edition and grading rules have not yet been locked.</p>
         <p>The chamber tabs above also change this scorecard. Its model selection is separate from the main forecast.</p>
       </div>
       {forecast.inputNotices.map(notice => <InputNotice key={notice.raceId} notice={notice} />)}
       <details className="night-models"><summary>Inspect other model stacks</summary>
         <label>Scorecard model <select disabled={busy} value={forecast.run.id} onChange={event => {
-          const choice = loaded.choices.find(item => item.id === event.target.value);
-          if (choice) setRequest({ chamber, runId: choice.id, expectedResultSha256: choice.resultSha256 });
-        }}>{loaded.choices.map(choice => <option key={choice.id} value={choice.id}>{choice.label}{choice.id === loaded.defaultRunId ? " · Standard" : ""}</option>)}</select></label>
+          const choice = displayed.choices.find(item => item.id === event.target.value);
+          if (choice) setRequest({ chamber, runId: choice.id === displayed.defaultRunId ? null : choice.id,
+            expectedResultSha256: choice.id === displayed.defaultRunId ? undefined : choice.resultSha256 });
+        }}>{displayed.choices.map(choice => <option key={choice.id} value={choice.id}>{choice.label}{choice.id === displayed.defaultRunId ? " · Standard" : ""}</option>)}</select></label>
         <p>Changes here affect only this scorecard. Opening it again starts with the standard forecast.</p>
       </details>
       {busy && <p role="status">Loading the selected model. The previously verified forecast remains visible.</p>}
@@ -168,7 +217,7 @@ export default function ElectionNightGuide({ chamber, onClose }: { chamber: Cham
         <div className="night-summary"><div><strong>{forecast.summary.raceCount}</strong><span>modeled contests</span></div>
           <div><strong>{forecast.summary.pairRaceCount}</strong><span>with a two-candidate margin</span></div>
           <div><strong>Not scored</strong><span>verified election results have not been added</span></div></div>
-        <h4>Races to watch</h4><p>These six examples have the least certain winners in the dated standard forecast. The same races stay here when you inspect another stack. Their margins show whether an even win chance also means a close expected race.</p>
+        <h4>Races to watch</h4><p>{watchIsStandard ? "These six examples have the least certain winners in the dated standard forecast. The same races stay here when you inspect another stack." : "These six examples have the least certain winners in the selected model. Choose Standard to see its latest set."} Their margins show whether an even win chance also means a close expected race.</p>
         <div className="night-featured">{featured.map(race => <RacePrediction key={race.id} race={race} extent={extent} featured notice={forecast.inputNotices.find(note => note.raceId === race.id)} reference={reference?.perRace.find(row => row.raceId === race.id)} />)}</div>
         <details className="night-all-races"><summary>All {forecast.summary.raceCount} predictions</summary>
           <label>Find a race or candidate <input value={query} onChange={event => { setQuery(event.target.value); setAllExpanded(false); }} /></label>
@@ -181,7 +230,7 @@ export default function ElectionNightGuide({ chamber, onClose }: { chamber: Cham
       </section>
       <section className="night-section" aria-labelledby="night-uncertainty-title">
         <div className="eyebrow">2 · Uncertainty</div><h3 id="night-uncertainty-title">What the forecast expects to get wrong</h3>
-        {loaded.referenceError && <div className="night-reference-error" role="status"><p>{loaded.referenceError}</p><button type="button" onClick={() => setAttempt(value => value + 1)}>Retry uncertainty reference</button></div>}
+        {displayed.referenceError && <div className="night-reference-error" role="status"><p>{displayed.referenceError}</p><button type="button" onClick={() => setAttempt(value => value + 1)}>Retry uncertainty reference</button></div>}
         <h4>All {forecast.summary.raceCount} modeled contests</h4>
         <div className="night-uncertainty-grid"><article className="night-miss-reference"><h4>Wrong top choices</h4><div className="night-big-number">{forecast.summary.expectedModalMisses.toFixed(1)} <small>of {forecast.summary.raceCount}</small></div>
           <p>The expected number of incorrect top choices under the model’s own probabilities. This is an average, not a limit or a measured accuracy record.</p>
@@ -193,7 +242,9 @@ export default function ElectionNightGuide({ chamber, onClose }: { chamber: Cham
           <p className="night-reference-band">The middle 90% of simulated elections has an average error of <strong>{reference.summary.meanAbsoluteMarginError.range90.lower.toFixed(1)} to {reference.summary.meanAbsoluteMarginError.range90.upper.toFixed(1)} points</strong>.</p>
           <p>This is the model’s own expectation, not measured accuracy or a ±{reference.summary.meanAbsoluteMarginError.mean.toFixed(1)}-point range for each race. Individual races have different expected errors, shown with their predictions.</p>
         </> : <><p className="night-pending">No reviewed error reference for this edition</p><p>Individual margin ranges are shown above. A reviewed expected average margin error and shared range for the number of misses are not available for this exact model and date.</p></>}</article></div>
-        {loaded.primaryReferenceError && <div className="night-reference-error" role="status"><p>{loaded.primaryReferenceError}</p><button type="button" onClick={() => setAttempt(value => value + 1)}>Retry grading-group reference</button></div>}
+        {displayed.primaryReferenceError && <div className="night-reference-error" role="status"><p>{displayed.primaryReferenceError}</p><button type="button" onClick={() => setAttempt(value => value + 1)}>Retry grading-group reference</button></div>}
+        {forecast.chamber === "senate" && !primaryReference && !displayed.primaryReferenceError &&
+          <p className="night-pending">No reviewed 32-race expected-error reference is available for this exact forecast edition.</p>}
         {primaryReference && <article className="night-primary-reference" aria-label="Primary grading group expected errors" data-reference-run={primaryReference.runId}>
           <h4>The {primaryReference.perRace.length} candidate pairs used for the primary grade</h4>
           <p>This reference uses exactly the fixed grading group. Alaska, Maine and Georgia stay in the full forecast above and are tracked separately for evaluation.</p>
@@ -229,7 +280,7 @@ export default function ElectionNightGuide({ chamber, onClose }: { chamber: Cham
         </article>}
         <p><strong>50/50 does not tell us the margin.</strong> It can mean a narrow contest, or uncertainty about which candidate wins comfortably. Use the separate margin range and close-race chances where available.</p>
       </section>
-      <ElectionNightRubric standardSenate={!!senateScope} />
+      <ElectionNightRubric standardSenate={!!senateScope} forecastCutoffAt={forecast.run.cutoffAt} />
       <details className="night-method"><summary>Edition, sources and evaluation definitions</summary>
         <p>Result fingerprint: <code>{forecast.run.artifactSha256}</code>. This identifies the saved forecast bytes; it is not a claim that the inputs are complete or the model is accurate.</p>
         <p>{forecast.run.strictAsOf ? "Inputs were checked against their stated cutoff." : "This edition does not establish that every input was available at its forecast cutoff."}</p>

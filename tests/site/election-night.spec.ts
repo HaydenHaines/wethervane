@@ -1,6 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
+import { createHash } from "node:crypto";
 
 const read = (path: string) => JSON.parse(readFileSync(resolve(path), "utf8"));
 const senateRegistry = read("public/data/explorer/registry.json");
@@ -8,6 +9,74 @@ const houseCatalog = read("data/house-live/catalog.json");
 const standardReference = read("public/data/election-night/references.json").entries[0].reference;
 const coreReferences = read("public/data/election-night/core-references.json").entries;
 const displayProbability = (p: number) => p > 0 && p < .001 ? "<0.1%" : p < 1 && p > .999 ? ">99.9%" : `${(100 * p).toFixed(1)}%`;
+
+test("open scorecard follows a revised same-ID public forecast, then its separately published exact references", async ({ page }) => {
+  const old = senateRegistry.runs.find((row: { id: string }) => row.id === senateRegistry.defaults["2026"]);
+  const nextRegistry = structuredClone(senateRegistry);
+  const next = nextRegistry.runs.find((row: { id: string }) => row.id === old.id);
+  const bundle = read(`public${old.href}`);
+  const cutoff = "2026-10-27T12:00:00Z", issued = "2026-10-27T12:05:00Z";
+  for (const run of [next, bundle.run]) {
+    run.dateId = "2026-10-27"; run.dateLabel = "October 27, 2026";
+    run.forecastAt = cutoff; run.cutoffAt = cutoff; run.issuedAt = issued;
+    run.inputCutoffs.find((row: { label: string }) => row.label === "Polling inputs").at = cutoff;
+  }
+  const resultBody = JSON.stringify(bundle);
+  const digest = (body: string) => createHash("sha256").update(body).digest("hex");
+  next.sha256 = digest(resultBody);
+  const full = read("public/data/election-night/references.json");
+  const fullEntry = full.entries.find((row: { runId: string }) => row.runId === old.id);
+  fullEntry.resultSha256 = next.sha256; fullEntry.forecastCutoffAt = cutoff; fullEntry.forecastIssuedAt = issued;
+  const fullBody = JSON.stringify(full);
+  const core = read("public/data/election-night/core-references.json");
+  const coreEntry = core.entries.find((row: { runId: string }) => row.runId === old.id);
+  coreEntry.resultSha256 = next.sha256; coreEntry.forecastCutoffAt = cutoff; coreEntry.forecastIssuedAt = issued;
+  coreEntry.reference.edition = "2026-10-27"; coreEntry.reference.input_cutoff_utc = cutoff;
+  const coreBody = JSON.stringify(core);
+  const index = read("public/data/election-night/publication-index.json");
+  index.full.sha256 = digest(fullBody); index.primary.sha256 = digest(coreBody);
+  for (const publication of [index.full, index.primary]) {
+    const qualified = publication.editions.find((row: { runId: string }) => row.runId === old.id);
+    qualified.resultSha256 = next.sha256;
+    qualified.qualification.forecastIssuedAt = issued;
+    qualified.qualification.forecastCutoffAt = cutoff;
+  }
+  let revised = false, referencesPublished = false;
+  await page.route("**/data/explorer/registry.json", route => revised
+    ? route.fulfill({ contentType: "application/json", body: JSON.stringify(nextRegistry) }) : route.continue());
+  await page.route(`**${old.href}`, route => revised
+    ? route.fulfill({ contentType: "application/json", body: resultBody }) : route.continue());
+  await page.route("**/data/election-night/publication-index.json", route => referencesPublished
+    ? route.fulfill({ contentType: "application/json", body: JSON.stringify(index) }) : route.continue());
+  await page.route("**/data/election-night/references.json", route => referencesPublished
+    ? route.fulfill({ contentType: "application/json", body: fullBody }) : route.continue());
+  await page.route("**/data/election-night/core-references.json", route => referencesPublished
+    ? route.fulfill({ contentType: "application/json", body: coreBody }) : route.continue());
+  await page.goto("/");
+  await page.getByRole("button", { name: "Election night scorecard", exact: true }).click();
+  const panel = page.locator("#election-night-scorecard");
+  await expect(panel.locator(".night-edition")).toHaveAttribute("data-scorecard-result-sha", old.sha256);
+  await expect(panel.locator(".night-reference-value")).toBeVisible();
+  revised = true;
+  await page.evaluate(() => window.dispatchEvent(new Event("focus")));
+  await expect(panel.locator(".night-edition")).toHaveAttribute("data-scorecard-result-sha", next.sha256);
+  await expect(panel.locator(".night-reference-value")).toHaveCount(0);
+  await expect(panel.locator(".night-primary-reference")).toHaveCount(0);
+  await expect(panel.locator(".night-margin-reference")).toContainText("No reviewed error reference for this edition");
+  referencesPublished = true;
+  await page.evaluate(() => window.dispatchEvent(new Event("focus")));
+  await expect(panel.locator(".night-reference-value")).toContainText("5.6");
+  await expect(panel.locator(".night-primary-reference")).toHaveAttribute("data-reference-run", old.id);
+  await expect(panel.locator(".night-method code")).toHaveText(next.sha256);
+  await expect(panel.getByLabel("Scorecard model")).toHaveValue(old.id);
+  await expect(panel).toHaveAttribute("aria-busy", "false");
+  nextRegistry.defaults["2026"] = "current-fundamentals";
+  await page.evaluate(() => window.dispatchEvent(new Event("focus")));
+  await expect(panel.getByLabel("Scorecard model")).toHaveValue("current-fundamentals");
+  await expect(panel.locator(".night-edition")).toContainText("Standard forecast");
+  await expect(panel.locator(".night-reference-value")).toHaveCount(0);
+  await expect(panel.locator(".night-primary-reference")).toHaveAttribute("data-reference-run", "current-fundamentals");
+});
 
 test("reviewed expected errors follow only their exact Senate edition and remain distinct from observed scores", async ({ page }) => {
   await page.goto("/");

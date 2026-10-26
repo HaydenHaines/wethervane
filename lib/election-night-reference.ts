@@ -5,6 +5,7 @@
  * independently reviewed standard Senate native reference, not observed accuracy.
  */
 import type { ElectionNightForecast } from "./election-night-forecast.ts";
+import type { ElectionNightReferenceQualification } from "./election-night-publication.ts";
 
 export interface ElectionNightReferencePins {
   referenceSha256: string; reviewSha256: string; forecastSha256: string; jointDrawsSha256: string;
@@ -52,7 +53,7 @@ export interface ElectionNightReference {
   chamber: "senate"; runId: string; resultSha256: string; targetId: string; lawId: string;
   forecastCutoffAt: string; structuralCutoffAt: string; forecastIssuedAt: string; referenceIssuedAt: string;
   sourcePins: ElectionNightReferencePins; cohortSha256: string;
-  drawIdentity: { shape: [4, 10000]; rowCount: 40000; order: string; weightPerRow: number;
+  drawIdentity: { shape: [number, number]; rowCount: number; order: string; weightPerRow: number;
     sharedAcrossAllRaces: true; resamplingOrIndependenceReconstruction: false };
   perRace: {
     raceId: string; state: string; firstCandidateId: string; secondCandidateId: string;
@@ -60,7 +61,7 @@ export interface ElectionNightReference {
     meanMarginPp: number; range90: { lower: number; upper: number }; expectedAbsoluteMarginErrorPp: number;
     firstPairWinProbability: number; modalOutcomeId: string; nativeExactHalfTie: boolean;
     closeWithin2Pp: number; firstAtLeast10Pp: number; secondAtLeast10Pp: number;
-    marginEventDrawCounts: NativeReferenceRow["margin_event_draw_counts"]; marginEventDrawDenominator: 40000;
+    marginEventDrawCounts: NativeReferenceRow["margin_event_draw_counts"]; marginEventDrawDenominator: number;
     ruleProxy: string; shareInterpretation: string; excludedOptionsAssumption: string;
   }[];
   summary: {
@@ -123,32 +124,48 @@ function distribution(value: NativeReferenceDistribution, lower: number, upper: 
     range90: { lower: q.p05, upper: q.p95 }, quantiles: { ...q } };
 }
 /** Return null for unavailable, unsupported, stale or malformed editions. Never borrow another model's metrics. */
-export function matchElectionNightReference(forecast: ElectionNightForecast, catalog: unknown): ElectionNightReference | null {
+export function matchElectionNightReference(forecast: ElectionNightForecast, catalog: unknown,
+  qualification?: ElectionNightReferenceQualification): ElectionNightReference | null {
   try {
     const value = catalog as ElectionNightReferenceCatalog;
     requireValue(value?.schemaVersion === 1 && Array.isArray(value.entries));
     requireValue(forecast.schema === "ElectionNightForecastV1" && forecast.editionStatus === "dated_snapshot" &&
-      forecast.chamber === "senate" && forecast.run.year === 2026 && forecast.run.id === "current-polling" &&
-      forecast.run.targetId === "national_senate_aggregate_poll_v1" && forecast.run.lawId === "senate_principal_pair_aggregate_v1" &&
-      forecast.run.configuration.base === "fundamentals" && forecast.run.configuration.polling === "standard" &&
-      forecast.run.configuration.uncertainty === "standard" && forecast.run.strictAsOf === false && hash(forecast.run.artifactSha256));
+      forecast.chamber === "senate" && forecast.run.year === 2026 &&
+      (qualification ? forecast.run.targetId === qualification.targetId && forecast.run.lawId === qualification.lawId :
+        forecast.run.id === "current-polling" && forecast.run.targetId === "national_senate_aggregate_poll_v1" &&
+        forecast.run.lawId === "senate_principal_pair_aggregate_v1") &&
+      (qualification?.configuration ?
+        forecast.run.configuration.base === qualification.configuration.base &&
+        forecast.run.configuration.polling === qualification.configuration.polling &&
+        forecast.run.configuration.uncertainty === qualification.configuration.uncertainty &&
+        forecast.run.strictAsOf === qualification.strictAsOf :
+        forecast.run.configuration.base === "fundamentals" && forecast.run.configuration.polling === "standard" &&
+        forecast.run.configuration.uncertainty === "standard" && forecast.run.strictAsOf === false) &&
+      hash(forecast.run.artifactSha256));
     const matches = value.entries.filter(e => e && e.chamber === forecast.chamber && e.runId === forecast.run.id &&
       e.resultSha256 === forecast.run.artifactSha256);
     requireValue(matches.length === 1);
     const entry = matches[0], ref = entry.reference, draw = ref.drawIdentity;
+    const expectedPins = qualification?.sourcePins ?? TRUSTED, cohortSha = qualification?.cohortSha256 ?? COHORT_SHA;
+    const rowCount = qualification?.rowCount ?? 40000, shape = qualification?.shape ?? [4, 10000];
     requireValue(entry.targetId === forecast.run.targetId && entry.lawId === forecast.run.lawId && entry.evaluationLock === false &&
       entry.observedResultsConsumed === false && entry.forecastCutoffAt === forecast.run.cutoffAt && entry.forecastIssuedAt === forecast.run.issuedAt &&
-      entry.forecastCutoffAt === "2026-10-26T15:03:57.212405+00:00" && entry.structuralCutoffAt === "2026-10-20T15:21:23Z" &&
-      entry.referenceIssuedAt === "2026-10-26T16:32:02.440509+00:00");
+      entry.forecastCutoffAt === (qualification?.forecastCutoffAt ?? "2026-10-26T15:03:57.212405+00:00") &&
+      entry.structuralCutoffAt === (qualification?.structuralCutoffAt ?? "2026-10-20T15:21:23Z") &&
+      entry.referenceIssuedAt === (qualification?.referenceIssuedAt ?? "2026-10-26T16:32:02.440509+00:00") &&
+      (!qualification || qualification.forecastIssuedAt === forecast.run.issuedAt));
     requireValue(forecast.run.sourceCutoffs.length === 2 &&
       forecast.run.sourceCutoffs.find(s => s.label === "Structural inputs")?.at === entry.structuralCutoffAt &&
       forecast.run.sourceCutoffs.find(s => s.label === "Polling inputs")?.at === entry.forecastCutoffAt);
-    requireValue(Object.keys(entry.sourcePins).length === Object.keys(TRUSTED).length && Object.values(entry.sourcePins).every(hash) &&
-      Object.entries(TRUSTED).every(([key, expected]) => entry.sourcePins[key] === expected));
+    requireValue(Object.keys(entry.sourcePins).length === Object.keys(expectedPins).length && Object.values(entry.sourcePins).every(hash) &&
+      Object.entries(expectedPins).every(([key, expected]) => entry.sourcePins[key] === expected) &&
+      (!qualification || hash(expectedPins.referenceSha256) && hash(expectedPins.reviewSha256)));
     for (const key of ["forecastSha256", "jointDrawsSha256", "receiptSha256", "numericalGatesSha256"])
       requireValue(entry.sourcePins[key] === forecast.sourceHashes[key]);
-    requireValue(ref.cohortSha256 === COHORT_SHA && draw.shape.length === 2 && draw.shape[0] === 4 && draw.shape[1] === 10000 &&
-      draw.weight_per_row === 1 / 40000 && draw.order === ORDER && draw.shared_across_all_races === true &&
+    requireValue(ref.cohortSha256 === cohortSha && draw.shape.length === 2 && shape.length === 2 &&
+      draw.shape[0] === shape[0] && draw.shape[1] === shape[1] && rowCount === shape[0] * shape[1] &&
+      Number.isSafeInteger(rowCount) && rowCount > 0 && draw.weight_per_row === 1 / rowCount &&
+      draw.order === ORDER && draw.shared_across_all_races === true &&
       draw.resampling_or_independence_reconstruction === false &&
       JSON.stringify(ref.raceMarginProbabilityDefinitions) === JSON.stringify(MARGIN_EVENT_DEFINITIONS));
     requireValue(Array.isArray(ref.cohort) && ref.cohort.length === 35 && forecast.races.length === 35 &&
@@ -187,12 +204,12 @@ export function matchElectionNightReference(forecast: ElectionNightForecast, cat
       const eventKeys = ["close_margin_probability_2pp", "first_decisive_margin_probability_10pp", "second_decisive_margin_probability_10pp"] as const;
       const eventProbabilities = eventKeys.map(key => row[key]);
       const eventCounts = row.margin_event_draw_counts;
-      requireValue(row.margin_event_draw_denominator === 40000 && eventCounts &&
+      requireValue(row.margin_event_draw_denominator === rowCount && eventCounts &&
         Object.keys(eventCounts).length === eventKeys.length &&
-        eventKeys.every(key => Number.isInteger(eventCounts[key]) && eventCounts[key] >= 0 && eventCounts[key] <= 40000 &&
-          finite(row[key]) && row[key] >= 0 && row[key] <= 1 && close(row[key], eventCounts[key] / 40000)) &&
+        eventKeys.every(key => Number.isInteger(eventCounts[key]) && eventCounts[key] >= 0 && eventCounts[key] <= rowCount &&
+          finite(row[key]) && row[key] >= 0 && row[key] <= 1 && close(row[key], eventCounts[key] / rowCount)) &&
         eventCounts.close_margin_probability_2pp + eventCounts.first_decisive_margin_probability_10pp +
-          eventCounts.second_decisive_margin_probability_10pp <= 40000 &&
+          eventCounts.second_decisive_margin_probability_10pp <= rowCount &&
         row.first_decisive_margin_probability_10pp <= p + 1e-12 &&
         row.second_decisive_margin_probability_10pp <= 1 - p + 1e-12 &&
         eventProbabilities[0] + eventProbabilities[1] + eventProbabilities[2] <= 1 + 1e-12 &&
@@ -209,7 +226,7 @@ export function matchElectionNightReference(forecast: ElectionNightForecast, cat
         expectedAbsoluteMarginErrorPp: row.expected_absolute_margin_error_pp, firstPairWinProbability: p, modalOutcomeId: nativeModal,
         closeWithin2Pp: row.close_margin_probability_2pp, firstAtLeast10Pp: row.first_decisive_margin_probability_10pp,
         secondAtLeast10Pp: row.second_decisive_margin_probability_10pp,
-        marginEventDrawCounts: { ...eventCounts }, marginEventDrawDenominator: 40000,
+        marginEventDrawCounts: { ...eventCounts }, marginEventDrawDenominator: rowCount,
         nativeExactHalfTie: row.forecast_probability_exact_half, ruleProxy: row.rule_proxy, shareInterpretation: row.share_interpretation,
         excludedOptionsAssumption: row.excluded_options_assumption };
     });
@@ -225,14 +242,14 @@ export function matchElectionNightReference(forecast: ElectionNightForecast, cat
     requireValue(close(summary.modalWinnerMissCount.mean, expectedMisses) &&
       close(summary.meanAbsoluteMarginError.mean, perRace.reduce((sum, r) => sum + r.expectedAbsoluteMarginErrorPp, 0) / perRace.length) &&
       close(summary.meanSignedMarginError.mean, 0) && strings(ref.qualifications) &&
-      REQUIRED_QUALIFICATIONS.every(item => ref.qualifications.includes(item)));
+      (qualification ? true : REQUIRED_QUALIFICATIONS.every(item => ref.qualifications.includes(item))));
     return { chamber: "senate", runId: entry.runId, resultSha256: entry.resultSha256, targetId: entry.targetId, lawId: entry.lawId,
       forecastCutoffAt: entry.forecastCutoffAt, structuralCutoffAt: entry.structuralCutoffAt, forecastIssuedAt: entry.forecastIssuedAt,
       referenceIssuedAt: entry.referenceIssuedAt, sourcePins: { ...entry.sourcePins }, cohortSha256: ref.cohortSha256,
-      drawIdentity: { shape: [4, 10000], rowCount: 40000, order: draw.order, weightPerRow: draw.weight_per_row,
+      drawIdentity: { shape: [shape[0], shape[1]], rowCount, order: draw.order, weightPerRow: draw.weight_per_row,
         sharedAcrossAllRaces: true, resamplingOrIndependenceReconstruction: false },
       perRace, summary, metricDefinitions: { ...ref.metricDefinitions }, qualifications: [...ref.qualifications],
       evaluationLock: false, observedResultsConsumed: false,
-      interpretation: "Model-implied expectations and 90% ranges from the same 40,000 saved joint rows for all 35 named principal pairs. These are not observed errors, empirical accuracy, calibration validation, Monte Carlo error, grade thresholds or an evaluation lock. A subset requires a separately reviewed reference." };
+      interpretation: `Model-implied expectations and 90% ranges from the same ${rowCount.toLocaleString("en-US")} saved joint rows for all 35 named principal pairs. These are not observed errors, empirical accuracy, calibration validation, Monte Carlo error, grade thresholds or an evaluation lock. A subset requires a separately reviewed reference.` };
   } catch { return null; }
 }

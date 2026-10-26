@@ -3,7 +3,7 @@ import { ELECTION_NIGHT_RUBRIC } from "../lib/election-night-rubric";
 const percent = (value: number) => `${Math.round(value * 100)}%`;
 
 /** The displayed thresholds come from the same frozen configuration as the scorer. */
-export default function ElectionNightRubric({ standardSenate }: { standardSenate: boolean }) {
+export default function ElectionNightRubric({ standardSenate, forecastCutoffAt }: { standardSenate: boolean; forecastCutoffAt?: string }) {
   const bands = ELECTION_NIGHT_RUBRIC.bands;
   return <section className="night-section night-rubric" aria-labelledby="night-rubric-title">
     <div className="eyebrow">The evaluation rubric</div><h3 id="night-rubric-title">How the forecast will be judged</h3>
@@ -28,7 +28,7 @@ export default function ElectionNightRubric({ standardSenate }: { standardSenate
     </table>
     <p className="small">These letter boundaries are editorial choices, not universal scientific standards. The raw scores and differences will remain visible alongside any grade.</p>
     <p><strong>The 50/50 check:</strong> if the winner probabilities do not beat a fixed coin-flip forecast, the overall grade can be no better than D. An F stays an F. For House races that reference assigns 50% to Democratic, 50% to Republican and 0% to Other, and still counts Other wins.</p>
-    {standardSenate && <div className="night-baseline-note"><p><strong>Planned Senate reference:</strong> Basic electoral history — October 20 edition (earlier issued). We will compare it with the October 26 forecast on the same results. The forecasts had different information and lead times; this does not isolate the value of polling.</p>
+    {standardSenate && forecastCutoffAt && <div className="night-baseline-note"><p><strong>Planned Senate reference:</strong> Basic electoral history — October 20 edition (earlier issued). We will compare it with the {new Date(forecastCutoffAt).toLocaleDateString("en-US", { timeZone: "UTC", month: "long", day: "numeric" })} forecast on the same results. The forecasts had different information and lead times; this does not isolate the value of polling.</p>
       <p>The primary Senate grade uses the fixed 32-race group explained above. Its collective error must be compared with the reference for those same 32 races. The all-35 forecast reference remains separate.</p></div>}
     <details className="night-rubric-details"><summary>Exact scores, coverage and exceptions</summary>
       <p>The winner penalty is the Brier score divided by two: square the difference between each predicted chance and its result (1 for the winner, 0 otherwise), add those values, then divide by two. Average across the fixed race list.</p>

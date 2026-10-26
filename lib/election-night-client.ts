@@ -5,6 +5,9 @@ import { loadHouseLive } from "./house-live-client.ts";
 import { toHouseElectionNightForecast, toSenateElectionNightForecast, type ElectionNightForecast } from "./election-night-forecast.ts";
 import { matchElectionNightReference, type ElectionNightReference } from "./election-night-reference.ts";
 import { matchElectionNightCoreReference, supportsElectionNightCoreReference, type ElectionNightCoreReference } from "./election-night-core-reference.ts";
+import { parseElectionNightPublicationIndex, type ElectionNightReferencePublication,
+  type ElectionNightReferenceQualification } from "./election-night-publication.ts";
+export type { ElectionNightReferencePublication } from "./election-night-publication.ts";
 
 export interface ElectionNightChoice { id: string; label: string; resultSha256: string }
 export interface ElectionNightLoaded {
@@ -15,10 +18,6 @@ export interface ElectionNightLoaded {
   referenceError: string | null;
   primaryReference: ElectionNightCoreReference | null;
   primaryReferenceError: string | null;
-}
-export interface ElectionNightReferencePublication {
-  schemaVersion: number; href: string; sha256: string;
-  editions: { chamber: string; runId: string; resultSha256: string }[];
 }
 export interface ElectionNightRequest {
   chamber: ChamberId;
@@ -66,6 +65,39 @@ async function attachReferences(value: ForecastOnly, signal: AbortSignal, public
   return { ...full, ...primary };
 }
 
+/** Follow the currently published reference index; old catalog pins cannot attach to new forecast bytes. */
+export async function loadPublishedElectionNightForecast(request: ElectionNightRequest, signal: AbortSignal): Promise<ElectionNightLoaded> {
+  const forecastTask = loadElectionNightForecast(request, signal);
+  const indexTask = fetchRuntimePublicationIndex(signal).catch(error => {
+    signal.throwIfAborted();
+    return null;
+  });
+  const [base, index] = await Promise.all([forecastTask, indexTask]);
+  if (!index) return { ...base,
+    referenceError: "The published expected-error reference list could not be verified. The forecast remains available.",
+    primaryReferenceError: base.forecast.chamber === "senate"
+      ? "The published 32-race reference list could not be verified. The forecast remains available." : null };
+  return attachReferences({ forecast: base.forecast, defaultRunId: base.defaultRunId, choices: base.choices },
+    signal, index.full, index.primary);
+}
+
+async function fetchRuntimePublicationIndex(signal: AbortSignal) {
+  signal.throwIfAborted();
+  const controller = new AbortController();
+  const forwardAbort = () => controller.abort(signal.reason);
+  signal.addEventListener("abort", forwardAbort, { once: true });
+  const timeout = setTimeout(() => controller.abort(new DOMException("Reference index request timed out.", "TimeoutError")), 8000);
+  try {
+    const response = await fetch("/data/election-night/publication-index.json", { signal: controller.signal, cache: "no-store" });
+    if (!response.ok) throw Error("Reference index unavailable.");
+    const bytes = await response.arrayBuffer();
+    signal.throwIfAborted(); controller.signal.throwIfAborted();
+    const value = parseElectionNightPublicationIndex(JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(bytes)));
+    if (!value) throw Error("Reference index invalid.");
+    return value;
+  } finally { clearTimeout(timeout); signal.removeEventListener("abort", forwardAbort); }
+}
+
 async function attachReference(value: ForecastOnly,
   signal: AbortSignal, publication?: ElectionNightReferencePublication): Promise<Omit<ElectionNightLoaded, "primaryReference" | "primaryReferenceError">> {
   if (!publication) return { ...value, reference: null, referenceError: null };
@@ -94,7 +126,9 @@ async function attachReference(value: ForecastOnly,
     signal.throwIfAborted();
     referenceController.signal.throwIfAborted();
     if (digest !== publication.sha256) throw Error("Reference bytes changed.");
-    const reference = matchElectionNightReference(value.forecast, JSON.parse(new TextDecoder().decode(bytes)));
+    const qualification = editions[0].qualification;
+    const reference = matchElectionNightReference(value.forecast,
+      JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(bytes)), qualification);
     if (!reference) throw Error("The declared reference does not match this forecast.");
     return { ...value, reference, referenceError: null };
   } catch {
@@ -110,7 +144,7 @@ async function attachReference(value: ForecastOnly,
 async function attachPrimaryReference(forecast: ElectionNightForecast, signal: AbortSignal,
   publication?: ElectionNightReferencePublication): Promise<Pick<ElectionNightLoaded, "primaryReference" | "primaryReferenceError">> {
   const absent = { primaryReference: null, primaryReferenceError: null };
-  if (!publication || !supportsElectionNightCoreReference(forecast)) return absent;
+  if (!publication) return absent;
   let timeout: ReturnType<typeof setTimeout> | undefined;
   let forwardAbort: (() => void) | undefined;
   try {
@@ -119,6 +153,7 @@ async function attachPrimaryReference(forecast: ElectionNightForecast, signal: A
       !/^[a-f0-9]{64}$/.test(publication.sha256) || !Array.isArray(publication.editions) ||
       publication.editions.some(e => e.chamber !== "senate" || typeof e.runId !== "string" || !/^[a-zA-Z0-9_-]+$/.test(e.runId) ||
         typeof e.resultSha256 !== "string" || !/^[a-f0-9]{64}$/.test(e.resultSha256))) throw Error("Invalid primary-reference publication.");
+    if (!publication.editions.some(e => e.qualification) && !supportsElectionNightCoreReference(forecast)) return absent;
     const editions = publication.editions.filter(e => e.chamber === forecast.chamber && e.runId === forecast.run.id && e.resultSha256 === forecast.run.artifactSha256);
     if (editions.length === 0) return absent;
     if (editions.length !== 1) throw Error("Ambiguous primary-reference publication.");
@@ -132,7 +167,9 @@ async function attachPrimaryReference(forecast: ElectionNightForecast, signal: A
     const digest = Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256", bytes)), byte => byte.toString(16).padStart(2,"0")).join("");
     signal.throwIfAborted(); controller.signal.throwIfAborted();
     if (digest !== publication.sha256) throw Error("Primary reference bytes changed.");
-    const primaryReference = matchElectionNightCoreReference(forecast, JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(bytes)));
+    const qualification = editions[0].qualification;
+    const primaryReference = matchElectionNightCoreReference(forecast,
+      JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(bytes)), qualification);
     if (!primaryReference) throw Error("Primary reference does not match this forecast.");
     return { primaryReference, primaryReferenceError: null };
   } catch {

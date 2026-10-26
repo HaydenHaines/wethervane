@@ -1,0 +1,146 @@
+{
+  "schemaVersion": 1,
+  "full": {
+    "schemaVersion": 1,
+    "href": "/data/election-night/references.json",
+    "sha256": "9d2c289667d9f25fe38515eefb1503133a6f72b92cfcf65e5061540b235ccd5f",
+    "editions": [
+      {
+        "chamber": "senate",
+        "runId": "current-polling",
+        "resultSha256": "905ce512c44104d3e48900745cec0f430c9e3954736614468e1a8b728b6da5f0",
+        "qualification": {
+          "targetId": "national_senate_aggregate_poll_v1",
+          "lawId": "senate_principal_pair_aggregate_v1",
+          "forecastIssuedAt": "2026-10-26T15:05:11.698781+00:00",
+          "forecastCutoffAt": "2026-10-26T15:03:57.212405+00:00",
+          "referenceIssuedAt": "2026-10-26T16:32:02.440509+00:00",
+          "cohortSha256": "6b85e77001ce6e432624022810d69a2a541bf19159be5f3a1e046318adbe231f",
+          "sourcePins": {
+            "referenceSha256": "64df0b35a79e46d7d838b5aba70dbd678d110b19392ce30fa720c0ae3840a983",
+            "reviewSha256": "b5f793d959c484fc977e46f92afc63bc0375b8817708cd771fe9ae637e5f14e0",
+            "reviewManifestSha256": "b4cae1844dce11bc9bee0ed287cc0eb8e461142bce91359408207d3e6e0c6ab9",
+            "previousReferenceSha256": "48d36fdce404a74569553c859a8b8d66bb9790c0eef614950bfa98ca5da058db",
+            "previousReviewSha256": "4ba519f76c03852659c69eec96e84913c0fbcd00c8e8e3d82de6e9e7d845fe05",
+            "forecastSha256": "a1ffba60d937bfc81d06df51af6ed917a7ddc71fd9860c1d702de7c7c5db67cb",
+            "jointDrawsSha256": "a7240d654861078c7850e3d0c10c1f287604035de531abf14d82821aa4d5cc31",
+            "jointRowsSha256": "40e003ab4c7bf6aee9463d78ac3123e0ae702a325412763aec6f28ea3d2693ba",
+            "receiptSha256": "46dc22f42147ff4ceaf9981055fa9eed22362251af012debde12f9fcd8dfd53c",
+            "numericalGatesSha256": "77b1f90ef1399fda8cc44c79d01edcd92fb8f422a014ea9c27980e62a1da2044",
+            "ownerOutputReviewSha256": "f3fcaf56656187f71ab62756307265d05568077186d75479de37f4607e6855f1"
+          },
+          "shape": [
+            4,
+            10000
+          ],
+          "rowCount": 40000,
+          "configuration": {
+            "base": "fundamentals",
+            "polling": "standard",
+            "uncertainty": "standard"
+          },
+          "strictAsOf": false,
+          "structuralCutoffAt": "2026-10-20T15:21:23Z"
+        }
+      }
+    ]
+  },
+  "primary": {
+    "schemaVersion": 1,
+    "href": "/data/election-night/core-references.json",
+    "sha256": "8a63d2d3f8490b991a3da6b92ad686d2f9a5d0eb3dd03d51f0c644d8d3e16407",
+    "editions": [
+      {
+        "chamber": "senate",
+        "runId": "current-fundamentals",
+        "resultSha256": "37af627c934f519f32b2cf77a326f5658758a24153ee574fdc1a0ba46bfd51c1",
+        "qualification": {
+          "targetId": "national_senate_aggregate_baseline_v1",
+          "lawId": "senate_principal_pair_aggregate_v1",
+          "forecastIssuedAt": "2026-10-20T15:25:53.623020+00:00",
+          "forecastCutoffAt": "2026-10-20T15:21:23Z",
+          "referenceIssuedAt": "2026-10-26T17:25:31.414534+00:00",
+          "cohortSha256": "a11a92c18ad01867b5e68a9ac5f56a3398012abddacd980207098f09323e4ed1",
+          "sourcePins": {
+            "handoffSha256": "e571037c39a1203b79c2027ec72a4e2e7ff3b3340c1648eba39f75b6a7c41fbb",
+            "referenceSha256": "e8945138896bad678ee4d4dee5ab182e92ca150766deb47595cee6fc4825b120",
+            "reviewSha256": "b82bc61967c3af40274178d79f65ba088e3f5313d32233ec4fbc0c9ac3648c8d",
+            "reviewFreezeSha256": "a90c5c30a2db502a71ff56b98c5c2fc7966f9b1675539fc30b479d9bca18f3d3",
+            "policySha256": "efe1bf193e2959284b73ea833af0a136f6c592001a2faf50505e3258e25cf0cd",
+            "mappingSha256": "9024069ac0f397c2d379663d653d384e32532548ef26772035eda61ce55265e0",
+            "forecastSha256": "c02bdc63a0df27824578c07d6e2b752b831ae4bbd858cabc432ee00fbbf94136",
+            "jointDrawsSha256": "3244418fd97e377e72dd013e6e3bad3c25948bd80228b3a97953e4599b88a6a8",
+            "jointRowsSha256": "cc2fd31bba31f5b6393483b859dcce03857b6abf37706caf81336de93a84b001",
+            "receiptSha256": "b2f083636dbcd8ffe535844bfe7af0af5aa6574b7b8c1358fbafde40135a5ee3",
+            "failedV1EvidenceSha256": "d73ed9b406ba9c1184bca648eaf830a9f8c96ab7f6809e5165d52591554d2550"
+          },
+          "shape": [
+            100000
+          ],
+          "rowCount": 100000,
+          "configuration": {
+            "base": "fundamentals",
+            "polling": "none",
+            "uncertainty": "standard"
+          },
+          "strictAsOf": true,
+          "arm": "F",
+          "cohortId": "senate2026_plurality_core32_pre_result_v1",
+          "excludedRaceIds": [
+            "2026:AK:senate:regular",
+            "2026:GA:senate:regular",
+            "2026:ME:senate:regular"
+          ],
+          "raceAxisBinding": "F embeddedrace_ids; FP ordered axis from pinned reviewed source mapping and unchanged forecast builder, since FParchive stores no race_ids array.",
+          "structuralCutoffAt": "2026-10-20T15:21:23Z"
+        }
+      },
+      {
+        "chamber": "senate",
+        "runId": "current-polling",
+        "resultSha256": "905ce512c44104d3e48900745cec0f430c9e3954736614468e1a8b728b6da5f0",
+        "qualification": {
+          "targetId": "national_senate_aggregate_poll_v1",
+          "lawId": "senate_principal_pair_aggregate_v1",
+          "forecastIssuedAt": "2026-10-26T15:05:11.698781+00:00",
+          "forecastCutoffAt": "2026-10-26T15:03:57.212405+00:00",
+          "referenceIssuedAt": "2026-10-26T17:25:31.668413+00:00",
+          "cohortSha256": "a11a92c18ad01867b5e68a9ac5f56a3398012abddacd980207098f09323e4ed1",
+          "sourcePins": {
+            "handoffSha256": "e571037c39a1203b79c2027ec72a4e2e7ff3b3340c1648eba39f75b6a7c41fbb",
+            "referenceSha256": "545ff5c25cc74e681afd10305b7c5a00c0653368cf3a6adda76184b9dd142568",
+            "reviewSha256": "b82bc61967c3af40274178d79f65ba088e3f5313d32233ec4fbc0c9ac3648c8d",
+            "reviewFreezeSha256": "a90c5c30a2db502a71ff56b98c5c2fc7966f9b1675539fc30b479d9bca18f3d3",
+            "policySha256": "efe1bf193e2959284b73ea833af0a136f6c592001a2faf50505e3258e25cf0cd",
+            "mappingSha256": "9024069ac0f397c2d379663d653d384e32532548ef26772035eda61ce55265e0",
+            "forecastSha256": "a1ffba60d937bfc81d06df51af6ed917a7ddc71fd9860c1d702de7c7c5db67cb",
+            "jointDrawsSha256": "a7240d654861078c7850e3d0c10c1f287604035de531abf14d82821aa4d5cc31",
+            "jointRowsSha256": "ab6f8c2830ec582f78cad98d14ebf9f48747feccd144215265c1ed74a6ea534a",
+            "receiptSha256": "46dc22f42147ff4ceaf9981055fa9eed22362251af012debde12f9fcd8dfd53c",
+            "failedV1EvidenceSha256": "d73ed9b406ba9c1184bca648eaf830a9f8c96ab7f6809e5165d52591554d2550"
+          },
+          "shape": [
+            4,
+            10000
+          ],
+          "rowCount": 40000,
+          "configuration": {
+            "base": "fundamentals",
+            "polling": "standard",
+            "uncertainty": "standard"
+          },
+          "strictAsOf": false,
+          "arm": "FP",
+          "cohortId": "senate2026_plurality_core32_pre_result_v1",
+          "excludedRaceIds": [
+            "2026:AK:senate:regular",
+            "2026:GA:senate:regular",
+            "2026:ME:senate:regular"
+          ],
+          "raceAxisBinding": "F embeddedrace_ids; FP ordered axis from pinned reviewed source mapping and unchanged forecast builder, since FParchive stores no race_ids array.",
+          "structuralCutoffAt": "2026-10-20T15:21:23Z"
+        }
+      }
+    ]
+  }
+}

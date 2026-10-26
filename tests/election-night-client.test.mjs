@@ -2,7 +2,8 @@ import test, { afterEach } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { createHash } from "node:crypto";
-import { loadElectionNightForecast } from "../lib/election-night-client.ts";
+import { loadElectionNightForecast, loadPublishedElectionNightForecast } from "../lib/election-night-client.ts";
+import { parseElectionNightPublicationIndex } from "../lib/election-night-publication.ts";
 
 const root = new URL("../", import.meta.url);
 const registryBytes = readFileSync(new URL("public/data/explorer/registry.json", root));
@@ -13,6 +14,7 @@ const referencePublication = JSON.parse(readFileSync(new URL("data/election-nigh
 const referenceBytes = readFileSync(new URL(`public${referencePublication.href}`, root));
 const corePublication = JSON.parse(readFileSync(new URL("data/election-night-core-reference-publication.json", root)));
 const coreBytes = readFileSync(new URL(`public${corePublication.href}`, root));
+const runtimeIndex = JSON.parse(readFileSync(new URL("public/data/election-night/publication-index.json", root)));
 const originalFetch = globalThis.fetch;
 afterEach(() => { globalThis.fetch = originalFetch; });
 function serve(list = registry, result = bytes, reference = referenceBytes, core = coreBytes) {
@@ -24,6 +26,115 @@ function serve(list = registry, result = bytes, reference = referenceBytes, core
   };
   return calls;
 }
+const sha = body => createHash("sha256").update(body).digest("hex");
+function servePublished({ list = registry, result = bytes, reference = referenceBytes,
+  core = coreBytes, index = runtimeIndex } = {}) {
+  const calls = [];
+  globalThis.fetch = async (url, options) => {
+    calls.push(url);
+    options.signal.throwIfAborted();
+    const payload = url === "/data/explorer/registry.json" ? JSON.stringify(list)
+      : url === "/data/election-night/publication-index.json" ? JSON.stringify(index)
+      : url === referencePublication.href ? reference
+      : url === corePublication.href ? core : result;
+    return new Response(payload);
+  };
+  return calls;
+}
+
+test("runtime publication follows same run ID with a revised public SHA and exact new references", async () => {
+  // Synthetic republication: same reviewed native rows, new public edition date,
+  // separately published catalog bytes and their runtime qualification decision.
+  const list = structuredClone(registry), next = list.runs.find(run => run.id === entry.id);
+  const result = JSON.parse(bytes);
+  const cutoff = "2026-10-27T12:00:00Z", issued = "2026-10-27T12:05:00Z";
+  for (const run of [next, result.run]) {
+    run.dateId = "2026-10-27"; run.dateLabel = "October 27, 2026";
+    run.forecastAt = cutoff; run.cutoffAt = cutoff; run.issuedAt = issued;
+    run.components.base = "recent_calendar_history";
+    run.components.uncertainty = "reviewed_extended";
+    run.inputCutoffs.find(row => row.label === "Polling inputs").at = cutoff;
+  }
+  const resultBytes = Buffer.from(JSON.stringify(result)); next.sha256 = sha(resultBytes);
+  const full = JSON.parse(referenceBytes), fullEntry = full.entries.find(row => row.runId === entry.id);
+  fullEntry.resultSha256 = next.sha256; fullEntry.forecastCutoffAt = cutoff; fullEntry.forecastIssuedAt = issued;
+  const fullBytes = Buffer.from(JSON.stringify(full));
+  const core = JSON.parse(coreBytes), coreEntry = core.entries.find(row => row.runId === entry.id);
+  coreEntry.resultSha256 = next.sha256; coreEntry.forecastCutoffAt = cutoff; coreEntry.forecastIssuedAt = issued;
+  coreEntry.reference.edition = "2026-10-27"; coreEntry.reference.input_cutoff_utc = cutoff;
+  const coreResultBytes = Buffer.from(JSON.stringify(core));
+  const index = structuredClone(runtimeIndex);
+  index.full.sha256 = sha(fullBytes); index.primary.sha256 = sha(coreResultBytes);
+  for (const publication of [index.full, index.primary]) {
+    const qualified = publication.editions.find(row => row.runId === entry.id);
+    qualified.resultSha256 = next.sha256;
+    qualified.qualification.forecastIssuedAt = issued;
+    qualified.qualification.forecastCutoffAt = cutoff;
+    qualified.qualification.configuration = { base: "recent_calendar_history", polling: "standard", uncertainty: "reviewed_extended" };
+    qualified.qualification.strictAsOf = false;
+  }
+  const staleCalls = servePublished({ list, result: resultBytes });
+  const stale = await loadPublishedElectionNightForecast({ chamber: "senate", runId: entry.id }, new AbortController().signal);
+  assert.equal(stale.forecast.run.artifactSha256, next.sha256);
+  assert.equal(stale.reference, null); assert.equal(stale.primaryReference, null);
+  assert.equal(stale.referenceError, null); assert.equal(stale.primaryReferenceError, null);
+  assert.ok(!staleCalls.includes(referencePublication.href));
+  const calls = servePublished({ list, result: resultBytes, reference: fullBytes, core: coreResultBytes, index });
+  const fresh = await loadPublishedElectionNightForecast({ chamber: "senate", runId: entry.id }, new AbortController().signal);
+  assert.equal(fresh.forecast.run.artifactSha256, next.sha256);
+  assert.equal(fresh.reference?.resultSha256, next.sha256);
+  assert.equal(fresh.primaryReference?.resultSha256, next.sha256);
+  assert.equal(fresh.reference?.forecastCutoffAt, cutoff);
+  assert.equal(fresh.primaryReference?.forecastCutoffAt, cutoff);
+  assert.equal(fresh.reference?.perRace.length, 35);
+  assert.equal(fresh.primaryReference?.perRace.length, 32);
+  assert.equal(fresh.referenceError, null); assert.equal(fresh.primaryReferenceError, null);
+  assert.ok(calls.includes(referencePublication.href)); assert.ok(calls.includes(corePublication.href));
+});
+
+test("runtime publication rejects missing role metadata, and optional malformed core manifest stays optional", async () => {
+  for (const mutate of [
+    value => { delete value.full.editions[0].qualification.structuralCutoffAt; },
+    value => { delete value.primary.editions[1].qualification.cohortId; },
+    value => { delete value.primary.editions[1].qualification.sourcePins.policySha256; },
+    value => { value.full.editions[0].qualification.configuration = null; },
+  ]) {
+    const changed = structuredClone(runtimeIndex); mutate(changed);
+    assert.equal(parseElectionNightPublicationIndex(changed), null);
+  }
+  serve();
+  const loaded = await loadElectionNightForecast({ chamber: "senate", runId: null }, new AbortController().signal,
+    undefined, { ...corePublication, editions: null });
+  assert.equal(loaded.forecast.run.artifactSha256, entry.sha256);
+  assert.equal(loaded.primaryReference, null);
+  assert.match(loaded.primaryReferenceError, /could not be verified/);
+});
+
+test("a newly qualified fixed32 policy/mapping pin is read from publication, not an old code constant", async () => {
+  const catalog = JSON.parse(coreBytes), row = catalog.entries.find(item => item.runId === entry.id);
+  const previousPolicy = row.sourcePins.policySha256, previousMapping = row.sourcePins.mappingSha256;
+  row.sourcePins.policySha256 = "a".repeat(64); row.sourcePins.mappingSha256 = "b".repeat(64);
+  row.reference.sources.find(source => source.sha256 === previousPolicy).sha256 = row.sourcePins.policySha256;
+  row.reference.sources.find(source => source.sha256 === previousMapping).sha256 = row.sourcePins.mappingSha256;
+  const core = Buffer.from(JSON.stringify(catalog));
+  const index = structuredClone(runtimeIndex);
+  index.primary.sha256 = sha(core);
+  index.primary.editions.find(item => item.runId === entry.id).qualification.sourcePins = structuredClone(row.sourcePins);
+  servePublished({ core, index });
+  const loaded = await loadPublishedElectionNightForecast({ chamber: "senate", runId: null }, new AbortController().signal);
+  assert.equal(loaded.primaryReference?.resultSha256, entry.sha256);
+  assert.equal(loaded.primaryReference?.sourcePins.policySha256, "a".repeat(64));
+  assert.equal(loaded.primaryReference?.sourcePins.mappingSha256, "b".repeat(64));
+  assert.equal(loaded.primaryReferenceError, null);
+});
+
+test("pre-aborted published load never starts an independent reference-index fetch", async () => {
+  const calls = servePublished();
+  const controller = new AbortController(); controller.abort();
+  await assert.rejects(loadPublishedElectionNightForecast({ chamber: "senate", runId: null }, controller.signal),
+    { name: "AbortError" });
+  assert.ok(!calls.includes("/data/election-night/publication-index.json"));
+});
 
 test("the scorecard default follows the current standard registry with exact bytes and independent choices", async () => {
   const calls = serve();

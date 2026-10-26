@@ -130,20 +130,16 @@ function finish(value: Omit<ElectionNightForecast, "schema" | "editionStatus" | 
 }
 function senateConfiguration(entry: ExplorerRunEntry): void {
   const c = entry.components;
-  const base = ["recent_calendar_history", "senate_history_refreshed_v1", "senate_presidential_slope_v1", "senate_relative_lean_v1", "senate_relative_context_v1"];
-  if (entry.id.startsWith("current-comparison-")) {
-    requireValue(base.includes(c.base) && ["none", "standard"].includes(c.polling) && c.uncertainty === "standard" &&
-      entry.id === `current-comparison-${c.base}-${c.polling === "none" ? "f" : "fp"}` &&
-      entry.targetId === "senate2026_principal_pair_fundamentals_comparison_v1" &&
-      entry.lawId === "principal_pair_empirical_logit_shared_normal_student_t5_v1", "unsupported Senate comparison identity");
-  } else {
-    const id = c.polling === "none" ? "current-fundamentals" : c.uncertainty === "standard" ? "current-polling" : `current-${c.uncertainty}`;
-    requireValue(c.base === "fundamentals" && ["none", "standard"].includes(c.polling) &&
-      ["standard", "cycle-low", "cycle-high", "error-low", "error-high"].includes(c.uncertainty) &&
-      (c.polling !== "none" || c.uncertainty === "standard") && entry.id === id &&
-      entry.targetId === (c.polling === "none" ? "national_senate_aggregate_baseline_v1" : "national_senate_aggregate_poll_v1") &&
-      entry.lawId === "senate_principal_pair_aggregate_v1", "unsupported Senate saved identity");
-  }
+  requireValue(c && typeof c === "object", "missing Senate component identity");
+  const safe = (value: unknown) => typeof value === "string" && /^[a-z][a-z0-9_-]*$/.test(value);
+  const aggregate = entry.lawId === "senate_principal_pair_aggregate_v1" &&
+    entry.targetId === (c.polling === "none" ? "national_senate_aggregate_baseline_v1" : "national_senate_aggregate_poll_v1");
+  const comparison = entry.lawId === "principal_pair_empirical_logit_shared_normal_student_t5_v1" &&
+    entry.targetId === "senate2026_principal_pair_fundamentals_comparison_v1";
+  // The registry and bundle already agree byte-for-byte. A later published run
+  // may use a new base or uncertainty name without changing this pair schema.
+  requireValue(safe(c.base) && ["none", "standard"].includes(c.polling) && safe(c.uncertainty) &&
+    (aggregate || comparison), "unsupported Senate saved identity");
 }
 export function toSenateElectionNightForecast(bundle: ExplorerBundle, entry: ExplorerRunEntry): ElectionNightForecast {
   const { href, sha256, ...metadata } = entry;

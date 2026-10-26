@@ -1,6 +1,7 @@
 /** Pure exact-edition matcher. Caller authenticates catalog bytes; these are own-model fixed32 expectations, not observed accuracy. */
 import type { ElectionNightForecast } from "./election-night-forecast.ts";
 import type { NativeReferenceDistribution } from "./election-night-reference.ts";
+import type { ElectionNightReferenceQualification } from "./election-night-publication.ts";
 export interface ElectionNightCoreReferenceDistribution { mean: number; range90: { lower: number; upper: number } }
 interface CoreIdentityRow {
   race_id: string; state: string; seat_id: string; event_kind: string; scheduled_general_event_date: string;
@@ -86,20 +87,33 @@ const text = (v: unknown): v is string => typeof v === "string" && v.trim().leng
 const near = (a: number, b: number) => finite(a) && finite(b) && Math.abs(a-b) <= 1e-10;
 const same = (a: unknown, b: unknown) => JSON.stringify(a) === JSON.stringify(b);
 function need(v: unknown): asserts v { if (!v) throw Error("Not the exact qualified fixed32 reference."); }
-function expected(f: ElectionNightForecast) { return EXPECTED[f.run.id as keyof typeof EXPECTED]; }
+function expected(f: ElectionNightForecast, qualification?: ElectionNightReferenceQualification) {
+  return qualification ? { arm: qualification.arm, resultSha256: f.run.artifactSha256,
+    targetId: qualification.targetId, issuedAt: qualification.forecastIssuedAt,
+    cutoffAt: qualification.forecastCutoffAt, referenceIssuedAt: qualification.referenceIssuedAt,
+    shape: qualification.shape, rowCount: qualification.rowCount, pins: qualification.sourcePins } :
+    EXPECTED[f.run.id as keyof typeof EXPECTED];
+}
 /** Ineligible saved choices have no primary-reference error and never borrow F/FP summaries. */
-export function supportsElectionNightCoreReference(f: ElectionNightForecast): boolean {
+export function supportsElectionNightCoreReference(f: ElectionNightForecast,
+  qualification?: ElectionNightReferenceQualification): boolean {
   try {
-    const e = expected(f);
+    const e = expected(f, qualification);
     return !!e && f.schema === "ElectionNightForecastV1" && f.editionStatus === "dated_snapshot" && f.chamber === "senate" &&
       f.run.year === 2026 && f.run.artifactSha256 === e.resultSha256 && f.run.targetId === e.targetId &&
-      f.run.lawId === "senate_principal_pair_aggregate_v1" && f.run.issuedAt === e.issuedAt && f.run.cutoffAt === e.cutoffAt &&
-      f.run.strictAsOf === (e.arm === "F") && f.run.configuration.base === "fundamentals" &&
-      f.run.configuration.polling === (e.arm === "F" ? "none" : "standard") && f.run.configuration.uncertainty === "standard" &&
+      f.run.lawId === (qualification?.lawId ?? "senate_principal_pair_aggregate_v1") &&
+      (e.arm === "F" || e.arm === "FP") && f.run.issuedAt === e.issuedAt && f.run.cutoffAt === e.cutoffAt &&
+      (qualification?.configuration ? f.run.strictAsOf === qualification.strictAsOf &&
+        f.run.configuration.base === qualification.configuration.base &&
+        f.run.configuration.polling === qualification.configuration.polling &&
+        f.run.configuration.uncertainty === qualification.configuration.uncertainty :
+        f.run.strictAsOf === (e.arm === "F") && f.run.configuration.base === "fundamentals" &&
+        f.run.configuration.polling === (e.arm === "F" ? "none" : "standard") && f.run.configuration.uncertainty === "standard") &&
       f.sourceHashes.forecastSha256 === e.pins.forecastSha256 && f.sourceHashes.jointDrawsSha256 === e.pins.jointDrawsSha256 &&
       f.sourceHashes[e.arm === "F" ? "runReceiptSha256" : "receiptSha256"] === e.pins.receiptSha256 &&
       (e.arm === "F" ? f.run.sourceCutoffs.length === 0 : f.run.sourceCutoffs.length === 2 &&
-        f.run.sourceCutoffs.find(s => s.label === "Structural inputs")?.at === "2026-10-20T15:21:23Z" &&
+        f.run.sourceCutoffs.find(s => s.label === "Structural inputs")?.at ===
+          (qualification?.structuralCutoffAt ?? "2026-10-20T15:21:23Z") &&
         f.run.sourceCutoffs.find(s => s.label === "Polling inputs")?.at === e.cutoffAt);
   } catch { return false; }
 }
@@ -110,26 +124,34 @@ function summary(d: NativeReferenceDistribution, lower: number, upper: number, c
   return { mean:d.mean, range90:{ lower:q.p05, upper:q.p95 } };
 }
 /** Null is the only fallback: no nearest edition, cohort substitution or inferred cross-bank law. */
-export function matchElectionNightCoreReference(forecast: ElectionNightForecast, catalog: unknown): ElectionNightCoreReference | null {
+export function matchElectionNightCoreReference(forecast: ElectionNightForecast, catalog: unknown,
+  qualification?: ElectionNightReferenceQualification): ElectionNightCoreReference | null {
   try {
-    need(supportsElectionNightCoreReference(forecast)); const e = expected(forecast), value = catalog as ElectionNightCoreReferenceCatalog;
+    need(supportsElectionNightCoreReference(forecast, qualification));
+    const e = expected(forecast, qualification), value = catalog as ElectionNightCoreReferenceCatalog;
     need(value?.schemaVersion === 1 && Array.isArray(value.entries));
     const matches = value.entries.filter(r => r && r.chamber === "senate" && r.runId === forecast.run.id && r.resultSha256 === e.resultSha256);
     need(matches.length === 1); const entry = matches[0], ref = entry.reference, draw = ref.draw_identity;
     need(entry.targetId === e.targetId && entry.lawId === forecast.run.lawId && entry.forecastIssuedAt === e.issuedAt && entry.forecastCutoffAt === e.cutoffAt &&
       entry.evaluationLock === false && entry.observedResultsConsumed === false && ref.schema === "SenateFixedCohortScorecardReferenceV1" &&
       ref.status === "derived_pending_independent_review" && ref.arm === e.arm && ref.native_target_id === e.targetId && ref.edition === e.cutoffAt.slice(0,10) &&
-      ref.input_cutoff_utc === e.cutoffAt && ref.issued_utc === e.referenceIssuedAt && ref.cohort_id === COHORT_ID && ref.cohort_size === 32 &&
-      ref.common_target_cohort_sha256 === COHORT_SHA && same(ref.excluded_from_this_reference,EXCLUDED));
-    const trustedPins = { ...COMMON_PINS, ...e.pins };
+      ref.input_cutoff_utc === e.cutoffAt && ref.issued_utc === e.referenceIssuedAt &&
+      ref.cohort_id === (qualification?.cohortId ?? COHORT_ID) && ref.cohort_size === 32 &&
+      ref.common_target_cohort_sha256 === (qualification?.cohortSha256 ?? COHORT_SHA) &&
+      same(ref.excluded_from_this_reference, EXCLUDED) &&
+      (!qualification || same(qualification.excludedRaceIds, EXCLUDED)));
+    const trustedPins = qualification ? qualification.sourcePins : { ...COMMON_PINS, ...e.pins };
     need(Object.keys(entry.sourcePins).length === Object.keys(trustedPins).length && Object.entries(trustedPins).every(([k,v]) => entry.sourcePins[k] === v) &&
       ref.joint_rows.sha256 === e.pins.jointRowsSha256 && Array.isArray(ref.sources) &&
-      [e.pins.forecastSha256,e.pins.jointDrawsSha256,e.pins.receiptSha256,COMMON_PINS.policySha256,COMMON_PINS.mappingSha256].every(pin => ref.sources.some(s => s.sha256 === pin)));
+      [e.pins.forecastSha256,e.pins.jointDrawsSha256,e.pins.receiptSha256,
+        trustedPins.policySha256,trustedPins.mappingSha256].every(pin => ref.sources.some(s => s.sha256 === pin)));
     need(forecast.races.length === 35 && new Set(forecast.races.map(r=>r.id)).size === 35 && forecast.summary.raceCount === 35 && forecast.summary.pairRaceCount === 35 &&
       forecast.summary.tiePolicy === "lexicographic_outcome_id" && EXCLUDED.every(id => forecast.races.some(r=>r.id===id)));
     const indices = forecast.races.flatMap((r,i) => EXCLUDED.includes(r.id) ? [] : [i]);
-    need(same(draw.shape,e.shape) && draw.weight_per_row === 1/e.rowCount && draw.order === ORDER && same(draw.original_race_axis_indices,indices) &&
-      draw.shared_across_selected_races === true && draw.resampling === false && draw.cross_bank_pairing === false && ref.race_axis_binding === AXIS_BINDING &&
+    need(same(draw.shape,e.shape) && e.rowCount === e.shape.reduce((product,n) => product*n,1) &&
+      draw.weight_per_row === 1/e.rowCount && draw.order === ORDER && same(draw.original_race_axis_indices,indices) &&
+      draw.shared_across_selected_races === true && draw.resampling === false && draw.cross_bank_pairing === false &&
+      ref.race_axis_binding === (qualification?.raceAxisBinding ?? AXIS_BINDING) &&
       Array.isArray(ref.cohort) && ref.cohort.length === 32 && Array.isArray(ref.per_race) && ref.per_race.length === 32);
     let misses = 0;
     const perRace = indices.map((index,i) => {
@@ -155,14 +177,16 @@ export function matchElectionNightCoreReference(forecast: ElectionNightForecast,
         firstPairWinProbability:p,modalOutcomeId:nativeModal,denominator:pair.denominator,nativeDenominator:identity.denominator,ruleProxy:identity.rule_proxy };
     });
     need(Object.keys(ref.metric_definitions).length === 3 && Object.entries(DEFINITIONS).every(([k,v])=>ref.metric_definitions[k]===v) &&
-      Object.keys(ref.distributions).length === 4 && same(ref.qualifications,QUALIFICATIONS));
+      Object.keys(ref.distributions).length === 4 &&
+      (qualification ? Array.isArray(ref.qualifications) && ref.qualifications.every(text) : same(ref.qualifications,QUALIFICATIONS)));
     const summaries = { meanAbsoluteMarginError:summary(ref.distributions.mean_absolute_margin_error_pp,0,200),
       modalWinnerMissCount:summary(ref.distributions.modal_pair_winner_miss_count,0,32,true),interval90CoverageCount:summary(ref.distributions.interval_90_coverage_count,0,32,true) };
     need(near(summaries.modalWinnerMissCount.mean,misses) && near(summaries.meanAbsoluteMarginError.mean,perRace.reduce((s,r)=>s+r.expectedAbsoluteMarginErrorPp,0)/32) &&
       near(ref.distributions.mean_signed_margin_error_pp.mean,0));
     return {chamber:"senate",runId:entry.runId,resultSha256:entry.resultSha256,targetId:entry.targetId,lawId:entry.lawId,
-      forecastIssuedAt:entry.forecastIssuedAt,forecastCutoffAt:entry.forecastCutoffAt,referenceIssuedAt:ref.issued_utc,cohortId:COHORT_ID,
-      cohortLabel:"Primary grade: 32 plurality candidate pairs",cohortSha256:COHORT_SHA,excludedRaceIds:[...EXCLUDED],sourcePins:{...entry.sourcePins},
+      forecastIssuedAt:entry.forecastIssuedAt,forecastCutoffAt:entry.forecastCutoffAt,referenceIssuedAt:ref.issued_utc,
+      cohortId:ref.cohort_id, cohortLabel:"Primary grade: 32 plurality candidate pairs",
+      cohortSha256:ref.common_target_cohort_sha256,excludedRaceIds:[...EXCLUDED],sourcePins:{...entry.sourcePins},
       drawIdentity:{shape:[...draw.shape],rowCount:e.rowCount,weightPerRow:draw.weight_per_row,order:draw.order,originalRaceAxisIndices:[...indices],
         sharedAcrossSelectedRaces:true,resampling:false,crossBankPairing:false,raceAxisBinding:ref.race_axis_binding},perRace,summary:summaries,
       qualifications:[...ref.qualifications],evaluationLock:false,observedResultsConsumed:false,
