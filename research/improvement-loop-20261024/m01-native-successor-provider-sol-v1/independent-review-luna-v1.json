@@ -1,0 +1,38 @@
+{
+  "schema": "M01NativeSuccessorIndependentReviewV1",
+  "reviewer": "luna",
+  "review_scope": "Read-only adversarial review of frozen source, selection, check, and recorded artifacts. No full graph rerun, sampler, fit, or owner-worktree modification.",
+  "frozen_artifacts": {
+    "provider.py": "6154ecb3d66ad38b5ba5fa94719d1da865f3e32bdf749ef1bb4ed4250606d853",
+    "selection.json": "03edb47049384b662cdd645053fc6083bde8fb41d972b1a07da8b71ecf6283b5",
+    "check.py": "1ab874a2c7e6b9d11179667b30a00b14d9c703acf7cfe5b0d3083ee117d43005",
+    "result.json": "b746ca84ecff0e4424626927ce0dc7f7bd2b61cb3d70b16417c050695bbdb60f"
+  },
+  "verdict": "bounded_computational_pass_with_material_scope_limits",
+  "blockers": [],
+  "verified": [
+    "The frozen hashes match the author-supplied final hashes.",
+    "The provider checks a literal selection digest before parsing and verifies all 62 selection-pinned inputs and source files before use. The selection includes the actual Problem identity, native/archive observation map lineage, calibration consumer sources and bank inputs, the independent reference-mixture.npz, the parent states, and the native graph sources. The trust claim is local and correctly disclaims protection against a coordinated rewrite of provider and selection.",
+    "The provider adds a single complete-vector poll Potential, claims the six poll observation tokens once, forms each logit mean from named candidate category rates, and delegates the incumbent measurement provider with only polls emptied. The actual graph inventory independently matches the baseline witness at all stages after the stated poll-factor replacement; all 4,304 ownership tokens remain unique. The inventory includes the CES survey and report factors.",
+    "Validation requires the exact Problem digest and six ordered, unique poll IDs, rejects block/candidate/order/covariance/source-value perturbations, and requires an exact protected parent state plus mass. All eight masses in the selected parent set are 0.125. The factor-list full-density comparison demonstrates that the parent mass is not multiplied into this conditional log density.",
+    "The frozen helper receipt reports exact bitwise equality for all 4,000 covariance matrices and weights, shape [4000, 6, 6], against the helper-built reference. The reference-check log records the independent helper comparison and reference SHA256 856d72db3e5d01be86ee7303bb859cbbd6b2c9fee94bc8b6cc2cb049e58d18cb.",
+    "The single-Gaussian factor agrees with SciPy to 4.44e-16. The 4,000-component factor agrees with its direct SciPy log-sum-exp oracle to 8.88e-16; the symbolic mean-gradient maximum error is 5.59e-10 against finite differences.",
+    "The fixed-state whole-graph factor-list density changes by 0.2835660567507148 between reduction and mixture modes; the recorded poll-factor difference agrees within 2.77e-11. I recomputed this subtraction from the recorded totals.",
+    "The recorded selected-coordinate finite differences are internally consistent at the stated coarse threshold: choice_intercept values differ by 0.00256 (about 1.9e-9 relative to their magnitude), and turnout_intercept values differ by 0.0002503. This is a local two-coordinate check only."
+  ],
+  "limitations_and_gaps": [
+    "The complete graph is numerically evaluated only at the initial state for the first protected parent. The other seven parent states are checked as selected data and their masses are retained, but their conditionals are not evaluated or shown normalized.",
+    "The 662-coordinate full joint gradient did not compile in the no-C runtime. The retained PyTensor trace is consistent with a missing ufunc on a large fused Add. The author correctly records full_gradient as unavailable; poll-mean gradient checks and two full-density finite differences do not substitute for a full gradient.",
+    "No posterior inference, convergence, quadrature accuracy, scientific admission, empirical dependence validation, or calibration-law qualification is established. The Gaussian logit residual law, shared-vector covariance structure, and marginal-Bayes-within-cut target remain declared computational assumptions.",
+    "The compiler inventory checks factor ownership/composition, not the correctness or normalization of every incumbent factor. The partial result is not baseline-equivalence-certified and is not a production provider approval."
+  ],
+  "recorded_failure_review": {
+    "full_gradient": "Confirmed preserved failure trace: PyTensor Scratchpad lacks ufunc on a large Add during compile_dlogp evaluation; outcome is accurately represented in result.json and FINDINGS.md.",
+    "full_joint_logp": "Complete factor-list values are evaluated and summed; the failure of a monolithic scalar/gradient route is preserved in logs. This is a legitimate supplied-state arithmetic check, not inference."
+  },
+  "independent_actions": [
+    "Checked supplied frozen SHA256 values with sha256sum.",
+    "Recomputed factor-inventory comparison against the pinned native graph witness after removing the incumbent poll factor and the successor poll factor; confirmed 10 stages and 4,304 unique tokens.",
+    "Recomputed the full-joint reduction-to-mixture delta from result.json and inspected the saved no-C gradient failure and helper parity receipts. No heavy execution was run."
+  ]
+}

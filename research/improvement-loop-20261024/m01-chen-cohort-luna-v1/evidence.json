@@ -1,0 +1,163 @@
+{
+  "schema": "M01ChenEarlierCycleCohortFeasibilityLunaV1",
+  "reviewed_at": "2026-10-26",
+  "scope": "Author Yehu Chen repository snapshots and documented transformation; feasibility of a separate candidate-level 2012/2016/2018 labeled cohort for a 2020 replay. Descriptive only: no fit, admission, forecast or owner-worktree changes.",
+  "decision": {
+    "candidate_level_cohort_possible": true,
+    "distinct_poll_event_cohort_proven": false,
+    "calibration_admission_recommended": false,
+    "reason": "Rows and internal candidate outcome labels exist, but source tables lack unique poll/question/sample identifiers, exact dates, question/mode/population and source URLs. Exact Tierney content matches imply overlap risk, especially 2012."
+  },
+  "primary_author_sources": {
+    "repository": "https://github.com/yahoochen97/CNNForecasting",
+    "author": "Yehu Chen (GitHub yahoochen97)",
+    "readme_2019": {
+      "commit": "50a27498cd264950127ace0b4da572870ad6759a",
+      "url": "https://github.com/yahoochen97/CNNForecasting/blob/50a27498cd264950127ace0b4da572870ad6759a/README.md",
+      "local_capture": "README-2019-11-20.md",
+      "sha256": "fc340e201efe0643d0365ddcb91dc0e96e24f1d0b2bcf5b9c7bb9307529edda7",
+      "content": "CNNForecasting; 2020 US Senate Election Forecasting.",
+      "data_source_or_license_detail": "None in this brief 2019 README."
+    },
+    "readme_2020": {
+      "commit": "0b63a81a5f89f2373966dc9b35e0faa337aa4ae1",
+      "url": "https://github.com/yahoochen97/CNNForecasting/blob/0b63a81a5f89f2373966dc9b35e0faa337aa4ae1/README.md",
+      "local_capture": "README-2020-10-12.md",
+      "sha256": "ebf62b68f4ad0d717ba4cd658c9fca073fc987417be8fcf0e5ef43c0228ad1f8",
+      "claims": "Describes historical polling and 2020 forecast; README says MIT and points to LICENSE.",
+      "rights_check": "Raw root LICENSE URL at this commit returned 404; inspected commit tree had no root LICENSE; GitHub repository API returned license=null. Third-party data rights not established."
+    },
+    "chen_article": {
+      "title": "Polls, Context, and Time: A Dynamic Hierarchical Bayesian Forecasting Model for US Senate Elections",
+      "doi_url": "https://doi.org/10.1017/pan.2021.42",
+      "collection_lineage": "Paper states Senate poll data came from FiveThirtyEight and CNN, thanks Harry Enten at CNN for data, and links Code Ocean / Harvard Dataverse replication materials.",
+      "code_ocean": "https://doi.org/10.24433/CO.4154884.v1",
+      "dataverse": "https://doi.org/10.7910/DVN/GNHESM"
+    },
+    "tierney_article": {
+      "title": "Bias and Excess Variance in Election Polling: A Not-So-Hidden Markov Model",
+      "doi_url": "https://doi.org/10.1093/jrsssa/qnae066",
+      "collection_lineage": "Tierney and Volfovsky describe reliance on Chen et al. Senate polling data; this is collection-level lineage, not row-to-poll ID identity."
+    }
+  },
+  "snapshots": {
+    "chen_2019_combined": {
+      "path": "data/CNNData1992to2018.csv",
+      "commit": "50a27498cd264950127ace0b4da572870ad6759a",
+      "commit_author_time": "2019-11-20T01:34:58Z",
+      "commit_message": "rename data",
+      "status_at_commit": "renamed from CNNData1992to2018.csv; unchanged file content in that commit",
+      "git_blob_sha1": "32ed0899905a8a218204a8fca9319b3e84aede1d",
+      "local_capture": "CNNData1992to2018-2019.csv",
+      "bytes": 1208265,
+      "sha256": "f761a376033cb9b5b9e67e53e07bfd260c9865519d0bf45e30755b6b473dc6ca",
+      "data_rows": 15099,
+      "cycles": [1992,1994,1996,1998,2000,2002,2004,2006,2008,2010,2012,2014,2016,2018],
+      "target_cycle_2020_present": false,
+      "url": "https://raw.githubusercontent.com/yahoochen97/CNNForecasting/50a27498cd264950127ace0b4da572870ad6759a/data/CNNData1992to2018.csv"
+    },
+    "chen_2019_index": {
+      "path": "data/CNNData1992to2018idx.csv",
+      "commit": "50a27498cd264950127ace0b4da572870ad6759a",
+      "git_blob_sha1": "a42a2fc4c297322d55f8c7bae24eb84e9967e161",
+      "local_capture": "CNNData1992to2018idx-2019.csv",
+      "bytes": 1262928,
+      "sha256": "c2a327a58f16d70b6a88e7bdb53d97501feefc2ad95a3159919771672d3a2b80",
+      "rows": 15099,
+      "extra_field": "pollsteridx, not an observation/sample identifier",
+      "url": "https://raw.githubusercontent.com/yahoochen97/CNNForecasting/50a27498cd264950127ace0b4da572870ad6759a/data/CNNData1992to2018idx.csv"
+    },
+    "chen_2019_cnn_data": {
+      "path": "data/CNNData.csv",
+      "commit": "50a27498cd264950127ace0b4da572870ad6759a",
+      "git_blob_sha1": "1a8ae9ffa6cf608f6dfd7ef9b02da4c35979fbb1",
+      "local_capture": "CNNData-2019.csv",
+      "bytes": 1083782,
+      "sha256": "891ac041dbbf2196b19240857a177c7646a38489cb7aa6f7e75fe6acbf79b0e2",
+      "data_rows": 13484,
+      "schema": "Same 10 fields as 2019 combined historical table; no poll/question/sample ID."
+    },
+    "chen_2019_standalone_2018": {
+      "path": "data/CNNData2018.csv",
+      "commit": "50a27498cd264950127ace0b4da572870ad6759a",
+      "commit_author_time": "2019-11-20T01:34:58Z",
+      "git_blob_sha1": "f1cf31fb72a1011e1df777dda4797bb583bf28c7",
+      "existing_local_capture": "../m01-chen-archive-luna-v1/CNNData2018.csv",
+      "bytes": 120901,
+      "sha256": "23e22ac1a64962d21d2f31fdfb8ca903dd3ecd9b7c9514661c726be610000c6c",
+      "data_rows": 1613,
+      "projection_check": "Its 2018 rows are identical in order to the combined 2019 source across all 10 shared substantive fields; it is duplicate representation, not additional records."
+    },
+    "chen_2021_standalone_2018": {
+      "path": "data/CNNdata2018.csv",
+      "commit": "c8a6ed318989a6428c110aa749b4b859dda29c2d",
+      "commit_author_time": "2021-02-23T04:09:21Z",
+      "git_blob_sha1": "6f141436e7242ae2cae7f00be88b19bc079b617f",
+      "existing_local_capture": "../m01-chen-archive-root-v1/raw/CNNdata2018-20210223.csv",
+      "bytes": 124114,
+      "sha256": "b6fb022254df4a3fe0624b050e04c6e7911c2e3ba593bf3ff9333f798c5a1ea3",
+      "data_rows": 1200,
+      "cycles": [2018],
+      "target_timing": "After 2020 election, before 2022 target by Git commit metadata only; not admissible as 2020 as-of bytes."
+    }
+  },
+  "schemas": {
+    "2019_combined": ["cycle","state","Candidateidentifier","Percentage_of_Vote_won_x","samplesize","daysLeft","numberSupport","pollster","Republican","Democrat"],
+    "2019_index": "2019_combined + pollsteridx",
+    "2021_2018": ["cycle","state","pollster","samplesize","candidate_name","Candidateidentifier","daysLeft","numberSupport","Democrat","Republican","Percentage.of.Vote.won.x","pvi","experienced"],
+    "missing_across_poll_files": ["stable poll_id","question_id","question wording/version","original start_date","end_date","release/publication date","release URL or citation","population/sample frame","mode","sponsor/partisan provenance","unrounded original percentages","row-level source crosswalk"]
+  },
+  "pairable_candidate_rows": {
+    "group_key": ["cycle","state","daysLeft","pollster","samplesize"],
+    "rule": "Restrict to 2012/2016/2018 and nonpositive daysLeft; pair exactly one row flagged Democrat with exactly one row flagged Republican in group; report a pair only when both outcome labels are numeric. A group can still combine separate surveys because the table has no poll/question/sample IDs.",
+    "chen_2019_combined": {
+      "2012": {"candidate_rows":1468,"missing_numeric_outcomes":0,"positive_days_rows_excluded":0,"candidate_pair_groups":713,"ambiguous_groups":12,"pair_groups_both_outcomes_present":713,"support_sum_less_than_N":713,"equal_to_N":0,"greater_than_N":0},
+      "2016": {"candidate_rows":1733,"missing_numeric_outcomes":0,"positive_days_rows_excluded":0,"candidate_pair_groups":837,"ambiguous_groups":0,"pair_groups_both_outcomes_present":837,"support_sum_less_than_N":835,"equal_to_N":1,"greater_than_N":1},
+      "2018": {"candidate_rows":1613,"missing_numeric_outcomes":0,"positive_days_rows_excluded":0,"candidate_pair_groups":609,"ambiguous_groups":80,"pair_groups_both_outcomes_present":609,"support_sum_less_than_N":606,"equal_to_N":2,"greater_than_N":1},
+      "total_candidate_pair_groups":2159
+    },
+    "chen_2021_2018": {"candidate_rows":1200,"missing_numeric_outcomes":0,"positive_days_rows_excluded":8,"candidate_pair_groups_after_positive_exclusion":562,"ambiguous_groups_after_positive_exclusion":7,"pair_groups_both_outcomes_present":562,"support_sum_less_than_N":7,"equal_to_N":555,"greater_than_N":0}
+  },
+  "outcome_label_check": {
+    "2019_2012_2016_2018_rows_nonmissing": true,
+    "candidate_ids_with_one_consistent_outcome_label": 196,
+    "candidate_ids_with_multiple_outcome_values": 0,
+    "scope_caveat": "Internal consistency only; outcome values were not independently verified against certified state returns."
+  },
+  "tierney_overlap_screen": {
+    "prepared_source": "research/improvement-loop-20261024/momentum-calibration-preparation-sol-v1/prepared-v1/2020/selected-training-polls.csv",
+    "prepared_sha256": "22d1e4f6b325fe28a53b97a0d4a4bcd9102ff48e869d4667dbe75f14fb454a56",
+    "method": "Coarse exact state/cycle/day/pollster key; exact candidate D/R support values; one D/R source pair with matching Chen source N. Does not require Chen source N to equal Tierney reported_n and has no poll/sample ID.",
+    "matches": {
+      "2012": {"tierney_rows":467,"coarse_matches":467,"unique_candidate_pair_matches":467,"chen_N_equal_tierney_reported_n":0},
+      "2016": {"tierney_rows":463,"coarse_matches":37,"unique_candidate_pair_matches":1,"chen_N_equal_tierney_reported_n":0},
+      "2018": {"tierney_rows":288,"coarse_matches":8,"unique_candidate_pair_matches":2,"chen_N_equal_tierney_reported_n":0}
+    },
+    "interpretation": "Strong overlap risk, especially 2012; candidate-content matches suggest common source rows but cannot prove physical poll identity. Nonmatches are not proven distinct because date semantics/transforms differ."
+  },
+  "author_generator": {
+    "2020_commit": "0b63a81a5f89f2373966dc9b35e0faa337aa4ae1",
+    "2020_timestamp": "2020-10-12T19:13:09Z",
+    "2020_url": "https://github.com/yahoochen97/CNNForecasting/blob/0b63a81a5f89f2373966dc9b35e0faa337aa4ae1/data/generateData.py",
+    "2020_local_capture": "generateData-2020-10-12.py",
+    "2020_sha256": "8daa7e18f986d1e3cafefb478f4bd00cfbb52b1d2da21de8c0a9c33627231afe",
+    "2021_url": "https://github.com/yahoochen97/CNNForecasting/blob/c8a6ed318989a6428c110aa749b4b859dda29c2d/data/generateData.py",
+    "2021_local_capture": "generateData-2021-02-23.py",
+    "2021_sha256": "282c7f8e9c385bb2c9c59be522daa61639aa58c49539b279a7ac06181cc34e5f",
+    "observed_transformations": [
+      "2020 script reads live FiveThirtyEight Senate poll CSV for 2018/2020 output; it does not reproduce 2019 legacy combined table.",
+      "numberSupport is floor(samplesize*pct/100), so reconstructed support values from rounded percentages are not raw counts.",
+      "daysLeft comment says poll end date relative to election, but code uses negative inclusive date_range(start_date,election_date); actual dates are then dropped.",
+      "Before dropping poll_id/question_id, script filters candidate/question variants and population combinations; IDs are absent from final CSV.",
+      "For 2018, samplesize is reassigned to sum of candidate numberSupport values within question_id; resulting N may be effective support total, not respondent N.",
+      "2021 script revision includes a Mississippi Senate candidate identifier remapping and other filtering/recoding changes; 2019 vs 2021 row-count differences are not evidence of improvement."
+    ],
+    "legacy_transform_limit": "The 2019 combined 1992-2018 data are not regenerated/documented by these scripts. Do not project 2020/2021 transformations onto the older CSV as established lineage."
+  },
+  "target_safety": {
+    "2020": "2019 combined commit is dated 2019-11-20 and contains no 2020 cycle rows; chronological pretarget candidate status only, no independent exact-availability or public-retrieval proof. 2021 snapshot is posttarget and cannot support 2020 as-of use.",
+    "2022": "Both 2019 and 2021 commit timestamps are pre-2022; 2021 file only has 2018 polls. This is chronology, not proof of historical availability or identity.",
+    "2018": "Its own outcome labels cannot be used as predictors for 2018; only prior cycles are target-safe for a 2018 forecast."
+  },
+  "source_captures": "New local raw captures and author script/README captures are stored only in this directory. Existing standalone 2019/2021 CSV captures are referenced by path/hash and were not recopied. No raw source data was committed to public repo."
+}

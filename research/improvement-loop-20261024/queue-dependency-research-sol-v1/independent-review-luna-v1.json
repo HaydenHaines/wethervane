@@ -1,0 +1,121 @@
+{
+  "schema": "WithinPlanDependencyDispatchIndependentReviewLunaV1",
+  "reviewed_at": "2026-10-26",
+  "scope": "Read-only independent review of dispatch.py, test_dependency.py, FINDINGS.md, evidence.json, tests.log, and pinned queue/executor validators. Ran bounded synthetic DAG and validator adversarial checks in temporary directories; did not edit author code or results.",
+  "verdict": {
+    "supported_scope": "No material dependency readiness or result-authentication defect found under the stated cooperating-client/trusted-mutable-SQLite and non-daemonizing executor contract.",
+    "production_status": "Not production-ready; the documented mutable-storage, filesystem race, process-session, crash/power-loss, and operational gaps are real adoption blockers outside this research scope.",
+    "scientific_authority": "None; native outputs are metadata-verified and qualification remains unassessed."
+  },
+  "source_integrity": {
+    "status": "saved local pins match current reviewed files",
+    "hashes": {
+      "dispatch.py": "77020ef59046df5106379e669e18c3ebfda7b96f0503e88bf588eb71ba408674",
+      "test_dependency.py": "1408637a11afd8a470fa21a83fd5683f56e83f57b12969fb1450071a5a97a018",
+      "FINDINGS.md": "4fea9148c54ced9ce5c50478df739c1f525f9edd3e076d22d80ab380190f7889",
+      "evidence.json": "e146614551396e42e086a257b6a996405fdf9bcdb36f006e349cb67cf79c8875",
+      "tests.log": "ee2714e1f1efdbb26e49aa08e4de1b8ce56d2f4f06ed8fa7722b2ba5b40cfd3e"
+    },
+    "saved_tests": "Nine author tests pass in tests.log; evidence source manifests include dispatch, V2 admission, original queue/executor/ledger/receipt sources."
+  },
+  "authentication_review": {
+    "committed_release_gate": {
+      "status": "sound within supported trust model",
+      "basis": [
+        "Consumer binding resolves each dependency to an owner row in the same immutable plan, then calls verified_release; an existing release.json or successful-looking output alone is insufficient.",
+        "verified_release requires the SQLite release row, verifies canonical body/digest and exact result/release file pins, reconstructs the frozen producer binding/reservation, re-observes the original executor and recomputes the result, then checks the release document chain.",
+        "A producer must have outcome accepted_execution. Nonzero, timeout, invalid-native-output and other failed producer results do not authorize consumers. Unknown exit yields NotReady and retains capacity.",
+        "A consumer binding pins producer result, release, terminal and selected output; it inserts all four into the effective executor input pins and substitutes only declared SHA argv sentinels. Conflicting pins fail closed."
+      ]
+    },
+    "precommit_and_ready_gating": {
+      "status": "tested and consistent",
+      "basis": [
+        "Reservation remains active until the release record commits. Release/result files published before SQLite commit do not count as readiness.",
+        "A consumer-first plan order skips the not-ready consumer and schedules its producer; after producer release, the next selection can bind the consumer.",
+        "If a file is tampered after binding or after executor preparation but before launch, current chain verification/input-pin checks retain the reservation without launch."
+      ],
+      "tests": ["test_uncommitted_producer_publications_do_not_authorize_consumer", "test_active_binding_and_launch_dependency_recheck", "test_caller_crashes_around_dependency_publications"]
+    },
+    "terminal_and_output_pins": {
+      "status": "consistent within original executor contract",
+      "basis": [
+        "Selected terminal/recovery evidence pins are reverified; process/session observations, cooperative job lock, known return code and terminal cleanup verification gate release.",
+        "Each declared output path is checked for containment, re-pinned, required to match a native receipt from the terminal, and checked against its minimum byte threshold.",
+        "The generic evidence and native metadata do not certify scientific meaning or arbitrary nested input references; owner command validation and science remain external."
+      ]
+    },
+    "uncommitted_release_test": "Passed author test: caller death after release.json publication leaves no release row and no consumer attempt; tampering retains capacity; restoring exact bytes allows recovery.",
+    "potential_race": "Noncooperating filesystem writers can alter pinned files after checks and before/during consumer reads. Rechecking in dispatcher and original executor preparation/launch/child narrows but does not eliminate TOCTOU. The artifact correctly limits trust to cooperating local writers."
+  },
+  "dag_review_and_adversarial_tests": {
+    "source_validation": [
+      "Plan validator rejects unknown/self edges, unknown roles, duplicate producer-role edges, duplicate argv argument-slot use, unbound SHA sentinels, and cycles.",
+      "An edge includes job ID, native receipt role, exact fixed path argv slot(s), and SHA sentinel slot(s); output roles are unique within each job and outputs are disjoint through V2 admission.",
+      "Transitive three-job chain is covered by author test."
+    ],
+    "independent_synthetic_diamond": {
+      "status": "passed",
+      "graph": "producer p1 -> left and right; both left/right -> join; consumer/join listed before dependencies in plan.",
+      "observed": "All four jobs released; join authenticated both producer release chains and wrote expected joined fixture payload; reserved count returned to zero.",
+      "runtime_seconds": 3.5,
+      "isolation": "Fresh TemporaryDirectory and invented child commands only; no owner files or persisted results touched."
+    },
+    "independent_plan_validation": {
+      "cycle": "Two-node cycle rejected with dependency-cycle validation.",
+      "duplicate_edge": "Duplicate same producer/role edge rejected.",
+      "branch_fanout": "A producer with two consumers validates."
+    },
+    "gaps": [
+      "Author tests cover a simple transitive chain but not branching or multiple-parent joins; independent synthetic diamond closes this basic functional coverage gap, not exhaustive combinatorics.",
+      "Shared ancestors are recursively reauthenticated per dependency path with no scale bound or performance test; exponential/repeated verification is a scalability gap, not a small-fixture correctness failure.",
+      "Many-role, duplicate-path alias, very deep DAG and high fanout cases are not comprehensively tested."
+    ]
+  },
+  "crash_and_cleanup_review": {
+    "tested_crash_points": ["binding_published","reserved","prepared","launched","result_published","release_published","release_inserted","released"],
+    "assessment": "Crash recovery is coherent for injected caller death at these points: no relaunch after launch-intent; precommit publications are compared exactly and recovered; SQLite release insertion rolls back on caller death before commit; committed release is recognized on retry.",
+    "not_proven": [
+      "Actual power loss, filesystem/SQLite fsync behavior under hardware failure, syscall-level short-write or commit ambiguity, concurrent noncooperating writer races, and arbitrary kernel/process reparenting are not established by caller os._exit fixtures.",
+      "Process cleanup inherits the original Linux /proc, pidfd, flock and owned-session model. Escaping into a new session/daemonization is outside the stated cleanup scope and could outlive the observed owner process; production commands need a non-daemonization/containment contract or stronger isolation.",
+      "Cleanup proof is an executor-generated mutable local receipt, not an external attestation."
+    ]
+  },
+  "storage_and_audit_trust": {
+    "trust": "trusted_mutable_index_no_historical_audit",
+    "review": [
+      "SQLite release/reservation triggers protect against ordinary API mutation, but a filesystem owner can drop triggers, coherently rewrite or roll back SQLite rows and documents, or replace the local config/source state.",
+      "Current selected chain is synchronously checked; unreferenced released history is not fully audited on each tick. No protected head/append-only log/independent storage anchor is supplied.",
+      "The specific commit gate is real: readiness requires a committed release row. Global capacity and old released-history truth remain under the trusted mutable-index contract."
+    ],
+    "classification": "Documented adoption gap, not a false-ready bug under its explicitly trusted database premise."
+  },
+  "other_boundaries": [
+    "Fresh initialization is not an atomic bootstrap or repair protocol; interrupted roots remain visible and require operator investigation.",
+    "Capacity one and one synchronous dispatcher lock are fixed; pending candidate selection and recursive chain checking have no measured scale guarantee.",
+    "No cancellation/prelaunch deferral, automatic orphan recovery, cross-plan outputs, external result authority, protected historical audit, unattended controller, or production migration is implemented.",
+    "Failed predecessor is released as a recorded failure and dependent remains pending/not-ready; it is not silently run or falsely reported complete. No policy for scientifically appropriate handling of failed/unknown branches is supplied."
+  ],
+  "production_blockers_vs_gaps": {
+    "no_current_false_readiness_blocker_found": true,
+    "adoption_blockers": [
+      "Replace or formally accept mutable SQLite/config and no rollback protection; define external audit/recovery authority.",
+      "Establish filesystem trust/atomicity and command containment, including no daemonized descendants or a stronger sandbox/cgroup boundary.",
+      "Test concurrent clients, machine/power-loss boundaries and recovery on supported deployment storage; current tests use local Linux and synthetic jobs.",
+      "Add operational policy for stale/unknown reservations, dependency failure, cancellation and operator intervention before unattended use."
+    ],
+    "coverage_gaps_not_demonstrated_failures": [
+      "Full combinatorial DAG and scale testing; the small diamond passed.",
+      "Durable audit of all released history and robust storage-level trust anchoring.",
+      "Scientific authorization/qualification, fit/prediction execution, and model promotion."
+    ]
+  },
+  "reproduction": {
+    "author_tests_rerun": false,
+    "why": "Saved tests.log reviewed; bounded independent synthetic diamond and validator checks exercised required DAG paths without rerunning or editing author output.",
+    "independent_commands": [
+      "Temporary real-executor synthetic diamond DAG (3.5 seconds).",
+      "Direct queue plan-validator checks for two-node cycle rejection, duplicate edge rejection and branch fanout acceptance."
+    ]
+  }
+}

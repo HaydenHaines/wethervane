@@ -1,0 +1,7 @@
+# Chen's 2019 combined file and standalone 2018 file
+
+The author repository's [2019-11-20 combined candidate file](https://github.com/yahoochen97/CNNForecasting/blob/50a27498cd264950127ace0b4da572870ad6759a/data/CNNData1992to2018.csv) provides an alternate path to historical data. Its local capture is SHA-256 `f761a376033cb9b5b9e67e53e07bfd260c9865519d0bf45e30755b6b473dc6ca`, Git blob `32ed0899905a8a218204a8fca9319b3e84aede1d`, 1,208,265 bytes. The source contents API identifies that blob at the recorded commit; the Git timestamp alone is not an independent proof of contemporaneous public access.
+
+`check.py` compares the 2018 subset of the combined table to the separately captured `CNNData2018.csv` at that same commit. All 1,613 rows match **in order** across the ten fields present in the combined file; the standalone file adds an unnamed index column. This establishes the compared projection, not whole-file byte identity or equivalence to the later Tierney data. Both source files and their prior-election outcome fields are parsed; the target 2020 election is not scored or fitted. Since the 2018 rows are the same, treating the combined file as a separate 2018 cohort would not supply additional observations.
+
+The two captures remain local due to unresolved rights for underlying polling records; source URLs, Git blobs, SHA-256 values and this reproducible check are retained. No source admission, factor change or empirical forecast claim follows.

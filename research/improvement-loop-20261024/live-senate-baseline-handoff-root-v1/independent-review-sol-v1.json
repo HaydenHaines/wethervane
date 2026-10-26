@@ -1,0 +1,749 @@
+{
+  "schema": "LiveSenateBaselineIndependentSolReviewV1",
+  "reviewed_at_utc": "2026-10-26T21:00:27.690047+00:00",
+  "handoff_pin": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/live-senate-baseline-handoff-root-v1/handoff.json",
+    "sha256": "f98a79d8935e5930549e98e984772c0e046fd3f7b47d7b16b8293cddff6d03c8",
+    "bytes": 7950
+  },
+  "verdict": "qualified_pass_exact_current_identity_and_scope",
+  "scope": "Read-only current public GETs via curl, SHA256 of exact recorded standard owner files and historical selections/seals/selected FP-loading-1 sources, receipt metadata and NPZ headers. Only this review written; historical capture preserved. No sampler, fit, forecast regeneration, outcome scoring or source changes.",
+  "access_note": "Initial web tool inaccessible and urllib returned 403; normal shell curl succeeded without bypass or access changes.",
+  "live_observations": {
+    "registry": {
+      "url": "https://ballotmancy.com/data/explorer/registry.json",
+      "started_at_utc": "2026-10-26T21:00:26.687368+00:00",
+      "completed_at_utc": "2026-10-26T21:00:27.324866+00:00",
+      "sha256": "c1e6d85bd4886768975d91d45f57a151114564dfb8f73645b484f089a5214031",
+      "bytes": 59770,
+      "matches_handoff_sha256": true
+    },
+    "2026": {
+      "url": "https://ballotmancy.com/data/explorer/current-polling.json",
+      "started_at_utc": "2026-10-26T21:00:27.324964+00:00",
+      "completed_at_utc": "2026-10-26T21:00:27.438860+00:00",
+      "sha256": "905ce512c44104d3e48900745cec0f430c9e3954736614468e1a8b728b6da5f0",
+      "bytes": 158918,
+      "matches_handoff_sha256": true
+    },
+    "2018": {
+      "url": "https://ballotmancy.com/data/explorer/history-2018-FP-1.json",
+      "started_at_utc": "2026-10-26T21:00:27.439036+00:00",
+      "completed_at_utc": "2026-10-26T21:00:27.553166+00:00",
+      "sha256": "4f2af5135824a5b0420b31f5e589eb038d070ae70450ef4c80d0a4236e78fd02",
+      "bytes": 128150,
+      "matches_handoff_sha256": true
+    },
+    "2022": {
+      "url": "https://ballotmancy.com/data/explorer/history-2022-FP-1.json",
+      "started_at_utc": "2026-10-26T21:00:27.553306+00:00",
+      "completed_at_utc": "2026-10-26T21:00:27.651976+00:00",
+      "sha256": "1c1f3c226ca285724d3cc2af0fca1b77d6bff43a6b918ebb749686157596cf71",
+      "bytes": 130206,
+      "matches_handoff_sha256": true
+    }
+  },
+  "registry_projection_checks": {
+    "2026": {
+      "default_id": "current-polling",
+      "matches_handoff_default": true,
+      "entry_exactly_equals_handoff": true,
+      "projection_run_equals_registry_without_url_hash": true,
+      "race_count": 35,
+      "law_id": "senate_principal_pair_aggregate_v1",
+      "target_id": "national_senate_aggregate_poll_v1",
+      "strict_as_of": false,
+      "cutoff": "2026-10-26T15:03:57.212405+00:00",
+      "horizon_days": null,
+      "simulation_count": 40000,
+      "provenance": {
+        "sources": {
+          "handoffSha256": "53ecb8ea7c322932a64784453a00bd4181c7e95cea474c2f843e5b0e0bcd356b",
+          "sourceAdmissionReviewSha256": "1e877076277427215e503f575ce555c3c8a49bbacd6923e8affb58c9c9a45568",
+          "independentAllArmReviewSha256": "bba67ec05628647a1bfd66fbede6359e93713a0730339567084ba92f1b4a8217",
+          "forecastSha256": "a1ffba60d937bfc81d06df51af6ed917a7ddc71fd9860c1d702de7c7c5db67cb",
+          "jointDrawsSha256": "a7240d654861078c7850e3d0c10c1f287604035de531abf14d82821aa4d5cc31",
+          "chamberDrawsSha256": "186361c10c16e9a2943303f149bd359a70ec990f2f087464dd75b1e47ac68d8a",
+          "runSpecificationSha256": "05e83cf86b1f081836bda9d402130337f0746623c069c6c63f267d081ccb10e7",
+          "numericalGatesSha256": "77b1f90ef1399fda8cc44c79d01edcd92fb8f422a014ea9c27980e62a1da2044",
+          "receiptSha256": "46dc22f42147ff4ceaf9981055fa9eed22362251af012debde12f9fcd8dfd53c",
+          "frozenInputsSha256": "49d175f0c442b911e92710bb8f6d2082bf4ed8fdb675e2c57f306a194266262c",
+          "unchangedFundamentalsSha256": "c02bdc63a0df27824578c07d6e2b752b831ae4bbd858cabc432ee00fbbf94136",
+          "supersededForecastSha256": "3212cb2f504cda5cc6f475742b74433f76dfd7d46581d75e212264be39acba4d"
+        }
+      }
+    },
+    "2018": {
+      "default_id": "history-2018-FP-1",
+      "matches_handoff_default": true,
+      "entry_exactly_equals_handoff": true,
+      "projection_run_equals_registry_without_url_hash": true,
+      "race_count": 35,
+      "law_id": "historical_categorical_winner_gate_v1",
+      "target_id": "national_senate_aggregate_chamber_comparison_v1",
+      "strict_as_of": false,
+      "cutoff": "2018-10-23",
+      "horizon_days": 14,
+      "simulation_count": 80000,
+      "provenance": {
+        "sources": {
+          "historicalRunSelectionSha256": "53b1fae785b65b05e131d9195add518618cf1c5d47cd31d3e70345019d6d35e6",
+          "historicalSupportFreezeSha256": "6fab3dd97bc92fb918c2236119a0cffe49008ae9d7c5b5c2bee7bc0969f179ef",
+          "candidates.csv": "bbbb600176526284ac58c52429ad028e7fc3322642382c74b7d273a7a8f3e32c",
+          "groups.csv": "33dbb2418b06174be4fcf96a6f73bc65e178b9758cf37dc896240691ef0f1119",
+          "races.csv": "e693415682877002ca7dfcd81fbe9f0277f1d4de7ff2409cedf56a39aaef1c00",
+          "official-outcomes_labels-all-targets-SEPARATE.csv": "13996de4b2ddedcfe3b46606d8c4109affe076b8cdd276f0f0c0091e2e1e481a",
+          "official-outcomes_observed-chamber.csv": "125ba1c8683fe724f2c7e09e1074f7b1f35fa423636dfd31b40b8a6fd0d1c2fb",
+          "historicalProtocolSha256": "470fe6f48aca4105338a17b5290f00fa9a3567bc7fdb8d91df14528c31486a28",
+          "historicalPredictionSealSha256": "2ebcd38b6ba9d9e8cd2d8f394942ea2643acbaa1360123691a3e9ec4b3fb1c6a",
+          "historicalScoreSealSha256": "968dd688082d6e01fcf423466438e611d1555418ce21688cfdea540db5893708",
+          "historicalScoresSha256": "038cfa41fffe6288f677db0df73477967b611bf5740e9774f55474b7f46ea6e4",
+          "historicalChamberDefinitionSha256": "f65195950db2e980b1978de50030a55bd9b4fea3cc5cbfc97c022cebe89a0562",
+          "historicalJointDrawsSha256": "43ebce3411c321678f6c3447bd0b637c56ae1d98f10c95bfda6ff75a40ad1294"
+        }
+      }
+    },
+    "2022": {
+      "default_id": "history-2022-FP-1",
+      "matches_handoff_default": true,
+      "entry_exactly_equals_handoff": true,
+      "projection_run_equals_registry_without_url_hash": true,
+      "race_count": 35,
+      "law_id": "historical_categorical_winner_gate_v1",
+      "target_id": "national_senate_aggregate_chamber_comparison_v1",
+      "strict_as_of": false,
+      "cutoff": "2022-10-25",
+      "horizon_days": 14,
+      "simulation_count": 80000,
+      "provenance": {
+        "sources": {
+          "historicalRunSelectionSha256": "53b1fae785b65b05e131d9195add518618cf1c5d47cd31d3e70345019d6d35e6",
+          "historicalSupportFreezeSha256": "6fab3dd97bc92fb918c2236119a0cffe49008ae9d7c5b5c2bee7bc0969f179ef",
+          "candidates.csv": "bbbb600176526284ac58c52429ad028e7fc3322642382c74b7d273a7a8f3e32c",
+          "groups.csv": "33dbb2418b06174be4fcf96a6f73bc65e178b9758cf37dc896240691ef0f1119",
+          "races.csv": "e693415682877002ca7dfcd81fbe9f0277f1d4de7ff2409cedf56a39aaef1c00",
+          "official-outcomes_labels-all-targets-SEPARATE.csv": "13996de4b2ddedcfe3b46606d8c4109affe076b8cdd276f0f0c0091e2e1e481a",
+          "official-outcomes_observed-chamber.csv": "125ba1c8683fe724f2c7e09e1074f7b1f35fa423636dfd31b40b8a6fd0d1c2fb",
+          "historicalProtocolSha256": "470fe6f48aca4105338a17b5290f00fa9a3567bc7fdb8d91df14528c31486a28",
+          "historicalPredictionSealSha256": "c439498c2614996ac0385875bd48fac0e02cc770f489409cf58e89d2a5c2284c",
+          "historicalScoreSealSha256": "343abe4c21dd30a45b3f71acc041e44e2851cb8f19c1ed384ef25ffd64183953",
+          "historicalScoresSha256": "449a673f1404e2eecbbe8b2558079a9570f29fe0f3a4d44d016cda1e9066517b",
+          "historicalChamberDefinitionSha256": "d2d360d95f33c293e7d06953f8b27348712b2f9a3f9742bb7f831bcba062a094",
+          "historicalJointDrawsSha256": "8a5bb0342a75990c40ff2a4f5e64347ac4612bc673e3fb407e3a73ec142fe6b6"
+        }
+      }
+    }
+  },
+  "current_live_changed_since_handoff": false,
+  "local_file_pins": {
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-polling-refresh-20261026/frontend-handoff-v2.json": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-polling-refresh-20261026/frontend-handoff-v2.json",
+      "sha256": "53ecb8ea7c322932a64784453a00bd4181c7e95cea474c2f843e5b0e0bcd356b",
+      "bytes": 33194
+    },
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-polling-refresh-20261026/runner-sol/predictions-v1/standard/forecast.json": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-polling-refresh-20261026/runner-sol/predictions-v1/standard/forecast.json",
+      "sha256": "a1ffba60d937bfc81d06df51af6ed917a7ddc71fd9860c1d702de7c7c5db67cb",
+      "bytes": 198505
+    },
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-polling-refresh-20261026/runner-sol/predictions-v1/standard/joint-draws.npz": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-polling-refresh-20261026/runner-sol/predictions-v1/standard/joint-draws.npz",
+      "sha256": "a7240d654861078c7850e3d0c10c1f287604035de531abf14d82821aa4d5cc31",
+      "bytes": 22617735
+    },
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-polling-refresh-20261026/runner-sol/predictions-v1/standard/chamber-draws.npz": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-polling-refresh-20261026/runner-sol/predictions-v1/standard/chamber-draws.npz",
+      "sha256": "186361c10c16e9a2943303f149bd359a70ec990f2f087464dd75b1e47ac68d8a",
+      "bytes": 266943
+    },
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-polling-refresh-20261026/runner-sol/predictions-v1/standard/run-specification.json": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-polling-refresh-20261026/runner-sol/predictions-v1/standard/run-specification.json",
+      "sha256": "05e83cf86b1f081836bda9d402130337f0746623c069c6c63f267d081ccb10e7",
+      "bytes": 7932
+    },
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-polling-refresh-20261026/runner-sol/predictions-v1/standard/numerical-gates.json": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-polling-refresh-20261026/runner-sol/predictions-v1/standard/numerical-gates.json",
+      "sha256": "77b1f90ef1399fda8cc44c79d01edcd92fb8f422a014ea9c27980e62a1da2044",
+      "bytes": 685
+    },
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-polling-refresh-20261026/runner-sol/predictions-v1/standard/receipt.json": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-polling-refresh-20261026/runner-sol/predictions-v1/standard/receipt.json",
+      "sha256": "46dc22f42147ff4ceaf9981055fa9eed22362251af012debde12f9fcd8dfd53c",
+      "bytes": 102308
+    },
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-polling-refresh-20261026/runner-sol/predictions-v1/standard/admitted-observations.json": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-polling-refresh-20261026/runner-sol/predictions-v1/standard/admitted-observations.json",
+      "sha256": "b3a05ff5a848d91bb0e3bdd8804937a7af28267e40246f1f3694ee575d88afec",
+      "bytes": 858839
+    },
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-polling-refresh-20261026/root-source-admission-review-v1.json": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-polling-refresh-20261026/root-source-admission-review-v1.json",
+      "sha256": "1e877076277427215e503f575ce555c3c8a49bbacd6923e8affb58c9c9a45568",
+      "bytes": 3476
+    },
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-polling-refresh-20261026/root-all-arm-output-review-v1.json": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-polling-refresh-20261026/root-all-arm-output-review-v1.json",
+      "sha256": "bba67ec05628647a1bfd66fbede6359e93713a0730339567084ba92f1b4a8217",
+      "bytes": 212660
+    },
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-polling-refresh-20261026/runner-sol/admitted-intake-v1/intake-manifest-v1.json": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-polling-refresh-20261026/runner-sol/admitted-intake-v1/intake-manifest-v1.json",
+      "sha256": "b62ed6b0b26301fa11b92fa26237ed8e29eb63b24dd720d2beb4946a5ed6742e",
+      "bytes": 1389
+    },
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-polling-refresh-20261026/runner-sol/prepared-v1/plan.json": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-polling-refresh-20261026/runner-sol/prepared-v1/plan.json",
+      "sha256": "4fc13c5a8fa4312246fe1896ba229c7dffe3ac55464e2a0ead900e334357cd7a",
+      "bytes": 102661
+    },
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-polling-refresh-20261026/runner-sol/predictions-v1/standard/source-snapshots/062-inputs-frozen-root-v1.json": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-polling-refresh-20261026/runner-sol/predictions-v1/standard/source-snapshots/062-inputs-frozen-root-v1.json",
+      "sha256": "49d175f0c442b911e92710bb8f6d2082bf4ed8fdb675e2c57f306a194266262c",
+      "bytes": 308091
+    },
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/national-senate-forecast-20261020/forecast-v1/forecast.json": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/national-senate-forecast-20261020/forecast-v1/forecast.json",
+      "sha256": "c02bdc63a0df27824578c07d6e2b752b831ae4bbd858cabc432ee00fbbf94136",
+      "bytes": 201127
+    },
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/forecast-v2/forecast.json": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/forecast-v2/forecast.json",
+      "sha256": "3212cb2f504cda5cc6f475742b74433f76dfd7d46581d75e212264be39acba4d",
+      "bytes": 191971
+    },
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/selected-runs-v1.json": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/selected-runs-v1.json",
+      "sha256": "53b1fae785b65b05e131d9195add518618cf1c5d47cd31d3e70345019d6d35e6",
+      "bytes": 7327
+    },
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/protocol-v1.json": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/protocol-v1.json",
+      "sha256": "183a74d714da1ba570d5c78a65ccc1fdb0c6684bfce63978b90ce74c84fcccf5",
+      "bytes": 14839
+    },
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/protocol-v2-gh256.json": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/protocol-v2-gh256.json",
+      "sha256": "470fe6f48aca4105338a17b5290f00fa9a3567bc7fdb8d91df14528c31486a28",
+      "bytes": 15584
+    },
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2018/fit/seal.json": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2018/fit/seal.json",
+      "sha256": "fed5bdd0f4172cf77f040a1fb0f797de0a59de5984948312f964ea632199042c",
+      "bytes": 11829
+    },
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2018/core/seal.json": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2018/core/seal.json",
+      "sha256": "1d24c81ced3cb0712f81e1f5ba30368aadc7cb2fe203d739a6648256db4c44fa",
+      "bytes": 12417
+    },
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2018/complete/seal.json": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2018/complete/seal.json",
+      "sha256": "2ebcd38b6ba9d9e8cd2d8f394942ea2643acbaa1360123691a3e9ec4b3fb1c6a",
+      "bytes": 18632
+    },
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2018/score/seal.json": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2018/score/seal.json",
+      "sha256": "968dd688082d6e01fcf423466438e611d1555418ce21688cfdea540db5893708",
+      "bytes": 11749
+    },
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2018/complete/FP-loading-1.npz": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2018/complete/FP-loading-1.npz",
+      "sha256": "43ebce3411c321678f6c3447bd0b637c56ae1d98f10c95bfda6ff75a40ad1294",
+      "bytes": 1330778
+    },
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2018/complete/FP-loading-1-diagnostics.json": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2018/complete/FP-loading-1-diagnostics.json",
+      "sha256": "182c7a2020c98df0734e98061177b7a79316264b369ab327136e2abc1dd4bffa",
+      "bytes": 1911
+    },
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2018/complete/chamber-definition.json": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2018/complete/chamber-definition.json",
+      "sha256": "f65195950db2e980b1978de50030a55bd9b4fea3cc5cbfc97c022cebe89a0562",
+      "bytes": 39557
+    },
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2018/score/scores.json": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2018/score/scores.json",
+      "sha256": "038cfa41fffe6288f677db0df73477967b611bf5740e9774f55474b7f46ea6e4",
+      "bytes": 237040
+    },
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2018/core/selected-polls.csv": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2018/core/selected-polls.csv",
+      "sha256": "07861c70f0e02f7a369db8b98419da2def08b829192e3c1ad532c59bc1362f6b",
+      "bytes": 159710
+    },
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2018/core/core-races.csv": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2018/core/core-races.csv",
+      "sha256": "e389b2a9470561f45f56e830c2fec551ecd238c9a2af93f05a0f09af736c3a39",
+      "bytes": 14847
+    },
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2018/fit/diagnostics.json": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2018/fit/diagnostics.json",
+      "sha256": "5a6cb2e10b3e2c803a892fec7f9a665016441c0a006b26ce7c6f48e98d8957ff",
+      "bytes": 3219
+    },
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2022/fit/seal.json": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2022/fit/seal.json",
+      "sha256": "72f39587cb2a7c24ca1049918b2cdf30c3e5f76c2740db15c9b96ed8546b51a4",
+      "bytes": 11849
+    },
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2022/core/seal.json": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2022/core/seal.json",
+      "sha256": "268d3595665d601d3909c4046ba2730a6eba2d1a0f5e9563bb82ebe269a18b6d",
+      "bytes": 12417
+    },
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2022/complete/seal.json": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2022/complete/seal.json",
+      "sha256": "c439498c2614996ac0385875bd48fac0e02cc770f489409cf58e89d2a5c2284c",
+      "bytes": 18632
+    },
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2022/score/seal.json": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2022/score/seal.json",
+      "sha256": "343abe4c21dd30a45b3f71acc041e44e2851cb8f19c1ed384ef25ffd64183953",
+      "bytes": 11749
+    },
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2022/complete/FP-loading-1.npz": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2022/complete/FP-loading-1.npz",
+      "sha256": "8a5bb0342a75990c40ff2a4f5e64347ac4612bc673e3fb407e3a73ec142fe6b6",
+      "bytes": 1252870
+    },
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2022/complete/FP-loading-1-diagnostics.json": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2022/complete/FP-loading-1-diagnostics.json",
+      "sha256": "3dd85310403852bf957ae22e1c3748d2f7c22f30b7d48be7b319d3d509b7a672",
+      "bytes": 1901
+    },
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2022/complete/chamber-definition.json": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2022/complete/chamber-definition.json",
+      "sha256": "d2d360d95f33c293e7d06953f8b27348712b2f9a3f9742bb7f831bcba062a094",
+      "bytes": 39959
+    },
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2022/score/scores.json": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2022/score/scores.json",
+      "sha256": "449a673f1404e2eecbbe8b2558079a9570f29fe0f3a4d44d016cda1e9066517b",
+      "bytes": 236857
+    },
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2022/core/selected-polls.csv": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2022/core/selected-polls.csv",
+      "sha256": "5aa3fea602515c185ba10fdc9cd6e759ac9160c607fc7a56833c946330561365",
+      "bytes": 162802
+    },
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2022/core/core-races.csv": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2022/core/core-races.csv",
+      "sha256": "069316c19714b75bb43dafef2c9c288ce0a7667ea3779778cae44c61323194a8",
+      "bytes": 15470
+    },
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2022/fit/diagnostics.json": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2022/fit/diagnostics.json",
+      "sha256": "dc39ee10cb5ebab7fb6ad739f5250edc03b3362d9c3d1726a026930eb59b032e",
+      "bytes": 3229
+    }
+  },
+  "local_pin_mismatches": [],
+  "standard_2026": {
+    "handoff_status": "numerically_qualified_and_independently_reviewed_not_published",
+    "public_deployment_verified_by_matching_GET": true,
+    "owner_handoff_arm": "standard",
+    "forecast_races": 35,
+    "admitted_observations": 131,
+    "admitted_races": 25,
+    "structural_cutoff": "2026-10-20T15:21:23Z",
+    "polling_cutoff": "2026-10-26T15:03:57.212405+00:00",
+    "numerical_gates_recorded_status": "passed",
+    "retraining": false,
+    "calibration_reuse_status": "reuse_original_conditional_scales_without_retraining"
+  },
+  "historical_selected_sources": {
+    "2018": {
+      "batch_path": "research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256",
+      "selected_protocol": {
+        "path": "research/polling-layer-implementation-20261020/full-chamber-root/protocol-v2-gh256.json",
+        "sha256": "470fe6f48aca4105338a17b5290f00fa9a3567bc7fdb8d91df14528c31486a28"
+      },
+      "selected_stage_seals": {
+        "fit": {
+          "path": "research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2018/fit/seal.json",
+          "sha256": "fed5bdd0f4172cf77f040a1fb0f797de0a59de5984948312f964ea632199042c"
+        },
+        "core": {
+          "path": "research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2018/core/seal.json",
+          "sha256": "1d24c81ced3cb0712f81e1f5ba30368aadc7cb2fe203d739a6648256db4c44fa"
+        },
+        "complete": {
+          "path": "research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2018/complete/seal.json",
+          "sha256": "2ebcd38b6ba9d9e8cd2d8f394942ea2643acbaa1360123691a3e9ec4b3fb1c6a"
+        },
+        "score": {
+          "path": "research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2018/score/seal.json",
+          "sha256": "968dd688082d6e01fcf423466438e611d1555418ce21688cfdea540db5893708"
+        }
+      },
+      "selected_files": {
+        "FP-loading-1.npz": {
+          "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2018/complete/FP-loading-1.npz",
+          "sha256": "43ebce3411c321678f6c3447bd0b637c56ae1d98f10c95bfda6ff75a40ad1294",
+          "bytes": 1330778
+        },
+        "FP-loading-1-diagnostics.json": {
+          "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2018/complete/FP-loading-1-diagnostics.json",
+          "sha256": "182c7a2020c98df0734e98061177b7a79316264b369ab327136e2abc1dd4bffa",
+          "bytes": 1911
+        },
+        "chamber-definition.json": {
+          "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2018/complete/chamber-definition.json",
+          "sha256": "f65195950db2e980b1978de50030a55bd9b4fea3cc5cbfc97c022cebe89a0562",
+          "bytes": 39557
+        },
+        "scores.json": {
+          "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2018/score/scores.json",
+          "sha256": "038cfa41fffe6288f677db0df73477967b611bf5740e9774f55474b7f46ea6e4",
+          "bytes": 237040
+        },
+        "selected-polls.csv": {
+          "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2018/core/selected-polls.csv",
+          "sha256": "07861c70f0e02f7a369db8b98419da2def08b829192e3c1ad532c59bc1362f6b",
+          "bytes": 159710
+        },
+        "core-races.csv": {
+          "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2018/core/core-races.csv",
+          "sha256": "e389b2a9470561f45f56e830c2fec551ecd238c9a2af93f05a0f09af736c3a39",
+          "bytes": 14847
+        },
+        "diagnostics.json": {
+          "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2018/fit/diagnostics.json",
+          "sha256": "5a6cb2e10b3e2c803a892fec7f9a665016441c0a006b26ce7c6f48e98d8957ff",
+          "bytes": 3219
+        }
+      },
+      "public_provenance_matches": true,
+      "primary_horizon_days": 14,
+      "primary_loading_factor": 1.0,
+      "protocol_interpretation": "Retrospective development on all incoming seats, conditional on recorded support and as-of continuity of non-up organizing affiliations. Administrative support/publication proxies remain explicit; not a strict historical-vintage replay or candidate-count model.",
+      "fold_training": [
+        2012,
+        2016
+      ],
+      "selection_rule": "Retain passing original fits; only actual original quadrature failure admits GH256 replacement"
+    },
+    "2022": {
+      "batch_path": "research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256",
+      "selected_protocol": {
+        "path": "research/polling-layer-implementation-20261020/full-chamber-root/protocol-v2-gh256.json",
+        "sha256": "470fe6f48aca4105338a17b5290f00fa9a3567bc7fdb8d91df14528c31486a28"
+      },
+      "selected_stage_seals": {
+        "fit": {
+          "path": "research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2022/fit/seal.json",
+          "sha256": "72f39587cb2a7c24ca1049918b2cdf30c3e5f76c2740db15c9b96ed8546b51a4"
+        },
+        "core": {
+          "path": "research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2022/core/seal.json",
+          "sha256": "268d3595665d601d3909c4046ba2730a6eba2d1a0f5e9563bb82ebe269a18b6d"
+        },
+        "complete": {
+          "path": "research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2022/complete/seal.json",
+          "sha256": "c439498c2614996ac0385875bd48fac0e02cc770f489409cf58e89d2a5c2284c"
+        },
+        "score": {
+          "path": "research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2022/score/seal.json",
+          "sha256": "343abe4c21dd30a45b3f71acc041e44e2851cb8f19c1ed384ef25ffd64183953"
+        }
+      },
+      "selected_files": {
+        "FP-loading-1.npz": {
+          "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2022/complete/FP-loading-1.npz",
+          "sha256": "8a5bb0342a75990c40ff2a4f5e64347ac4612bc673e3fb407e3a73ec142fe6b6",
+          "bytes": 1252870
+        },
+        "FP-loading-1-diagnostics.json": {
+          "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2022/complete/FP-loading-1-diagnostics.json",
+          "sha256": "3dd85310403852bf957ae22e1c3748d2f7c22f30b7d48be7b319d3d509b7a672",
+          "bytes": 1901
+        },
+        "chamber-definition.json": {
+          "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2022/complete/chamber-definition.json",
+          "sha256": "d2d360d95f33c293e7d06953f8b27348712b2f9a3f9742bb7f831bcba062a094",
+          "bytes": 39959
+        },
+        "scores.json": {
+          "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2022/score/scores.json",
+          "sha256": "449a673f1404e2eecbbe8b2558079a9570f29fe0f3a4d44d016cda1e9066517b",
+          "bytes": 236857
+        },
+        "selected-polls.csv": {
+          "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2022/core/selected-polls.csv",
+          "sha256": "5aa3fea602515c185ba10fdc9cd6e759ac9160c607fc7a56833c946330561365",
+          "bytes": 162802
+        },
+        "core-races.csv": {
+          "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2022/core/core-races.csv",
+          "sha256": "069316c19714b75bb43dafef2c9c288ce0a7667ea3779778cae44c61323194a8",
+          "bytes": 15470
+        },
+        "diagnostics.json": {
+          "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/empirical-v2-gh256/2022/fit/diagnostics.json",
+          "sha256": "dc39ee10cb5ebab7fb6ad739f5250edc03b3362d9c3d1726a026930eb59b032e",
+          "bytes": 3229
+        }
+      },
+      "public_provenance_matches": true,
+      "primary_horizon_days": 14,
+      "primary_loading_factor": 1.0,
+      "protocol_interpretation": "Retrospective development on all incoming seats, conditional on recorded support and as-of continuity of non-up organizing affiliations. Administrative support/publication proxies remain explicit; not a strict historical-vintage replay or candidate-count model.",
+      "fold_training": [
+        2012,
+        2016,
+        2018,
+        2020
+      ],
+      "selection_rule": "Retain passing original fits; only actual original quadrature failure admits GH256 replacement"
+    }
+  },
+  "array_header_observations": {
+    "2026_joint": {
+      "logits.npy": {
+        "shape": [
+          4,
+          10000,
+          35
+        ],
+        "dtype": "<f8"
+      },
+      "shares.npy": {
+        "shape": [
+          4,
+          10000,
+          35
+        ],
+        "dtype": "<f8"
+      },
+      "first_wins.npy": {
+        "shape": [
+          4,
+          10000,
+          35
+        ],
+        "dtype": "|b1"
+      },
+      "shared_cycle.npy": {
+        "shape": [
+          4,
+          10000
+        ],
+        "dtype": "<f8"
+      },
+      "posterior_index.npy": {
+        "shape": [
+          4,
+          10000
+        ],
+        "dtype": "<i8"
+      },
+      "beta.npy": {
+        "shape": [
+          4,
+          10000,
+          2
+        ],
+        "dtype": "<f8"
+      },
+      "tau_cycle.npy": {
+        "shape": [
+          4,
+          10000
+        ],
+        "dtype": "<f8"
+      },
+      "tau_race.npy": {
+        "shape": [
+          4,
+          10000
+        ],
+        "dtype": "<f8"
+      },
+      "observed_race_indices.npy": {
+        "shape": [
+          25
+        ],
+        "dtype": "<i8"
+      }
+    },
+    "2026_chamber": {
+      "party_D.npy": {
+        "shape": [
+          40000
+        ],
+        "dtype": "<i8"
+      },
+      "party_R.npy": {
+        "shape": [
+          40000
+        ],
+        "dtype": "<i8"
+      },
+      "party_I.npy": {
+        "shape": [
+          40000
+        ],
+        "dtype": "<i8"
+      },
+      "scenario:campaign_pledge_unaligned:D.npy": {
+        "shape": [
+          40000
+        ],
+        "dtype": "<i8"
+      },
+      "scenario:campaign_pledge_unaligned:R.npy": {
+        "shape": [
+          40000
+        ],
+        "dtype": "<i8"
+      },
+      "scenario:independent_opposition_caucuses_D:D.npy": {
+        "shape": [
+          40000
+        ],
+        "dtype": "<i8"
+      },
+      "scenario:independent_opposition_caucuses_D:R.npy": {
+        "shape": [
+          40000
+        ],
+        "dtype": "<i8"
+      },
+      "scenario:independent_opposition_caucuses_R:D.npy": {
+        "shape": [
+          40000
+        ],
+        "dtype": "<i8"
+      },
+      "scenario:independent_opposition_caucuses_R:R.npy": {
+        "shape": [
+          40000
+        ],
+        "dtype": "<i8"
+      }
+    },
+    "2018_selected_FP_loading1": {
+      "winner_indices.npy": {
+        "shape": [
+          4,
+          20000,
+          35
+        ],
+        "dtype": "<i2"
+      },
+      "national_z.npy": {
+        "shape": [
+          4,
+          20000
+        ],
+        "dtype": "<f8"
+      },
+      "draw_ids.npy": {
+        "shape": [
+          4,
+          20000
+        ],
+        "dtype": "<i8"
+      },
+      "race_ids.npy": {
+        "shape": [
+          35
+        ],
+        "dtype": "<U22"
+      },
+      "seats:asof_alignment_other_U.npy": {
+        "shape": [
+          4,
+          20000,
+          3
+        ],
+        "dtype": "<i2"
+      },
+      "seats:unresolved_other_D.npy": {
+        "shape": [
+          4,
+          20000,
+          3
+        ],
+        "dtype": "<i2"
+      },
+      "seats:unresolved_other_R.npy": {
+        "shape": [
+          4,
+          20000,
+          3
+        ],
+        "dtype": "<i2"
+      }
+    },
+    "2022_selected_FP_loading1": {
+      "winner_indices.npy": {
+        "shape": [
+          4,
+          20000,
+          35
+        ],
+        "dtype": "<i2"
+      },
+      "national_z.npy": {
+        "shape": [
+          4,
+          20000
+        ],
+        "dtype": "<f8"
+      },
+      "draw_ids.npy": {
+        "shape": [
+          4,
+          20000
+        ],
+        "dtype": "<i8"
+      },
+      "race_ids.npy": {
+        "shape": [
+          35
+        ],
+        "dtype": "<U22"
+      },
+      "seats:asof_alignment_other_U.npy": {
+        "shape": [
+          4,
+          20000,
+          3
+        ],
+        "dtype": "<i2"
+      },
+      "seats:unresolved_other_D.npy": {
+        "shape": [
+          4,
+          20000,
+          3
+        ],
+        "dtype": "<i2"
+      },
+      "seats:unresolved_other_R.npy": {
+        "shape": [
+          4,
+          20000,
+          3
+        ],
+        "dtype": "<i2"
+      }
+    }
+  },
+  "assessment": [
+    "The mutable public registry and all three named projections currently match the captured SHA256 identities and default IDs exactly. No historical handoff rewrite is warranted.",
+    "The 2026 handoff status says not_published at its earlier issue time; that is not contradicted by later matching public deployment. Current GET identity, not the earlier status text, establishes observation of deployment.",
+    "2026 is national_senate_aggregate_poll_v1 under senate_principal_pair_aggregate_v1; 2018/2022 are national_senate_aggregate_chamber_comparison_v1 under historical_categorical_winner_gate_v1, FP loading1 at H14. These are distinct laws and do not directly demonstrate an improvement or retrospective calibration of the 2026 artifact.",
+    "All three strictAsOf values are false. Historical forecast cutoff, 2026 archive issuance, present retrieval and original source/publication dates are separate. Retrospective development and qualified source-vintage proxies prevent a blind-holdout or strict-real-time claim.",
+    "Principal-pair shares/winners and categorical winner draws have different supported scoring targets. Compare matched race/contest/option definitions, information cutoffs, horizons, organizing/caucus scenarios and vice-presidential tie-breaks before any empirical comparison. Historical winners alone do not support full-field count/margin scores or margin-ranked tipping.",
+    "Numerical gates and saved Monte Carlo draw counts concern recorded computation; they do not establish empirical model adequacy, source completeness, independent respondents or scientific superiority. Current polling reuses calibration without integrating its posterior uncertainty/retraining."
+  ],
+  "limitations": [
+    "No full numerical rederivation of public race/chamber/tipping summaries from NPZ arrays; file/provenance identity and array headers verified only.",
+    "Not every transitive source snapshot, all sensitivity arms or all historical stage-seal members were rehashed. Exact checked paths and digests are enumerated.",
+    "Historical scores.json was SHA-hashed only; no target outcome/score values parsed or used.",
+    "Registry and projections were fetched sequentially rather than atomically; timestamps are recorded. Their hashes all match the captured registry entries, so no observed mixed-version mismatch.",
+    "No new holdout, matched-cohort experiment, calibration retraining, full-count scientific target or promotion is supplied by this handoff."
+  ]
+}

@@ -1,0 +1,163 @@
+{
+  "schema": "LiveSenateBaselineHandoffV1",
+  "observedAtUtc": "2026-10-26T20:57:41.104674+00:00",
+  "registry": {
+    "url": "https://ballotmancy.com/data/explorer/registry.json",
+    "sha256": "c1e6d85bd4886768975d91d45f57a151114564dfb8f73645b484f089a5214031"
+  },
+  "live2026": {
+    "entry": {
+      "id": "current-polling",
+      "year": 2026,
+      "label": "Standard polling",
+      "targetId": "national_senate_aggregate_poll_v1",
+      "lawId": "senate_principal_pair_aggregate_v1",
+      "dateId": "2026-10-26",
+      "dateLabel": "October 26, 2026",
+      "forecastAt": "2026-10-26T15:03:57.212405+00:00",
+      "issuedAt": "2026-10-26T15:05:11.698781+00:00",
+      "cutoffAt": "2026-10-26T15:03:57.212405+00:00",
+      "horizonDays": null,
+      "components": {
+        "base": "fundamentals",
+        "polling": "standard",
+        "uncertainty": "standard"
+      },
+      "uncertaintyLabel": "Saved polling-error scales",
+      "uncertaintyDescription": "Shares, winners, chamber seats and tipping derive from the same saved joint rows; polling covariance reuses historical calibration without retraining.",
+      "historical": false,
+      "sensitivity": false,
+      "simulationCount": 40000,
+      "strictAsOf": false,
+      "inputCutoffs": [
+        {
+          "label": "Structural inputs",
+          "at": "2026-10-20T15:21:23Z"
+        },
+        {
+          "label": "Polling inputs",
+          "at": "2026-10-26T15:03:57.212405+00:00"
+        }
+      ],
+      "href": "/data/explorer/current-polling.json",
+      "sha256": "905ce512c44104d3e48900745cec0f430c9e3954736614468e1a8b728b6da5f0"
+    },
+    "url": "https://ballotmancy.com/data/explorer/current-polling.json",
+    "observed_bytes": 158918,
+    "handoff": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-polling-refresh-20261026/frontend-handoff-v2.json",
+      "sha256": "53ecb8ea7c322932a64784453a00bd4181c7e95cea474c2f843e5b0e0bcd356b",
+      "bytes": 33194
+    },
+    "ownerFiles": {
+      "forecast.json": {
+        "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-polling-refresh-20261026/runner-sol/predictions-v1/standard/forecast.json",
+        "sha256": "a1ffba60d937bfc81d06df51af6ed917a7ddc71fd9860c1d702de7c7c5db67cb",
+        "bytes": 198505
+      },
+      "joint-draws.npz": {
+        "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-polling-refresh-20261026/runner-sol/predictions-v1/standard/joint-draws.npz",
+        "sha256": "a7240d654861078c7850e3d0c10c1f287604035de531abf14d82821aa4d5cc31",
+        "bytes": 22617735
+      },
+      "chamber-draws.npz": {
+        "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-polling-refresh-20261026/runner-sol/predictions-v1/standard/chamber-draws.npz",
+        "sha256": "186361c10c16e9a2943303f149bd359a70ec990f2f087464dd75b1e47ac68d8a",
+        "bytes": 266943
+      },
+      "run-specification.json": {
+        "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-polling-refresh-20261026/runner-sol/predictions-v1/standard/run-specification.json",
+        "sha256": "05e83cf86b1f081836bda9d402130337f0746623c069c6c63f267d081ccb10e7",
+        "bytes": 7932
+      },
+      "numerical-gates.json": {
+        "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-polling-refresh-20261026/runner-sol/predictions-v1/standard/numerical-gates.json",
+        "sha256": "77b1f90ef1399fda8cc44c79d01edcd92fb8f422a014ea9c27980e62a1da2044",
+        "bytes": 685
+      },
+      "receipt.json": {
+        "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-polling-refresh-20261026/runner-sol/predictions-v1/standard/receipt.json",
+        "sha256": "46dc22f42147ff4ceaf9981055fa9eed22362251af012debde12f9fcd8dfd53c",
+        "bytes": 102308
+      },
+      "admitted-observations.json": {
+        "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-polling-refresh-20261026/runner-sol/predictions-v1/standard/admitted-observations.json",
+        "sha256": "b3a05ff5a848d91bb0e3bdd8804937a7af28267e40246f1f3694ee575d88afec",
+        "bytes": 858839
+      }
+    }
+  },
+  "historicalDefaultProjections": {
+    "2018": {
+      "entry": {
+        "id": "history-2018-FP-1",
+        "year": 2018,
+        "label": "2018 \u00b7 Fundamentals + polls \u00b7 loading 1",
+        "targetId": "national_senate_aggregate_chamber_comparison_v1",
+        "lawId": "historical_categorical_winner_gate_v1",
+        "dateId": "h14",
+        "dateLabel": "14 days before election",
+        "forecastAt": "2018-10-23",
+        "issuedAt": "2026-10-20T18:35:09.819768+00:00",
+        "cutoffAt": "2018-10-23",
+        "horizonDays": 14,
+        "components": {
+          "base": "fundamentals",
+          "polling": "standard",
+          "uncertainty": "loading-1"
+        },
+        "uncertaintyLabel": "Categorical national loading \u00d71",
+        "uncertaintyDescription": "Changes the categorical winner component's shared national loading only; other shared parameters and ordinary-race dependence remain.",
+        "historical": true,
+        "sensitivity": false,
+        "simulationCount": 80000,
+        "strictAsOf": false,
+        "href": "/data/explorer/history-2018-FP-1.json",
+        "sha256": "4f2af5135824a5b0420b31f5e589eb038d070ae70450ef4c80d0a4236e78fd02"
+      },
+      "live_url": "https://ballotmancy.com/data/explorer/history-2018-FP-1.json",
+      "observed_bytes": 128150
+    },
+    "2022": {
+      "entry": {
+        "id": "history-2022-FP-1",
+        "year": 2022,
+        "label": "2022 \u00b7 Fundamentals + polls \u00b7 loading 1",
+        "targetId": "national_senate_aggregate_chamber_comparison_v1",
+        "lawId": "historical_categorical_winner_gate_v1",
+        "dateId": "h14",
+        "dateLabel": "14 days before election",
+        "forecastAt": "2022-10-25",
+        "issuedAt": "2026-10-20T18:35:09.819768+00:00",
+        "cutoffAt": "2022-10-25",
+        "horizonDays": 14,
+        "components": {
+          "base": "fundamentals",
+          "polling": "standard",
+          "uncertainty": "loading-1"
+        },
+        "uncertaintyLabel": "Categorical national loading \u00d71",
+        "uncertaintyDescription": "Changes the categorical winner component's shared national loading only; other shared parameters and ordinary-race dependence remain.",
+        "historical": true,
+        "sensitivity": false,
+        "simulationCount": 80000,
+        "strictAsOf": false,
+        "href": "/data/explorer/history-2022-FP-1.json",
+        "sha256": "1c1f3c226ca285724d3cc2af0fca1b77d6bff43a6b918ebb749686157596cf71"
+      },
+      "live_url": "https://ballotmancy.com/data/explorer/history-2022-FP-1.json",
+      "observed_bytes": 130206
+    }
+  },
+  "historicalSelection": {
+    "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/full-chamber-root/selected-runs-v1.json",
+    "sha256": "53b1fae785b65b05e131d9195add518618cf1c5d47cd31d3e70345019d6d35e6",
+    "bytes": 7327
+  },
+  "limitations": [
+    "Live 2026 is an aggregate principal-pair proxy and not a full-field count model.",
+    "UI 2018/2022 baselines use a different historical categorical winner-gate law, retrospective development, H14 cutoffs and strictAsOf=false. They are not directly the 2026 law replayed, a strict vintage or a blind holdout.",
+    "Compare matching race/option semantics, frozen information, horizons, and supported scoring targets before claiming improvement. Public projections may omit full joint distributions needed for counts or margins.",
+    "URLs are mutable references; the exact digests pin this observation. The handoff predated publication and its status text alone does not establish the later live deployment."
+  ]
+}

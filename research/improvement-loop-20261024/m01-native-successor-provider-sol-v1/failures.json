@@ -1,0 +1,40 @@
+{
+  "preserved_failures": [
+    {
+      "stage": "calibration runtime native import",
+      "error": "ModuleNotFoundError pydantic",
+      "response": "use read-only schema-only overlay, no package changes"
+    },
+    {
+      "stage": "owner runtime import probe",
+      "error": "ArviZ lacks InferenceData",
+      "response": "retain established calibration PyMC stack"
+    },
+    {
+      "stage": "first full graph factor harness",
+      "error": "Cannot sample from flat variable",
+      "cause": "compile_fn raw Potential retained RandomVariable nodes instead of replacing by value nodes; numerical harness incorrect",
+      "response": "use native model.compile_logp(vars=[Potential]) and replace_rvs_by_values for deterministic rates; no fit or sampler invoked"
+    },
+    {
+      "stage": "first successful numeric checks artifact serialization",
+      "error": "ndarray not JSON serializable",
+      "response": "convert entire result recursively to plain JSON; numerical checks had passed, no scientific failure"
+    },
+    {
+      "stage": "full joint scalar no-C runtime",
+      "error": "Scratchpad has no ufunc for >32-input fused Add",
+      "response": "evaluate model.compile_logp(sum=False) full factor list and aggregate numerically; unchanged law, all factors retained; scalar failure exact log saved"
+    },
+    {
+      "stage": "full joint gradient no-C runtime",
+      "error": "same no-ufunc failure for 33-input Add",
+      "response": "exclude only local_add_canonizer rewrite; preserves original binary additions and model law, no owner/runtime code patched; exact log saved"
+    },
+    {
+      "stage": "full joint gradient excluded-rewrite attempt",
+      "error": "no-C large Add ufunc failure persists",
+      "response": "No further compiler/C attempts; deliver full factor-list logp and poll-mean gradients only, full662 gradient explicitly unavailable"
+    }
+  ]
+}

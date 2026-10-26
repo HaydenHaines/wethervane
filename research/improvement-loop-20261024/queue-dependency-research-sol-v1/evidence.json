@@ -1,0 +1,93 @@
+{
+  "schema": "WithinPlanDependencyDispatchEvidenceV1",
+  "recorded_at_utc": "2026-10-26T20:52:56.402746+00:00",
+  "scope": "Research-only real tiny within-plan producer/consumer executor integration; no production or scientific authority; no owner changes",
+  "local": {
+    "tests.log": {
+      "sha256": "ee2714e1f1efdbb26e49aa08e4de1b8ce56d2f4f06ed8fa7722b2ba5b40cfd3e",
+      "bytes": 1490
+    },
+    "FINDINGS.md": {
+      "sha256": "4fea9148c54ced9ce5c50478df739c1f525f9edd3e076d22d80ab380190f7889",
+      "bytes": 10590
+    },
+    "test_dependency.py": {
+      "sha256": "1408637a11afd8a470fa21a83fd5683f56e83f57b12969fb1450071a5a97a018",
+      "bytes": 10720
+    },
+    "dispatch.py": {
+      "sha256": "77020ef59046df5106379e669e18c3ebfda7b96f0503e88bf588eb71ba408674",
+      "bytes": 13757
+    }
+  },
+  "upstream": {
+    "checkpoints/continuation-v52.json": {
+      "sha256": "a3657000cc5f184ec8c38fc992775e86bd9a3bbc4fbc3aef265d2421b4e14b23",
+      "bytes": 8208
+    },
+    "queue-dispatch-research-sol-v1/dispatch.py": {
+      "sha256": "726b687d20fb9678c1d3814c6a944e219166abc62202c24d3cebc84bc2d91e58",
+      "bytes": 8898
+    },
+    "queue-dispatch-research-sol-v1/FINDINGS.md": {
+      "sha256": "2308273fde6035698da56cb5ae33a1cec7ec12e4918088bc45339c1c17ffa8c8",
+      "bytes": 9092
+    },
+    "queue-dispatch-research-sol-v1/independent-review-sol-v1.json": {
+      "sha256": "e93a62007ef142e1b2f4726014a8b69f496d8fe1b67cdd61a207094c0999ab52",
+      "bytes": 6888
+    },
+    "queue-dispatch-research-sol-v1/root-review-v1.json": {
+      "sha256": "3505aeb55d2efdb40543f76d896687e11b6940ec9edf7792a18e1df6df2d9c5c",
+      "bytes": 1723
+    },
+    "queue-incremental-index-sol-v2/core.py": {
+      "sha256": "207cfa6a85757b8d1d70aac056a96f45476b0a898f692b1ed5b5f5bf7709d9b2",
+      "bytes": 7646
+    },
+    "experiment_queue.py": {
+      "sha256": "6995febe73a5c1c2a317849416a58cc25130b9bbda44161f6a7624b321a8415f",
+      "bytes": 35468
+    },
+    "experiment_queue.md": {
+      "sha256": "683e3beb0ec97a8881e442eea232c9e4af06c14598debeb4b5ae898d48dcf220",
+      "bytes": 11174
+    },
+    "execution.py": {
+      "sha256": "ce02f4c4b9be397b299c2219092fdd355db1695798af07c4974bc63cb6bbbc93",
+      "bytes": 36273
+    },
+    "ledger.py": {
+      "sha256": "d65cea890ecf9b456f8b9625d173f15dac1e7fa94bb618d3407e26f368ee220a",
+      "bytes": 13115
+    },
+    "run_receipts.py": {
+      "sha256": "a7e78b822207109e0257adce9abb6493c53a0d93158177131ade76c0d874e73e",
+      "bytes": 30383
+    },
+    "test_experiment_queue.py": {
+      "sha256": "8e3bc176f52567eaf3dfd371b234437cd49fa5bd38cd24cffb11a2610131f831",
+      "bytes": 33722
+    }
+  },
+  "tests": {
+    "command": "nice -n 15 python3 -B -m unittest test_dependency -v",
+    "passed": 9,
+    "seconds": 12.003,
+    "actual_executor": true,
+    "caller_exit_code": 79,
+    "crash_boundaries": [
+      "binding_published",
+      "reserved",
+      "prepared",
+      "launched",
+      "result_published",
+      "release_published",
+      "release_inserted",
+      "released"
+    ]
+  },
+  "trust": "Trusted mutable SQLite/config; active and selected producer chains synchronous, no arbitrary unvisited historical-tamper claim",
+  "scientific_qualification": "unassessed",
+  "repeat_after_success": "allowed only with explicit new immutable attempt/output and original executor prior-terminal lineage/reason; no scientific-necessity gate"
+}

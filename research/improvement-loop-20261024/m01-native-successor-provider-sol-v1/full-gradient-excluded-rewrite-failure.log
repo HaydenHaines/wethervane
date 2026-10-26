@@ -1,0 +1,75 @@
+building actual reduction graph
+built 64 free RVs
+compiled actual factor 3.0821768670445735
+building actual bank graph
+built actual bank graph
+compiling complete actual logp/gradient
+Traceback (most recent call last):
+  File "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/lib/python3.12/site-packages/pytensor/link/vm.py", line 406, in __call__
+    thunk()
+  File "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/lib/python3.12/site-packages/pytensor/graph/op.py", line 545, in rval
+    r = p(n, [x[0] for x in i], o)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/lib/python3.12/site-packages/pytensor/tensor/elemwise.py", line 704, in perform
+    ufunc = node.tag.ufunc
+            ^^^^^^^^^^^^^^
+  File "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/lib/python3.12/site-packages/pytensor/graph/utils.py", line 283, in __getattribute__
+    return super().__getattribute__(name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Scratchpad' object has no attribute 'ufunc'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-native-successor-provider-sol-v1/check.py", line 71, in <module>
+    full_gradient=multi_model.compile_dlogp();gradient=np.asarray(full_gradient(multi_model.initial_point()));assert gradient.shape==(662,) and np.isfinite(gradient).all()
+                                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/lib/python3.12/site-packages/pymc/pytensorf.py", line 615, in __call__
+    return self.f(**state)
+           ^^^^^^^^^^^^^^^
+  File "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/lib/python3.12/site-packages/pytensor/compile/function/types.py", line 1038, in __call__
+    outputs = vm() if output_subset is None else vm(output_subset=output_subset)
+              ^^^^
+  File "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/lib/python3.12/site-packages/pytensor/link/vm.py", line 410, in __call__
+    raise_with_op(self.fgraph, node, thunk)
+  File "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/lib/python3.12/site-packages/pytensor/link/utils.py", line 526, in raise_with_op
+    raise exc_value.with_traceback(exc_trace)
+  File "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/lib/python3.12/site-packages/pytensor/link/vm.py", line 406, in __call__
+    thunk()
+  File "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/lib/python3.12/site-packages/pytensor/graph/op.py", line 545, in rval
+    r = p(n, [x[0] for x in i], o)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/lib/python3.12/site-packages/pytensor/tensor/elemwise.py", line 704, in perform
+    ufunc = node.tag.ufunc
+            ^^^^^^^^^^^^^^
+  File "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/lib/python3.12/site-packages/pytensor/graph/utils.py", line 283, in __getattribute__
+    return super().__getattribute__(name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Scratchpad' object has no attribute 'ufunc'
+Apply node that caused the error: Add(Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0, Mul.0)
+Toposort index: 742
+Inputs types: [TensorType(float64, shape=(24, 12, 2, 5)), TensorType(float64, shape=(24, 12, 2, 5)), TensorType(float64, shape=(24, 12, 2, 5)), TensorType(float64, shape=(24, 12, 2, 5)), TensorType(float64, shape=(24, 12, 2, 5)), TensorType(float64, shape=(24, 12, 2, 5)), TensorType(float64, shape=(24, 12, 2, 5)), TensorType(float64, shape=(24, 12, 2, 5)), TensorType(float64, shape=(24, 12, 2, 5)), TensorType(float64, shape=(24, 12, 2, 5)), TensorType(float64, shape=(24, 12, 2, 5)), TensorType(float64, shape=(24, 12, 2, 5)), TensorType(float64, shape=(24, 12, 2, 5)), TensorType(float64, shape=(24, 12, 2, 5)), TensorType(float64, shape=(24, 12, 2, 5)), TensorType(float64, shape=(24, 12, 2, 5)), TensorType(float64, shape=(24, 12, 2, 5)), TensorType(float64, shape=(24, 12, 2, 5)), TensorType(float64, shape=(24, 12, 2, 5)), TensorType(float64, shape=(24, 12, 2, 5)), TensorType(float64, shape=(24, 12, 2, 5)), TensorType(float64, shape=(24, 12, 2, 5)), TensorType(float64, shape=(24, 12, 2, 5)), TensorType(float64, shape=(24, 12, 2, 5)), TensorType(float64, shape=(24, 12, 2, 5)), TensorType(float64, shape=(24, 12, 2, 5)), TensorType(float64, shape=(24, 12, 2, 5)), TensorType(float64, shape=(24, 12, 2, 5)), TensorType(float64, shape=(24, 12, 2, 5)), TensorType(float64, shape=(24, 12, 2, 5)), TensorType(float64, shape=(24, 12, 2, 5)), TensorType(float64, shape=(24, 12, 2, 5)), TensorType(float64, shape=(24, 12, 2, 5))]
+Inputs shapes: [(24, 12, 2, 5), (24, 12, 2, 5), (24, 12, 2, 5), (24, 12, 2, 5), (24, 12, 2, 5), (24, 12, 2, 5), (24, 12, 2, 5), (24, 12, 2, 5), (24, 12, 2, 5), (24, 12, 2, 5), (24, 12, 2, 5), (24, 12, 2, 5), (24, 12, 2, 5), (24, 12, 2, 5), (24, 12, 2, 5), (24, 12, 2, 5), (24, 12, 2, 5), (24, 12, 2, 5), (24, 12, 2, 5), (24, 12, 2, 5), (24, 12, 2, 5), (24, 12, 2, 5), (24, 12, 2, 5), (24, 12, 2, 5), (24, 12, 2, 5), (24, 12, 2, 5), (24, 12, 2, 5), (24, 12, 2, 5), (24, 12, 2, 5), (24, 12, 2, 5), (24, 12, 2, 5), (24, 12, 2, 5), (24, 12, 2, 5)]
+Inputs strides: [(960, 80, 40, 8), (960, 80, 40, 8), (960, 80, 40, 8), (960, 80, 40, 8), (960, 80, 40, 8), (960, 80, 40, 8), (960, 80, 40, 8), (960, 80, 40, 8), (960, 80, 40, 8), (960, 80, 40, 8), (960, 80, 40, 8), (960, 80, 40, 8), (960, 80, 40, 8), (960, 80, 40, 8), (960, 80, 40, 8), (960, 80, 40, 8), (960, 80, 40, 8), (960, 80, 40, 8), (960, 80, 40, 8), (960, 80, 40, 8), (960, 80, 40, 8), (960, 80, 40, 8), (960, 80, 40, 8), (960, 80, 40, 8), (960, 80, 40, 8), (960, 80, 40, 8), (960, 80, 40, 8), (960, 80, 40, 8), (960, 80, 40, 8), (960, 80, 40, 8), (960, 80, 40, 8), (960, 80, 40, 8), (960, 80, 40, 8)]
+Inputs values: ['not shown', 'not shown', 'not shown', 'not shown', 'not shown', 'not shown', 'not shown', 'not shown', 'not shown', 'not shown', 'not shown', 'not shown', 'not shown', 'not shown', 'not shown', 'not shown', 'not shown', 'not shown', 'not shown', 'not shown', 'not shown', 'not shown', 'not shown', 'not shown', 'not shown', 'not shown', 'not shown', 'not shown', 'not shown', 'not shown', 'not shown', 'not shown', 'not shown']
+Outputs clients: [[Split{2}(Add.0, 2, [1 1])]]
+
+Backtrace when the node is created (use PyTensor flag traceback__limit=N to make it longer):
+  File "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/lib/python3.12/site-packages/pytensor/gradient.py", line 1496, in access_grad_cache
+    term = access_term_cache(node)[idx]
+  File "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/lib/python3.12/site-packages/pytensor/gradient.py", line 1171, in access_term_cache
+    output_grads = [access_grad_cache(var) for var in node.outputs]
+  File "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/lib/python3.12/site-packages/pytensor/gradient.py", line 1496, in access_grad_cache
+    term = access_term_cache(node)[idx]
+  File "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/lib/python3.12/site-packages/pytensor/gradient.py", line 1171, in access_term_cache
+    output_grads = [access_grad_cache(var) for var in node.outputs]
+  File "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/lib/python3.12/site-packages/pytensor/gradient.py", line 1496, in access_grad_cache
+    term = access_term_cache(node)[idx]
+  File "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/lib/python3.12/site-packages/pytensor/gradient.py", line 1171, in access_term_cache
+    output_grads = [access_grad_cache(var) for var in node.outputs]
+  File "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/lib/python3.12/site-packages/pytensor/gradient.py", line 1528, in access_grad_cache
+    grad_dict[var] = reduce(lambda x, y: x + y, terms)
+  File "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/lib/python3.12/site-packages/pytensor/gradient.py", line 1528, in <lambda>
+    grad_dict[var] = reduce(lambda x, y: x + y, terms)
+
+HINT: Use the PyTensor flag `exception_verbosity=high` for a debug print-out and storage map footprint of this Apply node.
