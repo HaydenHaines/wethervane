@@ -1,0 +1,35 @@
+{
+  "schema": "ContinuousImprovementCheckpointV62",
+  "recordedAtUtc": "2026-10-26T22:09:20.912737+00:00",
+  "status": "active; no model fit or promotion",
+  "references": {
+    "previous": {
+      "path": "research/improvement-loop-20261024/checkpoints/continuation-v61.json",
+      "sha256": "209a881f231d82f8487f84c6e531eb5e9727404e154e4a3c5819d25d4d22e09b",
+      "bytes": 2901
+    },
+    "v2_reviewed_source": {
+      "path": "research/improvement-loop-20261024/queue-v2-integration-review-sol-v1/first-reviewed-index.json",
+      "sha256": "c0f25f6d9bb1cb878a5300a243f3940d8e549de4049c193329d8cd02bc44fbad",
+      "bytes": 704
+    },
+    "v3_reviewed_source": {
+      "path": "research/improvement-loop-20261024/queue-v3-release-audit-root-v1/first-reviewed-index.json",
+      "sha256": "47c06517d809accd34766466e018bbbaec1380f6f3e9b9d9cf67ef2de6459ced",
+      "bytes": 1007
+    },
+    "count_v2_review": {
+      "path": "research/improvement-loop-20261024/m01-counting-sink-review-luna-v2/independent-review.json",
+      "sha256": "3c3d3b265b6dea4a5781a2ddc2b17e1a52cd09c473db0e196f3e9245985bf944",
+      "bytes": 4138
+    }
+  },
+  "evidence_preservation": "Reconstructed exact first-reviewed V2 and first-reviewed V3 source/test snapshots by reversing only their subsequent changes. Their hashes match the original independent reviews; these are evidence-only snapshots, not runnable migrated stores. Final V1/V2/V3 source identities remain unchanged.",
+  "count_sink": "Prototype V2 has an independently reproduced completion-marker gap. A separate V3 is under preparation with externally observed process success and explicit filesystem/power-loss trust limits; no TX graph or incomplete pickle was loaded.",
+  "ci": "GitHub job 121875483082 on commit 98c5e23 is in its full end-to-end step. The stale House 2026 selector expectation passed targeted desktop/mobile tests locally; no final workflow result is yet claimed.",
+  "next": [
+    "Review and test counting-sink V3 independently before any actual model experiment.",
+    "Poll the same GitHub job through completion; preserve unresolved outcomes.",
+    "Continue scientific and queue work under the active standing goal."
+  ]
+}
