@@ -1,0 +1,31 @@
+{
+  "schema": "HouseElectionNightFinalBrowserVerificationV1",
+  "worktree": "/home/hayden/projects/ballotmancy-election-night-guide-20261026",
+  "sourcePins": {
+    "houseMatcherSha256": "e44d70bab7b5f9ab0621f685c2fe66515329833003a80d5486143d70ee2e3d8b",
+    "guideComponentSha256": "545a1122082afcca2c626896a72a329f72ed740e7c36888a800295010306ac3d",
+    "browserTestSha256": "5cfa5f98c7b1b0a0ab44c658283467e8acea4f5d7b5792437b41ceea367b7c2d"
+  },
+  "verification": {
+    "productionBuild": "passed; final-build.log; Node prebuild, Next production build, and TypeScript",
+    "fullGuideBrowser": "16 passed, 2 failed solely because the fixed32 Senate test expected old copy 'across 35 races' where the page correctly rendered 'across 35 supported named pairs'; final-browser.log",
+    "fixed32AssertionCorrection": "one browser-test assertion changed; affected desktop and mobile tests then passed 2/2 in final-browser-focused.log; no product code changed",
+    "houseSyntheticScreenshotCases": "House exact-edition reference, same-run revision, and matched replacement passed desktop and mobile 2/2 in final-browser-house-screenshots.log",
+    "diffCheck": "passed",
+    "previewPort3137": "closed"
+  },
+  "screenshots": [
+    {
+      "project": "desktop-chromium",
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/house-election-night-reference-v1/house-expected-errors-synthetic-desktop.png",
+      "sha256": "a0f2e001bb160f6b16c4e0fdddf82a2958ffe8214e2a68ceb5543ae1e6b7b51d"
+    },
+    {
+      "project": "mobile-chromium",
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/house-election-night-reference-v1/house-expected-errors-synthetic-mobile.png",
+      "sha256": "db0a4d37c5a623feba74c7d0e26c75969e5e9c67d26c546fcfa45669e7707b2e"
+    }
+  ],
+  "visualReview": "Both images show 435 top-choice winner/group events separately from 412 named-pair margin events; values, ranges, and explanatory copy fit their cards with no visible overflow.",
+  "scope": "Synthetic compatibility reference only. No actual House expected-error catalog or publication descriptor was installed. The owner contract fixes 435 winner/group and 412 named-pair events with 23 pair-inapplicable races; future revisions and configurations within this schema can attach by metadata, while a changed cohort or law requires a separately reviewed adapter. No observed election results, score, or grade were produced."
+}

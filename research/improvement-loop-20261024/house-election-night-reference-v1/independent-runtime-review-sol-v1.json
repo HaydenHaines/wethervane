@@ -1,0 +1,135 @@
+{
+  "schema": "HouseElectionNightIndependentRuntimeReviewV1",
+  "at": "2026-10-26T18:57:17.557602+00:00",
+  "reviewer": "Sol (offline normalizer author, independent of Sol2 runtime/UI/client/index implementation)",
+  "status": "no_blocking_runtime_issue_found_with_documented_limitations",
+  "worktree": "/home/hayden/projects/ballotmancy-election-night-guide-20261026",
+  "reviewedCodeHashes": {
+    "lib/election-night-client.ts": "653a83d78079c6607df485dfd68945ff17443be9c8db011d742608ab218087a5",
+    "lib/election-night-publication.ts": "d9f53e49cd34d9bd4c2fb1e92f5aa8327f7beca33fe61ea654d4a9054b38e654",
+    "lib/election-night-house-reference.ts": "e44d70bab7b5f9ab0621f685c2fe66515329833003a80d5486143d70ee2e3d8b",
+    "lib/election-night-forecast.ts": "5bf79e7fa0e2cad333616baaee1b51c30b7e406670093de80d9c2c5390f899f1",
+    "lib/election-night-reference.ts": "65532786762ef3664a0ab6c0ffe61ace1ec46e8088c7a717399bf15f3ce8c770",
+    "lib/election-night-core-reference.ts": "51ddf45200ee23a6facc2f74fd6699df88de0502a30bafa3f13f262eb8c81b6f",
+    "components/ElectionNightGuide.tsx": "545a1122082afcca2c626896a72a329f72ed740e7c36888a800295010306ac3d",
+    "scripts/export_election_night_publication_index.mjs": "419a764d68f062a938a74a468ee8f8dc160640cc5c7a95644ac1d0fdcfa87701",
+    "lib/house-live-client.ts": "361ceaadfa4720493349fc80452bc997f698ee100eef927c530c448116a0c366"
+  },
+  "readTestHashes": {
+    "tests/election-night-house-client.test.mjs": "63ad4eeb49ac55e7f074a97d65185c1cb0693d9c3eee53c676cd714a7c0c66be",
+    "tests/election-night-house-reference.test.mjs": "c68e1484807c835a9b8a2373d8b4a67b4eb7df05510b76ce40e50bcaa45bcf84",
+    "tests/election-night-client.test.mjs": "ca2470dc4103d4edbf23b2f7b0e18f4881b95432b2318268cd89458159e7c4d6",
+    "tests/election-night-publication-index.test.mjs": "a47da13f154e058466c2ad47d1dcf0daec507883ce4f32e26059fa38dbdee598",
+    "tests/site/election-night.spec.ts": "798aa03d7e5a62aa272db77121cf1161cb2c87705b3c799df77c94c88e16f1b6",
+    "tests/house-election-night-import.test.mjs": "159cfb5810e193e09e80cfba954689597375145d8b5d523da8e3ab9fc745c66e",
+    "tests/fixtures/house-election-night-import-fixture.mjs": "f1a934942da44a68f6dc750d6fff7df6b3a184481feef3afbd96c493c71e29b0"
+  },
+  "scope": [
+    "Read-only independent review of optional House reference publication descriptors, runtime catalog byte authentication and exact forecast matching, client error/abort paths, index generation, open-view refresh and UI wording.",
+    "Used completed all16 synthetic V1 and V2 normalizer -> native view -> forecast -> runtime matcher integration as compatibility evidence. No new tests or expensive test repetition."
+  ],
+  "checks": [
+    {
+      "topic": "Exact edition updates",
+      "finding": "Client selects current registry/API default when runId is null, follows stable model IDs on background refresh, and binds references only to chamber+runId+exact public result SHA. Reused IDs with new bytes cannot inherit old errors. Reference catalog actual bytes must match served publication SHA; matcher verifies exact copied native SHA, joint bank, dates/configuration, ordered winner/pair cohorts and source pins.",
+      "evidence": [
+        "lib/election-night-client.ts:75",
+        "lib/election-night-client.ts:96",
+        "lib/election-night-house-reference.ts:120",
+        "components/ElectionNightGuide.tsx:115"
+      ]
+    },
+    {
+      "topic": "Optional error isolation",
+      "finding": "Missing House publication is an ordinary absent reference. Malformed optional House descriptor is isolated from valid Senate full/primary references. Failed House catalog/hash/match/timeout returns no House reference with a visible retry error and preserves authenticated House forecast; there is no borrowed Senate or old-edition numeric reference. See residual required-index asymmetry.",
+      "evidence": [
+        "lib/election-night-publication.ts:67",
+        "lib/election-night-client.ts:83",
+        "lib/election-night-client.ts:127",
+        "tests/election-night-client.test.mjs:139",
+        "tests/election-night-house-client.test.mjs:59"
+      ]
+    },
+    {
+      "topic": "435 group winners vs 412 conditional pairs",
+      "finding": "UI explicitly distinguishes 435 winner/group top-choice misses from 412 named-pair margin/interval metrics and 23 unavailable pair contests. Every supported pair counts equally. Self-reference and precision notes disclaim observed error/grade, empirical accuracy, separately qualified transformed-metric thresholds, and endpoint precision.",
+      "evidence": [
+        "components/ElectionNightGuide.tsx:240",
+        "components/ElectionNightGuide.tsx:247",
+        "components/ElectionNightGuide.tsx:267"
+      ]
+    },
+    {
+      "topic": "D/R/O tie policy",
+      "finding": "House projection and sidecar matcher both select exact tied modal outcomes in declared D,R,O party order; member/group identity is preserved and pooled probabilities are not assigned to individual candidates. Senate retains its separate outcome-ID rule. Modal miss expectation is independently checked against native probabilities.",
+      "evidence": [
+        "lib/election-night-forecast.ts:99",
+        "lib/election-night-house-reference.ts:94",
+        "tests/election-night-house-reference.test.mjs:66"
+      ]
+    },
+    {
+      "topic": "Future dates and configuration metadata",
+      "finding": "House reference runtime and index validate timestamps/order plus exact forecast/descriptor configuration; there is no hardcoded House issue-date allowlist. Later dated editions of the supported native current16 menu use data-driven pins. Index retains older run+SHA editions without falsely matching new bytes. New scientific target laws or new menu/schema semantics remain intentionally unsupported until separately implemented/reviewed. Qualified Senate runtime descriptor path supplies dates/configuration/policy pins; legacy constants remain fallback only.",
+      "evidence": [
+        "scripts/export_election_night_publication_index.mjs:122",
+        "lib/election-night-publication.ts:89",
+        "lib/election-night-house-reference.ts:136",
+        "lib/election-night-reference.ts:134",
+        "lib/election-night-core-reference.ts:90"
+      ]
+    },
+    {
+      "topic": "Refresh and cancellation",
+      "finding": "UI prevents overlapping refreshes in one effect, aborts/marks disposed on request/unmount changes, and checks abort/disposal before committing state. Client uses eight-second index/reference deadlines and checks parent/reference abort after non-abortable hash work. Forecast plus references are replaced together; old forecast remains explicitly labeled during a background load failure.",
+      "evidence": [
+        "components/ElectionNightGuide.tsx:115",
+        "components/ElectionNightGuide.tsx:132",
+        "components/ElectionNightGuide.tsx:164",
+        "lib/election-night-client.ts:114",
+        "lib/election-night-client.ts:137"
+      ]
+    },
+    {
+      "topic": "Normalizer/runtime compatibility",
+      "finding": "All16 synthetic configurations with differing truthful per-result issue times attach losslessly through actual forecast projection/matcher for both original NPZ V1 and segmented-index V2 metadata. PMF integer-row/quantile/mean/population-SD checks agree, as do435/412/23/tie and exact edition pins.",
+      "evidence": [
+        "importer-implementation-sol-v1.json",
+        "importer-tests-final.log",
+        "tests/house-election-night-import.test.mjs:22",
+        "tests/house-election-night-import.test.mjs:143"
+      ]
+    }
+  ],
+  "blockingFindings": [],
+  "residualLimitations": [
+    {
+      "id": "required_senate_index_asymmetry",
+      "severity": "operational_limitation_not_a_numeric_integrity_bypass",
+      "detail": "parseElectionNightPublicationIndex requires valid full and primary Senate descriptor blocks. A malformed required Senate descriptor invalidates the complete index, making a valid optional House reference unavailable while preserving the House forecast. Isolation is asymmetric: malformed House is isolated from Senate, but malformed required Senate descriptor is not isolated from House reference availability. Parent notified before this artifact."
+    },
+    {
+      "id": "known_schema_and_menu",
+      "detail": "Automatic refresh supports new byte-pinned editions under supported2026 target/law/current16 menu schemas, not arbitrary future scientific models or election years."
+    },
+    {
+      "id": "upstream_audit_boundary",
+      "detail": "Review did not rehash/decode large arrays or establish forecast skill. Source authentication and operator/scientific admission remain separate; actual corrected16 qualification/import/public activation are pending."
+    }
+  ],
+  "integrationEvidence": {
+    "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/house-election-night-reference-v1/importer-implementation-sol-v1.json",
+    "sha256": "c3a305b22ffaac9bc9dc2f300d84713cef695cc5cb33a5d1d970514980420e69",
+    "focusedTests": 11,
+    "focusedTestsPassed": 11,
+    "newTestsRunForThisReview": 0
+  },
+  "admission": {
+    "actualQualifiedCollectionAdmitted": false,
+    "observedResultsConsumed": false,
+    "evaluationLockCreated": false,
+    "publicFilesActivated": false,
+    "publicationApprovedByThisReview": false
+  },
+  "changes": "Only this new lab review artifact; no runtime/UI/index/client or other code edits."
+}

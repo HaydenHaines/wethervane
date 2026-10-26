@@ -1,0 +1,91 @@
+{
+  "schema": "HouseElectionNightReferenceImporterImplementationEvidenceV1",
+  "at": "2026-10-26T18:54:49.390490+00:00",
+  "status": "implementation_verified_on_synthetic_metadata_only_actual_qualified_collection_pending",
+  "worktree": "/home/hayden/projects/ballotmancy-election-night-guide-20261026",
+  "sourceHashes": {
+    "scripts/import_house_election_night_references.mjs": "c96c64cb4b0e55d881c48946551ad6ac009a467a125e80619a586a2c39b3e263",
+    "tests/house-election-night-import.test.mjs": "159cfb5810e193e09e80cfba954689597375145d8b5d523da8e3ab9fc745c66e",
+    "tests/fixtures/house-election-night-import-fixture.mjs": "f1a934942da44a68f6dc750d6fff7df6b3a184481feef3afbd96c493c71e29b0",
+    "lib/election-night-house-reference.ts": "e44d70bab7b5f9ab0621f685c2fe66515329833003a80d5486143d70ee2e3d8b",
+    "lib/election-night-forecast.ts": "5bf79e7fa0e2cad333616baaee1b51c30b7e406670093de80d9c2c5390f899f1"
+  },
+  "ownerHashes": {
+    "research/house-live-correction-20261026-v2/expected-error-catalog-schema-v1.json": "0bb17998b737cf1643b656f1ed8a0a2e8f2f0c63f4ef841ede2f3c58699cfab6",
+    "research/house-live-correction-20261026-v2/expected_error_collection.py": "af6de5a2182120b56e731790203f0936c3a09de628a6ee3ac88a3dee894a6480",
+    "research/house-live-correction-20261026-v2/expected-error-collection-implementation-review-v1.json": "3c432209fb11223f41eeb7da13b878b0f977c8918f734b7f3f9ca50d0079e0e2",
+    "research/house-disagreement-20261026/ny21-poll-diagnostic/sidecar-audit-segments-v1/audit_expected_error_sidecar.py": "857c573b1d39fefdc5a6bea95e0f4dd1b532d64f54943988bed9cb2cfb44a12a"
+  },
+  "ownedFiles": [
+    "scripts/import_house_election_night_references.mjs",
+    "tests/house-election-night-import.test.mjs",
+    "tests/fixtures/house-election-night-import-fixture.mjs"
+  ],
+  "tests": {
+    "command": "node --experimental-strip-types --test tests/house-election-night-import.test.mjs",
+    "tests": 11,
+    "passed": 11,
+    "failed": 0,
+    "log": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/house-election-night-reference-v1/importer-tests-final.log",
+    "logSha256": "113174935783c037bf43e8038553eb94a3c5ceef9d1f924a22b690e8e5c5dc98",
+    "initialFixtureCorrection": "Initial positive test used generic parser fixture run IDs; changed fixture IDs to actual runtime menu identities. First run 9/10, corrected run 11/11. No owner forecast bytes were changed."
+  },
+  "api": {
+    "normalize": "normalizeHouseElectionNightReferences(options) -> {catalog,publication,verification}",
+    "write": "importHouseElectionNightReferences({...options,outputDirectory}) -> same result; exclusive new private output directory only",
+    "roots": [
+      "sourceRoot",
+      "collectionRoot inside sourceRoot",
+      "nativeRoot inside sourceRoot",
+      "reviewRoot disjoint from sourceRoot"
+    ],
+    "pins": [
+      "catalog relative to collectionRoot",
+      "receipt relative to collectionRoot",
+      "nativeCatalog relative to nativeRoot",
+      "readyPacket relative to sourceRoot",
+      "review relative to reviewRoot"
+    ],
+    "operatorReviewSchema": {
+      "schema": "HouseElectionNightReferenceImportReviewV1",
+      "scope": "offline_reference_normalization",
+      "status": "approved",
+      "requiredExactPins": [
+        "collectionSha256",
+        "collectionReceiptSha256",
+        "nativeCatalogSha256",
+        "readyPacketSha256",
+        "auditorSha256"
+      ],
+      "results": "exact16 unique runId/resultSha256/sidecarSha256/sidecarReceiptSha256/independentAuditSha256 bindings; caller supplies trusted review pin externally"
+    }
+  },
+  "checks": [
+    "Actual byte SHA256 for collection/native catalogs, ready packet, plans, review metadata, sidecars, receipts, independent audits and driver bytes. Explicit path roots, no traversal or symlink escapes.",
+    "Native/scientific/numerical/ready/selection/receipt/audit identities bound across all16; duplicate/incomplete or config-mismatched entries fail closed. Native sequential issue timestamps preserved per entry; reference cannot predate native forecast.",
+    "435 ordered winner events,412 exact oriented named pairs,23 inapplicable rows; pair mask, conditional denominators, candidate/group/member identities and owner D/R/O tie order preserved.",
+    "Four exact joint metrics; count PMFs checked against integer original row counts, inverse-CDF quantiles, means and population SD. Mean modal misses and per-race mean absolute margin error independently reconciled to frozen native summaries.",
+    "V1 conditional archive name/receipt/plan links retained. V2 exact conditional manifest/schema/weights/sidecar links exercised with metadata-only synthetic fixture; original source_runs order copied exactly.",
+    "All16 positive V1 and V2 fixtures pass actual houseLiveView -> toHouseElectionNightForecast -> matchHouseExpectedErrorReference with generated publication qualifiers.",
+    "Complete raw sidecar copied unchanged, including precision_scope, native limitations, metric qualifications, ties, source pins.",
+    "Exclusive private export SHA matches exact catalog bytes; existing exports and public/producer/operator-root destinations refused. Partial write cleanup included."
+  ],
+  "privateSyntheticStage": {
+    "path": "/tmp/house-reference-import-sol-PkViZp/private-export",
+    "catalogSha256": "caaec8357a5896cf85e6acfa4ad0953ba009b334e3bda9d76868be423e889ba9",
+    "publicationSha256": "f45b8411c8b58318ba570d95c71d104c020e86e0e48634bf0b2953630eb926bc",
+    "warning": "Wholly invented fixture metadata, audits, review admission and placeholder archives. Do not activate as real data.",
+    "authenticatedMetadataArtifacts": 127,
+    "delegatedRawArchiveArtifacts": 18
+  },
+  "intendedInstallPathsOnly": [
+    "data/election-night-house-reference-publication.json",
+    "public/data/election-night/house-references.json"
+  ],
+  "limits": [
+    "No actual corrected16 collection was admitted, imported or published. Compatibility sidecar is not admission. Owner implementation review itself says actual collection pending.",
+    "NPZ/NPY archive bytes deliberately not rehashed, decoded or recomputed. Exact scoped archive pins and authenticated independent audit are the delegated upstream trust boundary; changing raw bytes alone requires upstream re-audit and is not detected by this metadata-only importer.",
+    "No actual results, evaluation lock, letter grade, empirical accuracy, separate transformed-metric precision qualification or cross-model/cross-chamber row coupling asserted.",
+    "No active public files installed; no build/browser, fit, commit or push. Root owns full integrated checks and actual operator-reviewed release admission."
+  ]
+}

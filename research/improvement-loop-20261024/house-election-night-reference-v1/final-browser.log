@@ -1,0 +1,115 @@
+[WebServer] (node:1845450) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 18 tests using 1 worker
+
+(node:1845462) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [desktop-chromium] › tests/site/election-night.spec.ts:13:5 › House expected errors stay separate for 435 winner groups and 412 named pairs across a same-run revision (7.6s)
+  ✓   2 [desktop-chromium] › tests/site/election-night.spec.ts:80:5 › open scorecard follows a revised same-ID public forecast, then its separately published exact references (1.3s)
+  ✓   3 [desktop-chromium] › tests/site/election-night.spec.ts:148:5 › reviewed expected errors follow only their exact Senate edition and remain distinct from observed scores (2.0s)
+  ✓   4 [desktop-chromium] › tests/site/election-night.spec.ts:198:5 › an invalid uncertainty reference leaves the forecast available and can be retried (1.1s)
+  ✓   5 [desktop-chromium] › tests/site/election-night.spec.ts:220:7 › senate: same-page guide starts standard, renders every exact model, and preserves the visitor's forecast (4.7s)
+  ✓   6 [desktop-chromium] › tests/site/election-night.spec.ts:220:7 › house: same-page guide starts standard, renders every exact model, and preserves the visitor's forecast (24.1s)
+  ✓   7 [desktop-chromium] › tests/site/election-night.spec.ts:292:5 › an open scorecard follows chamber tabs and browser history with each chamber's standard forecast (3.1s)
+  ✘   8 [desktop-chromium] › tests/site/election-night.spec.ts:314:5 › the separate fixed32 grading-group reference keeps exact F and FP values beside the full35 forecast (6.2s)
+(node:1845907) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   9 [desktop-chromium] › tests/site/election-night.spec.ts:353:5 › an invalid fixed32 attachment preserves the forecast and35 reference, then retries independently (1.3s)
+(node:1846019) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  10 [mobile-chromium] › tests/site/election-night.spec.ts:13:5 › House expected errors stay separate for 435 winner groups and 412 named pairs across a same-run revision (9.3s)
+  ✓  11 [mobile-chromium] › tests/site/election-night.spec.ts:80:5 › open scorecard follows a revised same-ID public forecast, then its separately published exact references (1.4s)
+  ✓  12 [mobile-chromium] › tests/site/election-night.spec.ts:148:5 › reviewed expected errors follow only their exact Senate edition and remain distinct from observed scores (2.2s)
+  ✓  13 [mobile-chromium] › tests/site/election-night.spec.ts:198:5 › an invalid uncertainty reference leaves the forecast available and can be retried (1.5s)
+  ✓  14 [mobile-chromium] › tests/site/election-night.spec.ts:220:7 › senate: same-page guide starts standard, renders every exact model, and preserves the visitor's forecast (6.0s)
+  ✓  15 [mobile-chromium] › tests/site/election-night.spec.ts:220:7 › house: same-page guide starts standard, renders every exact model, and preserves the visitor's forecast (29.8s)
+  ✓  16 [mobile-chromium] › tests/site/election-night.spec.ts:292:5 › an open scorecard follows chamber tabs and browser history with each chamber's standard forecast (4.8s)
+  ✘  17 [mobile-chromium] › tests/site/election-night.spec.ts:314:5 › the separate fixed32 grading-group reference keeps exact F and FP values beside the full35 forecast (6.5s)
+(node:1846395) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  18 [mobile-chromium] › tests/site/election-night.spec.ts:353:5 › an invalid fixed32 attachment preserves the forecast and35 reference, then retries independently (1.6s)
+
+
+  1) [desktop-chromium] › tests/site/election-night.spec.ts:314:5 › the separate fixed32 grading-group reference keeps exact F and FP values beside the full35 forecast 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: locator('#election-night-scorecard').locator('.night-margin-reference')
+    Expected substring: "across 35 races"
+    Received string:    "Expected average margin error5.6 percentage pointsThe model expects its predicted margins to miss by this much on average across 35 supported named pairs, ignoring the direction of each miss. Every pair counts equally.The middle 90% of simulated elections has an average error of 4.0 to 7.9 points.This is the model’s own expectation, not measured accuracy or an error limit for each race. Individual races have different expected errors, shown with their predictions where a named pair exists."
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toContainText" locator('#election-night-scorecard').locator('.night-margin-reference') with timeout 5000ms
+      - waiting for locator('#election-night-scorecard').locator('.night-margin-reference')
+        14 × locator resolved to <article class="night-margin-reference">…</article>
+           - unexpected value "Expected average margin error5.6 percentage pointsThe model expects its predicted margins to miss by this much on average across 35 supported named pairs, ignoring the direction of each miss. Every pair counts equally.The middle 90% of simulated elections has an average error of 4.0 to 7.9 points.This is the model’s own expectation, not measured accuracy or an error limit for each race. Individual races have different expected errors, shown with their predictions where a named pair exists."
+
+
+      336 |     if (id === "current-polling") {
+      337 |       await expect(panel.locator(".night-margin-reference .night-reference-value")).toContainText("5.6");
+    > 338 |       await expect(panel.locator(".night-margin-reference")).toContainText("across 35 races");
+          |                                                              ^
+      339 |     } else {
+      340 |       await expect(panel.locator(".night-margin-reference")).toContainText("No reviewed error reference for this edition");
+      341 |       await expect(panel.locator(".night-reference-value")).toHaveCount(0);
+        at /home/hayden/projects/ballotmancy-election-night-guide-20261026/tests/site/election-night.spec.ts:338:62
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/election-night-the-separat-ec3b0--beside-the-full35-forecast-desktop-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/election-night-the-separat-ec3b0--beside-the-full35-forecast-desktop-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/election-night-the-separat-ec3b0--beside-the-full35-forecast-desktop-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/election-night-the-separat-ec3b0--beside-the-full35-forecast-desktop-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [mobile-chromium] › tests/site/election-night.spec.ts:314:5 › the separate fixed32 grading-group reference keeps exact F and FP values beside the full35 forecast 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: locator('#election-night-scorecard').locator('.night-margin-reference')
+    Expected substring: "across 35 races"
+    Received string:    "Expected average margin error5.6 percentage pointsThe model expects its predicted margins to miss by this much on average across 35 supported named pairs, ignoring the direction of each miss. Every pair counts equally.The middle 90% of simulated elections has an average error of 4.0 to 7.9 points.This is the model’s own expectation, not measured accuracy or an error limit for each race. Individual races have different expected errors, shown with their predictions where a named pair exists."
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toContainText" locator('#election-night-scorecard').locator('.night-margin-reference') with timeout 5000ms
+      - waiting for locator('#election-night-scorecard').locator('.night-margin-reference')
+        14 × locator resolved to <article class="night-margin-reference">…</article>
+           - unexpected value "Expected average margin error5.6 percentage pointsThe model expects its predicted margins to miss by this much on average across 35 supported named pairs, ignoring the direction of each miss. Every pair counts equally.The middle 90% of simulated elections has an average error of 4.0 to 7.9 points.This is the model’s own expectation, not measured accuracy or an error limit for each race. Individual races have different expected errors, shown with their predictions where a named pair exists."
+
+
+      336 |     if (id === "current-polling") {
+      337 |       await expect(panel.locator(".night-margin-reference .night-reference-value")).toContainText("5.6");
+    > 338 |       await expect(panel.locator(".night-margin-reference")).toContainText("across 35 races");
+          |                                                              ^
+      339 |     } else {
+      340 |       await expect(panel.locator(".night-margin-reference")).toContainText("No reviewed error reference for this edition");
+      341 |       await expect(panel.locator(".night-reference-value")).toHaveCount(0);
+        at /home/hayden/projects/ballotmancy-election-night-guide-20261026/tests/site/election-night.spec.ts:338:62
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/election-night-the-separat-ec3b0--beside-the-full35-forecast-mobile-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/election-night-the-separat-ec3b0--beside-the-full35-forecast-mobile-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/election-night-the-separat-ec3b0--beside-the-full35-forecast-mobile-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/election-night-the-separat-ec3b0--beside-the-full35-forecast-mobile-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    [desktop-chromium] › tests/site/election-night.spec.ts:314:5 › the separate fixed32 grading-group reference keeps exact F and FP values beside the full35 forecast 
+    [mobile-chromium] › tests/site/election-night.spec.ts:314:5 › the separate fixed32 grading-group reference keeps exact F and FP values beside the full35 forecast 
+  16 passed (2.0m)

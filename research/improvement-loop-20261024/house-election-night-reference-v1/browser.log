@@ -1,0 +1,94 @@
+[WebServer] (node:1840713) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 1 worker
+
+(node:1840725) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [desktop-chromium] › tests/site/election-night.spec.ts:13:5 › House expected errors stay separate for 435 winner groups and 412 named pairs across a same-run revision (11.8s)
+(node:1840855) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  2 [mobile-chromium] › tests/site/election-night.spec.ts:13:5 › House expected errors stay separate for 435 winner groups and 412 named pairs across a same-run revision (11.1s)
+
+
+  1) [desktop-chromium] › tests/site/election-night.spec.ts:13:5 › House expected errors stay separate for 435 winner groups and 412 named pairs across a same-run revision 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('#election-night-scorecard').locator('.night-edition')
+    Expected: "2222222222222222222222222222222222222222222222222222222222222222"
+    Received: "4cc3d17c5a39f24292f0fdee039f9f7dab5b96e3614b6d7e35df7f9459046ce4"
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" locator('#election-night-scorecard').locator('.night-edition') with timeout 5000ms
+      - waiting for locator('#election-night-scorecard').locator('.night-edition')
+        14 × locator resolved to <div class="night-edition" data-scorecard-result-sha="4cc3d17c5a39f24292f0fdee039f9f7dab5b96e3614b6d7e35df7f9459046ce4">…</div>
+           - unexpected value "4cc3d17c5a39f24292f0fdee039f9f7dab5b96e3614b6d7e35df7f9459046ce4"
+
+
+      66 |   revised = true;
+      67 |   await page.evaluate(() => window.dispatchEvent(new Event("focus")));
+    > 68 |   await expect(panel.locator(".night-edition")).toHaveAttribute("data-scorecard-result-sha", h("2"));
+         |                                                 ^
+      69 |   await expect(panel.locator(".night-reference-value")).toHaveCount(0);
+      70 |   record.resultSha256 = h("2"); sidecar.native_result.sha256 = h("2");
+      71 |   updateIndex();
+        at /home/hayden/projects/ballotmancy-election-night-guide-20261026/tests/site/election-night.spec.ts:68:49
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/election-night-House-expec-4dfb1--across-a-same-run-revision-desktop-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/election-night-House-expec-4dfb1--across-a-same-run-revision-desktop-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/election-night-House-expec-4dfb1--across-a-same-run-revision-desktop-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/election-night-House-expec-4dfb1--across-a-same-run-revision-desktop-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [mobile-chromium] › tests/site/election-night.spec.ts:13:5 › House expected errors stay separate for 435 winner groups and 412 named pairs across a same-run revision 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('#election-night-scorecard').locator('.night-edition')
+    Expected: "2222222222222222222222222222222222222222222222222222222222222222"
+    Received: "4cc3d17c5a39f24292f0fdee039f9f7dab5b96e3614b6d7e35df7f9459046ce4"
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" locator('#election-night-scorecard').locator('.night-edition') with timeout 5000ms
+      - waiting for locator('#election-night-scorecard').locator('.night-edition')
+        13 × locator resolved to <div class="night-edition" data-scorecard-result-sha="4cc3d17c5a39f24292f0fdee039f9f7dab5b96e3614b6d7e35df7f9459046ce4">…</div>
+           - unexpected value "4cc3d17c5a39f24292f0fdee039f9f7dab5b96e3614b6d7e35df7f9459046ce4"
+
+
+      66 |   revised = true;
+      67 |   await page.evaluate(() => window.dispatchEvent(new Event("focus")));
+    > 68 |   await expect(panel.locator(".night-edition")).toHaveAttribute("data-scorecard-result-sha", h("2"));
+         |                                                 ^
+      69 |   await expect(panel.locator(".night-reference-value")).toHaveCount(0);
+      70 |   record.resultSha256 = h("2"); sidecar.native_result.sha256 = h("2");
+      71 |   updateIndex();
+        at /home/hayden/projects/ballotmancy-election-night-guide-20261026/tests/site/election-night.spec.ts:68:49
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/election-night-House-expec-4dfb1--across-a-same-run-revision-mobile-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/election-night-House-expec-4dfb1--across-a-same-run-revision-mobile-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/election-night-House-expec-4dfb1--across-a-same-run-revision-mobile-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/election-night-House-expec-4dfb1--across-a-same-run-revision-mobile-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    [desktop-chromium] › tests/site/election-night.spec.ts:13:5 › House expected errors stay separate for 435 winner groups and 412 named pairs across a same-run revision 
+    [mobile-chromium] › tests/site/election-night.spec.ts:13:5 › House expected errors stay separate for 435 winner groups and 412 named pairs across a same-run revision 

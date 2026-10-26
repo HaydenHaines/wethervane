@@ -1,0 +1,81 @@
+{
+  "schema": "HouseElectionNightReferenceFrontendReviewLunaV1",
+  "reviewedAt": "2026-10-26",
+  "status": "frontend_contract_review_passed_actual_corrected16_collection_pending",
+  "scope": "Independent read-only semantic and contract review of the House expected-error normalizer, runtime matcher, current forecast projection, client attachment, publication index, UI wording and synthetic importer/runtime tests. No source edits, test reruns, actual corrected16 collection admission, archive decoding/rehashing, result ingestion, grade, or publication.",
+  "worktree": "/home/hayden/projects/ballotmancy-election-night-guide-20261026",
+  "reviewedSources": [
+    {"path":"scripts/import_house_election_night_references.mjs","sha256":"c96c64cb4b0e55d881c48946551ad6ac009a467a125e80619a586a2c39b3e263"},
+    {"path":"lib/election-night-house-reference.ts","sha256":"e44d70bab7b5f9ab0621f685c2fe66515329833003a80d5486143d70ee2e3d8b"},
+    {"path":"lib/election-night-forecast.ts","sha256":"5bf79e7fa0e2cad333616baaee1b51c30b7e406670093de80d9c2c5390f899f1"},
+    {"path":"lib/election-night-client.ts","sha256":"653a83d78079c6607df485dfd68945ff17443be9c8db011d742608ab218087a5"},
+    {"path":"lib/election-night-publication.ts","sha256":"d9f53e49cd34d9bd4c2fb1e92f5aa8327f7beca33fe61ea654d4a9054b38e654"},
+    {"path":"components/ElectionNightGuide.tsx","sha256":"545a1122082afcca2c626896a72a329f72ed740e7c36888a800295010306ac3d"},
+    {"path":"scripts/export_election_night_publication_index.mjs","sha256":"419a764d68f062a938a74a468ee8f8dc160640cc5c7a95644ac1d0fdcfa87701"},
+    {"path":"tests/house-election-night-import.test.mjs","sha256":"159cfb5810e193e09e80cfba954689597375145d8b5d523da8e3ab9fc745c66e"},
+    {"path":"tests/election-night-house-reference.test.mjs","sha256":"c68e1484807c835a9b8a2373d8b4a67b4eb7df05510b76ce40e50bcaa45bcf84"},
+    {"path":"tests/election-night-house-client.test.mjs","sha256":"63ad4eeb49ac55e7f074a97d65185c1cb0693d9c3eee53c676cd714a7c0c66be"},
+    {"path":"tests/site/election-night.spec.ts","sha256":"798aa03d7e5a62aa272db77121cf1161cb2c87705b3c799df77c94c88e16f1b6"},
+    {"path":"tests/fixtures/house-election-night-import-fixture.mjs","sha256":"f1a934942da44a68f6dc750d6fff7df6b3a184481feef3afbd96c493c71e29b0"},
+    {"path":"tests/fixtures/house-expected-reference.mjs","sha256":"bc1eed460e297576b907d19281b88154f34fb87b4b3302e8abb1c7f57bc9f7e0"},
+    {"path":"tests/fixtures/election-night/house-compatibility-sidecar.json","sha256":"5be0168f9b69719c838ea4db0c48194e2433cad5b4176b579be2d254a1baa086"}
+  ],
+  "contractFindings": [
+    "The frontend keeps two event scopes distinct: 435 district-level candidate/group winner outcomes drive expected modal misses; 412 named conditional principal pairs drive margin-error and interval-coverage metrics; the remaining 23 races explicitly have no conditional-pair error/range value.",
+    "House modal ties follow the owner’s exact D/R/O order. A synthetic exact R/O tie confirms R is selected and the former lexicographic outcome-ID choice is rejected. The expected miss mean is sum(1 - max probability); the tie order matters to modal-call identity and the joint miss-count distribution, not to that mean.",
+    "Count PMFs are bound to the finite original row count through integer bin reconstruction, total counts, expected mean and inverse-CDF quantiles. Metric units and per-metric linear versus inverse-CDF conventions are checked. Configuration/result fingerprints, race order, pair orientation/IDs, pair mask, group/member calls, row/chain dimensions and no-pair statuses are cross-checked.",
+    "The importer requires an independently trusted operator review pin separate from producer roots, cross-binds all16 native configurations, owner collection/receipt, sidecars, source receipts/plans, source science/numerical reviews, per-sidecar independent audits and drivers. The V1 NPZ and V2 segmented-manifest selection/weight semantics are covered by metadata-only tests. V2 index, plan and sidecar manifest pins must agree.",
+    "Raw NPZ/NPY payload bytes are deliberately not rehashed or recomputed by this normalizer. The contract delegates raw-array integrity to the exact upstream independent audit and operator review, and the output verification record says so. The source plans/receipts and sidecar receipt still bind the exact archive pins and row law.",
+    "The public copy labels all435 winner/group events separately from the412 supported named-pair margin statistics. Group probabilities are not split among candidates. It describes the reference as model-implied and finite-bank, not observed accuracy or a grade; it states no separate transformed-metric precision threshold qualification or quantile precision claim and retains the owner precision note. No cross-model or cross-chamber row matching is claimed."
+  ],
+  "editionMetadataCheck": {
+    "source": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-20261025/release-v6/native/catalog.json and its16 small native result JSON metadata files",
+    "resultCount": 16,
+    "uniqueForecastIssuedAtCount": 16,
+    "uniqueForecastCutoffCount": 1,
+    "commonForecastCutoff": "2026-10-25T15:48:30.658333+00:00",
+    "exampleDistinctIssueTimes": [
+      {"runId":"house-current-fundamentals","issuedAt":"2026-10-25T21:58:02.430642+00:00"},
+      {"runId":"house-current-polling","issuedAt":"2026-10-25T21:58:38.251767+00:00"}
+    ],
+    "assessment": "All16 results share the dated forecast cutoff but have distinct per-result issue times. Requiring equal issue times would reject the real menu; preserving each entry’s timestamp is correct.",
+    "arrayArchivesRead": false
+  },
+  "testEvidence": {
+    "sol1Importer": {
+      "command": "node --experimental-strip-types --test tests/house-election-night-import.test.mjs",
+      "passed": 11,
+      "failed": 0,
+      "logPath": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/house-election-night-reference-v1/importer-tests-final.log",
+      "logSha256": "113174935783c037bf43e8038553eb94a3c5ceef9d1f924a22b690e8e5c5dc98",
+      "coverageObserved": "Synthetic all16 V1/V2 metadata normalization; source/audit/receipt/canonical row/PMF/tie/precision/path corruption failures; exact runtime attachment; exclusive private writes. Fixtures use invented reviews and placeholder archives."
+    },
+    "integratedNodeSuite": {
+      "reportedTests": 140,
+      "passed": 140,
+      "failed": 0,
+      "logPath": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/house-election-night-reference-v1/root-node-suite.log",
+      "logSha256": "af94f64a9dcaaad835efe4133f42d954ac6812ae0b9af39ce80b262a29c95dc8"
+    },
+    "typecheck": {"status":"passed per root report","logPath":"/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/house-election-night-reference-v1/root-typecheck.log","logSha256":"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"},
+    "browserNote": "An earlier synthetic House browser run passed desktop/mobile before the final component text edit. Root reported final browser verification still pending at this review snapshot; no visual-browser pass is claimed here."
+  },
+  "reviewDisposition": {
+    "materialFrontendBlockers": [],
+    "resolvedReviewFindings": [
+      "Use owner D/R/O tie precedence instead of House outcome-ID lexicographic order.",
+      "Keep 435 group-winner and 412 conditional-pair metrics distinct.",
+      "Preserve per-result forecast issue timestamps; require the common forecast cutoff, not a common issue time.",
+      "Bind V2 conditional manifest/schema/weights to source plan and sidecar without rereading original arrays.",
+      "Describe finite-bank expected errors without claiming metric-specific precision qualification."
+    ],
+    "actualCorrected16CollectionAdmitted": false,
+    "actualCollectionImported": false,
+    "publicFilesInstalled": false,
+    "actualResultsConsumed": false,
+    "evaluationLocked": false,
+    "archiveRehashOrRecomputationPerformed": false,
+    "deploymentPerformed": false,
+    "commitOrPushPerformed": false
+  }
+}

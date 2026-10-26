@@ -1,0 +1,74 @@
+{
+  "schema": "HouseFrontendComparisonContractReceiptV1",
+  "utc": "2026-10-26T18:49:17.931782+00:00",
+  "status": "contract_received_private_preparation_only",
+  "handoff": {
+    "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-disagreement-20261026/comparison-handoff-v2.json",
+    "sha256": "89a34b5ba9cfdcc861b57bf5a74365f4950ac950aa9d05659009940f6cdf869a",
+    "bytes": 13716
+  },
+  "review": {
+    "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-disagreement-20261026/comparison-handoff-root-review-v1.json",
+    "sha256": "918f57f55d3f6ba651e819aa87a96b12f087344080861a83cef3077e526e0cb3",
+    "bytes": 1571
+  },
+  "immediateSourcePinsVerified": [
+    {
+      "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-disagreement-20261026/build_comparison_handoff.py",
+      "sha256": "82e695d315f7112e4388239ac71192d6b379067a8f343498bd4c5c215c676bcf",
+      "bytes": 6512
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-disagreement-20261026/compare_reviewed_house.py",
+      "sha256": "83680b6fec2b1d83f849274dcdc3c7124654c068ff5bab220fa91f1a6a725808",
+      "bytes": 13914
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-disagreement-20261026/reviewed-comparison-compatibility-v3/receipt.json",
+      "sha256": "0f29ad1e53164e7ad55178802b1c18a581f067a69b76fb4de6e8ac7988407c3f",
+      "bytes": 7101
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-disagreement-20261026/reviewed-comparison-compatibility-v3/review-queue.csv",
+      "sha256": "a225cad7c5d585ad30cbcc1af7e8a62e9bddc0fcd51c9e70796aa154599f8903",
+      "bytes": 32148
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-disagreement-20261026/analysis-v1/README.md",
+      "sha256": "8b26e46713cb1248cc52abc7fcded2f1ab7cccfadf25704a4be0f6532eedebba",
+      "bytes": 8122
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-disagreement-20261026/ny21-source-audit/cross-race-v1/ny21-co04-correction-review-v2.json",
+      "sha256": "abd2ab519b58d51560303b78f291d23d92cf971ca0901f8537952ce5d781fe45",
+      "bytes": 2902
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-disagreement-20261026/build_comparison_handoff.py",
+      "sha256": "82e695d315f7112e4388239ac71192d6b379067a8f343498bd4c5c215c676bcf",
+      "bytes": 6512
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-disagreement-20261026/COMPARISON_HANDOFF_REVIEW_V1.md",
+      "sha256": "d4301b416e670332cd89a454e1a008410466f044d7d2ea37aa1691f5fd2342ce",
+      "bytes": 4051
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-disagreement-20261026/reviewed-comparison-compatibility-v3/root-review.json",
+      "sha256": "973886a0e873bdd5fc585e8ed6dbe33e136a19ff0bc12974d510c5f14803331e",
+      "bytes": 2151
+    }
+  ],
+  "cases": 7,
+  "currentData": "Old release self-comparison; zero deltas; no corrected16 forecast included.",
+  "publicationAdmitted": false,
+  "frontendContractDecisions": [
+    "Display external ordinal rating as a sourced category; never assign it an invented win probability or treat disagreement as observed error.",
+    "Resolve exact forecast and baseline editions before attaching numbers; model deltas are not isolated causal effects.",
+    "Keep candidate/group winner events and conditional named-pair shares distinct, including independents and changed pair membership.",
+    "Use null as unavailable/inapplicable, not zero. Retain current and baseline poll counts with date context.",
+    "Full435x16 external-rating dataset remains internal. Only selected excerpts may be considered after source-policy and exact-edition review."
+  ],
+  "nextAction": "Prepare a reviewed seven-case explanatory comparison adapter after the current House scorecard integration; re-run owner builder on qualified corrected16 before public use.",
+  "ownerReadinessReport": "Owner reports8 of16 corrected final-menu configurations qualified; no corrected native catalog yet. No process-live claim is inferred."
+}
