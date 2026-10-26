@@ -1,0 +1,93 @@
+{
+  "schema": "ActualM01NumbaTerminalAssessmentV1",
+  "status": "full_gradient_and_selected_finite_differences_passed",
+  "terminal": {
+    "schema": "BoundedActualNumbaAttemptTerminalV1",
+    "pid": 1926579,
+    "returncode": 0,
+    "termination_reason": null,
+    "wall_seconds": 408.8210572581738,
+    "peak_observed_rss_bytes": 3805814784,
+    "peak_observed_vms_bytes": 4143857664,
+    "peak_observed_threads": 1,
+    "peak_cache_bytes": 0,
+    "caps": {
+      "wall_seconds": 600,
+      "cpu_soft_seconds": 540,
+      "cpu_hard_seconds": 550,
+      "rss_watchdog_bytes": 4294967296,
+      "address_space_bytes": 8589934592,
+      "individual_file_bytes": 67108864,
+      "aggregate_cache_watchdog_bytes": 536870912,
+      "poll_seconds": 0.5
+    },
+    "full_result_exists": true,
+    "no_retries": true
+  },
+  "full_logp_error": 1.1641532182693481e-10,
+  "computed_gradient_dimensions": 662,
+  "finite_computed_dimensions": 662,
+  "persisted_full_gradient": false,
+  "persisted_full_point": false,
+  "checked_coordinates": 6,
+  "near_zero_checked_coordinates": [
+    "community_interaction_sd_log__",
+    "final_race_sd_log__",
+    "candidate_role_mean[0]"
+  ],
+  "warnings": {
+    "loop_fusion_argument_limit": 3,
+    "python_AdvancedIncSubtensor_fallback": 3,
+    "dot_contiguity": 6
+  },
+  "pure_nopython_graph_established": false,
+  "fastmath": false,
+  "cxx": "",
+  "scientific_qualification": false,
+  "actual_sampler_or_fit": false,
+  "all_parent_conditional_normalization_established": false,
+  "source_identity": "Original frozen provider/selection/Problem/parent and complete original Jacobian-inclusive density retained; no scientific-law rewrite.",
+  "limitations": [
+    "All662 entries checked finite, but only6 derivative summaries persisted; no complete numerical point/vector replay artifact.",
+    "Three selected derivatives near zero; six summaries do not independently verify all-coordinate accuracy.",
+    "One fixed initial point of first parent only, cold single compile with mixedNUMBA/Pythonfallback; no sampling/performance/outer-precision qualification."
+  ],
+  "prior_artifacts": [
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-native-successor-provider-sol-v1/provider.py",
+      "sha256": "6154ecb3d66ad38b5ba5fa94719d1da865f3e32bdf749ef1bb4ed4250606d853",
+      "bytes": 5176
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-native-successor-provider-sol-v1/selection.json",
+      "sha256": "03edb47049384b662cdd645053fc6083bde8fb41d972b1a07da8b71ecf6283b5",
+      "bytes": 45703
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-native-successor-provider-sol-v1/result.json",
+      "sha256": "b746ca84ecff0e4424626927ce0dc7f7bd2b61cb3d70b16417c050695bbdb60f",
+      "bytes": 11003
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-native-successor-provider-sol-v1/evidence.json",
+      "sha256": "b4900d5c94fee9ee8e5447ee429ecf70053fd904363cc1764d246ec8a7726c60",
+      "bytes": 2775
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-native-successor-provider-sol-v1/full-joint-first-failure.log",
+      "sha256": "80f1f3a1cfa1b6de183c452719dc87c38e790b7beb3ee86cb4c6bad45e7737f7",
+      "bytes": 13458
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-native-successor-provider-sol-v1/full-gradient-first-failure.log",
+      "sha256": "2edc2e41c6ead5725339c765f0b7ec48a1e37e37332402112612223bf16e435f",
+      "bytes": 9287
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-native-successor-provider-sol-v1/full-gradient-excluded-rewrite-failure.log",
+      "sha256": "5cc6cb792a85546f009f36fbf1b95a5e61b819081de9ba010f4034ebb3a01e8b",
+      "bytes": 9287
+    }
+  ],
+  "next_evidence_needed": "A separately bounded independent replay preserving exact full point and full gradient, with nonzero perturbed-coordinate checks. Not executed here."
+}

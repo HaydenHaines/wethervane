@@ -1,0 +1,33 @@
+{
+  "schema": "M01NumbaArtifactAuditV1",
+  "status": "recorded_receipts_consistent",
+  "source_sha256": {
+    "previous_result": "b746ca84ecff0e4424626927ce0dc7f7bd2b61cb3d70b16417c050695bbdb60f",
+    "previous_evidence": "b4900d5c94fee9ee8e5447ee429ecf70053fd904363cc1764d246ec8a7726c60",
+    "new_result": "5794631e7fd87126ca7b2479d5d5414745ea36f8cd92e7469eadcb6bd142345a",
+    "launch": "f97960be6144424343a13792661c12d7a756f1e0ad6b81232510dcb6830e16c8",
+    "terminal": "cacb5a2a2c061f3a310ef9e0c87d3a5391a1d98d76fbc1a5b9230ebc135c5ef5"
+  },
+  "prior_vs_new_logp_absolute_difference": 1.1641532182693481e-10,
+  "independently_saved_nonzero_coordinate_comparisons": {
+    "choice_intercept": {
+      "prior_central_difference": 1323662.0194511488,
+      "new_central_difference": 1323662.019445328,
+      "new_analytic_gradient": 1323662.0204931116,
+      "analytic_vs_prior_absolute_difference": 0.0010419627651572227
+    },
+    "turnout_intercept": {
+      "prior_central_difference": 668.3528714347631,
+      "new_central_difference": 668.3528772555292,
+      "new_analytic_gradient": 668.3529098975595,
+      "analytic_vs_prior_absolute_difference": 3.8462796396743215e-05
+    }
+  },
+  "peak_observed_rss_bytes": 3805814784,
+  "limits": [
+    "Audit cross-checks existing recorded runs; it does not replay a full graph or independently produce a gradient.",
+    "The exact 662-vector and initial point were not persisted; only six derivative values are recorded, three approximately zero.",
+    "This is one initial state and first protected parent only; normalized conditional densities, other parents, sampler behavior and scientific performance remain unverified.",
+    "Three object-mode fallback warnings and failed fusion warnings mean no native-only or throughput claim follows."
+  ]
+}

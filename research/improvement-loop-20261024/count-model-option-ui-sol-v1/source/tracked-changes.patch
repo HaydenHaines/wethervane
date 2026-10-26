@@ -1,0 +1,38 @@
+diff --git a/app/globals.css b/app/globals.css
+index 3696882..c070a4e 100644
+--- a/app/globals.css
++++ b/app/globals.css
+@@ -3245,3 +3245,13 @@ select:focus-visible {
+   .night-predictions .night-prediction-facts { grid-template-columns: minmax(0, 1fr); }
+   .night-guide select, .night-guide input { width: 100%; }
+ }
++
++/* Count option preparation stays inside the collapsed Senate model controls. */
++.count-model-availability { margin: 20px 0; padding: 16px; border: 1px solid var(--line); border-radius: 8px; }
++.count-model-availability > div { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
++.count-model-availability h3 { margin: 0; font-size: 16px; }
++.count-model-availability p, .count-model-availability dd { font-size: 13px; line-height: 1.5; }
++.count-model-availability dl { display: flex; flex-wrap: wrap; gap: 16px 28px; }
++.count-model-availability dt { font-size: 12px; font-weight: 600; }
++.count-model-availability dd { margin: 3px 0 0; }
++.count-model-availability summary { cursor: pointer; font-size: 13px; }
+diff --git a/components/StackControls.tsx b/components/StackControls.tsx
+index 796c55f..bc446c2 100644
+--- a/components/StackControls.tsx
++++ b/components/StackControls.tsx
+@@ -1,5 +1,6 @@
+ import { forecastLabel } from "../lib/forecast-copy";
+ import ModelSliceControls from "./ModelSliceControls";
++import CountModelAvailability from "./CountModelAvailability";
+ import { savedForecastSlices } from "../lib/model-slices";
+ import { useState } from "react";
+ import type { ExplorerBundle, ExplorerRegistry } from "../lib/explorer-types";
+@@ -341,6 +342,8 @@ export default function StackControls({
+         )}
+ 
+ 
++        <CountModelAvailability displayedRun={run} />
++
+         <div className="composition-secondary">
+           <div className="stack-field comparison-field">
+             <label htmlFor="comparison-baseline">Comparison baseline</label>

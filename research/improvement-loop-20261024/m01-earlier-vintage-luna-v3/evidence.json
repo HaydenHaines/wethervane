@@ -1,0 +1,129 @@
+{
+  "schema": "EarlierVintageSenatePollSourceResearchLunaV3",
+  "review_date": "2026-10-26",
+  "scope": "Primary-source review for an event/question/sample-identifiable Senate polling data vintage public by 2018-10-23. No model fit, source admission, or owner-data modification.",
+  "decision": {
+    "complete_qualifying_dataset_found": false,
+    "strongest_pre_cutoff_partial_source": "FiveThirtyEight pollster-ratings raw-polls.csv at commit 142cad5610ed6b3468e730199034b280b9e805d5",
+    "source_to_538_poll_event_link_proven_for_example": true,
+    "Tierney_row_sample_identity_proven_for_example": false,
+    "reason": "The contemporaneous FiveThirtyEight file carries a FiveThirtyEight poll number and previous election outcomes, but lacks question/sample IDs, original source URLs, release dates, question text, population, and complete field interval. The richer later FiveThirtyEight polls archive postdates the target cutoff; other contemporary API/report alternatives were mutable, unavailable, or incomplete."
+  },
+  "target": {
+    "forecast_cutoff": "2018-10-23",
+    "eligible_training_cycles_for_this_cutoff": [2012, 2016],
+    "excluded_from_earlier_cycle_training": [2018],
+    "interpretation": "Past-cycle outcomes can be labels in a 2018 as-of replay only where they were known by the target cutoff. This does not make later-reconstructed poll records, derived error fields, or current revisions contemporaneously available."
+  },
+  "five_thirtyeight_2018_partial_archive": {
+    "publisher": "FiveThirtyEight",
+    "article_url": "https://fivethirtyeight.com/features/the-polls-are-all-right/",
+    "article_title": "The Polls Are All Right",
+    "article_publication_time": "2018-05-30 11:00 AM (article page local time; timezone not inferred)",
+    "article_claim": "Database download link; includes polls in final 21 days for gubernatorial and congressional elections since 1998; over 8,500 polls in total.",
+    "article_access_caveat": "The current article URL redirects to ABC News politics. Search indexing retained the May 30, 2018 article title/date and substantive text; this review did not recover the original HTML page from a contemporaneous web archive.",
+    "repo": "https://github.com/fivethirtyeight/data",
+    "commit_url": "https://github.com/fivethirtyeight/data/commit/142cad5610ed6b3468e730199034b280b9e805d5",
+    "commit_sha": "142cad5610ed6b3468e730199034b280b9e805d5",
+    "commit_message": "update pollster-ratings",
+    "author_and_committer_date": "2018-05-30T14:41:12Z",
+    "github_api_commit_verification": {"verified": true, "reason": "valid", "verified_at": "2024-01-16T19:59:59Z"},
+    "timestamp_caveat": "A valid signature authenticates the commit payload and its declared commit timestamp; it does not by itself prove the exact object was publicly retrievable on that date. The same-day publisher article says the database was downloadable; no contemporaneous server retrieval log was found.",
+    "raw_file_url": "https://raw.githubusercontent.com/fivethirtyeight/data/142cad5610ed6b3468e730199034b280b9e805d5/pollster-ratings/raw-polls.csv",
+    "license_url": "https://github.com/fivethirtyeight/data/blob/142cad5610ed6b3468e730199034b280b9e805d5/LICENSE",
+    "license": "CC BY 4.0 according to the prior source packet; preserve attribution and version link. Underlying third-party releases remain a separate rights consideration.",
+    "existing_local_capture": {
+      "path": "research/improvement-loop-20261024/m01-538-archive-root-v1/raw-polls-20180530.csv",
+      "bytes": 1326873,
+      "git_blob_sha1": "39675528c20d57e88fbb1147ee10f6295f7061da",
+      "sha256": "79489a9d7f796d8f50841e91d8dcb858679ada75690812d4757f095a107efb91"
+    },
+    "2018_readme_url": "https://raw.githubusercontent.com/fivethirtyeight/data/142cad5610ed6b3468e730199034b280b9e805d5/pollster-ratings/README.md",
+    "2018_readme_sha256": "5508c6d5d2190162d4de0f7383dc530c7ab3ac5a79962a68fad1083bcd62a992",
+    "2018_readme_bytes": 4672,
+    "2018_readme_findings": {
+      "poll_identifier": "pollno: FiveThirtyEight poll ID number",
+      "date": "polldate: median field date, not publication date",
+      "sample_size": "samplesize may be estimated from margin of error or similar polls; defaults to 600 if no better estimate exists",
+      "candidate_labels": "In D/R races candidate 1 is Democrat and candidate 2 Republican; candidate #1/#2 definitions may be top two finishers regardless of poll candidate list",
+      "includes_outcomes_and_derived_fields": ["cand1_actual", "cand2_actual", "margin_actual", "error", "bias", "rightcall"],
+      "missing_fields_in_the_exact_2018_file": ["question_id", "original_sample_id", "question_wording", "population", "start_date", "release_date", "original_release_url", "source_row_crosswalk"]
+    },
+    "observed_2018_file_schema": ["pollno", "race", "year", "location", "type_simple", "type_detail", "pollster", "partisan", "polldate", "samplesize", "cand1_name", "cand1_pct", "cand2_name", "cand2_pct", "cand3_pct", "margin_poll", "electiondate", "cand1_actual", "cand2_actual", "margin_actual", "error", "bias", "rightcall", "comment"],
+    "cohort_counts_from_prior_reproducible_inventory": {"2012_and_2016_senate_general_poll_rows": 465, "archive_full_rows": 8512, "2018_senate_general_rows": 0},
+    "coverage_limit": "For congressional polls, this 2018 ratings database is a final-21-day accuracy sample, not an exhaustive time series or every historical poll release."
+  },
+  "richer_later_archive_rejected_for_as_of_vintage": {
+    "current_documentation_url": "https://github.com/fivethirtyeight/data/blob/master/polls/README.md",
+    "current_documentation_describes": ["poll_id", "question_id", "population", "methodology", "start_date", "end_date", "created_at", "url", "candidate response IDs and percentages"],
+    "github_api_history_url_for_readme": "https://api.github.com/repos/fivethirtyeight/data/commits?path=polls/README.md&per_page=100",
+    "earliest_history_commit_seen": {"sha": "e9ac20b4924c8a135aab1b05fbb23f6de9f7615d", "date": "2019-01-29T18:50:10Z", "message": "adds polling data to data.fivethirtyeight.com (#29)"},
+    "history_queries_through_cutoff": [
+      {"path": "polls/README.md", "url": "https://api.github.com/repos/fivethirtyeight/data/commits?path=polls%2FREADME.md&per_page=100&until=2018-10-23T23%3A59%3A59Z", "status": 200, "response_bytes": 2, "response_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945", "result": "empty list"},
+      {"path": "polls/senate_polls.csv", "url": "https://api.github.com/repos/fivethirtyeight/data/commits?path=polls%2Fsenate_polls.csv&per_page=100&until=2018-10-23T23%3A59%3A59Z", "status": 200, "response_bytes": 2, "response_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945", "result": "empty list"},
+      {"path": "polls/senate_polls_historical.csv", "url": "https://api.github.com/repos/fivethirtyeight/data/commits?path=polls%2Fsenate_polls_historical.csv&per_page=100&until=2018-10-23T23%3A59%3A59Z", "status": 200, "response_bytes": 2, "response_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945", "result": "empty list"}
+    ],
+    "current_data_page_url": "https://data.fivethirtyeight.com/",
+    "current_data_page_history_note": "Its indexed page says the separate polls dataset was last updated September 26, 2023; that is well after the requested target vintage.",
+    "endpoint_status": [
+      {"url": "https://projects.fivethirtyeight.com/polls-page/data/senate_polls_historical.csv", "status": 200, "final_url": "https://abcnews.com/politics", "body_bytes": 326180, "body_sha256": "fc7733654fe4d065c8c96a67088c725db491bb8f5ddef758e4fcf7fda894358c", "content_type": "text/html; charset=utf-8", "interpretation": "ABC HTML shell, not CSV"},
+      {"url": "https://raw.githubusercontent.com/fivethirtyeight/data/master/polls/senate_polls_historical.csv", "status": 404, "body_bytes": 14, "body_sha256": "d5558cd419c8d46bdc958064cb97f963d1ea793866414c025906ec15033512ed", "interpretation": "No such file at current GitHub path"}
+    ],
+    "conclusion": "Richer row schema is useful as a post-target forensic source only; the repository path's first recorded public commit postdates the 2018 cutoff. Current database IDs, created_at values, URLs, or later field classifications cannot be back-projected as contemporaneous availability proof."
+  },
+  "sample_identity_case": {
+    "primary_release_url": "https://www.rasmussenreports.com/public_content/politics/elections/election_2012/election_2012_senate_elections/arizona/election_2012_arizona_senate",
+    "question_url": "https://www.rasmussenreports.com/public_content/politics/elections/election_2012/election_2012_senate_elections/arizona/questions/questions_arizona_senate_october_21_2012",
+    "publisher_release_date": "2012-10-25",
+    "publisher_poll": {"field_date": "2012-10-21", "n": 500, "population": "likely Arizona voters", "question": "2012 Arizona Senate, Jeff Flake versus Richard Carmona; candidate order rotated", "toplines": {"Flake_R_pct": 50, "Carmona_D_pct": 44, "other_pct": 3, "undecided_pct": 3}},
+    "538_record": {"pollno": "5385932", "cycle_state_race": "2012_Sen-G_AZ", "polldate": "2012-10-21", "samplesize": 500, "cand1_dem_pct": 44, "cand2_rep_pct": 50},
+    "event_assessment": "Publisher primary release -> 538 poll-event correspondence verified from release date/content, field date, sample, population, question and toplines.",
+    "tierney_existing_row": {"observation_id": "tierney_cnn:row:3318", "line": 3318, "end_date_proxy": "2012-10-21", "source_name": "Rasmussen Reports/Pulse Opinion Research", "derived_dem": 220, "derived_rep": 250, "derived_sum": 470, "population": null, "field_start": null, "publication_date": null, "question_id": null, "sample_id": null, "source_url": null},
+    "tierney_assessment": "Strong candidate association, unverified event/sample identity. Same labels, date string and normalized conditional share do not prove the same respondents, sample or instrument. The candidate values are author-derived, and their sum is not the publisher N. No source lineage is available to join the Tierney row to pollno 5385932 or the Rasmussen release.",
+    "prior_packet": "research/improvement-loop-20261024/m01-release-linkage-luna-v1/evidence.json and tierney-identity-addendum-v1.md; preserved unchanged"
+  },
+  "other_primary_sources_and_access": {
+    "huffpost_api_announcement": {
+      "url": "https://groups.google.com/g/pollster-users/c/UjjOE3gGui0",
+      "dated": "2017-01-13",
+      "what_it_proves": "Pollster's API maintainer announced question-oriented API v2 and raw-data responses; warned the database could be edited and change between requests.",
+      "current_endpoint_test": {"url": "https://elections.huffingtonpost.com/pollster/api/v2/polls.json?topic=Senate", "http_status": 404, "body_bytes": 554, "result": "NoSuchKey; no dataset response"},
+      "limitation": "No preserved, dated 2018 complete response or source-vintage record was found. It was a live mutable API, not an authenticated archived snapshot."
+    },
+    "aapor_2016_report": {
+      "url": "https://aapor.org/wp-content/uploads/2023/01/AAPOR-2016-Election-Polling-Report.pdf",
+      "report_published": "2017",
+      "source_description": "The report says public-domain poll-level datasets came from FiveThirtyEight, HuffPost Pollster, and RealClearPolitics; it supplements design variables manually from press releases, news stories, methodological reports, and pollster websites, contacting pollsters when details were missing or unclear.",
+      "limitation": "Public report is not a downloadable complete event/source crosswalk and does not provide stable original sample/question IDs for all Senate polls."
+    },
+    "chen_and_tierney": {
+      "chen_author_repo": "https://github.com/yahoochen97/CNNForecasting",
+      "chen_2019_file_commit": "50a27498cd264950127ace0b4da572870ad6759a (2019-11-20)",
+      "tierney_repo": "https://github.com/g-tierney/polling_errors_replication",
+      "tierney_data_commit": "4aba5bc539dde8157bb2eeae9f3330a01439c19d (2023-03-08)",
+      "limitation": "Both postdate cutoff; prior schema audit found no stable poll/question/sample IDs or row-to-release source crosswalk."
+    },
+    "lucid_2016_microdata": {
+      "url": "https://github.com/Lucid-Archive/Election-2016-Polling-Data",
+      "release_archive_date": "2021-05-12 (repository archived)",
+      "limitation": "Pollster-authored 2016 microdata include survey column and exact questionnaire file, but release is post-cutoff, covers Lucid's own 13 surveys rather than a historical archive, and does not provide a pre-2018 dataset vintage or broad previous-election outcome cohort."
+    }
+  },
+  "captures_and_rights": {
+    "only_new_local_capture": {
+      "path": "research/improvement-loop-20261024/m01-earlier-vintage-luna-v3/source-captures/github-polls-readme-commits-through-2018-10-23.json",
+      "content": "[]",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "url": "https://api.github.com/repos/fivethirtyeight/data/commits?path=polls%2FREADME.md&per_page=100&until=2018-10-23T23%3A59%3A59Z"
+    },
+    "raw_polling_data": "No raw poll data or release PDF copied into this packet. The existing 538 CC-BY source capture and Rasmussen HTML captures remain at their pinned prior paths."
+  },
+  "access_failures": [
+    "FiveThirtyEight's 2018 article URL now redirects to the ABC News politics landing page; original article availability is supported by its indexed publication metadata/text and the dated archive/commit, not by current direct page retrieval.",
+    "The detailed FiveThirtyEight current/historical Senate CSV URL returns an ABC News HTML shell, not CSV; GitHub raw path has no file.",
+    "The former HuffPost Pollster API URL returns 404 NoSuchKey; no historical as-of snapshot was recovered.",
+    "No primary Tierney-to-Rasmussen sample/question source lineage was located in the author source packages inspected earlier."
+  ],
+  "next_concrete_source": "For a future row-level audit, obtain the original Chen/CNN poll table and source crosswalk from the Harvard Dataverse / Code Ocean replication capsule or request the dataset acquisition record from Yehu Chen / Harry Enten. For an authorized 2018-as-of cohort, use the pinned May 2018 FiveThirtyEight archive only after explicitly excluding the 2018 cycle from training, separating actual outcome labels from poll features, manually resolving source release/question/population for each candidate, and treating the 538 poll IDs as archive IDs rather than original sample IDs."
+}

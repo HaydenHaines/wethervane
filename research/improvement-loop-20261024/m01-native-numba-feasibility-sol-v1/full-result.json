@@ -1,0 +1,126 @@
+{
+  "schema": "ActualM01SingleNumbaAttemptV1",
+  "status": "full_gradient_and_selected_finite_differences_passed",
+  "seconds": 399.57086006598547,
+  "pid": 1926579,
+  "logp": -920789.3648686935,
+  "frozen_reference_logp": -920789.3648686936,
+  "logp_error": 1.1641532182693481e-10,
+  "gradient_shape": [
+    662
+  ],
+  "finite_coordinates": 662,
+  "finite_difference_checks": [
+    {
+      "value_variable": "community_interaction_sd_log__",
+      "flat_index": 77,
+      "within_variable_index": 0,
+      "shape": [],
+      "step": 1e-05,
+      "numeric": 0.0,
+      "analytic": 0.0,
+      "absolute_error": 0.0,
+      "tolerance": 0.01
+    },
+    {
+      "value_variable": "final_race_sd_log__",
+      "flat_index": 539,
+      "within_variable_index": 0,
+      "shape": [],
+      "step": 1e-05,
+      "numeric": 0.0,
+      "analytic": 0.0,
+      "absolute_error": 0.0,
+      "tolerance": 0.01
+    },
+    {
+      "value_variable": "choice_intercept",
+      "flat_index": 543,
+      "within_variable_index": 0,
+      "shape": [],
+      "step": 1e-05,
+      "numeric": 1323662.019445328,
+      "analytic": 1323662.0204931116,
+      "absolute_error": 0.0010477835312485695,
+      "tolerance": 13.246620194453282
+    },
+    {
+      "value_variable": "turnout_intercept",
+      "flat_index": 548,
+      "within_variable_index": 0,
+      "shape": [],
+      "step": 1e-05,
+      "numeric": 668.3528772555292,
+      "analytic": 668.3529098975595,
+      "absolute_error": 3.2642030305396474e-05,
+      "tolerance": 0.016683528772555294
+    },
+    {
+      "value_variable": "event_gamma_shape_log__",
+      "flat_index": 576,
+      "within_variable_index": 0,
+      "shape": [],
+      "step": 1e-05,
+      "numeric": -1.3115291949361563,
+      "analytic": -1.3115323535962307,
+      "absolute_error": 3.158660074387143e-06,
+      "tolerance": 0.010013115291949362
+    },
+    {
+      "value_variable": "candidate_role_mean",
+      "flat_index": 582,
+      "within_variable_index": 0,
+      "shape": [
+        2
+      ],
+      "step": 1e-05,
+      "numeric": 0.0,
+      "analytic": 4.550433685102504e-16,
+      "absolute_error": 4.550433685102504e-16,
+      "tolerance": 0.01
+    }
+  ],
+  "warnings": [
+    "Loop fusion failed because the resulting node would exceed the kernel argument limit.",
+    "Loop fusion failed because the resulting node would exceed the kernel argument limit.",
+    "Loop fusion failed because the resulting node would exceed the kernel argument limit.",
+    "Numba will use object mode to run AdvancedIncSubtensor's perform method. Set `pytensor.config.compiler_verbose = True` to see more details.",
+    "Numba will use object mode to run AdvancedIncSubtensor's perform method. Set `pytensor.config.compiler_verbose = True` to see more details.",
+    "Numba will use object mode to run AdvancedIncSubtensor's perform method. Set `pytensor.config.compiler_verbose = True` to see more details.",
+    "np.dot() is faster on contiguous arrays, called on (Array(float64, 2, 'C', False, aligned=True), Array(float64, 2, 'A', False, aligned=True))",
+    "np.dot() is faster on contiguous arrays, called on (Array(float64, 2, 'A', True, aligned=True), Array(float64, 2, 'C', False, aligned=True))",
+    "np.dot() is faster on contiguous arrays, called on (Array(float64, 2, 'A', True, aligned=True), Array(float64, 2, 'A', False, aligned=True))",
+    "np.dot() is faster on contiguous arrays, called on (Array(float64, 2, 'F', True, aligned=True), Array(float64, 2, 'A', False, aligned=True))",
+    "np.dot() is faster on contiguous arrays, called on (Array(float64, 2, 'A', False, aligned=True), Array(float64, 2, 'C', True, aligned=True))",
+    "np.dot() is faster on contiguous arrays, called on (Array(float64, 2, 'A', False, aligned=True), Array(float64, 2, 'C', False, aligned=True))"
+  ],
+  "fastmath": false,
+  "cxx": "",
+  "runtime": {
+    "numpy": {
+      "version": "2.5.4",
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/lib/python3.12/site-packages/numpy/__init__.py"
+    },
+    "pytensor": {
+      "version": "2.38.2",
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/lib/python3.12/site-packages/pytensor/__init__.py"
+    },
+    "numba": {
+      "version": "0.68.0",
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/lib/python3.12/site-packages/numba/__init__.py"
+    },
+    "llvmlite": {
+      "version": "0.50.0",
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/lib/python3.12/site-packages/llvmlite/__init__.py"
+    },
+    "pymc": {
+      "version": "5.28.0",
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/lib/python3.12/site-packages/pymc/__init__.py"
+    },
+    "arviz": {
+      "version": "0.22.0",
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/lib/python3.12/site-packages/arviz/__init__.py"
+    }
+  },
+  "scope": "One actual frozen first-parent graph at one fixed point only; no fits, sampling, other-parent normalization or forecast qualification."
+}

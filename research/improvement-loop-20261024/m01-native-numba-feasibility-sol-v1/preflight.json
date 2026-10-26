@@ -1,0 +1,185 @@
+{
+  "schema": "ActualM01NumbaPreflightV1",
+  "tests": [
+    {
+      "test": "CheckAndRaise preserved",
+      "passed": true,
+      "warnings": []
+    },
+    {
+      "test": "gammaln digamma count shape",
+      "passed": true,
+      "value_error": 0.0,
+      "gradient_error": 1.1102230246251565e-16
+    }
+  ],
+  "full_attempt_permitted": true,
+  "source_pins": {
+    "provider.py": {
+      "sha256": "6154ecb3d66ad38b5ba5fa94719d1da865f3e32bdf749ef1bb4ed4250606d853",
+      "bytes": 5176
+    },
+    "selection.json": {
+      "sha256": "03edb47049384b662cdd645053fc6083bde8fb41d972b1a07da8b71ecf6283b5",
+      "bytes": 45703
+    },
+    "result.json": {
+      "sha256": "b746ca84ecff0e4424626927ce0dc7f7bd2b61cb3d70b16417c050695bbdb60f",
+      "bytes": 11003
+    }
+  },
+  "actual_gradient": {
+    "transformed_dimensions": 662,
+    "raw_apply_nodes": 36377,
+    "op_counts": {
+      "pytensor.tensor.elemwise.DimShuffle": 9117,
+      "pytensor.tensor.subtensor.Subtensor": 1067,
+      "pytensor.tensor.elemwise.Elemwise": 20169,
+      "pytensor.tensor.basic.MakeVector": 225,
+      "pytensor.tensor.basic.Join": 18,
+      "pytensor.tensor.math.Dot": 58,
+      "pytensor.tensor.subtensor.AdvancedSubtensor": 43,
+      "pytensor.tensor.extra_ops.CumOp": 2,
+      "pytensor.tensor.basic.Alloc": 11,
+      "pytensor.tensor.special.Softmax": 45,
+      "pytensor.tensor.math.Sum": 1658,
+      "pytensor.tensor.math.Max": 8,
+      "pytensor.tensor.math.All": 7,
+      "pytensor.tensor.basic.ScalarFromTensor": 485,
+      "pytensor.raise_op.CheckAndRaise": 3,
+      "pytensor.tensor.math.Any": 9,
+      "pytensor.tensor.shape.Shape": 524,
+      "pytensor.tensor.shape.Reshape": 80,
+      "pymc.logprob.utils.CheckParameterValue": 68,
+      "pytensor.tensor.subtensor.IncSubtensor": 397,
+      "pytensor.tensor.subtensor.AdvancedIncSubtensor": 1741,
+      "pytensor.tensor.basic.Split": 214,
+      "pytensor.tensor.special.SoftmaxGrad": 428
+    },
+    "dispatch": [
+      {
+        "op": "pytensor.tensor.elemwise.DimShuffle",
+        "implementation": "pytensor.link.numba.dispatch.elemwise.numba_funcify_DimShuffle",
+        "generic_fallback": false
+      },
+      {
+        "op": "pytensor.tensor.subtensor.Subtensor",
+        "implementation": "pytensor.link.numba.dispatch.subtensor.numba_funcify_default_subtensor",
+        "generic_fallback": false
+      },
+      {
+        "op": "pytensor.tensor.elemwise.Elemwise",
+        "implementation": "pytensor.link.numba.dispatch.elemwise.numba_funcify_Elemwise",
+        "generic_fallback": false
+      },
+      {
+        "op": "pytensor.tensor.basic.MakeVector",
+        "implementation": "pytensor.link.numba.dispatch.tensor_basic.numba_funcify_MakeVector",
+        "generic_fallback": false
+      },
+      {
+        "op": "pytensor.tensor.basic.Join",
+        "implementation": "pytensor.link.numba.dispatch.tensor_basic.numba_funcify_Join",
+        "generic_fallback": false
+      },
+      {
+        "op": "pytensor.tensor.math.Dot",
+        "implementation": "pytensor.link.numba.dispatch.elemwise.numba_funcify_Dot",
+        "generic_fallback": false
+      },
+      {
+        "op": "pytensor.tensor.subtensor.AdvancedSubtensor",
+        "implementation": "pytensor.link.numba.dispatch.subtensor.numba_funcify_AdvancedSubtensor",
+        "generic_fallback": false
+      },
+      {
+        "op": "pytensor.tensor.extra_ops.CumOp",
+        "implementation": "pytensor.link.numba.dispatch.extra_ops.numba_funcify_CumOp",
+        "generic_fallback": false
+      },
+      {
+        "op": "pytensor.tensor.basic.Alloc",
+        "implementation": "pytensor.link.numba.dispatch.tensor_basic.numba_funcify_Alloc",
+        "generic_fallback": false
+      },
+      {
+        "op": "pytensor.tensor.special.Softmax",
+        "implementation": "pytensor.link.numba.dispatch.elemwise.numba_funcify_Softmax",
+        "generic_fallback": false
+      },
+      {
+        "op": "pytensor.tensor.math.Sum",
+        "implementation": "pytensor.link.numba.dispatch.elemwise.numba_funcify_CAReduce",
+        "generic_fallback": false
+      },
+      {
+        "op": "pytensor.tensor.math.Max",
+        "implementation": "pytensor.link.numba.dispatch.elemwise.numba_funcify_CAReduce",
+        "generic_fallback": false
+      },
+      {
+        "op": "pytensor.tensor.math.All",
+        "implementation": "pytensor.link.numba.dispatch.elemwise.numba_funcify_CAReduce",
+        "generic_fallback": false
+      },
+      {
+        "op": "pytensor.tensor.basic.ScalarFromTensor",
+        "implementation": "pytensor.link.numba.dispatch.tensor_basic.numba_funcify_ScalarFromTensor",
+        "generic_fallback": false
+      },
+      {
+        "op": "pytensor.raise_op.CheckAndRaise",
+        "implementation": "pytensor.link.numba.dispatch.compile_ops.numba_funcify_CheckAndRaise",
+        "generic_fallback": false
+      },
+      {
+        "op": "pytensor.tensor.math.Any",
+        "implementation": "pytensor.link.numba.dispatch.elemwise.numba_funcify_CAReduce",
+        "generic_fallback": false
+      },
+      {
+        "op": "pytensor.tensor.shape.Shape",
+        "implementation": "pytensor.link.numba.dispatch.shape.numba_funcify_Shape",
+        "generic_fallback": false
+      },
+      {
+        "op": "pytensor.tensor.shape.Reshape",
+        "implementation": "pytensor.link.numba.dispatch.shape.numba_funcify_Reshape",
+        "generic_fallback": false
+      },
+      {
+        "op": "pymc.logprob.utils.CheckParameterValue",
+        "implementation": "pytensor.link.numba.dispatch.compile_ops.numba_funcify_CheckAndRaise",
+        "generic_fallback": false
+      },
+      {
+        "op": "pytensor.tensor.subtensor.IncSubtensor",
+        "implementation": "pytensor.link.numba.dispatch.subtensor.numba_funcify_default_subtensor",
+        "generic_fallback": false
+      },
+      {
+        "op": "pytensor.tensor.subtensor.AdvancedIncSubtensor",
+        "implementation": "pytensor.link.numba.dispatch.subtensor.numba_funcify_AdvancedSubtensor",
+        "generic_fallback": false
+      },
+      {
+        "op": "pytensor.tensor.basic.Split",
+        "implementation": "pytensor.link.numba.dispatch.tensor_basic.numba_funcify_Split",
+        "generic_fallback": false
+      },
+      {
+        "op": "pytensor.tensor.special.SoftmaxGrad",
+        "implementation": "pytensor.link.numba.dispatch.elemwise.numba_funcify_SoftmaxGrad",
+        "generic_fallback": false
+      }
+    ],
+    "scope": "Symbolic unoptimized gradient only; dispatch may change under NUMBA optimizations, Elemwise scalar composites need deeper lowering. No full numerical compile here."
+  },
+  "seconds": 20.92846073000692,
+  "runtime": {
+    "executable": "/home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/bin/python",
+    "pytensor": "2.38.2",
+    "numpy": "2.5.4",
+    "cxx": ""
+  }
+}
