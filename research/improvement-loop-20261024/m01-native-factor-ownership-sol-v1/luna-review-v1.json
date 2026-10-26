@@ -1,0 +1,72 @@
+{
+  "schema": "M01NativeFactorOwnershipIndependentReviewLunaV1",
+  "reviewed_at": "2026-10-26",
+  "scope": "Independent bounded review of FINDINGS.md, check.py, result.json, per-arm-event-ledger.csv and source pins. No fitting; no full-bank rehash or posterior-sample reads.",
+  "reviewed_artifacts": {
+    "FINDINGS.md": {"sha256": "3e6d08df0f224179ea9a4098584499d41b540e26adb5d628796c766db7851e4d", "bytes": 6579},
+    "check.py": {"sha256": "d5f0916ffa59e083ff4b55eb48e44812ca11978741a039c3bf801b92950849f6", "bytes": 8711},
+    "result.json": {"sha256": "791c3ec6358cb5ad77a53ad632d9ad25d4f8ef68e619252d69b82c29ba8d982b", "bytes": 30340},
+    "per-arm-event-ledger.csv": {"sha256": "f35009e0893ee41fb5a2b0b3c5a1a8122a45c91314da678fef053c0c88ce98a3", "bytes": 218034}
+  },
+  "verdict": "supplied_state_checks_reproduced_with_scope_limits; actual_native_binding_remains_blocked",
+  "bank_pin_and_coordinate_review": {
+    "result_pin_entries": 48,
+    "raw_bank_entries_in_compatibility_metadata": 32,
+    "raw_bank_hash_check": "Did not rehash full NetCDF bank bytes. Cross-checked each of the 32 compatibility metadata SHA-256 values against the corresponding result.json pin and on-disk byte size; all agree. This confirms manifest consistency, not independently the current file content hash.",
+    "coordinate_check": "Read only the small observed_data/source_race vectors (at most 387 strings each) from all 32 banks; did not read historical_logit values, posterior draws, warmup draws or sample_stats. In every file, ordered IDs equal the per-arm compatibility metadata and the frozen plan's per-arm training_race_ids.",
+    "ordered_membership_by_target": {
+      "2018": {"H0": 299, "F0": 299, "ordered_ids_equal": true},
+      "2020": {"H0": 329, "F0": 329, "ordered_ids_equal": true},
+      "2022": {"H0": 357, "F0": 357, "ordered_ids_equal": true},
+      "2024": {"H0": 387, "F0": 387, "ordered_ids_equal": true}
+    },
+    "2024_correction": "Confirmed against the pinned compatibility manifest, frozen plan, and all eight actual 2024 raw-bank event-coordinate vectors: H0 and F0 both contain the same 387 ordered training events. The earlier 357-versus-387 / 30-key difference claim is false for 2024; 357 is the 2022 count."
+  },
+  "ledger_rederivation": {
+    "rows": 2744,
+    "per_target": [
+      {"target": 2018, "raw_events_each_arm": 299, "calibration_events_each_arm": 59, "shared_each_arm": 59, "selected_calibration_rows_each_arm": 930},
+      {"target": 2020, "raw_events_each_arm": 329, "calibration_events_each_arm": 85, "shared_each_arm": 85, "selected_calibration_rows_each_arm": 1218},
+      {"target": 2022, "raw_events_each_arm": 357, "calibration_events_each_arm": 106, "shared_each_arm": 106, "selected_calibration_rows_each_arm": 1514},
+      {"target": 2024, "raw_events_each_arm": 387, "calibration_events_each_arm": 106, "shared_each_arm": 106, "selected_calibration_rows_each_arm": 1514}
+    ],
+    "interpretation": "Counts and 2,744 row total reproduce from the ledger. Its marginal/conditional owner columns are explicitly candidates, every complete_native_binding value is missing, and the rows are not a compiler receipt or proof of source/sample independence."
+  },
+  "objective_and_conditional_checks": {
+    "pinned_source": {
+      "path": "calibration-consumer-v1/snapshot-source/src/forecasting/poll_covariance_v1.py",
+      "sha256_in_result": "9ae130b3f314d75a5255c7c92fab502ec596a7cca2960090706fa203b133e05d",
+      "check_extracts": "Unmodified gaussian_error_objective AST (source lines 79-100), does not import or run fit_error_scales/optimizer."
+    },
+    "independent_fixed_state_recheck": {
+      "method": "Recompiled the same source function AST and independently recalculated the first 3 selected residual rows from each target CSV; no bank files were opened in this step.",
+      "observation_ids_each_target": ["tierney_cnn:row:2978", "tierney_cnn:row:3048", "tierney_cnn:row:3079"],
+      "objective_minus_scipy_normal_nll_each_target": -4.440892098500626e-16,
+      "central_finite_difference_max_gradient_error_each_target": 4.2683434564594336e-10,
+      "interpretation": "The normalized multivariate Gaussian NLL and derivative of the pinned objective, including the fixed log-scale penalty, agree at these supplied positive scales. The four fold checks reuse the exact same three 2012 observations and are not independent data validations."
+    },
+    "normalization_and_measure": "The stated whitening/Jacobian calculation is algebraically valid for a fixed nonsingular Gaussian on poll-logit coordinates; a density transformed to share coordinates needs the logit Jacobian. However, the Gauss-Hermite integrand is constructed from the SciPy Gaussian density divided by the same whitened standard-normal reference, so it simplifies identically to 1. This is a useful algebra/implementation consistency check, but not an independent test of build_poll_likelihood, GaussianPollLikelihood, or a future native adapter.",
+    "kernel_comparison": "check.py's five supplied kernels match the pinned PollCoordinates.kernels construction: independent diagonal; shared cycle; same race within cycle; same pollster within cycle; and same-race Brownian movement min(age_i,age_j)/30. This confirms the tested source parameterization, not whether working cross-cycle independence or source/dependency assumptions are empirically adequate."
+  },
+  "source_pin_review": {
+    "aggregate_factory": "The aggregate component factory source is pinned in result.json; it supports that the inspected historical_logit factor is a Student-t outcome factor in that aggregate bank factory. It does not identify a native modular count-graph outcome atom.",
+    "preparation_source_gap": {
+      "finding_claim": "FINDINGS.md calls momentum-calibration-preparation-sol-v1/prepare.py:128 the pinned preparation for the residual definition.",
+      "result_pin_absent": true,
+      "current_file_sha256_not_pinned_by_packet": "897a638e11c91977603fe5909ccf6e13cda2aab3bc684152572a2c481e38aec6",
+      "severity": "moderate provenance limitation",
+      "detail": "The selected input CSVs and covariance objective source are pinned, but prepare.py is absent from result.json pins. The cited code statement is true of the current file inspected, but this packet does not bind that source version. Pin it before treating the cited preparation code as part of a reproducible source chain."
+    },
+    "not_exercised_or_pinned": "polling_v1.py/GaussianPollLikelihood is not pinned in result.json or invoked by the supplied objective check. No finding here establishes that a real M01 selected native problem consumes the proposed conditional factor."
+  },
+  "blockers_and_limits": [
+    "Actual M01 ownership remains blocked: no complete selected M01 Problem, immutable provider/configuration manifest, canonical links from historical official labels to conditioned poll events/native official-count atoms, or compiler receipts showing exactly one marginal outcome owner and one sampling/MOE variance budget were supplied. The coordination note explicitly says no M01 binding or implementation is underway.",
+    "The Gaussian test establishes fixed-state arithmetic for a 3-observation subset of an incumbent residual objective, not a native count graph implementation, fit, integrated covariance-parameter law, or empirical validity of Gaussianity and dependence assumptions.",
+    "The event coordinates are exactly consistent across the bank files, compatibility metadata and plan, but the labels and release/sample truth behind those keys, source vintage, hidden sample overlap, and full upstream data lineage are not established by this check.",
+    "No full raw-bank bytes were independently rehashed in this review. Existing result.json carries full-file SHA values and they match compatibility manifest entries and file sizes; raw posterior draw arrays remain unread."
+  ],
+  "access_and_execution": {
+    "full_check_py": "Not run because it hashes all 32 raw bank files and rewrites result.json and per-arm-event-ledger.csv; the review instead used read-only manifest comparisons, small NetCDF coordinate vectors and an isolated fixed-state objective recheck.",
+    "coordinate_reader": "System Python did not have h5py; used the pre-existing calibration-v1 runtime Python to read only source_race coordinate vectors. No source/worktree files were changed."
+  }
+}

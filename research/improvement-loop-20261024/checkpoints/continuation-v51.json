@@ -1,0 +1,98 @@
+{
+  "schema": "ContinuousImprovementCheckpointV51",
+  "recordedAtUtc": "2026-10-26T20:35:55.224418+00:00",
+  "evidence": {
+    "previous": {
+      "path": "research/improvement-loop-20261024/checkpoints/continuation-v50.json",
+      "sha256": "d2d6ef3b23cd247c50493dcb8f1452aa88c83405ff223bb998d047a24646adf6",
+      "bytes": 1671
+    },
+    "correctionIndependentReview": {
+      "path": "research/improvement-loop-20261024/m01-bank-membership-correction-root-v1/sol-review-v1.json",
+      "sha256": "973f480bdd34d3ae4b66b5c7c9762e40b78f3574d89a25f7343291a7ca265588",
+      "bytes": 8657
+    },
+    "nativeFindings": {
+      "path": "research/improvement-loop-20261024/m01-native-factor-ownership-sol-v1/FINDINGS.md",
+      "sha256": "3e6d08df0f224179ea9a4098584499d41b540e26adb5d628796c766db7851e4d",
+      "bytes": 6579
+    },
+    "nativeLedger": {
+      "path": "research/improvement-loop-20261024/m01-native-factor-ownership-sol-v1/per-arm-event-ledger.csv",
+      "sha256": "f35009e0893ee41fb5a2b0b3c5a1a8122a45c91314da678fef053c0c88ce98a3",
+      "bytes": 218034
+    },
+    "nativeResult": {
+      "path": "research/improvement-loop-20261024/m01-native-factor-ownership-sol-v1/result.json",
+      "sha256": "791c3ec6358cb5ad77a53ad632d9ad25d4f8ef68e619252d69b82c29ba8d982b",
+      "bytes": 30340
+    },
+    "nativeIndependentReview": {
+      "path": "research/improvement-loop-20261024/m01-native-factor-ownership-sol-v1/luna-review-v1.json",
+      "sha256": "b2de632f651a7ad71ca6a99755ad456365208ffb10d4d16e9376e372fe723079",
+      "bytes": 8415
+    },
+    "nativeRootReview": {
+      "path": "research/improvement-loop-20261024/m01-native-factor-ownership-sol-v1/root-review-v1.json",
+      "sha256": "9cb60c0e55ded033c45cf5d9cbaac49ea6a193632554b8c7d906f2fd579fe432",
+      "bytes": 2161
+    },
+    "sourceSupport": {
+      "path": "research/improvement-loop-20261024/m01-538-support-audit-root-v1/support.json",
+      "sha256": "b66fa59cce19b3c629b628cbf35f1077d13cc44d2209cef01d9bf0ac8cce9e54",
+      "bytes": 1687
+    },
+    "sourceSupportReview": {
+      "path": "research/improvement-loop-20261024/m01-538-support-audit-root-v1/independent-review-luna-v1.json",
+      "sha256": "098217830deb297d4db6bf742d669a4989dcea0c0cac19df467580101ff5d603",
+      "bytes": 5915
+    },
+    "primaryLinkageEvidence": {
+      "path": "research/improvement-loop-20261024/m01-release-linkage-luna-v1/evidence.json",
+      "sha256": "9ba8139cd85489d8098a342858bb018762e8be4e548c327fc51250e30091caad",
+      "bytes": 7621
+    },
+    "primaryLinkageCorrection": {
+      "path": "research/improvement-loop-20261024/m01-release-linkage-luna-v1/tierney-identity-addendum-v1.md",
+      "sha256": "8aa698329e04fd877fed318ef683b0efefc6128ff03d7d8d67a12b0f80a91da5",
+      "bytes": 2629
+    },
+    "queueV1Failure": {
+      "path": "research/improvement-loop-20261024/queue-incremental-index-sol-v1/independent-review-sol-v1.json",
+      "sha256": "f5035616bea6942c87a893fc1eb930d35c75b3a55d1de25df74683c984abf526",
+      "bytes": 6816
+    },
+    "queueV1Reproducer": {
+      "path": "research/improvement-loop-20261024/queue-incremental-index-sol-v1-failure-preserved/repro.py",
+      "sha256": "f6fa84d86481536106676ca2621c9af3d2be5b3d7fa90e40c2f933c0126fe4fc",
+      "bytes": 996
+    },
+    "queueV1Preservation": {
+      "path": "research/improvement-loop-20261024/queue-incremental-index-sol-v1-failure-preserved/preservation.json",
+      "sha256": "54c9bdefe65f688f07c82cd965bff92aaab8e106f556c252265e25bdc5385047",
+      "bytes": 1671
+    },
+    "queueV2Evidence": {
+      "path": "research/improvement-loop-20261024/queue-incremental-index-sol-v2/evidence.json",
+      "sha256": "254c5bb8c8e0980dfdbb45835d615007d74110267f89c3197fb424934f5c1255",
+      "bytes": 1254
+    },
+    "queueV2Review": {
+      "path": "research/improvement-loop-20261024/queue-incremental-index-sol-v2/independent-review-sol-v1.json",
+      "sha256": "6369f3c816f64862edb0c4347116a08e54cb727e8206949faa79a2e5f0fa8cb7",
+      "bytes": 7285
+    }
+  },
+  "goal": "active; weakest layer not yet supported and no new model promoted",
+  "bankCorrection": "Independent correction review verifies 299,329,357,387 equal H0/F0 event-key sets and prior overlap counts. Author verified raw bank hashes and all 32 stored-coordinate vectors; independent reviewer checked all coordinate vectors and existing hash metadata but did not rehash full files. v49 and older reviews are preserved as issued but the 30-key difference assertion is false.",
+  "nativeFactors": "Per-arm ledger binds aggregate bank coordinates to candidate outcome ownership and calibrated residual use; actual selected native Problem and factor adapter remain missing. Three-row conditional Gaussian objective/gradient checks pass on identical rows across folds. Whitened quadrature is a tautological identity, not a full native normalization test; prepare.py was absent from the original pin list and is separately pinned in the root review. No fit, empirical predictive result or owner registration.",
+  "sourceResearch": "May 2018 archive support: 451 standard-date generic D/R rows cover 58 state-year keys; 57 intersect existing training by state/year only, not verified event identity. Four 2016 Louisiana runoff and 10 non-generic-pair rows require separate treatment. Rasmussen primary release matches 538 AZ 2012 row; Tierney linkage remains strong but unverified, superseding the original stronger statement. Missouri Tierney linkage ambiguous. Author captured Rasmussen pages locally but they are not committed to the public repo; exact URLs and hashes are in evidence. No source admission.",
+  "queueResearch": "V1 independently failed: sorted-adjacent path checking could accept nested outputs and structural audit could pass. V1 and independent reproducer remain as negative evidence. V2 rejects all six failure permutations, nested cross-plan and legacy stores, and audit detects matching nested projections. Author 10 tests including 1000 synthetic serial admissions; independent reviewer nine focused tests and six permutations. V2 is admission-only, has zero launches, explicitly trusts mutable SQLite operationally, is not equivalent to the existing immediate historical-tamper gate, and lacks dispatch/reservation/recovery and production adoption.",
+  "ownerStatus": "At observation House precision jobs and release watcher were active; corrected NY-21 publication is not asserted. National 2018 owner reports full 32-chain run compiling; posterior qualification not yet available. Do not restart or mutate owner runs.",
+  "next": [
+    "Construct the actual selected M01 full provider/factor manifest, a normalized conditional adapter and once-only evidence/variance ownership, then independently test full-vector fixed states before owner-coordinated fitting.",
+    "Extend incremental research toward authenticated active-reservation and dependency dispatch with explicit storage and audit contracts; preserve V1 failure and existing queue.",
+    "Pursue original poll provenance, establish matched cohort and cutoff support without treating state-year as poll identity.",
+    "Integrate only qualified House release and evaluated national results after owner handoff."
+  ]
+}

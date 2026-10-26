@@ -1,0 +1,86 @@
+{
+  "schema": "IncrementalAdmissionIndependentSolReviewV1",
+  "reviewed_at": "2026-10-26",
+  "verdict": "changes_required",
+  "scope": "Read-only source review plus five focused unittest methods and one temporary-directory ownership counterexample; zero executor launches, no 1000-admission rerun, no prototype edits. Only this new review JSON is written.",
+  "pins": {
+    "core.py": {
+      "sha256": "6115b776da3b127ae344336b96a45e4e8a3726e083e7e3434ff095dc8cc303cc",
+      "bytes": 7285
+    },
+    "test_core.py": {
+      "sha256": "5d0879c72e1f5689e6f5f57014ff6c193ed13d6d02562cc3ff9df5cac36a1954",
+      "bytes": 4977
+    },
+    "FINDINGS.md": {
+      "sha256": "ca93e343f82199b9a7e35d55002a63d19dc5fc09d9e31722fdf99cab2a391241",
+      "bytes": 6390
+    },
+    "evidence.json": {
+      "sha256": "ae594083673bff540139db2df3a905b6fb03447c6d35fb73d76793cf4513c09c",
+      "bytes": 730
+    },
+    "../experiment_queue.py": {
+      "sha256": "6995febe73a5c1c2a317849416a58cc25130b9bbda44161f6a7624b321a8415f",
+      "bytes": 35468
+    },
+    "../execution.py": {
+      "sha256": "ce02f4c4b9be397b299c2219092fdd355db1695798af07c4974bc63cb6bbbc93",
+      "bytes": 36273
+    },
+    "../ledger.py": {
+      "sha256": "d65cea890ecf9b456f8b9625d173f15dac1e7fa94bb618d3407e26f368ee220a",
+      "bytes": 13115
+    },
+    "../test_experiment_queue.py": {
+      "sha256": "8e3bc176f52567eaf3dfd371b234437cd49fa5bd38cd24cffb11a2610131f831",
+      "bytes": 33722
+    }
+  },
+  "authored_evidence_pins_match": {
+    "core.py": true,
+    "test_core.py": true,
+    "FINDINGS.md": true
+  },
+  "focused_tests": {
+    "command": "nice -n 15 python3 -B -m unittest test_core.CoreTests.test_exact_retry_fresh_inputs_changed_identity_and_resumption test_core.CoreTests.test_duplicates_nested_paths_and_symlink test_core.CoreTests.test_process_death_atomic_boundaries test_core.CoreTests.test_competing_claims test_core.CoreTests.test_mutable_index_trust_and_explicit_audit -v",
+    "result": "5 passed in 0.267s"
+  },
+  "blockers": [
+    {
+      "id": "SOL-1",
+      "severity": "high within claimed ownership contract",
+      "location": "core.py:76-79; admit checks existing owners before inserting any current-plan owners",
+      "finding": "Checking only adjacent lexicographically sorted output paths does not detect every ancestor/descendant pair. An unrelated sibling with a punctuation suffix can sort between parent and child. All current-plan paths are checked only against already committed owners, so later SQL insertion does not catch the nested pair.",
+      "reproduced_outputs": [
+        "<temp>/owned",
+        "<temp>/owned-other",
+        "<temp>/owned/child"
+      ],
+      "observed": "One three-job plan admitted successfully; operational status admissions=1, ownership_claims=3; structural audit passed. No malicious SQL or tampering was required.",
+      "claim_affected": "FINDINGS says exact/ancestor/descendant conflicts fail closed. Existing tests only cover nested outputs across separate admissions, not this intra-plan configuration.",
+      "recommended_fix": "Validate each current-plan output against all exact parent identities in a set or equivalent component-aware structure before insertion. Add this three-output regression and a shuffled ordering variant. Structural audit may also validate static ownership invariants, while continuing to avoid historical mutable input validation.",
+      "reproducer_python": "import core,test_core\nx=test_core.CoreTests();x.setUp()\ntry:\n p=x.plan('a');p['jobs'] += [x.f.job('b'),x.f.job('c')]\n for j,suffix in zip(p['jobs'],['owned','owned-other','owned/child']):\n  j['execution_spec']['output_directory']=str(x.base/suffix)\n print(x.admit(p));print(core.operational_status(x.db));print(core.audit(x.db))\nfinally:x.doCleanups()"
+    }
+  ],
+  "accepted_boundaries": [
+    "Canonical serialization freezes one logical caller plan and its expected digest is checked before store mutation; queue.validate_plan invokes executor.validate and rechecks declared executable and input bytes even on exact retry. Digest equality is integrity against a supplied expectation, not proof of plan approval or scientific authorization.",
+    "BEGIN IMMEDIATE serializes cooperating writers. Evidence plus owner insertion commit in one transaction; five focused tests include actual process death after evidence, owners and commit. No evidence indicates split committed states under these tested boundaries. Physical power-loss/fsync interleavings remain untested as documented.",
+    "Unique attempt/output keys reject exact cross-admission duplicates. Existing ancestor parent lookups and descendant prefix range are appropriate for canonical absolute paths on this Linux cooperative filesystem boundary. The intra-plan bug is separate.",
+    "Current symlink aliases and noncanonical paths are rejected; future symlink changes, bind mounts, external attempts and post-validation input drift are explicitly outside the core. No launch authority exists.",
+    "All resume_prelaunch values other than None are rejected; exact retry still revalidates fresh outputs and fails once output exists. This intentionally conservative behavior is documented.",
+    "Mutable SQLite authoritative storage is honestly labeled trusted_index_not_historical_audit. Dropping a delete trigger and deleting owner rows changes status and structural audit catches projection mismatch. Consistent malicious rewrite/rollback is not detected and no protected head is claimed.",
+    "Structural audit checks canonical plan digest/identity and exact owner projection, not historic mutable input bytes, historic validation semantics or execution receipts. It cannot qualify a plan or authenticate an independent historical head."
+  ],
+  "nonblocking_observations": [
+    {
+      "location": "operational_status",
+      "finding": "The two count queries are separate SQLite reads without explicit BEGIN, so concurrent committed admission between them can yield admissions and ownership_claims from different snapshots. Treat as approximate operational counters, or wrap a read transaction if consistency is required."
+    },
+    {
+      "location": "opened/connect context-manager use",
+      "finding": "SQLite Connection context managers commit/rollback but do not explicitly close; operational_status/audit/initialize rely on object lifetime for connection closure. This is a resource-management consideration, not demonstrated integrity failure."
+    }
+  ],
+  "overall": "The prototype accurately limits admission-only scope and mutable-index trust, and focused tests pass. SOL-1 contradicts a central advertised ownership invariant and should be fixed before accepting the prototype as satisfying that contract. Production integration remains separately unimplemented as findings states."
+}

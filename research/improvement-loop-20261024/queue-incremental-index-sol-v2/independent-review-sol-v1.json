@@ -1,0 +1,146 @@
+{
+  "schema": "IncrementalAdmissionV2IndependentSolReviewV1",
+  "reviewed_at": "2026-10-26",
+  "verdict": "v1_ownership_blocker_resolved_for_research_scope",
+  "production_approval": false,
+  "scope": "Read-only diff/source review, all nine focused unittest methods excluding thousand-admission scale, plus independent six-permutation admission and structural-audit probes in temporary databases. nice -n 15 python3 -B; zero executor launches. Only this review JSON written.",
+  "pins": {
+    "core.py": {
+      "sha256": "207cfa6a85757b8d1d70aac056a96f45476b0a898f692b1ed5b5f5bf7709d9b2",
+      "bytes": 7646
+    },
+    "test_core.py": {
+      "sha256": "9d194cc712391126437757ecf5230dff7b726cc7217f7fecd697bcea35dcf6d5",
+      "bytes": 8441
+    },
+    "FINDINGS.md": {
+      "sha256": "8658540fedee658bef2661f4ee2a085c7df649329f5adb5b4788f25f65f7916c",
+      "bytes": 7817
+    },
+    "evidence.json": {
+      "sha256": "254c5bb8c8e0980dfdbb45835d615007d74110267f89c3197fb424934f5c1255",
+      "bytes": 1254
+    },
+    "tests.log": {
+      "sha256": "3a331eede374925cf8b1c4f5f4c38b310223bb26f7d856b1a055a710fd6b8ad9",
+      "bytes": 1343
+    },
+    "../experiment_queue.py": {
+      "sha256": "6995febe73a5c1c2a317849416a58cc25130b9bbda44161f6a7624b321a8415f",
+      "bytes": 35468
+    },
+    "../execution.py": {
+      "sha256": "ce02f4c4b9be397b299c2219092fdd355db1695798af07c4974bc63cb6bbbc93",
+      "bytes": 36273
+    },
+    "../ledger.py": {
+      "sha256": "d65cea890ecf9b456f8b9625d173f15dac1e7fa94bb618d3407e26f368ee220a",
+      "bytes": 13115
+    },
+    "../test_experiment_queue.py": {
+      "sha256": "8e3bc176f52567eaf3dfd371b234437cd49fa5bd38cd24cffb11a2610131f831",
+      "bytes": 33722
+    },
+    "../queue-incremental-index-sol-v1/core.py": {
+      "sha256": "6115b776da3b127ae344336b96a45e4e8a3726e083e7e3434ff095dc8cc303cc",
+      "bytes": 7285
+    },
+    "../queue-incremental-index-sol-v1/independent-review-sol-v1.json": {
+      "sha256": "f5035616bea6942c87a893fc1eb930d35c75b3a55d1de25df74683c984abf526",
+      "bytes": 6816
+    }
+  },
+  "authored_evidence_pins_match": {
+    "core.py": true,
+    "test_core.py": true,
+    "tests.log": true,
+    "FINDINGS.md": true
+  },
+  "preserved_failure_packet_pins_match": {
+    "tests.log": true,
+    "independent-review-sol-v1.json": true,
+    "repro.py": true,
+    "FINDINGS.md": true,
+    "test_core.py": true,
+    "repro.log": true,
+    "core.py": true,
+    "evidence.json": true
+  },
+  "v1_failure_preserved": {
+    "finding": "V1 sorted-adjacent path validation accepted parent /owned and child /owned/child when /owned-other sorted between; its structural audit also passed. That failure and its original passing tests remain negative evidence; V2 does not retroactively qualify V1.",
+    "original_review_sha256": "f5035616bea6942c87a893fc1eb930d35c75b3a55d1de25df74683c984abf526"
+  },
+  "source_diff_assessment": {
+    "changes": [
+      "Schema string and initialization meta value changed to IncrementalAdmissionResearchV2.",
+      "New disjoint_outputs collects all output names, rejects exact duplicates, and checks every complete Path.parents chain against that set.",
+      "admission_rows replaces adjacent lexical check with disjoint_outputs.",
+      "audit checks disjoint_outputs on both reconstructed evidence outputs and actual indexed outputs before projection equality."
+    ],
+    "assessment": "These are the entire core diff from V1. For the established canonical absolute path contract, complete parent membership is independent of sort or insertion order and closes SOL-1. Structural audit now rejects matching but nested projections across all admissions."
+  },
+  "executed_checks": {
+    "focused_unittests": {
+      "passed": 9,
+      "seconds": 0.649,
+      "excluded": "test_thousand_serial_synthetic_admissions",
+      "methods": [
+        "test_competing_claims",
+        "test_cross_plan_nested_both_admission_orders",
+        "test_duplicates_nested_paths_and_symlink",
+        "test_exact_retry_fresh_inputs_changed_identity_and_resumption",
+        "test_mutable_index_trust_and_explicit_audit",
+        "test_nonadjacent_same_plan_nested_regression",
+        "test_process_death_atomic_boundaries",
+        "test_structural_audit_rejects_consistent_nested_projection",
+        "test_v1_store_refused_without_migration"
+      ]
+    },
+    "independent_counterexample_permutations": [
+      [
+        "owned",
+        "owned-other",
+        "owned/child"
+      ],
+      [
+        "owned",
+        "owned/child",
+        "owned-other"
+      ],
+      [
+        "owned-other",
+        "owned",
+        "owned/child"
+      ],
+      [
+        "owned-other",
+        "owned/child",
+        "owned"
+      ],
+      [
+        "owned/child",
+        "owned",
+        "owned-other"
+      ],
+      [
+        "owned/child",
+        "owned-other",
+        "owned"
+      ]
+    ],
+    "independent_permutation_result": "All six reject admission with exactly nested output ownership, leaving zero admissions; separately injecting matching evidence and owners for each permutation is rejected by audit with exactly nested output ownership.",
+    "cross_plan": "Author tests executed and passed parent-first and child-first admission orders, with unrelated sibling retained.",
+    "version_refusal": "Author test executed and passed V1 meta refusal by open, admit and audit; initialize refuses to overwrite existing file. This is a version gate, not authentication against malicious meta rewriting.",
+    "regression_result": "All previously focused V1 behavior tests pass: fresh source drift rejection, supplied digest/identity checks, exact retry, resume refusal, duplicate claims, canonical/symlink rejection, concurrent duplicate claims, mutable-index structural mismatch, and actual process-death atomicity boundaries."
+  },
+  "new_blockers": [],
+  "retained_limitations": [
+    "SQLite bytes and cooperating local writers remain trusted. Trigger removal, consistent malicious database rewrite or rollback need independent protection; the schema version gate does not provide that protection.",
+    "Operational status two-count reads have no explicit snapshot transaction and may straddle concurrent commits. Treat them as approximate counters unless changed.",
+    "Connection context managers do not explicitly close in initialize/status/audit; lifetime cleanup remains a resource-management consideration.",
+    "Structural audit is not historic mutable input validation, historical schema validation, independent audit-head authentication, execution receipt validation, or scientific qualification.",
+    "Input/executable bytes are rechecked on admission against supplied pins, but plan digest/pins alone do not establish approval; post-validation mutation requires original launch gates.",
+    "No dispatcher, dependency materialization authority, reservations, execution cleanup/resumption integration, protected historical head, migration, production qualification or comparative scale benefit established."
+  ],
+  "conclusion": "No new defect or V1 focused-behavior regression found in the reviewed narrow admission core. SOL-1 is fixed in admission and audit and V1 stores are refused. Accept this as a research correctness correction only; production adoption remains unsupported."
+}

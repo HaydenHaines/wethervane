@@ -1,0 +1,121 @@
+{
+  "schema": "M01PrimaryPollReleaseLinkageLunaV1",
+  "reviewed_at": "2026-10-26",
+  "scope": "Primary pollster release checks for at most two candidate links. Evidence note only; no data admission, fitting, or forecast changes.",
+  "inputs": {
+    "538_archive": {
+      "path": "research/improvement-loop-20261024/m01-538-archive-root-v1/raw-polls-20180530.csv",
+      "sha256": "79489a9d7f796d8f50841e91d8dcb858679ada75690812d4757f095a107efb91",
+      "pinned_commit": "https://github.com/fivethirtyeight/data/commit/142cad5610ed6b3468e730199034b280b9e805d5",
+      "date_semantics": "FiveThirtyEight README says polldate is median field date, not release/publication date."
+    },
+    "Tierney_prepared_rows": {
+      "path": "research/improvement-loop-20261024/momentum-calibration-preparation-sol-v1/prepared-v1/2018/selected-training-polls.csv",
+      "sha256": "df682ca44d043cdc9ff6372448f205769bf763197ddfaa17c109aaaa21974e21",
+      "date_semantics": "Prepared end_date and available_date are field-end proxies only; publication_date blank and historical_version_verified=False. Values are marked author-derived, not verified raw counts."
+    }
+  },
+  "candidates": [
+    {
+      "status": "verified_poll_event_link",
+      "archive_poll_number": "5385932",
+      "tierney_observation_id": "tierney_cnn:row:3318",
+      "race": "2012_Sen-G_AZ",
+      "pollster": "Rasmussen Reports/Pulse Opinion Research",
+      "primary_release": {
+        "release_url": "https://www.rasmussenreports.com/public_content/politics/elections/election_2012/election_2012_senate_elections/arizona/election_2012_arizona_senate",
+        "question_url": "https://www.rasmussenreports.com/public_content/politics/elections/election_2012/election_2012_senate_elections/arizona/questions/questions_arizona_senate_october_21_2012",
+        "release_date": "2012-10-25",
+        "field_date": "2012-10-21",
+        "sample": 500,
+        "population": "Likely Arizona voters",
+        "question": "If the 2012 election for the U.S. Senate were held today, would you vote for Republican Jeff Flake or Democrat Richard Carmona? Candidate order rotated, with half hearing Republican first and half Democrat first.",
+        "results": {"Jeff_Flake_R_pct": 50, "Richard_Carmona_D_pct": 44, "other_pct": 3, "undecided_pct": 3},
+        "moe": "±4.5 percentage points, 95% confidence",
+        "pollster_fieldwork_note": "Rasmussen Reports says field work for all its surveys is conducted by Pulse Opinion Research, LLC."
+      },
+      "five_thirtyeight_record": {
+        "polldate_median_field_date": "2012-10-21",
+        "samplesize": 500,
+        "cand1_dem_pct": 44,
+        "cand2_rep_pct": 50,
+        "normalized_dem_two_party_share": 0.4680851063829787
+      },
+      "tierney_record": {
+        "end_date_proxy": "2012-10-21",
+        "publication_date": null,
+        "population": "unknown in prepared row",
+        "dem_value_author_derived": 220,
+        "rep_value_author_derived": 250,
+        "reported_n_sum_of_derived_values": 470,
+        "dem_two_party_share": 0.4680851063829787,
+        "source_names_verified_in_prepared_row": false,
+        "sample_id": "unknown:tierney_cnn:row:3318"
+      },
+      "basis": "The dated publisher release and linked original question page identify a single-day 500-likely-voter Flake/Carmona poll on Oct. 21 with 44/50/3/3 results. 538 records the same field date, sample size, and integer D/R values; Tierney's derived D/R values reduce to precisely the same conditional share. This verifies linkage to the poll event with strong primary-source evidence, not Tierney raw-byte lineage or a contemporaneous version of its prepared CSV. Tierney's N=470 is reconstructed from the derived candidate values and must not be represented as original respondent N."
+    },
+    {
+      "status": "ambiguous_do_not_join",
+      "archive_poll_number": "75213",
+      "tierney_observation_id": "tierney_cnn:row:4550",
+      "race": "2016_Sen-G_MO",
+      "pollster": "Emerson College",
+      "primary_release": {
+        "release_url": "https://www.realclearpolitics.com/docs/2016/ECP_Final_Press_Release_and_Toplines_4_States.11_.2_.pdf",
+        "release_authorship": "Emerson College; release names Emerson College Polling Advisor Spencer Kimball as press contact",
+        "release_date": "2016-11-02",
+        "field_dates": "2016-10-28 through 2016-10-31",
+        "sample": 650,
+        "population": "Likely general-election voters",
+        "senate_ballot_results": {"Jason_Kander_D": "294/650 = 45.2%", "Roy_Blunt_R": "294/650 = 45.2%", "someone_else": 36, "undecided": 27},
+        "moe": "±3.8 percentage points",
+        "question_wording": "Not present in accessible release; it gives Senate ballot toplines without the exact question text."
+      },
+      "five_thirtyeight_record": {
+        "polldate_median_field_date": "2016-10-30",
+        "samplesize": 650,
+        "cand1_dem_pct": 45,
+        "cand2_rep_pct": 45,
+        "normalized_dem_two_party_share": 0.5
+      },
+      "tierney_record": {
+        "end_date_proxy": "2016-10-30",
+        "source_election_date": "2016-11-03",
+        "prepared_election_date": "2016-11-08",
+        "publication_date": null,
+        "population": "unknown in prepared row",
+        "dem_value_author_derived": 341,
+        "rep_value_author_derived": 335,
+        "reported_n_sum_of_derived_values": 676,
+        "dem_two_party_share": 0.5044378698224852,
+        "sample_id": "unknown:tierney_cnn:row:4550"
+      },
+      "basis": "The release supports the 538 poll event: its Oct. 28–31 field interval has Oct. 30 as a plausible median date; n=650 and 45.2/45.2 round to the archive's 650 and 45/45. However, it does not verify the Tierney row: that row says its date is an end date of Oct. 30, one day before the release's stated Oct. 31 fieldwork end, and it has author-derived D/R values summing to 676 with a different conditional D share. The prepared row marks population unknown and release publication date blank. Same-name/date-level proximity is insufficient; leave ambiguous pending row-level source data, question and sample identity."
+    }
+  ],
+  "capture_attempts": [
+    {
+      "path": "source-captures/rasmussen-arizona-release.html",
+      "url": "https://www.rasmussenreports.com/public_content/politics/elections/election_2012/election_2012_senate_elections/arizona/election_2012_arizona_senate",
+      "http_status": 200,
+      "bytes": 46936,
+      "sha256": "69159795c6282df8093a6765b149d2515612959265c76ce1170e3372d2901a38"
+    },
+    {
+      "path": "source-captures/rasmussen-arizona-questions.html",
+      "url": "https://www.rasmussenreports.com/public_content/politics/elections/election_2012/election_2012_senate_elections/arizona/questions/questions_arizona_senate_october_21_2012",
+      "http_status": 200,
+      "bytes": 20271,
+      "sha256": "615778badf01bae7da8f2e0f36ea8aaeca1df9284bb3844fb7ec74fa7039e490"
+    },
+    {
+      "path": null,
+      "url": "https://www.realclearpolitics.com/docs/2016/ECP_Final_Press_Release_and_Toplines_4_States.11_.2_.pdf",
+      "capture_status": "Direct local HTTP request returned 403 Forbidden. Browser document reader accessed and parsed the PDF. No local copy retained.",
+      "web_evidence": "https://www.realclearpolitics.com/docs/2016/ECP_Final_Press_Release_and_Toplines_4_States.11_.2_.pdf"
+    }
+  ],
+  "access_failures": [
+    "Direct local retrieval of the Emerson PDF at its publicly indexed URL returned HTTP 403; its contents were accessible in the web document reader, so date, method and toplines are reported from that document."
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "schema": "M01Earlier538SupportIndependentReviewLunaV1",
+  "reviewed_at": "2026-10-26",
+  "scope": "Independent arithmetic, source-date/cohort, and scope review of m01-538-support-audit-root-v1. No admission or fitting.",
+  "reviewed_files": {
+    "audit.py": {"sha256": "a9d652b3675f920140128fba8feb18640043b67ea6520b71f204d9e55dad4d65", "size": 2863},
+    "support.json": {"sha256": "b66fa59cce19b3c629b628cbf35f1077d13cc44d2209cef01d9bf0ac8cce9e54", "size": 1687},
+    "README.md": {"sha256": "5d9d160450ae7945876489907d4fa28b35b80ed2faf87c38c69fdccbf189956a", "size": 2450}
+  },
+  "source_pins": {
+    "archive_sha256_checked": "79489a9d7f796d8f50841e91d8dcb858679ada75690812d4757f095a107efb91",
+    "prepared2018_sha256_checked": "df682ca44d043cdc9ff6372448f205769bf763197ddfaa17c109aaaa21974e21",
+    "source_readme": "https://raw.githubusercontent.com/fivethirtyeight/data/142cad5610ed6b3468e730199034b280b9e805d5/pollster-ratings/README.md"
+  },
+  "independent_rederivation": {
+    "archive_rows_filtered_to_type_Sen_G_year_2012_or_2016": 465,
+    "archive_rows_by_year": {"2012": 210, "2016": 255},
+    "strata": [
+      {"year": "2012", "D_R_labels": true, "electiondate_is_standard_november": true, "rows": 208},
+      {"year": "2012", "D_R_labels": false, "electiondate_is_standard_november": true, "rows": 2},
+      {"year": "2016", "D_R_labels": true, "electiondate_is_standard_november": true, "rows": 243},
+      {"year": "2016", "D_R_labels": false, "electiondate_is_standard_november": true, "rows": 8},
+      {"year": "2016", "D_R_labels": true, "electiondate_is_standard_november": false, "rows": 4}
+    ],
+    "standard_date_D_R_rows": 451,
+    "state_cycle_key_counts": {"archive": 58, "prepared": 59, "intersection": 57},
+    "archive_only_keys": [["2016", "GA"]],
+    "prepared_only_keys": [["2012", "WV"], ["2016", "AK"]],
+    "prepared_rows_by_cycle": {"2012": 467, "2016": 463},
+    "gap_from_recorded_poll_date_to_recorded_election_date_days_in_451": {"min": 2, "max": 21},
+    "method": "Independent CSV parsing and direct counters/set differences, separate from audit.py; source hashes checked."
+  },
+  "assessment": {
+    "verdict": "Arithmetic and stated coarse key differences reproduced; scope limitations are mostly accurately disclosed.",
+    "findings": [
+      {
+        "severity": "confirmed",
+        "detail": "Counts reconcile: 465 rows split as 210 in 2012 and 255 in 2016; 451 rows satisfy the stated standard November electiondate and generic Democrat/Republican label criteria (208+243). Excluded records are 2 non-D/R-label rows in 2012, 8 non-D/R-label rows in standard-date 2016 races, and 4 D/R-labeled Louisiana rows with 2016-12-10 electiondate."
+      },
+      {
+        "severity": "confirmed",
+        "detail": "State-year key counts and differences reproduce exactly. The prepared file itself contains 467 2012 rows and 463 2016 rows, so the 59 keys are only coarse support summaries, not 2018-cycle observations."
+      },
+      {
+        "severity": "limitation",
+        "detail": "The source README explicitly says candidates 1 and 2 are the top two finishers in the election, regardless of poll ordering; when those top finishers are D/R, the source labels them Democrat and Republican. Thus the generic-label inclusion screen is retrospective and only safe for prior elections whose results were known at the target cutoff. The 2012/2016 cohort is prior to a 2018 cutoff, but the CSV also embeds actual results, errors, bias and right-call fields. audit.py does not use those fields in its calculations and excludes 2018/other years before the support counts; any future training extraction must physically drop those retrospective fields and enforce cycle cutoffs."
+      },
+      {
+        "severity": "limitation",
+        "detail": "`polldate` is median field date, per the pinned source README, and samplesize may be imputed (including default 600 where no better estimate exists). The 2–21 day span is therefore the gap between recorded median date and recorded election date, not publication lead time or necessarily fieldwork-end lead time. The cohort is a FiveThirtyEight pollster-rating sample, with a described late-poll window for congressional/gubernatorial data, not a census or full polling time series."
+      },
+      {
+        "severity": "limitation",
+        "detail": "The May 30, 2018 repository commit and contemporaneous publisher/article record support a source-snapshot lead for a pre-November 2018 candidate vintage, but they do not prove a strict public-download timestamp for the exact bytes. The support screen itself says it is not an admitted cohort."
+      },
+      {
+        "severity": "minor",
+        "detail": "The script does not validate canonical race identity or state/year race multiplicity. The README correctly cautions about special elections, multiple races, runoffs, question/sample identity, publication timing and name conventions. In particular, the 58/59 key counts must not be interpreted as 58/59 unique Senate contests or polling support for every race; state/year keys may collapse distinct contests in a state-cycle."
+      },
+      {
+        "severity": "minor",
+        "detail": "README's phrase '451 are standard-November-date polls whose first two candidates carry the source's generic Democrat and Republican labels' matches its code's exact string/date filters. It should continue to be read as mechanical filtering only: 2012 and 2016 election dates are hard-coded, and the filter does not validate a race roster, ballot wording, poll population, release date, sample identity or whether the poll was actually an independent survey."
+      }
+    ],
+    "independent_command_result": "Ran audit.py successfully; its reported arithmetic agrees with the independent counters and set differences above. No tracked files other than the review output were edited by this review."
+  }
+}

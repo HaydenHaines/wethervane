@@ -1,0 +1,34 @@
+{
+  "schema": "IncrementalAdmissionResearchEvidenceV2",
+  "recorded_at_utc": "2026-10-26T20:34:00.477276+00:00",
+  "scope": "V2 admission-only ownership correction; zero executor launches; no production adoption; V1 stores rejected without migration",
+  "files": {
+    "core.py": {
+      "sha256": "207cfa6a85757b8d1d70aac056a96f45476b0a898f692b1ed5b5f5bf7709d9b2",
+      "bytes": 7646
+    },
+    "test_core.py": {
+      "sha256": "9d194cc712391126437757ecf5230dff7b726cc7217f7fecd697bcea35dcf6d5",
+      "bytes": 8441
+    },
+    "tests.log": {
+      "sha256": "3a331eede374925cf8b1c4f5f4c38b310223bb26f7d856b1a055a710fd6b8ad9",
+      "bytes": 1343
+    },
+    "FINDINGS.md": {
+      "sha256": "8658540fedee658bef2661f4ee2a085c7df649329f5adb5b4788f25f65f7916c",
+      "bytes": 7817
+    }
+  },
+  "preserved_failure_packet": {
+    "path": "../queue-incremental-index-sol-v1-failure-preserved/preservation.json",
+    "sha256": "54c9bdefe65f688f07c82cd965bff92aaab8e106f556c252265e25bdc5385047"
+  },
+  "regressions": [
+    "all six counterexample orderings",
+    "exact duplicate and reversed parent/child",
+    "cross-plan ancestor and descendant conflict",
+    "audit rejects matching but nested evidence/ownership",
+    "V1 store explicitly refused"
+  ]
+}

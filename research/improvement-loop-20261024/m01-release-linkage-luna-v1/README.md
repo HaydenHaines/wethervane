@@ -1,0 +1,20 @@
+# Primary-release linkage checks: two 538/Tierney candidates
+
+Scope: original pollster releases and conservative matching of two candidates from `m01-538-archive-root-v1`. This is an evidence note only. No data admitted, fitted, or added to a training set.
+
+## Outcomes
+
+- **2012 Arizona, Rasmussen poll 5385932 ↔ Tierney row 3318: verified poll-event link.** Rasmussen's dated original archive page is dated October 25, 2012 and says its survey of 500 likely Arizona voters was conducted October 21. The linked question page confirms the exact ballot wording (Flake vs. Carmona; order rotated) and the same field date and population. It reports Flake 50%, Carmona 44%, other 3%, undecided 3%. The 538 archive has median field date October 21, n=500 and D/R=44/50. Tierney's date is October 21, and its author-derived D/R values 220/250 yield exactly the same conditional Democratic share 44/(44+50)=0.4680851; the displayed reported_n=470 is the sum of those derived D/R values, not the original respondent N. Field date and original release date are distinct: the release is dated four days after the fieldwork.
+- **2016 Missouri, Emerson poll 75213 ↔ Tierney row 4550: ambiguous; do not join.** Emerson's November 2 dated press release, in a PDF authored by Emerson and preserved at the linked RCP URL, reports a likely-general-election-voter sample n=650, fielded October 28–31, and Senate ballot toplines Kander 45.2% / Blunt 45.2% (294 each; other 36; undecided 27). 538's `polldate=10/30/16` is the archive's median field date, n=650, D/R 45/45, consistent with that release. The Tierney row instead labels October 30 as its end date, has author-derived values 341/335 (reported_n 676; D share 0.5044379), and its source election date is corrected from November 3 to November 8. Thus the same pollster, race, and near-identical date do not establish sample identity: Tierney's alleged end date precedes Emerson's stated end of fieldwork, and its denominator/derived share do not reproduce the release's n=650/45.2-to-45.2 figures. The available Emerson release does not give the exact Senate ballot question wording. No Tierney sample identifier or publication date is present. Further original Tierney row-level provenance/question wording is needed.
+
+## Date convention
+
+The FiveThirtyEight README defines its `polldate` as median field date, not publication date. Tierney preparation describes its `end_date` as a field-end proxy and has no verified publication date for either row. Do not interpret equal date strings as evidence that these conventions agree. For Arizona, the primary release's one-day fieldwork makes the two date values compatible. For Missouri, Emerson's Oct. 28–31 interval shows Tierney's Oct. 30 `end_date` cannot literally be the published fieldwork end date for the matched release.
+
+## Evidence and limitations
+
+The 538 source values below are from the pinned local FiveThirtyEight snapshot. Tierney values are from the already-prepared selected-training row; the row itself marks population/methodology unknown, values author-derived, and historical version unverified. Primary releases support the Arizona poll-event match but do not authenticate the historical byte vintage of the Tierney CSV. Emerson is ambiguous for the additional row-specific discrepancies above.
+
+The Rasmussen release and question HTML were captured locally. The Emerson PDF parses through the web document reader at the citation URL, but a direct local HTTP capture returned **403 Forbidden**; the PDF is therefore not duplicated in this folder. Its URL and the failed capture are recorded in `evidence.json`. Exact Emerson question wording was not located in the accessible release. No substitute poll or match was inferred from pollster names alone.
+
+Source captures and hashes are listed in `evidence.json`. The Emerson PDF is hosted by RealClearPolitics but identifies Emerson College as author/publisher in the release itself; no claim is made about the host's rights to redistribute it. Preserve source attribution and check underlying rights before reuse.
