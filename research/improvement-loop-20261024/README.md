@@ -9,6 +9,7 @@ As of October 26, 2026 UTC:
 The first entry is the latest checkpoint. Earlier entries preserve the scope and
 remaining work recorded at their issuance; later checkpoints supersede that status.
 
+- [Checkpoint v67](checkpoints/continuation-v67.json) records independently reproduced fixed-input compression of the actual 4,000-component six-poll likelihood, preserving original weights and residual evidence. Full native-graph substitution and scientific qualification remain separate work.
 - [Checkpoint v66](checkpoints/continuation-v66.json) records independent paired gasoline influence accounting and a reviewed V3 selection adapter for new stores. The full-stack weakest role remains unidentified; two independent toy snapshot reviews record restart and liveness limits. Owner runs remain separate and active.
 - [Checkpoint v65](checkpoints/continuation-v65.json) records a reviewed source-only TX graph-size measurement design and an invented V4 snapshot/acknowledgment prototype awaiting review. Neither has run the model. The cross-session messaging transport failed on attempted updates; delivery was not established, and the incomplete pickle remains preserved locally.
 - [Checkpoint v64](checkpoints/continuation-v64.json) records the successful GitHub web workflow for `98c5e23`: 200 generic end-to-end cases passed, with ten opt-in cases run successfully in the separate published-House verification. Counting and TX measurement work remain research preparation; no scientific fit or promotion follows.
