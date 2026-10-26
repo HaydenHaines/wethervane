@@ -1,4 +1,4 @@
-/** Offline authenticated local evidence. Never follow receipt-internal research paths. */
+/** Offline authenticated evidence. V2 research paths require a separately explicit operator storage root. */
 import { readPinnedHouseLiveJson } from "../lib/house-live-artifacts.ts";
 import { houseLivePin } from "../lib/house-live-result.ts";
 
@@ -23,8 +23,8 @@ export async function readHouseLivePredictionEvidence(directory, result, cache =
 
 /** Caller authenticates these local documents first. No mapping is permitted for legacy generic evidence. */
 export function resolveHouseLivePredictionPlan(result, documents) {
-  const receipts = documents.filter(document => document.value?.schema === "HouseLivePredictionReceiptV1");
-  const plans = documents.filter(document => ["HouseLivePredictionPlanV1", "HouseLiveCombinedPredictionPlanV1"]
+  const receipts = documents.filter(document => ["HouseLivePredictionReceiptV1", "HouseLivePredictionReceiptV2"].includes(document.value?.schema));
+  const plans = documents.filter(document => ["HouseLivePredictionPlanV1", "HouseLiveCombinedPredictionPlanV1", "HouseLiveCombinedPredictionPlanV2"]
     .includes(document.value?.schema));
   if (!receipts.length && !plans.length) return undefined;
   require(receipts.length === 1 && plans.length === 1,
@@ -42,6 +42,9 @@ export function resolveHouseLivePredictionPlan(result, documents) {
     plan.settings.chains === result.joint_draws.chain_count &&
     plan.settings.chains * plan.settings.draws === result.joint_draws.count,
   `Result ${result.id} prediction plan configuration or chain/draw counts disagree with its native result.`);
+  const segmented = plan.schema === "HouseLiveCombinedPredictionPlanV2";
+  require(receipt.schema === (segmented ? "HouseLivePredictionReceiptV2" : "HouseLivePredictionReceiptV1"),
+    `Result ${result.id} prediction receipt/plan storage versions disagree.`);
   const binding = { kind: plan.schema === "HouseLivePredictionPlanV1" ? "original" : "combined",
     plan: localPin(pin), receipt: localPin(receipts[0].pin) };
   if (binding.kind === "original") return binding;
@@ -62,5 +65,20 @@ export function resolveHouseLivePredictionPlan(result, documents) {
   }
   require(rows === result.joint_draws.count && chains === result.joint_draws.chain_count,
     `Result ${result.id} combined source lengths disagree with its native result.`);
+  if (segmented) {
+    const storage = plan.conditional_storage;
+    require(storage && Object.keys(storage).length === 3 && storage.schema === "ConditionalSegmentsManifestV1" &&
+      houseLivePin(storage.manifest) && storage.manifest.path.endsWith(".json") && storage.weights === "equal_weight_per_original_joint_row" &&
+      receipt.outputs.some(pin => pin.path === storage.manifest.path && pin.sha256 === storage.manifest.sha256),
+      `Result ${result.id} V2 conditional manifest or original-row weights are unbound.`);
+    const reviews = documents.filter(document => document.value?.schema === "HouseLivePredictionBindingReviewV2");
+    require(reviews.length === 1 && reviews[0].value.status === "exact_receipt_plan_and_outputs_bound" &&
+      configurationMatches(reviews[0].value.configuration, result) && houseLivePin(reviews[0].value.prediction_receipt) &&
+      reviews[0].value.prediction_receipt.sha256 === receipts[0].pin.sha256 && Array.isArray(reviews[0].value.input_pins) &&
+      reviews[0].value.input_pins.every(houseLivePin) && reviews[0].value.input_pins.some(pin => pin.path === storage.manifest.path && pin.sha256 === storage.manifest.sha256),
+      `Result ${result.id} needs one authenticated exact V2 storage binding review.`);
+    binding.conditionalStorage = { manifest: localPin(storage.manifest), plan: localPin(receipt.plan),
+      receipt: localPin(reviews[0].value.prediction_receipt) };
+  }
   return binding;
 }

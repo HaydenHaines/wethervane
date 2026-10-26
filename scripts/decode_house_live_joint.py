@@ -5,7 +5,9 @@ Accepts one JSON request on stdin. Each successful row emits exactly 435 bytes,
 one D=0/R=1/O=2 code per ordered race. This authenticates and validates the
 archive format; it does not qualify a forecast or a publication decision.
 For combined archives, an authenticated local plan supplies source-row layout.
-Its original source receipts and plans are referenced by pins, not opened here.
+V1 original source receipts/plans remain references. V2 additionally requires an
+explicit offline storage root and authenticates its manifest, original receipts,
+plans and child bytes; no research root is inferred from a receipt.
 
 NPY specification: https://numpy.org/doc/stable/reference/generated/numpy.lib.format.html
 ZIP reader: https://docs.python.org/3/library/zipfile.html
@@ -93,7 +95,7 @@ def read_request() -> dict:
         raise DecodeError("Request is not valid JSON.") from error
     base_keys = {"schema", "directory", "artifact", "count", "chainCount", "orderedRaceIds"}
     combined_keys = base_keys | {"combinedPlan", "configuration"}
-    need(isinstance(request, dict) and set(request) in (base_keys, combined_keys),
+    need(isinstance(request, dict) and set(request) in (base_keys, combined_keys, combined_keys | {"conditionalStorage"}),
          "Request fields do not match HouseLiveJointDecodeRequestV1.")
     need(request["schema"] == "HouseLiveJointDecodeRequestV1", "Unknown joint decode request schema.")
     directory = request["directory"]
@@ -103,6 +105,16 @@ def read_request() -> dict:
     if "combinedPlan" in request:
         need(valid_pin(request["combinedPlan"], ".json"), "Combined plan pin has an unsafe path or digest.")
         need(valid_configuration(request["configuration"]), "Expected combined configuration is invalid.")
+    if "conditionalStorage" in request:
+        storage = request["conditionalStorage"]
+        need(isinstance(storage, dict) and set(storage) == {"directory", "manifest", "plan", "receipt", "orderedPairRaceIds"} and
+             isinstance(storage["directory"], str) and os.path.isabs(storage["directory"]) and
+             all(valid_pin(storage[key], ".json") for key in ("manifest", "plan", "receipt")) and
+             storage["plan"]["sha256"] == request["combinedPlan"]["sha256"] and
+             isinstance(storage["orderedPairRaceIds"], list) and storage["orderedPairRaceIds"] and
+             len(set(storage["orderedPairRaceIds"])) == len(storage["orderedPairRaceIds"]) and
+             all(isinstance(race, str) and RACE_ID.fullmatch(race) for race in storage["orderedPairRaceIds"]),
+             "V2 conditional storage requires an explicit root and exact source/ordered-pair pins.")
     count, chains = request["count"], request["chainCount"]
     need(type(count) is int and 0 < count <= MAX_ROWS and type(chains) is int and
          0 < chains <= count and count % chains == 0,
@@ -169,8 +181,16 @@ def read_combined_plan(opened, request: dict) -> dict:
     expected_keys = {"schema", "issued_at", "configuration", "pilot", "settings", "source_runs",
                      "inputs", "source", "polling_error_scales", "exact_electoral_rule_simulation",
                      "source_2026_outcomes_loaded", "combination"}
+    segmented = isinstance(plan, dict) and plan.get("schema") == "HouseLiveCombinedPredictionPlanV2"
+    if segmented:
+        expected_keys |= {"conditional_storage", "group_completion"}
+        need("conditionalStorage" in request, "V2 plan requires an explicit offline conditional storage root.")
+        need(plan.get("conditional_storage") == {"schema": "ConditionalSegmentsManifestV1", "manifest": request["conditionalStorage"]["manifest"],
+             "weights": "equal_weight_per_original_joint_row"}, "V2 conditional manifest or weights differ.")
+    else:
+        need("conditionalStorage" not in request, "V1 archive must not be reinterpreted as V2 storage.")
     need(isinstance(plan, dict) and set(plan) == expected_keys and
-         plan["schema"] == "HouseLiveCombinedPredictionPlanV1" and plan["pilot"] is False and
+         plan["schema"] in {"HouseLiveCombinedPredictionPlanV1", "HouseLiveCombinedPredictionPlanV2"} and plan["pilot"] is False and
          plan["source_2026_outcomes_loaded"] is False and
          plan["exact_electoral_rule_simulation"] is False and
          isinstance(plan["issued_at"], str) and bool(plan["issued_at"]) and
@@ -350,6 +370,11 @@ def main() -> int:
                 verify_sha(plan_opened, request["combinedPlan"]["sha256"], plan_initial,
                            plan_path, "Combined plan")
                 combined_plan = read_combined_plan(plan_opened, request)
+                if combined_plan["schema"] == "HouseLiveCombinedPredictionPlanV2":
+                    from house_live_conditional_storage import verify_prediction_storage
+                    storage = request["conditionalStorage"]
+                    verified = verify_prediction_storage(storage["directory"], storage["manifest"], storage["plan"], storage["receipt"], storage["orderedPairRaceIds"])
+                    need(verified["rows"] == request["count"] and verified["chains"] == request["chainCount"], "V2 conditional and joint row/chain counts differ.")
             verify_sha(opened, request["artifact"]["sha256"], initial, artifact)
             validate_archive(opened, request, combined_plan)
             verify_sha(opened, request["artifact"]["sha256"], initial, artifact)

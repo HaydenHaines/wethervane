@@ -59,7 +59,7 @@ async function installNoReplace(parent, staging, output, pythonExecutable) {
 }
 
 export async function importHouseLive({ sourceRoot, catalog: catalogPin, reviewRoot, review: reviewPin,
-  geographySource, outputDirectory, pythonExecutable, polling } = {}) {
+  geographySource, outputDirectory, pythonExecutable, polling, conditionalStorageRoot } = {}) {
   require([sourceRoot, reviewRoot, outputDirectory].every(value => typeof value === "string" && value.length > 0),
     "Explicit source root, review root, and output directory are required.");
   require(geographySource && plainText(geographySource.name) && plainText(geographySource.url) &&
@@ -80,6 +80,12 @@ export async function importHouseLive({ sourceRoot, catalog: catalogPin, reviewR
   }
   await assertAbsent(output);
 
+  let conditionalRoot;
+  if (conditionalStorageRoot !== undefined) {
+    require(typeof conditionalStorageRoot === "string" && conditionalStorageRoot.length > 0, "Invalid offline conditional storage root.");
+    conditionalRoot = await realpath(conditionalStorageRoot);
+    require(!inside(conditionalRoot, output), "Live House output must be outside the read-only conditional storage root.");
+  }
   const files = new Map();
   let reservedReviewPath;
   function stage(path, bytes) {
@@ -156,7 +162,7 @@ export async function importHouseLive({ sourceRoot, catalog: catalogPin, reviewR
   for (const result of results) require(!files.has(result.joint_draws.path),
     "A staged artifact path conflicts with a raw joint archive.");
 
-  const evidenceValues = new Map(), stagedEvidence = new Set(), evidenceByResult = new Map(), combinedPlans = new Map();
+  const evidenceValues = new Map(), stagedEvidence = new Set(), evidenceByResult = new Map(), combinedPlans = new Map(), conditionalStorages = new Map();
   for (const result of results) {
     const documents = await readHouseLivePredictionEvidence(root, result, evidenceValues);
     for (const { pin } of documents) {
@@ -169,6 +175,10 @@ export async function importHouseLive({ sourceRoot, catalog: catalogPin, reviewR
     evidenceByResult.set(result.id, documents);
     const binding = resolveHouseLivePredictionPlan(result, documents);
     combinedPlans.set(result.id, binding?.kind === "combined" ? binding.plan : undefined);
+    if (binding?.conditionalStorage) {
+      require(conditionalRoot, "V2 import requires an explicit offline conditional storage root.");
+      conditionalStorages.set(result.id, { ...binding.conditionalStorage, directory: conditionalRoot });
+    }
   }
   for (const result of results) require(!files.has(result.joint_draws.path),
     "A staged evidence path conflicts with a raw joint archive.");
@@ -205,6 +215,7 @@ export async function importHouseLive({ sourceRoot, catalog: catalogPin, reviewR
     const checked = await checkHouseLiveJointArchive(root, result, {
       seatQuantileConvention: review.seat_quantile_convention,
       ...(combinedPlans.get(result.id) ? { combinedPlan: combinedPlans.get(result.id) } : {}),
+      ...(conditionalStorages.get(result.id) ? { conditionalStorage: conditionalStorages.get(result.id) } : {}),
       ...(pythonExecutable === undefined ? {} : { pythonExecutable }),
     });
     jointRowsChecked += checked.rowsChecked;
@@ -245,7 +256,7 @@ async function main() {
     "--source-root": "sourceRoot", "--catalog": "catalogPath", "--catalog-sha256": "catalogSha256",
     "--review-root": "reviewRoot", "--review": "reviewPath", "--review-sha256": "reviewSha256",
     "--geography-source-name": "geographyName", "--geography-source-url": "geographyUrl",
-    "--geography-source-note": "geographyNote", "--output-dir": "outputDirectory", "--python": "pythonExecutable",
+    "--geography-source-note": "geographyNote", "--output-dir": "outputDirectory", "--python": "pythonExecutable", "--conditional-storage-root": "conditionalStorageRoot",
     "--polling-root": "pollingRoot", "--polling-receipt": "pollingReceipt", "--polling-receipt-sha256": "pollingReceiptSha256",
     "--polling-ledger": "pollingLedger", "--polling-ledger-sha256": "pollingLedgerSha256",
   };

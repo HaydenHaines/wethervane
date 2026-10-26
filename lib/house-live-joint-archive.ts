@@ -10,12 +10,15 @@ export interface HouseLiveJointArchiveOptions extends HouseLiveJointCheckOptions
   signal?: AbortSignal;
   /** Explicit local evidence pin. No original research path is inferred or followed. */
   combinedPlan?: HouseLivePin;
+  /** Explicit offline owner root, never inferred from evidence-internal paths. V2 only. */
+  conditionalStorage?: { directory: string; manifest: HouseLivePin; plan: HouseLivePin; receipt: HouseLivePin };
 }
 export interface HouseLiveJointArchiveCheck extends HouseLiveJointCheck {
   artifactSha256: string;
   archiveFormat: "house_live_npz_chain_major_v1" | "house_live_npz_combined_chain_major_v1";
   seatQuantileConvention: "inverse_cdf" | "linear";
   combinedPlanSha256?: string;
+  conditionalStorageManifestSha256?: string;
 }
 
 /**
@@ -32,6 +35,9 @@ export async function checkHouseLiveJointArchive(directory: string, input: House
   if (typeof directory !== "string" || !directory.length) throw Error("An explicit archive source directory is required.");
   if (options.combinedPlan !== undefined && !houseLivePin(options.combinedPlan))
     throw Error("A valid explicit local combined-plan pin is required.");
+  if (options.conditionalStorage && (!options.combinedPlan || typeof options.conditionalStorage.directory !== "string" ||
+    !options.conditionalStorage.directory.length || ![options.conditionalStorage.manifest, options.conditionalStorage.plan, options.conditionalStorage.receipt].every(houseLivePin)))
+    throw Error("V2 archive verification requires an explicit conditional root and valid manifest/plan/receipt pins.");
   const decoder = fileURLToPath(new URL("../scripts/decode_house_live_joint.py", import.meta.url));
   const child = spawn(options.pythonExecutable ?? "python3", [decoder], {
     stdio: ["pipe", "pipe", "pipe"], signal: options.signal,
@@ -48,7 +54,9 @@ export async function checkHouseLiveJointArchive(directory: string, input: House
     count: result.joint_draws.count, chainCount: result.joint_draws.chain_count,
     orderedRaceIds: result.joint_draws.ordered_race_ids,
     ...(options.combinedPlan === undefined ? {} : { combinedPlan: options.combinedPlan,
-      configuration: { id: result.id, ...result.configuration } }) }));
+      configuration: { id: result.id, ...result.configuration } }),
+    ...(options.conditionalStorage ? { conditionalStorage: { ...options.conditionalStorage,
+      orderedPairRaceIds: result.races.filter(race => race.conditional_shares !== null).map(race => race.race_id) } } : {}) }));
 
   async function* rows(): AsyncGenerator<number[]> {
     let remainder = Buffer.alloc(0);
@@ -71,7 +79,8 @@ export async function checkHouseLiveJointArchive(directory: string, input: House
     return { ...checked, artifactSha256: result.joint_draws.sha256,
       archiveFormat: options.combinedPlan ? "house_live_npz_combined_chain_major_v1" : "house_live_npz_chain_major_v1",
       seatQuantileConvention: options.seatQuantileConvention,
-      ...(options.combinedPlan ? { combinedPlanSha256: options.combinedPlan.sha256 } : {}) };
+      ...(options.combinedPlan ? { combinedPlanSha256: options.combinedPlan.sha256 } : {}),
+      ...(options.conditionalStorage ? { conditionalStorageManifestSha256: options.conditionalStorage.manifest.sha256 } : {}) };
   } finally {
     // On a numerical mismatch the reader stops early; terminate only our own helper.
     if (child.exitCode === null && child.signalCode === null) child.kill();

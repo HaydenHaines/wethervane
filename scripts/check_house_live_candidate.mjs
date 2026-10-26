@@ -10,7 +10,7 @@ import { readHouseLivePredictionEvidence, resolveHouseLivePredictionPlan } from 
 const require = (condition, message) => { if (!condition) throw Error(message); };
 
 export async function checkHouseLiveCandidate({ sourceRoot, result: resultPin, seatQuantileConvention,
-  pythonExecutable } = {}) {
+  pythonExecutable, conditionalStorageRoot } = {}) {
   require(typeof sourceRoot === "string" && sourceRoot.length > 0, "An explicit candidate source root is required.");
   require(["inverse_cdf", "linear"].includes(seatQuantileConvention),
     "An explicit candidate seat-quantile convention is required.");
@@ -22,8 +22,11 @@ export async function checkHouseLiveCandidate({ sourceRoot, result: resultPin, s
   const evidence = await readHouseLivePredictionEvidence(root, result);
   const binding = resolveHouseLivePredictionPlan(result, evidence);
   require(binding, "Candidate verification requires an authenticated local prediction receipt and plan pair.");
+  if (binding.conditionalStorage) require(typeof conditionalStorageRoot === "string" && conditionalStorageRoot.length > 0,
+    "V2 verification requires an explicit offline conditional storage root.");
   const jointArchive = await checkHouseLiveJointArchive(root, result, { seatQuantileConvention,
     ...(binding.kind === "combined" ? { combinedPlan: binding.plan } : {}),
+    ...(binding.conditionalStorage ? { conditionalStorage: { ...binding.conditionalStorage, directory: await realpath(conditionalStorageRoot) } } : {}),
     ...(pythonExecutable === undefined ? {} : { pythonExecutable }) });
   return { schema: "HouseLiveCandidateVerificationV1", publicationAdmission: false,
     notice: "Offline joint-row consistency verification only; this does not admit the candidate for publication.",
@@ -35,7 +38,7 @@ export async function checkHouseLiveCandidate({ sourceRoot, result: resultPin, s
 
 async function main() {
   const options = {}, names = { "--source-root": "sourceRoot", "--result": "resultPath",
-    "--result-sha256": "resultSha256", "--seat-quantile-convention": "seatQuantileConvention", "--python": "pythonExecutable" };
+    "--result-sha256": "resultSha256", "--seat-quantile-convention": "seatQuantileConvention", "--python": "pythonExecutable", "--conditional-storage-root": "conditionalStorageRoot" };
   const args = process.argv.slice(2);
   for (let index = 0; index < args.length; index += 2) {
     const name = names[args[index]];
