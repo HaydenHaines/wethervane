@@ -1,0 +1,156 @@
+{
+  "schema": "M01IndependentCalibrationSourceChallengeReviewV1",
+  "review_date": "2026-10-26",
+  "reviewer_role": "independent primary-source and local-pin challenge",
+  "reviewed_packet": "research/improvement-loop-20261024/m01-calibration-source-provenance-sol-v1",
+  "verdict": "no_material_overclaim_found",
+  "scope": "Read-only challenge of provenance claims, primary-source lineage, 538 alternatives, and exact local pins. No acquisition of poll data, protected labels, capsule contents, or model fitting.",
+  "findings": [
+    "Tierney/Volfovsky section 3 says it relies on Senate polls collected in Chen, Garnett, and Montgomery (1992–2020), but this does not authenticate the exact transformation or byte identity between the Dataverse capsule and Tierney CSV.",
+    "The exact local Tierney CSV hash and Git blob pin establish identity with the cited author-repository snapshot dated 2023-03-08. They do not establish original poll publication timestamps, sample identity, or a pre-2018/pre-2020 source vintage.",
+    "The indexed Harvard Dataverse DOI record identifies a 2021 V1 dataset. That supports dataset-version existence by 2021 only; it does not prove constituent poll release times or historical byte vintage for earlier elections. Dataverse/Code Ocean content was not independently acquired or inspected.",
+    "FiveThirtyEight State of the Polls README describes its 2012/2016/2020 files as part of a retrospective 2024 story and explicitly dates only the 2024 file publication cutoff. Its pollster-ratings README defines polldate as median field date. These are not per-poll historical release evidence.",
+    "The local FiveThirtyEight intake documentation accurately calls its March 2025 snapshot and created_at plus one day rule a proxy. Treat it as a separately versioned linkage or coverage sensitivity, not verified release time or independent rows to concatenate.",
+    "The report correctly preserves unknowns, distinguishes earlier event cycles from pre-target source-byte vintage, records access failures, and makes no source-admission or fit claim."
+  ],
+  "primary_sources": [
+    {
+      "title": "Tierney and Volfovsky, Bias and Excess Variance in Election Polling: A Not-So-Hidden Markov Model, section 3",
+      "url": "https://arxiv.org/pdf/2206.14570",
+      "relevant_location": "PDF page 4, lines 163-168 in web extraction",
+      "supports": "Senate polling data are said to come from Chen, Garnett, and Montgomery; this is source lineage context, not exact transformed-file authentication."
+    },
+    {
+      "title": "Chen, Garnett, and Montgomery, official Harvard Dataverse V1 record",
+      "url": "https://doi.org/10.7910/DVN/GNHESM",
+      "supports": "A versioned 2021 research dataset record; not individual poll release-time evidence."
+    },
+    {
+      "title": "FiveThirtyEight State of the Polls 2024 README",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/state-of-the-polls-2024/README.md",
+      "relevant_location": "Description of 2012/2016/2020 and 2024 files",
+      "supports": "Historical-cycle files occur in a retrospective 2024 dataset; only the 2024 file has an explicit publication cutoff."
+    },
+    {
+      "title": "FiveThirtyEight pollster-ratings README",
+      "url": "https://github.com/fivethirtyeight/data/blob/master/pollster-ratings/README.md",
+      "relevant_location": "raw-polls.csv codebook",
+      "supports": "polldate is median field date; not publication date."
+    },
+    {
+      "title": "Tierney and Volfovsky pinned replication repository commit",
+      "url": "https://github.com/g-tierney/polling_errors_replication/tree/4aba5bc539dde8157bb2eeae9f3330a01439c19d",
+      "supports": "Pinned author replication source location and commit."
+    },
+    {
+      "title": "Tierney pinned preparation script",
+      "url": "https://github.com/g-tierney/polling_errors_replication/blob/4aba5bc539dde8157bb2eeae9f3330a01439c19d/scripts/01_model_prepare_input.R",
+      "supports": "Author preparation script used to inspect the pinned source path."
+    }
+  ],
+  "reviewed_local_files": [
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-calibration-source-provenance-sol-v1/report.json",
+      "sha256": "1819877a8029c84d470ca5b4f7a0209ee01e2496a476bb61da222ee5f981475f",
+      "matches_pinned_value": true
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-calibration-source-provenance-sol-v1/access-log.json",
+      "sha256": "66c935fbb242021f610bdb7a903c53345a7c68bff5421acf301f2a114bdafe42",
+      "matches_pinned_value": true
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-calibration-source-provenance-sol-v1/README.md",
+      "sha256": "5589d34f959193a9ba58ce50450691e282ac1c2f06a7f9c430c1c44cf4c27348",
+      "matches_pinned_value": true
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-calibration-source-provenance-sol-v1/verification.json",
+      "sha256": "49221cefd97a2840d4dd655dde1ee3a198f766ed88ee1b44773d6567fbb1f9c3",
+      "matches_pinned_value": null
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-calibration-preparation-sol-v1/prepared-v1/2018/selected-training-polls.csv",
+      "sha256": "df682ca44d043cdc9ff6372448f205769bf763197ddfaa17c109aaaa21974e21",
+      "matches_pinned_value": true
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-calibration-preparation-sol-v1/prepared-v1/2018/earlier-outcomes.csv",
+      "sha256": "285cfdcec24628f40f63963c1ba4576eb9051587ba173f173c78767308087fbc",
+      "matches_pinned_value": true
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-calibration-preparation-sol-v1/prepared-v1/2022/selected-training-polls.csv",
+      "sha256": "2cfe745917c250bd128fd3664357abaefa3e74fadd54b12f24d4cb914ef70a79",
+      "matches_pinned_value": true
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-calibration-preparation-sol-v1/prepared-v1/2022/earlier-outcomes.csv",
+      "sha256": "b38537de9c3cb512ca6a35ce9db909c9813519afaaa67124abe9961c9e42fbd7",
+      "matches_pinned_value": true
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-calibration-preparation-sol-v1/prepared-v1/2020/selected-training-polls.csv",
+      "sha256": "22d1e4f6b325fe28a53b97a0d4a4bcd9102ff48e869d4667dbe75f14fb454a56",
+      "matches_pinned_value": true
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-calibration-preparation-sol-v1/prepared-v1/2020/earlier-outcomes.csv",
+      "sha256": "7c2f52610d0ae2e499abdbabdb4fe030c4e7594e5e106be8189c875b801e9749",
+      "matches_pinned_value": true
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-calibration-preparation-sol-v1/prepared-v1/2024/selected-training-polls.csv",
+      "sha256": "2cfe745917c250bd128fd3664357abaefa3e74fadd54b12f24d4cb914ef70a79",
+      "matches_pinned_value": true
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-calibration-preparation-sol-v1/prepared-v1/2024/earlier-outcomes.csv",
+      "sha256": "b38537de9c3cb512ca6a35ce9db909c9813519afaaa67124abe9961c9e42fbd7",
+      "matches_pinned_value": true
+    },
+    {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/historical-intake-sol/README.md",
+      "sha256": "bb8c1567e81b6afb207a6ede994accd53ac513a3d3dba4fccc6002bad6b379dc",
+      "matches_pinned_value": true
+    },
+    {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/historical-intake-sol/source_receipt.json",
+      "sha256": "2fd7ba167d48a68d92adbee11a47a7c92bda8f789fd7cc6847ab0804dbfe7173",
+      "matches_pinned_value": true
+    },
+    {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/historical-intake-sol/raw/tierney-polls_cnn_dataset.csv",
+      "sha256": "61e1141f5ed84cfbbec487115742f59c6e20ebd04ba99a0a32f08d8fa2b20322",
+      "matches_pinned_value": true
+    },
+    {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/historical-intake-sol/raw/tierney-01_model_prepare_input.R",
+      "sha256": "c155c83015d83caba56928aad48279d1255e279cc256f13a71014f5f2be0d891",
+      "matches_pinned_value": true
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-calibration-preparation-review-sol-v1/REPORT.md",
+      "sha256": "c8ebe5732fded357a4ff74df35b5f330c6bdbcc250907fecf8a9976b8739cd79",
+      "matches_pinned_value": true
+    },
+    {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/coordination-frontend-20261026/m01-historical-poll-source-response-v1.md",
+      "sha256": "5767dbdbb64fe2771b2d421597817620b5b015ece404a03a7649233d55334f61",
+      "matches_pinned_value": true
+    },
+    {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/tx-disjoint-calibration-sol-v1/attempt-v1/selected-disjoint-training.csv",
+      "sha256": "151a14846e850ff0b4537897a29faa772a5a5e0a81f8cd92f41fcdec202dcb61",
+      "matches_pinned_value": true
+    }
+  ],
+  "boundaries": {
+    "source_admission": false,
+    "model_fit": false,
+    "poll_data_acquired": false,
+    "protected_labels_read": false,
+    "external_capsule_content_verified": false,
+    "mutable_upstream_pages_pinned_by_local_content_hash": false
+  }
+}

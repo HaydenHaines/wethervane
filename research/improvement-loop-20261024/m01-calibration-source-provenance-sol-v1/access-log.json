@@ -1,0 +1,31 @@
+{
+  "schema": "M01ProvenanceAccessLogV1",
+  "attempts": [
+    {
+      "url": "https://dataverse.harvard.edu/api/datasets/:persistentId/?persistentId=doi:10.7910/DVN/GNHESM",
+      "method": "urllib stdlib",
+      "result": "HTTP403; no metadata/capsule bytes acquired"
+    },
+    {
+      "url": "https://doi.org/10.7910/DVN/GNHESM",
+      "method": "web.open",
+      "result": "HTTP500 redirect unavailable"
+    },
+    {
+      "url": "https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/GNHESM",
+      "method": "web.open",
+      "result": "Javascript anti-robot page; no file ID"
+    },
+    {
+      "url": "https://doi.org/10.24433/CO.4154884.v1",
+      "method": "web.open",
+      "result": "not accessible via tool"
+    },
+    {
+      "url": "https://api.github.com/repos/g-tierney/polling_errors_replication/commits?path=data/polls_cnn_dataset.csv&per_page=100",
+      "method": "web.open",
+      "result": "not accessible via tool; no file-history timing inferred"
+    }
+  ],
+  "largeArchiveDownloaded": false
+}

@@ -1,0 +1,506 @@
+{
+  "schema": "M01HistoricalCalibrationSourceProvenanceV1",
+  "source": {
+    "repository": "https://github.com/g-tierney/polling_errors_replication",
+    "commit": "4aba5bc539dde8157bb2eeae9f3330a01439c19d",
+    "commit_date": "2023-03-08T15:12:51Z",
+    "path": "data/polls_cnn_dataset.csv",
+    "blob": "2b397788b99435522a7f051a4040bcd913c693f6",
+    "fetch_url": "https://api.github.com/repos/g-tierney/polling_errors_replication/git/blobs/2b397788b99435522a7f051a4040bcd913c693f6",
+    "local_path": "raw/tierney-polls_cnn_dataset.csv",
+    "bytes": 688043,
+    "sha256": "61e1141f5ed84cfbbec487115742f59c6e20ebd04ba99a0a32f08d8fa2b20322",
+    "senate_cycles": "1992 through 2020, even years",
+    "exported_cycles": [
+      2012,
+      2016,
+      2018,
+      2020
+    ],
+    "license": "No LICENSE file in the inspected repository tree; repository access and replication intent do not establish redistribution permission",
+    "upstream_lineage": "File is named CNN; author preparation script selects it for Senatorial analysis. Original pollster release provenance and reconstruction method remain unverified"
+  },
+  "gitBlobVerified": "2b397788b99435522a7f051a4040bcd913c693f6",
+  "folds": [
+    {
+      "target": 2018,
+      "tier": "A",
+      "preparedRows": 930,
+      "preparedCycles": [
+        "2012",
+        "2016"
+      ],
+      "earlierOutcomeRows": 62,
+      "strictEarlierEventCycleCheck": true,
+      "strictPreTargetByteVintageEstablished": false,
+      "strictAsOfQualified": false,
+      "currentDisjointBankCompatibleRowCount": 930,
+      "additionalExcludedRows": [],
+      "preparedPolls": {
+        "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-calibration-preparation-sol-v1/prepared-v1/2018/selected-training-polls.csv",
+        "sha256": "df682ca44d043cdc9ff6372448f205769bf763197ddfaa17c109aaaa21974e21"
+      },
+      "preparedLabels": {
+        "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-calibration-preparation-sol-v1/prepared-v1/2018/earlier-outcomes.csv",
+        "sha256": "285cfdcec24628f40f63963c1ba4576eb9051587ba173f173c78767308087fbc"
+      },
+      "qualification": "Existing retrospective earlier-cycle preparation only; not an admitted M01 historical bank."
+    },
+    {
+      "target": 2022,
+      "tier": "A",
+      "preparedRows": 1514,
+      "preparedCycles": [
+        "2012",
+        "2016",
+        "2018",
+        "2020"
+      ],
+      "earlierOutcomeRows": 118,
+      "strictEarlierEventCycleCheck": true,
+      "strictPreTargetByteVintageEstablished": false,
+      "strictAsOfQualified": false,
+      "currentDisjointBankCompatibleRowCount": 1483,
+      "additionalExcludedRows": [
+        {
+          "observation_id": "tierney_cnn:row:5049",
+          "race_id": "2020:TX:senate:regular",
+          "reason": "not_in_current_TX_event_disjoint_bank"
+        },
+        {
+          "observation_id": "tierney_cnn:row:5063",
+          "race_id": "2020:TX:senate:regular",
+          "reason": "not_in_current_TX_event_disjoint_bank"
+        },
+        {
+          "observation_id": "tierney_cnn:row:5092",
+          "race_id": "2020:TX:senate:regular",
+          "reason": "not_in_current_TX_event_disjoint_bank"
+        },
+        {
+          "observation_id": "tierney_cnn:row:5099",
+          "race_id": "2020:TX:senate:regular",
+          "reason": "not_in_current_TX_event_disjoint_bank"
+        },
+        {
+          "observation_id": "tierney_cnn:row:5121",
+          "race_id": "2020:TX:senate:regular",
+          "reason": "not_in_current_TX_event_disjoint_bank"
+        },
+        {
+          "observation_id": "tierney_cnn:row:5124",
+          "race_id": "2020:TX:senate:regular",
+          "reason": "not_in_current_TX_event_disjoint_bank"
+        },
+        {
+          "observation_id": "tierney_cnn:row:5162",
+          "race_id": "2020:TX:senate:regular",
+          "reason": "not_in_current_TX_event_disjoint_bank"
+        },
+        {
+          "observation_id": "tierney_cnn:row:5171",
+          "race_id": "2020:TX:senate:regular",
+          "reason": "not_in_current_TX_event_disjoint_bank"
+        },
+        {
+          "observation_id": "tierney_cnn:row:5174",
+          "race_id": "2020:TX:senate:regular",
+          "reason": "not_in_current_TX_event_disjoint_bank"
+        },
+        {
+          "observation_id": "tierney_cnn:row:5201",
+          "race_id": "2020:TX:senate:regular",
+          "reason": "not_in_current_TX_event_disjoint_bank"
+        },
+        {
+          "observation_id": "tierney_cnn:row:5207",
+          "race_id": "2020:TX:senate:regular",
+          "reason": "not_in_current_TX_event_disjoint_bank"
+        },
+        {
+          "observation_id": "tierney_cnn:row:5208",
+          "race_id": "2020:TX:senate:regular",
+          "reason": "not_in_current_TX_event_disjoint_bank"
+        },
+        {
+          "observation_id": "tierney_cnn:row:5215",
+          "race_id": "2020:TX:senate:regular",
+          "reason": "not_in_current_TX_event_disjoint_bank"
+        },
+        {
+          "observation_id": "tierney_cnn:row:5216",
+          "race_id": "2020:TX:senate:regular",
+          "reason": "not_in_current_TX_event_disjoint_bank"
+        },
+        {
+          "observation_id": "tierney_cnn:row:5223",
+          "race_id": "2020:TX:senate:regular",
+          "reason": "not_in_current_TX_event_disjoint_bank"
+        },
+        {
+          "observation_id": "tierney_cnn:row:5237",
+          "race_id": "2020:TX:senate:regular",
+          "reason": "not_in_current_TX_event_disjoint_bank"
+        },
+        {
+          "observation_id": "tierney_cnn:row:5272",
+          "race_id": "2020:TX:senate:regular",
+          "reason": "not_in_current_TX_event_disjoint_bank"
+        },
+        {
+          "observation_id": "tierney_cnn:row:5284",
+          "race_id": "2020:TX:senate:regular",
+          "reason": "not_in_current_TX_event_disjoint_bank"
+        },
+        {
+          "observation_id": "tierney_cnn:row:5286",
+          "race_id": "2020:TX:senate:regular",
+          "reason": "not_in_current_TX_event_disjoint_bank"
+        },
+        {
+          "observation_id": "tierney_cnn:row:5306",
+          "race_id": "2020:TX:senate:regular",
+          "reason": "not_in_current_TX_event_disjoint_bank"
+        },
+        {
+          "observation_id": "tierney_cnn:row:5331",
+          "race_id": "2020:TX:senate:regular",
+          "reason": "not_in_current_TX_event_disjoint_bank"
+        },
+        {
+          "observation_id": "tierney_cnn:row:5340",
+          "race_id": "2020:TX:senate:regular",
+          "reason": "not_in_current_TX_event_disjoint_bank"
+        },
+        {
+          "observation_id": "tierney_cnn:row:5342",
+          "race_id": "2020:TX:senate:regular",
+          "reason": "not_in_current_TX_event_disjoint_bank"
+        },
+        {
+          "observation_id": "tierney_cnn:row:5345",
+          "race_id": "2020:TX:senate:regular",
+          "reason": "not_in_current_TX_event_disjoint_bank"
+        },
+        {
+          "observation_id": "tierney_cnn:row:5360",
+          "race_id": "2020:TX:senate:regular",
+          "reason": "not_in_current_TX_event_disjoint_bank"
+        },
+        {
+          "observation_id": "tierney_cnn:row:5367",
+          "race_id": "2020:TX:senate:regular",
+          "reason": "not_in_current_TX_event_disjoint_bank"
+        },
+        {
+          "observation_id": "tierney_cnn:row:5376",
+          "race_id": "2020:TX:senate:regular",
+          "reason": "not_in_current_TX_event_disjoint_bank"
+        },
+        {
+          "observation_id": "tierney_cnn:row:5426",
+          "race_id": "2020:TX:senate:regular",
+          "reason": "not_in_current_TX_event_disjoint_bank"
+        },
+        {
+          "observation_id": "tierney_cnn:row:5436",
+          "race_id": "2020:TX:senate:regular",
+          "reason": "not_in_current_TX_event_disjoint_bank"
+        },
+        {
+          "observation_id": "tierney_cnn:row:5437",
+          "race_id": "2020:TX:senate:regular",
+          "reason": "not_in_current_TX_event_disjoint_bank"
+        },
+        {
+          "observation_id": "tierney_cnn:row:5446",
+          "race_id": "2020:TX:senate:regular",
+          "reason": "not_in_current_TX_event_disjoint_bank"
+        }
+      ],
+      "preparedPolls": {
+        "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-calibration-preparation-sol-v1/prepared-v1/2022/selected-training-polls.csv",
+        "sha256": "2cfe745917c250bd128fd3664357abaefa3e74fadd54b12f24d4cb914ef70a79"
+      },
+      "preparedLabels": {
+        "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-calibration-preparation-sol-v1/prepared-v1/2022/earlier-outcomes.csv",
+        "sha256": "b38537de9c3cb512ca6a35ce9db909c9813519afaaa67124abe9961c9e42fbd7"
+      },
+      "qualification": "Existing retrospective earlier-cycle preparation only; not an admitted M01 historical bank."
+    },
+    {
+      "target": 2020,
+      "tier": "B",
+      "preparedRows": 1218,
+      "preparedCycles": [
+        "2012",
+        "2016",
+        "2018"
+      ],
+      "earlierOutcomeRows": 90,
+      "strictEarlierEventCycleCheck": true,
+      "strictPreTargetByteVintageEstablished": false,
+      "strictAsOfQualified": false,
+      "currentDisjointBankCompatibleRowCount": 1218,
+      "additionalExcludedRows": [],
+      "preparedPolls": {
+        "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-calibration-preparation-sol-v1/prepared-v1/2020/selected-training-polls.csv",
+        "sha256": "22d1e4f6b325fe28a53b97a0d4a4bcd9102ff48e869d4667dbe75f14fb454a56"
+      },
+      "preparedLabels": {
+        "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-calibration-preparation-sol-v1/prepared-v1/2020/earlier-outcomes.csv",
+        "sha256": "7c2f52610d0ae2e499abdbabdb4fe030c4e7594e5e106be8189c875b801e9749"
+      },
+      "qualification": "Existing retrospective earlier-cycle preparation only; not an admitted M01 historical bank."
+    },
+    {
+      "target": 2024,
+      "tier": "B",
+      "preparedRows": 1514,
+      "preparedCycles": [
+        "2012",
+        "2016",
+        "2018",
+        "2020"
+      ],
+      "earlierOutcomeRows": 118,
+      "strictEarlierEventCycleCheck": true,
+      "strictPreTargetByteVintageEstablished": false,
+      "strictAsOfQualified": false,
+      "currentDisjointBankCompatibleRowCount": 1483,
+      "additionalExcludedRows": [
+        {
+          "observation_id": "tierney_cnn:row:5049",
+          "race_id": "2020:TX:senate:regular",
+          "reason": "not_in_current_TX_event_disjoint_bank"
+        },
+        {
+          "observation_id": "tierney_cnn:row:5063",
+          "race_id": "2020:TX:senate:regular",
+          "reason": "not_in_current_TX_event_disjoint_bank"
+        },
+        {
+          "observation_id": "tierney_cnn:row:5092",
+          "race_id": "2020:TX:senate:regular",
+          "reason": "not_in_current_TX_event_disjoint_bank"
+        },
+        {
+          "observation_id": "tierney_cnn:row:5099",
+          "race_id": "2020:TX:senate:regular",
+          "reason": "not_in_current_TX_event_disjoint_bank"
+        },
+        {
+          "observation_id": "tierney_cnn:row:5121",
+          "race_id": "2020:TX:senate:regular",
+          "reason": "not_in_current_TX_event_disjoint_bank"
+        },
+        {
+          "observation_id": "tierney_cnn:row:5124",
+          "race_id": "2020:TX:senate:regular",
+          "reason": "not_in_current_TX_event_disjoint_bank"
+        },
+        {
+          "observation_id": "tierney_cnn:row:5162",
+          "race_id": "2020:TX:senate:regular",
+          "reason": "not_in_current_TX_event_disjoint_bank"
+        },
+        {
+          "observation_id": "tierney_cnn:row:5171",
+          "race_id": "2020:TX:senate:regular",
+          "reason": "not_in_current_TX_event_disjoint_bank"
+        },
+        {
+          "observation_id": "tierney_cnn:row:5174",
+          "race_id": "2020:TX:senate:regular",
+          "reason": "not_in_current_TX_event_disjoint_bank"
+        },
+        {
+          "observation_id": "tierney_cnn:row:5201",
+          "race_id": "2020:TX:senate:regular",
+          "reason": "not_in_current_TX_event_disjoint_bank"
+        },
+        {
+          "observation_id": "tierney_cnn:row:5207",
+          "race_id": "2020:TX:senate:regular",
+          "reason": "not_in_current_TX_event_disjoint_bank"
+        },
+        {
+          "observation_id": "tierney_cnn:row:5208",
+          "race_id": "2020:TX:senate:regular",
+          "reason": "not_in_current_TX_event_disjoint_bank"
+        },
+        {
+          "observation_id": "tierney_cnn:row:5215",
+          "race_id": "2020:TX:senate:regular",
+          "reason": "not_in_current_TX_event_disjoint_bank"
+        },
+        {
+          "observation_id": "tierney_cnn:row:5216",
+          "race_id": "2020:TX:senate:regular",
+          "reason": "not_in_current_TX_event_disjoint_bank"
+        },
+        {
+          "observation_id": "tierney_cnn:row:5223",
+          "race_id": "2020:TX:senate:regular",
+          "reason": "not_in_current_TX_event_disjoint_bank"
+        },
+        {
+          "observation_id": "tierney_cnn:row:5237",
+          "race_id": "2020:TX:senate:regular",
+          "reason": "not_in_current_TX_event_disjoint_bank"
+        },
+        {
+          "observation_id": "tierney_cnn:row:5272",
+          "race_id": "2020:TX:senate:regular",
+          "reason": "not_in_current_TX_event_disjoint_bank"
+        },
+        {
+          "observation_id": "tierney_cnn:row:5284",
+          "race_id": "2020:TX:senate:regular",
+          "reason": "not_in_current_TX_event_disjoint_bank"
+        },
+        {
+          "observation_id": "tierney_cnn:row:5286",
+          "race_id": "2020:TX:senate:regular",
+          "reason": "not_in_current_TX_event_disjoint_bank"
+        },
+        {
+          "observation_id": "tierney_cnn:row:5306",
+          "race_id": "2020:TX:senate:regular",
+          "reason": "not_in_current_TX_event_disjoint_bank"
+        },
+        {
+          "observation_id": "tierney_cnn:row:5331",
+          "race_id": "2020:TX:senate:regular",
+          "reason": "not_in_current_TX_event_disjoint_bank"
+        },
+        {
+          "observation_id": "tierney_cnn:row:5340",
+          "race_id": "2020:TX:senate:regular",
+          "reason": "not_in_current_TX_event_disjoint_bank"
+        },
+        {
+          "observation_id": "tierney_cnn:row:5342",
+          "race_id": "2020:TX:senate:regular",
+          "reason": "not_in_current_TX_event_disjoint_bank"
+        },
+        {
+          "observation_id": "tierney_cnn:row:5345",
+          "race_id": "2020:TX:senate:regular",
+          "reason": "not_in_current_TX_event_disjoint_bank"
+        },
+        {
+          "observation_id": "tierney_cnn:row:5360",
+          "race_id": "2020:TX:senate:regular",
+          "reason": "not_in_current_TX_event_disjoint_bank"
+        },
+        {
+          "observation_id": "tierney_cnn:row:5367",
+          "race_id": "2020:TX:senate:regular",
+          "reason": "not_in_current_TX_event_disjoint_bank"
+        },
+        {
+          "observation_id": "tierney_cnn:row:5376",
+          "race_id": "2020:TX:senate:regular",
+          "reason": "not_in_current_TX_event_disjoint_bank"
+        },
+        {
+          "observation_id": "tierney_cnn:row:5426",
+          "race_id": "2020:TX:senate:regular",
+          "reason": "not_in_current_TX_event_disjoint_bank"
+        },
+        {
+          "observation_id": "tierney_cnn:row:5436",
+          "race_id": "2020:TX:senate:regular",
+          "reason": "not_in_current_TX_event_disjoint_bank"
+        },
+        {
+          "observation_id": "tierney_cnn:row:5437",
+          "race_id": "2020:TX:senate:regular",
+          "reason": "not_in_current_TX_event_disjoint_bank"
+        },
+        {
+          "observation_id": "tierney_cnn:row:5446",
+          "race_id": "2020:TX:senate:regular",
+          "reason": "not_in_current_TX_event_disjoint_bank"
+        }
+      ],
+      "preparedPolls": {
+        "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-calibration-preparation-sol-v1/prepared-v1/2024/selected-training-polls.csv",
+        "sha256": "2cfe745917c250bd128fd3664357abaefa3e74fadd54b12f24d4cb914ef70a79"
+      },
+      "preparedLabels": {
+        "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-calibration-preparation-sol-v1/prepared-v1/2024/earlier-outcomes.csv",
+        "sha256": "b38537de9c3cb512ca6a35ce9db909c9813519afaaa67124abe9961c9e42fbd7"
+      },
+      "qualification": "Existing retrospective earlier-cycle preparation only; not an admitted M01 historical bank."
+    }
+  ],
+  "pins": [
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-calibration-preparation-sol-v1/prepared-v1/2018/selected-training-polls.csv",
+      "sha256": "df682ca44d043cdc9ff6372448f205769bf763197ddfaa17c109aaaa21974e21"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-calibration-preparation-sol-v1/prepared-v1/2018/earlier-outcomes.csv",
+      "sha256": "285cfdcec24628f40f63963c1ba4576eb9051587ba173f173c78767308087fbc"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-calibration-preparation-sol-v1/prepared-v1/2022/selected-training-polls.csv",
+      "sha256": "2cfe745917c250bd128fd3664357abaefa3e74fadd54b12f24d4cb914ef70a79"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-calibration-preparation-sol-v1/prepared-v1/2022/earlier-outcomes.csv",
+      "sha256": "b38537de9c3cb512ca6a35ce9db909c9813519afaaa67124abe9961c9e42fbd7"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-calibration-preparation-sol-v1/prepared-v1/2020/selected-training-polls.csv",
+      "sha256": "22d1e4f6b325fe28a53b97a0d4a4bcd9102ff48e869d4667dbe75f14fb454a56"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-calibration-preparation-sol-v1/prepared-v1/2020/earlier-outcomes.csv",
+      "sha256": "7c2f52610d0ae2e499abdbabdb4fe030c4e7594e5e106be8189c875b801e9749"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-calibration-preparation-sol-v1/prepared-v1/2024/selected-training-polls.csv",
+      "sha256": "2cfe745917c250bd128fd3664357abaefa3e74fadd54b12f24d4cb914ef70a79"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-calibration-preparation-sol-v1/prepared-v1/2024/earlier-outcomes.csv",
+      "sha256": "b38537de9c3cb512ca6a35ce9db909c9813519afaaa67124abe9961c9e42fbd7"
+    },
+    {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/historical-intake-sol/README.md",
+      "sha256": "bb8c1567e81b6afb207a6ede994accd53ac513a3d3dba4fccc6002bad6b379dc"
+    },
+    {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/historical-intake-sol/source_receipt.json",
+      "sha256": "2fd7ba167d48a68d92adbee11a47a7c92bda8f789fd7cc6847ab0804dbfe7173"
+    },
+    {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/historical-intake-sol/raw/tierney-polls_cnn_dataset.csv",
+      "sha256": "61e1141f5ed84cfbbec487115742f59c6e20ebd04ba99a0a32f08d8fa2b20322"
+    },
+    {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/polling-layer-implementation-20261020/historical-intake-sol/raw/tierney-01_model_prepare_input.R",
+      "sha256": "c155c83015d83caba56928aad48279d1255e279cc256f13a71014f5f2be0d891"
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/momentum-calibration-preparation-review-sol-v1/REPORT.md",
+      "sha256": "c8ebe5732fded357a4ff74df35b5f330c6bdbcc250907fecf8a9976b8739cd79"
+    },
+    {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/coordination-frontend-20261026/m01-historical-poll-source-response-v1.md",
+      "sha256": "5767dbdbb64fe2771b2d421597817620b5b015ece404a03a7649233d55334f61"
+    },
+    {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/tx-disjoint-calibration-sol-v1/attempt-v1/selected-disjoint-training.csv",
+      "sha256": "151a14846e850ff0b4537897a29faa772a5a5e0a81f8cd92f41fcdec202dcb61"
+    }
+  ],
+  "primaryLineage": "Tierney/Volfovsky paper section3 credits Senate polls to Chen/Garnett/Montgomery; precise file-to-upstream-row transformation not yet authenticated.",
+  "acquisitionOverlap": "Owner written response says no Tierney date/vintage acquisition in that session; no claim about all sessions.",
+  "modelFit": false,
+  "sourceAdmission": false,
+  "ownerMutation": false
+}

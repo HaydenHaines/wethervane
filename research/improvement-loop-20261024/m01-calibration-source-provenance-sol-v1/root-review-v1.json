@@ -1,0 +1,38 @@
+{
+  "schema": "M01CalibrationProvenanceRootReviewV1",
+  "reviewedAtUtc": "2026-10-26T19:55:45.193316+00:00",
+  "reportSha256": "1819877a8029c84d470ca5b4f7a0209ee01e2496a476bb61da222ee5f981475f",
+  "sourcePinsVerified": 15,
+  "foldChecks": [
+    {
+      "target": 2018,
+      "training_rows": 930,
+      "label_rows": 62,
+      "all_event_cycles_before_target": true
+    },
+    {
+      "target": 2022,
+      "training_rows": 1514,
+      "label_rows": 118,
+      "all_event_cycles_before_target": true
+    },
+    {
+      "target": 2020,
+      "training_rows": 1218,
+      "label_rows": 90,
+      "all_event_cycles_before_target": true
+    },
+    {
+      "target": 2024,
+      "training_rows": 1514,
+      "label_rows": 118,
+      "all_event_cycles_before_target": true
+    }
+  ],
+  "primarySourceCheck": "Tierney/Volfovsky article \u00a73 credits Chen et al. with Senate polling data; 2021 Harvard dataset is an upstream lead, not verified equality with Tierney file.",
+  "limitations": [
+    "Earlier election cycle is not evidence of an earlier source-byte vintage.",
+    "No original publication dates, no capsule content, no posterior bank, no complete native source ledger or empirical qualification was established.",
+    "2024 training preparation has no 2022 data."
+  ]
+}
