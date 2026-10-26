@@ -5,6 +5,7 @@ import test from "node:test";
 import { toSenateElectionNightForecast, toHouseElectionNightForecast } from "../lib/election-night-forecast.ts";
 import { houseLiveView } from "../lib/house-live-view.ts";
 import { parseHouseLiveResult } from "../lib/house-live-result.ts";
+import { houseNy21Notice } from "../lib/house-ny21-notice.ts";
 
 const read = relative => JSON.parse(readFileSync(new URL(`../${relative}`, import.meta.url), "utf8"));
 const sha = relative => createHash("sha256").update(readFileSync(new URL(`../${relative}`, import.meta.url))).digest("hex");
@@ -96,6 +97,7 @@ test("all 16 actual House artifacts preserve 435 listed winner vectors, exact 41
     const before = JSON.stringify(view); freeze(view);
     const result = toHouseElectionNightForecast(view);
     assert.equal(result.chamber, "house"); assert.equal(result.races.length, 435);
+    assert.deepEqual(result.inputNotices, [houseNy21Notice]);
     assert.equal(result.summary.pairRaceCount, 412);
     assert.deepEqual(result.races.filter(r => r.pair === null).map(r => r.seatId), noPairDistricts);
     assert.equal(result.run.id, native.id); assert.deepEqual(result.run.configuration, native.configuration);
@@ -138,6 +140,14 @@ test("all 16 actual House artifacts preserve 435 listed winner vectors, exact 41
     result.chamberScenario.seats.U.pmf[0] = -10;
     assert.equal(JSON.stringify(view), before);
   }
+});
+
+test("a replacement House artifact never inherits the old NY-21 input notice", () => {
+  const { view } = house();
+  view.run.resultSha256 = "a".repeat(64);
+  assert.deepEqual(toHouseElectionNightForecast(view).inputNotices, []);
+  const { bundle, entry } = senate();
+  assert.deepEqual(toSenateElectionNightForecast(bundle, entry).inputNotices, []);
 });
 
 test("exact modal ties use lexicographic outcome IDs, preserve group identity, and do not treat near ties as exact", () => {

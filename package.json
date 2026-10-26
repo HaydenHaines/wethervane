@@ -25,6 +25,7 @@
     "test:component-studies": "python3 -m unittest discover -s tests -p site_component_results_test.py && node --experimental-strip-types --test tests/component-study.test.mjs tests/component-study-view.test.mjs",
     "test:count-preview": "node --experimental-strip-types --test tests/count-view.test.mjs tests/count-preview.test.mjs tests/election-outcome-view.test.mjs tests/election-outcome-preview.test.mjs",
     "test:scoreboard": "node --experimental-strip-types --test tests/scoreboard.test.mjs tests/presentation.test.mjs",
+    "test:election-night": "node --experimental-strip-types --test tests/election-night-*.test.mjs",
     "test:house-live": "node --experimental-strip-types --test tests/house-live-*.test.mjs tests/house-ny21-notice.test.mjs",
     "test:house-live-decoder": "python3 -m unittest discover -s tests -p site_house_live_joint_decoder_test.py",
     "test:house-live-browser": "BALLOTMANCY_LIVE_HOUSE_BROWSER=1 node --experimental-strip-types --test tests/house-live-results.test.mjs",

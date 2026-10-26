@@ -2,6 +2,12 @@
 import type { ExplorerBundle, ExplorerOutcome, ExplorerRace, ExplorerRunEntry, ExplorerScenario } from "./explorer-types.ts";
 import type { HouseLiveRaceView, HouseLiveView } from "./house-live-view.ts";
 import { HOUSE_LIVE_EXPECTED_DISTRICT_KEYS } from "./house-live-result.ts";
+import { houseNy21NoticeFor } from "./house-ny21-notice.ts";
+
+export interface ElectionNightInputNotice {
+  raceId: string; districtKey: string; issuedDate: string; publicWording: string; explanation: string;
+  sources: readonly { label: string; url: string; date: string }[];
+}
 
 export interface ElectionNightPair {
   firstCandidateId: string; secondCandidateId: string;
@@ -31,6 +37,7 @@ export interface ElectionNightForecast {
   };
   qualification: string[]; sourceUrls: string[]; sourceHashes: Record<string, string>;
   sourceNotes: { label: string; url: string; notes: string[] }[];
+  inputNotices: ElectionNightInputNotice[];
   races: ElectionNightRace[]; chamberScenario: ExplorerScenario | null;
   summary: {
     raceCount: number; pairRaceCount: number; expectedModalMisses: number; topTieRaceCount: number;
@@ -179,7 +186,7 @@ export function toSenateElectionNightForecast(bundle: ExplorerBundle, entry: Exp
       ...(entry.researchEvidence ? [entry.researchEvidence.status, entry.researchEvidence.numericalStatus,
         entry.researchEvidence.forecastSkill, entry.researchEvidence.qualification] : []), supportNote],
     sourceUrls: [...new Set(races.flatMap(r => r.sourceUrls))], sourceHashes: { ...bundle.provenance.sources },
-    sourceNotes: [], races, chamberScenario: structuredClone(scenario) });
+    sourceNotes: [], inputNotices: [], races, chamberScenario: structuredClone(scenario) });
 }
 export function toHouseElectionNightForecast(view: HouseLiveView): ElectionNightForecast {
   const run = view.run, c = run.configuration;
@@ -234,5 +241,6 @@ export function toHouseElectionNightForecast(view: HouseLiveView): ElectionNight
       ...view.historicalEvidence.map(h => h.qualification), supportNote],
     sourceUrls: [...new Set([...races.flatMap(r => r.sourceUrls), ...view.sources.map(s => s.url), ...view.historicalEvidence.map(h => h.url)])],
     sourceNotes: view.sources.filter(s => s.limitations?.length).map(s => ({ label: s.label, url: s.url, notes: [...s.limitations!] })),
+    inputNotices: houseNy21NoticeFor(view) ? [structuredClone(houseNy21NoticeFor(view)!)] : [],
     sourceHashes, races, chamberScenario: structuredClone(view.chamber) });
 }

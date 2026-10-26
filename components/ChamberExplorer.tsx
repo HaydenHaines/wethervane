@@ -18,6 +18,7 @@ export default function ChamberExplorer() {
   const [scorecardOpen, setScorecardOpen] = useState(false);
   const scorecardButton = useRef<HTMLButtonElement>(null);
   const previousScroll = useRef(0);
+  const previousChamber = useRef<ChamberId | null>(null);
   function closeScorecard() {
     setScorecardOpen(false);
     requestAnimationFrame(() => {
@@ -28,6 +29,8 @@ export default function ChamberExplorer() {
   useEffect(() => {
     const restore = () => {
       const next = fromUrl();
+      if (previousChamber.current !== next) previousScroll.current = 0;
+      previousChamber.current = next;
       urls.current[next] = location.pathname + location.search + location.hash;
       setChamber(next);
     };
@@ -38,7 +41,8 @@ export default function ChamberExplorer() {
 
   function select(next: ChamberId) {
     if (next === chamber) return;
-    if (scorecardOpen) previousScroll.current = window.scrollY;
+    if (scorecardOpen) previousScroll.current = 0;
+    previousChamber.current = next;
     if (chamber)
       urls.current[chamber] =
         location.pathname + location.search + location.hash;

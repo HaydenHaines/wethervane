@@ -25,6 +25,9 @@ for (const chamber of ["senate", "house"] as const) {
     await expect(panel.locator(".night-edition")).toContainText("Standard forecast");
     await expect(panel).toHaveAttribute("aria-busy", "false");
     await expect(panel.locator(".night-featured .night-race")).toHaveCount(6);
+    await panel.locator(".night-featured .night-race-definitions > summary").first().click();
+    await expect(panel.locator(".night-featured .night-race").first()).toContainText(chamber === "senate"
+      ? "the winning event used by this model’s two-contender approximation" : "pair event is separate from the winner chances");
     const watchIds = await panel.locator(".night-featured .night-race").evaluateAll(nodes => nodes.map(node => node.getAttribute("data-scorecard-race")));
     await panel.locator(".night-models summary").click();
     const select = panel.getByLabel("Scorecard model");
@@ -39,6 +42,7 @@ for (const chamber of ["senate", "house"] as const) {
       await expect(panel.locator(".night-method code")).toHaveText(digest);
       await expect(panel.locator(".night-edition strong")).toContainText(entry.label);
       await expect(panel.locator(".night-big-number")).toContainText(missed.toFixed(1));
+      if (chamber === "house") await expect(panel.locator(":scope > .night-input-notice")).toContainText("Christopher Schmidt");
       expect(await panel.locator(".night-featured .night-race").evaluateAll(nodes => nodes.map(node => node.getAttribute("data-scorecard-race")))).toEqual(watchIds);
       expect(page.url()).toBe(originalUrl);
       expect(await page.locator(".hero").textContent()).toBe(originalHero);
@@ -56,6 +60,12 @@ for (const chamber of ["senate", "house"] as const) {
       await panel.getByLabel("Find a race or candidate").fill(unsupported.district_key);
       await expect(panel.locator(".night-predictions .night-race")).toHaveCount(1);
       await expect(panel.locator(".night-predictions")).toContainText("No supported two-candidate margin");
+      await panel.getByLabel("Find a race or candidate").fill("NY-21");
+      await expect(panel.locator(".night-predictions .night-input-notice")).toContainText("excludes two polls");
+      await expect(panel.locator(".night-predictions .night-input-notice a")).toHaveCount(3);
+      await panel.locator(".night-method > summary").click();
+      await expect(panel.locator(".night-method .night-input-notice")).toContainText("October 25 estimates");
+      await expect(panel.locator(".night-method")).toContainText("Source capture notes");
     }
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     await panel.getByRole("button", { name: "Close scorecard", exact: true }).click();
@@ -68,3 +78,24 @@ for (const chamber of ["senate", "house"] as const) {
     expect(errors).toEqual([]);
   });
 }
+
+test("an open scorecard follows chamber tabs and browser history with each chamber's standard forecast", async ({ page }) => {
+  await page.goto("/?run=current-fundamentals");
+  await page.getByRole("button", { name: "Election night scorecard", exact: true }).click();
+  const panel = page.locator("#election-night-scorecard");
+  await expect(panel).toHaveAttribute("data-scorecard-chamber", "senate");
+  await expect(panel.locator(".night-models select")).toHaveValue(senateRegistry.defaults["2026"]);
+  await page.getByRole("tab", { name: "House", exact: true }).click();
+  await expect(panel).toHaveAttribute("data-scorecard-chamber", "house");
+  await expect(panel.locator(".night-models select")).toHaveValue(houseCatalog.default_id);
+  await expect(panel.getByRole("heading", { name: "Election night scorecard", exact: true })).toBeFocused();
+  await page.goBack();
+  await expect(panel).toHaveAttribute("data-scorecard-chamber", "senate");
+  await expect(panel.locator(".night-models select")).toHaveValue(senateRegistry.defaults["2026"]);
+  await expect(page).toHaveURL(/run=current-fundamentals/);
+  await page.goForward();
+  await expect(panel).toHaveAttribute("data-scorecard-chamber", "house");
+  await expect(panel.locator(".night-models select")).toHaveValue(houseCatalog.default_id);
+  await panel.getByRole("button", { name: "Close scorecard", exact: true }).click();
+  await expect(page.getByRole("button", { name: "Election night scorecard", exact: true })).toBeFocused();
+});

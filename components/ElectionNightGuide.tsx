@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { ChamberId } from "../lib/chamber";
 import { loadElectionNightForecast, type ElectionNightLoaded, type ElectionNightRequest } from "../lib/election-night-client";
-import type { ElectionNightPair, ElectionNightRace } from "../lib/election-night-forecast";
+import type { ElectionNightInputNotice, ElectionNightPair, ElectionNightRace } from "../lib/election-night-forecast";
 import { probability, STATE_NAMES } from "../lib/presentation";
 
 const signed = (value: number) => `${Math.abs(value) < .05 ? "" : value > 0 ? "+" : "−"}${Math.abs(value).toFixed(1)}`;
@@ -30,10 +30,21 @@ function MarginRange({ pair, extent }: { pair: ElectionNightPair; extent: number
   </div>;
 }
 
-function RacePrediction({ race, extent, featured = false }: { race: ElectionNightRace; extent: number; featured?: boolean }) {
+function InputNotice({ notice, detail = false }: { notice: ElectionNightInputNotice; detail?: boolean }) {
+  return <aside className="night-input-notice" aria-label={`${notice.districtKey} forecast input notice`}>
+    <strong>{notice.districtKey} inputs under review · issued {notice.issuedDate}</strong>
+    <p>{notice.publicWording}</p>
+    {detail && <><p>{notice.explanation}</p><ul>{notice.sources.map(source => <li key={source.url}>
+      <a href={source.url} target="_blank" rel="noreferrer">{source.label}</a> · {source.date}
+    </li>)}</ul></>}
+  </aside>;
+}
+
+function RacePrediction({ race, extent, featured = false, notice }: { race: ElectionNightRace; extent: number; featured?: boolean; notice?: ElectionNightInputNotice }) {
   const pair = race.pair;
   return <article className="night-race" data-scorecard-race={race.id}>
     <div className="night-race-heading"><h4>{label(race)}</h4></div>
+    {notice && <InputNotice notice={notice} detail />}
     <dl className="night-prediction-facts">
       <div><dt>Predicted two-candidate margin</dt><dd>{pair ? pointPrediction(pair) : "No supported two-candidate margin"}</dd></div>
       <div><dt>Highest win chance</dt><dd>{race.modalPick.tiedOutcomeIds.length > 1 ? "Tied leading chances" : race.modalPick.name}{" · "}{probability(race.modalPick.probability)}{race.modalPick.kind === "group" && " for the group"}</dd></div>
@@ -113,6 +124,7 @@ export default function ElectionNightGuide({ chamber, onClose }: { chamber: Cham
         <p>This is a saved forecast edition. The final election-night evaluation edition and grading rules have not yet been locked.</p>
         <p>The chamber tabs above also change this scorecard. Its model selection is separate from the main forecast.</p>
       </div>
+      {forecast.inputNotices.map(notice => <InputNotice key={notice.raceId} notice={notice} />)}
       <details className="night-models"><summary>Inspect other model stacks</summary>
         <label>Scorecard model <select disabled={busy} value={forecast.run.id} onChange={event => {
           const choice = loaded.choices.find(item => item.id === event.target.value);
@@ -128,11 +140,11 @@ export default function ElectionNightGuide({ chamber, onClose }: { chamber: Cham
           <div><strong>{forecast.summary.pairRaceCount}</strong><span>with a two-candidate margin</span></div>
           <div><strong>Not scored</strong><span>verified election results have not been added</span></div></div>
         <h4>Races to watch</h4><p>These six examples have the least certain winners in the dated standard forecast. The same races stay here when you inspect another stack. Their margins show whether an even win chance also means a close expected race.</p>
-        <div className="night-featured">{featured.map(race => <RacePrediction key={race.id} race={race} extent={extent} featured />)}</div>
+        <div className="night-featured">{featured.map(race => <RacePrediction key={race.id} race={race} extent={extent} featured notice={forecast.inputNotices.find(note => note.raceId === race.id)} />)}</div>
         <details className="night-all-races"><summary>All {forecast.summary.raceCount} predictions</summary>
           <label>Find a race or candidate <input value={query} onChange={event => { setQuery(event.target.value); setAllExpanded(false); }} /></label>
           <p className="small">Showing {shown.length} of {filtered.length} matching contests.</p>
-          <div className="night-predictions">{shown.map(race => <RacePrediction key={race.id} race={race} extent={100} />)}</div>
+          <div className="night-predictions">{shown.map(race => <RacePrediction key={race.id} race={race} extent={100} notice={forecast.inputNotices.find(note => note.raceId === race.id)} />)}</div>
           {filtered.length > 10 && <button type="button" onClick={() => setAllExpanded(value => !value)}>{allExpanded ? "Show fewer predictions" : `See all ${filtered.length} predictions`}</button>}
           {!filtered.length && <p>No matching races or candidates.</p>}
         </details>
@@ -172,6 +184,7 @@ export default function ElectionNightGuide({ chamber, onClose }: { chamber: Cham
         {forecast.run.sourceCutoffs.map((source, index) => <p key={index}>{source.label}: {date(source.at)}</p>)}
         <p>The expected wrong-choice count adds one minus each race’s highest modeled win chance. It needs no independence assumption and does not supply an uncertainty band. Exact ties use a fixed ordering of the outcome identifiers.</p>
         <ul>{forecast.qualification.map((note, index) => <li key={index}>{note}</li>)}</ul>
+        {forecast.inputNotices.map(notice => <InputNotice key={notice.raceId} notice={notice} detail />)}
         {forecast.sourceNotes.length > 0 && <><h4>Source capture notes</h4><ul>{forecast.sourceNotes.map((source, index) => <li key={index}>
           <a href={source.url} target="_blank" rel="noreferrer">{source.label}</a><ul>{source.notes.map((note, index) => <li key={index}>{note}</li>)}</ul>
         </li>)}</ul></>}
