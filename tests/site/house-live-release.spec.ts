@@ -478,4 +478,48 @@ test.describe("actual staged 2026 House release", () => {
     await expect(pairView).toContainText(`First candidate exceeds half: ${probability(pair.p_first_exceeds_half)}.`);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   });
+  test("the reviewed NY-21 erratum leads from the forecast to the affected race and linked sources", async ({ page, request }, testInfo) => {
+    test.setTimeout(120_000);
+    for (const item of release.catalog.entries) {
+      const response = await request.get(`/api/chambers/house/live?run=${encodeURIComponent(item.id)}`);
+      expect(response.status(), item.id).toBe(200);
+      const publication = await response.json();
+      expect(publication.view.run.resultSha256, item.id).toBe(item.result.sha256);
+      const shown = publication.view.races.find((race: { id: string }) => race.id === "2026:NY-21:house:regular");
+      const original = native(item.id).races.find(race => race.race_id === "2026:NY-21:house:regular");
+      expect(shown, item.id).toBeTruthy(); expect(original, item.id).toBeTruthy();
+      expect(shown.outcomes.map((outcome: { winProbability: number }) => outcome.winProbability), item.id)
+        .toEqual(original!.outcomes.map(outcome => outcome.p_win));
+    }
+    const entry = release.catalog.entries.find(item => item.id === release.catalog.default_id)!;
+    expect(entry.result.sha256).toBe("c84248d56ff0fd0e291538729680cf8cdaa51bad9fb456c3d359fa022b76451d");
+    await page.goto("/?chamber=house&edition=current");
+    const notice = page.getByRole("region", { name: "NY-21 forecast input notice" });
+    await expect(notice).toContainText("NY-21 is under review. The October 25 forecast omits declared write-in candidate Christopher Schmidt and excludes two polls that name him.");
+    await notice.getByRole("button", { name: "View NY-21" }).click();
+    const detailHeading = page.locator("#house-live-detail-title");
+    await expect(detailHeading).toHaveText("NY-21");
+    await expect(detailHeading).toBeFocused();
+    await expect.poll(() => detailHeading.evaluate(node => {
+      const box = node.getBoundingClientRect();
+      return box.top >= 0 && box.bottom <= innerHeight;
+    })).toBe(true);
+    const focus = page.getByRole("region", { name: "NY-21 forecast input detail" });
+    await expect(focus).toBeVisible();
+    await expect(focus.getByRole("link")).toHaveCount(3);
+    await expect(focus.getByRole("link", { name: /New York candidate list/ })).toBeVisible();
+    await expect(focus.getByRole("link", { name: /NCPR: write-in campaign/ })).toBeVisible();
+    await expect(focus.getByRole("link", { name: /Siena poll/ })).toBeVisible();
+    await expect(focus).toContainText("The displayed probabilities remain the October 25 estimates.");
+    await expect(focus).not.toContainText("source-coverage erratum");
+    await expect(page.getByRole("region", { name: "NY-21 input review" })).toBeVisible();
+    await page.screenshot({ path: testInfo.outputPath("ny21-notice.png"), fullPage: true });
+    await page.goto("/?chamber=house&edition=current&race=2026%3AAL-01%3Ahouse%3Aregular");
+    await expect(notice).toBeVisible();
+    await expect(page.getByRole("region", { name: "NY-21 forecast input detail" })).toHaveCount(0);
+    await page.goto("/?chamber=house&edition=current&run=house-current-fundamentals&race=2026%3ANY-21%3Ahouse%3Aregular");
+    await expect(notice).toBeVisible();
+    await expect(page.getByRole("region", { name: "NY-21 forecast input detail" })).toBeVisible();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  });
 });

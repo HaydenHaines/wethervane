@@ -94,6 +94,31 @@ test("source capture notes appear only for nonempty limitations and keep each so
   assert.match(html, /href="https:\/\/example.invalid\/rendered"/);
 });
 
+test("NY-21 notice is visible for the pinned release, detailed only in NY-21 focus, and absent for replacement bytes", () => {
+  const pinned = structuredClone(view);
+  pinned.run.id = "house-current-polling";
+  pinned.run.resultSha256 = "c84248d56ff0fd0e291538729680cf8cdaa51bad9fb456c3d359fa022b76451d";
+  const ny21 = render({ view: pinned, selectedRaceId: "2026:NY-21:house:regular" });
+  assert.match(ny21, /NY-21 is under review\. The October 25 forecast omits declared write-in candidate Christopher Schmidt and excludes two polls that name him\. These published estimates have not yet been updated for that finding\./);
+  assert.match(ny21, /View NY-21/);
+  assert.ok(ny21.indexOf('aria-label="NY-21 forecast input notice"') < ny21.indexOf('aria-label="House group-win probability ribbon"'));
+  assert.match(ny21, /NY-21 forecast inputs under review/);
+  assert.match(ny21, /aria-label="NY-21 forecast input detail"/);
+  assert.match(ny21, /aria-label="NY-21 input review"/);
+  assert.match(ny21, /The displayed probabilities remain the October 25 estimates/);
+  assert.match(ny21, /New York candidate list|NCPR: write-in campaign|Siena poll/);
+  assert.doesNotMatch(ny21, /source-coverage erratum|original dated artifact|survey-menu evidence/);
+  assert.match(ny21, /northcountrypublicradio\.org\/news\/story\/54097/);
+  assert.match(ny21, /sri\.siena\.edu\/2026\/10\/09/);
+  assert.match(ny21, /elections\.ny\.gov\/certification-november-3-2026/);
+  const other = render({ view: pinned, selectedRaceId: "2026:AL-01:house:regular" });
+  assert.match(other, /aria-label="NY-21 forecast input notice"/);
+  assert.doesNotMatch(other, /aria-label="NY-21 forecast input detail"/);
+  const replacement = structuredClone(pinned);
+  replacement.run.resultSha256 = "0".repeat(64);
+  assert.doesNotMatch(render({ view: replacement, selectedRaceId: "2026:NY-21:house:regular" }), /NY-21 is under review|aria-label="NY-21 input review"/);
+});
+
 test("Other leaders stay out of the D/R path; a missing chamber never creates control numbers", () => {
   const html = render();
   const other = html.split('data-segment="other"')[1].split("</section>")[0];
