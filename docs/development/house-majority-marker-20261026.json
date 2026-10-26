@@ -1,0 +1,66 @@
+{
+  "schema": "HouseMajorityMarkerVerificationV1",
+  "utc": "2026-10-26T14:37:06.806772+00:00",
+  "request": "Restore the House snake majority marker.",
+  "scope": "Structural seat-count reference in the displayed probability ranking; no tipping probability computed or published. Other-leading and tied-Other districts stay outside party counts. Complete unique usable chamber roster required.",
+  "sources": [
+    {
+      "path": "app/globals.css",
+      "sha256": "4f50930275ec69cfa0b822bbe467a4b0b90334e7c304b18b4a1d09d93e534ca1"
+    },
+    {
+      "path": "components/HouseGroupRibbon.tsx",
+      "sha256": "ac9c7aaf8fcfa3e34a57af18427112c839b0f67d85024656386689aaff584a7f"
+    },
+    {
+      "path": "components/HouseLiveResults.tsx",
+      "sha256": "7130b9fc03c5b8e1b8f697ff966745439ff0ace774e96a978f81a0906a9ac86f"
+    },
+    {
+      "path": "lib/group-ribbon-layout.ts",
+      "sha256": "14b2b233c054e4b538f4296c91c7472cf1d7b7eb81fd552040dfe566b231bff5"
+    },
+    {
+      "path": "tests/group-ribbon-layout.test.mjs",
+      "sha256": "ee06ef7eaf594f57d433c092d7285f83aac944400804be537383bedd9e1be87e"
+    },
+    {
+      "path": "tests/site/house-live-release.spec.ts",
+      "sha256": "3b5ea2b50bf2e6e139590cf0fe9872cffb259de621fb055247a29e1f48cef99e"
+    },
+    {
+      "path": "tests/site/house-comparison.spec.ts",
+      "sha256": "18900340b3b60a781be4a3699b8530e581cade722a3dfcd8a18fb7348bf02b17"
+    }
+  ],
+  "checks": [
+    {
+      "command": "node --experimental-strip-types --test tests/group-ribbon-layout.test.mjs tests/house-live-results.test.mjs",
+      "passed": 13,
+      "skipped": 4,
+      "note": "Opt-in standalone browser fixtures intentionally skipped; actual publication browser loop run separately."
+    },
+    {
+      "command": "npm run build",
+      "status": "passed"
+    },
+    {
+      "command": "npm run typecheck",
+      "status": "passed"
+    },
+    {
+      "command": "BALLOTMANCY_LIVE_HOUSE_RELEASE=1 npx playwright test --config=playwright.site.config.ts tests/site/house-live-release.spec.ts --grep 'one renderer'",
+      "passed": 2,
+      "scope": "All16 real configurations on desktop and mobile: independent rank calculation, visible bar styling, existing map/colors/control, summary selection and larger-label mode."
+    },
+    {
+      "command": "npx playwright test --config=playwright.site.config.ts tests/site/house-comparison.spec.ts --grep 'shared cross-year'",
+      "passed": 2,
+      "owner": "Independent Sol",
+      "note": "Repairs stale expected behavior found in CI40337450024; production correctly rejects cross-year comparison before displaying historical results."
+    }
+  ],
+  "native_data_changed": false,
+  "visual_evidence": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/house-majority-marker-v1/local-visual.json",
+  "served_verification": "pending deployment"
+}

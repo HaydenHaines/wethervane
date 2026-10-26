@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import type { HouseGroupBloc } from "../lib/house-group-result.ts";
-import { layoutGroupRibbon, type GroupRibbonEntry, type GroupRibbonRace } from "../lib/group-ribbon-layout.ts";
+import { groupRibbonMajorityPositions, layoutGroupRibbon, type GroupRibbonEntry, type GroupRibbonRace, type RibbonChamber } from "../lib/group-ribbon-layout.ts";
 import { COLORS, probability } from "../lib/presentation.ts";
 import HouseGroupLegend from "./HouseGroupLegend";
 
@@ -15,8 +15,8 @@ function tileColor(row: GroupRibbonEntry) {
   return { D: COLORS.likelyD, R: COLORS.likelyR, O: COLORS.likelyO }[top];
 }
 
-/** Compact, non-control display of ultimate D/R/O group-win probabilities. */
-export default function HouseGroupRibbon({ races, selectedRaceId, onSelect }: { races: readonly GroupRibbonRace[]; selectedRaceId: string; onSelect: (id: string) => void }) {
+/** Group-win chances, with optional seat-count reference markers for a complete chamber. */
+export default function HouseGroupRibbon({ races, selectedRaceId, onSelect, chamber }: { races: readonly GroupRibbonRace[]; selectedRaceId: string; onSelect: (id: string) => void; chamber?: RibbonChamber }) {
   const container = useRef<HTMLDivElement>(null);
   const buttons = useRef(new Map<string, HTMLButtonElement>());
   const [columns, setColumns] = useState(12);
@@ -29,6 +29,9 @@ export default function HouseGroupRibbon({ races, selectedRaceId, onSelect }: { 
     return () => observer.disconnect();
   }, [showLabels]);
   const layout = useMemo(() => layoutGroupRibbon(races, columns), [races, columns]);
+  const majorityPositions = groupRibbonMajorityPositions(layout, chamber);
+  const majorityLabel = (from: ("D" | "R")[]) => from.length === 2 ? "from either end"
+    : from[0] === "D" ? "from the Democratic end" : "from the Republican end";
   const ready = [...layout.main.rows, ...layout.other.rows, ...layout.mixedTies];
   const entries = [...ready, ...layout.unavailable];
   useEffect(() => {
@@ -55,10 +58,12 @@ export default function HouseGroupRibbon({ races, selectedRaceId, onSelect }: { 
     };
   }
   function tile(row: GroupRibbonEntry, position?: { row: number; column: number; direction: string }) {
+    const majority = majorityPositions.find(marker => marker.id === row.id);
     const top = Math.max(row.probabilities.D, row.probabilities.R, row.probabilities.O);
-    const description = `${row.districtKey}; ${chanceText(row)}; ${row.leaders.length > 1 ? "Top chances tied: " : "Highest chance: "}${row.leaders.map(key => groupName[key]).join(" and ")}; ${row.probabilitySource === "structural" ? "fixed under the listed group support" : "modeled group probabilities"}`;
+    const description = `${row.districtKey}; ${chanceText(row)}; ${row.leaders.length > 1 ? "Top chances tied: " : "Highest chance: "}${row.leaders.map(key => groupName[key]).join(" and ")}; ${row.probabilitySource === "structural" ? "fixed under the listed group support" : "modeled group probabilities"}${majority ? `; majority marker, ${chamber!.majorityThreshold} seats ${majorityLabel(majority.from)}` : ""}`;
     const color = tileColor(row);
-    return <button key={row.id} {...navigation(row.id)} className="house-ribbon-cell" data-district={row.districtKey}
+    return <button key={row.id} {...navigation(row.id)} className={`house-ribbon-cell${majority ? " majority-position" : ""}`} data-district={row.districtKey}
+      data-direction={position?.direction} data-majority-from={majority?.from.join(" ")}
       aria-label={description} title={description}
       style={{ ...(position ? { gridRow: position.row + 1, gridColumn: position.column + 1 } : {}), background: color, color: top > .6 && top <= .9 && row.leaders.length === 1 ? "var(--ink)" : "#fff" }}>
       <span>{row.districtKey}</span><small aria-hidden="true">{position?.direction === "right-to-left" ? "←" : "→"}</small>
@@ -69,7 +74,16 @@ export default function HouseGroupRibbon({ races, selectedRaceId, onSelect }: { 
   return <section className={`tipping-card house-ribbon${showLabels ? "" : " is-compact"}`} aria-label="House group-win probability ribbon">
     <h2>House group-win chances by district</h2>
     <p>{races.length} districts · {ready.length} with a usable group prediction · {layout.unavailable.length} unavailable.</p>
-    <p>Each probability is the chance that a Democratic, Republican, or Other candidate group wins the district. It does not show House control or a tipping point.</p>
+    <p>Each probability is the chance that a Democratic, Republican, or Other candidate group wins the district.</p>
+    {majorityPositions.length > 0 ? <div className="house-majority-summary">
+      <strong><span className="house-majority-key" aria-hidden="true" />Majority marker · {chamber!.majorityThreshold} seats</strong>
+      <div>{majorityPositions.map(marker => <span key={marker.id}>
+        <button type="button" onClick={() => onSelect(marker.id)}>{marker.districtKey}</button>{" "}{majorityLabel(marker.from)}
+      </span>)}</div>
+      <p>The bar marks the district reached by counting {chamber!.majorityThreshold} seats inward from each end of the ranked path.
+        {layout.other.rows.length + layout.mixedTies.length > 0 && " Districts where Other leads or ties stay separate, so the two markers differ."}
+        {" "}This is a seat-count guide, not the chance that a district decides control. See the chamber forecast below the map.</p>
+    </div> : <p>This ribbon does not show House control or a tipping point.</p>}
     <label className="house-ribbon-density"><input type="checkbox" checked={showLabels} onChange={event => setShowLabels(event.target.checked)} /> Show district labels and larger tiles</label>
     <p className="house-ribbon-focus" aria-live="polite">
       {selected ? <><strong>{selected.districtKey}</strong> · {chanceText(selected)}. {selected.leaders.length > 1 ? "Top chances tied: " : "Highest chance: "}{selected.leaders.map(key => groupName[key]).join(" and ")}. {selected.probabilitySource === "structural" && "Fixed under the listed group support."}</>

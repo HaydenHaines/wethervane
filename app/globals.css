@@ -2618,6 +2618,47 @@ select:focus-visible {
   border-left: 2px solid var(--ink);
   pointer-events: none;
 }
+.house-ribbon-cell.majority-position[data-direction="right-to-left"]::after {
+  left: auto;
+  right: -4px;
+}
+.house-majority-summary {
+  border-block: 1px solid var(--line);
+  margin: 18px 0 10px;
+  padding: 14px 0;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.house-majority-summary > strong {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.house-majority-key {
+  display: inline-block;
+  height: 18px;
+  border-left: 2px solid var(--ink);
+}
+.house-majority-summary > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 20px;
+  margin-top: 5px;
+}
+.house-majority-summary button {
+  border: 0;
+  background: none;
+  color: var(--ink);
+  padding: 0;
+  font: inherit;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.house-majority-summary p {
+  margin: 7px 0 0;
+  color: var(--muted);
+}
 .house-coverage-note {
   font-size: 12px;
   line-height: 1.7;

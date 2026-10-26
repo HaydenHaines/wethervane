@@ -379,7 +379,37 @@ test.describe("actual staged 2026 House release", () => {
         probability(result.chamber.majority.unresolved),
       ]);
       else await expect(page.getByRole("region", { name: "House control availability" })).toBeVisible();
-      await expect(page.locator(".house-tipping-summary,.house-ribbon-cell.majority-position")).toHaveCount(0);
+      // Independently count 218 from each end of the supplied D/R path. Other
+      // leaders/ties never become seats for either party or a tipping statistic.
+      const ranked = result.races.map(race => {
+        const p = (party: string) => race.outcomes.filter(outcome => outcome.party === party)
+          .reduce((sum, outcome) => sum + outcome.p_win, 0);
+        return { district: race.district_key, D: p("D"), R: p("R"), O: p("O") };
+      }).filter(row => row.O < Math.max(row.D, row.R))
+        .sort((a, b) => (b.D - b.R) - (a.D - a.R) || a.district.localeCompare(b.district));
+      const expectedMarkers = [...new Set([ranked[217].district, ranked[ranked.length - 218].district])];
+      const markers = page.locator(".house-ribbon-cell.majority-position");
+      await expect(markers).toHaveCount(expectedMarkers.length);
+      expect((await markers.evaluateAll(nodes => nodes.map(node => node.getAttribute("data-district")))).sort())
+        .toEqual(expectedMarkers.sort());
+      await expect(page.locator(".house-majority-summary")).toContainText("218 seats");
+      await expect(page.locator(".house-tipping-summary")).toHaveCount(0);
+      for (const marker of await markers.all()) {
+        await expect(marker).toHaveAccessibleName(/majority marker, 218 seats/);
+        const bar = await marker.evaluate(node => {
+          const style = getComputedStyle(node, "::after");
+          return { content: style.content, height: parseFloat(style.height), width: parseFloat(style.borderLeftWidth) };
+        });
+        expect(bar.content).not.toBe("none"); expect(bar.height).toBeGreaterThan(0); expect(bar.width).toBeGreaterThan(0);
+      }
+      if (entry.id === release.catalog.default_id) {
+        const district = expectedMarkers[0];
+        await page.locator(".house-majority-summary").getByRole("button", { name: district, exact: true }).click();
+        await expect(page.locator("#house-live-detail-title")).toContainText(district);
+        await page.getByLabel("Show district labels and larger tiles").check();
+        await expect(markers.first()).toHaveAttribute("data-district", district);
+        await expect(markers.first()).toBeVisible();
+      }
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), entry.id).toBe(true);
     }
     expect(errors).toEqual([]);
