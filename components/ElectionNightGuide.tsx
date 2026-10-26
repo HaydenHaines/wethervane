@@ -6,7 +6,9 @@ import { loadPublishedElectionNightForecast, type ElectionNightLoaded, type Elec
 import type { ElectionNightInputNotice, ElectionNightPair, ElectionNightRace } from "../lib/election-night-forecast";
 import type { ElectionNightReference } from "../lib/election-night-reference";
 import type { HouseExpectedErrorReference } from "../lib/election-night-house-reference";
+import ElectionNightEvaluation from "./ElectionNightEvaluation";
 import ElectionNightRubric from "./ElectionNightRubric";
+import { useElectionNightEvaluation } from "./useElectionNightEvaluation";
 import senateResultPolicy from "../data/election-night-senate-result-policy.json";
 import { probability, STATE_NAMES } from "../lib/presentation";
 
@@ -44,9 +46,9 @@ function InputNotice({ notice, detail = false }: { notice: ElectionNightInputNot
   </aside>;
 }
 
-function RacePrediction({ race, extent, featured = false, notice, reference, houseReference }: { race: ElectionNightRace; extent: number;
+function RacePrediction({ race, extent, featured = false, notice, reference, houseReference, resultStatus }: { race: ElectionNightRace; extent: number;
   featured?: boolean; notice?: ElectionNightInputNotice; reference?: ElectionNightReference["perRace"][number];
-  houseReference?: HouseExpectedErrorReference["perRace"][number] }) {
+  houseReference?: HouseExpectedErrorReference["perRace"][number]; resultStatus: string }) {
   const pair = race.pair;
   const expectedError = reference?.expectedAbsoluteMarginErrorPp ?? houseReference?.expectedAbsoluteMarginErrorPp ?? undefined;
   const closeChance = reference?.closeWithin2Pp ?? pair?.closeWithin2Pp ?? null;
@@ -58,7 +60,7 @@ function RacePrediction({ race, extent, featured = false, notice, reference, hou
     <dl className="night-prediction-facts">
       <div><dt>Predicted two-candidate margin</dt><dd>{pair ? pointPrediction(pair) : "No supported two-candidate margin"}</dd></div>
       <div><dt>Highest win chance</dt><dd>{race.modalPick.tiedOutcomeIds.length > 1 ? "Tied leading chances" : race.modalPick.name}{" · "}{probability(race.modalPick.probability)}{race.modalPick.kind === "group" && " for the group"}</dd></div>
-      <div><dt>Final result / prediction error</dt><dd>Awaiting verified result</dd></div>
+      <div><dt>Final result / prediction error</dt><dd>{resultStatus}</dd></div>
     </dl>
     {featured && pair && <MarginRange pair={pair} extent={extent} />}
     {expectedError !== undefined && <p className="night-race-expected-error">For this race, the model expects its predicted margin to miss by <strong>{expectedError.toFixed(1)} percentage points</strong> on average, ignoring the direction of the miss. This is the mean across saved simulation draws, not an error limit.</p>}
@@ -93,6 +95,7 @@ function RacePrediction({ race, extent, featured = false, notice, reference, hou
 
 /** Same-page preparation view. Final-result ingestion and an evaluation lock are separate contracts. */
 export default function ElectionNightGuide({ chamber, onClose }: { chamber: ChamberId; onClose: () => void }) {
+  const evaluation = useElectionNightEvaluation(chamber);
   const heading = useRef<HTMLHeadingElement>(null);
   const standardWatchEdition = useRef<string | null>(null);
   const standardWatchNeedsRefresh = useRef(false);
@@ -169,11 +172,17 @@ export default function ElectionNightGuide({ chamber, onClose }: { chamber: Cham
   const reference = displayed?.reference;
   const primaryReference = displayed?.primaryReference;
   const houseReference = displayed?.houseReference;
+  const evaluationHasResults = !!evaluation.view?.ledger?.recordCount;
+  const recordedEvaluationRaces = new Set(evaluation.view?.rows.filter(row => row.sources.length > 0).map(row => row.raceId) ?? []);
+  const resultStatus = (raceId: string) => evaluation.loading ? "Checking evaluation status" : evaluation.error || evaluation.view?.status === "unavailable"
+    ? "Evaluation temporarily unavailable" : recordedEvaluationRaces.has(raceId) ? "See the locked evaluation above" : "Awaiting verified result";
   const senateScope = forecast?.chamber === "senate" && forecast.run.configuration.polling === "standard" && primaryReference &&
     primaryReference.sourcePins.policySha256 === senateResultPolicy.sourceHashes.policySha256 &&
     JSON.stringify(forecast.races.map(race => race.id)) === JSON.stringify(senateResultPolicy.fixedCohorts.full35) &&
     JSON.stringify(primaryReference.perRace.map(race => race.raceId)) === JSON.stringify(senateResultPolicy.fixedCohorts.pluralityCore32) &&
-    JSON.stringify(primaryReference.excludedRaceIds) === JSON.stringify(senateResultPolicy.fixedCohorts.conditional3)
+    JSON.stringify(primaryReference.excludedRaceIds) === JSON.stringify(senateResultPolicy.fixedCohorts.conditional3) &&
+    (!evaluation.view?.lock || (JSON.stringify(evaluation.view.lock.cohort.displayRaceIds) === JSON.stringify(senateResultPolicy.fixedCohorts.full35) &&
+      JSON.stringify(evaluation.view.lock.cohort.winnerRaceIds) === JSON.stringify(senateResultPolicy.fixedCohorts.pluralityCore32)))
     ? senateResultPolicy : null;
   const featured = useMemo(() => watchIds.flatMap(id => forecast?.races.find(race => race.id === id) ?? []), [watchIds, forecast]);
   const extent = Math.max(10, Math.ceil(Math.max(0, ...featured.flatMap(race => race.pair
@@ -191,7 +200,10 @@ export default function ElectionNightGuide({ chamber, onClose }: { chamber: Cham
         <span>{forecast.run.id === displayed.defaultRunId ? "Standard forecast" : "Alternative model"} · Dated snapshot</span>
         <p>Inputs through {date(forecast.run.cutoffAt)}. Forecast issued {date(forecast.run.issuedAt)}.</p>
         <p>Updates automatically from the published forecast while this scorecard is open.</p>
-        <p>This is a saved forecast edition. The final election-night evaluation edition and grading rules have not yet been locked.</p>
+        <p>{evaluation.loading ? "Checking the published evaluation status." : evaluation.error || evaluation.view?.status === "unavailable"
+          ? "The published evaluation status could not be verified." : evaluation.view?.lock
+            ? "The locked evaluation is shown separately from this updating forecast."
+            : "No locked election-night evaluation has been published on this site yet."}</p>
         <p>The chamber tabs above also change this scorecard. Its model selection is separate from the main forecast.</p>
       </div>
       {forecast.inputNotices.map(notice => <InputNotice key={notice.raceId} notice={notice} />)}
@@ -220,17 +232,18 @@ export default function ElectionNightGuide({ chamber, onClose }: { chamber: Cham
         </aside>}
         <div className="night-summary"><div><strong>{forecast.summary.raceCount}</strong><span>modeled contests</span></div>
           <div><strong>{forecast.summary.pairRaceCount}</strong><span>with a two-candidate margin</span></div>
-          <div><strong>Not scored</strong><span>verified election results have not been added</span></div></div>
+          <div><strong>{evaluationHasResults ? "See evaluation" : "Not scored"}</strong><span>{evaluationHasResults ? "locked forecast results below" : "no verified results shown"}</span></div></div>
+        <ElectionNightEvaluation view={evaluation.view} currentResultSha256={forecast.run.artifactSha256} />
         <h4>Races to watch</h4><p>{watchIsStandard ? "These six examples have the least certain winners in the dated standard forecast. The same races stay here when you inspect another stack." : "These six examples have the least certain winners in the selected model. Choose Standard to see its latest set."} Their margins show whether an even win chance also means a close expected race.</p>
-        <div className="night-featured">{featured.map(race => <RacePrediction key={race.id} race={race} extent={extent} featured notice={forecast.inputNotices.find(note => note.raceId === race.id)} reference={reference?.perRace.find(row => row.raceId === race.id)} houseReference={houseReference?.perRace.find(row => row.raceId === race.id)} />)}</div>
+        <div className="night-featured">{featured.map(race => <RacePrediction key={race.id} race={race} extent={extent} featured notice={forecast.inputNotices.find(note => note.raceId === race.id)} reference={reference?.perRace.find(row => row.raceId === race.id)} houseReference={houseReference?.perRace.find(row => row.raceId === race.id)} resultStatus={resultStatus(race.id)} />)}</div>
         <details className="night-all-races"><summary>All {forecast.summary.raceCount} predictions</summary>
           <label>Find a race or candidate <input value={query} onChange={event => { setQuery(event.target.value); setAllExpanded(false); }} /></label>
           <p className="small">Showing {shown.length} of {filtered.length} matching contests.</p>
-          <div className="night-predictions">{shown.map(race => <RacePrediction key={race.id} race={race} extent={100} notice={forecast.inputNotices.find(note => note.raceId === race.id)} reference={reference?.perRace.find(row => row.raceId === race.id)} houseReference={houseReference?.perRace.find(row => row.raceId === race.id)} />)}</div>
+          <div className="night-predictions">{shown.map(race => <RacePrediction key={race.id} race={race} extent={100} notice={forecast.inputNotices.find(note => note.raceId === race.id)} reference={reference?.perRace.find(row => row.raceId === race.id)} houseReference={houseReference?.perRace.find(row => row.raceId === race.id)} resultStatus={resultStatus(race.id)} />)}</div>
           {filtered.length > 10 && <button type="button" onClick={() => setAllExpanded(value => !value)}>{allExpanded ? "Show fewer predictions" : `See all ${filtered.length} predictions`}</button>}
           {!filtered.length && <p>No matching races or candidates.</p>}
         </details>
-        <p>When verified results are added, a called winner and a final vote margin will be tracked separately. An incomplete count will not be scored as a final margin.</p>
+        <p>A called winner and a final vote margin are tracked separately. An incomplete count is not scored as a final margin.</p>
       </section>
       <section className="night-section" aria-labelledby="night-uncertainty-title">
         <div className="eyebrow">2 · Uncertainty</div><h3 id="night-uncertainty-title">What the forecast expects to get wrong</h3>
@@ -295,7 +308,7 @@ export default function ElectionNightGuide({ chamber, onClose }: { chamber: Cham
         </article>}
         <p><strong>50/50 does not tell us the margin.</strong> It can mean a narrow contest, or uncertainty about which candidate wins comfortably. Use the separate margin range and close-race chances where available.</p>
       </section>
-      <ElectionNightRubric standardSenate={!!senateScope} forecastCutoffAt={forecast.run.cutoffAt} />
+      <ElectionNightRubric standardSenate={!!senateScope} forecastCutoffAt={forecast.run.cutoffAt} evaluation={evaluation} />
       <details className="night-method"><summary>Edition, sources and evaluation definitions</summary>
         <p>Result fingerprint: <code>{forecast.run.artifactSha256}</code>. This identifies the saved forecast bytes; it is not a claim that the inputs are complete or the model is accurate.</p>
         <p>{forecast.run.strictAsOf ? "Inputs were checked against their stated cutoff." : "This edition does not establish that every input was available at its forecast cutoff."}</p>

@@ -89,7 +89,8 @@ export const ELECTION_NIGHT_RUBRIC = Object.freeze({
 export interface RubricReference { id: string; sha256: string }
 export interface RubricForecastBinding {
   chamber: "senate" | "house"; runId: string; resultSha256: string; nativeForecastSha256: string;
-  targetId: string; lawId: string; issuedAt: string; cutoffAt: string; horizonCalendarDays: number;
+  /** House V1 has no native target or law IDs; retain that absence explicitly. */
+  targetId: string | null; lawId: string | null; issuedAt: string; cutoffAt: string; horizonCalendarDays: number;
 }
 interface RubricTargetBase { raceId: string; eventId: string; roundId: string; resultRuleId: string; denominator: string }
 export interface RubricWinnerTarget extends RubricTargetBase {
@@ -168,9 +169,10 @@ function canonical(v: unknown): string { return JSON.stringify(v, (_, x) => x &&
   ? Object.fromEntries(Object.entries(x).sort(([a], [b]) => a < b ? -1 : a > b ? 1 : 0)) : x); }
 const same = (a: unknown, b: unknown) => canonical(a) === canonical(b);
 const reference = (v: RubricReference) => v && text(v.id) && hash(v.sha256);
-function binding(v: RubricForecastBinding): boolean {
+export function validElectionNightRubricBinding(v: RubricForecastBinding): boolean {
   return !!v && ["senate", "house"].includes(v.chamber) && text(v.runId) && hash(v.resultSha256) && hash(v.nativeForecastSha256) &&
-    text(v.targetId) && text(v.lawId) && Number.isFinite(Date.parse(v.issuedAt)) && Number.isFinite(Date.parse(v.cutoffAt)) &&
+    ((text(v.targetId) && text(v.lawId)) || (v.chamber === "house" && v.targetId === null && v.lawId === null)) &&
+    text(v.issuedAt) && text(v.cutoffAt) && Number.isFinite(Date.parse(v.issuedAt)) && Number.isFinite(Date.parse(v.cutoffAt)) &&
     Date.parse(v.cutoffAt) <= Date.parse(v.issuedAt) && Number.isSafeInteger(v.horizonCalendarDays) && v.horizonCalendarDays >= 0;
 }
 function baseTarget(t: RubricTarget): boolean { return !!t && [t.raceId, t.eventId, t.roundId, t.resultRuleId, t.denominator].every(text); }
@@ -189,7 +191,7 @@ function validate(input: ElectionNightRubricInput): void {
   requireValue(c?.schema === "ElectionNightRubricComparisonV1" && text(c.id) && hash(c.sha256) && text(c.label) &&
     c.rubricDecisionSha256 === ELECTION_NIGHT_RUBRIC.decisionSha256 && reference(c.comparisonReview) && reference(c.cohortDefinition) && reference(c.resultPolicy),
     "Missing or mismatched rubric/comparison/cohort/result-policy references.");
-  requireValue(binding(c.model) && binding(c.baseline) && same(input.modelForecast, c.model) && same(input.baselineForecast, c.baseline) &&
+  requireValue(validElectionNightRubricBinding(c.model) && validElectionNightRubricBinding(c.baseline) && same(input.modelForecast, c.model) && same(input.baselineForecast, c.baseline) &&
     c.model.chamber === c.baseline.chamber, "Forecast editions do not match the declared comparison contract.");
   if (c.comparisonMode === "matched_horizon") requireValue(c.model.cutoffAt === c.baseline.cutoffAt &&
     c.model.horizonCalendarDays === c.baseline.horizonCalendarDays && c.earlierBenchmarkPins === null,
@@ -308,7 +310,7 @@ export function gradeElectionNightRubric(input: ElectionNightRubricInput): Elect
   const issues: string[] = [];
   try { validate(input); } catch (error) { issues.push(error instanceof Error ? error.message : "Invalid rubric input."); }
   const c = input?.contract;
-  const safe = c && binding(c.model) && binding(c.baseline) && reference(c.cohortDefinition) && reference(c.resultPolicy) &&
+  const safe = c && validElectionNightRubricBinding(c.model) && validElectionNightRubricBinding(c.baseline) && reference(c.cohortDefinition) && reference(c.resultPolicy) &&
     Array.isArray(c.winnerCohort) && c.winnerCohort.every(t => winnerTarget(t, c.model.chamber)) && Array.isArray(c.intervalCohort) && c.intervalCohort.every(intervalTarget) &&
     Array.isArray(c.intervalExclusions) && c.intervalExclusions.every(t => t && text(t.raceId) && text(t.reason)) &&
     Array.isArray(input.winnerRows) && input.winnerRows.every(r => r && text(r.raceId)) &&

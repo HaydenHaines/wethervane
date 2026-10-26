@@ -92,6 +92,28 @@ test("House fixed D/R/O coin flip is distinct from uniform thirds and retains ac
   assert.equal(gradeElectionNightRubric(droppedO).overall.grade, null);
 });
 
+test("only House may explicitly omit both native target and law IDs", () => {
+  const house = fixture({ chamber: "house" });
+  for (const side of ["model", "baseline"]) {
+    house.contract[side].targetId = house.contract[side].lawId = null;
+    house[`${side}Forecast`].targetId = house[`${side}Forecast`].lawId = null;
+  }
+  assert.equal(gradeElectionNightRubric(house).overall.grade, "C");
+  const mixed = structuredClone(house);
+  mixed.contract.model.targetId = mixed.modelForecast.targetId = "INVENTED-target";
+  assert.equal(gradeElectionNightRubric(mixed).status, "not_graded");
+  const senate = fixture();
+  senate.contract.model.targetId = senate.contract.model.lawId = null;
+  senate.modelForecast.targetId = senate.modelForecast.lawId = null;
+  assert.equal(gradeElectionNightRubric(senate).status, "not_graded");
+  const omitted = structuredClone(house);
+  delete omitted.contract.model.targetId; delete omitted.modelForecast.targetId;
+  assert.equal(gradeElectionNightRubric(omitted).status, "not_graded");
+  const numericDate = structuredClone(house);
+  numericDate.contract.model.issuedAt = numericDate.modelForecast.issuedAt = 0;
+  assert.equal(gradeElectionNightRubric(numericDate).status, "not_graded");
+});
+
 test("zero baseline withholds component and overall letters while preserving raw paired losses and differences", () => {
   const result = gradeElectionNightRubric(fixture({ winnerModel: 0.2, winnerBaseline: 0 }));
   assert.equal(result.winner.complete, true); assert.equal(result.winner.skill, null); assert.equal(result.winner.grade, null); assert.equal(result.overall.grade, null);

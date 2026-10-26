@@ -1,0 +1,411 @@
+{
+  "schema": "ElectionNightEvaluationViewV1",
+  "chamber": "senate",
+  "status": "partial_results",
+  "errorCode": null,
+  "lock": {
+    "id": "INVENTED-lock",
+    "sha256": "335127ca30178c5950eee1c803220bf2d629b8198d603a9854fc1fbc8a401e10",
+    "frozenAt": "2026-11-01T14:00:00Z",
+    "model": {
+      "chamber": "senate",
+      "cutoffAt": "2026-11-01T12:00:00Z",
+      "horizonCalendarDays": 1,
+      "issuedAt": "2026-11-01T13:00:00Z",
+      "lawId": "INVENTED-law",
+      "nativeForecastSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "resultSha256": "1d17b16ad152d93148821e332df07982234bc1c5a2c1c8ef783a9985c8fcc914",
+      "runId": "INVENTED-model-senate",
+      "targetId": "INVENTED-target"
+    },
+    "baseline": {
+      "chamber": "senate",
+      "cutoffAt": "2026-11-01T12:00:00Z",
+      "horizonCalendarDays": 1,
+      "issuedAt": "2026-11-01T13:00:00Z",
+      "lawId": "INVENTED-law",
+      "nativeForecastSha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "resultSha256": "fba437773f7710ccd07ce3530e150816fe9302e684042366e5d67276de582a53",
+      "runId": "INVENTED-baseline-senate",
+      "targetId": "INVENTED-target"
+    },
+    "comparison": {
+      "id": "INVENTED-comparison",
+      "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "label": "INVENTED matched forecast editions",
+      "mode": "matched_horizon"
+    },
+    "rubricDecisionSha256": "0d338b95faaa0fd393361e56bd59fae5d8b4f17d50a5b3c326393984c6faf67a",
+    "cohort": {
+      "displayRaceIds": [
+        "INVENTED-SENATE-race-1",
+        "INVENTED-SENATE-race-2"
+      ],
+      "winnerRaceIds": [
+        "INVENTED-SENATE-race-1",
+        "INVENTED-SENATE-race-2"
+      ],
+      "intervalRaceIds": [
+        "INVENTED-SENATE-race-1",
+        "INVENTED-SENATE-race-2"
+      ],
+      "intervalExclusions": []
+    }
+  },
+  "ledger": {
+    "id": "INVENTED-ledger",
+    "sha256": "5574702700419ed715b282e7820e4262759a195c6fe004fa39e6a7bd4086b776",
+    "chosenHeadSha256": "337d8c82352bc332352fff0339d75745444271da65ffc967ba5f72a4dece62a8",
+    "revisionCount": 1,
+    "recordCount": 1,
+    "provenance": [
+      {
+        "recordId": "INVENTED-result-INVENTED-SENATE-race-1",
+        "revision": "1",
+        "recordSha256": "1e83419ee6edf838ea49f8b05c989f5a1461ac0141f44916bac897865bfc9f42",
+        "revisionSha256": "337d8c82352bc332352fff0339d75745444271da65ffc967ba5f72a4dece62a8",
+        "sourceSha256": "defe0e7a5c79d8d34d9dd78ddc5cd9e4ed698484e2dd1a5dd031f2317357809d",
+        "sourceUrl": "https://example.invalid/INVENTED-official-result",
+        "publishedAt": "2026-11-04T12:00:00Z",
+        "retrievedAt": "2026-11-05T12:00:00Z",
+        "resultPolicySha256": "d2b22ffe000ca73676f652b3da18f5c20967ad73cdc64b2ade13187110a14a55",
+        "evidenceSha256": [
+          "f3af82960c521d013a7e24cebc7f5dbf857e446c4cad09ccb39c978184fac9f2"
+        ]
+      }
+    ]
+  },
+  "coverage": {
+    "winner": {
+      "total": 2,
+      "final": 0,
+      "provisional": 0,
+      "pending": 2,
+      "mismatched": 0,
+      "unexpected": 0
+    },
+    "interval": {
+      "total": 2,
+      "final": 0,
+      "provisional": 0,
+      "pending": 2,
+      "mismatched": 0,
+      "unexpected": 0
+    }
+  },
+  "rows": [
+    {
+      "raceId": "INVENTED-SENATE-race-1",
+      "displayOnly": false,
+      "forecast": {
+        "seatId": "INVENTED-SENATE-race-1",
+        "state": "XX",
+        "electionLabel": "INVENTED contest",
+        "modalPick": {
+          "name": "INVENTED First Candidate",
+          "kind": "candidate",
+          "probability": 0.7
+        },
+        "pair": {
+          "firstCandidateName": "INVENTED First Candidate",
+          "secondCandidateName": "INVENTED Second Candidate",
+          "meanMarginPp": 2,
+          "range90": {
+            "lower": -5,
+            "upper": 9
+          }
+        }
+      },
+      "winner": {
+        "model": {
+          "status": "unresolved",
+          "finality": "called",
+          "loss": null,
+          "observedValue": null,
+          "reason": "Result has not reached the declared certified status.",
+          "observedValueKind": null,
+          "modalPickCorrect": null,
+          "diagnosticScope": "graded_cohort",
+          "observation": {
+            "value": "INVENTED-SENATE-race-1:first",
+            "label": "INVENTED First Candidate",
+            "status": "called"
+          },
+          "marginScore": null,
+          "target": {
+            "denominator": "INVENTED named-pair votes",
+            "estimand": "senate_principal_pair_lead",
+            "eventId": "INVENTED-election",
+            "firstCandidateId": "INVENTED-SENATE-race-1:first",
+            "outcomeIds": [
+              "INVENTED-SENATE-race-1:first",
+              "INVENTED-SENATE-race-1:second"
+            ],
+            "raceId": "INVENTED-SENATE-race-1",
+            "resultRuleId": "INVENTED-final-rule",
+            "roundId": "INVENTED-final-round",
+            "secondCandidateId": "INVENTED-SENATE-race-1:second"
+          }
+        },
+        "baseline": {
+          "status": "unresolved",
+          "finality": "called",
+          "loss": null,
+          "observedValue": null,
+          "reason": "Result has not reached the declared certified status.",
+          "observedValueKind": null,
+          "modalPickCorrect": null,
+          "diagnosticScope": "graded_cohort",
+          "observation": {
+            "value": "INVENTED-SENATE-race-1:first",
+            "label": "INVENTED First Candidate",
+            "status": "called"
+          },
+          "marginScore": null,
+          "target": {
+            "denominator": "INVENTED named-pair votes",
+            "estimand": "senate_principal_pair_lead",
+            "eventId": "INVENTED-election",
+            "firstCandidateId": "INVENTED-SENATE-race-1:first",
+            "outcomeIds": [
+              "INVENTED-SENATE-race-1:first",
+              "INVENTED-SENATE-race-1:second"
+            ],
+            "raceId": "INVENTED-SENATE-race-1",
+            "resultRuleId": "INVENTED-final-rule",
+            "roundId": "INVENTED-final-round",
+            "secondCandidateId": "INVENTED-SENATE-race-1:second"
+          }
+        }
+      },
+      "margin": {
+        "model": {
+          "status": "unresolved",
+          "finality": "called",
+          "loss": null,
+          "observedValue": null,
+          "reason": "A called winner does not establish a final vote margin.",
+          "observedValueKind": null,
+          "modalPickCorrect": null,
+          "diagnosticScope": "graded_cohort",
+          "observation": {
+            "value": -7,
+            "label": "INVENTED First Candidate minus INVENTED Second Candidate percentage points",
+            "status": "called"
+          },
+          "marginScore": null,
+          "target": {
+            "denominator": "INVENTED named-pair votes",
+            "estimand": "named_pair_margin",
+            "eventId": "INVENTED-election",
+            "firstCandidateId": "INVENTED-SENATE-race-1:first",
+            "intervalLevel": 0.9,
+            "orientation": "first_minus_second",
+            "raceId": "INVENTED-SENATE-race-1",
+            "resultRuleId": "INVENTED-final-rule",
+            "roundId": "INVENTED-final-round",
+            "secondCandidateId": "INVENTED-SENATE-race-1:second",
+            "units": "percentage_points"
+          }
+        },
+        "baseline": {
+          "status": "unresolved",
+          "finality": "called",
+          "loss": null,
+          "observedValue": null,
+          "reason": "A called winner does not establish a final vote margin.",
+          "observedValueKind": null,
+          "modalPickCorrect": null,
+          "diagnosticScope": "graded_cohort",
+          "observation": {
+            "value": -7,
+            "label": "INVENTED First Candidate minus INVENTED Second Candidate percentage points",
+            "status": "called"
+          },
+          "marginScore": null,
+          "target": {
+            "denominator": "INVENTED named-pair votes",
+            "estimand": "named_pair_margin",
+            "eventId": "INVENTED-election",
+            "firstCandidateId": "INVENTED-SENATE-race-1:first",
+            "intervalLevel": 0.9,
+            "orientation": "first_minus_second",
+            "raceId": "INVENTED-SENATE-race-1",
+            "resultRuleId": "INVENTED-final-rule",
+            "roundId": "INVENTED-final-round",
+            "secondCandidateId": "INVENTED-SENATE-race-1:second",
+            "units": "percentage_points"
+          }
+        }
+      },
+      "sources": [
+        {
+          "recordId": "INVENTED-result-INVENTED-SENATE-race-1",
+          "revision": "1",
+          "recordSha256": "1e83419ee6edf838ea49f8b05c989f5a1461ac0141f44916bac897865bfc9f42",
+          "revisionSha256": "337d8c82352bc332352fff0339d75745444271da65ffc967ba5f72a4dece62a8",
+          "sourceSha256": "defe0e7a5c79d8d34d9dd78ddc5cd9e4ed698484e2dd1a5dd031f2317357809d",
+          "sourceUrl": "https://example.invalid/INVENTED-official-result",
+          "publishedAt": "2026-11-04T12:00:00Z",
+          "retrievedAt": "2026-11-05T12:00:00Z",
+          "resultPolicySha256": "d2b22ffe000ca73676f652b3da18f5c20967ad73cdc64b2ade13187110a14a55",
+          "evidenceSha256": [
+            "f3af82960c521d013a7e24cebc7f5dbf857e446c4cad09ccb39c978184fac9f2"
+          ]
+        }
+      ]
+    },
+    {
+      "raceId": "INVENTED-SENATE-race-2",
+      "displayOnly": false,
+      "forecast": {
+        "seatId": "INVENTED-SENATE-race-2",
+        "state": "XX",
+        "electionLabel": "INVENTED contest",
+        "modalPick": {
+          "name": "INVENTED First Candidate",
+          "kind": "candidate",
+          "probability": 0.7
+        },
+        "pair": {
+          "firstCandidateName": "INVENTED First Candidate",
+          "secondCandidateName": "INVENTED Second Candidate",
+          "meanMarginPp": 2,
+          "range90": {
+            "lower": -5,
+            "upper": 9
+          }
+        }
+      },
+      "winner": {
+        "model": {
+          "status": "unresolved",
+          "finality": "unreported",
+          "loss": null,
+          "observedValue": null,
+          "reason": "No separate observed-result field is available.",
+          "observedValueKind": null,
+          "modalPickCorrect": null,
+          "diagnosticScope": "graded_cohort",
+          "observation": null,
+          "marginScore": null,
+          "target": {
+            "denominator": "INVENTED named-pair votes",
+            "estimand": "senate_principal_pair_lead",
+            "eventId": "INVENTED-election",
+            "firstCandidateId": "INVENTED-SENATE-race-2:first",
+            "outcomeIds": [
+              "INVENTED-SENATE-race-2:first",
+              "INVENTED-SENATE-race-2:second"
+            ],
+            "raceId": "INVENTED-SENATE-race-2",
+            "resultRuleId": "INVENTED-final-rule",
+            "roundId": "INVENTED-final-round",
+            "secondCandidateId": "INVENTED-SENATE-race-2:second"
+          }
+        },
+        "baseline": {
+          "status": "unresolved",
+          "finality": "unreported",
+          "loss": null,
+          "observedValue": null,
+          "reason": "No separate observed-result field is available.",
+          "observedValueKind": null,
+          "modalPickCorrect": null,
+          "diagnosticScope": "graded_cohort",
+          "observation": null,
+          "marginScore": null,
+          "target": {
+            "denominator": "INVENTED named-pair votes",
+            "estimand": "senate_principal_pair_lead",
+            "eventId": "INVENTED-election",
+            "firstCandidateId": "INVENTED-SENATE-race-2:first",
+            "outcomeIds": [
+              "INVENTED-SENATE-race-2:first",
+              "INVENTED-SENATE-race-2:second"
+            ],
+            "raceId": "INVENTED-SENATE-race-2",
+            "resultRuleId": "INVENTED-final-rule",
+            "roundId": "INVENTED-final-round",
+            "secondCandidateId": "INVENTED-SENATE-race-2:second"
+          }
+        }
+      },
+      "margin": {
+        "model": {
+          "status": "unresolved",
+          "finality": "unreported",
+          "loss": null,
+          "observedValue": null,
+          "reason": "No separate observed-result field is available.",
+          "observedValueKind": null,
+          "modalPickCorrect": null,
+          "diagnosticScope": "graded_cohort",
+          "observation": null,
+          "marginScore": null,
+          "target": {
+            "denominator": "INVENTED named-pair votes",
+            "estimand": "named_pair_margin",
+            "eventId": "INVENTED-election",
+            "firstCandidateId": "INVENTED-SENATE-race-2:first",
+            "intervalLevel": 0.9,
+            "orientation": "first_minus_second",
+            "raceId": "INVENTED-SENATE-race-2",
+            "resultRuleId": "INVENTED-final-rule",
+            "roundId": "INVENTED-final-round",
+            "secondCandidateId": "INVENTED-SENATE-race-2:second",
+            "units": "percentage_points"
+          }
+        },
+        "baseline": {
+          "status": "unresolved",
+          "finality": "unreported",
+          "loss": null,
+          "observedValue": null,
+          "reason": "No separate observed-result field is available.",
+          "observedValueKind": null,
+          "modalPickCorrect": null,
+          "diagnosticScope": "graded_cohort",
+          "observation": null,
+          "marginScore": null,
+          "target": {
+            "denominator": "INVENTED named-pair votes",
+            "estimand": "named_pair_margin",
+            "eventId": "INVENTED-election",
+            "firstCandidateId": "INVENTED-SENATE-race-2:first",
+            "intervalLevel": 0.9,
+            "orientation": "first_minus_second",
+            "raceId": "INVENTED-SENATE-race-2",
+            "resultRuleId": "INVENTED-final-rule",
+            "roundId": "INVENTED-final-round",
+            "secondCandidateId": "INVENTED-SENATE-race-2:second",
+            "units": "percentage_points"
+          }
+        }
+      },
+      "sources": []
+    }
+  ],
+  "availableMatchedRows": {
+    "winner": {
+      "scope": "available_matched_rows",
+      "count": 0,
+      "finalCount": 0,
+      "provisionalCount": 0,
+      "modelMeanLoss": null,
+      "baselineMeanLoss": null,
+      "meanPairedLossDifference": null
+    },
+    "interval": {
+      "scope": "available_matched_rows",
+      "count": 0,
+      "finalCount": 0,
+      "provisionalCount": 0,
+      "modelMeanLoss": null,
+      "baselineMeanLoss": null,
+      "meanPairedLossDifference": null
+    }
+  },
+  "rubricStatus": "not_graded",
+  "rubric": null
+}

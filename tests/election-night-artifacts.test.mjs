@@ -174,6 +174,14 @@ test("lock loading rejects missing/untrusted/corrupt roles and mismatched admiss
   assert.throws(() => loadElectionNightEvaluationLock(f.store, f.request), /Corrupt/);
 });
 
+test("an evaluation lock cannot claim it was frozen before its forecast was issued", t => {
+  const f = setup(t), premature = structuredClone(f.manifest);
+  premature.frozenAt = "2026-10-20T15:24:59Z";
+  assert.throws(() => loadElectionNightEvaluationLock(f.store, f.lockRequest(premature)), /cannot precede/);
+  premature.frozenAt = 0;
+  assert.throws(() => loadElectionNightEvaluationLock(f.store, f.lockRequest(premature)), /Invalid evaluation lock/);
+});
+
 test("result ledger uses only its explicit pinned head, preserves corrections and never orders by timestamps", t => {
   const f = setup(t), first = f.revision(), second = f.revision({ id: "INVENTED-revision-2", raceId: "INVENTED-B", predecessor: first.pin.sha256 });
   const corrected = f.revision({ id: "INVENTED-correction", recordRevision: "2", predecessor: second.pin.sha256, supersedes: first.record.sha256,

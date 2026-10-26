@@ -7,17 +7,21 @@ import test from "node:test";
 import { ElectionNightArtifactStore, loadElectionNightEvaluationLock, loadElectionNightResultLedger } from "../lib/election-night-artifacts.ts";
 import { assertEarlierSenateCertifiedMinimums, buildElectionNightScoring } from "../lib/election-night-scoring.ts";
 import { HOUSE_PARTY_WINNER_INTERPRETATION_SHA256 } from "../lib/election-night-evaluation.ts";
-import { toSenateElectionNightForecast } from "../lib/election-night-forecast.ts";
-import { ELECTION_NIGHT_RUBRIC, gradeElectionNightRubric } from "../lib/election-night-rubric.ts";
+import { toHouseElectionNightForecast, toSenateElectionNightForecast } from "../lib/election-night-forecast.ts";
+import { houseLiveView } from "../lib/house-live-view.ts";
+import { parseHouseLiveResult } from "../lib/house-live-result.ts";
+import { ELECTION_NIGHT_RUBRIC, gradeElectionNightRubric, validElectionNightRubricBinding } from "../lib/election-night-rubric.ts";
 
-// All names, ballots, review decisions, observations and source bytes are INVENTED.
-// These software fixtures do not admit or grade any real 2026 election result.
+// Apart from the explicitly named public-forecast metadata check, fixtures use
+// invented names, observations, reviews and source bytes. No real 2026 result
+// is admitted or graded.
 const H = char => char.repeat(64);
 const unique = pins => [...new Map(pins.map(pin => [pin.sha256, pin])).values()];
 const near = (actual, expected) => assert.ok(Math.abs(actual - expected) < 1e-12, `${actual} vs ${expected}`);
 const ownerMappingPath = "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-polling-refresh-20261026/scorecard-baseline-compatibility-sol/candidate-pair-event-mapping-v1.json";
 function setup(t, chamber = "senate", count = 2, { currentHouse = false, gradedCount = count,
-  excludeLastInterval = false, winnerMinimumStatus = "final", marginMinimumStatus = "final", mutateModelProtocol = null } = {}) {
+  excludeLastInterval = false, winnerMinimumStatus = "final", marginMinimumStatus = "final", mutateModelProtocol = null,
+  houseNullIdentities = false } = {}) {
   const root = mkdtempSync(join(tmpdir(), "election-night-scoring-"));
   t.after(() => rmSync(root, { recursive: true, force: true }));
   const store = new ElectionNightArtifactStore(root);
@@ -32,7 +36,7 @@ function setup(t, chamber = "senate", count = 2, { currentHouse = false, gradedC
   const baselineSource = store.put(Buffer.from("INVENTED baseline original bytes"));
   const binding = (side, pin) => ({ chamber, runId: currentHouse ? `house-current-${side === "model" ? "polling" : "fundamentals"}` : `INVENTED-${side}`, resultSha256: pin.sha256,
     nativeForecastSha256: chamber === "senate" ? H(side === "model" ? "a" : "b") : pin.sha256,
-    targetId: "INVENTED-target", lawId: "INVENTED-law", issuedAt: "2026-11-01T13:00:00Z",
+    targetId: houseNullIdentities ? null : "INVENTED-target", lawId: houseNullIdentities ? null : "INVENTED-law", issuedAt: "2026-11-01T13:00:00Z",
     cutoffAt: "2026-11-01T12:00:00Z", horizonCalendarDays: 2 });
   const bindings = { model: binding("model", modelSource), baseline: binding("baseline", baselineSource) };
   const denominator = "INVENTED named-pair votes";
@@ -333,6 +337,38 @@ test("House Other winner absent from native support remains a scored three-class
   assert.deepEqual(scored.modelEvaluation.rows[0].winner.score.logLoss, { status: "infinite", value: null });
   assert.equal(scored.modelEvaluation.rows[0].winner.score.housePartyWinner.zeroOrigin.O, "structural_absent");
   assert.equal(scored.modelEvaluation.rows[0].winner.score.housePartyWinner.candidateRoster.listedInFrozenRoster, false);
+});
+
+test("an authenticated invented House lock can score explicit absent native IDs without inventing target or law", t => {
+  const f = setup(t, "house", 1, { houseNullIdentities: true });
+  assert.equal(f.loadedLock.modelForecast.run.targetId, null);
+  assert.equal(f.loadedLock.modelForecast.run.lawId, null);
+  const bridge = buildElectionNightScoring(f.loadedLock, f.ledger([f.revision({ marginPp: 0 })]));
+  const result = gradeElectionNightRubric(bridge.rubricInput);
+  assert.equal(result.status, "graded");
+  assert.equal(result.overall.grade, "A"); // Entirely invented one-race fixture.
+  const currentLike = setup(t, "house", 1, { currentHouse: true, houseNullIdentities: true });
+  assert.throws(() => buildElectionNightScoring(currentLike.loadedLock,
+    currentLike.ledger([currentLike.revision()])), /435 party winners/);
+  assert.throws(() => setup(t, "senate", 1, { houseNullIdentities: true }), /bindings differ/);
+});
+
+test("the actual published House V1 projection has the explicit absent native IDs accepted by the lock contract", () => {
+  const root = new URL("../", import.meta.url);
+  const catalog = JSON.parse(readFileSync(new URL("data/house-live/catalog.json", root)));
+  const entry = catalog.entries.find(row => row.id === catalog.default_id);
+  const bytes = readFileSync(new URL(`data/house-live/${entry.result.path}`, root));
+  assert.equal(createHash("sha256").update(bytes).digest("hex"), entry.result.sha256);
+  const native = parseHouseLiveResult(JSON.parse(bytes));
+  assert.ok(native);
+  const forecast = toHouseElectionNightForecast(houseLiveView(native, entry));
+  assert.equal(forecast.run.targetId, null); assert.equal(forecast.run.lawId, null);
+  assert.equal(forecast.races.length, 435); assert.equal(forecast.summary.pairRaceCount, 412);
+  assert.equal(validElectionNightRubricBinding({ chamber: "house", runId: forecast.run.id,
+    resultSha256: forecast.run.artifactSha256, nativeForecastSha256: entry.result.sha256,
+    targetId: forecast.run.targetId, lawId: forecast.run.lawId, issuedAt: forecast.run.issuedAt,
+    cutoffAt: forecast.run.cutoffAt, horizonCalendarDays: 0 }), true);
+  // This checks metadata compatibility only; it does not lock or score an election.
 });
 
 test("only authenticated store products enter scoring and current House editions require 435/412", t => {

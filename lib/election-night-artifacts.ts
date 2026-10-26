@@ -11,7 +11,8 @@ import { constants, closeSync, fsyncSync, linkSync, lstatSync, mkdirSync, openSy
 import { isAbsolute, join, relative, resolve, sep } from "node:path";
 import type { ElectionNightForecast } from "./election-night-forecast.ts";
 import type { ElectionNightEvaluationProtocol, VerifiedElectionNightOutcome } from "./election-night-evaluation.ts";
-import type { ElectionNightRubricContract, RubricForecastBinding } from "./election-night-rubric.ts";
+import { validElectionNightRubricBinding, type ElectionNightRubricContract,
+  type RubricForecastBinding } from "./election-night-rubric.ts";
 
 export interface ElectionNightArtifactPin { sha256: string; byteLength: number; path: string }
 export type DeepReadonly<T> = T extends object ? { readonly [P in keyof T]: DeepReadonly<T[P]> } : T;
@@ -221,11 +222,6 @@ function authority(store: ElectionNightArtifactStore, subject: ElectionNightArti
 function readPublished<T>(store: ElectionNightArtifactStore, index: Map<string, ElectionNightArtifactPin>, pin: ElectionNightArtifactPin): T {
   published(index, pin); return store.readJson<T>(pin) as T;
 }
-function validBinding(v: RubricForecastBinding): boolean {
-  return !!v && ["senate", "house"].includes(v.chamber) && text(v.runId) && hash(v.resultSha256) && hash(v.nativeForecastSha256) &&
-    text(v.targetId) && text(v.lawId) && Number.isFinite(Date.parse(v.issuedAt)) && Number.isFinite(Date.parse(v.cutoffAt)) &&
-    Date.parse(v.cutoffAt) <= Date.parse(v.issuedAt) && Number.isSafeInteger(v.horizonCalendarDays) && v.horizonCalendarDays >= 0;
-}
 /**
  * Trust roots are explicit caller arguments, never taken from the subject's claims.
  * comparisonContract.sha256 is an admitted comparison identity, NOT a self-hash of
@@ -235,15 +231,17 @@ export function loadElectionNightEvaluationLock(store: ElectionNightArtifactStor
   need(request && validPin(request.lock), "An exact lock pin is required.");
   const { publication, admission } = authority(store, request.lock, request.trustedPublication, request.trustedAdmission, "evaluation_lock", request.lock.sha256);
   const manifest = readPublished<ElectionNightEvaluationLockManifest>(store, publication, request.lock);
-  need(manifest?.schema === "ElectionNightEvaluationLockV1" && text(manifest.id) && Number.isFinite(Date.parse(manifest.frozenAt)), "Invalid evaluation lock manifest.");
+  need(manifest?.schema === "ElectionNightEvaluationLockV1" && text(manifest.id) && text(manifest.frozenAt) && Number.isFinite(Date.parse(manifest.frozenAt)), "Invalid evaluation lock manifest.");
   rolePins(manifest.artifacts, artifactRoles, "lock artifact"); rolePins(manifest.reviews, reviewRoles, "lock review");
   for (const pin of [...Object.values(manifest.artifacts), ...Object.values(manifest.reviews)]) { published(publication, pin); store.read(pin); }
   need(same([...new Set(Object.values(manifest.reviews).map(p => p.sha256))].sort(), admission.reviews.map(p => p.sha256).sort()),
     "Lock review bytes differ from the caller-trusted scientific admission.");
   const contract = readPublished<ElectionNightRubricContract>(store, publication, manifest.artifacts.comparisonContract);
   need(contract?.schema === "ElectionNightRubricComparisonV1" && hash(contract.sha256) &&
-    validBinding(manifest.forecastBindings?.model) && validBinding(manifest.forecastBindings?.baseline) &&
+    validElectionNightRubricBinding(manifest.forecastBindings?.model) && validElectionNightRubricBinding(manifest.forecastBindings?.baseline) &&
     same(contract.model, manifest.forecastBindings.model) && same(contract.baseline, manifest.forecastBindings.baseline), "Comparison and lock forecast bindings differ.");
+  need([manifest.forecastBindings.model, manifest.forecastBindings.baseline].every(binding =>
+    Date.parse(binding.issuedAt) <= Date.parse(manifest.frozenAt)), "Evaluation lock cannot precede either forecast edition.");
   need(contract.cohortDefinition?.sha256 === manifest.artifacts.cohort.sha256 && contract.resultPolicy?.sha256 === manifest.artifacts.resultPolicy.sha256 &&
     contract.rubricDecisionSha256 === manifest.artifacts.rubric.sha256 && contract.comparisonReview?.sha256 === manifest.reviews.comparison.sha256,
     "Comparison contract does not bind the exact cohort, result policy, rubric and review bytes.");

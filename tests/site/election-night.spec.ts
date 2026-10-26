@@ -10,6 +10,69 @@ const standardReference = read("public/data/election-night/references.json").ent
 const coreReferences = read("public/data/election-night/core-references.json").entries;
 const displayProbability = (p: number) => p > 0 && p < .001 ? "<0.1%" : p < 1 && p > .999 ? ">99.9%" : `${(100 * p).toFixed(1)}%`;
 
+test("locked evaluation follows admitted updates without changing the live forecast or assigning a partial grade", async ({ page }) => {
+  // Every result, candidate and score in these mocked responses is invented.
+  const noLock = read("tests/fixtures/election-night/noLock.json");
+  const called = read("tests/fixtures/election-night/called.json");
+  const corrected = read("tests/fixtures/election-night/corrected.json");
+  const graded = read("tests/fixtures/election-night/graded.json");
+  const defaultRun = senateRegistry.runs.find((row: { id: string }) => row.id === senateRegistry.defaults["2026"]);
+  let response = noLock;
+  await page.route(url => url.pathname === "/api/election-night/evaluation", route => route.fulfill({
+    status: response.status === "unavailable" ? 503 : 200, contentType: "application/json", body: JSON.stringify(response),
+  }));
+  await page.goto("/");
+  await page.getByRole("button", { name: "Election night scorecard", exact: true }).click();
+  const panel = page.locator("#election-night-scorecard");
+  await expect(panel.locator(".night-edition")).toContainText("No locked election-night evaluation has been published");
+  const firstRace = await panel.locator(".night-featured .night-race").first().getAttribute("data-scorecard-race");
+  expect(firstRace).toBeTruthy();
+  const adapt = (value: typeof called) => {
+    // Map one invented row to a displayed race ID to exercise per-race status;
+    // the API response is mocked and does not admit any actual result.
+    const original = value.rows[0].raceId;
+    const result = JSON.parse(JSON.stringify(value).split(original).join(firstRace!));
+    result.lock.model.resultSha256 = defaultRun.sha256;
+    return result;
+  };
+  response = adapt(called);
+  await page.evaluate(() => window.dispatchEvent(new Event("focus")));
+  const evaluation = panel.getByRole("region", { name: "Evaluation of the locked forecast" });
+  await expect(evaluation).toContainText("This is the forecast currently shown above");
+  await expect(evaluation).toContainText("0 of 2 graded winner results");
+  await expect(panel.locator(".night-featured .night-race").first()).toContainText("See the locked evaluation above");
+  await expect(panel.locator(".night-featured .night-race").nth(1)).toContainText("Awaiting verified result");
+  await evaluation.getByText("Results reported for the locked forecast", { exact: false }).click();
+  await expect(evaluation).toContainText("INVENTED First Candidate · called");
+  await expect(evaluation).toContainText("preliminary");
+  await expect(evaluation).toContainText("Not scored");
+  await expect(panel.locator(".night-rubric")).toContainText("No final letter grade assigned");
+
+  response = adapt(corrected);
+  await page.evaluate(() => window.dispatchEvent(new Event("focus")));
+  await expect(evaluation).toContainText("1 of 2 graded winner results");
+  const results = evaluation.getByText("Results reported for the locked forecast", { exact: false });
+  if (!(await results.evaluate(node => (node.parentElement as HTMLDetailsElement).open))) await results.click();
+  await expect(evaluation).toContainText("9.0 points from the average; outside the 90% range");
+  await expect(panel.locator(".night-rubric")).toContainText("No final letter grade assigned");
+
+  response = adapt(graded);
+  await page.evaluate(() => window.dispatchEvent(new Event("focus")));
+  await expect(panel.locator(".night-rubric")).toContainText(`Overall grade: ${graded.rubric.overall.grade}`);
+  await expect(panel.locator(".night-grade-active")).toHaveText(graded.rubric.overall.grade);
+  await panel.locator(".night-models > summary").click();
+  await panel.getByLabel("Scorecard model").selectOption("current-fundamentals");
+  await expect(evaluation).toContainText("The forecast shown above is a different edition");
+  await expect(panel.locator(".night-rubric")).toContainText(`Overall grade: ${graded.rubric.overall.grade}`);
+
+  response = { ...noLock, status: "unavailable", errorCode: "ledger_verification_failed" };
+  await page.evaluate(() => window.dispatchEvent(new Event("focus")));
+  await expect(panel.locator(".night-rubric")).toContainText("evaluation status could not be verified");
+  await expect(panel.locator(".night-grade-active")).toHaveCount(0);
+  await expect(panel.locator(".night-evaluation")).toHaveCount(0);
+  await expect(panel.locator(".night-featured .night-race")).toHaveCount(6);
+});
+
 test("House expected errors stay separate for 435 winner groups and 412 named pairs across a same-run revision", async ({ page }, testInfo) => {
   // Compatibility sidecar is a synthetic browser fixture, never an admitted publication.
   const sidecar = read("tests/fixtures/election-night/house-compatibility-sidecar.json");
@@ -192,7 +255,7 @@ test("reviewed expected errors follow only their exact Senate edition and remain
   await expect(margin.locator(".night-reference-value")).toContainText("5.6");
   await expect(panel.locator(".night-summary")).toContainText("Not scored");
   await expect(panel.locator(".night-featured .night-margin-chances")).toHaveCount(6);
-  await expect(panel.locator(".night-edition")).toContainText("have not yet been locked");
+  await expect(panel.locator(".night-edition")).toContainText("No locked election-night evaluation has been published");
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });
 
@@ -259,7 +322,7 @@ for (const chamber of ["senate", "house"] as const) {
       expect(await page.locator(".hero").textContent()).toBe(originalHero);
     }
     await expect(panel.locator(".night-rubric")).toContainText("No letter grade assigned");
-    await expect(panel.locator(".night-edition")).toContainText("have not yet been locked");
+    await expect(panel.locator(".night-edition")).toContainText("No locked election-night evaluation has been published");
     await expect(panel.locator(".night-miss-reference")).toContainText("not a limit or a measured accuracy record");
     await panel.locator(".night-featured").screenshot({ path: testInfo.outputPath(`${chamber}-featured.png`) });
     await panel.locator(".night-uncertainty-grid").first().screenshot({ path: testInfo.outputPath(`${chamber}-uncertainty.png`) });

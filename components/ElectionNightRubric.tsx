@@ -1,18 +1,29 @@
 import { ELECTION_NIGHT_RUBRIC } from "../lib/election-night-rubric";
+import type { ElectionNightEvaluationState } from "./useElectionNightEvaluation";
 
 const percent = (value: number) => `${Math.round(value * 100)}%`;
 
 /** The displayed thresholds come from the same frozen configuration as the scorer. */
-export default function ElectionNightRubric({ standardSenate, forecastCutoffAt }: { standardSenate: boolean; forecastCutoffAt?: string }) {
+export default function ElectionNightRubric({ standardSenate, forecastCutoffAt, evaluation }: {
+  standardSenate: boolean; forecastCutoffAt?: string; evaluation: ElectionNightEvaluationState;
+}) {
   const bands = ELECTION_NIGHT_RUBRIC.bands;
+  const view = evaluation.view;
+  const grade = view?.status === "graded" ? view.rubric?.overall.grade ?? null : null;
   return <section className="night-section night-rubric" aria-labelledby="night-rubric-title">
     <div className="eyebrow">The evaluation rubric</div><h3 id="night-rubric-title">How the forecast will be judged</h3>
     <p>Two tests: did the winner probabilities provide useful information, and did the margin ranges balance precision with misses?</p>
-    <div className="night-grade-scale" aria-label="A through F evaluation scale; no grade assigned">{bands.map(band => <span key={band.grade}>{band.grade}</span>)}</div>
-    <p><strong>No letter grade assigned.</strong> These are the selected grading rules. The final forecast edition, comparison forecast, eligible races and result definitions still need to be locked before election results are scored.</p>
+    <div className="night-grade-scale" aria-label={`A through F evaluation scale; ${grade ? `grade ${grade}` : "no grade displayed"}`}>{bands.map(band => <span key={band.grade} className={grade === band.grade ? "night-grade-active" : undefined} aria-current={grade === band.grade ? "true" : undefined}>{band.grade}</span>)}</div>
+    {grade ? <p><strong>Overall grade: {grade}.</strong> This grade applies to the locked forecast and the fixed results listed above.</p>
+      : evaluation.loading ? <p>Checking whether an evaluation has been published…</p>
+        : evaluation.error || view?.status === "unavailable" ? <p>The evaluation status could not be verified. The forecast remains available.</p>
+          : view?.lock ? <p><strong>No final letter grade assigned.</strong> {view.status === "complete_score_not_gradeable"
+            ? "The complete results do not produce a defined overall grade under these rules."
+            : "The forecast and rules are locked, but the required results are not complete."}</p>
+            : <p><strong>No letter grade assigned.</strong> No locked evaluation has been published on this site yet.</p>}
     <dl><div><dt>Winner probabilities</dt><dd>Compare the chance assigned to each possible winner with what happened. Confident mistakes cost more. The score uses every declared outcome, including Other in the House.</dd></div>
       <div><dt>Margin ranges</dt><dd>Charge for the width of each 90% range and add a penalty when the result falls outside it. Making every range very wide cannot earn a good score merely by covering the results.</dd></div></dl>
-    <p>Each test gets a grade based on how much its scoring penalty improves on the declared basic electoral-history forecast. Lower penalties are better. The overall grade is the lower of the two grades.</p>
+    <p>Each test gets a grade based on how much its scoring penalty improves on the declared reference forecast. Lower penalties are better. The overall grade is the lower of the two grades.</p>
     <table className="night-rubric-table">
       <caption>Grade for each test · improvement over the reference forecast</caption>
       <thead><tr><th scope="col">Grade</th><th scope="col">Scoring penalty compared with the reference</th></tr></thead>
@@ -28,7 +39,7 @@ export default function ElectionNightRubric({ standardSenate, forecastCutoffAt }
     </table>
     <p className="small">These letter boundaries are editorial choices, not universal scientific standards. The raw scores and differences will remain visible alongside any grade.</p>
     <p><strong>The 50/50 check:</strong> if the winner probabilities do not beat a fixed coin-flip forecast, the overall grade can be no better than D. An F stays an F. For House races that reference assigns 50% to Democratic, 50% to Republican and 0% to Other, and still counts Other wins.</p>
-    {standardSenate && forecastCutoffAt && <div className="night-baseline-note"><p><strong>Planned Senate reference:</strong> Basic electoral history — October 20 edition (earlier issued). We will compare it with the {new Date(forecastCutoffAt).toLocaleDateString("en-US", { timeZone: "UTC", month: "long", day: "numeric" })} forecast on the same results. The forecasts had different information and lead times; this does not isolate the value of polling.</p>
+    {standardSenate && forecastCutoffAt && !view?.lock && !evaluation.error && view?.status !== "unavailable" && <div className="night-baseline-note"><p><strong>Planned Senate reference:</strong> Basic electoral history — October 20 edition (earlier issued). We will compare it with the {new Date(forecastCutoffAt).toLocaleDateString("en-US", { timeZone: "UTC", month: "long", day: "numeric" })} forecast on the same results. The forecasts had different information and lead times; this does not isolate the value of polling.</p>
       <p>The primary Senate grade uses the fixed 32-race group explained above. Its collective error must be compared with the reference for those same 32 races. The all-35 forecast reference remains separate.</p></div>}
     <details className="night-rubric-details"><summary>Exact scores, coverage and exceptions</summary>
       <p>The winner penalty is the Brier score divided by two: square the difference between each predicted chance and its result (1 for the winner, 0 otherwise), add those values, then divide by two. Average across the fixed race list.</p>
