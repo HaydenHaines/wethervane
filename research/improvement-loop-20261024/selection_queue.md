@@ -1,5 +1,11 @@
 # Selection commands through the durable queue
 
+**Queue version:** The instructions below describe the preserved V1 compiler
+and dispatcher. V1 has a capacity-accounting defect when release records are
+inconsistent; see `experiment_queue.md`. An independently reviewed V3 adapter
+for new stores is described in `queue-v3/selection_queue.md`. Existing pinned
+stores and plans are not migrated or rewritten.
+
 `selection_queue.py` compiles two separately admitted scientific workflow phases into the existing `experiment_queue.py` / `execution.py` command contracts. It emits immutable plan data; it does not create a queue, launch a command, inspect native results, install a scheduler, write a selection registry, or decide which model wins. `scoped_selection.py` remains the sole native/journal/selection admission boundary.
 
 Preparation is one job. A successful process can report either `blocked_requires_computation` or `review_required`; both remain an unselected preparation with empirical status `unassessed` and publication false. There is no dependency edge that automatically advances a prepared candidate into application. An independent review and exact source-bound root decision must exist before a separate application recipe can be compiled. The actual TX2026 count request remains pending; no positive scientific selection has been demonstrated here.

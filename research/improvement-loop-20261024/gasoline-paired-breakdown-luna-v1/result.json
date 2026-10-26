@@ -1,0 +1,125 @@
+{
+  "schema": "MatchedGasolinePerRaceCRPSBreakdownV2",
+  "status": "bounded_descriptive_reanalysis_of_exposed_retrospective_folds",
+  "primary_metric": "share_crps",
+  "pair": "original G01 gasoline challenger minus F0 incumbent, no arm reselection",
+  "race_weights": "one equal weight per originally scored race within each cycle; no row dropped",
+  "cycles": [
+    {
+      "year": 2018,
+      "tier": "A",
+      "n_matched_all_races": 30,
+      "paired_race_delta_definition": "G01 share_crps minus F0 share_crps; negative favors lower G01 loss",
+      "improved_race_count": 22,
+      "worsened_race_count": 8,
+      "exact_tie_count": 0,
+      "mean_delta": -0.002269086601967979,
+      "reviewed_cycle_delta": -0.0022690866019685965,
+      "median_delta": -0.002945407310314927,
+      "minimum_delta": -0.007827935212040657,
+      "maximum_delta": 0.006535166889729806,
+      "top_three_absolute_deltas_share_of_absolute_total": 0.17676954882231238,
+      "top_three_largest_absolute_races_signed_delta_sum": -0.022151702672243236,
+      "remaining_races_signed_delta_sum": -0.04592089538679614,
+      "remaining_races_mean_delta": -0.001700773903214672,
+      "leave_one_race_out_mean_range": [
+        -0.0025726815499575576,
+        -0.0020774021671378868
+      ]
+    },
+    {
+      "year": 2020,
+      "tier": "B",
+      "n_matched_all_races": 28,
+      "paired_race_delta_definition": "G01 share_crps minus F0 share_crps; negative favors lower G01 loss",
+      "improved_race_count": 16,
+      "worsened_race_count": 12,
+      "exact_tie_count": 0,
+      "mean_delta": 0.00014716884601658032,
+      "reviewed_cycle_delta": 0.0001471688460167389,
+      "median_delta": -0.0008727150307653274,
+      "minimum_delta": -0.003325909528165222,
+      "maximum_delta": 0.005510053609431374,
+      "top_three_absolute_deltas_share_of_absolute_total": 0.1962530960016443,
+      "top_three_largest_absolute_races_signed_delta_sum": 0.015224417240541271,
+      "remaining_races_signed_delta_sum": -0.011103689552077023,
+      "remaining_races_mean_delta": -0.00044414758208308094,
+      "leave_one_race_out_mean_range": [
+        -5.145651559137503e-05,
+        0.00027580137839368406
+      ]
+    },
+    {
+      "year": 2022,
+      "tier": "A",
+      "n_matched_all_races": 30,
+      "paired_race_delta_definition": "G01 share_crps minus F0 share_crps; negative favors lower G01 loss",
+      "improved_race_count": 12,
+      "worsened_race_count": 18,
+      "exact_tie_count": 0,
+      "mean_delta": 0.0019696721793519964,
+      "reviewed_cycle_delta": 0.001969672179351626,
+      "median_delta": 0.0026171292699708644,
+      "minimum_delta": -0.007146411883550023,
+      "maximum_delta": 0.012263935853276536,
+      "top_three_absolute_deltas_share_of_absolute_total": 0.22953867095154198,
+      "top_three_largest_absolute_races_signed_delta_sum": 0.03490128504360238,
+      "remaining_races_signed_delta_sum": 0.024188880336957506,
+      "remaining_races_mean_delta": 0.0008958844569243521,
+      "leave_one_race_out_mean_range": [
+        0.0016146975699063224,
+        0.0022840199056589627
+      ]
+    },
+    {
+      "year": 2024,
+      "tier": "B",
+      "n_matched_all_races": 30,
+      "paired_race_delta_definition": "G01 share_crps minus F0 share_crps; negative favors lower G01 loss",
+      "improved_race_count": 18,
+      "worsened_race_count": 12,
+      "exact_tie_count": 0,
+      "mean_delta": -0.0011118267302161068,
+      "reviewed_cycle_delta": -0.0011118267302163039,
+      "median_delta": -0.0020428119324637298,
+      "minimum_delta": -0.005356255231586886,
+      "maximum_delta": 0.004935008344077618,
+      "top_three_absolute_deltas_share_of_absolute_total": 0.1846451106066991,
+      "top_three_largest_absolute_races_signed_delta_sum": -0.005287397768903926,
+      "remaining_races_signed_delta_sum": -0.02806740413757928,
+      "remaining_races_mean_delta": -0.0010395334865770103,
+      "leave_one_race_out_mean_range": [
+        -0.0013203382845020973,
+        -0.0009654671267205627
+      ]
+    }
+  ],
+  "cycle_direction_count": {
+    "cycles_with_lower_G01_mean_crps": 2,
+    "cycles_with_higher_G01_mean_crps": 2,
+    "equal_cycle_mean_delta": -0.00031601807670387724
+  },
+  "matched_inputs_sha256": {
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/2018/F0/scores.json": "4f410c67c4bfeda6d22edd537d7976859ea1c768842c00c876f6f46cd47e884b",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/2018/G01/scores.json": "841c4dee8a5915a10bad2aa0675c35c4c3aed643a24965088a91761b347fd2ee",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-results-review-luna-v1/independent-score-review-2018-r2.json": "c320ee29350de4e077a2d39bb9c16862757c330d37c53629444a8f313350eaef",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/2020/F0/scores.json": "74db3112d3d20dbf6c806b283b4eed0340f9987e7b4b3b49d98ab221398d6e3d",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/2020/G01/scores.json": "39d14ad1d42a14e72f7b36760ece175d87d7c3def5114a0e523079767a248cd0",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-results-review-luna-v1/independent-score-review-2020.json": "5bb744100205bfc64e45d86b0b562273fc93f25c69f560b3a199b18e7338419f",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/2022/F0/scores.json": "12ad960908ff0e587a7ff342582e3698872c4d1e5a85a450cc3c31b69a9bf445",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/2022/G01/scores.json": "250f26708aabf1aa0f500059cad3173244cba02fb98d5739c03541721f96358f",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-results-review-luna-v1/independent-score-review-2022.json": "8e2f3ee714cbfda0b94b0f6038b6e582e6c4627ccf41e5ca695d9bef564a9e43",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/2024/F0/scores.json": "4518d2884c23d73d70db6e00e82506172da0ad8037aee55591d172921aaacbe1",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-execution-v1/attempt-v1/2024/G01/scores.json": "14a9aa4c2f0876f3d24a51da7ae1ebcfc21f075b5335acb601dac1546ff2b9f3",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/gasoline-results-review-luna-v1/independent-score-review-2024.json": "c56e14fa614e4efc6976057aa9cb950d2a30bbe63244a9ad72be9314fe56e3d8"
+  },
+  "independent_audit_seal_sha256": "df8b41a1f8a6a5587e349679a61b2a94de6021b5b0b774c887b4a55b06f7ad89",
+  "qualification": false,
+  "interpretation_limits": [
+    "The four folds are exposed retrospective development comparisons, not prospective validation.",
+    "Races within an election share national context and model/source errors; race counts are not independent experiments.",
+    "No fit, sampler, raw prediction bank, resampling, significance test, or forecast-qualified result was created.",
+    "Per-race concentration and leave-one-race-out ranges are descriptive influence checks only; they do not isolate causality or solve cycle dependence.",
+    "This breakdown does not rank the eight model roles or show which layer is empirically weakest."
+  ]
+}

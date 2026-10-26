@@ -1,0 +1,111 @@
+{
+  "schema": "CountingSessionV4IndependentSolReviewV1",
+  "reviewed_at_utc": "2026-10-26T22:28:12.398455+00:00",
+  "verdict": "qualified_pass_ephemeral_ack_and_byte_snapshots_with_liveness_limit",
+  "source_pins": {
+    "session.py": {
+      "sha256": "f6a879d66711db4f7133b0fdcb97a9b9d809e3268cf23319a9c96f4b990c6d04",
+      "bytes": 9930
+    },
+    "engine.py": {
+      "sha256": "405dd912264d1feb61afc0ed37eadb71d29e55574645a4421c19243df1a11acc",
+      "bytes": 22636
+    },
+    "test_session.py": {
+      "sha256": "482c21d7f44160b98ba567d4214b90c1db8d720fa2f3a7a901ed77f734c3953c",
+      "bytes": 6174
+    },
+    "FINDINGS.md": {
+      "sha256": "13d52762409a8f13bda47ac88e8c07bb0f1b0f0915d332904fb398c7c6e4a8e4",
+      "bytes": 5906
+    },
+    "evidence.json": {
+      "sha256": "8f43268d620598ea5c8156197fad6c3b9c79c3804ae14203f5077a7bbf6eeaa9",
+      "bytes": 32366
+    }
+  },
+  "engine_byte_identical_to_reviewed_v3": true,
+  "fresh_copy_suite": {
+    "stdout": "",
+    "stderr": "test_concurrent_readers_block_cooperating_writer (__main__.Tests.test_concurrent_readers_block_cooperating_writer) ... ok\ntest_forked_process_cannot_adopt_retained_session (__main__.Tests.test_forked_process_cannot_adopt_retained_session) ... ok\ntest_noncooperating_after_read_mutation_does_not_change_returned_snapshot (__main__.Tests.test_noncooperating_after_read_mutation_does_not_change_returned_snapshot) ... ok\ntest_noncooperating_before_read_change_rejects (__main__.Tests.test_noncooperating_before_read_change_rejects) ... ok\ntest_normal_explicit_ack_and_immutable_snapshot (__main__.Tests.test_normal_explicit_ack_and_immutable_snapshot) ... ok\ntest_uncertain_supervisor_success_cannot_be_rehashed_to_ack (__main__.Tests.test_uncertain_supervisor_success_cannot_be_rehashed_to_ack) ... ok\n\n----------------------------------------------------------------------\nRan 6 tests in 0.780s\n\nOK\n",
+    "result": {
+      "schema": "V4CallerAckSnapshotTestsV1",
+      "root": "/tmp/tmp2p9trmof/v4/test-run-db2a3d26b6c14b2996d50237fb7362d3",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "report": [
+        {
+          "test": "cooperating_race",
+          "readers": 2,
+          "writer_blocked_until_readers_release": true,
+          "snapshots_remain_original": true,
+          "changed_directory_next_verify_rejected": true
+        },
+        {
+          "test": "forked_session_adoption",
+          "rejected": true
+        },
+        {
+          "test": "uncooperative_after_read",
+          "snapshot_valid_original_bytes": true,
+          "live_directory_changed": true,
+          "no_live_directory_claim": true
+        },
+        {
+          "test": "uncooperative_before_read",
+          "changed_captured_bytes_rejected": true
+        },
+        {
+          "test": "normal",
+          "source": "405dd912264d1feb61afc0ed37eadb71d29e55574645a4421c19243df1a11acc",
+          "files": 13,
+          "copy_and_restart_rejected": true
+        },
+        {
+          "test": "uncertain_success",
+          "receipt_visible": true,
+          "raw_v3_file_check_accepts": true,
+          "v4_ack_issued": false,
+          "receipt_sha256": "3a0d4c434899cb5201560d1a29f50f3d2987b1188c75d62eb37cff35e51a71dc"
+        }
+      ],
+      "scope": "invented fixtures only; no deserialize or graph"
+    }
+  },
+  "independent_fifo_counterexample": {
+    "prior_transport_completed_and_ack_issued": true,
+    "regular_file_replaced_by_fifo": true,
+    "cooperating_flock_ignored_by_mutator": true,
+    "verify_blocked_without_writer": true,
+    "observation_seconds": 0.2,
+    "direct_probe_process_returncode": -15,
+    "reaped": true,
+    "transport_children_already_reaped_before_mutation": true
+  },
+  "assessment": [
+    "Acknowledgment identity is enforced by original object identity, private issuance registry, MAC and original PID. Copies, dictionary/rehashed file substitutes, new Session and fork adoption fail under trusted in-process code. This is intentionally volatile; a process restart cannot recover acknowledgment, so no durable restart readiness follows.",
+    "Uncertain external success directory fsync leaves visible raw V3-looking success evidence but V4 issues no acknowledgment. V4 avoids accepting rehashed metadata through Session.verify. Raw private engine verifier remains callable/unsafe for this policy; hostile in-process bypass is out of contract.",
+    "Shared/exclusive cooperating locks block the tested writer while readers capture. Returned file bytes and nested parsed views are immutable. Noncooperating mutation after capture does not change the returned byte image, and later verification rejects live-file drift; this is snapshot semantics, not a live-directory assertion.",
+    "No stable global on-disk instant, malicious owner protection, signed authority, persistent acknowledgment or uncatchable-death recovery is established. A future consumer must use captured bytes, not reopen verified names."
+  ],
+  "findings": [
+    {
+      "severity": "liveness_gap",
+      "finding": "read_directory opens members O_RDONLY before checking regular-file type. Replacing an expected member with a FIFO can block open indefinitely before size/type checks. Independently reproduced only after all transport children completed/reaped; the direct blocked probe was TERM/reaped. Lock acquisition is already documented without timeout, but this separate noncooperating member-open blocking path should be explicit or prevented (e.g. bounded/nonblocking regular-file capture). No liveness guarantee is supported."
+    },
+    {
+      "severity": "bound_precision",
+      "finding": "MAX_SNAPSHOT is enforced per directory and again after combining output/control maps. Before the final combined check, transient captured bytes can exceed 8 MiB (up to the fixed allowed-roster file bounds, plus parsing/object copies). Returned snapshots are capped, but 8 MiB is not a proven process-memory cap."
+    },
+    {
+      "severity": "restart_limit",
+      "finding": "New process/session, including a legitimate restarted controller, intentionally cannot adopt prior files as acknowledged success. This closes recomputed-receipt adoption by refusing recovery, rather than supplying a durable restart protocol."
+    }
+  ],
+  "limitations": [
+    "Fresh invented-object tests only; no TX/native/scientific imports, graph, sampler, pickle load or owner changes.",
+    "No arbitrary malicious Python-memory security, coherent rewrite/rollback, physical power-loss or broad process-tree proof.",
+    "FIFO probe is intentional owner-writable noncooperation, not an accidental natural transition; no fixture process survives the test."
+  ]
+}

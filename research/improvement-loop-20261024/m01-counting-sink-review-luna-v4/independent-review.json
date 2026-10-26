@@ -1,0 +1,48 @@
+{
+  "schema": "IndependentCountingSinkV4ReviewV1",
+  "reviewer": "luna",
+  "date": "2026-10-26",
+  "source_pins": {
+    "session.py": "f6a879d66711db4f7133b0fdcb97a9b9d809e3268cf23319a9c96f4b990c6d04",
+    "engine.py": "405dd912264d1feb61afc0ed37eadb71d29e55574645a4421c19243df1a11acc",
+    "test_session.py": "482c21d7f44160b98ba567d4214b90c1db8d720fa2f3a7a901ed77f734c3953c",
+    "evidence.json": "8f43268d620598ea5c8156197fad6c3b9c79c3804ae14203f5077a7bbf6eeaa9",
+    "test-result.json": "b1db7637858078965a114ab918d606fcec8ee8b0963fe488b52fa21b5148a426"
+  },
+  "independent_reproduction": "Copied only session.py, engine.py and test_session.py to a fresh /tmp directory; all six invented-object tests passed in 0.705 seconds. No TX graph, partial pickle, sample, owner store or owner file was touched.",
+  "supported": [
+    "Session initialization and every verification check process PID/source files. The acknowledgement requires the original frozen dataclass object in the issuing Session registry plus a session HMAC; copies, dataclass replacements, new Session instances and forked processes are rejected. Repeated verification in the same live Session is permitted; this is a reusable read/verify capability, not one-shot consumption.",
+    "An uncertain external success.json post-rename fsync exception makes execute raise before acknowledgment issuance. Visible/rehashed V3 files cannot synthesize the in-memory issued object. This is operational for callers that retain only returned acknowledgments.",
+    "Shared/exclusive flock tests show two readers can coexist while a cooperating writer blocks. Directory and regular-file opens use no-follow flags; file bytes are captured with before/after stat checks, size bounds and exact rosters, and all cross-file projections are verified against those captured bytes. Returned mapping and nested parsed metadata are immutable.",
+    "A noncooperating write after capture leaves the returned immutable snapshot equal to the originally acknowledged bytes while the live path has changed; a subsequent verification rejects. This correctly limits the claim to the returned byte snapshot, not a live directory."
+  ],
+  "limits_and_gaps": [
+    {
+      "severity": "medium",
+      "finding": "flock is advisory and lock acquisition has no timeout. A live cooperating process that never releases a lock can block execute/verify indefinitely. SIGKILL/process death releases kernel flock handles, but a permanently hung holder has no lease/recovery path. This is explicitly documented and means no production liveness guarantee."
+    },
+    {
+      "severity": "medium",
+      "finding": "The acknowledgment is intentionally ephemeral and in-process, not a durable/signature-based record. Forks are rejected by PID, but a same-process caller can reuse an acknowledgment; there is no expiry or one-time consume. This matches read-verification semantics but must not be repurposed as a single-use action authorization without changing the protocol."
+    },
+    {
+      "severity": "medium",
+      "finding": "The snapshot capture reads output and supervisor directories sequentially, so even with hashes and projections it does not prove both directories coexisted at one instant under uncooperative mutation. Captured bytes remain immutable and authenticated to the acknowledgment; no live filesystem/history claim follows."
+    },
+    {
+      "severity": "low",
+      "finding": "The lock helper checks regular file and link count but is vulnerable to a noncooperating actor unlinking/replacing the lock pathname while a descriptor is held; subsequent users could flock a different inode. This is within the stated advisory-lock threat boundary. Prevent accidental replacement by enforcing persistent lock-file ownership/path identity or documenting never-unlink as a hard store invariant."
+    },
+    {
+      "severity": "low",
+      "finding": "The in-memory issuance registry retains each acknowledgment for the Session lifetime and has no explicit size/close policy. Suitable for the bounded toy prototype; repeated large-session use would need bounded lifecycle management."
+    },
+    {
+      "severity": "low",
+      "finding": "No hostile in-process code, coherent filesystem rewrite, power-loss durability, or arbitrary-process authorization guarantee. Caller-selected SHA and HMAC are not an external signature. Pickle payload is still not stored or loaded."
+    }
+  ],
+  "uncertain_fsync_and_late_mutation": "Tests and source inspection support the stated behavior: no ack is issued when success receipt publication is uncertain; captured bytes remain immutable despite later disk changes. Consumers must use the returned VerifiedSnapshot bytes and never treat reopening a pathname as verification.",
+  "verdict": "bounded process-local acknowledgment/snapshot design is internally coherent within its cooperating trusted-local contract; liveness and hostile-write limitations remain explicit",
+  "recommendation": "Keep the capability narrowly for local read verification. For any broader service or long-running use, add lock acquisition deadlines, no-unlink lock-file guarantees, acknowledgment lifecycle limits, and a stable snapshot/transactional storage layer. Never admit pickle deserialization on this basis alone."
+}

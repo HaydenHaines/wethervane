@@ -1,0 +1,51 @@
+{
+  "conclusion": "No functional blocker found in the frozen adapter for its stated new-V3-store and cooperating-local-store scope. The parent README correctly warns that legacy V1 stores/plans are not migrated; the V3 README also states pins do not prove plan creator identity and its synthetic mechanics are not scientific evidence. Do not interpret queue accepted_execution as forecast qualification or model selection.",
+  "findings": [
+    {
+      "area": "source binding and store separation",
+      "evidence": "V3 compiler imports queue modules with queue-v3 directory at sys.path[0], pins its compiler/queue/executor/ledger/receipt decoder and pins parent scoped_selection/native_selection/helper modules. The queue current_sources contract binds an initialized V3 store to its dispatcher/executor sources. The regression test confirms V1 dispatcher refuses a V3 store and retry/resume compilers reject plans missing the V3 experiment_queue.py dispatcher-source pin.",
+      "limit": "Pins establish byte identity at verification time under the documented cooperating local-store model; they are not authenticated authorship and do not protect against arbitrary concurrent hostile mutations.",
+      "severity": "no_blocker_found"
+    },
+    {
+      "area": "selection and retry/resume boundary",
+      "evidence": "Build emits one fixed preparation/application job; preparation carries no application authority. Application recipe checks exact task/candidate/native spec/revision/predecessor/journal cycle, while actual native and journal admission stays in unchanged scoped_selection CLI. Retry copies the exact spec and only changes attempt/output/queue/predecessor/reason; resume requires sealed never-launched evidence and queue enqueue performs stronger same-store reference, launch-intent, process/claim and exact-spec/output checks.",
+      "limit": "Compiler checks are deliberately not sufficient admission. Decision/current journal validity, process state, competing references and exact owner output freshness rely on the existing CLI/dispatcher/executor at execution/enqueue time.",
+      "severity": "no_blocker_found"
+    },
+    {
+      "area": "subprocess and recovery tests",
+      "evidence": "All seven tests passed. Tests exercise actual queued CLI subprocesses and a post-COMMIT/pre-receipt failure followed by a fresh explicit attempt that observes already_applied without duplicate event. The test explicitly demonstrates source-drift deferral/resumption, then a terminal retry that sheds consumed prelaunch evidence.",
+      "limit": "All sources, registry and native inspection fixtures are invented temporary test data; synthetic interpreter monkeypatches native inspector. The deterministic drift test patches launch in-process. No adversarial hostile-history, power-loss, true concurrent mutation, or real scientific selection was tested.",
+      "severity": "covered_with_test-scope_caveat"
+    },
+    {
+      "area": "prior documentation-count claim retracted",
+      "evidence": "The reviewed queue-v3/selection_queue.md contains no \u201csix cases\u201d phrase or case count. The earlier review incorrectly attributed that statement to this document; no documentation change is warranted. The test file has seven methods and all passed.",
+      "recommendation": "Retract the prior count discrepancy; preserve the reviewed document.",
+      "severity": "correction"
+    }
+  ],
+  "independent_test": {
+    "command": "python3 -B -m unittest -v test_selection_queue",
+    "cwd": "research/improvement-loop-20261024/queue-v3",
+    "effects": "Tests use temporary invented native fixtures and queue stores; test code invokes actual compiler/dispatcher/worker/selection CLI subprocesses. The synthetic executable substitutes fake native inspection only. One drift hook patches execution.launch to deterministically inject prelaunch source drift.",
+    "elapsed_seconds_approx": 8.2,
+    "outcome": "PASS",
+    "tests": 7
+  },
+  "review_file_sha256_note": "This file is newly authored; evidence file hashes above were calculated directly from inspected source bytes.",
+  "reviewer": "luna",
+  "schema": "IndependentQueueV3SelectionAdapterReviewV1",
+  "scope": "Read-only source review of frozen V3 selection recipe adapter, its tests, V3 queue/execution contract, and the parent selection_queue.md version warning. No owner queue, store, or scientific command was run.",
+  "source_sha256": {
+    "native_selection.py": "adf9067ed03366c0e88001e9f31c91b76b294c262e222ee53ba7bc2e3cc29286",
+    "queue-v3/execution.py": "ce02f4c4b9be397b299c2219092fdd355db1695798af07c4974bc63cb6bbbc93",
+    "queue-v3/experiment_queue.py": "dcf01b7de0dfaed641fa40e2c5c5d2d584f73c78ac691dac2ec42b3f3f2a2b96",
+    "queue-v3/selection_queue.md": "b01bfed3eb4a86da621104edfcead35cd1f8db9315cc56ddba0a24319aea145c",
+    "queue-v3/selection_queue.py": "a13d4d04b89cb5e28c95240876217f5672b2cb9b01c5923ac0dd7ab4ae53961d",
+    "queue-v3/test_selection_queue.py": "1448a4d0940ef26be00723527324f2bff419cc42d4eb8bb1445028fa91d3eba6",
+    "scoped_selection.py": "5006cdea38e036bd5b84b94278f83548035e5e2c434f651ef519b6a30f3fed4b",
+    "selection_queue.md": "3ce405efe6f87abc7e2fe52f4f59257c7c99ee4f1f4289b2e1882204fc93bba1"
+  }
+}
