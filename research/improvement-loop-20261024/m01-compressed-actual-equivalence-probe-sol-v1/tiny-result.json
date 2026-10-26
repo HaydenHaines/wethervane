@@ -1,0 +1,81 @@
+{
+  "schema": "PreparedActualProbeTinyTestsV1",
+  "status": "passed",
+  "tests": [
+    "frozen_contract_all_source_pins",
+    "fresh_receipt",
+    "stale",
+    "future",
+    "overlap",
+    "slot",
+    "wrong_contract",
+    "memory_floor",
+    "retained_digest_mismatch",
+    "complete_vector_equal",
+    "last_coordinate_diff",
+    "missing_coordinate",
+    "nonfinite",
+    "target_ids_distinct_preserved",
+    "mass_changed",
+    "claim_changed",
+    "receipt_exception_reaped_terminal",
+    "controller_interruption_reaped_terminal"
+  ],
+  "actual_graph_imported": false,
+  "actual_graph_executed": false,
+  "owned_tiny_children_reaped": 2,
+  "cleanup_receipts": [
+    {
+      "test": "receipt_exception",
+      "terminal": {
+        "arm": "original",
+        "pid": 1984230,
+        "returncode": -15,
+        "reason": "controller_exception",
+        "controller_error": "Traceback (most recent call last):\n  File \"/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-compressed-actual-equivalence-probe-sol-v1/launch.py\", line 33, in run_child\n    atomic_json(out/'launch.json',{'pid':child.pid,'arm':arm,'command':child.args,'environment':{k:env[k]for k in ['OPENBLAS_NUM_THREADS','OMP_NUM_THREADS','MKL_NUM_THREADS','NUMEXPR_NUM_THREADS','NUMBA_NUM_THREADS','PYTENSOR_FLAGS','NUMBA_CACHE_DIR']},'live_resources':live,'caps':cap})\n  File \"/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-compressed-actual-equivalence-probe-sol-v1/test_tiny.py\", line 33, in write\n    if Path(path).name=='launch.json':raise exc\n                                      ^^^^^^^^^\nOSError: injected receipt write\n",
+        "seconds": 0.004464020021259785,
+        "peak_rss_bytes": 0,
+        "peak_threads": 0,
+        "peak_disk_bytes": 0,
+        "no_retry": true
+      }
+    },
+    {
+      "test": "controller_interruption",
+      "terminal": {
+        "arm": "original",
+        "pid": 1984231,
+        "returncode": -15,
+        "reason": "controller_exception",
+        "controller_error": "Traceback (most recent call last):\n  File \"/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-compressed-actual-equivalence-probe-sol-v1/launch.py\", line 33, in run_child\n    atomic_json(out/'launch.json',{'pid':child.pid,'arm':arm,'command':child.args,'environment':{k:env[k]for k in ['OPENBLAS_NUM_THREADS','OMP_NUM_THREADS','MKL_NUM_THREADS','NUMEXPR_NUM_THREADS','NUMBA_NUM_THREADS','PYTENSOR_FLAGS','NUMBA_CACHE_DIR']},'live_resources':live,'caps':cap})\n  File \"/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-compressed-actual-equivalence-probe-sol-v1/test_tiny.py\", line 33, in write\n    if Path(path).name=='launch.json':raise exc\n                                      ^^^^^^^^^\nKeyboardInterrupt: injected interruption\n",
+        "seconds": 0.004303936846554279,
+        "peak_rss_bytes": 0,
+        "peak_threads": 0,
+        "peak_disk_bytes": 0,
+        "no_retry": true
+      }
+    }
+  ],
+  "source_pins": {
+    "common.py": {
+      "sha256": "be5e7b6bbc48a4712a9bfa9155f97ec1c714e92ff03c03eb06c9ca38024127e7",
+      "bytes": 3014
+    },
+    "child.py": {
+      "sha256": "7956af659bdf5bf02d40aab431219f891d4eb2503b41ad1a286308456e43e5df",
+      "bytes": 8554
+    },
+    "compare.py": {
+      "sha256": "9b892b5cf11b60fb8e106105b50067e65267971a23dd18a4496932f9b9e6c30d",
+      "bytes": 3832
+    },
+    "launch.py": {
+      "sha256": "c0dfcfcadc234bda6e688242062d603eecc052e9cdfc24d51e8ee882c096ba50",
+      "bytes": 7010
+    },
+    "test_tiny.py": {
+      "sha256": "133a05ce123916ba5d9e4da160d428677b6dbf71bc9bdf70f23e8a4abb77c1b1",
+      "bytes": 5597
+    }
+  }
+}

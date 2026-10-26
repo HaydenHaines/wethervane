@@ -1,0 +1,44 @@
+{
+  "schema": "CompressedActualProbeIndependentReviewV1",
+  "decision": "block_actual_attempt_until_worker_entry_guard_and_resource_enforcement",
+  "reviewed_evidence_sha256": "4613346d3166a43835bc3499410811af37cc6dd064ea2a10b1ab49e5a5e95d4a",
+  "frozen_source_pins": {
+    "contract.json": "47b0f6f279d3905421d77c4fc0dac5cf0ae441aafd0e88aedf545e55693875c8",
+    "common.py": "be5e7b6bbc48a4712a9bfa9155f97ec1c714e92ff03c03eb06c9ca38024127e7",
+    "child.py": "7956af659bdf5bf02d40aab431219f891d4eb2503b41ad1a286308456e43e5df",
+    "launch.py": "c0dfcfcadc234bda6e688242062d603eecc052e9cdfc24d51e8ee882c096ba50",
+    "compare.py": "9b892b5cf11b60fb8e106105b50067e65267971a23dd18a4496932f9b9e6c30d",
+    "test_tiny.py": "133a05ce123916ba5d9e4da160d428677b6dbf71bc9bdf70f23e8a4abb77c1b1"
+  },
+  "blocker": {
+    "file": "child.py",
+    "lines": "7-10, 13-28",
+    "claim": "Worker described as controller-only is directly callable; auth file is forgeable and parent PID only proves immediate spawning process, not that launch.py ran. Worker does not install controller RLIMITs or watchdogs before actual graph import/build/compile.",
+    "consequence": "Review/resource admission and resource controls can be bypassed by direct worker invocation.",
+    "reproduced": "Static path analysis only; did not execute the actual worker or an actual graph."
+  },
+  "verified_by_static_review": {
+    "selected_mode": "actual_calibration_bank only; incumbent_reduction remains in source predecessor but is not included in this expensive probe",
+    "complete_problem_and_observation_identity": "The packet contract/source selection binds the Problem and ordered six observations; compressed provider compares the supplied poll block and native mapping.",
+    "coordinate_comparison": "Both arm outputs must contain two shared exact points and finite (2,662) gradients; all logp, gradient, factor, poll-logp, and rate arrays are compared.",
+    "parent_scope": "First selected parent evaluated; all eight selected masses must be .125 and parent mass is excluded from logp. No all-parent normalization is tested.",
+    "evidence_ownership": "Comparison retains parent/model IDs, checks full nonmeasurement component inventory and poll factor ownership, while allowing only the measurement implementation/spec to differ.",
+    "source_identity": "Frozen contract has 89 pinned dependencies; child/provider explicitly load local modules and verify known runtime module versions/paths. Trust is limited to non-hostile local filesystem and current process assumptions.",
+    "caller_receipts": "Original receipt digest is passed on compressed invocation and completion acknowledgement is printed by controller after success; tiny tests do not exercise full CLI sequencing."
+  },
+  "tiny_test_reproduction": {
+    "isolated_copy": "/tmp/luna-compressed-probe.VJKkFS",
+    "command_class": "test_tiny.py only, calibration runtime Python, one-thread numerical environment, nice 15, 30-second timeout",
+    "result": "18/18 passed",
+    "children_reaped": 2,
+    "actual_model_imported_or_executed": false,
+    "result_file": "reproduced-tiny-result.json"
+  },
+  "not_established": [
+    "actual graph construction or compilation within caps",
+    "actual original/compressed logp or gradient parity",
+    "all 662 coordinates independently finite-difference validated",
+    "all-parent conditional normalization or empirical predictive benefit",
+    "protection from SIGKILL, power loss, hostile filesystem mutation, or a malicious same-user process"
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "schema": "ContinuousImprovementCheckpointV71",
+  "recordedAtUtc": "2026-10-26T23:03:33.888954+00:00",
+  "status": "active; actual parity experiment not run",
+  "references": {
+    "previous": {
+      "path": "research/improvement-loop-20261024/checkpoints/continuation-v70.json",
+      "sha256": "90698c75fff22cac90f3a9ab391fd6e12f5042e24b9d2274b4f41b8bed66cc4a",
+      "bytes": 4248
+    },
+    "probe_v1": {
+      "path": "research/improvement-loop-20261024/m01-compressed-actual-equivalence-probe-sol-v1/evidence.json",
+      "sha256": "4613346d3166a43835bc3499410811af37cc6dd064ea2a10b1ab49e5a5e95d4a",
+      "bytes": 2287
+    },
+    "review_v1": {
+      "path": "research/improvement-loop-20261024/m01-compressed-actual-equivalence-review-luna-v1/independent-review.json",
+      "sha256": "ddc5fdda6cf10bfa2510784e6c39de1155c789b7e621b5690da396f456f39d51",
+      "bytes": 3537
+    }
+  },
+  "probe": "The prepared separate-arm complete-graph comparison preserves two shared points and all 662 gradient coordinates but no actual graph has been built. Independent Luna reproduced 18 toy tests and identified a source-level entry bypass: a direct child invocation with a fabricated authorization can bypass the controller resource controls. Do not use V1 for actual computation. Preserve all bytes; separate V2 is under preparation with child-entry enforcement and defense-in-depth limits, followed by independent review. A V2 may protect against accidental direct use without claiming hostile same-user security. The fixed-input provider comparison remains qualified only within the narrower v69 scope.",
+  "frontend": "GitHub workflow 40414769526 for deploy commit 0d71d82 is actively running end-to-end tests. The public site still shows the earlier description; SiteGround logs were requested from the user and status remains unknown. Corrected House recovery remains separately pending.",
+  "next": [
+    "Review V2 independent test and source evidence; fresh per-job resource and concurrency checks before any actual graph, no user permission gate.",
+    "Monitor exact GitHub workflow and public deployment; use user-provided SiteGround logs if available.",
+    "Continue data-identification work and await owner-qualified corrected House artifacts."
+  ]
+}

@@ -9,6 +9,7 @@ As of October 26, 2026 UTC:
 The first entry is the latest checkpoint. Earlier entries preserve the scope and
 remaining work recorded at their issuance; later checkpoints supersede that status.
 
+- [Checkpoint v71](checkpoints/continuation-v71.json) records the independent finding that the first prepared actual-graph worker can bypass its controller resource limits. No actual graph was run; a separately versioned correction and review are in progress.
 - [Checkpoint v70](checkpoints/continuation-v70.json) records a source-grounded registration/turnout identification barrier, an exact counterexample and the observation-interface constraint. The owner’s 2018 GPU run has entered sampling; qualification remains pending.
 - [Checkpoint v69](checkpoints/continuation-v69.json) records independent supplied-state and native-registry review of the compressed polling provider. Full graph parity and the corrected House release remain pending.
 - [Checkpoint v68](checkpoints/continuation-v68.json) records the House release-readiness audit and a deployed-branch metadata correction awaiting public verification. The corrected House handoff and exact-edition expected-error reference remain pending. The symbolic runner is independently tested only on toy inputs; the compressed provider awaits review.

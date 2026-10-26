@@ -1,0 +1,15 @@
+Traceback (most recent call last):
+  File "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-compressed-actual-equivalence-probe-sol-v1/test_tiny.py", line 35, in <module>
+    try:launch.run_child('original',out,{'caps':cap},{})
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-compressed-actual-equivalence-probe-sol-v1/launch.py", line 32, in run_child
+    child=subprocess.Popen([sys.executable,'-B',str(HERE/'child.py'),arm,str(out)],cwd=HERE,env=env,stdout=log,stderr=subprocess.STDOUT,start_new_session=True,preexec_fn=setup)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-compressed-actual-equivalence-probe-sol-v1/test_tiny.py", line 24, in tiny_popen
+    child=actual_popen([sys.executable,'-c','import time; time.sleep(5)'],**kwargs);children.append(child);return child
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/subprocess.py", line 1026, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+  File "/usr/lib/python3.12/subprocess.py", line 1958, in _execute_child
+    raise child_exception_type(err_msg)
+subprocess.SubprocessError: Exception occurred in preexec_fn.
