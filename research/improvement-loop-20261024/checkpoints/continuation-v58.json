@@ -1,0 +1,40 @@
+{
+  "schema": "ContinuousImprovementCheckpointV58",
+  "recordedAtUtc": "2026-10-26T21:46:25.853136+00:00",
+  "status": "active; no model fitted or promoted; no end-to-end thousands-cycle evidence",
+  "references": {
+    "previous": {
+      "path": "research/improvement-loop-20261024/checkpoints/continuation-v57.json",
+      "sha256": "49a7dc46b7ae1c1daff9abf67950579b2833b553e1bb900e3ab4936385398007",
+      "bytes": 6060
+    },
+    "persistence_review": {
+      "path": "research/improvement-loop-20261024/m01-gradient-persistence-design-sol-v1/FINDINGS.md",
+      "sha256": "7ec717bab6e7b666f013e622c020f4ab9fcac1a6481c75c7c342977887e84cf4",
+      "bytes": 6397
+    },
+    "persistence_evidence": {
+      "path": "research/improvement-loop-20261024/m01-gradient-persistence-design-sol-v1/evidence.json",
+      "sha256": "dde4dd524b08bc3f8365de2366549d64cf550a4fb067221173eca3344485ec8a",
+      "bytes": 743
+    },
+    "persistence_proposal": {
+      "path": "research/improvement-loop-20261024/m01-gradient-persistence-design-sol-v1/proposal.json",
+      "sha256": "f4df2a738e34a03c77525372ef08cc853c0ee82abf5551531366c25f10eb92a8",
+      "bytes": 1440
+    },
+    "symbolic_attempt_audit": {
+      "path": "research/improvement-loop-20261024/m01-parent-gradient-after-replacement-plan-sol-v1/attempt-root-v1/root-audit.json",
+      "sha256": "6ef98464acac2516f492dee44869190e93572c453433de09391a023b7c72659e",
+      "bytes": 1988
+    }
+  },
+  "persistence": "Independent source/receipt audit confirms all 64 variable segments total 662, replacement and gradient structural checks passed, and original run failed with EFBIG at exactly its 64 MiB file cap. The partial pickle is retained locally, hash-pinned, never deserialized, and not a usable output. The unexecuted next proposal is a capped hash/count-only serialization measurement, then a separately reviewed chunked immutable output only if the measured size fits explicit storage budgets. Do not rerun without a new resource check, source/receipt validation and independent review; no numerical equivalence or posterior qualification is implied.",
+  "ci": "GitHub job 121862090967 on commit cf15600 passed both previously failed steps plus build/typecheck, and remains at Chromium installation as of checkpoint creation. The earlier failures were independently confirmed from GitHub logs. Browser and later steps remain pending; do not call the workflow passed until the actual job concludes.",
+  "county": "County share-only artifact and current state-level count model do not support numerical county vote targets; owner confirmed a separately validated allocation layer and reporting contract are needed.",
+  "next": [
+    "Obtain an independent review of the bounded serialization-measurement proposal; preserve the partial artifact and all previous attempt evidence.",
+    "Poll the specific live GitHub job without restarting it solely because observation times out.",
+    "Continue independently reviewing queue scaling and support scientific owners under the 2018\u21922022\u21922026 sequence."
+  ]
+}

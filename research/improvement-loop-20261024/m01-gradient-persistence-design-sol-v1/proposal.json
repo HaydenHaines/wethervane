@@ -1,0 +1,35 @@
+{
+  "schema": "UnexecutedBoundedSymbolicSerializationDesignV1",
+  "status": "design_only_no_actual_graph_or_serialization_run",
+  "current_attempt": "preserved failure; never retry/append/load partial pickle",
+  "next_measurement": {
+    "mode": "same-bundle single-Pickler protocol5 streaming counting/hash sink, no bulk output",
+    "logical_stream_limit_bytes": 536870912,
+    "report_and_cache_disk_limit_bytes": 16777216,
+    "wall_seconds": 120,
+    "cpu_soft_seconds": 90,
+    "cpu_hard_seconds": 95,
+    "rss_watchdog_bytes": 2147483648,
+    "address_space_bytes": 6442450944,
+    "threads": 1,
+    "nice": 15,
+    "requires_new_review_and_fresh_resources": true
+  },
+  "conditional_future_persistence": {
+    "data_payload_max_bytes": 402653184,
+    "metadata_log_max_bytes": 16777216,
+    "cache_max_bytes": 33554432,
+    "planned_sum_bytes": 452984832,
+    "synchronous_writer_budget_bytes": 469762048,
+    "aggregate_watchdog_bytes": 536870912,
+    "chunk_max_bytes": 33554432,
+    "per_file_hard_limit_bytes": 67108864,
+    "one_logical_pickle_stream": true,
+    "shared_memo_preserved": true,
+    "compression_savings_assumed": false,
+    "current_partial_loader_allowed": false,
+    "success_requires": "whole stream completed + all chunks flushed/fsynced and hash/length verified + atomic fsynced completion manifest",
+    "restore_and_numeric_parity": "separate future stages; not executed"
+  },
+  "qualification": false
+}
