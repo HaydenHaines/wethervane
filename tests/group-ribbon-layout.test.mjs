@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { layoutGroupRibbon } from "../lib/group-ribbon-layout.ts";
+import { groupRibbonMajorityPositions, layoutGroupRibbon } from "../lib/group-ribbon-layout.ts";
 
 function race(id, probabilities, structural = false) {
   return { id, districtKey: id, probabilities, structural };
@@ -58,4 +58,48 @@ test("native rounding tolerance preserves probabilities without inventing normal
   ], 2);
   assert.deepEqual(result.main.rows[0].probabilities, probabilities);
   assert.deepEqual(result.unavailable.map(row => row.id), ["invalid"]);
+});
+
+const orderedRaces = count => Array.from({ length: count }, (_, i) =>
+  race(`district-${String(i + 1).padStart(3, "0")}`, { D: 1 - i / count, R: i / count, O: 0 }));
+
+test("majority markers follow supplied seats and ranking through every snake width", () => {
+  for (const totalSeats of [1, 5, 16, 435]) {
+    const races = orderedRaces(totalSeats), majorityThreshold = Math.floor(totalSeats / 2) + 1;
+    for (const columns of [1, 3, 12, 48, 60]) {
+      const layout = layoutGroupRibbon(races.toReversed(), columns);
+      const positions = groupRibbonMajorityPositions(layout, { totalSeats, majorityThreshold });
+      assert.equal(positions.length, totalSeats % 2 ? 1 : 2);
+      for (const from of ["D", "R"]) {
+        const index = from === "D" ? majorityThreshold - 1 : totalSeats - majorityThreshold;
+        assert.equal(positions.find(row => row.from.includes(from)).id, races[index].id);
+      }
+      assert.ok(positions.every(row => !("probability" in row) && !("tipping" in row)));
+    }
+  }
+});
+
+test("Other leads and Other ties stay outside both party counts without moving the seat threshold", () => {
+  for (const probabilities of [{ D: .1, R: .1, O: .8 }, { D: .5, R: 0, O: .5 }]) {
+    const races = [...orderedRaces(4), race("other", probabilities)];
+    const positions = groupRibbonMajorityPositions(layoutGroupRibbon(races, 3), { totalSeats: 5, majorityThreshold: 3 });
+    assert.deepEqual(positions, [
+      { id: "district-003", districtKey: "district-003", from: ["D"] },
+      { id: "district-002", districtKey: "district-002", from: ["R"] },
+    ]);
+  }
+});
+
+test("no majority marker is inferred from partial, missing, duplicate, or insufficient main-path seats", () => {
+  const chamber = { totalSeats: 5, majorityThreshold: 3 }, complete = layoutGroupRibbon(orderedRaces(5), 3);
+  assert.deepEqual(groupRibbonMajorityPositions(complete), []);
+  for (const races of [orderedRaces(4), orderedRaces(6), [...orderedRaces(4), race("missing", null)],
+    [...orderedRaces(4), { ...race("duplicate-key", { D: 0, R: 1, O: 0 }), districtKey: "district-001" }],
+    [...orderedRaces(2), ...["a", "b", "c"].map(id => race(id, { D: 0, R: 0, O: 1 }))]]) {
+    assert.deepEqual(groupRibbonMajorityPositions(layoutGroupRibbon(races, 3), chamber), []);
+  }
+  for (const invalid of [{ totalSeats: 5, majorityThreshold: 2 }, { totalSeats: 5, majorityThreshold: 6 },
+    { totalSeats: 5.1, majorityThreshold: 3 }, { totalSeats: 5, majorityThreshold: 3.1 }]) {
+    assert.deepEqual(groupRibbonMajorityPositions(complete, invalid), []);
+  }
 });

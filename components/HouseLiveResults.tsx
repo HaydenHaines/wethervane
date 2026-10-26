@@ -193,7 +193,7 @@ export default function HouseLiveResults({ view, catalog, geography, builderExpa
       busy={busy} error={error} onSelect={onSelect} onRetry={onRetry} shareUrl={shareUrl} />
     {comparisonTools}
 
-    <HouseGroupRibbon races={ribbonRaces} selectedRaceId={selected.id} onSelect={selectRace} />
+    <HouseGroupRibbon races={ribbonRaces} selectedRaceId={selected.id} onSelect={selectRace} chamber={{ totalSeats: 435, majorityThreshold: 218 }} />
     <div className="house-results-layout">
       <div>
         <section className="map-card" aria-label="House map">

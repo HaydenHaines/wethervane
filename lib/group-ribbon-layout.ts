@@ -25,6 +25,38 @@ export interface GroupRibbonLayout {
   unavailable: { id: string; districtKey: string; reason: string }[];
 }
 
+export interface RibbonChamber {
+  totalSeats: number;
+  majorityThreshold: number;
+}
+export interface GroupRibbonMajorityPosition {
+  id: string;
+  districtKey: string;
+  from: ("D" | "R")[];
+}
+
+/** Counts seats from each end of the main path; never estimates a tipping probability.
+ * Other-leading and tied-Other districts remain outside both parties' counts.
+ * An explicit full-chamber contract is required; partial/invalid fields have no marker.
+ */
+export function groupRibbonMajorityPositions(layout: GroupRibbonLayout, chamber?: RibbonChamber): GroupRibbonMajorityPosition[] {
+  if (!chamber) return [];
+  const { totalSeats, majorityThreshold } = chamber;
+  if (!Number.isInteger(totalSeats) || totalSeats < 1 || !Number.isInteger(majorityThreshold) ||
+    majorityThreshold <= totalSeats / 2 || majorityThreshold > totalSeats) return [];
+  const ready = [...layout.main.rows, ...layout.other.rows, ...layout.mixedTies];
+  if (layout.unavailable.length || ready.length !== totalSeats ||
+    new Set(ready.map(row => row.districtKey)).size !== totalSeats || layout.main.rows.length < majorityThreshold) return [];
+  const positions: GroupRibbonMajorityPosition[] = [];
+  for (const from of ["D", "R"] as const) {
+    const row = layout.main.rows[from === "D" ? majorityThreshold - 1 : layout.main.rows.length - majorityThreshold];
+    const existing = positions.find(position => position.id === row.id);
+    if (existing) existing.from.push(from);
+    else positions.push({ id: row.id, districtKey: row.districtKey, from: [from] });
+  }
+  return positions;
+}
+
 const blocs: HouseGroupBloc[] = ["D", "R", "O"];
 const compareDistrict = (a: { districtKey: string }, b: { districtKey: string }) => a.districtKey.localeCompare(b.districtKey);
 function validDistribution(value: unknown): value is { D: number; R: number; O: number } {

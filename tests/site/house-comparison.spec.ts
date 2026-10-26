@@ -131,16 +131,17 @@ test("changing the selected model keeps a same-year reference and changing year 
   await expect(page.locator(".scoreboard-comparison, .house-candidate-comparison")).toHaveCount(0);
 });
 
-test("a shared cross-year reference is visibly rejected and can be removed without changing the selected model", async ({ page }) => {
-  await open(page, "house_relative_context_v1-2022-h14");
-  await expect(page.getByRole("button", { name: "Remove comparison", exact: true })).toBeVisible();
-  await expect(page.getByRole("alert").filter({ hasText: "Comparison unavailable" })).toContainText("same election year");
+test("a shared cross-year reference is rejected before either historical result is displayed", async ({ page }) => {
+  const params = new URLSearchParams({ chamber: "house", run: FIXED, race: RACE, view: "actual",
+    compare: "house_relative_context_v1-2022-h14" });
+  await page.goto(`/?${params}`);
+  await expect(page.getByRole("heading", { name: "This House link could not be opened" })).toBeVisible();
+  await expect(page.locator(".error-box [role=alert]")).toContainText("different historical House year");
+  await expect(page.getByRole("heading", { name: "How this model did", exact: true })).toHaveCount(0);
   await expect(page.locator(".scoreboard-comparison, .house-candidate-comparison")).toHaveCount(0);
-  await assertMain(page);
-  await page.getByRole("button", { name: "Remove comparison", exact: true }).click();
+  await page.getByRole("button", { name: "Explore historical House research" }).click();
+  await expect(page.getByRole("heading", { name: "How this model did", exact: true })).toBeVisible();
   expect(new URL(page.url()).searchParams.has("compare")).toBe(false);
-  await expect(page.getByLabel("Compare with", { exact: true })).toHaveValue("");
-  await assertMain(page);
 });
 
 test("saved comparison binds both exact results, reloads, and restores even when its primary is already displayed", async ({ page, request }) => {
