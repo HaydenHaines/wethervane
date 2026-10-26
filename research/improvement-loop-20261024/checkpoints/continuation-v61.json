@@ -1,0 +1,35 @@
+{
+  "schema": "ContinuousImprovementCheckpointV61",
+  "recordedAtUtc": "2026-10-26T22:05:02.447826+00:00",
+  "status": "active; no new scientific fit or promotion",
+  "references": {
+    "previous": {
+      "path": "research/improvement-loop-20261024/checkpoints/continuation-v60.json",
+      "sha256": "2dbb5745a9ee5c911b65e50d11985186f2f28a6a94a994ecaa9b8af947d55f61",
+      "bytes": 4704
+    },
+    "count_v2": {
+      "path": "research/improvement-loop-20261024/m01-counting-sink-prototype-sol-v2/evidence.json",
+      "sha256": "dc73ff0491022b1a2439480ef51a9c883e6946456ebabadf2e97f1fb3339417e",
+      "bytes": 39692
+    },
+    "count_v2_independent_review": {
+      "path": "research/improvement-loop-20261024/m01-counting-sink-review-luna-v2/independent-review.json",
+      "sha256": "3c3d3b265b6dea4a5781a2ddc2b17e1a52cd09c473db0e196f3e9245985bf944",
+      "bytes": 4138
+    },
+    "queue_v3": {
+      "path": "research/improvement-loop-20261024/queue-v3-release-audit-root-v1/receipt.json",
+      "sha256": "350fc89abea45ce37bb7185fa1d277ab6b78acb72ff16cc5c620433808b76f5c",
+      "bytes": 2230
+    }
+  },
+  "count_v2": "The invented-object-only counting prototype V2 independently passed 11 tests, including actual post-launch receipt failure and handled SIGTERM child reaping. A separate review reproduced a completion-state flaw: directory fsync failure after complete.json rename can leave a marker accepted by verify_complete despite a seal-failure record. V2 is not ready for adaptation. A new V3 is being prepared to address ambiguous completion and exact artifact roster; any remaining inability to establish success after uncatchable death or persistent filesystem failures must remain explicit. No TX graph or existing partial pickle was loaded.",
+  "queue": "The independently reviewed V3 queue protects the specific missing-result and orphan-release counterexamples in bounded tests. V1/V2 remain source-pinned and vulnerable to the documented external-mutation case; no store migration exists. No conclusion about all possible malicious rewrites or thousands of scientific cycles follows.",
+  "ci": "GitHub run 40407404636 completed 198 end-to-end cases but failed two stale assertions that a 2026 House year button did not exist. Commit 98c5e23 corrects the historical test to check that the 2026 button is enabled and unselected; both desktop/mobile targeted tests pass locally. New GitHub run 40409345000 job 121875483082 is in progress; do not infer final status.",
+  "next": [
+    "Independently review the new counting-sink V3, including completion-marker failures when seal-failure evidence cannot be written, source provenance, and SIGKILL/power-loss limits.",
+    "Monitor GitHub job 121875483082 to completion; keep deploy forecasts and owner jobs separate.",
+    "Preserve V1/V2 queue stores and pursue scalable verified execution and actual model comparisons."
+  ]
+}

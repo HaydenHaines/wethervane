@@ -1,0 +1,38 @@
+{
+  "schema": "IndependentCountingSinkV2ReviewV1",
+  "reviewer": "luna",
+  "date": "2026-10-26",
+  "scope": "Invented-object prototype only; no scientific graph, partial pickle, compile, sampler or owner artifact touched",
+  "pins": {
+    "V1/counting.py": "3c0536f9bbf03b71f0cb0d5f28af0a2af6ded098ae49aaf9598ce9b56e7d8047",
+    "V2/counting.py": "d04ab2580598d464b7a26d93d1c28000fb23390d9dc3974b2984b6d13e2f2292",
+    "V2/test_counting.py": "f3726e24bad88636f95d28fc8c473b21df7ff46d0792566c358cb92a95ef5f64",
+    "V2/evidence.json": "dc73ff0491022b1a2439480ef51a9c883e6946456ebabadf2e97f1fb3339417e",
+    "V2/test-result.json": "6d9730094fc1d67c167d830207a42809482e80bfa21fea6f602e232ec5bbb22a"
+  },
+  "independent_reproduction": {
+    "fresh_copy_tests": "Copied V2 counting.py and test_counting.py into fresh /tmp; all 11 tests passed in 3.995 seconds.",
+    "post_popen_receipt_exception": "Tested actual Popen then injected launch.json atomic write exception; child was TERM-signaled and reaped, terminal recorded exception/cleanup, no complete marker.",
+    "controller_sigterm": "Tested SIGTERM to a controller after worker startup; owned worker termination/reap observed through pidfd and terminal recorded signal 15; no complete marker.",
+    "cpu_signal": "SIGXCPU arrived at configured 2-CPU-second soft limit; terminal label is now cpu_soft_limit_sigxcpu. V1 label was ambiguous/incorrect.",
+    "post_rename_fsync_failure": "Fresh invented run with one-shot injected directory-fsync error after complete.json rename: run raised, seal-failure.json was written, complete.json remained, and verify_complete accepted it using its hash."
+  },
+  "supported_v2_improvements": [
+    "Direct-child exception and catchable SIGTERM teardown paths are materially improved and tested; completion is gated on verified reaped direct child.",
+    "V1/V2 complete manifest schema separation test passes; V2 doesn't silently accept V1 manifest schema.",
+    "V1 bounded accepted-prefix, tiny bytes/hash oracle, budget, no-payload/no-deserialization, request/source identity, metadata tamper and CPU tests pass in V2 suite."
+  ],
+  "blocker": {
+    "severity": "medium",
+    "finding": "Completion publication is not fail/complete separated across a directory-fsync failure after atomic rename. atomic_json renames complete.json before fsyncing the directory. If that fsync fails, run writes seal-failure.json and raises, but complete.json persists; verify_complete only checks listed files and doesn't reject seal-failure.json or require an exact allowed file set. The reproducible run was reported failed but verified as complete.",
+    "correction": "Define post-rename fsync failure as indeterminate and make verification fail closed if any seal-failure marker exists; ensure manifest verification requires the expected exact file roster and completion state. Add injected post-rename-fsync regression. Do not treat the current behavior as a durable completion guarantee."
+  },
+  "remaining_limits": [
+    "SIGKILL, power loss, controller process death and uncatchable termination cannot run teardown or guarantee a terminal receipt; documented and not tested.",
+    "Cleanup is for a direct child only; the invented worker has no descendants. This is not sufficient proof for future code that can spawn subprocesses.",
+    "The source/request SHA pins prove bytes under trusted local generation, not authorization; a locally selected hash is not a signature. Pickle remains non-loadable and no restoration safety is shown.",
+    "The source checks/child execution are not protected against a malicious concurrent source-file rewrite-and-restore actor. No hostile filesystem threat model is claimed.",
+    "No actual symbolic graph size, runtime, restoration, parity or scientific property was measured."
+  ],
+  "recommendation": "V2 fixes the V1 CPU label and catchable controller teardown gaps under its toy direct-child scope. Fix and test the post-rename completion ambiguity before relying on the completion verifier; continue to prohibit pickle deserialization absent authenticated local provenance and independent restore review."
+}
