@@ -1,0 +1,46 @@
+{
+  "schema": "ContinuousImprovementCheckpointV86",
+  "recordedAtUtc": "2026-10-27T00:13:26.641068+00:00",
+  "status": "active; bounded survey arithmetic verified, no model or data admission",
+  "references": {
+    "previous": {
+      "path": "research/improvement-loop-20261024/checkpoints/continuation-v85.json",
+      "sha256": "14ec9614dd5c5d3b89b3412f4049fd6884ed8edbfd11401e871dd20171d5ba82",
+      "bytes": 3612
+    },
+    "gvf_addendum": {
+      "path": "research/improvement-loop-20261024/m01-nov-voting-weight-join-luna-v1/gvf-addendum-v1.md",
+      "sha256": "8c853397911fd71ca61a8398d9009f10ee8a38884e03dc082bed0a1e735a8422",
+      "bytes": 7703
+    },
+    "gvf_evidence": {
+      "path": "research/improvement-loop-20261024/m01-nov-voting-weight-join-luna-v1/gvf-addendum-evidence-v1.json",
+      "sha256": "5944138087726a0bd8826ffadff33eeb9f06653a24eb23fc7096e3a0b64734ee",
+      "bytes": 3631
+    },
+    "independent_challenge": {
+      "path": "research/improvement-loop-20261024/cps-gvf-independent-sol-v1/README.md",
+      "sha256": "f465fd2a05014695dd158c62c31932338c7d2a88a698e39c5488a9a4da0d6a4f",
+      "bytes": 4899
+    },
+    "arithmetic": {
+      "path": "research/improvement-loop-20261024/cps-gvf-arithmetic-sol-v1/evidence.json",
+      "sha256": "925d5c6b8eecea704f653046d0a6bc7de79c48d468889bba5d4bf83862c52d53",
+      "bytes": 2321
+    },
+    "root_review": {
+      "path": "research/improvement-loop-20261024/cps-gvf-arithmetic-root-review-v1/README.md",
+      "sha256": "ba10230eb8d78733abf96dd24acafc98321185142ddf66ae05bd0e78e578220a",
+      "bytes": 1374
+    }
+  },
+  "finding": "Census 2018/2020 technical documents publish generalized variance functions that can estimate approximate marginal SEs for supported aggregates without a public replicate file. They do not provide the general joint covariance or systematic nonsampling bias correction needed to validate a multivariate observation model. Edited PES2 universe includes no response but questionnaire shows no separate no-response routing; do not infer question administration.",
+  "independent_review": "Independent Sol verified formulas and identified the explicit state/division/region mapping: Tables9\u201311 for Total/White; other groups use Table8 parameters with appropriate geographic factors from Tables12\u201314. Do not silently use national coefficients for state cells. Four national official worked examples were checked against primary documents and reproduced; nine bounded tests pass. No state example, microdata, fit, calibration or source vintage was established.",
+  "queue": "Separately versioned runnable frontier research implementation is still under bounded testing and independent review; no production integration or large-cycle claim.",
+  "owner_work": "2018 materialization and House recovery processes were last observed live. 2022 waits for 2018 analysis; corrected House release handoff was absent. Continue respecting committed capacity and all original diagnostic gates.",
+  "next": [
+    "Finish independent review of research queue frontier and preserve test and negative findings.",
+    "For survey model research, identify a supported vintage-valid aggregate and specify denominator, observation ownership, dependence and nonsampling limitations before any likelihood or fitting.",
+    "Monitor owner jobs and integrate only the exact qualified House handoff."
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "packet": "m01-nov-voting-weight-join-luna-v1",
+  "addendum": "gvf-addendum-v1.md",
+  "retrieved_utc_date": "2026-10-26",
+  "preserves": "README.md and evidence.json remain unchanged; this addendum narrows the claim about whether replicate files are necessary.",
+  "primary_sources": [
+    {
+      "url": "https://www2.census.gov/programs-surveys/cps/techdocs/cpsnov18.pdf",
+      "gvf_locations": "Attachment 16; PDF pp. 193-200, printed pp. 16-7 through 16-14",
+      "evidence": [
+        "PDF p. 194 (printed p. 16-8), lines 6574-6595: GVF models variance as a function of estimate expectation, parameters estimated using direct replicate variances, Table 8 is November 2018 supplement characteristics.",
+        "PDF pp. 195-197 (printed pp. 16-9 through 16-12), lines 6627-6700: parameter selection, formulas for number/percent and difference, explicit correlation warning.",
+        "PDF pp. 199-200: published Tables 7 and 8 parameters."
+      ],
+      "registration_routing": "Attachment 7 PDF p. 113, lines 3605-3630: PES1 adult-citizen edited universe; edited PES2 universe is PES1=2,-2,-3,-9. Attachment 8 questionnaire PDF p. 118, lines 3750-3764: S1=No, Don't Know, Refused route to S2; S1=Yes routes to S5 and skips S2. No separate S1=-9/no-response route to S2 is shown. The -9 edited-universe code is not proof of an administered question path. PES7 edited universe includes PES1=1 or PES2=1 and asks how respondent last registered (record layout lines 3692-3698)."
+    },
+    {
+      "url": "https://www2.census.gov/programs-surveys/cps/techdocs/cpsnov20.pdf",
+      "gvf_locations": "Attachment 16; PDF pp. 199-207, printed pp. 16-7 through 16-15",
+      "evidence": [
+        "PDF p. 199, lines 6686-6711: GVF model, direct replicate variance basis, Table 8 for November 2020 supplement.",
+        "PDF pp. 201-203, lines 6748-6818: formulas for estimated number, percentage and difference; correlation warning.",
+        "PDF pp. 206-207: Table 8 parameters for Voting and Registration characteristics."
+      ],
+      "registration_routing": "Attachment 7 PDF pp. 113-114, lines 3623-3648: edited PES2 universe PES1=2,-2,-3,-9. Attachment 8 questionnaire PDF p. 118, lines 3770-3784: S1=No, Don't Know, Refused route to S2; S1=Yes routes to S5 and skips S2. No separate S1=-9/no-response route to S2 is shown. This edited-file code is not proof of questionnaire administration after a no response. PES7 asks last registration method under a broader edited universe."
+    }
+  ],
+  "interpretation": {
+    "replicate_data_strictly_necessary": false,
+    "qualified_reason": "Official 2018 and 2020 GVF parameters permit approximate marginal errors for covered aggregate estimates.",
+    "not_solved": [
+      "general covariance across outcomes, cells or characteristics",
+      "joint person-level registration/voting likelihood",
+      "registration status among people reporting that they voted, because the instrument routes PES1=Yes around PES2; the edited -9 universe code does not establish an interview route",
+      "microdata replicate file contents, verified person linkage, replicate family/formula sufficient to independently reproduce the vintage calculations",
+      "original historical availability of the documentation or replicate products"
+    ]
+  },
+  "limitations": [
+    "No microdata or replicate weights were downloaded or evaluated.",
+    "The GVF tables are only applied as documented approximate standard errors; this note does not reproduce table estimates.",
+    "No claim that documentation's underlying direct replicate variances can be recreated from public records."
+  ]
+}
