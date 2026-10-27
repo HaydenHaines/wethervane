@@ -1,0 +1,89 @@
+{
+  "schema": "PreparedRemainingFixedParentEvidenceV1",
+  "status": "frozen_tiny_tests_passed_actual_unexecuted",
+  "files": {
+    "common.py": {
+      "sha256": "f723467e3e0bed28a7c77984e37757cc02236f581233937e61cf817d5ddde31b",
+      "bytes": 4082
+    },
+    "entry.py": {
+      "sha256": "4aa828c794b16e7d1e1b156a7d183d204f973583cafdeb0a9f52b4c316d74ea6",
+      "bytes": 3680
+    },
+    "child.py": {
+      "sha256": "fe4cc32ced143e0a21aaef4e0d74ad15db4fbc4d13772d8e48711e8ece41fe61",
+      "bytes": 11175
+    },
+    "evaluator.py": {
+      "sha256": "20d6497a26577e196aa77a8842c48954e7ed33aa283394422b51385597cdb1a0",
+      "bytes": 4817
+    },
+    "launch.py": {
+      "sha256": "812b621a53451b66688c384fb555d4c08197f05d4be30e9df8edc627b190eb8f",
+      "bytes": 8847
+    },
+    "selection.py": {
+      "sha256": "3c2e9c6c5319b35928af5f2364bee3ea77c09c552aae0715529f8573f8f7bb80",
+      "bytes": 3588
+    },
+    "baseline_compare.py": {
+      "sha256": "96093e3391d38e78b7e2e4a3ae06ac74e77afc4014ce09e0a10ed80ef3cf2f6b",
+      "bytes": 8137
+    },
+    "compare.py": {
+      "sha256": "91c620b7f9efa6b9676f8dcd4ee013e181baebc9444fb901020fb48ec79dda49",
+      "bytes": 6855
+    },
+    "comparison_gate.py": {
+      "sha256": "1274c665c546234fde7197669fd8340c8b95c1f3cfe2b7d8c3171de4e89a0262",
+      "bytes": 1908
+    },
+    "test_tiny.py": {
+      "sha256": "5ea36a10b7aa8bcdafacaf5b39f547269328cbe9eb7067feb6e6cea8d6f85386",
+      "bytes": 9370
+    },
+    "contract.json": {
+      "sha256": "b1a2d867720a2b770b95b2d7b15fd6f45fa5c9fc17381576af5f70c08ceeedb1",
+      "bytes": 51153
+    },
+    "tiny-result.json": {
+      "sha256": "094fb3f026509c39793279e47ea17dfb798d3f9245b7bbfb802bcf2e8fb99e48",
+      "bytes": 3907
+    },
+    "tiny-first.log": {
+      "sha256": "1ca9737ba1aa59299add29b028403b53a639d51939c65543adc14bfbf9dec6ec",
+      "bytes": 34
+    },
+    "tiny.log": {
+      "sha256": "3a9f077ed1d0a1981589f0ab8ac529c1746a869512275b26eb2050ed5bf6434a",
+      "bytes": 34
+    },
+    "DESIGN.md": {
+      "sha256": "96e7a5af7f38ee7e10c9f826c7c7540b590f368f449f9b59b5d5a44d4b84f2a3",
+      "bytes": 11076
+    },
+    "README.md": {
+      "sha256": "06c40bd0a54d38bb9d8465daa6e354fd26da36e2d384dcc84f97225c6bf30f75",
+      "bytes": 670
+    }
+  },
+  "tests": 40,
+  "test_exit_code": 0,
+  "actual_graph_imported": false,
+  "actual_graph_evaluated": false,
+  "actual_attempts_exist": false,
+  "actual_review_or_resource_receipt_created": false,
+  "remaining_ordinals": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "FD_gap": "original saved dynamic FDonlyparent1; explicit selected dynamic-witness phase required before independent fixed-selected",
+  "normalizers_posteriors": "unverified",
+  "frozen_sources_or_owner_jobs_modified": false,
+  "test_command": "OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 NUMBA_NUM_THREADS=1 PYTHONDONTWRITEBYTECODE=1 timeout --kill-after=3s 30s nice -n15 .improvement-ledger/runtime/calibration-v1-env/bin/python -B /home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-remaining-fixed-parent-sol-v1/test_tiny.py",
+  "no_more_source_changes_or_runs": true
+}
