@@ -1,0 +1,16 @@
+test_store_versions_cannot_dispatch_each_others_plans (test_compatibility.SuccessorQueueTests.test_store_versions_cannot_dispatch_each_others_plans)
+Different code versions cannot silently operate on each other's pinned stores. ... FAIL
+
+======================================================================
+FAIL: test_store_versions_cannot_dispatch_each_others_plans (test_compatibility.SuccessorQueueTests.test_store_versions_cannot_dispatch_each_others_plans)
+Different code versions cannot silently operate on each other's pinned stores.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/memo-layout-immediate_ancestor_parent-in2qy6sz/queue-finite-decode-memo-sol-v1/test_experiment_queue.py", line 218, in test_store_versions_cannot_dispatch_each_others_plans
+    self.assertIn("unsupported or moved queue store", failed.stderr)
+AssertionError: 'unsupported or moved queue store' not found in 'Traceback (most recent call last):\n  File "/tmp/memo-layout-immediate_ancestor_parent-in2qy6sz/queue-finite-decode-memo-sol-v1/experiment_queue.py", line 721, in <module>\n    main()\n  File "/tmp/memo-layout-immediate_ancestor_parent-in2qy6sz/queue-finite-decode-memo-sol-v1/experiment_queue.py", line 710, in main\n    value = enqueue(args.root, document(args.plan), args.sha256)\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File "/tmp/memo-layout-immediate_ancestor_parent-in2qy6sz/queue-finite-decode-memo-sol-v1/experiment_queue.py", line 641, in enqueue\n    config, fd=dispatcher(root)\n               ^^^^^^^^^^^^^^^^\n  File "/tmp/memo-layout-immediate_ancestor_parent-in2qy6sz/queue-finite-decode-memo-sol-v1/experiment_queue.py", line 96, in dispatcher\n    config = configuration(root)\n             ^^^^^^^^^^^^^^^^^^^\n  File "/tmp/memo-layout-immediate_ancestor_parent-in2qy6sz/queue-finite-decode-memo-sol-v1/experiment_queue.py", line 88, in configuration\n    require(config["sources"] == expected_sources, "queue store source identity differs from running dispatcher")\n  File "/tmp/memo-layout-immediate_ancestor_parent-in2qy6sz/queue-finite-decode-memo-sol-v1/experiment_queue.py", line 36, in require\n    executor.require(value, message)\n  File "/tmp/memo-layout-immediate_ancestor_parent-in2qy6sz/queue-finite-decode-memo-sol-v1/execution.py", line 39, in require\n    raise ExecutionError(message)\nexecution.ExecutionError: queue store source identity differs from running dispatcher\n'
+
+----------------------------------------------------------------------
+Ran 1 test in 0.208s
+
+FAILED (failures=1)

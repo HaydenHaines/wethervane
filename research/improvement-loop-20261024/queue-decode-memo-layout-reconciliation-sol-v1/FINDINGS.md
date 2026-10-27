@@ -1,0 +1,7 @@
+# Two-layout regression reconciliation
+
+Frozen memo source unchanged. One exact inherited test reproduced under two fresh scratch layouts, source pins retained. Documented author layout copies actual lab-root parent modules(schemaLocalExperimentQueueStoreV1) and actual queue-v2 sibling. Test passes. Reviewer layout instead places immediate ancestor modules at parent(schemaLocalExperimentQueueStoreFiniteOwnedResearchV1,same as memo). Test fails its assertion of old-schema error wording because source-identity rejection occurs. No model/actual queue worker was launched by these cross-version refusal tests.
+
+This explains the discrepancy without claiming the independent full suite73/73: source layout matters. The test assumes parent means the original schema version. For an immediate-ancestor comparison, same-schema/different-source must reject on sourceidentity, and that is fail-closed behavior. A separately versioned test should require rejection plus unchanged store/no job/launch creation, and verify the correct expected reason for each old schema/source case. Do not edit the frozen memo/test or call the brittle reason assertion a dispatch acceptance bug.
+
+Current parent bytes are pinned in this packet; the author's earlier full-run artifact recorded version-relative layout but did not pin the copied older parent bytes itself. Current reproduction supports the explanation, not a retroactive exact-byte receipt for that historical run. Source/file-history uncertainty is preserved. Only the targeted test was rerun here; no new full73-suite claim.
