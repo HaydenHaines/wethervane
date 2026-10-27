@@ -1,0 +1,51 @@
+# Independent design critique: evidence-ownership checker
+
+## Scope
+
+Read-only challenge of Sol's supplied-claim validator and the pinned A2018 aggregate ledger. No model or owner jobs were run, and no row-level survey/respondent tokens are included. This is a design review, not an admitted ledger, data audit, or statistical qualification.
+
+Reviewed checker: m01-evidence-ownership-audit-sol-v1/hardening-v3; reviewed A2018 summary: m01-a2018-observation-ownership-luna-v2. Exact file pins are in source-pins.json.
+
+## What the checker can establish
+
+Given a caller-supplied ledger, the validator can enforce its own syntactic rules: unique record IDs; nonempty, unique canonical atom strings; no atom reused between records; no outcome event key reused between factors; pairwise assessments for each record pair; permitted respondent/source-error statuses and presence of syntactically shaped evidence/adapter pins; a timezone-aware cutoff; supplied availability strings not after cutoff; an explicit nonempty target list in historical mode; and presence of a vector-manifest-shaped pin. Hardening-v3 usefully closes the empty historical-target-list vacuity.
+
+That is contract checking of claims. As its code correctly returns, authenticated=false and fit_authorized=false. A pin is checked only for path text and 64 lowercase hex characters; bytes are not opened or hashed. The validator does not verify canonicalization, factor ownership against source code, vector contents/order/covariance, target-roster completeness, date provenance, or whether an adapter implements the claimed law. A fabricated but internally consistent fixture passes by design.
+
+## Evidence classes must remain distinct
+
+| Class | What it means | A2018 example | What a checker must not infer |
+|---|---|---|---|
+| Exact duplicate observation | Same measured datum or source-derived statistic consumed twice | Would require the same canonical poll/survey/count datum routed into two numerical owners | Same event key, same covariate, or same release family alone is not proof of the same measured datum |
+| Correlated/joint evidence | Distinct observations with shared sampling/error structure, accounted for jointly | The 274 poll rows belong to one 274x274 covariance MvNormal block and one poll factor in the selected source | Rows are not 274 independent polls; one block alone does not prove source-level sampling assumptions are right |
+| Known independent evidence | Disjoint observational units supported by actual design/lineage evidence | No cross-source respondent-disjointness proof is present in this A2018 ledger | Different source names, cycles, dates, or row tokens alone do not establish independent respondents or independent errors |
+| Shared covariate/input | Reused model input that may be deterministic, or may itself have uncertainty | Candidate/profile/event mappings and shared latent kappa are inputs/structure, not outcome observations | Reusing a fixed covariate is not duplicate outcome evidence; uncertain estimated inputs need one shared uncertainty model, not duplicated independent priors |
+| Unknown overlap | Provenance does not resolve respondent or source-error linkage | Survey record IDs are source-scoped; poll observation IDs are row IDs, with no respondent/sample IDs or pollster/date/population/mode/n in the prepared problem schema | Do not change unknown to disjoint because identifiers differ or metadata are missing |
+
+“Independence” also needs two axes. Distinct respondent samples may still share a release/source error; the same respondent sample can produce distinct responses under a joint model. The checker’s respondents/source_error split is a useful start, but an asserted edge is not evidence that the pairwise claims form a coherent multiblock joint law.
+
+## A2018 source-grounded examples
+
+The pinned component snapshot defines official count likelihoods per count observation (source lines 440–448), survey Potentials per survey block with source/record provenance tokens (lines 520–534), and one multivariate poll likelihood per poll block with its covariance matrix (lines 546–570). The frozen aggregate ledger reports 65 survey blocks and 7,968 survey-record memberships, one 274-row poll covariance block, and zero official-count and participation-report observations. For the AZ 2018 target it reports 20 poll rows and no target survey/count/report.
+
+These are different units: CES survey-record memberships are not demonstrated unique persons; poll rows are paired-candidate logit measurements, not individual respondents; official count vectors would be category-count observations; participation reports would be event totals. A single event/contest key is too coarse to equate these measurements. In particular, a survey self-report about voting and a later official count for that contest share a target event but are not byte-for-byte duplicate observations. Conversely, if an official result was first used to create a calibration residual and then appears as a training label in a count likelihood, label reuse is material even though serialized records and factor names differ.
+
+The same distinction applies to priors and common inputs. A2018's eventG block has a shared kappa and conditional Gamma priors; that is hierarchical prior dependence, not repeated observed evidence. The source-level ledger says the eventG conditional prior is retained given shared kappa because this A2018 problem has no count/report/open-person observations, no ranked/runoff rows/channels, survey loop is eventG-free, and ordinary poll log-rate differences cancel its common multiplier. That source-algebra result is conditional, not evidence of marginal independence or a compiled/sampler result.
+
+## Adversarial cases and checker limits
+
+1. Alias evasion: two records can contain the same real datum but supply different canonical strings. Current code accepts them if no other supplied field conflicts. A canonical atom needs a source-backed derivation and ideally a compound key tied to source bytes, row/measure, event, and vintage.
+2. False duplicate by coarse label: outcome_label_event_keys is only an event-key list. Two genuinely distinct measures for the same event (for example self-reported participation and official category totals) are rejected as “outcome label reused across factors,” even when a valid joint law models their dependence. Split event_key from outcome_observation_atom/measure_id; use event keys for target leakage checks, not as exact observation identity. Preserve the conservative rule that the same official datum cannot be independently reused.
+3. Joint law is only declared: a dependency marked jointly_modeled needs any syntactically valid adapter pin and nonempty law ID. The validator does not check adapter bytes, shared latent variables, internal block membership, or whether the actual factor graph uses it. The global duplicate-atom rule also means this field cannot excuse repeated atoms, which is sensible for exact duplicate data but should be explicit.
+4. Pairwise consistency gap: complete pair coverage does not establish a coherent joint dependence model over triples/blocks. Pairwise disjoint/joint labels can be mutually incompatible; a shared cycle shock can connect several records even if every pair was independently annotated. Add group/block identity and validate each connected joint component against one reviewed factorization.
+5. Covariate/evidence category gap: the schema has no explicit distinction between outcome evidence, deterministic covariates, uncertain shared inputs/priors, and derived statistics. If every repeated input is represented as a canonical atom, legitimate shared covariates can be falsely rejected; if shared inputs are omitted, reuse of a derived outcome in a feature or calibration can go unnoticed. Represent typed lineage edges and once-only ownership of uncertainty.
+6. Historical target/source not authenticated: V3 requires a nonempty target list for historical mode and intersects supplied outcome event keys against it, but accepts a truncated or renamed target list. verified_available_at, historical version status, source hashes, and vector manifest remain caller declarations. It cannot establish contemporaneous public availability, source vintage, or completeness.
+7. Units and temporal alignment are not first-class: event-key equality cannot determine whether a row is a person-level response, poll estimate, released count, report total, or prior; nor distinguish field period, publication time, data vintage, and outcome time. A2018's cutoff is 2018-10-23, but prepared poll metadata lacks enough publication/sample fields to verify individual poll vintage from this ledger.
+8. No factor-graph binding: factor_owner is free text, complete_vector_status='bound' plus a shaped pin is enough, and code does not bind records to actual model factors or the selected parent bank. The exact A2018 source's poll order/covariance ownership is independently pinned by its source-level ledger; that claim does not come from this generic validator.
+
+## Recommended validator shape
+
+Keep the current validator as a fail-closed claim-schema gate. Add a separate evidence-resolution phase that reads pinned sources and derives typed canonical observation atoms; keep event/contest/candidate identity separate from source-row/measure identity; record respondent overlap separately from shared-source/error dependence; represent shared deterministic covariates and shared uncertain inputs as lineage edges; and model a joint block once with an explicit factorization identifier. Native integration should bind the complete selected problem, source bytes, record-to-factor map, poll vector order/covariance, and target roster. Unsupported or missing metadata must remain unknown and block an independence claim. Historical replay additionally needs verified release/vintage evidence, not only a supplied timestamp.
+
+These recommendations do not say A2018 contains duplicate evidence or that its factors are independent. In the prepared A2018 ledger there is one poll covariance factor, no official-count/report factor, and no Arizona survey factor; cross-source respondent and vintage linkage remains unknown. No raw respondent identifiers are exported in this review.
+
