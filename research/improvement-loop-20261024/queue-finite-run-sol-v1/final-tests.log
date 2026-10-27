@@ -1,0 +1,25 @@
+test_admission_crashes_repair_after_seal (test_finite.FiniteTests.test_admission_crashes_repair_after_seal) ... ok
+test_concurrent_enqueue_seal (test_finite.FiniteTests.test_concurrent_enqueue_seal) ... ok
+test_corrupt_accepted_scaffold_rejected (test_finite.FiniteTests.test_corrupt_accepted_scaffold_rejected) ... ok
+test_corruption_after_finalization_is_not_accepted (test_finite.FiniteTests.test_corruption_after_finalization_is_not_accepted) ... ok
+test_current_source_and_old_schema_rejected_without_writes (test_finite.FiniteTests.test_current_source_and_old_schema_rejected_without_writes) ... ok
+test_live_and_corrupt_release_block_final (test_finite.FiniteTests.test_live_and_corrupt_release_block_final) ... ok
+test_missing_db_cannot_reset_unmaterialized_intent (test_finite.FiniteTests.test_missing_db_cannot_reset_unmaterialized_intent) ... ok
+test_precommit_rolls_back_and_empty_policy (test_finite.FiniteTests.test_precommit_rolls_back_and_empty_policy) ... ok
+test_projection_crashes_idempotent (test_finite.FiniteTests.test_projection_crashes_idempotent) ... ok
+test_real_dependency_and_open_idle (test_finite.FiniteTests.test_real_dependency_and_open_idle) ... ok
+test_real_failure_blocks_dependency (test_finite.FiniteTests.test_real_failure_blocks_dependency) ... ok
+test_same_process_projection_errors_recover (test_finite.FiniteTests.test_same_process_projection_errors_recover) ... ok
+test_competing_killed_clients_share_capacity_across_two_queues (test_experiment_queue.QueueTests.test_competing_killed_clients_share_capacity_across_two_queues) ... ok
+test_resume_same_reservation_after_prepare_and_launch_crashes (test_experiment_queue.QueueTests.test_resume_same_reservation_after_prepare_and_launch_crashes) ... ok
+test_unknown_live_remains_reserved_then_recovered_unknown_blocks_downstream (test_experiment_queue.QueueTests.test_unknown_live_remains_reserved_then_recovered_unknown_blocks_downstream) ... ok
+test_result_before_release_is_incomplete_and_reconciles_exact_result (test_experiment_queue.QueueTests.test_result_before_release_is_incomplete_and_reconciles_exact_result) ... ok
+test_corrupted_cached_result_or_release_retains_capacity_and_quarantines (test_experiment_queue.QueueTests.test_corrupted_cached_result_or_release_retains_capacity_and_quarantines) ... ok
+test_bound_dependency_drift_does_not_rebind_or_launch_consumer (test_experiment_queue.QueueTests.test_bound_dependency_drift_does_not_rebind_or_launch_consumer) ... ok
+test_exact_prelaunch_resume_in_new_plan_launches_once_and_preserves_deferral (test_experiment_queue.QueueTests.test_exact_prelaunch_resume_in_new_plan_launches_once_and_preserves_deferral) ... ok
+test_retry_is_new_plan_attempt_and_outputs_without_rebinding_old_consumer (test_experiment_queue.QueueTests.test_retry_is_new_plan_attempt_and_outputs_without_rebinding_old_consumer) ... ok
+
+----------------------------------------------------------------------
+Ran 20 tests in 9.374s
+
+OK

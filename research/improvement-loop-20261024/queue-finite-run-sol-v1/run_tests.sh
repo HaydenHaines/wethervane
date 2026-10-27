@@ -1,0 +1,12 @@
+#!/bin/sh
+set -eu
+cd "$(dirname "$0")"
+exec nice -n 15 python3 -B -m unittest test_finite.FiniteTests \
+ test_experiment_queue.QueueTests.test_competing_killed_clients_share_capacity_across_two_queues \
+ test_experiment_queue.QueueTests.test_resume_same_reservation_after_prepare_and_launch_crashes \
+ test_experiment_queue.QueueTests.test_unknown_live_remains_reserved_then_recovered_unknown_blocks_downstream \
+ test_experiment_queue.QueueTests.test_result_before_release_is_incomplete_and_reconciles_exact_result \
+ test_experiment_queue.QueueTests.test_corrupted_cached_result_or_release_retains_capacity_and_quarantines \
+ test_experiment_queue.QueueTests.test_bound_dependency_drift_does_not_rebind_or_launch_consumer \
+ test_experiment_queue.QueueTests.test_exact_prelaunch_resume_in_new_plan_launches_once_and_preserves_deferral \
+ test_experiment_queue.QueueTests.test_retry_is_new_plan_attempt_and_outputs_without_rebinding_old_consumer -v
