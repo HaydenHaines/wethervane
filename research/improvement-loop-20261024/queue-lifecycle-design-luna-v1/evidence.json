@@ -1,0 +1,62 @@
+{
+  "schema": "QueueLifecycleDesignLunaV1",
+  "reviewed_utc_date": "2026-10-26",
+  "scope": "Primary-source SQLite lifecycle design research and invented tiny process-crash counterexample; no production changes or scientific runs.",
+  "source_files": [
+    {
+      "path": "research/improvement-loop-20261024/queue-durable-frontier-sol-v1/FINDINGS.md",
+      "sha256": "ea17babeefc564cdc17e7e113f8e492097409828da479302246b5ea0e45f8234"
+    },
+    {
+      "path": "research/improvement-loop-20261024/queue-durable-frontier-sol-v1/dispatch.py",
+      "sha256": "a5c139d5ac888c74d109ea775f01f520b880914bfc84014ccee256cb1c54b165"
+    },
+    {
+      "path": "research/improvement-loop-20261024/queue-v2/execution.py",
+      "sha256": "ce02f4c4b9be397b299c2219092fdd355db1695798af07c4974bc63cb6bbbc93"
+    },
+    {
+      "path": "research/improvement-loop-20261024/queue-incremental-index-sol-v2/core.py",
+      "sha256": "207cfa6a85757b8d1d70aac056a96f45476b0a898f692b1ed5b5f5bf7709d9b2"
+    },
+    {
+      "path": "research/improvement-loop-20261024/queue-durable-frontier-sol-v1/test_frontier.py",
+      "sha256": "d7a4701c3d77e7bdd2a65c968ce19861a5b284d9ee94ca8f1d3e2d7fa8a4ed0d"
+    }
+  ],
+  "official_primary_sources": [
+    {
+      "url": "https://www.sqlite.org/lang_transaction.html",
+      "sections": ["2.1", "2.2", "3"],
+      "claims_used": ["one simultaneous writer", "BEGIN IMMEDIATE starts write transaction immediately and may yield SQLITE_BUSY", "COMMIT can yield SQLITE_BUSY and leave transaction active", "some transaction errors may auto-rollback"]
+    },
+    {
+      "url": "https://www.sqlite.org/pragma.html#pragma_synchronous",
+      "lines": "807-844",
+      "claims_used": ["rollback-mode FULL is not necessarily power-loss durable", "EXTRA adds directory sync after rollback journal unlink", "transactions durable across application crashes irrespective of sync/journal mode"]
+    },
+    {
+      "url": "https://www.sqlite.org/atomiccommit.html",
+      "sections": ["2", "3", "5", "9.2", "9.3", "9.4"],
+      "claims_used": ["atomic commit scope and hardware/filesystem assumptions", "flush/fsync assumptions", "SQLite ATTACH multi-database mechanism", "external arbitrary application files are outside SQLite transaction"]
+    },
+    {
+      "url": "https://www.sqlite.org/lockingv3.html",
+      "sections": ["2", "3", "4"],
+      "claims_used": ["rollback-journal locking and hot-journal process/OS/power-loss recovery"]
+    }
+  ],
+  "own_artifacts": [
+    {
+      "path": "counterexample.py",
+      "sha256": "b9ddf17d79b203c534cadb76f7988cf9465779dd7c593fb25ab5997a93608e5c",
+      "command": "python3 -B counterexample.py",
+      "result": "PASS; child exited 73 inside release transaction; external file remained, DB release row absent, dependent remained unresolved; exact replay committed once; test confirms an empty ready frontier can coexist with pending unresolved work."
+    }
+  ],
+  "non_claims": [
+    "No OS crash, power cut, fsync fault, disk-full condition, corruption, or production queue code was exercised.",
+    "The SQLite documentation does not establish the deployed filesystem/storage behavior.",
+    "The evidence does not make separate JSON publication and SQLite commit one atomic operation."
+  ]
+}
