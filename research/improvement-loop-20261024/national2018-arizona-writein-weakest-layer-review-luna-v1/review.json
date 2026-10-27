@@ -1,0 +1,54 @@
+{
+  "schema": "National2018ArizonaWriteinWeakestLayerReviewV1",
+  "verdict": "The Arizona result is a substantive candidate-mark calibration warning and a useful diagnostic priority. It does not identify a weakest causal model layer or justify a model/UI/default change.",
+  "confirmed_scope": {
+    "race": "2018 Arizona regular Senate",
+    "outcome_estimand": "candidate_marks, not physical turnout",
+    "rows": 32000,
+    "parent_structure": "eight preserved parent draws/records at original 0.125 masses, as declared by the sealed prediction manifest",
+    "retained_divergences": 76,
+    "deleted_or_reweighted_rows": 0,
+    "forecast_qualified": false,
+    "national_complete": false
+  },
+  "writein_arithmetic": {
+    "observed_marks": 566,
+    "predicted_mean_marks": 587860.7353124998,
+    "predicted_minus_observed": 587294.7353124998,
+    "mean_per_candidate": 83980.10504464283,
+    "total_observed_candidate_marks": 2384308,
+    "total_predicted_mean_candidate_marks": 3087181.984812502,
+    "overall_candidate_mark_excess": 702873.984812502,
+    "writein_mean_excess_fraction_of_total_excess": 0.8355619186406026,
+    "interpretation": "This is arithmetic decomposition of saved marginal means. It shows the overprediction is concentrated in these seven candidate IDs, but does not attribute the discrepancy to a single layer or establish a jointly calibrated aggregate write-in distribution."
+  },
+  "layer_and_complementarity": {
+    "source_roles": "The seven source rows are literal W write-ins in the bound outcome packet and are each represented as a separate other-bloc candidate in problem.json. Pinned joint.py source uses candidate-specific other utility intercepts with a Normal(-3,1) prior and softmax allocation; this is a plausible mechanism to inspect, not proof that it caused the error.",
+    "what_supported": "For this one provisional race, saved candidate-count means for the seven write-in IDs are about 83\u201385k each against 2\u2013365 observed marks; medians are about 52k each; all seven observed marks are below their respective 95% interval lower bounds (about 6.8k\u20137.2k). The predicted mean across all candidates is also high. This supports a severe candidate-mark predictive mismatch under the saved model and a focused write-in allocation check.",
+    "what_not_supported": [
+      "The run fails convergence gates (76 retained divergences) and is unqualified; successful scoring does not repair that.",
+      "No causal contrast isolates Choice, Participation, Event size, Count/Rules, Population, Measurement, or interactions. The full prediction couples these layers, and changing candidate support/role changes the law being evaluated.",
+      "Aggregate means are not enough to assess the posterior predictive distribution of total write-in marks; preserve joint row IDs and parent masses when aggregating. The seven marginal 95% intervals cannot be summed into an aggregate interval.",
+      "Candidate marks are not physical voters. This cannot be called turnout, participation, or ballot-casting calibration.",
+      "The 2018 pair-share comparison (28 matches; MAE about 2.48pp versus 2.57pp for preserved FP) and 26-race historical-baseline winner comparison have different information sets and scopes. They neither negate the count discrepancy nor identify a layer effect.",
+      "Individual 95% marginal interval misses do not form a joint group coverage test; the seven-event sum distribution must be reconstructed from same-row draws."
+    ],
+    "next_disambiguating_evidence": "Without new fits, first verify saved raw draw reconstruction/identity by parent: per row, sum the seven named write-in counts, all other candidate counts, principal candidates, nonresponse/blank/invalid, and candidate total; retain row IDs, eight parent identities and fixed 0.125 masses. Compare distribution of the named write-in sum and total to the literal source labels, plus each named candidate and principal-pair share. This locates whether error is candidate allocation vs overall event/count scale but is still descriptive. For attribution, wait for authorized complete 2022 parity results; then predeclare a full matched refit that changes one explicit write-in-choice support/parameterization while holding outcome vintage/cutoff, remaining layer contracts, parent-cut target, scoring universe and output definition fixed; score joint candidate marks, pair shares, all-candidate totals and proper calibration metrics, with all eight parents and convergence/MC uncertainty. A main-effect or write-in vs other reparameterization that also changes event incidence/measurement is an interaction/estimand change, not a pure layer test."
+  },
+  "weakest_layer_ledger_update": {
+    "prior_ledger": "weakest-layer-ledger-sol-v1 is pinned at evidence observed 2026-10-27 00:34 UTC and explicitly concludes no empirical weakest incremental layer identified.",
+    "new_evidence": "The Arizona score review/handoff is timestamped 03:09 UTC, later than that ledger. It adds a strong candidate-mark mismatch not represented in that ledger's prose.",
+    "reconciliation": "Update the descriptive evidence ledger to include this candidate-mark warning and point to the new calibration handoff, while preserving the no-layer-ranking conclusion. Do not treat previous ledger as current exhaustive evidence."
+  },
+  "ui_publication": {
+    "decision": "No promotion, publication or default change is supported.",
+    "guardrails": [
+      "Keep 2018 labeled provisional/unqualified and disclose 76 divergences if internal scores are shown.",
+      "Do not label candidate marks as turnout or physical participation.",
+      "Do not publish each model-generated 84k-scale estimate as validated named write-in support; candidate-level output is sharply inconsistent with the bound observed marks and not qualified.",
+      "If a UI displays the factual recorded outcome, preserve candidate identities and source-qualified write-in status; do not merge these seven distinct IDs into an unsourced single party/category."
+    ],
+    "2022": "No duplicate 2022 run or alteration. Use only the existing authorized owner parity/evaluation evidence when it is complete and source-bound; this review does not assert 2022 parity or make a cross-cycle claim."
+  },
+  "actions_taken": "Read-only metadata and summary inspection; no bank/raw prediction rows, model code execution, refit, UI change, owner write or job launch."
+}
