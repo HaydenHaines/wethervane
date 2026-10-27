@@ -1,0 +1,45 @@
+{
+  "findings": {
+    "815_reference_physical_names_unique": true,
+    "five_ordered_points_and_4085_saved_comparison_records_checked": true,
+    "maximum_fraction_matches": true,
+    "numeric_differences_recomputed": false,
+    "plan_hash_consistent_across_receipt_reference_structure": true,
+    "raw_numerical_arrays_opened": false,
+    "receipt_hash_authenticates_bytes_not_source_origin": true,
+    "runtime_copy_hash_rechecked": true,
+    "scope": "Internal consistency of saved receipt and metadata pins only; one parent CPU parity claim in saved records. Not all-parent numeric parity, GPU parity, fit admission or forecast qualification.",
+    "six_receipt_bound_input_hashes_rechecked": true,
+    "two_boundary_source_pins_rechecked": true
+  },
+  "independent_rerun": {
+    "GPU_parity": false,
+    "all_parent_numeric_parity": false,
+    "boundary_source_pins_rechecked": 2,
+    "checks_per_point": 817,
+    "fit_admitted": false,
+    "forecast_qualified": false,
+    "max_saved_tolerance_fraction": 0.007094365732817098,
+    "numeric_vectors_loaded": false,
+    "physical_comparisons": 4075,
+    "pins_rechecked": 6,
+    "points": 5,
+    "raw_comparisons_recomputed": false,
+    "receipt_sha256": "109feacd03133852444239e9bc173481b41a92086208722230537a0a38f72d39",
+    "reference_physical_names": 815,
+    "schema": "Independent2022CPUParent0ReceiptMetadataCheckV1",
+    "total_saved_checks": 4085
+  },
+  "pins": {
+    "independent_check_sha256": "128fdddd794751ef736394ae74d66df277da61d84dec16a64705655f350dae22",
+    "independent_output_sha256": "a72b913f3c02473caa63dfc4f5622d1aff96976b2d574b560c6980e110da9e24",
+    "root_review_check_sha256": "3b2b0cc33ab55405cb7ebe779846c52218f6c211f6f011b856603f861f0c11d0",
+    "root_review_result_sha256": "07115a8e5cd0faa399a96415c97fdeb986c873e302dc2cc15eb0b8c242369dd4",
+    "target_receipt_bytes": 1606729,
+    "target_receipt_reported_sha256": "109feacd03133852444239e9bc173481b41a92086208722230537a0a38f72d39",
+    "target_receipt_sha256": "109feacd03133852444239e9bc173481b41a92086208722230537a0a38f72d39"
+  },
+  "reviewer_note": "The checker trusts each saved pass_check/failure/nonfinite/tolerance-fraction record after validating finite bounds and rosters. Without the saved numerical arrays this is appropriately a receipt-consistency check, not an independent numerical parity rerun.",
+  "schema": "Senate2022CPUParent0ReceiptReviewLunaV1",
+  "source_packet": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/senate-2022-cpu-parity-receipt-review-root-v1"
+}

@@ -1,0 +1,9 @@
+# Independent 2022 CPU parent-0 receipt metadata review
+
+I independently reran the small review checker and a separate metadata-only verifier. The target receipt SHA-256 is `109feacd03133852444239e9bc173481b41a92086208722230537a0a38f72d39`; its bytes match the SHA reported in both checks. The root review's `check.py` and `result.json` were also pinned by this packet.
+
+The independent verifier rehashed all six receipt-bound files (runtime source, CPU reference result, all-parent structural result, adapter boundary result, boundary proof JSON, and original plan), rehashed the boundary proof's two source files, verified the runtime saved-source copy, and checked plan identity across receipt/reference/structure. It verified five ordered saved point records, 817 entries per point (`logp`, full gradient, 815 uniquely named physical outputs), 4,085 total comparisons, 4,075 physical comparisons, zero saved failure/nonfinite counts, and maximum tolerance fraction `0.007094365732817098`. It read JSON metadata only and did not open original numerical arrays or run a model.
+
+The receipt's scope is correctly limited: parent-0 CPU reference parity is reported by the saved receipt; GPU parity, all-parent numeric parity, sampler transitions, fit admission, and forecast qualification remain false. The all-parent artifact checked is explicitly structural-only. The receipt SHA pins artifact bytes; this review does not authenticate their external origin or independently recompute numerical differences. The saved pass flags and tolerance fractions are trusted assertions after checking roster, finite range, and hash consistency. That is suitable for a metadata/receipt review but must not be described as a numerical rerun.
+
+Reproduction script and output: `recheck_metadata.py`, `reproduced-check.json`. No owner files were changed and no model or fit job was started.
