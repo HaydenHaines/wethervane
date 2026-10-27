@@ -1,0 +1,169 @@
+{
+  "schema": "ReadOnlySixParentCapacityAssessmentV1",
+  "status": "historical_observation_launch_not_supported_as_nonconflicting",
+  "observation_window_utc": [
+    "2026-10-27T02:04:31Z",
+    "2026-10-27T02:08:57.385466Z"
+  ],
+  "latest_exact_observation_utc": "2026-10-27T02:08:57.385466Z",
+  "observation_origin": "Read-only tool outputs in this session; recorded values below are historical, not resampled at packet creation.",
+  "resources": {
+    "MemAvailable_bytes": 47514345472,
+    "MemAvailable_GiB": 44.251182556152344,
+    "root_free_bytes": 234119897088,
+    "staging_free_bytes": 68179091456,
+    "allowed_cpus": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "load_average_at_020808_utc": [
+      4.044921875,
+      3.37255859375,
+      3.26708984375
+    ]
+  },
+  "observed_jobs": [
+    {
+      "pid": 2058242,
+      "start_ticks": 120221759,
+      "role": "national2018 parent4 prediction",
+      "cpu_affinity": "6",
+      "nice": 19,
+      "MemoryMax_bytes": 12884901888,
+      "RSS_kib_at_020857": 5761896
+    },
+    {
+      "pid": 2058319,
+      "role": "national2018 parent5 prediction",
+      "cpu_affinity_from_queue": "7",
+      "MemoryMax_bytes": 12884901888,
+      "ActiveState": "active",
+      "start_ticks": "not captured"
+    },
+    {
+      "pid": 2057733,
+      "start_ticks": 120209922,
+      "role": "House Minnesota corrected evaluation",
+      "cpu_affinity": "3",
+      "threads": 2,
+      "nice": 19,
+      "RSS_kib_at_020857": 824736,
+      "held_lock": "/home/hayden/projects/ballotmancy-house-benchmark/research/.house-mn-replay-resource.lock",
+      "held_lock_device_inode": "103:04:5177878"
+    },
+    {
+      "pid": 2058265,
+      "start_ticks": 120221961,
+      "role": "House corrected follow-up queue",
+      "cpu_affinity": "3",
+      "state": "sleeping",
+      "pending_children": [
+        "review_corrected_diagnostics.py",
+        "guarded_alternative_pilot.py",
+        "guarded_corrected_paired.py"
+      ]
+    },
+    {
+      "pid": 2058273,
+      "role": "Kansas native reference",
+      "cpu_affinity": "5",
+      "MemoryMax_bytes": 8589934592,
+      "ActiveState": "active",
+      "RSS_kib_at_020857": 1100384,
+      "start_ticks": "not captured"
+    },
+    {
+      "pid": 1938621,
+      "start_ticks": 118522834,
+      "role": "national2022 GPU preflight queue",
+      "state": "waiting_for_2018_analysis"
+    }
+  ],
+  "transition_correction": {
+    "prior_parent3_pid": 2048976,
+    "prior_parent3_start_ticks": 120063702,
+    "final_status": "absent; systemd unit inactive/Result success",
+    "note": "Early rolling message incorrectly described parent3+4 overlap; final confirmed active pair is parent4+5, CPUs6+7."
+  },
+  "commitments": {
+    "House_memory_reserve_bytes": 30655329075,
+    "House_memory_reserve_GiB": 28.55,
+    "national2018_running_parents": [
+      4,
+      5
+    ],
+    "national2018_completed_parents": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "national2018_pending_parents": [
+      6,
+      7
+    ],
+    "national2018_may_start_rule": "MemAvailable >= House reserve + 12GiB*(running+1) + 1GiB; reserve full worker caps intentionally; auto reevaluation every20s",
+    "national2022_preflight_cap_bytes": 17179869184,
+    "national2022_preflight_rule": "after native reference and2018 scoring/comparison complete, require16GiB+House reserve+1GiB and free shared GPU lease",
+    "national2022_current_status": "wait_for_2018_analysis; later sampler/materialization/prediction queues also waiting",
+    "House_cycle_recovery_status": "four_sources_reviewed_not_combined; publication_qualified false",
+    "House_release_status": "further_precision_required; publication_qualified false",
+    "House_followup_event_at_020727": "waiting_for_joint_diagnostic",
+    "House_new_combiner": "none observed active; future memory-safe combination/review still required, not assumed cancelled",
+    "House_guard_floors": "16GiB RAM/25GiB free; its protected executable-name list does not include the M01 runner, so its guard cannot coordinate M01 automatically",
+    "shared_gpu_lease": "queue reported lease_free true; no lock for inode11797711 observed in /proc/locks at final lock check; not acquired or reserved",
+    "M01_private_lock": "only serializes cooperating evaluator family, not owner queues"
+  },
+  "source_check": {
+    "checked_at_utc": "2026-10-27T02:06:58.121283Z",
+    "packet": "research/improvement-loop-20261024/m01-six-parent-witness-sol-v1",
+    "contract_sha256": "bbd46183000b9fa3387541d3866607b93ba3ba8d09a6c4b24847b4facfef35f4",
+    "packet_files_checked": 20,
+    "packet_mismatches": [],
+    "contract_dependency_pins_checked": 184,
+    "dependency_mismatches": [],
+    "admission_source_pins_checked": 12,
+    "admission_source_mismatches": [],
+    "admission_path": "research/improvement-loop-20261024/m01-six-parent-witness-admission-luna-v1/review-six-parent-dynamic-v1.json",
+    "admission_sha256": "b30829bab3c44dc6d0c6d0953e8b12f7aedbebd41593f3142dd5763ca69593a1",
+    "admission_canonical_digest": "aebde066a9ecff0d6a69bfce0d91a177343fa84a2161ca270bc9086e6e76ac4c",
+    "allowed_phases": [
+      "dynamic-six"
+    ],
+    "parent_roster": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "attempt_exists_at_check": false
+  },
+  "conclusion": "Raw headroom exceeds generic M01 floors but does not establish nonconflict with reserved/automatically launching owner work. Cannot honestly issue resource_conflicts=[] now.",
+  "next_action": "Use an owner-coordinated resource window that preserves automatic launch priority and existing reserves, then immediately recheck live PIDs/start identities, queues/leases/staging/CPU/RAM/disk and exact source before a separately authorized bounded run. No blanket all-jobs-idle rule is inferred.",
+  "prohibited_actions_not_taken": [
+    "no actual model/workload launch",
+    "no owner queue pause/kill/change",
+    "no resource lease acquisition",
+    "no resource receipt",
+    "no publication qualification inference"
+  ],
+  "limitations": [
+    "Point-in-time observations changed during inspection; not current at resume.",
+    "This packet records already observed small metadata/process facts, not copies of mutable owner files.",
+    "PIDs without captured start ticks require fresh identity checks; never signal or act on PID alone.",
+    "No reservation or shared scheduler integration exists for M01 across owner queues.",
+    "Source checks do not grant capacity or scientific qualification."
+  ]
+}
