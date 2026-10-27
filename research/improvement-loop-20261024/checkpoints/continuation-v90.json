@@ -1,0 +1,36 @@
+{
+  "schema": "ContinuousImprovementCheckpointV90",
+  "recordedAtUtc": "2026-10-27T00:25:40.628575+00:00",
+  "status": "active; exact invented shared-Gamma test and independent challenge complete, not actual-model qualification",
+  "references": {
+    "previous": {
+      "path": "research/improvement-loop-20261024/checkpoints/continuation-v89.json",
+      "sha256": "98dc557789530c471881348abae39d0e012d103c0deff9caf25f8fa70c5cdda8",
+      "bytes": 3250
+    },
+    "toy": {
+      "path": "research/improvement-loop-20261024/shared-gamma-toy-sol-v1/evidence.json",
+      "sha256": "96adc67405eaf00db7ab35a8367adaec67acbd03fb3a7e47a54a235af35923dc",
+      "bytes": 1298
+    },
+    "toy_review": {
+      "path": "research/improvement-loop-20261024/shared-gamma-toy-independent-luna-v1/review.json",
+      "sha256": "11d8729332e85fb17de6ef5c94e6dceb07ffd68f06b2364f5f5b783b3d422fb2",
+      "bytes": 3117
+    },
+    "parent_cut_counterexample": {
+      "path": "research/improvement-loop-20261024/shared-gamma-toy-independent-luna-v1/parent_cut_check_result.json",
+      "sha256": "2de0c58c9c44cc2b9722597d970d68030d405c7092cc6e25e7b73e47b9e674f7",
+      "bytes": 858
+    }
+  },
+  "result": "Eight toy tests verified normalized Gamma integration, nontrivial remaining posterior and exact shared-kappa Gamma-Poisson reconstruction. For toy rates1,2 and shared discrete kappa(1,2), P(N1=N2=0)=5/36 while independent kappas give119/864 despite identical per-event margins. Fixed G and active count observation are explicit counterexamples. The independent reviewer reproduced tests and supplied a separate unequal-evidence parent-cut example: fixed(1/8,7/8) versus incorrect evidence reweighting(1/22,21/22).",
+  "boundary": "This discrete-kappa toy is not actual2018 compiled-target proof, continuous prior sampler validation, empirical performance or numerical cure. The shared kappa, event multipliers, participant allocations, row/RNG lineage, all fixed parent masses and full diagnostic gates remain required. No actual graph or sampler was launched.",
+  "storage_coordination": "User asked whether old worktrees five-million-import and large-draws are needed. Current deploy frontend and queued release instructions have no direct path references. However live Node test PID1722215 and Python fixture PID1722249 have cwd/fixture under /home/hayden/projects/ballotmancy-house-five-million-import-20261025, so owner must assess that live test before removing that worktree. No matching live process for /home/hayden/projects/ballotmancy-house-large-draws-20261025 was found. No process or worktree changed.",
+  "owner_status": "2018 provisional parent0 and House cycle source owner remain active at last check; full reviewed House handoff remains pending. Continue user resource/overlap guards.",
+  "next": [
+    "Decide, with Senate owner coordination and full actual dependency/compiled-source audit, whether any exact collapsed reconstruction is practical; implement no unilateral owner change.",
+    "Continue independent live House release integration after exact qualified handoff.",
+    "Advance queue lifecycle/recovery and authenticated scale without overstating bounded research."
+  ]
+}

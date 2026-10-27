@@ -1,0 +1,38 @@
+{
+  "schema": "IndependentSharedGammaToyReviewV1",
+  "reviewer": "luna",
+  "review_date": "2026-10-26",
+  "reviewed_packet": "../shared-gamma-toy-sol-v1",
+  "frozen_author_pins": {
+    "toy.py": "5783a92fd6e465732ed30f47e94a372482c3ac132515fcaad41562065fda187a",
+    "test_toy.py": "42ba7aad33b410df0b0bfb7d8e106b00f416cae16ccd208366b83a637d02daf3",
+    "result.json": "81fc751e7fe9ac4520100c1fb808a696fd0c2687a8c84682873546bc6b7ba2b3",
+    "evidence.json": "96adc67405eaf00db7ab35a8367adaec67acbd03fb3a7e47a54a235af35923dc",
+    "README.md": "09e1c2ff6ce05784d293e78360fdf612d51ae5fd6ddfd4712e3f183ff4706121"
+  },
+  "reproduction": {
+    "command": "PYTHONDONTWRITEBYTECODE=1 nice -n 15 python3 -B -m unittest -v test_toy",
+    "result": "8 tests passed in 0.017 seconds",
+    "scope": "standard library exact fractions; invented toy only"
+  },
+  "independent_conclusion": "Gamma-Poisson integral, shared-kappa distinction, prior-only integration identity, active-observation counterexample and disclosed toy limits are correct.",
+  "parent_mass_coverage_gap": {
+    "finding": "Author toy's parent mass test has identical observation evidence for all parents; it cannot detect accidental reweighting by parent evidence. The README discloses this limitation.",
+    "supplemental_check_source": "parent_cut_check.py",
+    "supplemental_check_result": "parent_cut_check_result.json",
+    "supplemental_result": "Exact rational check keeps protected masses (1/8,7/8) after per-parent normalized nuisance integration despite parent evidence (1/4,3/4); ordinary Bayesian evidence reweight would yield (1/22,21/22). Passed."
+  },
+  "continuous_shared_kappa_check": {
+    "actual_prior_difference": "The toy's finite kappa prior {1,2} differs from actual LogNormal(log(100),0.7).",
+    "analytic_extension": "For any nondegenerate positive kappa and lambda>0, q_lambda(kappa)=P(N=0|kappa,lambda)=(kappa/(kappa+lambda))^kappa has derivative d log q/dkappa=-log(1+lambda/kappa)+lambda/(kappa+lambda)<0. Two q functions are co-monotone, so shared-kappa joint zero probability E[q1 q2] is strictly greater than E[q1]E[q2], the independent-per-event-kappa probability.",
+    "raw_count_covariance": "Can remain zero because conditional means are kappa-independent; dependence is present in joint zero/tail events and higher-order moments."
+  },
+  "active_observation": "An observed Poisson count changes the kappa posterior; G may still be integrated conditional on kappa to a negative-binomial likelihood, but kappa is no longer prior-only and cannot simply be dropped.",
+  "fixed_parent_mass_semantics": "Within each parent, normalized nuisance integration contributes factor one; preserve original outer masses. Do not multiply masses by parent evidence in a protected cut target.",
+  "limits": [
+    "No actual model graph compiled or run.",
+    "Toy kappa prior is discrete, not the actual continuous LogNormal.",
+    "No empirical sampler, finite-precision, prediction executor, source-lineage, or actual-bank equivalence shown.",
+    "Parent-cut supplemental check is a separate exact toy, not actual parent data."
+  ]
+}
