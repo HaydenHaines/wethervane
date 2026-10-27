@@ -1,0 +1,19 @@
+{
+  "schema": "ContinuousImprovementCheckpointV116",
+  "recordedAtUtc": "2026-10-27T02:39:35.565853+00:00",
+  "status": "active; source-based scale bottleneck independently verified; benchmark unimplemented and unexecuted",
+  "previous": {
+    "path": "research/improvement-loop-20261024/checkpoints/continuation-v115.json",
+    "sha256": "58a8b5fad301d153affc5ed0c070256711396f8ebd151eb00d85ccd318264a8e",
+    "bytes": 2744
+  },
+  "scale": "queue-finite-owned-scaling-design-sol-v1 calculates healthy idle tick 2R audits, RA(A\u22121) pair comparisons and 2RA executable rehashes for R reserved jobs, A intents; R=A=N gives N\u00b2(N\u22121) comparisons and 2N\u00b2 rehashes. queue-finite-owned-scaling-independent-review-luna-v1 confirms conditional arithmetic, not wall-time or I/O measurement. At N1000 16,041,856,000,000 bytes are logical rehash bytes for observed Python, not disk I/O.",
+  "pilot": "Design proposes separately source-bound scratch harness, real tiny subprocess histories at 1/2/4/8, no fabricated histories, at most 16 launches, capacity1 and measured admission/launch/idle/status/restart/seal/finalization. Independent review requires explicit fresh active-owner/job-queue and cgroup CPU/memory/pressure/disk latency/free-space/cache observations, detached worker-tree accounting, mid-batch owner-change stop policy, fresh headroom and conservative caps before running. No benchmark executed and no throughput/1000-cycle claim.",
+  "reproducibility": "Frozen queue runner rewrites tracked cleanup-verification.json; old bytes restored, separate independent copy/addendum preserved. Future harness must use scratch outputs and prove source tree remains unchanged.",
+  "science": "No empirically weakest layer or qualified matched forecast comparison established; 2018 provisional outputs unqualified. Six-parent M01 remains unrun due owner resource commitments and dynamically starting jobs; old observations are not permits.",
+  "next": [
+    "Implement safe scratch pilot with all independent resource controls, test and review harness before authorized bounded actual benchmark.",
+    "Use measured baseline to improve history audit complexity while preserving all integrity/freshness checks, then independent review and meaningful scale tests.",
+    "Reassess owner coordination before actual model graph run; monitor House release and SiteGround activation."
+  ]
+}
