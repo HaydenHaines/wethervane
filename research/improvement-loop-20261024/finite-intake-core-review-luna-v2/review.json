@@ -1,0 +1,31 @@
+{
+  "schema": "FiniteIntakeCoreIndependentReviewLunaV2",
+  "status": "same_process_stale_temp_blocker_closed_for_cooperating_local_scope",
+  "reviewed_frozen_packet": "../finite-intake-core-sol-v2",
+  "scope": "read-only source review and bounded temporary-store tests; no V3 integration, production store, model or scientific job",
+  "source_pins": {
+    "core.py": "9895a5c991d81e5ab4d5a8d22ada312adbd9622b318a467f73d1fc76dafe3f47",
+    "test_core.py": "93b8294feff8885486024ad75187c9a183b8f39df04aed490da439f8d9db16e0",
+    "evidence.json": "867b46e9ffd36945193c9b9c0caef8cee275b3af2641b9a04a914caa833ccb0d",
+    "README.md": "3404b0d8dc3811361487c0c4d90f7f1b80825d0506be1effb8ae8df3cf591686",
+    "V1_independent_review.json": "3144df2eaa9e1e1cb44b4a19b21fb508daa53f01ce5fedff6efe30bd774f8dcf",
+    "V1_evidence.json": "75c35e335a9bb756f400aaabc26158165d0fa6771318206b0ab3cdee65f35711"
+  },
+  "tests": {
+    "command": "PYTHONDONTWRITEBYTECODE=1 nice -n 15 python3 -B -m unittest -v test_core",
+    "result": "14 tests passed in 0.346 seconds in independent rerun; the source's 12 barrier races again sampled seal-wins only, while held-transaction tests exercise both serialized orders.",
+    "relevant_case": "test_repeated_same_process_prepublication_errors_recover injects three os.link exceptions after each attempt temp file is written/fsynced; each attempt leaves an inert distinct name, and same-process finalize retry publishes identical DB-committed bytes and returns idempotently."
+  },
+  "review": {
+    "specific_v1_finding": "V1's PID-only temp name could be stranded by an ordinary exception and block a same-process retry with FileExistsError.",
+    "v2_correction": "V2 uses PID plus secrets.token_hex(16) in a fresh exclusive temp name per projection attempt. Repeated ordinary publication exceptions leave unique inert temps; they do not collide with or prevent retry. Exclusive final os.link, exact-byte conflict checking, directory fsync, and DB-authoritative final bytes remain intact.",
+    "empty_and_failure_semantics": "Explicit-empty final disposition is distinct from nonempty success; failed/blocked/cancelled terminals produce terminal_with_failures; qualification remains unassessed. OPEN, pending and missing evidence block finalization. These are workflow bookkeeping labels, not scientific outcome validation.",
+    "crash_recovery": "The existing process-exit tests cover pre/post enqueue, seal, terminal and final DB commits, plus before/after receipt publication and directory sync. Recovery from a committed final row projects the same canonical bytes. A stale temp after a process exit is harmless under the nonce scheme, though not scavenged.",
+    "store_versioning": "The binding schema is FiniteIntakeCoreV2 and source/root checked; code rejects mismatched V1 binding rather than silently migrating. No migration path is established."
+  },
+  "limitations": [
+    "No actual queue-v3 adapter exists in this packet; the original V3 enqueue/seal race, partial-admission ownership/scaffolding crashes, executor reconciliation and reservation/liveness checks remain unresolved for integration.",
+    "Terminal evidence uses an invented fixture contract and a mutable local SQLite/filesystem trust model. No authentic V3 receipts, cryptographic producer identity, hostile same-user protection, scientific qualification or thousands-cycle capacity is established.",
+    "Tests assume an honest local Linux filesystem. They do not prove power-loss/device-flush behavior, NFS/network semantics, backup/restore, or eliminate all storage failures. Random temporary names solve accidental retry collision, not adversarial same-user attacks or garbage collection."
+  ]
+}
