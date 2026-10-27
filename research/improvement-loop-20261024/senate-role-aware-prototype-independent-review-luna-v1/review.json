@@ -1,0 +1,28 @@
+{
+  "schema": "SenateRoleAwarePrototypeIndependentReviewV1",
+  "verdict": "No defect found in the stated invented single-profile allocation/partition prototype. It conserves supplied category mass, fixes total nonmajor mass across roster expansion, and explicitly requires caller-supplied role/eligibility/response. It is an unadmitted alternative law, not evidence of cause or calibration.",
+  "tests": {
+    "command": "PYTHONDONTWRITEBYTECODE=1 nice -n 15 python3 -B -m unittest -v test_role_aware_prototype.py",
+    "result": "7/7 pass in an isolated /tmp copy; no model dependencies.",
+    "independent_probe": "32 eligible write-ins preserve total write-in named mass0.02, principal-pair named mass0.72, printed other named mass0.06 and noncandidate mass0.20. 1,000 supplied participants conserve expected category marks. Empty candidate support is accepted only at zero response; positive response fails. Observed-mark partition preserves synthetic counts exactly."
+  },
+  "source_and_scope": {
+    "current_model": "Pinned117 source uses iid other-candidate utilities and full-roster softmax. Prototype deliberately changes this to caller-supplied fixed other_mass and writein_fraction; it is not a source-equivalent replacement or fitted role model.",
+    "response": "Caller supplies response scalar. This is an input, not estimated/learned here. The pinned source has a scalar per-contest response, but prototype has no graph or role-source binding.",
+    "roles_and_eligibility": "Candidate role/eligibility are explicit caller fields. No ballot records, legal sources, dates, cutoff or inference validates them.",
+    "conservation": "Candidate-conditional group probabilities sum to one when at least one eligible group can absorb every positive mass. Multiplying by response and a validated noncandidate simplex allocates total probability one; expected_marks preserves supplied participant total within float tolerances."
+  },
+  "checked_cases": {
+    "group_mass": "One versus32 write-in candidates leaves aggregate write-in mass and D/R pair unchanged; within-group utility softmax redistributes only within eligible role groups.",
+    "noncandidate_and_major": "The explicit noncandidate simplex gets exactly (1-response); major group gets 1-other_mass; printed-other and write-in groups split other_mass using writein_fraction.",
+    "zero_cases": "Handles response0, no other mass, no eligible candidate only when response and other_mass are zero, zero-mass absent roles, and sole eligible nonmajor role; positive allocation to absent role fails closed.",
+    "observed_partition": "Requires exact candidate and noncandidate support, nonnegative integers and zero observed marks for ineligible candidates; copies each supplied count without allocation or reassignment."
+  },
+  "limitations": [
+    "No prior, role-support source, response calibration, likelihood, posterior, model graph, RNG, training data or 2022/AZ outcomes. Expected values are deterministic synthetic allocation, not posterior predictions.",
+    "No causal attribution, improved calibration, fit qualification or public/default decision follows. The fixed group mass is an alternative scientific assumption that needs independently sourced role definitions and pre-cutoff training evidence.",
+    "Extreme utilities can underflow small softmax weights to zero in floating point; the test only demonstrates finite normalized output, not full model numerical bounds.",
+    "The helper expected_marks validates supplied probability structure and conservation but cannot independently authenticate that caller-provided maps came from category_probabilities or a lawful candidate roster."
+  ],
+  "scope": "Tests ran on two copied Python files under /tmp. No Arizona outcomes, owner raw rows, large predictions, model or owner jobs, or owner files were changed."
+}
