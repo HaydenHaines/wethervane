@@ -1,0 +1,52 @@
+{
+  "schema": "CandidateFixedProfileOracleIndependentReviewV1",
+  "verdict": "The oracle accurately implements the declared deterministic fixed-utility, fixed-response, fixed-profile allocation identity. It demonstrates a real ratio-of-sums effect and conservation. It is not a full source emulator, model result, or attribution test.",
+  "source_equation_review": {
+    "pinned_file": "117-components.py",
+    "pinned_sha256": "1574e7831344009f08470b9287b257556a9c031fb7e33e29938a70d51b1a854d",
+    "relevant_lines": {
+      "candidate_utility": "345-367",
+      "category_allocation": "403-427",
+      "event_scale": "429-439",
+      "ordinary_pair_poll": "561-562"
+    },
+    "confirmed_equations": [
+      "candidate probabilities are softmax over all candidate utilities",
+      "expected named category rates are cell_intensity multiplied by contest response and candidate probability, summed over cells",
+      "noncandidate rates receive (1-response) times a simplex allocation",
+      "a common eventG scales all candidate/noncandidate rates for that event",
+      "ordinary poll means use log(first rate)-log(second rate); a shared eventG cancels in the within-contest log ratio"
+    ],
+    "scope_match": "Given each profile's utilities, total pre-category intensity, a common scalar response, and noncandidate simplex, the oracle multiplies total intensity by response and softmax, then allocates the remaining rate among noncandidate categories. This matches the stated conditional algebra."
+  },
+  "reproduced_results": {
+    "official_tests": "7/7 standard-library tests pass",
+    "independent_probe": "Pass: single-profile D/R remains 3 as minor utilities are added; expected minor mass rises while total named mass stays fixed. Two-profile aggregate D/R changes from 7/3 to 4 when adding weight-10 minor alternatives, while within-profile ratios remain 9 and 1. When each profile has D/R=3, aggregate remains 3.",
+    "variable_response_counterexample": "With profile responses 0.9 and 0.1, fixed participant totals 100 and D/R odds 9 and 1, the source-form aggregate ratio is 43/7 (6.142857). The oracle's required common scalar response returns 7/3 (2.333333). This is expected under its declared scalar-response scope, but shows it cannot directly emulate the source's cell-varying response without extending the API or precomputing correct profile weights.",
+    "initial_probe_note": "My first supplementary invariant fixture accidentally set one profile's D/R odds to 9 instead of 3 and failed. I corrected that invented input; the retained probe and output are the passing run. Subject files were not modified."
+  },
+  "material_caveats": [
+    {
+      "severity": "scope_limit",
+      "finding": "Actual source response is a cell-specific tensor, not the oracle's one scalar. For real profile aggregation the weights must include each cell's intensity times its response; arbitrary profile-level averaging can change the aggregate pair ratio."
+    },
+    {
+      "severity": "interpretation_guard",
+      "finding": "Adding minor alternatives redistributes expected named-category mass at fixed total intensity and response; total named mass remains total intensity times response. This toy cannot explain a total candidate-mark excess by the Choice denominator alone while holding event scale, intensity and response fixed. A fitted model can change those quantities after conditioning, which is outside this oracle."
+    },
+    {
+      "severity": "terminology",
+      "finding": "The oracle calls its input participant totals. To avoid equating modeled marks with physical turnout, describe these inputs as supplied profile count/intensity weights and outputs as expected category marks. They are not an independently observed voter population."
+    },
+    {
+      "severity": "no_full_model_claim",
+      "finding": "Utilities and profile weights are invented and fixed. No priors, posterior learning, hierarchical covariance, 288-cell selected graph, ranked-poll reporting epsilon, gradient, diagnostics, 2022 comparison, Arizona rows/outcomes, or causal layer intervention are evaluated."
+    },
+    {
+      "severity": "floating_point",
+      "finding": "Stable max-shift softmax avoids overflow for ordinary finite utilities, but exp(-1000) underflows to zero. The implementation documents this; zero predicted rate would make the source's log-rate poll quantity singular, so extreme-tail behavior must not be generalized from these tests."
+    }
+  ],
+  "suggested_use": "Use this as an algebra demonstration for why candidate alternatives can shift within-profile mass and why heterogeneous-profile ratio-of-sums differs from one-profile odds. If a later analysis is intended to reproduce native values, use pinned model utilities, per-cell intensity and response, eventG, source-specific poll path, full category roster, and common state; validate exact aggregate rates before interpreting outcomes.",
+  "prohibited_inference": "No Arizona outcome tuning, owner raw-row audit, model job, fit, layer ranking, forecast qualification, UI or release decision was performed."
+}
