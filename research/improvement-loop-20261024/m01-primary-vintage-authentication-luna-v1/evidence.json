@@ -1,0 +1,125 @@
+{
+  "schema": "A2018PrimaryVintageAuthenticationLunaV1",
+  "observed_utc": "2026-10-26",
+  "scope": "Read-only primary source vintage check; no owner jobs, models, poll/survey row exports, or owner changes.",
+  "claim_status": {
+    "exact_538_csv_vintage_independently_authenticated": false,
+    "538_data_family_public_offer_by_2018_05_30_supported": true,
+    "single_rasmussen_primary_question_page_version_available_by_archive_capture": true,
+    "full_a2018_source_cohort_vintage_authenticated": false,
+    "source_atoms_or_independent_samples_authenticated": false,
+    "executed_graph_or_forecast_qualification": false
+  },
+  "frozen_local_inputs": {
+    "resolver_evidence": {
+      "path": "a2018-source-evidence-resolver-sol-v1/evidence.json",
+      "sha256": "b602e51220a0a6387a3b9410fd926bee939f5987aa0eb46c41f2d605945fdc6f"
+    },
+    "resolver_readme": {
+      "path": "a2018-source-evidence-resolver-sol-v1/README.md",
+      "sha256": "c2f88710b928189b2eddf29d056d95e4406527ee4efe9653cdad4b82194d43cc"
+    },
+    "earlier_vintage_evidence": {
+      "path": "m01-earlier-vintage-luna-v3/evidence.json",
+      "sha256": "803d7afe7ab5d263b774efc29adb64ebdb8a019a2df602ae21063b0585883f5a"
+    },
+    "current_public_handoff": {
+      "path": "live-senate-baseline-handoff-root-v1/handoff.json",
+      "sha256": "f98a79d8935e5930549e98e984772c0e046fd3f7b47d7b16b8293cddff6d03c8"
+    },
+    "existing_538_csv_capture": {
+      "path": "m01-538-archive-root-v1/raw-polls-20180530.csv",
+      "bytes": 1326873,
+      "sha256": "79489a9d7f796d8f50841e91d8dcb858679ada75690812d4757f095a107efb91",
+      "note": "Existing private lab capture was hash-pinned; no poll rows copied into this packet."
+    }
+  },
+  "fivethirtyeight": {
+    "commit": {
+      "url": "https://github.com/fivethirtyeight/data/commit/142cad5610ed6b3468e730199034b280b9e805d5",
+      "api_url": "https://api.github.com/repos/fivethirtyeight/data/commits/142cad5610ed6b3468e730199034b280b9e805d5",
+      "sha": "142cad5610ed6b3468e730199034b280b9e805d5",
+      "author_time": "2018-05-30T14:41:12Z",
+      "committer_time": "2018-05-30T14:41:12Z",
+      "signature_verified": true,
+      "github_verified_at": "2024-01-16T19:59:59Z",
+      "api_response_bytes": 136723,
+      "api_response_sha256": "bf7177827454ccca58c7f8097105a9fa1fb4002a032d6c584191628b5f4acaef",
+      "changed_paths_include": ["pollster-ratings/raw-polls.csv", "pollster-ratings/README.md"],
+      "interpretation": "Authenticates signed commit payload/declared timestamp under GitHub verification; does not itself establish public retrieval by that timestamp."
+    },
+    "official_article": {
+      "url": "https://fivethirtyeight.com/features/the-polls-are-all-right/",
+      "current_redirect": "https://abcnews.com/politics",
+      "archive_capture_url": "https://web.archive.org/web/20180530151110id_/https://fivethirtyeight.com/features/the-polls-are-all-right/",
+      "archive_capture_utc": "2018-05-30T15:11:10Z",
+      "archive_cdx_record": {
+        "status": 200,
+        "mimetype": "text/html",
+        "digest": "UCYLBYH2VIMHO6GTG3C6EQCVSSB76NS2",
+        "length": 39140
+      },
+      "cdx_query_url": "https://web.archive.org/cdx/search/cdx?url=fivethirtyeight.com%2Ffeatures%2Fthe-polls-are-all-right%2F&output=json&filter=statuscode%3A200&filter=timestamp%3A2018&collapse=digest",
+      "cdx_response_bytes": 3696,
+      "cdx_response_sha256": "de8dba3c8e75cc3c2e3195d6fbe54f7914b878b41614992e4a36a136eac055c0",
+      "retrieved_replay_body_bytes": 168936,
+      "retrieved_replay_body_sha256": "1e063e88574aefd3f4a01030389460fe51d75c3676c05c6dcd4f2253a91879b8",
+      "visible_article_time": "2018-05-30T15:00:00Z",
+      "content_claim": "FiveThirtyEight pollster-ratings database can be downloaded; article links to the mutable GitHub master tree.",
+      "limitation": "Page capture corroborates dataset-family offer date, but article link is not a commit-pinned immutable CSV object."
+    },
+    "raw_csv_exact_object_archive_check": {
+      "url": "https://raw.githubusercontent.com/fivethirtyeight/data/142cad5610ed6b3468e730199034b280b9e805d5/pollster-ratings/raw-polls.csv",
+      "cdx_query_url": "https://web.archive.org/cdx/search/cdx?url=raw.githubusercontent.com%2Ffivethirtyeight%2Fdata%2F142cad5610ed6b3468e730199034b280b9e805d5%2Fpollster-ratings%2Fraw-polls.csv&output=json&filter=statuscode%3A200&filter=timestamp%3A2018",
+      "query_status": 200,
+      "response_bytes": 3,
+      "response_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "result": "No matching archive capture returned. This is absence of an observed capture, not proof none exists elsewhere."
+    }
+  },
+  "rasmussen_single_release": {
+    "primary_publisher_page": "https://www.rasmussenreports.com/public_content/politics/elections/election_2012/election_2012_senate_elections/arizona/election_2012_arizona_senate",
+    "primary_question_page": "https://www.rasmussenreports.com/public_content/politics/elections/election_2012/election_2012_senate_elections/arizona/questions/questions_arizona_senate_october_21_2012",
+    "publisher_release_date_claim": "2012-10-25",
+    "poll_details_from_prior_crosswalk": {
+      "field_date": "2012-10-21",
+      "n": 500,
+      "population": "Likely Arizona voters",
+      "question": "If the 2012 election for the U.S. Senate were held today, would you vote for Republican Jeff Flake or Democrat Richard Carmona?",
+      "candidate_order": "The question page states candidate order was split/rotated.",
+      "reported_toplines": {"Flake_R_pct": 50, "Carmona_D_pct": 44, "other_pct": 3, "undecided_pct": 3}
+    },
+    "archived_question_page": {
+      "archive_capture_url": "https://web.archive.org/web/20121028033757id_/http://www.rasmussenreports.com/public_content/politics/elections/election_2012/election_2012_senate_elections/arizona/questions/questions_arizona_senate_october_21_2012",
+      "archive_capture_utc": "2012-10-28T03:37:57Z",
+      "archive_cdx_record": {
+        "status": 200,
+        "mimetype": "text/html",
+        "digest": "O5YSL6RDI5AW7ZLUBV57VNV6HRUDXUCB",
+        "length": 6129
+      },
+      "cdx_query_url": "https://web.archive.org/cdx/search/cdx?url=www.rasmussenreports.com%2Fpublic_content%2Fpolitics%2Felections%2Felection_2012%2Felection_2012_senate_elections%2Farizona%2Fquestions%2Fquestions_arizona_senate_october_21_2012&output=json&filter=statuscode%3A200&filter=timestamp%3A2012&collapse=digest",
+      "cdx_response_bytes": 909,
+      "cdx_response_sha256": "7e6857569dd70a3216b23b7cd0f8cc4fae46e98b008ce672be67220bcb87182c",
+      "retrieved_replay_body_bytes": 20213,
+      "retrieved_replay_body_sha256": "38f9ab385971aa832d83ab50169cdc7e7e74a0c42f15d135d9a36b386f0fc763",
+      "body_content_check": "Archived publisher page title identifies Arizona Senate October 21, 2012; text says survey of 500 likely voters conducted October 21 and contains the Flake/Carmona question and rotated order note.",
+      "interpretation": "An exact archived primary-page version is documented as captured by 2012-10-28 03:37:57Z. This is an upper bound on when this version was publicly present, not an independently authenticated first-publication timestamp."
+    },
+    "event_linkage": "Existing source review m01-earlier-vintage-luna-v3 assesses this Rasmussen release and 538 pollno 5385932 as same poll event based on race/candidate, field date, n, population, question and toplines. It does not establish unique respondent identity or Tierney lineage.",
+    "topline_archive_limitation": "The archived primary question-page capture does not itself establish the poll top-line values; those are from publisher report/current page and crosswalk. The top-lines subpage did not yield a matching 2012 CDX capture."
+  },
+  "current_handoff_context": {
+    "public_handoff_observed_utc": "2026-10-26T20:57:41.104674+00:00",
+    "current_2026_strict_as_of": false,
+    "historical_2018_strict_as_of": false,
+    "historical_2022_strict_as_of": false,
+    "interpretation": "The handoff proves a present public artifact identity at its observation time; it cannot authenticate historical input publication/availability."
+  },
+  "access_failures_and_nonfindings": [
+    "Current FiveThirtyEight article endpoint redirects to ABC News politics; the 2018 Internet Archive capture restored its dated content.",
+    "No 2018 Internet Archive CDX record was returned for the commit-pinned GitHub raw CSV URL.",
+    "GH Archive hourly JSON request returned HTTP 403 during exploration; no alternate event-log conclusion is claimed.",
+    "A 2012 archive capture of the Rasmussen question page exists; the corresponding archived toplines page did not return a matching CDX record."
+  ]
+}
