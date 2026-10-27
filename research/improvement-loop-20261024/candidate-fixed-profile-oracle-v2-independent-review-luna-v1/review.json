@@ -1,0 +1,64 @@
+{
+  "schema": "CandidateFixedProfileOracleV2IndependentReviewV1",
+  "verdict": "V2's deterministic allocation formulas and validation match its explicit hypothetical per-profile response extension; its scalar case matches pinned117's actual one-response-per-contest source. No technical error found in the bounded cases. This remains an invented algebra oracle, not source substitution or a model analysis.",
+  "source_shape_correction": {
+    "provider_response": "Pinned117 behavior lines193-200 constructs scalar response per contest. CountsRules lines415-425 broadcasts it over cells. V2 README correctly labels varying response as hypothetical.",
+    "v1": "Original V1 review remains byte-preserved; separate correction retracts its mistaken cell-specific-source assertion. The 0.9/0.1 case is a generalized counterexample only."
+  },
+  "independent_reproduction": {
+    "suite": "11/11 stdlib tests pass.",
+    "Fraction_case": {
+      "profile_intensity": [
+        100,
+        100
+      ],
+      "response": [
+        0.9,
+        0.1
+      ],
+      "major_weights": [
+        [
+          9,
+          1
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "minor_weight_each": 10,
+      "exact_named_expected": [
+        "124/3",
+        "16/3",
+        "160/3"
+      ],
+      "noncandidate_expected": [
+        25,
+        75
+      ],
+      "aggregate_D_over_R": "31/4",
+      "total_named": 100,
+      "total_noncandidate": 100,
+      "conservation_total": 200
+    },
+    "scalar_special_case": "At common response0.5 the same profiles yield aggregate D/R=4; test also checks scalar input is exactly equal to a repeated response vector."
+  },
+  "equation_and_invariant_review": {
+    "confirmed": [
+      "softmax is max-shifted over each profile's full roster",
+      "named expectations are N_i*r_i*p_ik",
+      "noncandidate expectations are N_i*(1-r_i)*a_j under shared simplex a",
+      "all profiles require same candidate roster width",
+      "per-profile and aggregate category conservation holds at fixed N_i and response"
+    ],
+    "interpretation": "Changing utilities/roster reallocates fixed named mass when response is fixed. Changing response by profile changes how much mass is assigned to named versus noncandidate categories. A common event-scale factor multiplies all categories and can be folded into profile intensity weights for a fixed event."
+  },
+  "limitations": [
+    "Per-profile response is a hypothetical generalization; not the pinned117 selected source. It may support a future provider with that shape only after its distinct source/contract is pinned.",
+    "Profiles, weights, utilities, responses and simplex are invented. No selected state/profile values, priors, graph compilation, posterior, gradient, outcome data, raw predictive rows, calibration or causal effect was tested.",
+    "The example's labels are synthetic participant/intensity totals. Do not present synthetic expected category marks as observed physical turnout or use them as AZ calibration.",
+    "Extreme finite utility differences can underflow softmax probabilities to zero; this is a toy finite-precision property, not a verified native numerical error bound.",
+    "Correct source identity plus arithmetic does not establish that the observed Arizona discrepancy is caused by candidate choice or an incremental layer."
+  ],
+  "audit_note": "No Arizona outcomes or owner rows were read; no model, forecast or active job was imported/launched; V1 source artifacts were not modified."
+}
