@@ -1,0 +1,1436 @@
+{
+  "closure_source_sha256": {
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/mixed-count-graph-astra-v1/open_contribution.py": "444d3b82883e1d9c921046c3bd643096a04b4b0ff950a0e42788f3e124cefdb3",
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/mixed-count-graph-astra-v1/rank_contribution.py": "7fbc42874bb6fde95195fe0506db51bb86d2fb2ef418b2fc12592578f1bf2cf7",
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-2018-gpu-preparation-root-v1/gpu-production-v1/attempt1/source-snapshots/117-components.py": "1574e7831344009f08470b9287b257556a9c031fb7e33e29938a70d51b1a854d"
+  },
+  "context_identity": "efbc0cefe3d1cb028be5e78a123dd5e0df0643125f7a32331ccc208debde4430",
+  "counts": {
+    "contests": 37,
+    "events": 54,
+    "factor_membership_count_by_family": {
+      "correlated_poll_mvn": 274,
+      "survey_potential": 7968
+    },
+    "factor_membership_rows": 8242,
+    "official_count_observations": 0,
+    "participation_report_observations": 0,
+    "poll_blocks": 1,
+    "poll_rows": 274,
+    "ranked_poll_rows": 0,
+    "survey_blocks": 65,
+    "survey_record_rows": 7968
+  },
+  "cutoff_utc": "2018-10-23T00:00:00Z",
+  "eventG_likelihood_closure": {
+    "claim": "For the exact pinned A2018 problem/source, each of 54 eventG coordinates retains its Gamma(kappa,kappa) conditional prior given kappa and the other parameters; no empirical posterior arrays were read.",
+    "closure_checks": {
+      "contest_response_is_scalar": true,
+      "core_ranked_config_count": 1,
+      "core_ranked_observation_count": 0,
+      "official_count_observation_count": 0,
+      "open_person_absent": true,
+      "ordinary_poll_formula_verified": true,
+      "ordinary_poll_row_count": 274,
+      "participation_report_count": 0,
+      "ranked_config_count": 1,
+      "ranked_observation_count": 0,
+      "ranked_poll_channel_count": 0,
+      "runoff_config_count": 1,
+      "runoff_observation_count": 0,
+      "survey_loop_eventG_free": true
+    },
+    "event_ids": [
+      "event_ak2018_general",
+      "event_al2018_general",
+      "event_ar2018_general",
+      "event_az2018_general",
+      "event_ca2018_general",
+      "event_co2018_general",
+      "event_ct2018_general",
+      "event_dc2018_general",
+      "event_de2018_general",
+      "event_fl2018_general",
+      "event_ga2018_general",
+      "event_hi2018_general",
+      "event_ia2018_general",
+      "event_id2018_general",
+      "event_il2018_general",
+      "event_in2018_general",
+      "event_ks2018_general",
+      "event_ky2018_general",
+      "event_la2018_general",
+      "event_ma2018_general",
+      "event_md2018_general",
+      "event_me2018_general",
+      "event_mi2018_general",
+      "event_mn2018_general",
+      "event_mo2018_general",
+      "event_ms2018_general",
+      "event_ms2018_runoff",
+      "event_mt2018_general",
+      "event_nc2018_general",
+      "event_nd2018_general",
+      "event_ne2018_general",
+      "event_nh2018_general",
+      "event_nj2018_general",
+      "event_nm2018_general",
+      "event_nv2018_general",
+      "event_ny2018_general",
+      "event_oh2018_general",
+      "event_ok2018_general",
+      "event_or2018_general",
+      "event_pa2018_general",
+      "event_ri2018_general",
+      "event_sc2018_general",
+      "event_sd2018_general",
+      "event_tn2018_general",
+      "event_tx2014_general",
+      "event_tx2016_general",
+      "event_tx2018_general",
+      "event_ut2018_general",
+      "event_va2018_general",
+      "event_vt2018_general",
+      "event_wa2018_general",
+      "event_wi2018_general",
+      "event_wv2018_general",
+      "event_wy2018_general"
+    ],
+    "invalidated_if": [
+      "any pinned source drift",
+      "any official count or participation report appears",
+      "open_person becomes present",
+      "ranked/runoff observations become nonempty",
+      "ranked poll channels appear",
+      "survey likelihood begins using eventG/event_intensity",
+      "ordinary poll formula or scalar-response semantics change"
+    ],
+    "reasoning": [
+      "zero official counts and zero participation reports remove direct total/count factors",
+      "open-person absent and ranked/runoff observation arrays empty remove extension count factors",
+      "surveys do not reference eventG/event_intensity in the pinned survey likelihood path",
+      "all poll rows are non-ranked; ordinary log category-rate differences algebraically cancel common eventG and contest scalar response",
+      "shared kappa can induce marginal dependence; this is conditional prior status, not unconditional independence or a sampler result"
+    ],
+    "status": "verified_source_algebra_conditional_on_shared_kappa"
+  },
+  "events": [
+    {
+      "cycle": 2014,
+      "event_id": "event_tx2014_general",
+      "role": "training",
+      "state_code": "48"
+    },
+    {
+      "cycle": 2016,
+      "event_id": "event_tx2016_general",
+      "role": "training",
+      "state_code": "48"
+    },
+    {
+      "cycle": 2018,
+      "event_id": "event_ak2018_general",
+      "role": "prediction",
+      "state_code": "02"
+    },
+    {
+      "cycle": 2018,
+      "event_id": "event_al2018_general",
+      "role": "prediction",
+      "state_code": "01"
+    },
+    {
+      "cycle": 2018,
+      "event_id": "event_ar2018_general",
+      "role": "prediction",
+      "state_code": "05"
+    },
+    {
+      "cycle": 2018,
+      "event_id": "event_az2018_general",
+      "role": "prediction",
+      "state_code": "04"
+    },
+    {
+      "cycle": 2018,
+      "event_id": "event_ca2018_general",
+      "role": "prediction",
+      "state_code": "06"
+    },
+    {
+      "cycle": 2018,
+      "event_id": "event_co2018_general",
+      "role": "prediction",
+      "state_code": "08"
+    },
+    {
+      "cycle": 2018,
+      "event_id": "event_ct2018_general",
+      "role": "prediction",
+      "state_code": "09"
+    },
+    {
+      "cycle": 2018,
+      "event_id": "event_dc2018_general",
+      "role": "prediction",
+      "state_code": "11"
+    },
+    {
+      "cycle": 2018,
+      "event_id": "event_de2018_general",
+      "role": "prediction",
+      "state_code": "10"
+    },
+    {
+      "cycle": 2018,
+      "event_id": "event_fl2018_general",
+      "role": "prediction",
+      "state_code": "12"
+    },
+    {
+      "cycle": 2018,
+      "event_id": "event_ga2018_general",
+      "role": "prediction",
+      "state_code": "13"
+    },
+    {
+      "cycle": 2018,
+      "event_id": "event_hi2018_general",
+      "role": "prediction",
+      "state_code": "15"
+    },
+    {
+      "cycle": 2018,
+      "event_id": "event_ia2018_general",
+      "role": "prediction",
+      "state_code": "19"
+    },
+    {
+      "cycle": 2018,
+      "event_id": "event_id2018_general",
+      "role": "prediction",
+      "state_code": "16"
+    },
+    {
+      "cycle": 2018,
+      "event_id": "event_il2018_general",
+      "role": "prediction",
+      "state_code": "17"
+    },
+    {
+      "cycle": 2018,
+      "event_id": "event_in2018_general",
+      "role": "prediction",
+      "state_code": "18"
+    },
+    {
+      "cycle": 2018,
+      "event_id": "event_ks2018_general",
+      "role": "prediction",
+      "state_code": "20"
+    },
+    {
+      "cycle": 2018,
+      "event_id": "event_ky2018_general",
+      "role": "prediction",
+      "state_code": "21"
+    },
+    {
+      "cycle": 2018,
+      "event_id": "event_la2018_general",
+      "role": "prediction",
+      "state_code": "22"
+    },
+    {
+      "cycle": 2018,
+      "event_id": "event_ma2018_general",
+      "role": "prediction",
+      "state_code": "25"
+    },
+    {
+      "cycle": 2018,
+      "event_id": "event_md2018_general",
+      "role": "prediction",
+      "state_code": "24"
+    },
+    {
+      "cycle": 2018,
+      "event_id": "event_me2018_general",
+      "role": "prediction",
+      "state_code": "23"
+    },
+    {
+      "cycle": 2018,
+      "event_id": "event_mi2018_general",
+      "role": "prediction",
+      "state_code": "26"
+    },
+    {
+      "cycle": 2018,
+      "event_id": "event_mn2018_general",
+      "role": "prediction",
+      "state_code": "27"
+    },
+    {
+      "cycle": 2018,
+      "event_id": "event_mo2018_general",
+      "role": "prediction",
+      "state_code": "29"
+    },
+    {
+      "cycle": 2018,
+      "event_id": "event_ms2018_general",
+      "role": "prediction",
+      "state_code": "28"
+    },
+    {
+      "cycle": 2018,
+      "event_id": "event_mt2018_general",
+      "role": "prediction",
+      "state_code": "30"
+    },
+    {
+      "cycle": 2018,
+      "event_id": "event_nc2018_general",
+      "role": "prediction",
+      "state_code": "37"
+    },
+    {
+      "cycle": 2018,
+      "event_id": "event_nd2018_general",
+      "role": "prediction",
+      "state_code": "38"
+    },
+    {
+      "cycle": 2018,
+      "event_id": "event_ne2018_general",
+      "role": "prediction",
+      "state_code": "31"
+    },
+    {
+      "cycle": 2018,
+      "event_id": "event_nh2018_general",
+      "role": "prediction",
+      "state_code": "33"
+    },
+    {
+      "cycle": 2018,
+      "event_id": "event_nj2018_general",
+      "role": "prediction",
+      "state_code": "34"
+    },
+    {
+      "cycle": 2018,
+      "event_id": "event_nm2018_general",
+      "role": "prediction",
+      "state_code": "35"
+    },
+    {
+      "cycle": 2018,
+      "event_id": "event_nv2018_general",
+      "role": "prediction",
+      "state_code": "32"
+    },
+    {
+      "cycle": 2018,
+      "event_id": "event_ny2018_general",
+      "role": "prediction",
+      "state_code": "36"
+    },
+    {
+      "cycle": 2018,
+      "event_id": "event_oh2018_general",
+      "role": "prediction",
+      "state_code": "39"
+    },
+    {
+      "cycle": 2018,
+      "event_id": "event_ok2018_general",
+      "role": "prediction",
+      "state_code": "40"
+    },
+    {
+      "cycle": 2018,
+      "event_id": "event_or2018_general",
+      "role": "prediction",
+      "state_code": "41"
+    },
+    {
+      "cycle": 2018,
+      "event_id": "event_pa2018_general",
+      "role": "prediction",
+      "state_code": "42"
+    },
+    {
+      "cycle": 2018,
+      "event_id": "event_ri2018_general",
+      "role": "prediction",
+      "state_code": "44"
+    },
+    {
+      "cycle": 2018,
+      "event_id": "event_sc2018_general",
+      "role": "prediction",
+      "state_code": "45"
+    },
+    {
+      "cycle": 2018,
+      "event_id": "event_sd2018_general",
+      "role": "prediction",
+      "state_code": "46"
+    },
+    {
+      "cycle": 2018,
+      "event_id": "event_tn2018_general",
+      "role": "prediction",
+      "state_code": "47"
+    },
+    {
+      "cycle": 2018,
+      "event_id": "event_tx2018_general",
+      "role": "prediction",
+      "state_code": "48"
+    },
+    {
+      "cycle": 2018,
+      "event_id": "event_ut2018_general",
+      "role": "prediction",
+      "state_code": "49"
+    },
+    {
+      "cycle": 2018,
+      "event_id": "event_va2018_general",
+      "role": "prediction",
+      "state_code": "51"
+    },
+    {
+      "cycle": 2018,
+      "event_id": "event_vt2018_general",
+      "role": "prediction",
+      "state_code": "50"
+    },
+    {
+      "cycle": 2018,
+      "event_id": "event_wa2018_general",
+      "role": "prediction",
+      "state_code": "53"
+    },
+    {
+      "cycle": 2018,
+      "event_id": "event_wi2018_general",
+      "role": "prediction",
+      "state_code": "55"
+    },
+    {
+      "cycle": 2018,
+      "event_id": "event_wv2018_general",
+      "role": "prediction",
+      "state_code": "54"
+    },
+    {
+      "cycle": 2018,
+      "event_id": "event_wy2018_general",
+      "role": "prediction",
+      "state_code": "56"
+    },
+    {
+      "cycle": 2018,
+      "event_id": "event_ms2018_runoff",
+      "role": "prediction",
+      "state_code": "28"
+    }
+  ],
+  "external_scoring_not_model_factor": {
+    "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-2018-gpu-preparation-root-v1/arizona-writein-score-review-v1.json",
+    "role": "separate candidate-mark scoring receipt; not included in frozen A2018 problem likelihood",
+    "sha256": "4c6e66225b3c37c2977c0773ba43cc9009b83822035cc6a371ab6409a660f15b"
+  },
+  "factor_families": [
+    {
+      "factor_count": 0,
+      "family": "official_count_vector_poisson",
+      "observation_ids": [],
+      "unit": "candidate/noncandidate ballot-mark count vector; no A2018 rows"
+    },
+    {
+      "factor_count": 0,
+      "family": "participation_report_negative_binomial",
+      "observation_ids": [],
+      "unit": "reported participant count; no A2018 rows"
+    },
+    {
+      "factor_count": 65,
+      "factor_ids": [
+        "survey_likelihood_survey_CES2014_TX_20141001",
+        "survey_likelihood_survey_CES2014_TX_20141005",
+        "survey_likelihood_survey_CES2014_TX_20141006",
+        "survey_likelihood_survey_CES2014_TX_20141007",
+        "survey_likelihood_survey_CES2014_TX_20141008",
+        "survey_likelihood_survey_CES2014_TX_20141009",
+        "survey_likelihood_survey_CES2014_TX_20141010",
+        "survey_likelihood_survey_CES2014_TX_20141011",
+        "survey_likelihood_survey_CES2014_TX_20141012",
+        "survey_likelihood_survey_CES2014_TX_20141013",
+        "survey_likelihood_survey_CES2014_TX_20141014",
+        "survey_likelihood_survey_CES2014_TX_20141015",
+        "survey_likelihood_survey_CES2014_TX_20141016",
+        "survey_likelihood_survey_CES2014_TX_20141017",
+        "survey_likelihood_survey_CES2014_TX_20141018",
+        "survey_likelihood_survey_CES2014_TX_20141019",
+        "survey_likelihood_survey_CES2014_TX_20141020",
+        "survey_likelihood_survey_CES2014_TX_20141021",
+        "survey_likelihood_survey_CES2014_TX_20141022",
+        "survey_likelihood_survey_CES2014_TX_20141023",
+        "survey_likelihood_survey_CES2014_TX_20141024",
+        "survey_likelihood_survey_CES2014_TX_20141025",
+        "survey_likelihood_survey_CES2014_TX_20141026",
+        "survey_likelihood_survey_CES2014_TX_20141027",
+        "survey_likelihood_survey_CES2014_TX_20141028",
+        "survey_likelihood_survey_CES2014_TX_20141029",
+        "survey_likelihood_survey_CES2014_TX_20141030",
+        "survey_likelihood_survey_CES2014_TX_20141031",
+        "survey_likelihood_survey_CES2014_TX_20141101",
+        "survey_likelihood_survey_CES2014_TX_20141102",
+        "survey_likelihood_survey_CES2014_TX_20141103",
+        "survey_likelihood_survey_CES2016_TX_20160928",
+        "survey_likelihood_survey_CES2016_TX_20160929",
+        "survey_likelihood_survey_CES2016_TX_20161004",
+        "survey_likelihood_survey_CES2016_TX_20161005",
+        "survey_likelihood_survey_CES2016_TX_20161006",
+        "survey_likelihood_survey_CES2016_TX_20161007",
+        "survey_likelihood_survey_CES2016_TX_20161008",
+        "survey_likelihood_survey_CES2016_TX_20161009",
+        "survey_likelihood_survey_CES2016_TX_20161010",
+        "survey_likelihood_survey_CES2016_TX_20161011",
+        "survey_likelihood_survey_CES2016_TX_20161012",
+        "survey_likelihood_survey_CES2016_TX_20161013",
+        "survey_likelihood_survey_CES2016_TX_20161014",
+        "survey_likelihood_survey_CES2016_TX_20161015",
+        "survey_likelihood_survey_CES2016_TX_20161016",
+        "survey_likelihood_survey_CES2016_TX_20161017",
+        "survey_likelihood_survey_CES2016_TX_20161018",
+        "survey_likelihood_survey_CES2016_TX_20161019",
+        "survey_likelihood_survey_CES2016_TX_20161020",
+        "survey_likelihood_survey_CES2016_TX_20161021",
+        "survey_likelihood_survey_CES2016_TX_20161022",
+        "survey_likelihood_survey_CES2016_TX_20161023",
+        "survey_likelihood_survey_CES2016_TX_20161024",
+        "survey_likelihood_survey_CES2016_TX_20161025",
+        "survey_likelihood_survey_CES2016_TX_20161026",
+        "survey_likelihood_survey_CES2016_TX_20161027",
+        "survey_likelihood_survey_CES2016_TX_20161028",
+        "survey_likelihood_survey_CES2016_TX_20161029",
+        "survey_likelihood_survey_CES2016_TX_20161030",
+        "survey_likelihood_survey_CES2016_TX_20161101",
+        "survey_likelihood_survey_CES2016_TX_20161102",
+        "survey_likelihood_survey_CES2016_TX_20161103",
+        "survey_likelihood_survey_CES2016_TX_20161105",
+        "survey_likelihood_survey_CES2016_TX_20161106"
+      ],
+      "family": "survey_potential",
+      "record_count": 7968,
+      "source_ids": [
+        "CES2014_historical_training",
+        "CES2016_historical_training"
+      ],
+      "unit": "masked survey record; respondent uniqueness/independence unknown"
+    },
+    {
+      "factor_count": 1,
+      "factor_ids": [
+        "poll_likelihood_A2018_global_poll_block"
+      ],
+      "family": "correlated_poll_mvn",
+      "row_count": 274,
+      "source_ids": [
+        "A2018_polls"
+      ],
+      "unit": "paired-candidate poll logit row within shared covariance block"
+    }
+  ],
+  "ledger_policy": "Aggregate and block identifiers only. Survey row tokens, observed values, masks, poll logits/covariance values, and predictions/draws are not serialized.",
+  "model_prior_families": [
+    {
+      "id": "turnout propensity",
+      "source_lines": "117-components.py:173-190",
+      "summary": "Gaussian intercept/midterm/main and pooled interaction/community/state terms feed a sigmoid cell propensity."
+    },
+    {
+      "id": "event scale",
+      "source_lines": "117-components.py:192-255",
+      "summary": "kappa ~ LogNormal(log(100),0.7); no official count factors means all eventG values take Gamma(kappa,kappa) prior branch."
+    },
+    {
+      "id": "candidate response",
+      "source_lines": "117-components.py:193-206",
+      "summary": "one scalar per contest: sigmoid(Normal(logit(.98),.5) baseline plus pooled race effect with scale .3."
+    },
+    {
+      "id": "candidate choice",
+      "source_lines": "117-components.py:280-383",
+      "summary": "selected IID per-candidate utility and profile softmax; nonmajor candidate effect Normal(-3,1), except sole-other Normal(-.3,1); no role hierarchy selected."
+    },
+    {
+      "id": "noncandidate allocation",
+      "source_lines": "117-components.py:392-425",
+      "summary": "per-contest Dirichlet(ones) over noncandidate categories when width>1."
+    },
+    {
+      "id": "outer parent mixture",
+      "source": "A2018 plan",
+      "summary": "eight fixed parent masses .125; not likelihood-updated by this ledger."
+    }
+  ],
+  "parent_masses": [
+    {
+      "mass": 0.125,
+      "parent_id": "dc1504c1e969713118dd2368e4d67b88fbfb74713d450372cd83de729ff67e27",
+      "parent_identity": "7718f5aea2d1c2d9801ba44e5f1a61a5d3810824a685cecf552eb3348e994e6a"
+    },
+    {
+      "mass": 0.125,
+      "parent_id": "1728d48c1f41fcdfb4181bfff51314887d0b4c1a1b9adc68e4c6d49aa33cae54",
+      "parent_identity": "89dd925cd156de57cca96278c0de66bda33c43c40719d9827497643e6c5c2d14"
+    },
+    {
+      "mass": 0.125,
+      "parent_id": "6f5ffbe25856e90816b4d5be9ea4c4920c510ade3a0b9bf3993b11688a06e571",
+      "parent_identity": "4edbd11b720850b1a273afd63166adef16dad002225873b2d70bbb6ed369efc7"
+    },
+    {
+      "mass": 0.125,
+      "parent_id": "15066535b64a8f0609be09d43344bc2f1231ac97da7baa5d9365ac74bdd5e519",
+      "parent_identity": "4b894ccebd60e0b6033dba8e2aa4b521eaccb7cb4c3b5df6a739aa5335eaa6ad"
+    },
+    {
+      "mass": 0.125,
+      "parent_id": "f999b89fa4f4b0571f55805b13b148d33be73973a8202043fec1b00541600a95",
+      "parent_identity": "135e8bfc330ed9c2ec24f67af64e9a9d9324dec92787abb480be3962fa871970"
+    },
+    {
+      "mass": 0.125,
+      "parent_id": "86eff2b399ce317c65f99461dd70672a6d0fc5517766f0a82ea96331946ac1cc",
+      "parent_identity": "831e426c45aa4eb1ae80b9447af57f1159fbecc220aaf09c7f07a62a9d9e77d3"
+    },
+    {
+      "mass": 0.125,
+      "parent_id": "8b616f0479b14d9ad667a2f66b0afd8922f57f4e5f167cb327960023e6a28761",
+      "parent_identity": "bcbe86b351f92ae50394ebad0a07144664e1e0a1cddc9f87c71510cfce5eaa94"
+    },
+    {
+      "mass": 0.125,
+      "parent_id": "2fc4181e29efdaffbf2e38880909943e54a9f799b59d80a42800f2a7aed19b06",
+      "parent_identity": "48f08b1684af13af8b5419d79ced40d32f196b06ad2ffcdf990a563d45e4bce2"
+    }
+  ],
+  "plan_status": {
+    "forecast_qualified": false,
+    "national_complete": false,
+    "publication_authorized": false,
+    "purpose": "retrospective_proxy",
+    "scope": "actual_research"
+  },
+  "poll_blocks": [
+    {
+      "covariance_shape": [
+        274,
+        274
+      ],
+      "factor_id": "poll_likelihood_A2018_global_poll_block",
+      "poll_block_id": "A2018_global_poll_block",
+      "row_count": 274,
+      "source_id": "A2018_polls"
+    }
+  ],
+  "poll_row_counts_by_event": {
+    "event_az2018_general": 20,
+    "event_ct2018_general": 2,
+    "event_de2018_general": 2,
+    "event_fl2018_general": 32,
+    "event_in2018_general": 13,
+    "event_ma2018_general": 4,
+    "event_md2018_general": 2,
+    "event_mi2018_general": 14,
+    "event_mn2018_general": 16,
+    "event_mo2018_general": 28,
+    "event_ms2018_general": 2,
+    "event_mt2018_general": 9,
+    "event_nd2018_general": 6,
+    "event_ne2018_general": 1,
+    "event_nj2018_general": 10,
+    "event_nm2018_general": 6,
+    "event_nv2018_general": 12,
+    "event_ny2018_general": 4,
+    "event_oh2018_general": 9,
+    "event_pa2018_general": 8,
+    "event_ri2018_general": 2,
+    "event_tn2018_general": 19,
+    "event_tx2018_general": 19,
+    "event_ut2018_general": 1,
+    "event_va2018_general": 5,
+    "event_wa2018_general": 1,
+    "event_wi2018_general": 7,
+    "event_wv2018_general": 20
+  },
+  "predecessor_aggregate_comparison": {
+    "matches_v1_aggregate": true,
+    "predecessor_ledger_sha256": "dfce1d1641606a41b26001d9a9ec6db083e69e5aa67a706d00513c0c4905dbf1",
+    "projection_sha256": "7a04813f79d33d81ad12c7230440131fe26e5ebf89fdfdebb3cfc61b4d9f3eda",
+    "row_level_survey_tokens_compared": "local count/uniqueness only; no values exported"
+  },
+  "problem_admission_id": "789b9dc604e3f5fe5df898d483c66fc91fdd10e50eac37a23fb7235aa42d439b",
+  "schema": "A2018ObservationOwnershipLedgerV1AggregateSuccessor",
+  "selected_composition": {
+    "person_coordinates": "hybrid_v1",
+    "selections": [
+      [
+        "population",
+        "protected_full_parent_exposure_v1"
+      ],
+      [
+        "community",
+        "demographic_profile_drift_v1"
+      ],
+      [
+        "fundamentals",
+        "lean_carryover_context_incumbency_v1"
+      ],
+      [
+        "environment",
+        "separated_lkj2_cycle_student5_race_v1"
+      ],
+      [
+        "participation",
+        "profile_turnout_response_observed_total_gamma_v1"
+      ],
+      [
+        "choice",
+        "candidate_iid_profile_choice_v1"
+      ],
+      [
+        "counts_rules",
+        "single_mark_category_allocation_poisson_v1"
+      ],
+      [
+        "measurement",
+        "joint_CES_ranked_intended_report_F1a_pair_v1"
+      ]
+    ],
+    "standardized": true
+  },
+  "source_file_sha256": {
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/historical-national-2018-assembly-astra-v1/problem.json": "abcaf347e682422303780c5ff12bb3e6179e4b98362686c01338e29df06a385a",
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-2018-gpu-preparation-root-v1/arizona-writein-score-review-v1.json": "4c6e66225b3c37c2977c0773ba43cc9009b83822035cc6a371ab6409a660f15b",
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-2018-gpu-preparation-root-v1/gpu-production-v1/attempt1/source-snapshots/117-components.py": "1574e7831344009f08470b9287b257556a9c031fb7e33e29938a70d51b1a854d",
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-multicycle-execution-astra-v1/A2018/UNADMITTED-plan.json": "3e33169c4e1b0f2811d43d3afbb8d8a8f74132b132db866d65ca119567e27003",
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-multicycle-execution-astra-v1/A2018/context.json": "4d1f9fa71a67e83405d1f769dd4f4f238ada3046f7396947af29cd0a8b77bcf4"
+  },
+  "sources": [
+    {
+      "available_utc": "2018-10-23T00:00:00Z",
+      "role": "covariates",
+      "source_id": "covariates_tx2014_prior",
+      "source_sha256": "0a2a1b9c15a83f33406828e7b7e2c1b24230570ed0639c995c410b2bbe9ec786"
+    },
+    {
+      "available_utc": "2018-10-23T00:00:00Z",
+      "role": "survey",
+      "source_id": "CES2014_historical_training",
+      "source_sha256": "7853cc627203affd3ab6d6aa93038a0166a02a046a16580887c72881e2331c7a"
+    },
+    {
+      "available_utc": "2018-10-23T00:00:00Z",
+      "role": "survey",
+      "source_id": "CES2016_historical_training",
+      "source_sha256": "7853cc627203affd3ab6d6aa93038a0166a02a046a16580887c72881e2331c7a"
+    },
+    {
+      "available_utc": "2018-10-23T00:00:00Z",
+      "role": "covariates",
+      "source_id": "A2018_prior_covariates",
+      "source_sha256": "e693415682877002ca7dfcd81fbe9f0277f1d4de7ff2409cedf56a39aaef1c00"
+    },
+    {
+      "available_utc": "2018-10-23T00:00:00Z",
+      "role": "covariates",
+      "source_id": "A2018_candidate_metadata",
+      "source_sha256": "bbbb600176526284ac58c52429ad028e7fc3322642382c74b7d273a7a8f3e32c"
+    },
+    {
+      "available_utc": "2018-10-23T00:00:00Z",
+      "role": "polls",
+      "source_id": "A2018_polls",
+      "source_sha256": "2eb74bbe0f8286177e2d2a0fb2233d6c5e69809c16f40d24df4c2c3c6cd71af0"
+    }
+  ],
+  "survey_block_counts_by_source": {
+    "CES2014_historical_training": {
+      "blocks": 31,
+      "contest_specific_blocks": 31,
+      "events": [
+        "event_tx2014_general"
+      ],
+      "no_contest_blocks": 0,
+      "records": 3662
+    },
+    "CES2016_historical_training": {
+      "blocks": 34,
+      "contest_specific_blocks": 0,
+      "events": [
+        "event_tx2016_general"
+      ],
+      "no_contest_blocks": 34,
+      "records": 4306
+    }
+  },
+  "survey_blocks": [
+    {
+      "contest_id": "contest_tx2014_regular",
+      "event_id": "event_tx2014_general",
+      "factor_id": "survey_likelihood_survey_CES2014_TX_20141001",
+      "record_count": 58,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2014_historical_training",
+      "survey_block_id": "survey_CES2014_TX_20141001"
+    },
+    {
+      "contest_id": "contest_tx2014_regular",
+      "event_id": "event_tx2014_general",
+      "factor_id": "survey_likelihood_survey_CES2014_TX_20141005",
+      "record_count": 73,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2014_historical_training",
+      "survey_block_id": "survey_CES2014_TX_20141005"
+    },
+    {
+      "contest_id": "contest_tx2014_regular",
+      "event_id": "event_tx2014_general",
+      "factor_id": "survey_likelihood_survey_CES2014_TX_20141006",
+      "record_count": 291,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2014_historical_training",
+      "survey_block_id": "survey_CES2014_TX_20141006"
+    },
+    {
+      "contest_id": "contest_tx2014_regular",
+      "event_id": "event_tx2014_general",
+      "factor_id": "survey_likelihood_survey_CES2014_TX_20141007",
+      "record_count": 426,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2014_historical_training",
+      "survey_block_id": "survey_CES2014_TX_20141007"
+    },
+    {
+      "contest_id": "contest_tx2014_regular",
+      "event_id": "event_tx2014_general",
+      "factor_id": "survey_likelihood_survey_CES2014_TX_20141008",
+      "record_count": 230,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2014_historical_training",
+      "survey_block_id": "survey_CES2014_TX_20141008"
+    },
+    {
+      "contest_id": "contest_tx2014_regular",
+      "event_id": "event_tx2014_general",
+      "factor_id": "survey_likelihood_survey_CES2014_TX_20141009",
+      "record_count": 109,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2014_historical_training",
+      "survey_block_id": "survey_CES2014_TX_20141009"
+    },
+    {
+      "contest_id": "contest_tx2014_regular",
+      "event_id": "event_tx2014_general",
+      "factor_id": "survey_likelihood_survey_CES2014_TX_20141010",
+      "record_count": 86,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2014_historical_training",
+      "survey_block_id": "survey_CES2014_TX_20141010"
+    },
+    {
+      "contest_id": "contest_tx2014_regular",
+      "event_id": "event_tx2014_general",
+      "factor_id": "survey_likelihood_survey_CES2014_TX_20141011",
+      "record_count": 198,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2014_historical_training",
+      "survey_block_id": "survey_CES2014_TX_20141011"
+    },
+    {
+      "contest_id": "contest_tx2014_regular",
+      "event_id": "event_tx2014_general",
+      "factor_id": "survey_likelihood_survey_CES2014_TX_20141012",
+      "record_count": 160,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2014_historical_training",
+      "survey_block_id": "survey_CES2014_TX_20141012"
+    },
+    {
+      "contest_id": "contest_tx2014_regular",
+      "event_id": "event_tx2014_general",
+      "factor_id": "survey_likelihood_survey_CES2014_TX_20141013",
+      "record_count": 62,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2014_historical_training",
+      "survey_block_id": "survey_CES2014_TX_20141013"
+    },
+    {
+      "contest_id": "contest_tx2014_regular",
+      "event_id": "event_tx2014_general",
+      "factor_id": "survey_likelihood_survey_CES2014_TX_20141014",
+      "record_count": 108,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2014_historical_training",
+      "survey_block_id": "survey_CES2014_TX_20141014"
+    },
+    {
+      "contest_id": "contest_tx2014_regular",
+      "event_id": "event_tx2014_general",
+      "factor_id": "survey_likelihood_survey_CES2014_TX_20141015",
+      "record_count": 364,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2014_historical_training",
+      "survey_block_id": "survey_CES2014_TX_20141015"
+    },
+    {
+      "contest_id": "contest_tx2014_regular",
+      "event_id": "event_tx2014_general",
+      "factor_id": "survey_likelihood_survey_CES2014_TX_20141016",
+      "record_count": 313,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2014_historical_training",
+      "survey_block_id": "survey_CES2014_TX_20141016"
+    },
+    {
+      "contest_id": "contest_tx2014_regular",
+      "event_id": "event_tx2014_general",
+      "factor_id": "survey_likelihood_survey_CES2014_TX_20141017",
+      "record_count": 189,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2014_historical_training",
+      "survey_block_id": "survey_CES2014_TX_20141017"
+    },
+    {
+      "contest_id": "contest_tx2014_regular",
+      "event_id": "event_tx2014_general",
+      "factor_id": "survey_likelihood_survey_CES2014_TX_20141018",
+      "record_count": 90,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2014_historical_training",
+      "survey_block_id": "survey_CES2014_TX_20141018"
+    },
+    {
+      "contest_id": "contest_tx2014_regular",
+      "event_id": "event_tx2014_general",
+      "factor_id": "survey_likelihood_survey_CES2014_TX_20141019",
+      "record_count": 102,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2014_historical_training",
+      "survey_block_id": "survey_CES2014_TX_20141019"
+    },
+    {
+      "contest_id": "contest_tx2014_regular",
+      "event_id": "event_tx2014_general",
+      "factor_id": "survey_likelihood_survey_CES2014_TX_20141020",
+      "record_count": 183,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2014_historical_training",
+      "survey_block_id": "survey_CES2014_TX_20141020"
+    },
+    {
+      "contest_id": "contest_tx2014_regular",
+      "event_id": "event_tx2014_general",
+      "factor_id": "survey_likelihood_survey_CES2014_TX_20141021",
+      "record_count": 114,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2014_historical_training",
+      "survey_block_id": "survey_CES2014_TX_20141021"
+    },
+    {
+      "contest_id": "contest_tx2014_regular",
+      "event_id": "event_tx2014_general",
+      "factor_id": "survey_likelihood_survey_CES2014_TX_20141022",
+      "record_count": 123,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2014_historical_training",
+      "survey_block_id": "survey_CES2014_TX_20141022"
+    },
+    {
+      "contest_id": "contest_tx2014_regular",
+      "event_id": "event_tx2014_general",
+      "factor_id": "survey_likelihood_survey_CES2014_TX_20141023",
+      "record_count": 98,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2014_historical_training",
+      "survey_block_id": "survey_CES2014_TX_20141023"
+    },
+    {
+      "contest_id": "contest_tx2014_regular",
+      "event_id": "event_tx2014_general",
+      "factor_id": "survey_likelihood_survey_CES2014_TX_20141024",
+      "record_count": 163,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2014_historical_training",
+      "survey_block_id": "survey_CES2014_TX_20141024"
+    },
+    {
+      "contest_id": "contest_tx2014_regular",
+      "event_id": "event_tx2014_general",
+      "factor_id": "survey_likelihood_survey_CES2014_TX_20141025",
+      "record_count": 22,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2014_historical_training",
+      "survey_block_id": "survey_CES2014_TX_20141025"
+    },
+    {
+      "contest_id": "contest_tx2014_regular",
+      "event_id": "event_tx2014_general",
+      "factor_id": "survey_likelihood_survey_CES2014_TX_20141026",
+      "record_count": 24,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2014_historical_training",
+      "survey_block_id": "survey_CES2014_TX_20141026"
+    },
+    {
+      "contest_id": "contest_tx2014_regular",
+      "event_id": "event_tx2014_general",
+      "factor_id": "survey_likelihood_survey_CES2014_TX_20141027",
+      "record_count": 16,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2014_historical_training",
+      "survey_block_id": "survey_CES2014_TX_20141027"
+    },
+    {
+      "contest_id": "contest_tx2014_regular",
+      "event_id": "event_tx2014_general",
+      "factor_id": "survey_likelihood_survey_CES2014_TX_20141028",
+      "record_count": 16,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2014_historical_training",
+      "survey_block_id": "survey_CES2014_TX_20141028"
+    },
+    {
+      "contest_id": "contest_tx2014_regular",
+      "event_id": "event_tx2014_general",
+      "factor_id": "survey_likelihood_survey_CES2014_TX_20141029",
+      "record_count": 6,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2014_historical_training",
+      "survey_block_id": "survey_CES2014_TX_20141029"
+    },
+    {
+      "contest_id": "contest_tx2014_regular",
+      "event_id": "event_tx2014_general",
+      "factor_id": "survey_likelihood_survey_CES2014_TX_20141030",
+      "record_count": 5,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2014_historical_training",
+      "survey_block_id": "survey_CES2014_TX_20141030"
+    },
+    {
+      "contest_id": "contest_tx2014_regular",
+      "event_id": "event_tx2014_general",
+      "factor_id": "survey_likelihood_survey_CES2014_TX_20141031",
+      "record_count": 5,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2014_historical_training",
+      "survey_block_id": "survey_CES2014_TX_20141031"
+    },
+    {
+      "contest_id": "contest_tx2014_regular",
+      "event_id": "event_tx2014_general",
+      "factor_id": "survey_likelihood_survey_CES2014_TX_20141101",
+      "record_count": 6,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2014_historical_training",
+      "survey_block_id": "survey_CES2014_TX_20141101"
+    },
+    {
+      "contest_id": "contest_tx2014_regular",
+      "event_id": "event_tx2014_general",
+      "factor_id": "survey_likelihood_survey_CES2014_TX_20141102",
+      "record_count": 4,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2014_historical_training",
+      "survey_block_id": "survey_CES2014_TX_20141102"
+    },
+    {
+      "contest_id": "contest_tx2014_regular",
+      "event_id": "event_tx2014_general",
+      "factor_id": "survey_likelihood_survey_CES2014_TX_20141103",
+      "record_count": 18,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2014_historical_training",
+      "survey_block_id": "survey_CES2014_TX_20141103"
+    },
+    {
+      "contest_id": null,
+      "event_id": "event_tx2016_general",
+      "factor_id": "survey_likelihood_survey_CES2016_TX_20160928",
+      "record_count": 41,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2016_historical_training",
+      "survey_block_id": "survey_CES2016_TX_20160928"
+    },
+    {
+      "contest_id": null,
+      "event_id": "event_tx2016_general",
+      "factor_id": "survey_likelihood_survey_CES2016_TX_20160929",
+      "record_count": 12,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2016_historical_training",
+      "survey_block_id": "survey_CES2016_TX_20160929"
+    },
+    {
+      "contest_id": null,
+      "event_id": "event_tx2016_general",
+      "factor_id": "survey_likelihood_survey_CES2016_TX_20161004",
+      "record_count": 37,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2016_historical_training",
+      "survey_block_id": "survey_CES2016_TX_20161004"
+    },
+    {
+      "contest_id": null,
+      "event_id": "event_tx2016_general",
+      "factor_id": "survey_likelihood_survey_CES2016_TX_20161005",
+      "record_count": 512,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2016_historical_training",
+      "survey_block_id": "survey_CES2016_TX_20161005"
+    },
+    {
+      "contest_id": null,
+      "event_id": "event_tx2016_general",
+      "factor_id": "survey_likelihood_survey_CES2016_TX_20161006",
+      "record_count": 269,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2016_historical_training",
+      "survey_block_id": "survey_CES2016_TX_20161006"
+    },
+    {
+      "contest_id": null,
+      "event_id": "event_tx2016_general",
+      "factor_id": "survey_likelihood_survey_CES2016_TX_20161007",
+      "record_count": 182,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2016_historical_training",
+      "survey_block_id": "survey_CES2016_TX_20161007"
+    },
+    {
+      "contest_id": null,
+      "event_id": "event_tx2016_general",
+      "factor_id": "survey_likelihood_survey_CES2016_TX_20161008",
+      "record_count": 119,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2016_historical_training",
+      "survey_block_id": "survey_CES2016_TX_20161008"
+    },
+    {
+      "contest_id": null,
+      "event_id": "event_tx2016_general",
+      "factor_id": "survey_likelihood_survey_CES2016_TX_20161009",
+      "record_count": 548,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2016_historical_training",
+      "survey_block_id": "survey_CES2016_TX_20161009"
+    },
+    {
+      "contest_id": null,
+      "event_id": "event_tx2016_general",
+      "factor_id": "survey_likelihood_survey_CES2016_TX_20161010",
+      "record_count": 563,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2016_historical_training",
+      "survey_block_id": "survey_CES2016_TX_20161010"
+    },
+    {
+      "contest_id": null,
+      "event_id": "event_tx2016_general",
+      "factor_id": "survey_likelihood_survey_CES2016_TX_20161011",
+      "record_count": 379,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2016_historical_training",
+      "survey_block_id": "survey_CES2016_TX_20161011"
+    },
+    {
+      "contest_id": null,
+      "event_id": "event_tx2016_general",
+      "factor_id": "survey_likelihood_survey_CES2016_TX_20161012",
+      "record_count": 250,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2016_historical_training",
+      "survey_block_id": "survey_CES2016_TX_20161012"
+    },
+    {
+      "contest_id": null,
+      "event_id": "event_tx2016_general",
+      "factor_id": "survey_likelihood_survey_CES2016_TX_20161013",
+      "record_count": 204,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2016_historical_training",
+      "survey_block_id": "survey_CES2016_TX_20161013"
+    },
+    {
+      "contest_id": null,
+      "event_id": "event_tx2016_general",
+      "factor_id": "survey_likelihood_survey_CES2016_TX_20161014",
+      "record_count": 114,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2016_historical_training",
+      "survey_block_id": "survey_CES2016_TX_20161014"
+    },
+    {
+      "contest_id": null,
+      "event_id": "event_tx2016_general",
+      "factor_id": "survey_likelihood_survey_CES2016_TX_20161015",
+      "record_count": 199,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2016_historical_training",
+      "survey_block_id": "survey_CES2016_TX_20161015"
+    },
+    {
+      "contest_id": null,
+      "event_id": "event_tx2016_general",
+      "factor_id": "survey_likelihood_survey_CES2016_TX_20161016",
+      "record_count": 138,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2016_historical_training",
+      "survey_block_id": "survey_CES2016_TX_20161016"
+    },
+    {
+      "contest_id": null,
+      "event_id": "event_tx2016_general",
+      "factor_id": "survey_likelihood_survey_CES2016_TX_20161017",
+      "record_count": 109,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2016_historical_training",
+      "survey_block_id": "survey_CES2016_TX_20161017"
+    },
+    {
+      "contest_id": null,
+      "event_id": "event_tx2016_general",
+      "factor_id": "survey_likelihood_survey_CES2016_TX_20161018",
+      "record_count": 86,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2016_historical_training",
+      "survey_block_id": "survey_CES2016_TX_20161018"
+    },
+    {
+      "contest_id": null,
+      "event_id": "event_tx2016_general",
+      "factor_id": "survey_likelihood_survey_CES2016_TX_20161019",
+      "record_count": 68,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2016_historical_training",
+      "survey_block_id": "survey_CES2016_TX_20161019"
+    },
+    {
+      "contest_id": null,
+      "event_id": "event_tx2016_general",
+      "factor_id": "survey_likelihood_survey_CES2016_TX_20161020",
+      "record_count": 94,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2016_historical_training",
+      "survey_block_id": "survey_CES2016_TX_20161020"
+    },
+    {
+      "contest_id": null,
+      "event_id": "event_tx2016_general",
+      "factor_id": "survey_likelihood_survey_CES2016_TX_20161021",
+      "record_count": 47,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2016_historical_training",
+      "survey_block_id": "survey_CES2016_TX_20161021"
+    },
+    {
+      "contest_id": null,
+      "event_id": "event_tx2016_general",
+      "factor_id": "survey_likelihood_survey_CES2016_TX_20161022",
+      "record_count": 83,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2016_historical_training",
+      "survey_block_id": "survey_CES2016_TX_20161022"
+    },
+    {
+      "contest_id": null,
+      "event_id": "event_tx2016_general",
+      "factor_id": "survey_likelihood_survey_CES2016_TX_20161023",
+      "record_count": 26,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2016_historical_training",
+      "survey_block_id": "survey_CES2016_TX_20161023"
+    },
+    {
+      "contest_id": null,
+      "event_id": "event_tx2016_general",
+      "factor_id": "survey_likelihood_survey_CES2016_TX_20161024",
+      "record_count": 100,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2016_historical_training",
+      "survey_block_id": "survey_CES2016_TX_20161024"
+    },
+    {
+      "contest_id": null,
+      "event_id": "event_tx2016_general",
+      "factor_id": "survey_likelihood_survey_CES2016_TX_20161025",
+      "record_count": 49,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2016_historical_training",
+      "survey_block_id": "survey_CES2016_TX_20161025"
+    },
+    {
+      "contest_id": null,
+      "event_id": "event_tx2016_general",
+      "factor_id": "survey_likelihood_survey_CES2016_TX_20161026",
+      "record_count": 6,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2016_historical_training",
+      "survey_block_id": "survey_CES2016_TX_20161026"
+    },
+    {
+      "contest_id": null,
+      "event_id": "event_tx2016_general",
+      "factor_id": "survey_likelihood_survey_CES2016_TX_20161027",
+      "record_count": 7,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2016_historical_training",
+      "survey_block_id": "survey_CES2016_TX_20161027"
+    },
+    {
+      "contest_id": null,
+      "event_id": "event_tx2016_general",
+      "factor_id": "survey_likelihood_survey_CES2016_TX_20161028",
+      "record_count": 35,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2016_historical_training",
+      "survey_block_id": "survey_CES2016_TX_20161028"
+    },
+    {
+      "contest_id": null,
+      "event_id": "event_tx2016_general",
+      "factor_id": "survey_likelihood_survey_CES2016_TX_20161029",
+      "record_count": 6,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2016_historical_training",
+      "survey_block_id": "survey_CES2016_TX_20161029"
+    },
+    {
+      "contest_id": null,
+      "event_id": "event_tx2016_general",
+      "factor_id": "survey_likelihood_survey_CES2016_TX_20161030",
+      "record_count": 13,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2016_historical_training",
+      "survey_block_id": "survey_CES2016_TX_20161030"
+    },
+    {
+      "contest_id": null,
+      "event_id": "event_tx2016_general",
+      "factor_id": "survey_likelihood_survey_CES2016_TX_20161101",
+      "record_count": 1,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2016_historical_training",
+      "survey_block_id": "survey_CES2016_TX_20161101"
+    },
+    {
+      "contest_id": null,
+      "event_id": "event_tx2016_general",
+      "factor_id": "survey_likelihood_survey_CES2016_TX_20161102",
+      "record_count": 4,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2016_historical_training",
+      "survey_block_id": "survey_CES2016_TX_20161102"
+    },
+    {
+      "contest_id": null,
+      "event_id": "event_tx2016_general",
+      "factor_id": "survey_likelihood_survey_CES2016_TX_20161103",
+      "record_count": 2,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2016_historical_training",
+      "survey_block_id": "survey_CES2016_TX_20161103"
+    },
+    {
+      "contest_id": null,
+      "event_id": "event_tx2016_general",
+      "factor_id": "survey_likelihood_survey_CES2016_TX_20161105",
+      "record_count": 1,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2016_historical_training",
+      "survey_block_id": "survey_CES2016_TX_20161105"
+    },
+    {
+      "contest_id": null,
+      "event_id": "event_tx2016_general",
+      "factor_id": "survey_likelihood_survey_CES2016_TX_20161106",
+      "record_count": 2,
+      "record_id_unique_within_source": true,
+      "source_id": "CES2016_historical_training",
+      "survey_block_id": "survey_CES2016_TX_20161106"
+    }
+  ],
+  "target": {
+    "candidate_count": 10,
+    "candidate_ids": [
+      "candidate_az2018_regular_12409",
+      "candidate_az2018_regular_12410",
+      "candidate_az2018_regular_13146",
+      "candidate_az2018_regular_18667",
+      "candidate_az2018_regular_FEC_S8AZ00353",
+      "candidate_az2018_regular_18668",
+      "candidate_az2018_regular_18665",
+      "candidate_az2018_regular_18669",
+      "candidate_az2018_regular_18666",
+      "candidate_az2018_regular_18664"
+    ],
+    "candidate_record_fields": [
+      "bloc",
+      "id",
+      "incumbent"
+    ],
+    "contest_id": "contest_az2018_regular",
+    "cycle": 2018,
+    "event_id": "event_az2018_general",
+    "noncandidate_category_ids": [
+      "nonresponse_contest_az2018_regular",
+      "blank_contest_az2018_regular",
+      "invalid_contest_az2018_regular"
+    ],
+    "official_count_observation_count": 0,
+    "participation_report_count": 0,
+    "poll_observation_ids": [
+      "poll_A2018_06cb308e24510e7a8107",
+      "poll_A2018_204919c0310b3c425d9b",
+      "poll_A2018_3c1e29af337c82ddb8e9",
+      "poll_A2018_40677af5141458db4d44",
+      "poll_A2018_40d807823e980aec5415",
+      "poll_A2018_522f21d6c54e9de1dbc5",
+      "poll_A2018_5e3d7aecd30210e5e22b",
+      "poll_A2018_69ff3064dae481b4d285",
+      "poll_A2018_6d7d70c258e7a7e601c2",
+      "poll_A2018_75f7a31bcf3a881c2b6d",
+      "poll_A2018_7ec404682c91b3e16aa2",
+      "poll_A2018_81674b1e05b789ba97fd",
+      "poll_A2018_888887686645e2078407",
+      "poll_A2018_8f08350ce5fb4b3961c9",
+      "poll_A2018_913e449e546b2776c65e",
+      "poll_A2018_a16018b47c9a3e276ada",
+      "poll_A2018_ac78efd2a37a34d97e3b",
+      "poll_A2018_d203ab1ccdd59135a932",
+      "poll_A2018_d540ddd57e4f7db3c4c4",
+      "poll_A2018_d8af27a32e99d88906d4"
+    ],
+    "poll_row_count": 20,
+    "state_code": "04",
+    "survey_block_count": 0
+  },
+  "unknowns_and_overlap": [
+    "No official count vectors or participation-report records are present.",
+    "Survey record tokens remain local and are not exported; uniqueness is source-scoped only, not proof of unique respondents/independence/cross-source disjointness.",
+    "Poll IDs identify rows, not respondent/sample identity; pollster, dates, population, mode and n absent in problem schema.",
+    "Poll rows are in one covariance block; no independence claim.",
+    "Source role and available time are supplied metadata, not verified vintage or independent lineage.",
+    "Candidate metadata source exists, while frozen target candidate fields are id/bloc/incumbent, not ballot_role."
+  ]
+}
