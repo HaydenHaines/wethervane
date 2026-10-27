@@ -1,0 +1,71 @@
+{
+  "schema": "OwnedParentEvaluatorPhaseV1",
+  "status": "completed_calls_not_normalized_conditionals",
+  "phase": "fixed-B",
+  "contract_sha256": "fb72f99c71689102a361ba1dd504610e4e70bcb2f46732044b43417ce43e3d47",
+  "anchor_index": 1,
+  "calls": [
+    {
+      "parent_index": 1,
+      "point_index": 0,
+      "file": "call-0-1-0.json",
+      "pin": {
+        "sha256": "177d7e85581e6847dd344f396ff5971fd8f6042c02d3e3f418dbf2ffa96b06d4",
+        "bytes": 41892
+      },
+      "point_sha256": "56b568a75b48d091def30238636ad11f60c6af1d0c145ebd8fe8a03582537361",
+      "parent_identity": "c0481866c67d6ef2e689fde5348b8ce26e93fffaedeb41fc018eda1204ce08b3"
+    },
+    {
+      "parent_index": 1,
+      "point_index": 1,
+      "file": "call-0-1-1.json",
+      "pin": {
+        "sha256": "d4dcf4f6e81df6ab569d8d07b7ccc1084428eb4f13b50955376529a8b04e6b62",
+        "bytes": 41887
+      },
+      "point_sha256": "0e70519a970eb4135286a9dc8bbae587136667b6cc46a9a8a8f9461c5d1558c7",
+      "parent_identity": "c0481866c67d6ef2e689fde5348b8ce26e93fffaedeb41fc018eda1204ce08b3"
+    },
+    {
+      "parent_index": 1,
+      "point_index": 2,
+      "file": "call-0-1-2.json",
+      "pin": {
+        "sha256": "7ddeec32972d4a91b17c32e95fb54902c6781ff99707aba900c4cab3109d30ff",
+        "bytes": 41886
+      },
+      "point_sha256": "0a9693e97bc0012479e236e6b578c89fc40767dd91a6a7c967212c278500cec0",
+      "parent_identity": "c0481866c67d6ef2e689fde5348b8ce26e93fffaedeb41fc018eda1204ce08b3"
+    }
+  ],
+  "artifacts": {
+    "entry.json": {
+      "sha256": "dabbd1f0f6d66c155bf9230e7fca93830c0a19cee6e922723ea458c8358a4f14",
+      "bytes": 481
+    },
+    "kernel.json": {
+      "sha256": "035eed272745c60e84ee6232f70f724ff09f50def2b0638ec07dcc4256252dcc",
+      "bytes": 17876
+    },
+    "model-envelope.json": {
+      "sha256": "d3538ce80bdb4df8620db56acaf4a2c3d091b4088aca4bbb2534b3a80cfc882b",
+      "bytes": 332047
+    },
+    "call-index.json": {
+      "sha256": "11090ba3bd92c34c6720c9633258d8951e18bc750f0809aafdaceb6a491f90ba",
+      "bytes": 1167
+    },
+    "finite-differences.json": {
+      "sha256": "eccaff009b2a9a8d6324f95deeaebd62ca2cd53106220d0a2494be5abe2a9f5c",
+      "bytes": 1271
+    }
+  },
+  "warnings": [
+    "Loop fusion failed because the resulting node would exceed the kernel argument limit."
+  ],
+  "seconds": 93.34476382099092,
+  "all_other_fixed_parent_baselines": "missing_except_saved_parent0_and_separate_B_phase",
+  "sampling": false,
+  "conditional_normalization": "unverified"
+}

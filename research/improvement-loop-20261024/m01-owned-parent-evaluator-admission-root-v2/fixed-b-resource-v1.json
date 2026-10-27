@@ -1,0 +1,46 @@
+{
+  "schema": "OwnedParentEvaluatorFreshResourcesV1",
+  "contract_sha256": "fb72f99c71689102a361ba1dd504610e4e70bcb2f46732044b43417ce43e3d47",
+  "independent_review_sha256": "717870514ba75799a5b2f24eca60bd1d6127858a52c91b45eb4abd1b649fcab7",
+  "checked_unix": 1793061776.1418693,
+  "observer": "root, one-CPU bounded fixed-B phase; fresh user-resource guard check",
+  "phase": "fixed-B",
+  "cpu": 2,
+  "protected_jobs": [
+    {
+      "pid": 2022911,
+      "start_time_ticks": 119707441
+    },
+    {
+      "pid": 2023285,
+      "start_time_ticks": 119711617
+    },
+    {
+      "pid": 2023269,
+      "start_time_ticks": 119711518
+    },
+    {
+      "pid": 1981196,
+      "start_time_ticks": 119063939
+    },
+    {
+      "pid": 1938621,
+      "start_time_ticks": 118522834
+    }
+  ],
+  "minimum_mem_available_bytes": 51056423731,
+  "minimum_disk_free_bytes": 2147483648,
+  "exclusive_actual_probe_slot": true,
+  "resource_conflicts": [],
+  "overlap_assessment": "no_conflict_for_this_one_cpu_job",
+  "assessment": {
+    "observed_available_bytes": 54964457472,
+    "house_reserved_bytes": 30655329075,
+    "national2018_one_worker_full_cap_bytes": 12884901888,
+    "owner_safety_bytes": 1073741824,
+    "own_peak_rss_watchdog_bytes": 4294967296,
+    "additional_system_headroom_bytes": 2147483648,
+    "assumption": "2018 active worker full cap conservatively reserved in addition to current RSS; House reserve follows owner queue; fresh prelaunch minimum includes both, watchdog peak and 2GiB additional headroom. 2022 preflight waits for 2018 analysis; CPU2 is distinct physical core from active House CPU3 and national2018 CPU6. Fixed-B phase only; no sampler, GPU or 2022 job. Both queues retain their own dynamic launch guards.",
+    "observed_local_disk_available_bytes": 230654443520
+  }
+}
