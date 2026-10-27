@@ -1,0 +1,30 @@
+{
+  "cleanup_observation": {
+    "fixture_identity_observations": 123,
+    "path": "/tmp/queue_ancestor_luna_33u7ct6h/research/improvement-loop-20261024/queue-finite-ancestor-sol-v1/cleanup-verification.json",
+    "scope": "disposable scratch copy; regression runner asserts each owned fixture identity is no longer alive",
+    "sha256": "6afcd89183f78108c5460bcb87d5a6cef8b97208bc6f87612e7e0699dea31d8f"
+  },
+  "commands": [
+    "PYTHONDONTWRITEBYTECODE=1 nice -n 15 python3 -B run_tests.py",
+    "PYTHONDONTWRITEBYTECODE=1 nice -n 15 python3 -B -m unittest -v test_ancestor"
+  ],
+  "no_queue_jobs_or_owner_mutation": true,
+  "results": [
+    {
+      "result": "passed",
+      "seconds": 78.024,
+      "suite": "original successor regression in exact scratch source layout",
+      "tests": 73
+    },
+    {
+      "cases": "1,464 exhaustive product cases + 2,000 seeded random collections; each compared against pairwise Path.is_relative_to oracle",
+      "result": "passed",
+      "seconds": 0.497,
+      "suite": "new overlap differential/property tests",
+      "tests": 5
+    }
+  ],
+  "schema": "QueueAncestorIndependentTestRunV1",
+  "scratch_root": "/tmp/queue_ancestor_luna_33u7ct6h/research/improvement-loop-20261024/queue-finite-ancestor-sol-v1"
+}

@@ -1,0 +1,21 @@
+{
+  "checks": {
+    "equivalence": "For each current path, the algorithm rejects exact prior duplicates, any previously seen ancestor, and any previously seen descendant by checking path membership in accumulated strict ancestors. This is symmetric under input order and equivalent to pairwise Path.is_relative_to in both directions.",
+    "path_cases": "The new 5-test suite passed: roots, duplicates, either order, /a vs /a-b vs /a/b, relative paths, Path-normalized double slash/dot, explicit .. lexical cases, and symlink alias. Canonical `ex.absolute` rejection for symlink aliases and noncanonical paths is unchanged.",
+    "preserved_work": "Evidence pins, 23 local packet file hashes, and inherited Python source comparisons verified. The 73-case actual tiny fixture regression passed in a copied version-relative scratch layout. The packet\u2019s initial flat-layout failure remains preserved and classified as harness layout failure.",
+    "runtime_diff": "Exactly one added helper (overlapping_outputs) and replacement of the nested pairwise loop in ownership_intents; other inherited Python source files byte-equal to queue-finite-owned-sol-v1.",
+    "validation_order_precision": "In ownership_intents, each spec is passed through _validate(spec, False), which uses lexical_absolute (absolute and normpath spelling), then the component comparator runs. ownership_audit invokes live validate(spec) later, after ownership_intents returns. Thus the source docs claim that resolved-path validation runs before this helper is inaccurate. The comparator is still equivalent to the prior lexical Path overlap check; existing live validation remains in place."
+  },
+  "no_owner_or_queue_jobs": true,
+  "observed_at_utc": "2026-10-27T02:55:34.204460+00:00",
+  "performance_limit": "The implementation keeps an ancestor set and seen set per call, reducing pair count. Set/path construction cost depends on component depth; the packet appropriately disclaims strict linear byte/time bounds. Existing `_validate(spec, True)` hashing all historical input and executable pins remains, as do locks, per-operation ownership scans and filesystem costs. No throughput benchmark or large-history measurement was run.",
+  "schema": "QueueFiniteAncestorIndependentReviewV1",
+  "scope_limits": [
+    "No actual performance benchmark, production store, owner job, or model job was run.",
+    "The 73 tests use tiny invented executor fixtures; they establish regression behavior, not large-scale throughput or power-loss safety.",
+    "Path equivalence review is for the current POSIX Python pathlib implementation and current accepted spec validation; no new filesystem normalization or symlink semantics were added."
+  ],
+  "source_pin_file": "source-pins.json",
+  "test_record": "test-reproduction.json",
+  "verdict": "The one-function substitution preserves the prior lexical overlap predicate for tested and reasoned Path cases. No runtime semantic blocker found. The source-only performance claim is qualitative; it removes pair-count comparisons but not repeated full-history reads/hashes or lock costs. A documentation correction is warranted: live resolved-path validation occurs after the ownership_intents comparator, not before it."
+}

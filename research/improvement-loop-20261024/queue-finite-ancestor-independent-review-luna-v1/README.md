@@ -1,0 +1,9 @@
+# Independent review: component-aware ownership overlap check
+
+The frozen runtime change adds `overlapping_outputs` and replaces only the pairwise ownership-intent overlap loop. I verified the source diff and compared all other inherited Python files to the frozen predecessor. The five differential/property tests pass in a disposable source-layout copy, and the 73-test tiny executor regression passes in the same scratch copy. The runner’s cleanup JSON was written only in `/tmp`; it recorded 123 fixture identity observations and asserts those identities are not alive after cleanup.
+
+The algorithm matches the old predicate: `Path(a).is_relative_to(Path(b)) or Path(b).is_relative_to(Path(a))`. For each path it detects a prior exact path, a path already recorded among prior strict ancestors, or a prior path among the new path’s strict parents. This covers either insertion order, roots, duplicates, and component boundaries; the exhaustive and seeded tests also cover relative and lexical normalization cases and compare against the old pairwise oracle. Symlink canonical rejection in the actual execution-spec validator remains unchanged.
+
+One documentation statement is inaccurate. `ownership_intents()` runs `_validate(spec, False)` before the helper, which enforces `lexical_absolute`; it does not resolve symlinks. `ownership_audit()` calls live `validate(spec)` later, after the comparator returns. This does not create a runtime mismatch with the predecessor, because the predecessor loop also used lexical `Path` overlap and live validation remains. Revise the claim that resolved validation precedes this helper.
+
+The helper reduces pairwise intent comparisons, but does not eliminate component-depth costs or the repeated live hashing/locking/history reads in the audit path. No benchmark or large-history performance claim is supported. See `review.json`, `source-pins.json` and `test-reproduction.json` for the exact evidence.
