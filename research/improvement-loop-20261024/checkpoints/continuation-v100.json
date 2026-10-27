@@ -1,0 +1,26 @@
+{
+  "schema": "ContinuousImprovementCheckpointV100",
+  "recordedAtUtc": "2026-10-27T01:00:45.466759+00:00",
+  "status": "active; prepared verifier v1 rejected for actual use pending acknowledgment successor",
+  "references": {
+    "previous": {
+      "path": "research/improvement-loop-20261024/checkpoints/continuation-v99.json",
+      "sha256": "45f435d271acf8734331ca80a27b5ec51ca3bd7cbcebb8a7d6566d9a812fa9de",
+      "bytes": 3167
+    },
+    "verifier_independent_review": {
+      "path": "research/improvement-loop-20261024/m01-remaining-fixed-parent-review-luna-v1/review.json",
+      "sha256": "5706bbb0d9f8752a75b9f38d00b2d7ab03e32b9e8022ce495886904fc78467e1",
+      "bytes": 6299
+    },
+    "counterexample": {
+      "path": "research/improvement-loop-20261024/m01-remaining-fixed-parent-review-luna-v1/reproduction.json",
+      "sha256": "a12afdb8019dd15e80215373da2befe9fcec076944bf192b0962172eed8d036d",
+      "bytes": 169
+    }
+  },
+  "finding": "Independent Luna matched all16 frozen file hashes and reproduced40 fixture tests, plus wrong exposure rejection. A separate tiny counterexample demonstrates selection.completed() accepts a success-shaped marker with empty comparison_artifacts and caller-supplied raw SHA without requiring a retained successful tool-return record. fixed-selected consults this helper before expensive launch: later comparison should block false final success, but the graph can already have been launched. This is a cooperative workflow protocol flaw, not a same-user cryptographic-security claim. No actual v1 phase was launched or admitted.",
+  "next": "Sol is preparing a separately versioned successor with exact phase-specific comparison artifact schema/pins, retained caller-return record and negative regression, followed by independent review. Do not silently modify frozen v1 or launch any v1 actual phase. Actual parent2\u20137 baselines, gradients, normalization and posterior remain incomplete.",
+  "frontend": "deploy/siteground317ff150f012871aec6c71ae680d7e76eec5b4db pushed after render tests/typecheck/production build. GitHub workflow40428923282 remained in progress at npm run test:e2e; public site still served old metadata at last check, so SiteGround deployment is unconfirmed. House corrected forecast remains held pending Alaska roster reconciliation.",
+  "storage": "User coordinated runner-sol/test-temporary-v1/v2/v3 historical Senate polling-refresh dirs; current/queued frontend references and live direct process checks found none. Coordinator handles restorable compaction. Great Lakes checkout is retired with restore-great-lakes-worktree.py and preserved branch/artifacts. No workspace restoration or deletion by this session."
+}

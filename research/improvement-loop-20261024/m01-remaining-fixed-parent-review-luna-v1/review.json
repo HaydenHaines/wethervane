@@ -1,0 +1,42 @@
+{
+  "schema": "RemainingFixedParentVerifierIndependentReviewLunaV1",
+  "reviewed_packet": "research/improvement-loop-20261024/m01-remaining-fixed-parent-sol-v1",
+  "reviewed_packet_evidence_sha256": "f4fff2c9315d48cfa73183d3e4787f3db02a4dee735d5f4ec638e13693c569cf",
+  "status": "substantial_checks_pass_one_acknowledgment_gate_gap",
+  "methods": {
+    "source_pins": "Independently recomputed all 16 files enumerated in evidence.json; every digest and byte count matched.",
+    "invented_tests": "Copied frozen packet to a fresh /tmp directory and ran its bounded test_tiny.py with 30s timeout, nice 15 and one-thread BLAS/Numba environment; output was {\"status\":\"passed\",\"tests\":40}. No actual graph was imported or evaluated.",
+    "independent_counterexamples": "Ran reproduce.py on a separate temporary copy. Full selected record identity rejects a changed exposure. The completed() helper accepted a self-authored success-shaped controller marker when passed its computed raw digest, despite no retained tool-return acknowledgment and an empty comparison_artifacts map."
+  },
+  "passed_findings": [
+    "Single selected integer ordinal 2–7 and one phase are bound through selection, resource receipt, worker authorization and result rows; fixed masses remain 0.125 and population_cut_v1 target identity checks bind complete record, problem, composition, parent ID and upstream identity.",
+    "Dynamic-witness stage explicitly rebuilds first-parent dynamic graph, evaluates selected whole parent at exact three saved points, validates those outputs against that parent's saved dynamic calls, and produces newly owned plus/minus finite-difference calls. This closes the predecessor's missing derivative witness for ordinals 2–7; it does not reuse parent1's derivatives.",
+    "Fixed-selected stage independently builds the selected native parent graph, requires the selected witness acknowledgment, compares exact common points, all factor arrays, poll/logp, rates, physical outputs and declared finite differences. It does not normalize conditionals or infer other parents.",
+    "Complete 662-coordinate points and digests, source/contract pins, exact parent exposure/source record, FD variable/coordinate/step/point arithmetic and ordered call rosters are checked in the comparison path. Mutating the complete exposure changed the parent identity and failed validation in my isolated test.",
+    "Normal process failure leaves an exclusive attempt that refuses a new run; completed replay is read-only. Controller tears down and reaps its owned process group on handled exception/interruption; tiny tests exercise receipt-write and interruption failures. Runtime hard limits and sampled watchdogs are explicit, but remain unmeasured on an actual graph."
+  ],
+  "material_gap": {
+    "location": "selection.py: completed(); launch.py: fixed-selected witness precondition",
+    "reproduction": "reproduce.py creates only result.json, terminal.json and a self-authored controller-success.json with correct-looking fields and empty comparison_artifacts. It computes sha256 locally and calls completed(out, digest, 2, 'dynamic-witness'). The helper accepts it. No retained write_stdin_return object, stdout acknowledgment or caller-return pin is presented.",
+    "effect": "For fixed-selected, launch.py uses completed() as the pre-launch witness gate. Thus a success-shaped but unacknowledged/incomplete marker with the supplied digest can satisfy the helper and let the expensive fixed graph launch before the later comparison gate reruns compare_witness. The later gate should prevent a false final comparison receipt, but it is too late to enforce the claimed pre-launch acknowledgment requirement.",
+    "comparison_artifact_specific": "completed() iterates whatever comparison_artifacts entries the receipt contains but never requires the exact phase-specific set. Empty mapping passes. Actual frozen workflow writes named execution and phase-comparison artifacts, so requiring those exact schemas and pins would reject the reproduced marker.",
+    "boundary": "This is a local workflow/protocol validation gap, not proof against malicious same-user filesystem/code control. A raw SHA proves only bytes. The frozen V1 prose says the caller must retain successful tool output, but this new-stage precondition does not accept or verify that retained return; unlike predecessor authentication, the requirement is currently out of band."
+  },
+  "required_successor_checks": [
+    "Bind an externally retained successful caller-return JSON (or an equivalent independently reviewed acknowledgment object) to phase, selected ordinal, exact controller-success digest and expected controller stdout; require it before fixed-selected can reserve/launch.",
+    "Require an exact comparison_artifacts roster and validate the expected artifact paths/schemas for each phase; reject empty, missing, extra or parent-aliased entries.",
+    "Add tiny negative cases for self-authored marker + raw digest, empty/missing comparison artifact map and mismatched caller-return contents; retain the existing predecessor acknowledgment tests."
+  ],
+  "limitations": [
+    "No actual graph, compiler, model, fit or forecast ran; no actual resource feasibility or real-stage cleanup is demonstrated.",
+    "The 40 tiny tests use invented/synthetic receipt and numerical fixtures; they test orchestration, not scientific numerical truth.",
+    "Even a corrected retained-return gate is cooperating local workflow provenance, not cryptographic same-user attestation or protection from arbitrary coherent source/filesystem rewriting.",
+    "Pointwise equality and FD witnesses do not establish conditional normalizers, sampler convergence, posterior validity, all-parent inference or predictive qualification."
+  ],
+  "reproduction_artifacts": {
+    "script": "research/improvement-loop-20261024/m01-remaining-fixed-parent-review-luna-v1/reproduce.py",
+    "result": "research/improvement-loop-20261024/m01-remaining-fixed-parent-review-luna-v1/reproduction.json",
+    "frozen_source_hashes": "research/improvement-loop-20261024/m01-remaining-fixed-parent-review-luna-v1/source-hashes.txt",
+    "test_run": "Fresh packet copy under /tmp/luna-six-parent-y1YJfI; 40 tests passed; source packet unchanged."
+  }
+}
