@@ -1,0 +1,52 @@
+{
+  "schema": "OwnedParentEvaluatorIndependentReviewV1",
+  "decision": "allow_one_bounded_attempt",
+  "allowed_phases": [
+    "fixed-B"
+  ],
+  "contract_sha256": "fb72f99c71689102a361ba1dd504610e4e70bcb2f46732044b43417ce43e3d47",
+  "packet_pins": {
+    "common.py": "9d0d056b10f605b7aa75d2dd58b8c4c1994ab0f5c393fca67185b0a7e663cdb8",
+    "child.py": "71e7eabc12a8cf565ef181ff49851945b32932abfdbac68b1c63b6636ef0333c",
+    "launch.py": "0a26370ff14828bf1743859872e53caa32ac79e4a7e5dd9edfd99b25e74f2267",
+    "compare.py": "fc545fb6946f7cc48eeb3f0efbdcf1ae2c9b3008e2c49fd86e63a4e8ffa69e3a",
+    "test_tiny.py": "f690497ff7ce98790c452218631b97ec168a9fbbd107b16fb2443bc2aabe467f",
+    "contract.json": "fb72f99c71689102a361ba1dd504610e4e70bcb2f46732044b43417ce43e3d47",
+    "entry.py": "77fb380f8acc1480c2e545b1233278f1461b93ae8e4e0d4febfe31880d568f81",
+    "evaluator.py": "20d6497a26577e196aa77a8842c48954e7ed33aa283394422b51385597cdb1a0",
+    "comparison_gate.py": "28d7e75dc25effc8db215cc70f4ef6fb0742c937ac493a40a5b8193193efad15"
+  },
+  "phase_basis": {
+    "dynamic_phase": "caller-returned success, source-bound result, terminal and comparison artifacts were reconciled",
+    "dynamic_caller_return_sha256": "41ef63d1b610b52527064aad61f87307eb319e6fa99be75db238e614fb9b71ff",
+    "dynamic_controller_success_sha256": "649f1e4c94d40872318c53449e417e8990f596f61610389fe2b96f1a9d6aa30f",
+    "dynamic_result_sha256": "fe45a567da17f5bc71be8c6519ffde05b1cf6fd06c212163109a91e642c8074c",
+    "dynamic_terminal_sha256": "32976ffa65667e6ae30f8010ffb68f33178a3f892e63b9c99a7195eb0d5c6a3a",
+    "dynamic_comparison_execution_sha256": "e1f8b9f3b14263f4ac07db932f03da52b96e1c2848e46f5981acdbbbebcee74a",
+    "dynamic_baseline_sha256": "83fba2520bc229f8a94aeede63ccc3dc3cfe54ac7c0b9d018b0d1d0a1632a571",
+    "dynamic_ordered_call_count": 27,
+    "anchor_index": 1,
+    "anchor_selection": "fixed original parent-bank ordinal1 (second record), declared before any new parent density values; no result-selected anchor",
+    "anchor_parent_identity": "c0481866c67d6ef2e689fde5348b8ce26e93fffaedeb41fc018eda1204ce08b3",
+    "pointwise_comparison_scope": "fixed-B only: exact ordered calls (1,0),(1,1),(1,2), same complete 662-coordinate point and parent record as the prior dynamic call, compare native B graph against dynamic exposure-reuse graph across logp, poll logp, all factor arrays, rates, physical outputs and selected finite differences",
+    "remaining_fixed_native_baselines_after_success": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "protected_masses": [
+      0.125,
+      0.125,
+      0.125,
+      0.125,
+      0.125,
+      0.125,
+      0.125,
+      0.125
+    ]
+  },
+  "scope_note": "Source and caller-ack review supports only one separate fixed-B pointwise feasibility phase, and only after root supplies a fresh nonconflicting fixed-B resource receipt under the same frozen contract. This object is not a resource receipt and does not authorize posterior sampling, normalized conditionals, evidence calculation, reweighting of any protected 0.125 parent mass, forecasts, or the six missing native-parent baselines."
+}
