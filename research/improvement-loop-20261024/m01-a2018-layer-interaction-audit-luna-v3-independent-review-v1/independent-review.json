@@ -1,0 +1,89 @@
+{
+  "schema": "A2018LayerInteractionAuditV3IndependentReviewLunaV1",
+  "source_packet": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-a2018-layer-interaction-audit-luna-v3",
+  "frozen_pins": {
+    "check.py": "a0812ddd5fabb99bf3b5d358764691b63248b461e0e8f9688eccd6a1e222f7c1",
+    "test_check.py": "c2cbeab126254a9830e05d472806e21fc839f38dee271f702765b36c3b28bb40",
+    "result.json": "b13cbcf34a1251ccc4c120688f58d7bb2a2f264cd32f612d0bc6c7d0fdca48b6",
+    "source-pins.json": "e778d0506bde3732b63e71d01d794119824e871f75e6ec83dcd9a37e7ae357e0",
+    "README.md": "6f81b7a0d7114049bb067c768e6044c819e7b98f1a8a60709e6dec50d5199ae6",
+    "legacy-result-preserved.json": "c5795829d7ded8d616baf9213d9091c9942318c4f0f8bc02f0100c1bebeba0db"
+  },
+  "pin_validation": {
+    "external_count": 12,
+    "all_external_pins_match": true,
+    "mismatches": [],
+    "packet_self_pin_entries": 7,
+    "all_self_pins_match": true,
+    "selfcheck": {
+      "README.md": {
+        "sha256": "6f81b7a0d7114049bb067c768e6044c819e7b98f1a8a60709e6dec50d5199ae6",
+        "bytes": 2197,
+        "matches": true
+      },
+      "check.py": {
+        "sha256": "a0812ddd5fabb99bf3b5d358764691b63248b461e0e8f9688eccd6a1e222f7c1",
+        "bytes": 18087,
+        "matches": true
+      },
+      "legacy-result-preserved.json": {
+        "sha256": "c5795829d7ded8d616baf9213d9091c9942318c4f0f8bc02f0100c1bebeba0db",
+        "bytes": 3198,
+        "matches": true
+      },
+      "result.json": {
+        "sha256": "b13cbcf34a1251ccc4c120688f58d7bb2a2f264cd32f612d0bc6c7d0fdca48b6",
+        "bytes": 9609,
+        "matches": true
+      },
+      "test_check.py": {
+        "sha256": "c2cbeab126254a9830e05d472806e21fc839f38dee271f702765b36c3b28bb40",
+        "bytes": 6484,
+        "matches": true
+      },
+      "tests-normal.log": {
+        "sha256": "1f6ca6c8bae693890c62644978fd1cf54ed7524dfdf17497107535cd844a5b44",
+        "bytes": 1477,
+        "matches": true
+      },
+      "tests-optimized.log": {
+        "sha256": "41ec138ac6d579d90371c28f7c2b287794a12b8d45f089760376dfc2cda71091",
+        "bytes": 1477,
+        "matches": true
+      }
+    }
+  },
+  "tests": {
+    "normal": "9 passed",
+    "optimized": "9 passed",
+    "normal_log_sha256": "e01f139cc4e39f60ff60a634cc91f9e3fc977ffb0a3623a4c317674e2b05df05",
+    "optimized_log_sha256": "d4d90fa554f1aef1ff2cf10bd4065f4664479fafa67c505cfa3bed95dd958c51",
+    "result_reproduced_from_original_path_byte_identical": true,
+    "result_sha256": "b13cbcf34a1251ccc4c120688f58d7bb2a2f264cd32f612d0bc6c7d0fdca48b6"
+  },
+  "independent_numeric_challenge": {
+    "prior_v2_exact_representable_1e16_counterexample_now_invariant": true,
+    "two_hundred_1e16_offset_cases_max_abs_error": 0.0,
+    "two_hundred_1e20_offset_cases_max_abs_error": 0.0,
+    "all_shifted_utilities_round_trip_exactly_to_base": true,
+    "grid_seed": 20261027,
+    "probe_output": "independent-gauge-grid.json",
+    "probe_script": "scratch/tree/m01-a2018-layer-interaction-audit-luna-v3/independent-gauge-grid.py"
+  },
+  "data_privacy": {
+    "result_contains_survey_poll_row_or_respondent_identifiers": false,
+    "raw_context_problem_or_posterior_arrays_read": false,
+    "model_import_build_fit_or_owner_job": false
+  },
+  "science_scope": {
+    "algebra_matches_source_expression_for_ordinary_pair_logit": true,
+    "common_positive_scalar_response_and_eventG_cancel_in_this_ratio_only": true,
+    "parent_masses_remain_protected_eighths": true,
+    "invented_weights_or_states_are_fit_posterior_draws": false,
+    "native_state_attainability_proven": false,
+    "compiled_graph_or_forecast_qualification": false,
+    "closure_derived_from_raw_rows": false,
+    "assessment": "V3 fixes the v2 numerical cancellation failure for exact representable gauge offsets and keeps its aggregate/source-scope caveats. No additional blocker found within the synthetic diagnostic scope."
+  },
+  "no_source_changes": true
+}

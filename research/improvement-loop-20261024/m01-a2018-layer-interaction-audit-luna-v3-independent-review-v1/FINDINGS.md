@@ -1,0 +1,11 @@
+# Independent review of A2018 layer-interaction audit v3
+
+I verified all 12 external input pins and the packet's self-pinned files against the frozen bytes. In a fresh scratch tree preserving v3's required sibling v2 layout, I reran `check.py` and all nine tests under normal Python and `python -O`; both suites passed. A check executed from the frozen packet's original directory reproduced `result.json` byte-for-byte. The source tamper-after-hash fixture is run by a real optimized child interpreter. No owner/source files were changed; no model, graph, raw context/problem rows, or posterior arrays were read.
+
+V3 corrects the v2 log-normalizer cancellation by subtracting each profile maximum before computing its log normalizer and by common-centering the D/R aggregate log terms before their final subtraction. The v2 counterexample now passes, including the exact representable `1e16` shift. I also ran 400 deterministic gauge-invariance cases (200 at `1e16`, 200 at `1e20`) with utility differences checked to survive the offsets exactly; maximum absolute difference was zero at both scales. The independent probe source and output are retained in this packet.
+
+The aggregate equation matches the selected source shape for an ordinary paired D/R poll: weighted profile-level category rates are summed, and a common positive scalar response and event-G multiply both sides and cancel in their log ratio. This does not imply cancellation in other likelihoods. The two profile weights and all utility fixtures remain invented, not fitted participation or choice draws. The result correctly preserves eight parent masses of 0.125 and disclaims native attainability, compiled graph, forecast qualification, calibration, and layer ranking.
+
+The source closure checks continue to verify pinned plan/ledger counts and flags plus source-expression anchors. They do not recompute raw observation closure or authenticate respondent/sample lineage. The output remains aggregate-only and contains no poll/survey row identifiers or respondent tokens. I found no additional blocker in v3's stated research-only scope.
+
+The v2 numeric defect is preserved separately at `m01-a2018-layer-interaction-audit-luna-independent-review-v1`; v2 was not edited. This report and the v3 reproduction artifacts are separate.

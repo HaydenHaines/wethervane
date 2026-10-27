@@ -1,0 +1,120 @@
+{
+  "schema": "A2018LayerInteractionAuditV2IndependentReviewLunaV1",
+  "reviewed_source": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-a2018-layer-interaction-audit-luna-v2",
+  "frozen_pins": {
+    "check.py": "21b77fb57d9ead011be9a12c5b4df6d4a27b3985925624e8762d7f54fbcc87b3",
+    "test_check.py": "854165e363f2a339ebee146874faa7590149284b7fd8f9ef15522654bb920ea0",
+    "result.json": "da8b2f49c9eb4ddcb1bf00448fb9d85e3751a159cfa75009af45a60c980e22e8",
+    "source-pins.json": "5bf3fc920e5044fc6263bd44582d6380ea802e968386f16a6fbc754ab81b7d76",
+    "README.md": "3a7d86db3a7fea664b50952c1f87134bca2741973725a6d3c99c423550b806a0",
+    "legacy-result-preserved.json": "c5795829d7ded8d616baf9213d9091c9942318c4f0f8bc02f0100c1bebeba0db"
+  },
+  "pins": {
+    "external_source_entries": 8,
+    "all_external_entries_match": true,
+    "external_mismatches": [],
+    "this_packet_self_pin_matches": true,
+    "selfcheck": {
+      "README.md": {
+        "sha256": "3a7d86db3a7fea664b50952c1f87134bca2741973725a6d3c99c423550b806a0",
+        "bytes": 2133,
+        "matches": true
+      },
+      "check.py": {
+        "sha256": "21b77fb57d9ead011be9a12c5b4df6d4a27b3985925624e8762d7f54fbcc87b3",
+        "bytes": 16305,
+        "matches": true
+      },
+      "legacy-result-preserved.json": {
+        "sha256": "c5795829d7ded8d616baf9213d9091c9942318c4f0f8bc02f0100c1bebeba0db",
+        "bytes": 3198,
+        "matches": true
+      },
+      "result.json": {
+        "sha256": "da8b2f49c9eb4ddcb1bf00448fb9d85e3751a159cfa75009af45a60c980e22e8",
+        "bytes": 8688,
+        "matches": true
+      },
+      "test_check.py": {
+        "sha256": "854165e363f2a339ebee146874faa7590149284b7fd8f9ef15522654bb920ea0",
+        "bytes": 5443,
+        "matches": true
+      },
+      "tests-normal.log": {
+        "sha256": "94094cf08b141d7d58a7d12f0d5637a9aaa0b15a62331eaad2ab9ae54bed7556",
+        "bytes": 1324,
+        "matches": true
+      },
+      "tests-optimized.log": {
+        "sha256": "49d2fb1739276849497b0b8f52ac41b2dcda8cd1e3db4d7d3db33d232c6606d5",
+        "bytes": 1324,
+        "matches": true
+      }
+    }
+  },
+  "reproduction": {
+    "scratch_copy": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-a2018-layer-interaction-audit-luna-independent-review-v1/scratch",
+    "normal_tests": "8 passed",
+    "optimized_tests": "8 passed",
+    "test_normal_log_sha256": "eca0a50c80236159dd5bdf56952993b5958cbce139a9c8d17772487c3af243e1",
+    "test_optimized_log_sha256": "e6a6094b433fbd9668f5fddfbdd6e3edfd3cac011c5a4839f8ab2f6708bb7025",
+    "exact_frozen_result_reproduced_from_original_location": true,
+    "result_sha256": "da8b2f49c9eb4ddcb1bf00448fb9d85e3751a159cfa75009af45a60c980e22e8"
+  },
+  "source_closure_review": {
+    "hardcoded_read_pinned_inputs_are_guarded_with_explicit_ValueError_not_assert": true,
+    "tamper_after_hash_rejected_under_real_O_child": true,
+    "exact_plan_ledger_provider_source_and_prior_review_bytes_pinned": true,
+    "closure_is_rederived_from_raw_observations": false,
+    "actual_graph_or_posterior_read": false,
+    "result_contains_row_or_respondent_tokens": false,
+    "limitations": "Aggregate counts and precomputed closure flags are checked under pinned bytes; source fragments are presence-checked. This is not raw-observation lineage or compiled-graph validation."
+  },
+  "algebraic_fixtures": {
+    "ordinary_pair_logit_expression": "log(sum_p w_p * softmax_p(D)) - log(sum_p w_p * softmax_p(R))",
+    "independent_direct_probability_check": "The two published fixed fixtures agree with direct per-profile softmax/log aggregation to floating precision.",
+    "scalar_response_and_event_scale_cancellation": "Valid for this ordinary D/R ratio when both are common strictly positive multiplicative scalars; does not imply cancellation in counts, ranked, runoff or survey factors.",
+    "relative_profile_weights": "Invented (1,1) vs (9,1) weights; not fitted participation draws or A2018 profile masses."
+  },
+  "material_numeric_counterexample": {
+    "weights": [
+      1.0,
+      9.0
+    ],
+    "base_pairs": [
+      [
+        4.0,
+        -4.0
+      ],
+      [
+        -4.0,
+        4.0
+      ]
+    ],
+    "base_other": 0.0,
+    "common_offset": 1e+16,
+    "shifted_pairs": [
+      [
+        1.0000000000000004e+16,
+        9999999999999996.0
+      ],
+      [
+        9999999999999996.0,
+        1.0000000000000004e+16
+      ]
+    ],
+    "shifted_other": 1e+16,
+    "v2_base": -2.1942472351374973,
+    "v2_shifted": -1.9975697137614865,
+    "v2_shift_error": 0.1966775213760108,
+    "independent_centered_base": -2.194247235137497,
+    "independent_centered_shifted": -2.194247235137497,
+    "reference_invariance_error": 0.0
+  },
+  "manifest_hygiene": {
+    "source_pins_lists_reference_paths_not_consumed_by_check": "The manifest includes the earlier luna-v1 result and prior review source-pins, but check.py uses a byte-identical local legacy-result copy and does not consume the prior review manifest. Hardcoded inputs actually read are still pinned.",
+    "impact": "Minor manifest clarity gap; not a reason for numerical counterexample."
+  },
+  "verdict": "V2 is fail-closed for its pinned aggregate inputs and its fixed moderate fixtures reproduce, with no raw row leakage. Its general numerical-stability claim is refuted: exact common utility gauge shifts alter an invariant logit by about 0.197. Do not rely on the synthetic sensitivity numbers outside tested ranges; preserve v2 and require a separately frozen centered-arithmetic successor with this regression.",
+  "no_owner_changes_or_model_jobs": true
+}
