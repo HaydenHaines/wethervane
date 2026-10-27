@@ -1,0 +1,53 @@
+{
+  "schema": "QueueFiniteRunIndependentReviewLunaV1",
+  "status": "finite_intake_lifecycle_passes_bounded_tests_but_output_namespace_overlap_remains",
+  "reviewed_packet": "../queue-finite-run-sol-v1",
+  "scope": "source review and bounded tests in temporary fixture stores; no model or owner work; no changes to frozen queue packet",
+  "pins": {
+    "queue-finite-run/experiment_queue.py": "35cf7914e0ced4110670c86191d6f74d5114b76b465971b44d3416af89c89235",
+    "queue-finite-run/finite_intake.py": "868165ac0b2e89cdba3c47d36d0b25fcf26f1001626d6e30813c3c11e5ac187f",
+    "queue-finite-run/evidence.json": "5e093481bb0b5368499378371575cdd65806e670a25afdd3f8d679b3b2c2f22d",
+    "queue-finite-run/README.md": "340e1b906ea7802710d700b0d8836891b9a012ddacf3c6bf7bec6f7ec7408641",
+    "queue-finite-run/final-tests.log": "0a5787d1b93355e9baf89ce38a5349ada78e7aa06c4da864434716bc7599ea9d",
+    "queue-finite-run/receipt_projection.py": "9895a5c991d81e5ab4d5a8d22ada312adbd9622b318a467f73d1fc76dafe3f47",
+    "queue-finite-run/execution.py": "ce02f4c4b9be397b299c2219092fdd355db1695798af07c4974bc63cb6bbbc93",
+    "queue-finite-run/ledger.py": "d65cea890ecf9b456f8b9625d173f15dac1e7fa94bb618d3407e26f368ee220a",
+    "queue-finite-run/run_receipts.py": "a7e78b822207109e0257adce9abb6493c53a0d93158177131ade76c0d874e73e",
+    "queue-finite-run/test_finite.py": "7ef3c31e9ed48f45aeffa82894172b0a7bd5a0836ca0b167af62bdbdcc424d76",
+    "queue-finite-run/test_experiment_queue.py": "390b6ede9328b6166c1aa78e5e40fa7267ce1f47dbc85ef672e4125c12022c1a",
+    "original-queue-v3/experiment_queue.py": "dcf01b7de0dfaed641fa40e2c5c5d2d584f73c78ac691dac2ec42b3f3f2a2b96",
+    "reproduce_nested_output_claims.py": "9d759c40392f500eb0315c8c2b0464105e06584334c3fff1d3044b0e9a3fa9dd",
+    "nested-output-v1.log": "c87344174b1533018eb49b397f6e3a2ffd7fa4513ae08fb8df95f231fe905bf4",
+    "nested-output-v3.log": "95fd7693a1a0936215cc23b5e94b02518ac0637a2522c8258769e8c142cd9348",
+    "reproduce_nested_admitting_claim.py": "1c47c741de3165210b3fa090c3eadbde82405e371c98ac189dbc7a398654ec9e",
+    "nested-admitting-v1.log": "01487de57d1435a59a6c27e71b742d54a6e988c12f6e1330221d526fd8b70cf6",
+    "reproduce_file_directory_collision.py": "a310c48d429ea10019e21731c98e740e9150301d0048f8e11f5c756bf72b98c6",
+    "collision-v1.log": "e110aba5bc0197776ff8eea437402a84e27fe485fb1e3c64dd59d5b1612c56bd",
+    "collision-v3.log": "9cee4c6dcd47b2a0636b38ec25344204c7a3212734b5caf6e1d983e5d17da211"
+  },
+  "bounded_suite": {
+    "command": "sh run_tests.sh",
+    "result": "20 tests passed in 9.854 seconds (12 finite-run integration tests and eight selected unchanged V3 executor tests)",
+    "scope": "temporary fixture stores and small executor processes only; original full V3 suite not run"
+  },
+  "confirmed_integration_properties": [
+    "The queue wrappers hold the original dispatcher.lock while lifecycle operations run. SQLite BEGIN IMMEDIATE transactions are nested under that same lock; _enqueue_locked and _tick_locked avoid acquiring a separate nested flock.",
+    "ADMITTING intent commits before scaffold writes. Exact plan retry repairs the same intent, including after seal; pending intents block tick/finalize and new conflicting exact claims. Tests cover crashes before/after intent commit and across scaffold, plan, receipt and accepted-state positions.",
+    "SEALED hashes the full intent admission set under the lock. A caller either commits its intent before seal or is rejected after seal. Sealed pending intent cannot launch until exact repair returns it to ACCEPTED.",
+    "Finalization runs original full _tick_locked reconciliation under the dispatcher lock and requires accepted intake, complete observation, no pending/live/unknown/quarantined reservations, and per-job terminal outcomes. Tests cover dependency blocking, result/release repair, stale dependency, unknown exit/recovery and corrupt release behavior.",
+    "Final bytes and FINALIZED state commit in SQLite before nonce-based exclusive file projection. Same-process publication exceptions and process exits across final commit/publish/fsync points recover idempotently in tests. Explicit-empty and terminal-with-failures are distinct; qualification remains unassessed."
+  ],
+  "material_gap": {
+    "name": "output-directory ownership only rejects exact path equality, not ancestor/descendant overlap",
+    "evidence": "Both the finite-run integration and original V3 admit separate plans with output roots /tmp/.../shared-output/parent and /tmp/.../shared-output/parent/child while neither exists and with no declared dependency. A stronger admission-only fixture uses /shared-output and /shared-output/data.txt: the existing fixture producer writes data.txt as a file under its output root while the second job requires the same pathname to be an output directory. Both plans are accepted. V1 ADMITTING-vs-ADMITTING checks also allow nested paths after a real intent_after_commit crash.",
+    "source_cause": "validate_plan checks set equality of output_directory strings within a plan. _enqueue_locked checks exact output_directory equality against accepted and partial plans. finite_intake.enqueue checks exact string equality between pending ADMITTING plans. executor.prepare's global output claim is a hash of the exact resolved output path, so the inherited V3 execution layer also misses path ancestry.",
+    "classification": "This is inherited from original V3, not introduced by the finite-run lifecycle protocol. V1 preserves the same path namespace assumption. It weakens the claim that attempts have disjoint owner-output areas: unrelated jobs can claim overlapping trees, including a path that one fixture writes as a file and another plans to create as a directory. No overlapping jobs were launched in this review.",
+    "smallest_correct_approach": "Treat canonical output paths as namespace claims and reject pairwise component-prefix overlap for all jobs in one plan and across accepted and ADMITTING plans under dispatcher.lock. If arbitrary direct executor.prepare callers are in scope, enforce the same reservation in the executor's global output-claim transaction/registry; a queue-only check cannot protect bypass callers. Alternatively define and authenticate a finer disjoint declared-file ownership policy, but do not imply subtree isolation from exact-string uniqueness. Add same-plan, accepted cross-plan, and crash-left-ADMITTING ancestor/file-vs-directory tests."
+  },
+  "limits": [
+    "No path-overlap worker execution was performed; the reproduced defect is admission behavior and source-supported collision risk, not a measured job outcome.",
+    "The implementation is a new isolated store schema; it does not migrate or modify the owner V3 store. The inherited original suite is only selectively exercised.",
+    "The database and files remain owner-writable under cooperating local flock assumptions; no malicious coherent-rewrite, power-loss, NFS, exhaustive schedule or scale proof is established.",
+    "The finite queue controls workflow/receipt status only; final qualification is unassessed and no scientific model or thousands-cycle claim follows."
+  ]
+}
