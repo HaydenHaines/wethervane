@@ -1,0 +1,28 @@
+{
+  "schema": "QueueNonemptyLifecycleIndependentReviewEvidenceLunaV1",
+  "reviewed_source_pins": {
+    "dispatch.py": "5bee078d4e287e4d9c772b3a748130d1a37e5899a0a04a1baa80a1a0551e19b4",
+    "consumer.py": "e09b780b0e8769a836ba44d81259094416eeda589fd3d10572d19e85d6cce111",
+    "test_lifecycle.py": "0c5f4bca62c00370f55643229322ac2b1c9f94e57c33f9e05b2ceeb319078add",
+    "source-delta.json": "2c792515f2316775d5eedaa9106bdd45e48658d7c83d6a6a3153dc0bd49f3cd1",
+    "source-pins.json": "c6f9af7a919e00a6fe72189248944fc1f7c20f892d64feaa8a7186968cb6632b",
+    "FINDINGS.md": "5788af76e0903abc73e40f8fc79a6742ba100130c1e9ff7bfa5c6269b334ca8c",
+    "evidence.json": "e052023fc6669dfb0f9336fd5151c13bbafbd2b9e0109aa1acb4e65f19f1130b"
+  },
+  "independent_artifacts": {
+    "review.json": "aacb37bfb7b29a256b8b4d5ed92435d6b77d57b1fb11b94acc0e458a79259822",
+    "review.py": "c826c9c7c85fa03192d0874a05baa64a41b7e95d7f8c65d660cb11eafcf84d5a",
+    "source-review-result.json": "2878ba93cd5290bb70f9a866cad61286d9e79c3f353551d9dd435ed9c26724ac",
+    "replay_tests.py": "1430d7f7014ed125f360104f47940ecd9442673e8fa6c69e21891028b786db53",
+    "tests.log": "a21267d6735c370cd4c65a8f9a341753c32c524e5f3e48f6533d95e7d712429f"
+  },
+  "tests": {
+    "fresh_temporary_copy": true,
+    "passed": 10,
+    "failed": 0,
+    "elapsed_seconds": 5.555,
+    "no_model_or_owner_jobs": true
+  },
+  "semantic_check": "Empty completion flags false; unknown execution nonterminal; failures/blocks terminal but not accepted; new admission reopens state; legacy completion fields rejected.",
+  "consumer_counterexample": "Consumer accepts a fully self-consistent fabricated success object. It is a contract fixture, not an origin-authentication boundary."
+}

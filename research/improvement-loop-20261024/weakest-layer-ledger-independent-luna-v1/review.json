@@ -1,0 +1,52 @@
+{
+  "schema": "WeakestLayerLedgerIndependentReviewLunaV1",
+  "verdict": "ledger_claim_supported_no_weakest_incremental_layer_identified",
+  "reviewed_ledger": {
+    "README_sha256": "57e60849a25df9d1deb059917ec713762e03bda4a95090ae849214bfbcf9b4d7",
+    "evidence_sha256": "469f710b177b084f24420877ae4ee5370bb32351f71ae4b331053cda11fd6c2f",
+    "declared_selection_verdict": "weakest_incremental_joint_forecast_layer_not_identified"
+  },
+  "input_pin_audit": {
+    "declared_hash_entries": 20,
+    "current_hash_matches": 20,
+    "mismatches": [],
+    "owner_queue_snapshot_values_preserved": true,
+    "snapshot_limit": "queue action/status values describe their timestamp; not evidence of current completion or permission to duplicate owner tasks"
+  },
+  "recomputed_light_arithmetic": {
+    "Texas2018_named_vote_relative_error": 0.3132006108745819793,
+    "Nevada2022_named_vote_relative_error": 0.6456754056079926895,
+    "equal_two_race_count_pair_CRPS": 0.011151047262722258,
+    "equal_two_race_FP_CRPS": 0.015475257549513316,
+    "equal_two_race_F_CRPS": 0.0437000443836437285,
+    "arithmetic_scope": "Recomputed only from published scalar summary fields with Decimal; no predictive banks or numerical diagnostics read/rescored."
+  },
+  "selection_logic_review": {
+    "observed_numerical_failures_as_empirical_layer_ranking": false,
+    "national2018_failure_interpreted_as_numerical_qualification_problem": true,
+    "count_vs_F_FP_information_matched": false,
+    "F_FP_algorithm_only_effect_identified": false,
+    "named_candidate_vote_error_treated_as_participation": false,
+    "all_eight_role_layer_winner_claimed": false,
+    "negative_decisions_preserved": {
+      "M02": {
+        "decision": "retain",
+        "preserve_challenger_and_predictions": true,
+        "public_default_changed": false,
+        "hash": "de6d022c5b7948e8421b011fa6f4aca09f103e8a3dc1a046474de27f58757584"
+      },
+      "G01": {
+        "decision": "retain_F0",
+        "preserve_all_results": true,
+        "public_default_changed": false,
+        "hash": "35ecb5db8b52409b39991dd2891d1592d6acea926299a4c1c25a73eb3363086c"
+      }
+    }
+  },
+  "limitations": [
+    "The two-cycle results are exposed retrospective development evidence, not a prospective holdout.",
+    "F/FP arms have different information sets; cycle-averaged CRPS is descriptive and does not identify an algorithm-only or layer effect.",
+    "Numerical diagnostics and predictive arrays were not recomputed; the review authenticates pinned scalar reports and recalculates only the stated simple arithmetic.",
+    "No scientific/model/owner work or registry/default mutation occurred."
+  ]
+}

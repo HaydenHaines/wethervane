@@ -1,0 +1,49 @@
+{
+  "schema": "QueueNonemptyLifecycleIndependentReviewLunaV1",
+  "verdict": "nonempty_completion_contract_closes_empty_vacuity_ambiguity_under_trusted_snapshot_contract",
+  "reviewed_frozen_sources": {
+    "dispatch.py": "5bee078d4e287e4d9c772b3a748130d1a37e5899a0a04a1baa80a1a0551e19b4",
+    "consumer.py": "e09b780b0e8769a836ba44d81259094416eeda589fd3d10572d19e85d6cce111",
+    "test_lifecycle.py": "0c5f4bca62c00370f55643229322ac2b1c9f94e57c33f9e05b2ceeb319078add",
+    "source-delta.json": "2c792515f2316775d5eedaa9106bdd45e48658d7c83d6a6a3153dc0bd49f3cd1",
+    "source-pins.json": "c6f9af7a919e00a6fe72189248944fc1f7c20f892d64feaa8a7186968cb6632b",
+    "FINDINGS.md": "5788af76e0903abc73e40f8fc79a6742ba100130c1e9ff7bfa5c6269b334ca8c",
+    "evidence.json": "e052023fc6669dfb0f9336fd5151c13bbafbd2b9e0109aa1acb4e65f19f1130b"
+  },
+  "source_delta_review": {
+    "current_source_pin_count": 11,
+    "source_pin_mismatches": [],
+    "actual_changed_dispatch_functions": ["completion", "initialize", "locked", "opened"],
+    "unchanged_function_ast_matches": 16,
+    "unrecorded_ast_changes": []
+  },
+  "fresh_copy_test_replay": {
+    "runner_sha256": "1430d7f7014ed125f360104f47940ecd9442673e8fa6c69e21891028b786db53",
+    "command": "python3 -B replay_tests.py",
+    "tests_passed": 10,
+    "tests_failed": 0,
+    "elapsed_seconds": 5.555,
+    "exit_code": 0,
+    "test_log_sha256": "a21267d6735c370cd4c65a8f9a341753c32c524e5f3e48f6533d95e7d712429f"
+  },
+  "lifecycle_cases_verified": [
+    "empty snapshot has nonempty terminal and accepted flags false",
+    "active/unknown execution retains reservation and is nonterminal",
+    "failure with blocked descendants is terminal but not accepted",
+    "failed standalone job is terminal but not accepted",
+    "successful execution is accepted-unqualified only, not scientifically qualified",
+    "new admission reopens the current-admissions snapshot",
+    "legacy ambiguous completion fields are rejected"
+  ],
+  "consumer_limit": "The small consumer fixture checks state/count consistency but is not a receipt-signature or provenance verifier. A fully self-consistent forged success object is accepted; callers must supply a trusted dispatcher snapshot, not arbitrary JSON.",
+  "remaining_lifecycle_limits": [
+    "No power-loss/fsync fault, large-DAG closure scale, thousands-cycle, service-intake seal or durable restore claim.",
+    "Completion is a current-admissions snapshot; work can reopen when new admission arrives.",
+    "Mutable SQLite/cooperating-writer trust and source/history limitations persist from the predecessor."
+  ],
+  "scope": {
+    "production_changes": false,
+    "owner_or_scientific_jobs": false,
+    "models_or_fits": false
+  }
+}

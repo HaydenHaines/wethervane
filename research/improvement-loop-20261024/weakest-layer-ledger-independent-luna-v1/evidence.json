@@ -1,0 +1,20 @@
+{
+  "schema": "WeakestLayerLedgerIndependentReviewEvidenceLunaV1",
+  "review_artifacts": {
+    "review.json": "26a08179da5e122250385b73243ea333a156b9ee21de4204de5dc8fe5f8d93ab",
+    "README.md": "3612f4d82a818cdc26d122471bfcf8d897fdc59f0a5f5d7e988029d70ddbc30f"
+  },
+  "ledger_inputs": {
+    "README.md": "57e60849a25df9d1deb059917ec713762e03bda4a95090ae849214bfbcf9b4d7",
+    "evidence.json": "469f710b177b084f24420877ae4ee5370bb32351f71ae4b331053cda11fd6c2f",
+    "two-cycle-owner-evidence-receipt-v1.json": "ecaf0b3117c6188164292379de574adab874089cd1ab2af9192d084799da59ad",
+    "momentum-forecast-decision-root-v1.json": "de6d022c5b7948e8421b011fa6f4aca09f103e8a3dc1a046474de27f58757584",
+    "shared-gasoline-decision-v1.json": "35ecb5db8b52409b39991dd2891d1592d6acea926299a4c1c25a73eb3363086c"
+  },
+  "checks": [
+    "All 20 ledger evidence input hashes currently match.",
+    "Recomputed two reported relative errors and equal-cycle CRPS arithmetic using published scalar JSON values only.",
+    "Read decision checkpoints to verify M02 and G01 negative/retain decisions and preservation flags."
+  ],
+  "limits": ["No predictive arrays, fits, forecasts, numerical diagnostics or owner tasks were rerun."]
+}
