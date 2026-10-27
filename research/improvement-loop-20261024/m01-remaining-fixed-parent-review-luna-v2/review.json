@@ -1,0 +1,43 @@
+{
+  "schema": "RemainingFixedParentV2IndependentReviewLunaV1",
+  "packet": "research/improvement-loop-20261024/m01-remaining-fixed-parent-sol-v2",
+  "packet_evidence_sha256": "320161340e969123ab5673b9727c4973072a6020f4d063cc835e9934937eef30",
+  "status": "v1_gap_closed_under_cooperative_caller_provenance",
+  "source_audit": {
+    "all_evidence_files": "All 16 files listed by V2 evidence.json were independently hashed and byte-counted; zero mismatches.",
+    "core_frozen_hashes": {
+      "contract.json": "3d122001e668af13493e9c2d37233e7bc1ea9a24965b73707d5733604963cd7e",
+      "selection.py": "c6a9a37241a7864441f08c758b91a1f7be4d684d54ff11c6419c1ab0ec0078f9",
+      "launch.py": "43c69a8d691dc17dda05fdf5472e8279afececa6f21359832bd3144bbeb8b5b3",
+      "common.py": "4c97ec6188011d91bde06e681fcba6e46800c4a2ceffeae87a1e025c174ffedf",
+      "test_tiny.py": "0eae63cfc6542f0e66c7343a7a6b429add3d54cec4067bd0983edd7572db3e0a",
+      "tiny-result.json": "03297f4daca942fcb77a0d4cc462b13efcef9d901ca015863d0adf7870b91d44"
+    },
+    "preservation": "V1 packet remains unchanged. V2 evidence states scientific worker and numerical comparators are unchanged from V1; this matches inspected hashes for child.py, evaluator.py, entry.py, compare.py, baseline_compare.py and comparison_gate.py."
+  },
+  "reproduction": {
+    "fresh_copy_layout": "Copied V2, V1 and the Luna V1 reproducer into sibling directories under /tmp/luna-six-parent-v2-tree-dyxODV, preserving the documented relative fixture paths.",
+    "command": "OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 NUMBA_NUM_THREADS=1 PYTHONDONTWRITEBYTECODE=1 timeout --kill-after=3s 30s nice -n 15 /home/hayden/projects/ballotmancy-improvement-lab/.improvement-ledger/runtime/calibration-v1-env/bin/python -B test_tiny.py",
+    "result": "{\"status\": \"passed\", \"tests\": 65}",
+    "harness_note": "A first V2-only copy did not run because test_tiny.py intentionally locates the preserved V1 and Luna V1 reproducer as siblings. No frozen source was changed; the rerun used the required relative packet layout."
+  },
+  "v1_gap_recheck": {
+    "result": "The V2 tiny suite ran the exact frozen V1 reproducer and confirmed it still accepts its self-authored success-shaped marker plus raw digest. V1 source/evidence were not changed.",
+    "v2_behavior": "V2 rejects marker-only/raw-hash input. completed() requires retained tool-return path and digest, schema RetainedSelectedStageToolReturnV1, exit_code exactly 0, parseable output, and exact object equality between retained output and controller_response derived from the current marker.",
+    "artifact_gate": "Exact phase-specific comparison_artifacts keys are required; both execution and phase comparison file pins are checked. The execution record must have its exact field roster and match phase, ordinal, contract, review digest and exact locally reviewed source hash map. Authorization/review/resource identity is rechecked.",
+    "phase_semantics": "Fixed-selected requires the selected parent's completed dynamic-witness retained return before reservation/worker launch. Replay requires the original retained success return. Nonzero exit, partial output, mismatched phase/parent, changed marker/result/terminal/authorization/comparison, wrong comparison schema/source, empty/missing/extra artifact maps reject."
+  },
+  "new_counterexample_search": {
+    "self_authored_receipt": "The old Luna V1 synthetic receipt is rejected by V2 because it is not a RetainedSelectedStageToolReturnV1 and does not contain the exact controller response.",
+    "coherent_mutation": "Frozen negative fixtures alter comparison roster, schema, parent, executed source, result, tool exit, partial stdout or acknowledgment contents; these reject even when the local fixture recomputes marker and caller-record hashes.",
+    "stale_return_and_path": "completed() hashes the retained JSON file bytes, checks exit=0, and compares its parsed full output to a response rebuilt from the current success marker. Changed retained bytes, wrong phase/parent, or stale response against changed marker are rejected. Exact path is supplied by caller and is hashed; filesystem symlink/hostile same-user attacks are expressly outside scope.",
+    "process_and_retry": "Tiny tests preserve exclusive claims and reject automatic retry after crash/partial reservation. Publisher emits success only after child reaping and comparison validation; completed replay is read-only. No graph or actual phase ran."
+  },
+  "limitations": [
+    "The retained tool-return file is a cooperative provenance input, not a cryptographic signature. A deliberately dishonest same-user caller can fabricate the whole stdout/marker/result/comparison/source set and self-author hashes; V2 documents this boundary accurately.",
+    "Protocol subprocess fixtures use invented numerical contents. They establish publisher/capture/verification consistency, not actual graph computation or numerical truth.",
+    "Actual graph import/build/compile, fixed-parent outputs, resource feasibility, normalizers, posterior sampling, and prediction quality remain untested/unverified.",
+    "No actual admission or fresh resource receipt was created; root must independently assess one-stage resource conflict/capacity."
+  ],
+  "source_hash_file": "research/improvement-loop-20261024/m01-remaining-fixed-parent-review-luna-v2/source-hashes.txt"
+}
