@@ -1,0 +1,45 @@
+--- frozen-v1/checker.py
++++ v2/checker.py
+@@ -20,18 +20,20 @@
+ def audit(manifest,expected_manifest_sha256):
+  need(sha(expected_manifest_sha256)and digest(manifest)==expected_manifest_sha256,'caller_manifest_pin_mismatch')
+  exact(manifest,['schema','composition_id','cutoff','model_binding','sources','factors'],'manifest_fields')
+- need(manifest['schema']=='ObservationOwnershipManifestV1'and text(manifest['composition_id']),'manifest_identity')
++ need(manifest['schema']=='ObservationOwnershipManifestV2'and text(manifest['composition_id']),'manifest_identity')
+  exact(manifest['model_binding'],['problem_sha256','composition_sha256','target_roster_sha256'],'model_binding_fields')
+  need(all(sha(x)for x in manifest['model_binding'].values()),'model_binding_pins')
+  cutoff=stamp(manifest['cutoff']);sources={};origin_by_bytes={}
+  need(isinstance(manifest['sources'],list),'sources_required')
+  for s in manifest['sources']:
+-  exact(s,['id','sha256','origin_namespace','provenance_sha256','available_at','role'],'source_fields')
++  exact(s,['id','sha256','origin_namespace','provenance_sha256','available_at','first_release_at','role'],'source_fields')
+   need(all(text(s[k])for k in ['id','origin_namespace','role'])and sha(s['sha256'])and sha(s['provenance_sha256']),'source_identity')
+   need(s['role']in ['observed','derived_observed','deterministic_input','uncertain_input'],'typed_source_role')
+   if s['sha256']in origin_by_bytes:need(origin_by_bytes[s['sha256']]==s['origin_namespace'],'source_lineage_alias_conflict')
+   origin_by_bytes[s['sha256']]=s['origin_namespace']
+-  need(s['id']not in sources,'duplicate_source_id');need(stamp(s['available_at'])<=cutoff,'source_after_cutoff');sources[s['id']]=s
++  need(s['id']not in sources,'duplicate_source_id');need(s['available_at']is not None,'source_version_availability_unknown');available=stamp(s['available_at']);need(available<=cutoff,'source_after_cutoff')
++  if s['first_release_at']is not None:need(stamp(s['first_release_at'])<=available,'first_release_after_version_availability')
++  sources[s['id']]=s
+  need(isinstance(manifest['factors'],list),'factors_required')
+  ids=set();all_atoms={};observed=[];inputs=0;joint_reuse=0;atom_claims=0;evidence_inputs=0;uncertain_refs={}
+  for index,f in enumerate(manifest['factors']):
+@@ -56,7 +58,9 @@
+    for o in comp['observations']:
+     exact(o,['source_id','record_token','field_id','measurement_id','target','raw_unit','model_unit','event_id','period_start','period_end','transformation_sha256'],'observation_fields')
+     need(o['source_id']in sources and all(text(o[k])for k in ['record_token','field_id','measurement_id','target','raw_unit','model_unit','event_id']),'observation_identity')
++    need(o['period_start']is not None and o['period_end']is not None,'observed_collection_period_unknown')
+     start,end=stamp(o['period_start']),stamp(o['period_end']);need(start<=end<=cutoff,'observation_temporal_scope')
++    need(end<=stamp(sources[o['source_id']]['available_at']),'observation_after_source_version_available')
+     need(o['transformation_sha256']is None or sha(o['transformation_sha256']),'transformation_pin')
+     need(o['model_unit']==o['raw_unit']or sha(o['transformation_sha256']),'unit_transform_required')
+     source=sources[o['source_id']];need(source['role']in ['observed','derived_observed'],'observation_source_role');key=(source['origin_namespace'],o['record_token'],o['field_id'])
+@@ -82,7 +86,7 @@
+    else:attested_disjoint+=1
+   else:unknown+=1
+  status='duplicate_declared_observed_atoms'if duplicates else 'evidence_input_review_required'if evidence_inputs else 'shared_uncertainty_review_required'if any(n>1 for n in uncertain_refs.values()) else 'no_observed_likelihoods'if not observed else 'overlap_review_required'if len(observed)>1 else 'structurally_consistent_claims'
+- return {'schema':'ObservationOwnershipAuditV1','status':status,'scientifically_qualified':False,'verified_independence':False,'independent_factorization_authenticated':False,'source_admission_authenticated':False,'likelihood_factors':len(observed),'nonlikelihood_factors':len(ids)-len(observed),'observed_claims':atom_claims,'unique_observed_atoms':len(all_atoms),'joint_internal_atom_reuses':joint_reuse,'cross_factor_duplicate_atom_pairs':duplicates,'distinct_observation_factor_pairs':distinct_pairs,'unknown_sampling_overlap_pairs':unknown,'declared_disjoint_sampling_pairs':attested_disjoint,'known_sampling_overlap_pairs':known_overlap,'shared_input_references':inputs,'observed_lineage_input_references_requiring_review':evidence_inputs,'reused_uncertain_input_sources':sum(n>1 for n in uncertain_refs.values()),'joint_law_authenticated':False,'model_vector_binding_authenticated':False,'sampling_attestations_authenticated':False,'source_error_dependence_unknown_pairs':len(observed)*(len(observed)-1)//2,'manifest_sha256':digest(manifest),'scope':'metadata consistency under caller-supplied canonical field/lineage and sampling attestations; not likelihood normalization or qualification'}
++ return {'schema':'ObservationOwnershipAuditV2','status':status,'scientifically_qualified':False,'verified_independence':False,'independent_factorization_authenticated':False,'source_admission_authenticated':False,'likelihood_factors':len(observed),'nonlikelihood_factors':len(ids)-len(observed),'observed_claims':atom_claims,'unique_observed_atoms':len(all_atoms),'joint_internal_atom_reuses':joint_reuse,'cross_factor_duplicate_atom_pairs':duplicates,'distinct_observation_factor_pairs':distinct_pairs,'unknown_sampling_overlap_pairs':unknown,'declared_disjoint_sampling_pairs':attested_disjoint,'known_sampling_overlap_pairs':known_overlap,'shared_input_references':inputs,'observed_lineage_input_references_requiring_review':evidence_inputs,'reused_uncertain_input_sources':sum(n>1 for n in uncertain_refs.values()),'joint_law_authenticated':False,'model_vector_binding_authenticated':False,'sampling_attestations_authenticated':False,'source_error_dependence_unknown_pairs':len(observed)*(len(observed)-1)//2,'manifest_sha256':digest(manifest),'scope':'metadata consistency under caller-supplied canonical field/lineage and sampling attestations; not likelihood normalization or qualification'}
+ 
+ def audit_a2018_aggregate(path,expected_sha256):
+  from pathlib import Path
