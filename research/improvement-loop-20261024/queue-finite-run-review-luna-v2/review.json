@@ -1,0 +1,42 @@
+{
+  "schema": "QueueFiniteRunIndependentReviewLunaV2",
+  "status": "containment_fix_reproduced_in_bounded_queue_scope_with_direct_executor_limit",
+  "reviewed_packet": "../queue-finite-run-sol-v2",
+  "scope": "read-only source review and bounded temporary queue tests; no model or owner work; V1/V3 and V2 frozen sources unchanged",
+  "pins": {
+    "experiment_queue.py": "1c8c3a55edfee4a95b62157e3175fc47438915a04ed9f607e9c170438b1c2965",
+    "finite_intake.py": "8f3521aca4ea2284d3d6d8b7cd2ed83fd3d9e212ee757d420339fe7ba5c45fac",
+    "evidence.json": "3e98abfb6f75c2c6021737bc97871db25e940aae4929f632330920a21289e8ec",
+    "README.md": "8155a58acdf2e5847a85bee3cd4225ecb422c7476a038ae7eb4f421ec15f693a",
+    "test_finite.py": "e49ae1056fbb737062187dc7ac2d78fd39f16e913bdf928312da11f0f3912205",
+    "test_experiment_queue.py": "390b6ede9328b6166c1aa78e5e40fa7267ce1f47dbc85ef672e4125c12022c1a",
+    "run_tests.sh": "fc36c0981a69e4059aa68518d61510883b8c7f04c57070573b9c35590755c33b",
+    "final-tests.log": "04988c40c7bd72c7e03244aca3b3afe05196e7a1f50c82588546ba89b60ad306",
+    "baseline-V1-contract.md": "340e1b906ea7802710d700b0d8836891b9a012ddacf3c6bf7bec6f7ec7408641",
+    "V1-independent-review.json": "cf5c4529e84094f68f6d08dfea12f488c7b4318b7da479c64f0d01649779ddab",
+    "probe_output_namespace.py": "d8fe54513d8d9633a44c0054df870d8d46a0299e8ed80ecece81eca6bcebe43b",
+    "probe-output.log": "cf23759ef2a1b7962e104b74400b07bd04a41d2eb8f033d9fa44be0f30ba39a3"
+  },
+  "integrated_suite": {
+    "command": "sh run_tests.sh",
+    "result": "22 tests passed in 9.576 seconds in independent rerun: 14 finite-run tests and eight selected inherited V3 executor tests",
+    "scope": "temporary stores and tiny fixture processes; no complete original V3 suite, production queue or model run"
+  },
+  "targeted_reproduction": {
+    "command": "PYTHONDONTWRITEBYTECODE=1 python3 -B probe_output_namespace.py /home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-finite-run-sol-v2",
+    "result": "same-plan ancestor/sibling/descendant rejected; accepted-claim descendant, ancestor and exact path rejected; reverse order rejected; pending ADMITTING descendant and file/directory alias rejected; lexical sibling accepted; no output paths materialized",
+    "scope": "admission-only, all fixture stores cleaned; no executor child launched in this custom probe"
+  },
+  "verified": [
+    "V2 defines outputs_overlap using Path.is_relative_to in either direction; validated execution specs require absolute canonical resolved paths. Plan validation checks every output-directory pair (not merely adjacent sorted paths), covering containment and equality in either ordering.",
+    "Cross-plan preflight rejects overlap with authenticated accepted entries and crash-left ADMITTING intents in either ancestor direction. The same-plan intervening sibling case is rejected; /owned-other remains a disjoint lexical sibling and is accepted.",
+    "Exact prelaunch resume still passes the inherited proof test; the containment rule does not make a new unrelated nested claim an accepted resume.",
+    "Finite lifecycle behavior remains as reviewed for V1: same dispatcher lock, durable admission intent before files, sealed exact repair, full reconciliation and evidence-backed final receipt. The tested core refuses V1 schema/store migration."
+  ],
+  "limitations": [
+    "V2 explicitly protects queue admissions only. Unchanged execution.prepare creates global output claims by hashing the exact resolved directory string, so callers that bypass queue admission can still claim ancestor/descendant paths. If direct executor calls are in the supported trust domain, protection must move into an atomic path-namespace claim there too.",
+    "Canonicalization plus Path.is_relative_to does not protect against symlink mutation or coherent owner-writable SQLite/filesystem rewrites. The packet assumes cooperating local callers and ordinary local filesystem semantics.",
+    "The path namespace probe establishes admission rejection/acceptance only; no job output collision was executed. Full V3 regression, storage power-loss, NFS, resource peak, performance or thousands-cycle claims remain absent.",
+    "No scientific qualification or forecast follows from workflow terminal states."
+  ]
+}
