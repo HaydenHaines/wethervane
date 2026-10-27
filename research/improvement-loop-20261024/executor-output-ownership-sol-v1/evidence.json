@@ -1,0 +1,71 @@
+{
+  "schema": "DirectExecutorOwnershipResearchEvidenceV1",
+  "status": "frozen_for_independent_review",
+  "source_and_test_pins": [
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/executor-output-ownership-sol-v1/execution.py",
+      "sha256": "b9f3a178fdff113d01e95bfe06544105fa550b6e904e283333e1390d1c7e2459",
+      "bytes": 43502
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/executor-output-ownership-sol-v1/ledger.py",
+      "sha256": "d65cea890ecf9b456f8b9625d173f15dac1e7fa94bb618d3407e26f368ee220a",
+      "bytes": 13115
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/executor-output-ownership-sol-v1/run_receipts.py",
+      "sha256": "a7e78b822207109e0257adce9abb6493c53a0d93158177131ade76c0d874e73e",
+      "bytes": 30383
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/executor-output-ownership-sol-v1/test_ownership.py",
+      "sha256": "8047d98aaaacb69fef431a5f5f2db3574cd8044b9cb403e2b6fb9beafc422ded",
+      "bytes": 10226
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/executor-output-ownership-sol-v1/tests-frozen.log",
+      "sha256": "20cdfcaef05db15f492d561b641deec971a081545a05b74645cca476af8cc003",
+      "bytes": 1723
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/executor-output-ownership-sol-v1/tests-failed-exception-class.log",
+      "sha256": "88a615f978bf4b725addf7480981c85e137dea4ca5b535fbfdc6713f7bb0facc",
+      "bytes": 3225
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/executor-output-ownership-sol-v1/ast-comparison.json",
+      "sha256": "01b8a496ec9f1ea595e509cef4e8601360557e742a82487fe08200a949d75c14",
+      "bytes": 877
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/executor-output-ownership-sol-v1/cleanup-scan.json",
+      "sha256": "dce86f2d4d0ec70d8d6bb5d230ffb2f5e203e28a5826de922228088de832e212",
+      "bytes": 145
+    }
+  ],
+  "baseline_pins": [
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-v3/execution.py",
+      "sha256": "ce02f4c4b9be397b299c2219092fdd355db1695798af07c4974bc63cb6bbbc93",
+      "bytes": 36273
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-v3/ledger.py",
+      "sha256": "d65cea890ecf9b456f8b9625d173f15dac1e7fa94bb618d3407e26f368ee220a",
+      "bytes": 13115
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-v3/run_receipts.py",
+      "sha256": "a7e78b822207109e0257adce9abb6493c53a0d93158177131ade76c0d874e73e",
+      "bytes": 30383
+    }
+  ],
+  "tests": {
+    "command": "nice -n 15 python3 -B -m unittest test_ownership -v",
+    "count": 12,
+    "log": "tests-frozen.log"
+  },
+  "resources": "only temporary invented fixtures, no science jobs, peak temporary disk/CPU/RSS not measured",
+  "negative_boundary": "External deletion of the sole pre-scaffold ownership intent is undetected; no independent witness. Test records acceptance after that external mutation.",
+  "scope": "one dedicated root, cooperating successor clients only; no cross-root, legacy-client, hostile-owner or filesystem sandbox protection"
+}
