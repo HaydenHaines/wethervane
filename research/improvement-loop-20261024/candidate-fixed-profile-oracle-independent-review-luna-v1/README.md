@@ -1,5 +1,7 @@
 # Independent review: invented fixed-profile candidate allocation oracle
 
+**Correction:** The claim below that the selected source has cell-specific response is incorrect. The pinned provider uses one response rate per contest; its participation intensity varies by cell. See the [source-pinned correction](../candidate-fixed-profile-oracle-independent-review-luna-v1-correction/README.md). The original review text is retained below for provenance.
+
 I checked the oracle against the pinned 2018 provider source and reran its seven standard-library tests. The fixed-input algebra is correct: softmax candidate choice, response split, noncandidate simplex allocation, and common event scaling. The independent tiny probe reproduces the 7/3-to-4 ratio-of-sums example and the same-odds invariant.
 
 The main applicability limit is that the actual provider response is cell-specific, while this oracle accepts one scalar response for all profiles. An invented counterexample gives an aggregate D/R ratio of 43/7 under responses 0.9 and 0.1, versus 7/3 for the oracle's common response. That is within the declared toy scope; it prevents direct use as a numerical emulation of the selected graph until the response weighting is represented.

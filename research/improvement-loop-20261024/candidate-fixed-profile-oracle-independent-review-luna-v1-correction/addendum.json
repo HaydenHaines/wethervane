@@ -1,0 +1,25 @@
+{
+  "schema": "CandidateFixedProfileOracleReviewCorrectionV1",
+  "corrects": "candidate-fixed-profile-oracle-independent-review-luna-v1/review.json; preserve original bytes and hash.",
+  "correction": "The V1 review's claim that the selected provider response is cell-specific was incorrect.",
+  "source_evidence": {
+    "sha256": "1574e7831344009f08470b9287b257556a9c031fb7e33e29938a70d51b1a854d",
+    "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-2018-gpu-preparation-root-v1/gpu-production-v1/attempt1/source-snapshots/117-components.py",
+    "behavior_lines": "193-200",
+    "allocation_lines": "407-425",
+    "finding": "For each contest, response_logits[name] is baseline response_intercept plus race[i], and response[name] is a scalar sigmoid. CountsRules multiplies this scalar by the cell-specific candidate_probability tensor and broadcasts the noncandidate share across the 24x12 cells. The allocation therefore has cell-varying intensity/utility profiles but one response value per contest."
+  },
+  "revised_assessment": {
+    "source_fidelity": "The oracle's single response argument used uniformly across profiles matches the pinned selected provider's per-contest response scalar. With each profile given the actual cell-intensity weight, candidate probability, and shared noncandidate simplex, its deterministic conditional allocation equations are faithful to the fixed-input source allocation; common eventG can be included as a common multiplier in profile weights.",
+    "withdrawn_finding": "Withdraw the claim that the selected source response is cell-specific, and withdraw the characterization of the scalar oracle response as a source-equation gap.",
+    "heterogeneous_response_probe": "The retained response=0.9/0.1 counterexample (43/7 versus 7/3) remains mathematically valid for a hypothetical model with profile-varying response. It is not evidence of a limitation in the pinned 117-components provider and should not be used to challenge this oracle's source fidelity.",
+    "remaining_limits": [
+      "Oracle values/profiles are invented; no selected model state or actual 288-cell values were passed.",
+      "The oracle establishes a deterministic allocation identity, not inference, posterior behavior, historical source/label correctness, or causal layer contribution.",
+      "Use cell intensity/profile weight and expected category marks terminology; these expected marks are not an independently measured physical turnout total.",
+      "At fixed event scale, intensity, and response, candidate roster expansion redistributes named marks rather than changing total named-category mass."
+    ],
+    "verdict": "No source-equation blocker remains in the declared fixed-profile scope. The V1 response-shape criticism is retracted. All non-source-fidelity limits in V1 remain."
+  },
+  "no_model_or_owner_work": "Read-only source inspection and correction only; no model import/run, raw outcome rows, Arizona tuning, owner data changes or new fit."
+}
