@@ -1,0 +1,30 @@
+{
+  "schema": "FrontierLifecycleIndependentReviewEvidenceLunaV1",
+  "own_files": {
+    "review.json": "9c7b065970e52c6640a47b545eb603f61dce4c02c8fb318974433ed2536d145a",
+    "replay_tests.py": "7c92af30336724636a554f961e6480a5bfdce9fd4eef78f1c55d0284d2b1508d",
+    "tests.log": "91804cb3989f9027b6631b54d26c0d6e131136ce54fea6290f30b899f4f78a5b",
+    "empty_completion_check.py": "65379a992e6d29afa7eff52f72821fe2e0f07d1606de34908d393d1aa1d99d31",
+    "empty-result.json": "13b55c4ea22ea396837917686ef396e561fc024d30fdc3524c96797a95a988b4"
+  },
+  "reviewed_frozen_sources": {
+    "dispatch.py": "51eb8e47089d58ad54fd5b87ef113b8e2380b7ed962492f82379c94c1797c3ee",
+    "test_lifecycle.py": "8874b5a7d26df697671865c496141048d3d47540d377a968c05f76c6f0c48900",
+    "tests-final.log": "390cc8c0e2a79bb7b25ca1f00c5bb17925e18fef0241e28bf506d30984b4706f",
+    "source-pins.json": "cc4f701d8821138204d037f143a1ca42993d1739080425561f7bc18eeb9e1a16",
+    "FINDINGS.md": "d5d644829e57d07333a6aae1c3799da14af2981ada1ed5bf2689bb886d9cf214",
+    "evidence.json": "1103929f1efe86b5a9d3863bd20900f4f17e2bfa61c72fd265c0c856e7dea7cd"
+  },
+  "official_documentation": [
+    "https://www.sqlite.org/lang_transaction.html",
+    "https://www.sqlite.org/pragma.html#pragma_synchronous",
+    "https://www.sqlite.org/atomiccommit.html",
+    "https://www.sqlite.org/lockingv3.html"
+  ],
+  "test_reproduction": "Eight tests pass in an independently copied temporary source lab; no owner path was used as a test store. A separate empty-store probe confirmed all_terminal=true, success=false, state=empty.",
+  "limits": [
+    "No OS crash, power cut, fsync fault, disk-full condition or storage corruption was simulated.",
+    "No production integration, large-DAG stress test, thousands-cycle campaign, scientific output or owner job was executed.",
+    "The report's historical/local trust limitations remain."
+  ]
+}

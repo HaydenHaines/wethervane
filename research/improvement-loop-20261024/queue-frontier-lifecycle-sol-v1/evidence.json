@@ -1,0 +1,53 @@
+{
+  "schema": "FrontierLifecycleResearchEvidenceV1",
+  "status": "frozen_bounded_tests_passed_pending_independent_review",
+  "files": {
+    "dispatch.py": {
+      "sha256": "51eb8e47089d58ad54fd5b87ef113b8e2380b7ed962492f82379c94c1797c3ee",
+      "bytes": 26190
+    },
+    "test_lifecycle.py": {
+      "sha256": "8874b5a7d26df697671865c496141048d3d47540d377a968c05f76c6f0c48900",
+      "bytes": 9871
+    },
+    "tests-first.log": {
+      "sha256": "bb057d450f2b2c361365f9b899832c971e4ace7a2501afd15d02051c7f6277b0",
+      "bytes": 1070
+    },
+    "tests.log": {
+      "sha256": "c87929c663b9c4e1c926420a2e062f3516d0c6bdd5f1c79a70fdda16a7165cc1",
+      "bytes": 1227
+    },
+    "tests-final.log": {
+      "sha256": "390cc8c0e2a79bb7b25ca1f00c5bb17925e18fef0241e28bf506d30984b4706f",
+      "bytes": 1390
+    },
+    "source-pins.json": {
+      "sha256": "cc4f701d8821138204d037f143a1ca42993d1739080425561f7bc18eeb9e1a16",
+      "bytes": 2874
+    },
+    "FINDINGS.md": {
+      "sha256": "d5d644829e57d07333a6aae1c3799da14af2981ada1ed5bf2689bb886d9cf214",
+      "bytes": 9697
+    },
+    "README.md": {
+      "sha256": "4ca314b1b66234d95e17683fd4aefaf82d0f09a211b1f8b248ebde8cc531aeea",
+      "bytes": 649
+    }
+  },
+  "tests": {
+    "count": 8,
+    "exit_code": 0,
+    "reported_seconds": 4.534,
+    "process_death": "real SQLite clients at admission/reservation/release/descendant/counter transaction boundaries; not power loss",
+    "real_tiny_executor_commands": true,
+    "prior_six_and_seven_test_runs_preserved": true
+  },
+  "implementation": "atomic transitive blocked terminal closure, first-cause idempotence, current-admissions all-terminal snapshot with fixed counters and bounded presence guards",
+  "trust": "trusted mutable SQLite and cooperating serialized writers; no protected historical archive/rollback anchor",
+  "scale": "no new scale measurement; full closure transaction may cost reachable graph size and repeat traversals across failed roots",
+  "production_ready": false,
+  "frozen_prior_versions_or_owner_jobs_modified": false,
+  "model_runs": false,
+  "no_more_source_changes_or_runs": true
+}

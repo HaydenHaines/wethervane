@@ -1,0 +1,70 @@
+{
+  "schema": "FrontierLifecycleIndependentReviewLunaV1",
+  "reviewed_frozen_packet": "research/improvement-loop-20261024/queue-frontier-lifecycle-sol-v1",
+  "source_pins_verified": {
+    "dispatch.py": "51eb8e47089d58ad54fd5b87ef113b8e2380b7ed962492f82379c94c1797c3ee",
+    "test_lifecycle.py": "8874b5a7d26df697671865c496141048d3d47540d377a968c05f76c6f0c48900",
+    "tests-final.log": "390cc8c0e2a79bb7b25ca1f00c5bb17925e18fef0241e28bf506d30984b4706f",
+    "source-pins.json": "cc4f701d8821138204d037f143a1ca42993d1739080425561f7bc18eeb9e1a16",
+    "FINDINGS.md": "d5d644829e57d07333a6aae1c3799da14af2981ada1ed5bf2689bb886d9cf214",
+    "evidence.json": "1103929f1efe86b5a9d3863bd20900f4f17e2bfa61c72fd265c0c856e7dea7cd"
+  },
+  "independent_replay": {
+    "method": "Copied frozen lifecycle source/tests and required sibling queue modules into a disposable temporary lab; replayed only the eight invented tiny lifecycle tests.",
+    "command": "python3 -B replay_tests.py",
+    "tests_passed": 8,
+    "tests_failed": 0,
+    "elapsed_seconds": 4.801,
+    "exit_code": 0,
+    "artifact_hashes": {
+      "replay_tests.py": "7c92af30336724636a554f961e6480a5bfdce9fd4eef78f1c55d0284d2b1508d",
+      "tests.log": "91804cb3989f9027b6631b54d26c0d6e131136ce54fea6290f30b899f4f78a5b"
+    }
+  },
+  "empty_store_semantics": {
+    "command": "python3 -B empty_completion_check.py",
+    "observed": {
+      "state": "empty",
+      "total": 0,
+      "pending": 0,
+      "active": 0,
+      "all_terminal": true,
+      "all_executions_accepted_unqualified": false
+    },
+    "result_sha256": "13b55c4ea22ea396837917686ef396e561fc024d30fdc3524c96797a95a988b4",
+    "assessment": "Vacuously correct for the documented predicate 'all currently admitted owners are terminal' and clearly distinguished by state='empty' plus success=false. A caller that treats all_terminal alone as queue completion can still mistake an empty store for completed work; consumers should check state/total and an explicit terminal-success/failure state."
+  },
+  "findings": [
+    {
+      "severity": "confirmed_improvement",
+      "text": "A failed release inserts release evidence, derives/deduplicates the transitive descendant closure with recursive UNION, records first cause, removes descendant pending rows, deletes active and updates counters in one BEGIN IMMEDIATE transaction. Injected process exit before commit rolls all of this back; after commit, four descendants in the diamond remain terminal-blocked under the first failed root and repeated idle/failure processing does not duplicate records."
+    },
+    {
+      "severity": "confirmed_improvement",
+      "text": "Completion distinguishes waiting_unresolved_not_complete, failure/block completion, successful-execution-unqualified and empty. New admission reopens the current-admissions snapshot. Unknown process exit keeps active capacity and does not mark descendants terminal."
+    },
+    {
+      "severity": "api_caveat",
+      "text": "all_terminal is true for the empty store and for all-terminal failed/blocked work. The state and all_executions_accepted_unqualified fields disambiguate the intended meaning, but a consumer reading the boolean alone can falsely infer successful completion."
+    },
+    {
+      "severity": "remaining_durability_limit",
+      "text": "Process-death tests do not establish OS/power-loss durability. The connection is rollback-journal with synchronous=FULL; SQLite documents that rollback-mode FULL may not preserve the latest commit across power loss on every filesystem. Separate result/release JSON publication remains outside the database transaction."
+    },
+    {
+      "severity": "remaining_scale_limit",
+      "text": "Failure propagation computes the full descendant closure inside one write transaction. Runtime, memory and journal demand scale with the reachable graph; no large-DAG or thousands-cycle measurement is claimed. If closure fails, retaining active capacity is fail-closed but can leave the queue unresolved."
+    },
+    {
+      "severity": "trust_boundary",
+      "text": "Counters and terminal projections are operational under the trusted mutable SQLite/cooperating-writer contract. Bounded presence guards catch a false zero, while exact structural audit is O(history+graph). A same-user raw writer can coherently alter rows/counters; no protected history or rollback anchor is added."
+    }
+  ],
+  "scope": {
+    "production_changes": false,
+    "owner_queue_or_model_work": false,
+    "power_loss_or_storage_fault_test": false,
+    "scientific_outputs": false,
+    "independent_adoption_approval": false
+  }
+}

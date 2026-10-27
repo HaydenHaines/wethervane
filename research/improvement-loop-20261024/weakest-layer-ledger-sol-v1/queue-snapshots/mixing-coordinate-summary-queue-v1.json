@@ -1,0 +1,33 @@
+{
+  "status": "running",
+  "utc": "2026-10-26T23:58:17.363665+00:00",
+  "source_pins": {
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-2018-gpu-preparation-root-v1/summarize_mixing_coordinates.py": "72c8c2731d0640fc948962d4dbc34e448291e7c0b0a09d11f7271bd714ac21c3",
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-2018-gpu-preparation-root-v1/test_summarize_mixing_coordinates.py": "3fddd0a6ce5abce4992e9a8b6e01c7381ea3a18b0a3581a2ac76fa69800c6487",
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-2018-gpu-preparation-root-v1/queue_mixing_summary.py": "a74eebb0a3c5102d68c5db4f59caeefc944e1dba257beb21c0eed01cd826c196"
+  },
+  "automatic_retry": false,
+  "action": "summary_terminal",
+  "materialization_action": "materialization_terminal",
+  "available_memory_bytes": 50408280064,
+  "observed_utc": "2026-10-27T00:12:17.382717+00:00",
+  "command": [
+    "systemd-run",
+    "--user",
+    "--wait",
+    "--unit=ballotmancy-national2018-mixing-summary-20261026-v1",
+    "--property=MemoryMax=512M",
+    "--property=MemorySwapMax=0",
+    "--property=Nice=19",
+    "--property=Restart=no",
+    "--working-directory=/home/hayden/projects/wethervane-redesign-20261006/integration",
+    "taskset",
+    "-c",
+    "6",
+    "/usr/bin/python3",
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-2018-gpu-preparation-root-v1/summarize_mixing_coordinates.py"
+  ],
+  "exit_code": 0,
+  "stdout": "",
+  "stderr": "Running as unit: ballotmancy-national2018-mixing-summary-20261026-v1.service; invocation ID: 01654d60026042a880d325568c17b260\nFinished with result: success\nMain processes terminated with: code=exited/status=0\nService runtime: 208ms\nCPU time consumed: 205ms\nMemory peak: 256.0K\nMemory swap peak: 0B\n"
+}
