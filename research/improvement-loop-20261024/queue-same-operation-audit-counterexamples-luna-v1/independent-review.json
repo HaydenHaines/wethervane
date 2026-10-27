@@ -1,0 +1,63 @@
+{
+  "schema": "QueueSameOperationAuditCounterexamplesIndependentReviewLunaV1",
+  "scope": "Read-only independent source/pin review and bounded fresh scratch reproduction. No owner jobs or large workload.",
+  "source_packet": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-same-operation-audit-counterexamples-sol-v1",
+  "source_packet_hashes": {
+    "FINDINGS.md": "74ba8fe047ac863b03643da1df4dbdb4a206b6735ca678b3cb1fa34c55e3668b",
+    "evidence.json": "e0f71eae1a33e257d84685036a59aff2f28fe8c27918482dd69cbdeef8aeee62",
+    "source-pins.json": "d6528c6f3252e4bf3d1de195692615f8e745fea7f4f8b2a019c5db4dafc97cb3",
+    "test_counterexamples.py": "c3865575003bb9c88b963b61aa87b0a32937e09e52014a78c6f7f6394723ba02",
+    "measure_calls.py": "278a9e6716e815e03bf0f6b1d5783d569a605b5d4d34a5b3a051c9f280ae507d",
+    "test-result.json": "9bf16b1bc891ba3b9194a1108651e8bde2a4399497e4066f5dd57624fff2e167",
+    "tests.log": "b9f8f0cccfb60a02b6a4d16f5325f9aec19c411eec36f31f66b8dd3cd4127e1b",
+    "tests-first-unintended-discovery-timeout.log": "6ad65feb3be8d6a9f82872f420237bf8d6890203243e37d69db71ff3cccc35b0",
+    "call-counts.json": "7e2c345e995a6546ed475ee5398c4bb5dce3811fc60be7bda09931bbddc60787",
+    "cleanup-observation.json": "1795abe262df523710014e2fd9741b2bc85107ff64fe7247c6592b08036c6d4f"
+  },
+  "all_15_source_manifest_entries_match": true,
+  "mismatches": [],
+  "reproduction": {
+    "command": "nice -n 15 python3 -B -m unittest test_counterexamples.AuditCounterexamples -v",
+    "result": "4 passed",
+    "elapsed_seconds": 2.297,
+    "fresh_histories": 4,
+    "scratch_layout": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-same-operation-audit-counterexamples-luna-v1/scratch",
+    "scratch_code_hashes": {
+      "execution.py": "efb0bd492cab907ebc38e622ea3e4fc48d089a0eeee722a1263b0fd0e7b192f0",
+      "experiment_queue.py": "6786be8745fb4ddba713e5dda85e90f2c3ce50e814a095cddf4bbad122796c9b",
+      "test_experiment_queue.py": "390b6ede9328b6166c1aa78e5e40fa7267ce1f47dbc85ef672e4125c12022c1a",
+      "test_counterexamples.py": "c3865575003bb9c88b963b61aa87b0a32937e09e52014a78c6f7f6394723ba02",
+      "measure_calls.py": "278a9e6716e815e03bf0f6b1d5783d569a605b5d4d34a5b3a051c9f280ae507d"
+    },
+    "test_log_sha256": "012d25e307279353f0afa4e26a4b7b37859e3ae0fc978dd62859fccb9c1afa71"
+  },
+  "counterexample_assessment": {
+    "same_D_external_input_edit_same_size_and_restored_mtime_detected_by_fresh_audit": true,
+    "same_D_job_lock_inode_replacement_rejected": true,
+    "same_D_corrupt_claim_rejected": true,
+    "cooperating_status_client_blocked_by_D": true,
+    "interpretation": "Supports that dispatcher D serializes cooperating dispatcher entry but cannot make external inputs or namespace immutable; cached whole-audit success would be stale under the shown mutations."
+  },
+  "measurement_reproduction": {
+    "command": "nice -n 15 python3 -B measure_calls.py",
+    "one_fresh_accepted_tiny_job_two_full_audits": true,
+    "execution_decode_calls": 46,
+    "distinct_exact_decode_inputs": 7,
+    "repeat_decode_calls": 39,
+    "decode_input_bytes_including_repeats": 48124,
+    "execution_pin_calls": 58,
+    "pin_reported_bytes_including_repeats": 16474902,
+    "author_reported_decode_input_bytes": 35520,
+    "author_reported_pin_bytes": 16464820,
+    "byte_totals_match_author_run": false,
+    "explanation_established": false,
+    "interpretation": "Call counts reproduce; input-byte/pin-byte totals do not. This does not invalidate the repeat-decode count, but shows run-specific byte totals are not stable from the retained evidence alone. Counts indicate a possible JSON decode optimization target only; no elapsed-time speedup or scaling evidence, and all validation/hash work must remain."
+  },
+  "watchdog_and_test_selection": {
+    "original_unintended_discovery_timeout_file_preserved_and_hash_matches_manifest": true,
+    "corrected_focused_selection_reproduced": true,
+    "inherited_full_regression_rerun": false,
+    "cleanup_scope": "Fixture cleanup was exercised by the reproduced tests. The original packet\u2019s sampled process scan is a limited post-run observation, not a complete descendant or historical resource guarantee."
+  },
+  "verdict": "The four counterexamples are reproducible and substantiate rejecting lock-only whole-audit reuse. The memoization idea remains a lead for a bounded differential benchmark, not proof that caching is safe or faster."
+}
