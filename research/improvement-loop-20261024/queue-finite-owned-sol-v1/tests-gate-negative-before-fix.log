@@ -1,0 +1,14 @@
+test_held_dispatcher_and_reservation_do_not_bypass_admission_drift (test_integration.IntegrationTests.test_held_dispatcher_and_reservation_do_not_bypass_admission_drift) ... FAIL
+
+======================================================================
+FAIL: test_held_dispatcher_and_reservation_do_not_bypass_admission_drift (test_integration.IntegrationTests.test_held_dispatcher_and_reservation_do_not_bypass_admission_drift)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-finite-owned-sol-v1/test_integration.py", line 89, in test_held_dispatcher_and_reservation_do_not_bypass_admission_drift
+    with self.assertRaises((ValueError,OSError)):ex.launch(self.root/'executions','a')
+AssertionError: (<class 'ValueError'>, <class 'OSError'>) not raised
+
+----------------------------------------------------------------------
+Ran 1 test in 0.112s
+
+FAILED (failures=1)

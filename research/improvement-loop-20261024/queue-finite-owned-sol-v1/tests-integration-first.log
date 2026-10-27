@@ -1,0 +1,129 @@
+test_bound_dependency_drift_does_not_rebind_or_launch_consumer (test_experiment_queue.QueueTests.test_bound_dependency_drift_does_not_rebind_or_launch_consumer) ... ok
+test_cached_native_roles_cannot_swap_and_effective_binding_matches_plan (test_experiment_queue.QueueTests.test_cached_native_roles_cannot_swap_and_effective_binding_matches_plan) ... ok
+test_competing_killed_clients_share_capacity_across_two_queues (test_experiment_queue.QueueTests.test_competing_killed_clients_share_capacity_across_two_queues) ... ok
+test_corrupted_cached_result_or_release_retains_capacity_and_quarantines (test_experiment_queue.QueueTests.test_corrupted_cached_result_or_release_retains_capacity_and_quarantines) ... ok
+test_corrupted_prepared_attempt_still_counts_capacity (test_experiment_queue.QueueTests.test_corrupted_prepared_attempt_still_counts_capacity) ... ok
+test_empty_scaffold_admission_and_failed_terminal_drift_are_explicit (test_experiment_queue.QueueTests.test_empty_scaffold_admission_and_failed_terminal_drift_are_explicit) ... ERROR
+test_exact_prelaunch_resume_in_new_plan_launches_once_and_preserves_deferral (test_experiment_queue.QueueTests.test_exact_prelaunch_resume_in_new_plan_launches_once_and_preserves_deferral) ... ok
+test_filesystem_exists_without_producer_terminal_never_admits_dependency (test_experiment_queue.QueueTests.test_filesystem_exists_without_producer_terminal_never_admits_dependency) ... FAIL
+test_invalid_graph_duplicate_attempt_and_unbound_sha_rejected (test_experiment_queue.QueueTests.test_invalid_graph_duplicate_attempt_and_unbound_sha_rejected) ... ok
+test_killed_partial_admission_keeps_ownership_and_allows_unrelated_work (test_experiment_queue.QueueTests.test_killed_partial_admission_keeps_ownership_and_allows_unrelated_work)
+A durable plan must retain its claim even when its writer dies before the receipt. ... ok
+test_malformed_admission_preserves_unknown_reservation_count (test_experiment_queue.QueueTests.test_malformed_admission_preserves_unknown_reservation_count) ... ERROR
+test_missing_admission_with_reservation_freezes_other_queue_dispatch (test_experiment_queue.QueueTests.test_missing_admission_with_reservation_freezes_other_queue_dispatch) ... ERROR
+test_nonzero_invalid_native_and_declared_output_gates_block_dependents (test_experiment_queue.QueueTests.test_nonzero_invalid_native_and_declared_output_gates_block_dependents) ... ok
+test_orphan_release_never_launches_a_job (test_experiment_queue.QueueTests.test_orphan_release_never_launches_a_job)
+An unrelated release file must be quarantined before any launch intent. ... ok
+test_partial_admission_resumes_same_plan_and_is_visible_before_resume (test_experiment_queue.QueueTests.test_partial_admission_resumes_same_plan_and_is_visible_before_resume) ... ok
+test_prelaunch_deferred_result_before_release_reconciles_without_launch (test_experiment_queue.QueueTests.test_prelaunch_deferred_result_before_release_reconciles_without_launch) ... ok
+test_prelaunch_resume_rejects_output_unsealed_proof_and_launch_intent (test_experiment_queue.QueueTests.test_prelaunch_resume_rejects_output_unsealed_proof_and_launch_intent) ... ok
+test_prepared_input_drift_defers_without_terminal_and_unrelated_job_runs (test_experiment_queue.QueueTests.test_prepared_input_drift_defers_without_terminal_and_unrelated_job_runs) ... ok
+test_real_dependency_chain_consumes_exact_output_and_sha_argument (test_experiment_queue.QueueTests.test_real_dependency_chain_consumes_exact_output_and_sha_argument) ... ok
+test_receipt_only_roles_exact_consumer_path_and_sha_are_required (test_experiment_queue.QueueTests.test_receipt_only_roles_exact_consumer_path_and_sha_are_required) ... ok
+test_relative_root_cli_and_api_execute_same_absolutely_admitted_dag (test_experiment_queue.QueueTests.test_relative_root_cli_and_api_execute_same_absolutely_admitted_dag) ... ok
+test_release_without_reservation_is_not_a_valid_result (test_experiment_queue.QueueTests.test_release_without_reservation_is_not_a_valid_result) ... ok
+test_release_without_result_never_frees_live_capacity (test_experiment_queue.QueueTests.test_release_without_result_never_frees_live_capacity)
+Corrupt release evidence cannot release a running job's reservation. ... ok
+test_result_before_release_is_incomplete_and_reconciles_exact_result (test_experiment_queue.QueueTests.test_result_before_release_is_incomplete_and_reconciles_exact_result) ... ok
+test_resume_same_reservation_after_prepare_and_launch_crashes (test_experiment_queue.QueueTests.test_resume_same_reservation_after_prepare_and_launch_crashes) ... ok
+test_retry_is_new_plan_attempt_and_outputs_without_rebinding_old_consumer (test_experiment_queue.QueueTests.test_retry_is_new_plan_attempt_and_outputs_without_rebinding_old_consumer) ... ok
+test_store_versions_cannot_dispatch_each_others_plans (test_experiment_queue.QueueTests.test_store_versions_cannot_dispatch_each_others_plans)
+Different code versions cannot silently operate on each other's pinned stores. ... ok
+test_unknown_live_remains_reserved_then_recovered_unknown_blocks_downstream (test_experiment_queue.QueueTests.test_unknown_live_remains_reserved_then_recovered_unknown_blocks_downstream) ... ok
+test_v2_and_v3_store_schemas_cannot_be_mixed (test_experiment_queue.QueueTests.test_v2_and_v3_store_schemas_cannot_be_mixed) ... ok
+test_v3_rejects_dependencies_preloaded_from_another_version (test_experiment_queue.QueueTests.test_v3_rejects_dependencies_preloaded_from_another_version) ... ok
+test_v3_rejects_valid_pins_for_a_different_dispatcher_path (test_experiment_queue.QueueTests.test_v3_rejects_valid_pins_for_a_different_dispatcher_path) ... ok
+test_worker_runs_under_separate_detached_executor_controller (test_experiment_queue.QueueTests.test_worker_runs_under_separate_detached_executor_controller) ... ok
+test_bounded_ownership_and_dispatcher_contention (test_integration.IntegrationTests.test_bounded_ownership_and_dispatcher_contention) ... ok
+test_direct_prepare_and_launch_excluded_from_managed_domain (test_integration.IntegrationTests.test_direct_prepare_and_launch_excluded_from_managed_domain) ... ok
+test_final_pins_effective_spec_and_ack (test_integration.IntegrationTests.test_final_pins_effective_spec_and_ack) ... ok
+test_historical_input_drift_reported_not_global_preparation_block (test_integration.IntegrationTests.test_historical_input_drift_reported_not_global_preparation_block) ... ok
+test_publish_oserror_keeps_partial_pending_then_replays (test_integration.IntegrationTests.test_publish_oserror_keeps_partial_pending_then_replays) ... ok
+test_real_all_preparation_deaths_repair_same_reservation (test_integration.IntegrationTests.test_real_all_preparation_deaths_repair_same_reservation) ... ok
+test_released_ownership_mutations_cannot_finalize_or_release_again (test_integration.IntegrationTests.test_released_ownership_mutations_cannot_finalize_or_release_again) ... ok
+test_unknown_external_claim_and_missing_domain_fail_closed (test_integration.IntegrationTests.test_unknown_external_claim_and_missing_domain_fail_closed) ... ok
+
+======================================================================
+ERROR: test_empty_scaffold_admission_and_failed_terminal_drift_are_explicit (test_experiment_queue.QueueTests.test_empty_scaffold_admission_and_failed_terminal_drift_are_explicit)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-finite-owned-sol-v1/test_experiment_queue.py", line 624, in test_empty_scaffold_admission_and_failed_terminal_drift_are_explicit
+    self.admit([self.job("failure", "nonzero")], "scaffold")
+  File "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-finite-owned-sol-v1/test_experiment_queue.py", line 95, in admit
+    queue.enqueue(self.root, plan, queue.digest(plan))
+  File "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-finite-owned-sol-v1/experiment_queue.py", line 642, in enqueue
+    return finite_intake.enqueue(root,plan,config,_enqueue_locked)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-finite-owned-sol-v1/finite_intake.py", line 81, in enqueue
+    frontier(root);c=opened(root);key=plan['queue_id'];payload=canonical(plan)
+    ^^^^^^^^^^^^^^
+  File "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-finite-owned-sol-v1/finite_intake.py", line 51, in frontier
+    require(all(p.is_dir()and p.name in known for p in (Path(root)/'queues').iterdir()),'unknown admission not in durable intent set')
+  File "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-finite-owned-sol-v1/finite_intake.py", line 13, in require
+    def require(v,m):ex.require(v,m)
+                     ^^^^^^^^^^^^^^^
+  File "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-finite-owned-sol-v1/execution.py", line 35, in require
+    raise ExecutionError(message)
+execution.ExecutionError: unknown admission not in durable intent set
+
+======================================================================
+ERROR: test_malformed_admission_preserves_unknown_reservation_count (test_experiment_queue.QueueTests.test_malformed_admission_preserves_unknown_reservation_count)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-finite-owned-sol-v1/test_experiment_queue.py", line 638, in test_malformed_admission_preserves_unknown_reservation_count
+    state = queue.tick(self.root)
+            ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-finite-owned-sol-v1/experiment_queue.py", line 653, in tick
+    finite_intake.frontier(root)
+  File "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-finite-owned-sol-v1/finite_intake.py", line 55, in frontier
+    ex.verify_pin(json.loads(r));require(doc(directory/'receipt.json')['plan']==ex.pin(directory/'plan.json'),'accepted plan pin drift');require(digest(doc(directory/'plan.json'))==digest(plan),'intent/file plan mismatch')
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-finite-owned-sol-v1/execution.py", line 62, in verify_pin
+    require(pin(item["path"]) == item, "artifact fingerprint changed: " + item["path"])
+  File "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-finite-owned-sol-v1/execution.py", line 35, in require
+    raise ExecutionError(message)
+execution.ExecutionError: artifact fingerprint changed: /tmp/tmpyuirgmzy/queue/queues/q0/receipt.json
+
+======================================================================
+ERROR: test_missing_admission_with_reservation_freezes_other_queue_dispatch (test_experiment_queue.QueueTests.test_missing_admission_with_reservation_freezes_other_queue_dispatch)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-finite-owned-sol-v1/test_experiment_queue.py", line 710, in test_missing_admission_with_reservation_freezes_other_queue_dispatch
+    self.admit([self.job("must-wait", "hold")], "second")
+  File "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-finite-owned-sol-v1/test_experiment_queue.py", line 95, in admit
+    queue.enqueue(self.root, plan, queue.digest(plan))
+  File "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-finite-owned-sol-v1/experiment_queue.py", line 642, in enqueue
+    return finite_intake.enqueue(root,plan,config,_enqueue_locked)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-finite-owned-sol-v1/finite_intake.py", line 81, in enqueue
+    frontier(root);c=opened(root);key=plan['queue_id'];payload=canonical(plan)
+    ^^^^^^^^^^^^^^
+  File "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-finite-owned-sol-v1/finite_intake.py", line 55, in frontier
+    ex.verify_pin(json.loads(r));require(doc(directory/'receipt.json')['plan']==ex.pin(directory/'plan.json'),'accepted plan pin drift');require(digest(doc(directory/'plan.json'))==digest(plan),'intent/file plan mismatch')
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-finite-owned-sol-v1/execution.py", line 62, in verify_pin
+    require(pin(item["path"]) == item, "artifact fingerprint changed: " + item["path"])
+            ^^^^^^^^^^^^^^^^^
+  File "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-finite-owned-sol-v1/execution.py", line 44, in pin
+    require(path.is_file() and not path.is_symlink(), "regular non-symlink file required: " + str(path))
+  File "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-finite-owned-sol-v1/execution.py", line 35, in require
+    raise ExecutionError(message)
+execution.ExecutionError: regular non-symlink file required: /tmp/tmp0xsm46ia/queue/queues/first/receipt.json
+
+======================================================================
+FAIL: test_filesystem_exists_without_producer_terminal_never_admits_dependency (test_experiment_queue.QueueTests.test_filesystem_exists_without_producer_terminal_never_admits_dependency)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-finite-owned-sol-v1/test_experiment_queue.py", line 373, in test_filesystem_exists_without_producer_terminal_never_admits_dependency
+    self.run_queue()
+  File "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-finite-owned-sol-v1/test_experiment_queue.py", line 105, in run_queue
+    return self.wait(done)
+           ^^^^^^^^^^^^^^^
+  File "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-finite-owned-sol-v1/test_experiment_queue.py", line 77, in wait
+    self.fail("queue fixture timeout: " + repr(logs))
+AssertionError: queue fixture timeout: []
+
+----------------------------------------------------------------------
+Ran 40 tests in 78.735s
+
+FAILED (failures=1, errors=3)

@@ -1,0 +1,22 @@
+# Preserved failures and changes
+
+`tests-integration-first.log` ran the unchanged original 32 queue tests plus eight new integration tests: 40 tests in 78.735 s, one failure and three errors. The new module imported the original Fixture TestCase, so unittest discovered the full inherited class. This discovery was accidental; the coverage and failures are preserved, not discarded.
+
+| Case | Classification and concrete evidence | Resolution |
+|---|---|---|
+| `test_filesystem_exists_without_producer_terminal_never_admits_dependency` | Actual integration regression: the new broad corruption handler retained a pre-intent reservation when an output directory already existed. Original test expected a known never-launched prelaunch deferral; producer never became terminal and `run_queue` timed out. | Only the new-attempt, before-intent output-freshness rejection now raises typed `LiveInputDrift`, following original unlaunched deferral. A partial intent with an unexpected output remains ambiguous/corrupt and is not released. Original test passes unchanged. |
+| `test_empty_scaffold_admission_and_failed_terminal_drift_are_explicit` | Untracked `queues/scaffold/jobs` was created by the test without a lifecycle intent. `finite_intake.frontier` rejects it before enqueue. This frontier function is AST-identical to frozen finite V2; it is not caused by executor integration. | Explicit successor test asserts no adoption, zero intents/no execution root, then checks the original failed-terminal-drift quarantine in a separate clean generation. |
+| `test_malformed_admission_preserves_unknown_reservation_count` | ACCEPTED receipt pin verification fails at frontier before returning a status observation. This exact early exception is inherited from finite V2. The test assumed original V3's observation API. | Successor test asserts tick/finalize reject and the live reservation pin remains unchanged, with no release, final receipt or extra reservation. It does not claim the old observation API returns a count. |
+| `test_missing_admission_with_reservation_freezes_other_queue_dispatch` | Missing ACCEPTED receipt fails frontier at the attempted second enqueue. Original V3 allowed enqueue then reported unknown reservation at tick; finite V2 rejects earlier. | Successor test asserts enqueue/tick rejection, unchanged first reservation/intent count, no second queue/executor attempt and no release. |
+
+`test_compatibility.SuccessorQueueTests` inherits every original test and overrides only the three explicitly changed finite-intake API cases. `test_experiment_queue.py` remains byte-identical to the frozen predecessor. The original full failing log remains evidence; no report says that unchanged original class passes all tests.
+
+`tests-failure-corrections.log`: five targeted checks pass, including the unchanged original preexisting-output test, the three successor cases and ownership mutation coverage.
+
+`tests-gate-negative-before-fix.log`: a newly added actual tiny executor negative **failed**, showing that held dispatcher flock plus matching pinned reservation could still launch after accidental admission receipt corruption. This was a real managed gate hole, not a fixture mismatch. Managed prepare/launch now perform bounded read-only ACCEPTED lifecycle/plan/receipt/scaffold/seal validation before acquiring ownership lock; `tests-manager-admission-correction.log` has four targeted passes. This check neither imports queue code nor trusts lock possession alone.
+
+Root-marker downgrade was also corrected before freeze: a recognized managed root rejects mismatching marker execution_root, and a symlinked managed execution root cannot turn into an unmanaged domain. Positive standalone handling for an unrelated parent marker remains tested. `tests-domain-corrections.log` and `tests-final-hardening.log` retain targeted results.
+
+A retry of an existing exact ownership record now explicitly fsyncs its file and parent directory. `tests-final-hardening.log` checks both calls and propagation of an invented fsync error; this is not a real power-loss or filesystem fault proof. Process-death and ordinary publication error fixtures remain distinct.
+
+`tests-phase-one-70.log` and `tests-phase-two-71.log` are intermediate passing runs with then-current source, not final-source evidence. Their cleanup observations are retained separately. The final source is assessed by `tests-final.log` and the exact pins in evidence.json.
