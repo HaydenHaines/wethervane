@@ -1,0 +1,45 @@
+# Finite intake lifecycle core V1 — isolated research, not a queue-v3 fix
+
+Thirteen tests pass in0.323s. This source-bound SQLite bookkeeping core implements OPEN→SEALED→FINALIZED and recoverable final-receipt projection for tiny fixtures. It does not integrate the actual queue-v3 dispatcher/executor or establish production/thousands-cycle readiness. All original queue/review packets and owner jobs remain unchanged.
+
+## Contract
+
+initialize binds exact core.py path/hash and absolute store root. create_run creates an explicitly identified finite generation with immutable empty policy; generation IDs are never silently reopened. OPEN accepts a fresh(jobID,pinned-input) record. Exact same accepted request is idempotent even after seal/finalization; it acknowledges prior membership, not new intake. Changed duplicates reject. New post-seal job IDs reject without writing the DB. A new finite generation requires explicit create_run with a new ID; runs are separate admission sets, not automatic successor computation.
+
+Every enqueue,seal,terminal-record and finalize operation acquires the same intake.lock flock and BEGIN IMMEDIATE SQLite transaction. Seal records a digest of the complete accepted sorted admission set in the transaction changing state to SEALED. Therefore a concurrent intake either commits first and belongs to the sealed set, or observes the seal and rejects. No snapshot completion implies finality while OPEN.
+
+Finalization requires SEALED, an unchanged admission digest and a revalidated terminal evidence record for every accepted job; missing/unknown/pending, corrupt identity or changed input/evidence blocks it. Empty is rejected by default; explicit_empty policy produces disposition explicit_empty, never accepted execution. Terminal failure/blocked/cancelled dispositions permit terminal_with_failures bookkeeping, never all_succeeded. Every final record says qualification unassessed. A status() result is explicitly metadata only; consumers must use finalize() for evidence/projection revalidation, not treat a bare FINALIZED row/JSON marker as currently verified evidence.
+
+**Critical scope:** InventedWorkflowTerminalV1 is a fixture-only terminal contract, not authenticated proof that any real process ran or was reaped. The supplied fixture pins and content are rehashed and identity checked, but a cooperating trusted producer issues them. No queue-v3 receipt, scientific status or arbitrary original executor receipt is silently accepted. Real dependency/terminal/release/liveness reconciliation is an adapter gap below. Tests create no scientific jobs or surviving worker jobs.
+
+## Commit and filesystem recovery
+
+SQLite default rollback journal plus synchronous=FULL is used; DB commit contains both FINALIZED and the exact canonical final bytes. The JSON receipt is only a projection. After a committed final row, crash recovery revalidates evidence and publishes/verifies the identical bytes; it never recomputes a timestamp or changes the accepted set. Existing differing receipt bytes fail, never overwrite. Projection writes a unique temporary file, fsyncs it, publishes with exclusive hard link, fsyncs the directory, removes the temporary link and fsyncs again. A returned acknowledgment follows these steps. If directory fsync raises, the API returns failure even when DB/visible receipt exist; retry verifies those bytes and repeats directory sync. Missing publication after commit is recoverable; a corrupt existing projection is an integrity failure, not silently repaired.
+
+SQLite FULL, fsync and hard-link semantics assume an honest local Linux filesystem and truthful device flushes. These tests prove process-crash behavior, not power-loss/storage-controller/NFS durability. Initial parent-directory creation, portable backup/restore, cross-filesystem migration, symlink adversaries and network filesystems are unqualified. Interrupted projection can leave unique .tmp files; they are retained inert evidence and do not affect receipt identity. No automatic scavenger was implemented. Test temporary stores are removed after all child processes exit.
+
+The mutable SQLite index is authoritative and locally owner writable. Seal digests/source binding detect tested accidental or partial changes; coordinated malicious DB/evidence rewriting by the same user can forge a coherent history. Input/terminal files are checked before commit but remain mutable, with a TOCTOU window outside cooperating writers. No immediate global historical tamper detection, cryptographic producer authentication, immutable storage or hostile same-user protection is claimed.
+
+## Actual tests
+
+Run from this directory:
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 nice -n 15 python3 -B -m unittest -v test_core
+```
+
+Twelve barrier-started real multiprocessing enqueue/seal races exercise competing OS transactions. The recorded unforced sample happened to have seal win12/12; it does not claim both stochastic schedules occurred. An additional contended-order test pauses one real transaction at its precommit seam while another process is started, then releases it; both enqueue-first and seal-first orders produce the correct accepted-set/state result. The test pause replaces only the no-op crash seam in its child, not SQLite/flock operations.
+
+Actual os._exit(91) faults cover enqueue,seal,terminal commits before/after DB commit and finalization before/after commit, before receipt publication, after publication before directory sync, and after directory sync. Recovery uses fresh DB connections and locks after the child dies. Tests verify no partial accepted job before commit, exact retry after committed enqueue, durable seal rejection, pending blocking, identical committed receipt recovery and idempotence. Additional tests cover explicit empty, failure final disposition, post-seal rejection without DB-byte mutation, wrong terminal identity, missing evidence, input/evidence drift, corrupt final projection, accidental sealed-set deletion/source-binding drift and injected uncertain directory-fsync failure. All test children are joined; no fixture job survives cleanup.
+
+The initial run failed because a changed duplicate fixture used an invalid pin and raised Integrity before the duplicate-policy rejection; the test was corrected to use a different valid pinned input. tests-first.log is preserved. A12test intermediate passing log is retained too; the final13test run is tests-final.log. No policy gate was relaxed to hide a failure.
+
+## Concrete queue-v3 integration points and unresolved transaction
+
+queue-v3/experiment_queue.py dispatcher()83–89 owns dispatcher.lock; enqueue()184–244 separately locks, validates full/partial ownership, writes jobs scaffold and plan/admission receipt, then creates job directories. tick()436+ reconciles exact dependency/result/terminal/release/liveness state under the dispatcher lock, while work()572–585 currently treats an unlocked all_jobs_recorded snapshot as finished. None of those functions reads this core or its seal, so the original race remains unfixed there.
+
+A future separately versioned adapter must use the **same authoritative dispatcher lock**, not nest core's separate lock around existing enqueue/tick calls. Factor locked internal enqueue/tick helpers to avoid reacquiring flock via a different FD/deadlocking; preserve original current_sources/module-path/store-schema rules with new source pins and refuse cross-version stores without a reviewed migration. Do not modify pinned V3 in place.
+
+The file admission and SQLite transaction cannot commit atomically. A durable ADMITTING intent with exact plan/source/attempt/output claims must be committed under the shared lock before file scaffolding; that intent must own those claims and count as nonterminal accepted/pending work if a crash interrupts any later write. Sealing must include ADMITTING intents, preventing their disappearance; exact retry repairs the same intent even after seal, while new IDs reject. Final ACCEPTED admission requires verified original plan/receipt/job scaffold, including receipt-before-job-directory crashes. An unresolved/missing/corrupt scaffold or unknown reservation blocks finalization. Never let a SQLite rollback erase ownership after durable files were written. This intent state is not implemented by the core.
+
+A real adapter must run original full reconciliation under that lock, map every admitted job's authentic outcome/dependency and exact release/terminal receipt pins into final evidence, and retain reservations for live/unknown/corrupt executor state. It must check no partial/quarantined admission or unknown reservation remains before committing final bytes. work() should report idle_open/deadline distinctly and only emit finite completion after durable seal+reconciled DB final state; filesystem output remains idempotent projection. Required integration regressions include actual V3 interrupted-admission repair, dependency mutations, owner-output collisions, live/released-reservation corruption and concurrent seal/enqueue/controller death using the real executor. This packet does not simulate those as successes.

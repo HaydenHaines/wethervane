@@ -1,0 +1,29 @@
+test_admission_set_and_source_binding_corruption (test_core.Lifecycle.test_admission_set_and_source_binding_corruption) ... ok
+test_drift_missing_corrupt_and_wrong_identity_fail_closed (test_core.Lifecycle.test_drift_missing_corrupt_and_wrong_identity_fail_closed) ... ok
+test_empty_policy_and_failure_disposition (test_core.Lifecycle.test_empty_policy_and_failure_disposition) ... ok
+test_enqueue_commit_crashes (test_core.Lifecycle.test_enqueue_commit_crashes) ... ok
+test_exact_retry_and_rejected_postseal_no_mutation (test_core.Lifecycle.test_exact_retry_and_rejected_postseal_no_mutation) ... ERROR
+test_final_db_and_projection_crashes (test_core.Lifecycle.test_final_db_and_projection_crashes) ... ok
+test_open_cannot_finalize_and_pending_blocks_sealed (test_core.Lifecycle.test_open_cannot_finalize_and_pending_blocks_sealed) ... ok
+test_real_enqueue_seal_race (test_core.Lifecycle.test_real_enqueue_seal_race) ... ok
+test_seal_commit_crashes (test_core.Lifecycle.test_seal_commit_crashes) ... ok
+test_terminal_commit_crash (test_core.Lifecycle.test_terminal_commit_crash) ... ok
+
+======================================================================
+ERROR: test_exact_retry_and_rejected_postseal_no_mutation (test_core.Lifecycle.test_exact_retry_and_rejected_postseal_no_mutation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/finite-intake-core-sol-v1/test_core.py", line 36, in test_exact_retry_and_rejected_postseal_no_mutation
+    with self.assertRaises(core.Rejected):core.enqueue(self.root,'r','j',{'input':{**self.payload['input'],'bytes':0}})
+                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/finite-intake-core-sol-v1/core.py", line 72, in enqueue
+    verify(payload['input'])
+  File "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/finite-intake-core-sol-v1/core.py", line 12, in verify
+    if filepin(p['path'])!=p:raise Integrity('pinned evidence drift')
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+core.Integrity: pinned evidence drift
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.281s
+
+FAILED (errors=1)
