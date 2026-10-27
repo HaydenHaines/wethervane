@@ -1,0 +1,39 @@
+{
+  "schema": "QueueFiniteDecodeMemoContextIndependentReviewLunaV1",
+  "target": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-finite-decode-memo-sol-v1",
+  "frozen_source_pins": {
+    "execution.py": "6cb2a3e94be5326e94447fe25df40333498d405978b20705500c96a64ac233f0",
+    "experiment_queue.py": "76435714a5be8cb5dac72705b25d6301cda6cab029d3eded4544cfb31bea87e2",
+    "test_decode_memo.py": "0ddca07899f8bdb76f2d801de92328354a701f4f8a4376ddc4c59974a7ace887",
+    "source-pins.json": "3598226c419cf7d50593aafcc31fbcdb3fb4df43d955878d9cb10b26788a7f7f",
+    "evidence.json": "308befb31d59edd9e97a98afef6828570bac69b63ec08e87b3617baebc2544d6"
+  },
+  "all_15_frozen_source_pin_entries_match": true,
+  "source_pin_mismatches": [],
+  "probe": {
+    "source": "context_probe.py",
+    "source_sha256": "45092e521d95ebcfd91fb59ea336c0951fa8c51b90b2aa9bbacb40e9db970b23",
+    "result": "context-probe-result.json",
+    "result_sha256": "e8a352d7b9c18807ecb3f3271c945e42352034dd3c52121f43f66098cb68de79",
+    "scratch_imports": {
+      "execution.py": "6cb2a3e94be5326e94447fe25df40333498d405978b20705500c96a64ac233f0",
+      "run_receipts.py": "a7e78b822207109e0257adce9abb6493c53a0d93158177131ade76c0d874e73e",
+      "ledger.py": "d65cea890ecf9b456f8b9625d173f15dac1e7fa94bb618d3407e26f368ee220a"
+    },
+    "normal_independent_thread_empty_context": true,
+    "explicit_copy_context_shares_same_mutable_memo": true,
+    "copied_context_can_repopulate_after_owner_scope_clear": true,
+    "stale_copied_context_rejects_new_decode_scope_as_nested": true,
+    "asyncio_task_inherits_scope_and_can_resume_after_owner_clear": true,
+    "async_task_context_cannot_start_new_scope_until_reset": true
+  },
+  "scope_assessment": {
+    "current_queue_entrypoints_are_synchronous_no_await_sites": true,
+    "README_explicitly_excludes_arbitrary_copied_context_async_service_api": true,
+    "current_synchronous_queue_blocker": false,
+    "future_async_or_manually_context_copied_manager_blocker": true,
+    "concurrent_copied_contexts_have_no_memo_lock": true,
+    "classification": "Documented boundary, not a defect in current synchronous queue paths. Do not reuse this memo scope in async/copy_context manager APIs or concurrent copied contexts without an active-generation guard and synchronization design."
+  },
+  "not_retested_to_avoid_overlap": "Primary reviewer is independently testing mutable return aliasing/deepcopy, fork/PID, cache bounds, stale byte/error behavior, the full targeted suite, and inherited regression. This packet does not claim those tests independently."
+}
