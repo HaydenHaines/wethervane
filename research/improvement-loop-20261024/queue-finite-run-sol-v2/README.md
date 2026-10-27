@@ -1,0 +1,19 @@
+# Finite-run queue integration research V2
+
+Frozen separately for independent review. V1 and original V3 remain unchanged. This is **queue-admission containment prevention**, not general filesystem or direct-executor output isolation. No production adoption, owner change, scientific run, full regression or thousands-cycle claim.
+
+The admission-only reproduction in `../queue-output-overlap-counterexample-sol-v1/` shows that both original V3 and finite-run V1 accept `/owned`, `/owned-other`, `/owned/child` together and a later `/owned/another-child`. Paths are absolute/canonical but that does not prohibit nesting. No execution store or output directory was created by that reproduction. The unchanged executor hashes complete output-directory strings for its global claims: those claims distinguish exact paths and **do not reject ancestor/descendant paths**. Direct calls to that executor remain outside this new protection. All launches in the queue execution domain must pass through this dispatcher; it does not sandbox a child that deliberately writes outside its declared output directory.
+
+V2 introduces distinct store/lifecycle/marker/final schemas and exact V2 source-path pins; it refuses V1 stores rather than migrating them. It adds component-aware `Path.is_relative_to` pairwise tests:
+
+- Every pair of same-plan output directories rejects equality or containment. The three-path intervening lexical sibling case and reversed ordering are tested; sorted adjacency is not used.
+- Original V3 partial-plan and accepted-plan ownership comparisons now include containment. Existing exact, fully authenticated prelaunch resumption remains permitted by the unchanged original proof checks.
+- All ADMITTING intent claims include containment even before any queue files exist. Exact same-plan retries remain repair, not a second intake.
+
+Accepted claims retain original history-wide scans. This is not a performance index. Canonical path checks occur through the original execution-spec validator; symlink swaps and coherent hostile owner rewrites are not made safe by lexical component comparisons.
+
+All other finite lifecycle behavior and trust assumptions follow the frozen V1 contract preserved verbatim in `BASELINE-V1-CONTRACT.md`; its V1 version labels and historical 20-test result refer to that predecessor. In particular, ADMITTING blocks dispatch until exact repair, enqueue/seal/finalize share dispatcher flock plus SQLite transactions, finalization runs original reconciliation and revalidates exact evidence, empty needs explicit policy, failures remain failures and receipt publication uses reviewed nonce-exclusive fsynced projection. Finalization can dispatch ready work and then reject as pending. Owner-writable SQLite, cooperating writers and reliable local fsync/SQLite/filesystem semantics remain assumptions. No external immutable witness or hostile-owner rollback protection exists.
+
+`sh run_tests.sh` ran at nice15: **22 tests passed in 10.892 s** (`final-tests.log`). Fourteen new tests plus eight selected unchanged inherited executor tests. The two added tests cover same-plan ancestor/descendant/exact pairs including the intervening sibling, accepted cross-plan and pre-file pending intent conflicts in both orientations and exact paths, and allow non-overlapping `/owned-other`. Inherited authenticated prelaunch resumption still passes. A post-run narrow `/proc` command-argument scan found zero fixture/executor matches. Temporary directories were removed. No peak temporary disk, RSS or CPU usage was measured.
+
+The full original suite, direct-executor containment rejection, setup-crash matrix, hostile path mutation, NFS/power loss/disk-full and long-run scale remain unverified or unsupported, as appropriate. This successor does not retrofit protection into any old queue or store. Independent review must challenge both containment and lifecycle semantics before use.
