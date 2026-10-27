@@ -1,0 +1,53 @@
+--- original
++++ candidate-v2
+@@ -162,7 +162,12 @@
+ 
+ 
+ def mixture_moments(design, events, scenarios):
+-    """Moments under caller-supplied shared scenarios and conditional independence."""
++    """Moments for a normalized working simplex of supplied scenarios.
++
++    Only near-unit synthetic scenario weights are accepted. Normalizing them
++    here is a numerical convention for this isolated mixture, not a policy
++    for protected upstream population-parent masses.
++    """
+     _design(design)
+     if not isinstance(events, (tuple, list)) or not isinstance(scenarios, (tuple, list)) or not scenarios:
+         raise ValueError('Explicit events and nonempty scenario list required')
+@@ -171,19 +176,29 @@
+         raise ValueError('Event IDs must be distinct')
+     for scenario in scenarios:
+         _scenario(design, scenario)
+-    if not math.isclose(math.fsum(s.weight for s in scenarios), 1, rel_tol=0, abs_tol=1e-12):
++    weight_sum = math.fsum(s.weight for s in scenarios)
++    if not math.isclose(weight_sum, 1, rel_tol=0, abs_tol=1e-12):
+         raise ValueError('Scenario weights must sum to one')
++    # Exact rational arithmetic avoids cancellation when a near-zero-weight
++    # first scenario has a much larger conditional mean than the rest. It is
++    # intentionally limited to this synthetic prototype, not a scalable fit.
++    raw_weights = [Fraction.from_float(float(s.weight)) for s in scenarios]
++    exact_weight_sum = sum(raw_weights, Fraction(0))
++    weights = [w / exact_weight_sum for w in raw_weights]
+     moments = [[conditional_moments(design, event, scenario) for event in events] for scenario in scenarios]
+-    means = [math.fsum(s.weight * moments[i][j]['mean'] for i, s in enumerate(scenarios))
+-             for j in range(len(events))]
++    conditional_means = [[Fraction.from_float(float(m['mean'])) for m in row] for row in moments]
++    exact_means = [sum((weights[i] * conditional_means[i][j] for i in range(len(scenarios))), Fraction(0))
++                   for j in range(len(events))]
++    means = [float(x) for x in exact_means]
+     covariance = []
+     for j in range(len(events)):
+         row = []
+         for k in range(len(events)):
+-            shared = math.fsum(s.weight * (moments[i][j]['mean'] - means[j]) *
+-                               (moments[i][k]['mean'] - means[k]) for i, s in enumerate(scenarios))
+-            within = math.fsum(s.weight * moments[i][j]['variance'] for i, s in enumerate(scenarios)) if j == k else 0.0
+-            row.append(shared + within)
++            shared = sum((weights[i] * (conditional_means[i][j] - exact_means[j]) *
++                          (conditional_means[i][k] - exact_means[k]) for i in range(len(scenarios))), Fraction(0))
++            within = sum((weights[i] * Fraction.from_float(float(moments[i][j]['variance']))
++                          for i in range(len(scenarios))), Fraction(0)) if j == k else Fraction(0)
++            row.append(float(shared + within))
+         covariance.append(row)
+     return {'event_ids': [e.event_id for e in events], 'eligible': totals, 'means': means,
+             'covariance': covariance, 'conditional_event_independence_assumed': True}
