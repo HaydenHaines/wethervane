@@ -1,0 +1,24 @@
+{
+  "schema": "QueueOverlapMicrobenchIndependentReviewV1",
+  "verdict": "The isolated microbenchmark uses the intended old/new overlap functions from exact pinned execution.py sources and measures only disjoint, same-depth synthetic sibling paths. A bounded rerun produced similar trends. It supports a narrow function-level timing observation, not actual queue throughput, process scaling, or production feasibility.",
+  "source_identity": {
+    "old_function": "queue-finite-owned-sol-v1/execution.py overlap(left,right) at lines362-364: Path.is_relative_to in both directions.",
+    "new_function": "queue-finite-ancestor-sol-v1/execution.py overlapping_outputs at lines367-381: Path component ancestry sets.",
+    "source_comparison": "source-comparison.json pins only execution.py as changed in the runtime; separate property tests cover ordered/duplicate/root/lexical paths, prefix counterexample, randomized cases and canonical symlink validation.",
+    "microbench_behavior": "It imports each exact module from the pinned packet path, creates sibling absolute paths with equal depth, computes old pairwise any-overlap and new set-based overlap, and raises on disagreement. The synthetic workload is all nonoverlapping; old path is forced through n(n-1)/2 checks."
+  },
+  "result_assessment": {
+    "original_measurements": "For n=50,150,300, original median old/new seconds are 0.03578/0.001159, 0.32105/0.003374, and 1.32140/0.006809 (about 31x,95x,194x).",
+    "independent_rerun": "Bounded exact-script rerun at n=50,150,300 produced 0.03555/0.001146, 0.32424/0.003459, and 1.33200/0.006741 (about 31x,94x,198x). The original result records affinity CPU2; my rerun reported affinity CPUs0\u201311. The relative pattern persisted under a different allowed affinity.",
+    "resources": "Result reports max RSS about25.4MiB. The benchmark allocates at most300 short path strings and small sets; this does not measure full queue/store memory."
+  },
+  "limitations_and_findings": [
+    "The old comparator's all-pairs behavior is measured only on disjoint siblings; overlapping inputs short-circuit old any() and new ancestor detection. The benchmark is therefore a selected healthy-admission/worst-case scan for old, not a representative conflict mix.",
+    "The benchmark file is not self-pinned inside original result.json, and its run command/time is absent there. The original JSON pins the execution module hashes, not the harness hash. This weakens original-run provenance; this review pins the harness and independently reruns it.",
+    "One interpreter process, three interleaved trials in a fixed old-then-new order, shared host. No process-level repetition, warmup protocol, raw queue history, database scans, hash checking, locks, filesystem durability, dispatch, cleanup, concurrent clients, or actual admissions are measured.",
+    "At n=300 there are 44,850 old pair comparisons. No inference is justified for thousands of queue entries because other tick scans and repeated input/source hashing remain outside this microbenchmark; runtime complexity and path-depth memory are documented separately.",
+    "The code uses direct module imports, but main-guarded queue entrypoints are not invoked. No real queue, model, owner job, or worktree source mutation occurred.",
+    "microbench.py observes os.sched_getaffinity(0) but does not set or verify a requested CPU mask; the original CPU2 context is asserted by result metadata, not enforced by the script itself."
+  ],
+  "scope": "Synthetic path helper comparison only; no claim of queue throughput or scientific cycles."
+}
