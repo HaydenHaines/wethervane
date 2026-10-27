@@ -1,0 +1,42 @@
+{
+  "schema": "HouseRecoveredReleaseWatchPlanV1",
+  "issued_at": "2026-10-26T22:37:10.850146+00:00",
+  "status": "prepared_pending_recovery",
+  "recovery_pid": 1966453,
+  "recovery_plan": {
+    "path": "research/house-precision-recovery-20261026-v1/context-recovery-plan-v1.json",
+    "sha256": "34122b314cdfda8ad7fd8b85f66c6f648b634a8bbdc0d9e0c42543f17a8fdffc"
+  },
+  "input_pins": [
+    {
+      "path": "research/house-precision-recovery-20261026-v1/watch_recovered_release.py",
+      "sha256": "cf95cd16c5ed10c6fed5c2f40366c95f6a506b9c422c4450eadc66844da3fad8"
+    },
+    {
+      "path": "research/house-precision-recovery-20261026-v1/test_watch_recovered_release.py",
+      "sha256": "0a7443a485b5095480131c3136e7f1cfb7908b430627b5c06d68a8396ac2b45e"
+    },
+    {
+      "path": "research/house-precision-recovery-20261026-v1/prepare_recovered_selection.py",
+      "sha256": "54642ea9ec02ac5521fe8467ff414a6074438fcdaab3b7ed5f2f778758725569"
+    },
+    {
+      "path": "research/house-precision-recovery-20261026-v1/test_prepare_recovered_selection.py",
+      "sha256": "1112b251db01534e1783040241508afbcfef6591b1f51fd7f7601bdf0ad884b2"
+    },
+    {
+      "path": "research/house-live-correction-20261026-v2/release-preparation-plan-v1.json",
+      "sha256": "4d7b1ee3730b48d12d640eff6d5c15264925007b3347ed22569c9b39fc123436"
+    },
+    {
+      "path": "research/house-live-correction-20261026-v2/selection-plan-candidate-v3.json",
+      "sha256": "986e403de155ce08e54623369626145c2b3f0d8d6489ee8817048b4efab1e469"
+    }
+  ],
+  "selection_destination": "recovered-release-selection-v1",
+  "release_destination": "release-reviewed-recovered-v1",
+  "minimum_free_disk_bytes": 21474836480,
+  "minimum_available_ram_bytes": 8589934592,
+  "publication_qualified": false,
+  "scope": "After exact recovery exits, require passing recovery and all16 explicit preflight; privately prepare scientific/native/expected-error packet. No website operation."
+}

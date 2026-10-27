@@ -1,0 +1,56 @@
+{
+  "schema": "HouseContextPrecisionRecoveryReceiptV1",
+  "at": "2026-10-27T00:19:33.382291+00:00",
+  "plan": {
+    "path": "research/house-precision-recovery-20261026-v1/context-recovery-plan-v1.json",
+    "sha256": "34122b314cdfda8ad7fd8b85f66c6f648b634a8bbdc0d9e0c42543f17a8fdffc"
+  },
+  "stages": [
+    {
+      "label": "source-queue",
+      "return_code": 0
+    },
+    {
+      "label": "source-binding",
+      "return_code": 0
+    },
+    {
+      "label": "source-audit",
+      "return_code": 0
+    },
+    {
+      "label": "combine",
+      "return_code": 0
+    },
+    {
+      "label": "combined-binding",
+      "return_code": 0
+    },
+    {
+      "label": "combined-audit",
+      "return_code": 0
+    }
+  ],
+  "publication_qualified": false,
+  "status": "context_precision_and_audits_passed",
+  "combined_receipt": {
+    "path": "research/house-live-correction-20261026-v2/combined-fp-recovery-v1/house-current-comparison-house_relative_context_v1-fp/receipt.json",
+    "sha256": "07c83161bf7b2ed7e3d000a1715ee12d8dcd7e6f58cf7ef3fc8aaf7225b02e70"
+  },
+  "combined_binding": {
+    "path": "research/house-live-correction-20261026-v2/precision-recovery-context-v1/combined-reviews/binding.json",
+    "sha256": "a916c532f8ab450e08430ce716898a5fd8d7f896422dfae29132b3e56fd80068"
+  },
+  "combined_audit": {
+    "path": "research/house-live-correction-20261026-v2/precision-recovery-context-v1/combined-reviews/audit.json",
+    "sha256": "ab50592bc1aac8e1765c3055c5b5434d1c238391a252a3c87cf5f69685d5d2f1"
+  },
+  "prior_combination_statuses": {
+    "house-current-polling": "passed",
+    "house-current-comparison-house_relative_lean_v1-fp": "passed",
+    "house-current-comparison-house_relative_context_v1-fp": "diagnostic_failure",
+    "house-current-cycle-high": "diagnostic_failure",
+    "house-current-error-high": "passed"
+  },
+  "remaining": "Inspect all other scenario gates, prepare a new explicitly reviewed selection and release plan, then website-owner integration."
+}

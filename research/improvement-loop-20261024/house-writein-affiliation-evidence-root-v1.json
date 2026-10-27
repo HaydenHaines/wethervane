@@ -1,0 +1,29 @@
+{
+  "schema": "HouseWriteinAffiliationFrontendEvidenceV1",
+  "recorded_at_utc": "2026-10-27T00:50:50.325307+00:00",
+  "branch": "deploy/siteground",
+  "commit": "317ff150f012871aec6c71ae680d7e76eec5b4db",
+  "base": "0d71d82e745c37b88abe72aca0a3369f2cb59b69",
+  "files": {
+    "components/HouseLiveResults.tsx": {
+      "sha256": "909d46fa4cbca2c2972467b2becb6a2090028af6ca24987b279875d3628a0a8d",
+      "bytes": 22715
+    },
+    "tests/house-live-results.test.mjs": {
+      "sha256": "846548aa5293880af530379470d5a9e0cf627dbdb11e2bdc618f5019967aa6ce",
+      "bytes": 52068
+    }
+  },
+  "issue": "Validated declared write-in candidates may have null party_label; the prior race-focus member line rendered their aggregation group O as if affiliation.",
+  "change": "Show Party affiliation not listed and Declared write-in for null; retain a supplied affiliation and also show declared write-in. Outcome group and actual forecasts unchanged.",
+  "validation": {
+    "red_test": "Targeted invented valid input failed before implementation",
+    "render": "node --experimental-strip-types --test tests/house-live-results.test.mjs: 7 passed, 0 failed, 4 browser tests skipped",
+    "typecheck": "npm run typecheck: exit0",
+    "production_build": "Node22 webpack Next production build exit0; one CPU, 3GiB MemoryMax",
+    "independent_review": "Sol reviewed parsed native/view data path and both known/unknown cases, no edits, same targeted tests pass",
+    "push": "origin/deploy/siteground updated to exact commit",
+    "github_ci": "run 40428923282 was in_progress at initial observation",
+    "siteground": "As of initial post-push request the public HTML still served previous metadata. Actual SiteGround deployment status unknown; no new roster or forecast published by this change."
+  }
+}

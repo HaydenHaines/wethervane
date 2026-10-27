@@ -1,0 +1,41 @@
+{
+  "schema": "M01NormalizationEquivalenceReviewLunaV1",
+  "status": "pointwise_checks_supported_normalization_unverified",
+  "review_scope": "read-only interpretation of fixed-cut target, completed dynamic and fixed-B pointwise comparisons, and prior-block collapse hypothesis; no model execution",
+  "core_target": {
+    "per_parent": "q_i(psi) = K_i(psi) / Z_i, where K_i = prior_D(psi|U_i) * joint_likelihood and Z_i = integral K_i dpsi, 0 < Z_i < infinity",
+    "outer_mixture": "p_cut(U_i,psi) = w_i q_i(psi), preserving original upstream w_i (M01 masses are 1/8)",
+    "forbidden_for_this_target": "normalizing w_i*Z_i across parents; that changes the protected cut into an evidence-updated joint posterior"
+  },
+  "evidence_assessment": {
+    "dynamic": "V3 completed prescribed 27 pointwise calls (8 parents x 3 points plus parent0 revisit); this supports call/pointwise numerical reuse at those states only.",
+    "fixed_B": "independent native parent index 1 anchor passed at 3 common states, including all factor entries, rates and physicals within declared tolerance; maximum logp error 1.7578713595867157e-8 and factor error 1.30385160446167e-8. Two scalar finite-difference comparisons are not analytic or full 662-coordinate gradient verification.",
+    "missing": "Native fixed baselines for parent indices 2–7 remain absent. No Z_i, normalized conditional bank, inference diagnostics, or prediction qualification is established. Fixed outer masses remain 0.125.",
+    "normalization": "Pointwise equality at finite states and gradient checks do not establish 0<Z_i<infinity, numerical integration accuracy, conditional convergence, or adequate support/tail exploration. A proper per-parent conditional bank plus diagnostics is needed before mixing predictions."
+  },
+  "counterexample": {
+    "construction": "Eight equal-mass parents; each conditional kernel is constant over two states, with seven kernels (1,1) and one (2,2). Thus all conditional laws are exactly (1/2,1/2), but Z=(2,...,2,4).",
+    "cut": "retains parent masses 1/8; an observable unique to the last parent has probability 1/8",
+    "evidence_reweighting": "would assign 1/9 to each of seven parents and 2/9 to the last; that observable becomes 2/9",
+    "implication": "within-parent evidence/normalization must not update protected outer masses under population_cut_v1"
+  },
+  "feasible_next_tests": [
+    "Complete the independently source-pinned fixed-state native baselines for parents 2–7 if the approved exhaustive source-equivalence proof is not accepted; compare identical full points, all factor ownership and physical outputs, with masses kept outside each logp.",
+    "For each parent separately, build a genuinely normalized conditional bank or validated integration/importance estimate; check support, finite normalizer, ESS/error and full conditional MCMC diagnostics. Normalize weights only within parent, then combine parent-specific rows using original 1/8 masses.",
+    "If using a collapsed frailty representation, compare reduced density and theta-gradient pullback against original logp after accounting exactly for the normalized transformed nuisance-prior block and Jacobian; raw full-coordinate pointwise logp equality is not the claim.",
+    "On reconstructed complete rows, verify one shared kappa per row and all event frailties conditionally generated from it, then compare joint prediction law against the unchanged prediction kernel. Preserve parent/row/RNG lineage; test active-count and additive-poll-floor counterexamples before claiming observed-likelihood factorization."
+  ],
+  "frailty_collapse": {
+    "status": "source-algebra hypothesis/design only; not implemented or compiled-verified",
+    "condition": "If every observed likelihood factor is independent of kappa and all 54 G_e after exact source-level cancellation, integrating normalized LogNormal(kappa) and conditional Gamma(G_e|kappa) priors leaves the theta marginal unchanged.",
+    "not_pointwise": "Removing kappa/G changes dimension and removes their prior density/Jacobian. Equality is only a marginal-law claim; compare theta gradients in shared coordinates with the correct transformed prior accounting.",
+    "joint_prediction": "For each retained complete row, draw one kappa and then all 54 event G values conditionally on that same kappa in pinned event order; recompute event and category intensities and use the existing shared-event participant/prediction path. Independent per-event kappa, G=1, or reused frailties changes joint predictions.",
+    "counterexamples": "An observed absolute-count/report factor involving G, additive poll epsilon preventing common-G cancellation, or any hidden nuisance-dependent observed factor defeats prior-only collapse. The exact toy supports its invented discrete-kappa math only, not the actual continuous-kappa compiled model."
+  },
+  "distinction_from_owner_experiment": "The owner's event-shape coordinate experiment retains latent event-shape variables and changes coordinates; this review's frailty-collapse route would remove a prior-only block from the observed likelihood and reconstruct it for prediction. They are distinct alternatives. No claim is made that either remedies sampling diagnostics or improves predictive skill.",
+  "limits": [
+    "No full-parent normalization, inference, fit, sampler, forecast score or layer contribution was evaluated.",
+    "The complete forecasting goal requires matched predictive evaluation; correctness/parity alone cannot rank a layer or establish improvement.",
+    "No external source claim was needed; review is grounded in the local pinned scientific contract and experiment evidence."
+  ]
+}

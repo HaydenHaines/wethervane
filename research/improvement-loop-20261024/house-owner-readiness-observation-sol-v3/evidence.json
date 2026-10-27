@@ -1,0 +1,89 @@
+{
+  "observedAt": "2026-10-27T00:47:43.600577+00:00",
+  "status": "no_handoff_release_watcher_deliberately_held_roster_reconciliation_pending",
+  "pins": {
+    "/home/hayden/projects/ballotmancy-house-benchmark/research/house-precision-recovery-20261026-v1/recovered-release-watch-plan-v1.json": {
+      "sha256": "757ff2d4403605328783e96233646e49c521c5e0e5d01c1ca03a617dc056a736",
+      "bytes": 1948,
+      "copy": "house-owner-readiness-observation-sol-v3/snapshots/00-recovered-release-watch-plan-v1.json"
+    },
+    "/home/hayden/projects/ballotmancy-house-benchmark/research/house-precision-recovery-20261026-v1/recovered-release-watch-hold-ak-roster-v1.json": {
+      "sha256": "bbd4dcd5b23cc200c178635ca61cd48a06c79e21c7dce82b0967f65bcd986fd7",
+      "bytes": 486,
+      "copy": "house-owner-readiness-observation-sol-v3/snapshots/01-recovered-release-watch-hold-ak-roster-v1.json"
+    },
+    "/home/hayden/projects/ballotmancy-house-benchmark/research/house-precision-recovery-20261026-v1/cycle-source-launch-v1.json": {
+      "sha256": "05e79e1ca8226f79d2f8899bf6c86c80e6aa128ff25f9cd2ff143a808c9e59b1",
+      "bytes": 407,
+      "copy": "house-owner-readiness-observation-sol-v3/snapshots/02-cycle-source-launch-v1.json"
+    },
+    "/home/hayden/projects/ballotmancy-house-benchmark/research/house-precision-recovery-20261026-v1/cycle-source-execution-plan-v1.json": {
+      "sha256": "a581ca7be64a52e7518a5d02413d33dd817ce6b44aaa50412a81374fdadff6b8",
+      "bytes": 2687,
+      "copy": "house-owner-readiness-observation-sol-v3/snapshots/03-cycle-source-execution-plan-v1.json"
+    },
+    "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-correction-20261026-v2/precision-recovery-context-v1/receipt.json": {
+      "sha256": "68fdc285c5e49a9a8b300c8156be026b4fc5f52d3eb231154ba4237ee173278c",
+      "bytes": 1979,
+      "copy": "house-owner-readiness-observation-sol-v3/snapshots/04-receipt.json"
+    },
+    "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-correction-20261026-v2/precision-recovery-cycle-sources-v1/events.jsonl": {
+      "sha256": "23b0fcca2e01d90ac792f886f2e9608c60e6d4e69b970dfe43218737e0c0db4c",
+      "bytes": 3043,
+      "copy": "house-owner-readiness-observation-sol-v3/snapshots/05-events.jsonl"
+    },
+    "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-correction-20261026-v2/recovered-release-watch-v1/start.json": {
+      "sha256": "34d82dd7d267bc20203ed405887a8bcc89624dc64673e4df8b00212839a04ab5",
+      "bytes": 360,
+      "copy": "house-owner-readiness-observation-sol-v3/snapshots/06-start.json"
+    },
+    "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-correction-20261026-v2/combined-fp-recovery-v1/house-current-comparison-house_relative_context_v1-fp/receipt.json": {
+      "sha256": "07c83161bf7b2ed7e3d000a1715ee12d8dcd7e6f58cf7ef3fc8aaf7225b02e70",
+      "bytes": 1898,
+      "copy": "house-owner-readiness-observation-sol-v3/snapshots/07-receipt.json"
+    },
+    "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-correction-20261026-v2/precision-recovery-context-v1/combined-reviews/binding.json": {
+      "sha256": "a916c532f8ab450e08430ce716898a5fd8d7f896422dfae29132b3e56fd80068",
+      "bytes": 13109,
+      "copy": "house-owner-readiness-observation-sol-v3/snapshots/08-binding.json"
+    },
+    "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-correction-20261026-v2/precision-recovery-context-v1/combined-reviews/audit.json": {
+      "sha256": "ab50592bc1aac8e1765c3055c5b5434d1c238391a252a3c87cf5f69685d5d2f1",
+      "bytes": 244893,
+      "copy": "house-owner-readiness-observation-sol-v3/snapshots/09-audit.json"
+    }
+  },
+  "processes": {
+    "1966453": {
+      "present": false
+    },
+    "1972714": {
+      "present": false
+    },
+    "1981196": {
+      "startTicks": 119063939,
+      "state": "S",
+      "ppid": 1,
+      "cmdline": "/home/hayden/projects/ballotmancy-house-benchmark/.venv/bin/python /home/hayden/projects/ballotmancy-house-benchmark/research/house-precision-recovery-20261026-v1/run_cycle_sources.py /home/hayden/projects/ballotmancy-house-benchmark/research/house-precision-recovery-20261026-v1/cycle-source-execution-plan-v1.json /home/hayden/projects/ballotmancy-house-benchmark/research/house-live-correction-20261026-v2/precision-recovery-cycle-sources-v1 "
+    },
+    "2023269": {
+      "startTicks": 119711518,
+      "state": "S",
+      "ppid": 1981196,
+      "cmdline": "/home/hayden/projects/ballotmancy-house-benchmark/.venv/bin/python /home/hayden/projects/ballotmancy-house-benchmark/research/house-live-correction-20261026-v2/run_queue.py /home/hayden/projects/ballotmancy-house-benchmark/research/house-precision-recovery-20261026-v1/cycle-source-plan-v1/source-queue-2.json /home/hayden/projects/ballotmancy-house-benchmark/research/house-live-correction-20261026-v2/precision-recovery-cycle-sources-v1/source-2-queue "
+    },
+    "2023285": {
+      "startTicks": 119711617,
+      "state": "R",
+      "ppid": 2023269,
+      "cmdline": "/home/hayden/projects/ballotmancy-house-benchmark/.venv/bin/python research/house-live-correction-20261026-v2/forecast.py house-current-cycle-high predictions-fp-v6/house-current-cycle-high --draws 250000 --warmup 5000 --seed 202610261402 "
+    }
+  },
+  "contextRecoveryReceiptStatus": "context_precision_and_audits_passed",
+  "contextRecoveryPublicationQualified": false,
+  "expectedExactHandoff": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-correction-20261026-v2/release-reviewed-recovered-v1/handoff-receipt.json",
+  "expectedHandoffExists": false,
+  "watcherTerminalExists": false,
+  "ownerWritesOrJobsLaunched": false,
+  "readmeSha256": "09411babc132cee8c15a4187036635116957041f60d6f40572006a32f82faa19"
+}

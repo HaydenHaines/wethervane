@@ -1,0 +1,58 @@
+{
+  "schema": "HouseHighCycleSourceRecoveryExecutionPlanV1",
+  "issued_at": "2026-10-26T22:54:18.632849+00:00",
+  "status": "prepared_waiting_for_existing_work",
+  "program_pid": 1828317,
+  "watcher_pid": 1868637,
+  "context_pid": 1966453,
+  "program_plan": {
+    "path": "research/house-live-correction-20261026-v2/precision-extension-program-plan-v1.json",
+    "sha256": "02a283d5fa7a7067bde925b6e948dd9292879ec7c29b7ac94637a5f022446df1"
+  },
+  "watcher_plan": {
+    "path": "research/house-live-correction-20261026-v2/release-watch-plan-v1.json",
+    "sha256": "fb00f68eb92bcf9affc2cef4455a7a11913162b457f9e394a4b562b9af8e0553"
+  },
+  "context_plan": {
+    "path": "research/house-precision-recovery-20261026-v1/context-recovery-plan-v1.json",
+    "sha256": "34122b314cdfda8ad7fd8b85f66c6f648b634a8bbdc0d9e0c42543f17a8fdffc"
+  },
+  "source_plan": {
+    "path": "research/house-precision-recovery-20261026-v1/cycle-source-plan-v1/plan.json",
+    "sha256": "128e6f8c8acf327e2cb9c3350a3c3d2a08314578f293382ce9599693df972b2a"
+  },
+  "input_pins": [
+    {
+      "path": "research/house-precision-recovery-20261026-v1/run_cycle_sources.py",
+      "sha256": "867a7e8522520e5d6b18e974fb71aa2f7fd0baa7a5396490ee526202c576a575"
+    },
+    {
+      "path": "research/house-precision-recovery-20261026-v1/test_run_cycle_sources.py",
+      "sha256": "3a372b87e5672a8a0f4077e06db93c518a620e2d58c866a7a879256939a75d8c"
+    },
+    {
+      "path": "research/house-precision-recovery-20261026-v1/prepare_cycle_sources.py",
+      "sha256": "107771bfdbed7ad47d0f18dfa9c5842445c7225c75bb79083f640b382af99751"
+    },
+    {
+      "path": "research/house-precision-recovery-20261026-v1/test_prepare_cycle_sources.py",
+      "sha256": "5a0d688815e5da50ad08cc227c288e29a736a4274ba85aaf2edb5592d16688e5"
+    },
+    {
+      "path": "research/house-live-correction-20261026-v2/run_queue.py",
+      "sha256": "07538b0cfc7a71249b4528a6045e93e6de604f97ecf64d01b266cd96aabad76e"
+    },
+    {
+      "path": "research/house-live-correction-20261026-v2/prediction_binding_segments.py",
+      "sha256": "35344c4e5e80f91b183bc43d6ea3a420c791bdbf4497f6c488a42aa24b5b7520"
+    },
+    {
+      "path": "research/house-live-correction-20261026-v2/audit_prediction_segments.py",
+      "sha256": "c5b0398d1ec5ee2b193882822318ba47628372a9e3305da12460adf806f2d69d"
+    }
+  ],
+  "minimum_free_disk_bytes": 25723313086,
+  "minimum_available_ram_bytes": 17179869184,
+  "publication_qualified": false,
+  "scope": "Private sequential source work only after completed original precision and passing context recovery; per-source host capacity, concurrency, seed and exact-source reviews. No combination, selection or website operation."
+}

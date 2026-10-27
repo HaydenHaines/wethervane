@@ -1,0 +1,36 @@
+{
+  "schema": "ContinuousImprovementCheckpointV98",
+  "recordedAtUtc": "2026-10-27T00:51:02.102342+00:00",
+  "status": "active; preventive frontend write-in clarity pushed, actual House forecast still held",
+  "references": {
+    "previous": {
+      "path": "research/improvement-loop-20261024/checkpoints/continuation-v97.json",
+      "sha256": "1ab3b65b71d52d503c52cf34e05cd86d83a40ec573b8c3a5bb3e288479174223",
+      "bytes": 2771
+    },
+    "frontend_writein": {
+      "path": "research/improvement-loop-20261024/house-writein-affiliation-evidence-root-v1.json",
+      "sha256": "730730ef693a8d942b63d5e80d073dbee711d7b6dcce2b4300db5aca52f515fb",
+      "bytes": 1790
+    },
+    "house_owner": {
+      "path": "research/improvement-loop-20261024/house-owner-readiness-observation-sol-v3/evidence.json",
+      "sha256": "9e1c0016354a184334ae7d4e46f1cda86d991119865a7bdd9e0e120e71d95461",
+      "bytes": 5809
+    },
+    "normalization_review": {
+      "path": "research/improvement-loop-20261024/m01-normalization-equivalence-review-luna-v1/review.json",
+      "sha256": "9d9a9db1cd2462e8eaa7b870deb0d80e5b91a00365b503f6aa4bb80a50860e52",
+      "bytes": 5694
+    }
+  },
+  "frontend": "Pushed origin/deploy/siteground commit317ff150f012871aec6c71ae680d7e76eec5b4db. House race detail now reports unlisted party and declared write-in rather than rendering modeled O aggregation as affiliation; known party remains shown. Invented parser-to-render test failed before fix, passes after. Seven renderer tests passed, four browser tests skipped; npm typecheck and Node22 production build passed; Sol independently reviewed. GitHub workflow40428923282 initially in_progress; public site still served old metadata at initial observation, so no SiteGround deployment success is claimed. No Alaska forecast or source data changed.",
+  "house": "A deliberate owner hold at research/house-precision-recovery-20261026-v1/recovered-release-watch-hold-ak-roster-v1.json records a certified Alaska House write-in absent from frozen roster, and private handoff watcher was stopped; roster reconciliation and corrected release plan required. Precision source2 is separately active; context pass does not clear hold. Do not restart watcher against old roster.",
+  "normalization": "Luna review confirms pointwise two-parent graph checks do not establish full gradients, within-parent normalizers or posterior; fixed population_cut_v1 masses1/8 cannot be evidence-reweighted. Owner 2018 has separate event-shape coordinate research under event-shape-reparameterization-v1; do not duplicate or change owner jobs.",
+  "storage": "User retired old label/perspective worktrees and Great Lakes checkout, with branch/artifacts and restore-great-lakes-worktree.py preserved. Current frontend has no need for paths. User listed11 possible ledger-deduplicated historical files in /home/hayden/research/storage-organization-20261026/ledger-remaining-research-candidates-20261027.json SHA5aca031f30ac93cd70434dbc71e069a931a7a61d572cd016413298b9372fd096; no current/queued frontend or live exact-path readers in this session, but historical momentum score registration and Delaware acquisition do reference original paths. Restore exact bytes before corresponding historical reruns; coordinator manages storage.",
+  "next": [
+    "Confirm GitHub CI and actual SiteGround served deployment for317ff15 without assuming push equals deployment.",
+    "Coordinate with House owner on Alaska roster hold, admit/import only exact corrected reviewed native plus matching expected-error references.",
+    "Finish six-parent fixed-comparison verifier and independent review; missing dynamic finite differences per parents2\u20137 require separately reviewed witness, not fabricated evidence."
+  ]
+}
