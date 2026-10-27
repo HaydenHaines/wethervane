@@ -1,0 +1,20 @@
+test_mode_argument_does_not_validate_each_sample_mode (test_counterexamples.Counterexamples.test_mode_argument_does_not_validate_each_sample_mode) ... ok
+test_new_descendant_skips_member_authentication_before_kill_write (test_counterexamples.Counterexamples.test_new_descendant_skips_member_authentication_before_kill_write) ... ok
+test_post_popen_birth_exception_drops_cleanup_handle (test_counterexamples.Counterexamples.test_post_popen_birth_exception_drops_cleanup_handle) ... ERROR
+
+======================================================================
+ERROR: test_post_popen_birth_exception_drops_cleanup_handle (test_counterexamples.Counterexamples.test_post_popen_birth_exception_drops_cleanup_handle)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/mock-pilot-counterexample-n1zd71gc/test_counterexamples.py", line 13, in test_post_popen_birth_exception_drops_cleanup_handle
+    with self.assertRaises(PermissionError):d.start('control',{})
+                                            ^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/mock-pilot-counterexample-n1zd71gc/pilot.py", line 133, in start
+    stdout.close();stderr.close();handle=dict(process=p,name=name,identity=birth(p.pid));self.children.append(handle);return handle
+                                                                                 ^^^^^
+AttributeError: 'object' object has no attribute 'pid'
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.006s
+
+FAILED (errors=1)
