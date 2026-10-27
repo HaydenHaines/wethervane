@@ -1,0 +1,101 @@
+{
+  "schema": "M012018NUTSRemedyResearchLunaV1",
+  "status": "read_only_research_candidate_plan",
+  "checked_utc": "2026-10-26",
+  "no_execution": true,
+  "question": "Which established HMC/NUTS remedy is justified for a 2018 model that failed a predeclared zero-divergence gate, and what one candidate can be tested in a matched follow-up?",
+  "observed_owner_result": {
+    "transitions": 32000,
+    "divergences": 76,
+    "divergence_rate": 0.002375,
+    "parents_with_divergences": 8,
+    "depth_saturation": 0,
+    "gate": {
+      "divergences_required": 0,
+      "depth_saturation_required": 0,
+      "max_rhat": 1.01,
+      "min_bulk_tail_ess": 400
+    }
+  },
+  "model_inspection": {
+    "selected_choice": "candidate_iid_profile_choice_v1",
+    "person_coordinates": "hybrid_v1",
+    "standardized": true,
+    "observed_total_coordinate_centers": [],
+    "observed_total_coordinate_scales": [],
+    "unconstrained_dimension_parent0": 3101,
+    "already_noncentered": [
+      "pooled raw standard-normal multiplied by HalfNormal scale",
+      "correlated cycle raw standard-normal multiplied by Cholesky factor",
+      "final race StudentT raw multiplied by final_race_sd",
+      "community drift raw normal innovations cumulatively summed"
+    ],
+    "nuts_baseline": {
+      "sampler": "numpyro_NUTS",
+      "target_accept_prob": 0.97,
+      "warmup": 1500,
+      "draws_per_chain": 1000,
+      "chains_per_parent": 4,
+      "parents": 8,
+      "max_tree_depth": 12,
+      "adapt_step_size": true,
+      "adapt_mass_matrix": true,
+      "dense_mass": false
+    },
+    "coordinate_location_limit": "Flagged and nearby nonflagged controls have similar leading coordinate families and standardized magnitudes; this does not establish a causal geometry mechanism."
+  },
+  "predeclared_candidate": {
+    "id": "C1-target-accept-0.995",
+    "single_change": "target_accept_prob 0.97 -> 0.995",
+    "unchanged": [
+      "same exact model/provider and factor targets",
+      "same eight protected parents and original masses",
+      "same seeds and original initialization",
+      "four chains per parent",
+      "1500 tune and 1000 draws per chain",
+      "max tree depth 12",
+      "same NUTS implementation, backend, runtime and device",
+      "all diagnostics gates, including zero divergences and zero depth saturation"
+    ],
+    "prediction": "If discretization error materially causes the retained divergences, smaller adapted step sizes at target 0.995 may remove them, with reduced efficiency possible.",
+    "falsification": "Any retained divergence or any other existing conditional diagnostic gate failure means C1 does not qualify; no further target tweaking is included in C1."
+  },
+  "technical_sources": [
+    {
+      "url": "https://num.pyro.ai/en/0.15.3/mcmc.html",
+      "relevant_section": "NUTS API; target_accept_prob lines 599-602 and adaptation/mass options lines 586-599 in web-rendered version",
+      "claim": "Increasing target_accept_prob reduces adapted step size and trades speed for robustness; NUTS supports step-size and mass-matrix adaptation and diagonal/dense/block options."
+    },
+    {
+      "url": "https://mc-stan.org/docs/reference-manual/divergent-transitions.html",
+      "claim": "Higher target acceptance/smaller step can help in some cases; varying curvature may require reparameterization."
+    },
+    {
+      "url": "https://mc-stan.org/docs/2_27/stan-users-guide/reparameterization-section.html",
+      "claim": "Centered/non-centered hierarchical reparameterization is a geometry-sensitive option, often useful when data are weak."
+    },
+    {
+      "url": "https://arxiv.org/abs/1701.02434",
+      "claim": "Primary geometric treatment of HMC failure and divergence diagnostics."
+    }
+  ],
+  "local_pins": {
+    "owner_plan": "fd44e4362c6c0a35e98aae23750b2266d4ea845aecea74de3970bb358a053209",
+    "parent0_contract": "f4debf48cc2ed96281c2780a5dabd61d0abb7982625cba740f9cc3f08bf208cd",
+    "divergence_audit_result": "21a7f534922c91618d8a92d5b2075dcc9d48b381b07a199f2a989d56d6d72089",
+    "matched_controls_result": "720ff44675c0db40d0c1e4f06a222538b0d7eae464bfaaf7718c2ceb58099a29",
+    "geometry_exploration_failure": "d5487e7b4676341e654d6b683b459e00121dd0d0cf0f6e41be8c57e428c26f6c",
+    "actual_runtime_source": "9d94b4a15bb309ccdd1228fd588bd5d8ea618555f8f2ed6c93e0e54f56ee5750",
+    "actual_model_component_source": "59ff50bff5b99e79211d0592a68983f615d60a583a62ca8b2adcddfdd733786f",
+    "runtime_record": "d9b7f305242fc87e083d4c5bdd9e3198e8f814a46ef26ebc2ba8990e5f35208d",
+    "independent_challenge_readme": "522113b4762bd1ef4090f77210ee611a3d11cb84674e59d2c32971653d1ae646",
+    "independent_challenge_source_pins": "bb0927c36e869911e5d6ec55a8fd5d44229501e875b1c54c744cdcd743009a67"
+  },
+  "scope_limits": [
+    "This does not diagnose the cause or bias of the 76 divergences.",
+    "No actual model reparameterization is chosen without successful owner geometry results.",
+    "A higher target acceptance proposal is not evidence it will remove all divergences.",
+    "The original zero-divergence gate is unchanged.",
+    "No model graph, compile, fit, sampler, or owner data write was performed."
+  ]
+}

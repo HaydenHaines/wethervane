@@ -1,0 +1,58 @@
+{
+  "schema": "M012018NUTSRemedyCorrectionLunaV1",
+  "status": "issued_correction_no_execution",
+  "checked_utc": "2026-10-26",
+  "preserved_original_packet": true,
+  "corrections": [
+    {
+      "prior_phrase": "highest-information",
+      "disposition": "withdrawn",
+      "replacement": "small predeclared sampler-only probe conditional on pending owner geometry analysis and fresh source/resource review"
+    },
+    {
+      "claim": "zero observed divergences",
+      "disposition": "finite-run diagnostic gate only; not proof of zero underlying probability, a causal remedy, or absence of unexplored difficult geometry"
+    },
+    {
+      "claim": "MCSE gate",
+      "disposition": "finite mcse_mean is checked; no numeric MCSE threshold is coded in the inspected coordinator"
+    },
+    {
+      "claim": "same-seed match",
+      "disposition": "seed/init scheme can be held fixed, but changed step-size adaptation changes trajectories; this is not pathwise pairing"
+    },
+    {
+      "claim": "fixed sampling budget",
+      "disposition": "fixed 80000 chain transitions (48000 tune + 32000 retained), not fixed leapfrog counts, gradient evaluations or walltime; max depth 12 creates variable compute and possible saturation risk"
+    }
+  ],
+  "candidate_unchanged": {
+    "id": "C1-target-accept-0.995",
+    "single_change": "target_accept_prob 0.97 -> 0.995",
+    "settings_unchanged": {
+      "parents": 8,
+      "parent_masses": "original protected masses, each .125",
+      "chains_per_parent": 4,
+      "warmup_per_chain": 1500,
+      "retained_per_chain": 1000,
+      "max_tree_depth": 12,
+      "gate": "unchanged, including zero divergences and zero depth saturation"
+    }
+  },
+  "pins": {
+    "original_luna_readme_sha256": "b1b9ae0870c72192998ea818da79c08537a77899b17c189836cf73280fb2f8ff",
+    "original_luna_evidence_sha256": "8f2b110e36223128b68d781930b88627a829e0965f140a6da69c29a9d2f262f0",
+    "sol_challenge_readme_sha256": "522113b4762bd1ef4090f77210ee611a3d11cb84674e59d2c32971653d1ae646",
+    "sol_challenge_source_pins_sha256": "bb0927c36e869911e5d6ec55a8fd5d44229501e875b1c54c744cdcd743009a67",
+    "coordinator_source_sha256": "b195e21a307f6d19c9a6e486150a07c51a96159343602258140f4db7b6bb2c13",
+    "owner_plan_sha256": "fd44e4362c6c0a35e98aae23750b2266d4ea845aecea74de3970bb358a053209",
+    "retained_divergence_audit_sha256": "21a7f534922c91618d8a92d5b2075dcc9d48b381b07a199f2a989d56d6d72089"
+  },
+  "no_fit_or_sampler_run": true,
+  "limits": [
+    "A zero-flag finite run would meet the count component of the existing numerical gate only; it would not prove zero divergence probability or identify a cause.",
+    "Same seeds do not pair paths when adapted sampler dynamics change.",
+    "Transition budget is fixed, while NUTS work and walltime are not.",
+    "The original Luna packet is not modified by this addendum."
+  ]
+}
