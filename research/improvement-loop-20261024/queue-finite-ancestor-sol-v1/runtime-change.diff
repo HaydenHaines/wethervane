@@ -1,0 +1,38 @@
+--- frozen/execution.py
++++ successor/execution.py
+@@ -364,6 +364,23 @@
+     return a.is_relative_to(b) or b.is_relative_to(a)
+ 
+ 
++def overlapping_outputs(outputs):
++    """Lexical Path-component equivalent of pairwise overlap, without filesystem IO.
++
++    Callers retain canonical-path validation. Separate descendant-prefix membership
++    makes detection independent of insertion order, including root and duplicates.
++    """
++    seen = set()
++    ancestors = set()
++    for output in outputs:
++        path = Path(output)
++        if path in seen or path in ancestors or any(parent in seen for parent in path.parents):
++            return True
++        seen.add(path)
++        ancestors.update(path.parents)
++    return False
++
++
+ def ownership_intents(root):
+     directory=Path(root)/'ownership-intents';values=[]
+     if directory.exists():
+@@ -374,9 +391,8 @@
+                     and path.name==identifier(spec['attempt_id'])+'.json','ownership intent binding differs')
+             _validate(spec,False)
+             values.append((path,value))
+-    for i,(a,x) in enumerate(values):
+-        for b,y in values[i+1:]:
+-            require(not overlap(x['specification']['output_directory'],y['specification']['output_directory']),'stored overlapping ownership intents')
++    require(not overlapping_outputs(v['specification']['output_directory'] for p,v in values),
++            'stored overlapping ownership intents')
+     known={v['specification']['attempt_id']:v for p,v in values}
+     attempts=Path(root)/'attempts'
+     if attempts.exists():
