@@ -1,0 +1,11 @@
+# Independent review: finite queue and owned executor integration
+
+I reviewed the frozen `queue-finite-owned-sol-v1` source and evidence, then reproduced its bounded suite at `nice -n 15 sh run_tests.sh`: 73 tests passed in 84.378 seconds. No model graph or owner job was run. The test categories include the successor queue class (with three explicitly documented finite-intake API substitutions), finite intake, direct-executor ownership and actual tiny process integration.
+
+I also ran `probe_managed_sqlite_drift.py` using a disposable `QueueTests` temporary directory. After preparing a valid reservation, it changed the lifecycle database intent to `ADMITTING`, retained the dispatcher lock and called the managed executor launch entry. It was rejected with `managed pending admission blocks execution`; no launch-intent appeared and the reservation remained. This independently checks the database state gate in addition to the suite’s corrupted receipt-file check.
+
+Within the stated single-root, cooperating-client scope, I found no additional blocker. Source/import identity, effective dependency-substituted specification, held dispatcher gate, reservation, plan/receipt/scaffold admission, executor intent/prepared/claims, acknowledgment, released-result revalidation, and final evidence are cross-checked. Actual small-process crash/replay, unknown/live/corrupt retention, lock contention, input drift and finalization tests pass. The earlier real managed-gate hole and inherited API differences remain honestly preserved in `FAILURES.md`.
+
+The implementation is not a hostile same-user boundary or a durable-public-ledger guarantee. SQLite and local filesystem durability are assumed; power-loss, NFS and disk-full behavior are unproven. Direct standalone/legacy clients can bypass queue capacity. Individual lock waits are bounded, but full ticks and history audits are not; worst-case audit scaling is source-derived rather than measured. The 73-test result does not establish deployment readiness or thousands-cycle capability.
+
+Exact pins and the independent probe output are in `source-pins.json`, `probe_managed_sqlite_drift.py` and `probe-result.txt`. Frozen source hashes: dispatcher `6786be…796c9b`, executor `5a29ec…0424e9`, intake `900307…0bff9`, evidence `9a3f18…a71194`.

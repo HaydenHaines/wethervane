@@ -1,0 +1,57 @@
+{
+  "frozen_source_hashes": {
+    "dispatcher": "6786be8745fb4ddba713e5dda85e90f2c3ce50e814a095cddf4bbad122796c9b",
+    "evidence": "9a3f18f938496a168747eeae1a0da3a91e804c236cf61c73a14afcd760a71194",
+    "execution": "5a29ecdc6b8607d4575c4066a6056f99bc3b6aa2314a6e1da65e3badee0424e9",
+    "intake": "900307f05113791fe4ce9ac45d8e0b5b7928e0ae1feacbec9346d8094ec0bff9"
+  },
+  "independent_probe": {
+    "path": "probe_managed_sqlite_drift.py",
+    "result": "rejected before launch-intent; reservation remains present. This checks the database admission gate in addition to the suite\u2019s accepted receipt-file corruption case.",
+    "result_path": "probe-result.txt",
+    "scenario": "After a valid managed reservation/preparation, mutate the private temporary SQLite intent state from ACCEPTED to ADMITTING, retain the dispatcher lock, then invoke direct executor.launch."
+  },
+  "limitations_and_residual_risks": [
+    "No hostile same-user, external immutable witness, WORM filesystem, NFS, power-loss, disk-full, or universal uncertain-fsync guarantee. Local SQLite/FULL, flock, hard-link and fsync semantics are assumptions.",
+    "A standalone single-intent deletion negative remains documented. Legacy or noncooperating clients may bypass the managed domain; direct standalone runs are not capacity-controlled by this queue.",
+    "Lock bounds are per acquisition (requested 0.5 seconds), not a total tick deadline. Hashing, scans, filesystem stalls and repeated acquisitions remain unbounded; cubic worst-case audit scaling is source-derived and unbenchmarked.",
+    "The unchanged original queue test class is not claimed to pass unchanged: API differences are explicit; FAILURES.md preserves the initial regression and three predecessor API errors, the later fixes, and test substitutions.",
+    "No production adoption, service resilience, fairness, migration, thousands-cycle performance, scientific qualification or model/forecast capability is established."
+  ],
+  "no_model_or_owner_work": true,
+  "observed_at_utc": "2026-10-27T02:29:06.648655+00:00",
+  "review_findings": [
+    {
+      "area": "source and store identity",
+      "finding": "Current source files are path-origin checked and pinned into the store; configuration revalidates them before queue operations. The execution ownership store binds the managed domain marker, queue store and dispatcher lock identity. Old schema migration is refused. Evidence also pins the exact predecessor implementations/tests and predecessor independent review."
+    },
+    {
+      "area": "managed launch gate",
+      "finding": "A managed prepare/launch requires the held dispatcher flock open-file description and matching unreleased reservation whose effective spec hashes to the binding and appears in an ACCEPTED, plan/receipt/scaffold-verified intake. SQLite is read-only during this gate. The suite\u2019s earlier reproduced gate failure is preserved in FAILURES.md; current lifecycle gate plus the independent SQLite state probe reject stale/corrupt admission before launch intent."
+    },
+    {
+      "area": "effective specification and output ownership",
+      "finding": "Dependency outputs substitute into an immutable effective spec which is carried through binding, preparation, intent, acknowledgment and launch. Ownership audit checks reservations/effective specs, intent/prepared/job/output claims and acknowledgments. finish/verified_result/finalize re-audit released ownership; final receipt pins resulting evidence. Mutation and post-finalization tests pass."
+    },
+    {
+      "area": "crash/replay and unknown/live handling",
+      "finding": "Exact prelaunch intent/publication replay, post-publication OSError, nine preparation-death points, killed controllers, terminal/unknown status and release/result boundaries are covered by actual small subprocess fixtures. Reserved/corrupt/unknown work remains held or quarantined; there is no automatic success from missing evidence. Re-sync retries are tested with injected fsync errors."
+    },
+    {
+      "area": "direct-manager isolation",
+      "finding": "Bare direct prepare/launch is rejected inside a managed execution root. Separate standalone roots are intentionally outside the managed queue capacity and ownership domain. This is a cooperative local boundary, not protection from a same-user legacy/noncooperating writer."
+    },
+    {
+      "area": "historical input drift",
+      "finding": "The integration deliberately separates structural ownership from current runnable inputs. Historical owner claims are audited without requiring old inputs to remain live, while newly runnable specs verify current inputs at the execution gates; final observation reports historical drift."
+    }
+  ],
+  "schema": "QueueFiniteOwnedIndependentReviewV1",
+  "source_pin_file": "source-pins.json",
+  "test_reproduction": {
+    "command": "nice -n 15 sh run_tests.sh",
+    "result": "73 passed in 84.378 seconds; no failures",
+    "scope": "successor queue compatibility with three documented finite-intake substitutions, finite intake, direct executor ownership and actual tiny integration fixtures; no scientific/model work"
+  },
+  "verdict": "The frozen V1 is internally source-coherent and bounded-fixture evidence supports its stated local cooperating-manager behavior. I found no additional blocker in the stated scope; it is research code, not production-ready or a scale result."
+}
