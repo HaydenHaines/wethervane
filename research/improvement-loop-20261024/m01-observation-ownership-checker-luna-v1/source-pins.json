@@ -1,0 +1,25 @@
+{
+  "schema": "M01ObservationOwnershipCheckerIndependentReviewV1",
+  "verdict": "main schema corrections verified; availability-period consistency gap; no source authentication",
+  "files": {
+    "observation-ownership-checker-sol-v1/checker.py": "468c745bf76056a48e9641a4570141f753749067853a45124155def2957b8532",
+    "observation-ownership-checker-sol-v1/test_checker.py": "2c06f773166f1531d022aee3e30593865df9c0c0551f32a9ca9689ed07e5fe1a",
+    "observation-ownership-checker-sol-v1/evidence.json": "96bedd30d324a664aabcb9ed0a6bbb90a079055e459e06a1ea9e8323a59c5a83",
+    "m01-a2018-observation-ownership-luna-v2/aggregate-ledger.json": "077e620e255fdb12474497f040afa061fcebb17c506b173692ced2acb438e423",
+    "m01-a2018-observation-ownership-luna-v2/source-pins.json": "19d8a7cd3d7ea7a116e796de1665844fe357c8ea082ea7428b246c2e7582f9ff"
+  },
+  "reproduction": {
+    "test_command": "PYTHONDONTWRITEBYTECODE=1 nice -n 15 python3 -B -m unittest test_checker -v (checker.py/test_checker.py copied to fresh temporary directory)",
+    "tests_passed": 18,
+    "probe_command": "PYTHONDONTWRITEBYTECODE=1 python3 -B temporal-order-probe.py",
+    "probe_result": "source available_at 2020-01-01, observation period_end 2020-01-15, cutoff 2020-02-01 => structurally_consistent_claims",
+    "scope": "Invented fixtures only; no respondent tokens, raw samples, model jobs or owner data mutation."
+  },
+  "review_file": "REVIEW.md",
+  "review_artifact_sha256": "a38efced0d04f6c1900c33c443b8ca377bc363edd2449bf16dab5150a638a823",
+  "reproduction_artifacts": {
+    "tests.log": "f253c2700bc9075a6838a5bdd1e4ae0ad8e1a1eb8bf61e917ea76642f7f37292",
+    "temporal-order-probe.py": "cb39f96a17ec0dd09f793f033319669d347deee3fcf77c0b48f8932f15845881",
+    "temporal-order-probe.json": "8cef01340b6c4c4d4a1dfb65a29c2aed412da4277f18ffdef044fb9cb13e17ee"
+  }
+}
