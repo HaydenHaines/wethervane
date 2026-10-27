@@ -1,0 +1,37 @@
+{
+  "verdict": "no_material_defect_found_for_declared_JSON_reconciliation_scope",
+  "rootReviewReproducedExactly": true,
+  "tinyTestsPassed": 2,
+  "exhaustiveFlagConfigurations": 221,
+  "additionalOwnerMetadataPinsVerified": [
+    "plan",
+    "audit",
+    "inventory",
+    "exploration_code",
+    "code"
+  ],
+  "npzLoaded": false,
+  "ownerModelOrAuditExecuted": false,
+  "files": {
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/national2018-controls-review-root-v1/check.py": "0317dbfb5cfbefc4792e8d7251c5173cdfc604c5287c38ecc506c2164aac0b32",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/national2018-controls-review-root-v1/test_check.py": "abcd7358a8ea5a420a5ffb3408affa3a39eeade468728508e8a6a3b3f5531874",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/national2018-controls-review-root-v1/review.json": "8d98b25da30a3f3ad99c66b15e09c548bc90b6a3f1b6642abe5f2327bf814d11",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/national2018-controls-review-root-v1/README.md": "24ac513f7dd8ca75af6dbc0fe579adb4ec39f69d2cd237a67d3ee6a482c11bfa",
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-2018-gpu-preparation-root-v1/gpu-production-v1/divergence-matched-controls-v1/result.json": "720ff44675c0db40d0c1e4f06a222538b0d7eae464bfaaf7718c2ceb58099a29",
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-2018-gpu-preparation-root-v1/gpu-production-v1/plan.json": "fd44e4362c6c0a35e98aae23750b2266d4ea845aecea74de3970bb358a053209",
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-2018-gpu-preparation-root-v1/gpu-production-v1/retained-divergence-audit-v1/result.json": "21a7f534922c91618d8a92d5b2075dcc9d48b381b07a199f2a989d56d6d72089",
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-2018-gpu-preparation-root-v1/actual-model-inventory-v2/result.json": "0d21bb3346334087691947b7808bef959abe2356f9b2f89779ee09162589d842",
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-2018-gpu-preparation-root-v1/locate_divergence_states_v2.py": "b69ecb0f1c2690f2b7db06471dfdf04e57f938dabab39e9d7410180c753e22e3",
+    "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-2018-gpu-preparation-root-v1/compare_divergent_controls.py": "3f4b08847d37f29b78b50ea117c9e0796a52bf9a90a384bbcde7025ae4121401"
+  },
+  "confirmed": {
+    "flags": 76,
+    "uniqueControls": 76,
+    "greedyCost": 178,
+    "minimumCost": 156,
+    "affectedLanes": 3,
+    "sameLeadingFamilyPairs": 42,
+    "distanceOneControls": 51
+  },
+  "limitation": "Root checker independently verifies audit/code linkage but does not itself verify owner report plan/inventory/exploration_code pins; this reviewer additionally verified those current small-file hashes. Neither proves raw NPZ values, historical immutability or sampler execution."
+}

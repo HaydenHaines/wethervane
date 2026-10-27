@@ -1,0 +1,52 @@
+{
+  "packet": "m01-nov-voting-weight-join-luna-v1",
+  "retrieved_utc_date": "2026-10-26",
+  "scope": "Official primary-source check of 2018 and 2020 November CPS Voting and Registration person point weights, documented person key, and existence/evidence for year-specific replicate weights and joins.",
+  "actions_not_taken": ["No bulk microdata download", "No model fit", "No changes to other work"],
+  "findings": {
+    "2018_point_weight": {
+      "status": "explicitly documented",
+      "source_url": "https://www2.census.gov/programs-surveys/cps/techdocs/cpsnov18.pdf",
+      "location": "Attachment 3, PDF p. 10 (printed pp. 3-1–3-2), lines 286-288; Attachment 7, PDF p. 95, lines 3092-3097",
+      "claim": "No November Voting supplement-specific point weight; use basic CPS person weight PWSSWGT at columns 613-622 to tally supplement items. PWSSWGT is a final weight, used for most tabulations, four implied decimals; universe PRPERTYP=1-3."
+    },
+    "2020_point_weight": {
+      "status": "explicitly documented",
+      "source_url": "https://www2.census.gov/programs-surveys/cps/techdocs/cpsnov20.pdf",
+      "location": "Attachment 3, PDF p. 10 (printed pp. 3-1–3-2), lines 285-288; Attachment 7, PDF p. 95, lines 3088-3093",
+      "claim": "Same instruction: use basic CPS person weight PWSSWGT to tally November Voting supplement items."
+    },
+    "integrated_person_file": {
+      "status": "documented",
+      "claim": "Each year’s documentation describes the November Voting supplement as part of that month's CPS, with basic CPS and supplement variables in the November computer file. Thus the point weight is in the same person record; no separate person-file merge is needed to apply PWSSWGT to the supplement fields. This does not address a replicate-file join."
+    },
+    "person_identifier": {
+      "status": "documented_within_month_only",
+      "source_urls": [
+        "https://www2.census.gov/programs-surveys/cps/techdocs/cpsnov18.pdf",
+        "https://www2.census.gov/programs-surveys/cps/techdocs/cpsnov20.pdf"
+      ],
+      "location": "Both Attachment 7, PDF p. 101 (printed p. 6-81), 2018 lines 3264-3267 and 2020 lines 3268-3271",
+      "claim": "QSTNUM is a unique household identifier and OCCURNUM a unique person identifier, each valid only within any specific month. Documentation supports a within-month key; no target-year replicate join is thereby verified."
+    },
+    "year_specific_replicate_file": {
+      "status": "not located in checked official year directories; existence unresolved",
+      "sources": [
+        {"url": "https://www2.census.gov/programs-surveys/cps/datasets/2018/supp/", "location": "directory lines 48-53", "observed": "nov18pub.dat.gz and nov18pub.zip listed; oct18rep files listed, but no explicitly named November Voting replicate file in the listing"},
+        {"url": "https://www2.census.gov/programs-surveys/cps/datasets/2020/supp/", "location": "directory lines 46-53", "observed": "nov20pub.csv, nov20pub.dat.gz and nov20pub.zip listed; October replicate files listed, but no explicitly named November Voting replicate file in the listing"}
+      ],
+      "limit": "This is a bounded observation of the listed official directories, not proof of global nonexistence. The technical docs' 'no supplement weight' statement addresses a supplement point weight; it is not an explicit statement that no replicate file exists."
+    },
+    "generic_memo": {
+      "status": "insufficient to validate 2018/2020 Voting replicate join",
+      "local_reference": "../cps-replicate-followup-sol-v1/README.md and sources.json",
+      "reason": "The 2012 generic person-supplement memo describes a QSTNUM/OCCURNUM merge and PERSUPWGT0 check but is not Voting/year-specific and its described weight names differ from PWSSWGT."
+    },
+    "later_year_contrast": {
+      "source_url": "https://www2.census.gov/programs-surveys/cps/datasets/2024/supp/cps_voting_repwgt_nov24.sas",
+      "location": "lines 0-10, 24-38",
+      "claim": "2024 has an explicitly named November Voting replicate file layout, key fields QSTNUM/OCCURNUM, then REPWT0 onward. This does not establish 2018/2020 availability or retroactive release vintage."
+    }
+  },
+  "bottom_line": "PWSSWGT is the authoritative documented point weight for both target supplements; the within-month QSTNUM/OCCURNUM person key is documented. A year-specific 2018/2020 November Voting replicate series and validated replicate join remain unresolved."
+}

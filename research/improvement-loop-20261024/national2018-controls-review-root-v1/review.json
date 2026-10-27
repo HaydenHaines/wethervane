@@ -1,0 +1,57 @@
+{
+  "schema": "National2018ControlsIndependentReconciliationV1",
+  "audit_sha256": "21a7f534922c91618d8a92d5b2075dcc9d48b381b07a199f2a989d56d6d72089",
+  "control_report_sha256": "720ff44675c0db40d0c1e4f06a222538b0d7eae464bfaaf7718c2ceb58099a29",
+  "owner_code_sha256": "3f4b08847d37f29b78b50ea117c9e0796a52bf9a90a384bbcde7025ae4121401",
+  "flags_reconciled": 76,
+  "unique_controls": 76,
+  "distance_counts": {
+    "1": 51,
+    "2": 4,
+    "3": 1,
+    "4": 10,
+    "6": 1,
+    "7": 3,
+    "8": 5,
+    "9": 1
+  },
+  "greedy_distance_sum": 178,
+  "same_lane_minimum_distance_sum": 156,
+  "lanes_with_longer_greedy_total": [
+    {
+      "parent": 1,
+      "chain": 0,
+      "greedy_distance_sum": 92,
+      "minimum_distance_sum": 76
+    },
+    {
+      "parent": 2,
+      "chain": 0,
+      "greedy_distance_sum": 19,
+      "minimum_distance_sum": 15
+    },
+    {
+      "parent": 7,
+      "chain": 0,
+      "greedy_distance_sum": 21,
+      "minimum_distance_sum": 19
+    }
+  ],
+  "same_leading_family_pairs": 42,
+  "flagged_median": 4.254714705793995,
+  "control_median": 4.199756522514036,
+  "verified": [
+    "audit linkage and count",
+    "complete exact matching roster",
+    "unique same-chain controls",
+    "greedy nearest-control policy",
+    "reported family counts and medians"
+  ],
+  "not_verified": [
+    "underlying NPZ values or hashes",
+    "posterior mixing",
+    "divergence mechanism or bias",
+    "forecast qualification"
+  ],
+  "limitation": "Adjacent same-chain states are dependent; the accepted state is not the failed trajectory. A minimum total-distance match is not automatically more scientifically informative. These exploratory summaries do not establish cause or sampler validity."
+}
