@@ -1,0 +1,22 @@
+{
+  "schema": "HouseDisposableCgroupLifecycleIndependentReviewV1",
+  "review_scope": "static source and captured receipt review; no fixture execution",
+  "inputs": {
+    "owner_packet": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-legacy-pair-bounded-20261026-v1",
+    "scope_empty_fixture.py": "0e0c5c1c6bf6259174758b4c83034826663cfc2ebf363c7b81b541d7fb3743d0",
+    "scope-empty-fixture-v1.json": "6dd3fc2938110c4d2377c2c58d74afe9282dcfaf91da55efddca14a48016eecf",
+    "scope_nested_fixture.py": "56e6db9d3e809414ff459f39658e9222ebbc65249eb5cbe7c3c97e66c7287097",
+    "scope-nested-fixture-v1.json": "af42bbd42d0d6a21a24fc4a687a4f9b9a902b98a9bf17828b6ce22045552e8cd",
+    "README.md": "4a910342118fddbfbd5e74b7bf78bd3eb5613947e7d168bb6bfe96455619e3d1"
+  },
+  "receipt_observations": {
+    "nested_schema": "HouseDisposableNestedEmptyFixtureV1",
+    "nested_status": "nested_child_killed_empty_scope_observed_before_stop",
+    "nested_populated_events": ["populated 0", "frozen 0"],
+    "nested_receipt_fixture_hash_matches_source": true,
+    "single_nonproduction_disposable_run_recorded": true
+  },
+  "finding": "The captured nested fixture supports a point-in-time, one-invocation teardown observation in a delegated disposable unit. It does not prove atomic invocation-bound targeting, race-safe or durable finalization, or production readiness.",
+  "owner_files_modified": false,
+  "bank_or_model_run": false
+}
