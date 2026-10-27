@@ -1,0 +1,44 @@
+{
+  "review": "ParticipationSimplexCorrectionIndependentReviewV1",
+  "verdict": "promising correction with one reproducible numerical blocker",
+  "scope": {
+    "invented_fixtures_only": true,
+    "forecast_or_model_run": false,
+    "raw_data_read": false,
+    "protected_population_parent_weights_changed": false,
+    "candidate_admission_or_qualification": false
+  },
+  "source_review": {
+    "candidate_diff_scope": "Only mixture_moments and its docstring differ from the pinned predecessor. Candidate first checks the same absolute 1e-12 near-unit sum, divides scenario weights by that sum for means and covariance, and centers the mean at the first conditional mean.",
+    "improvements_confirmed": [
+      "The candidate fixes the predecessor's general raw-weight total-mass error for near-unit weights by using a normalized internal scenario mixture.",
+      "The supplied 12 inherited and candidate unit tests pass in an isolated temporary copy.",
+      "Independent identical-scenario split probes pass at N=1000000 and N=2**53, including near-unit sums.",
+      "Invented two-event shared covariance probes are symmetric and PSD within stated roundoff for the tested positive and negative rank-one cases; Fraction reference cross-covariances agree within tolerance.",
+      "Inputs just beyond the declared tolerance are rejected in the independent probe."
+    ]
+  },
+  "blocking_counterexample": {
+    "severity": "major numerical correctness defect for the stated supported domain",
+    "inputs": {
+      "weight_sum_fsum": 0.9999999999999998,
+      "weights": [9.555591182889165e-19, 0.2294746878335557, 0.7556416181139466, 0.014883694052497535],
+      "intercepts": [1000, -1000, -1000, -1000],
+      "conditional_means": "[N, 0, 0, 0] (sigmoid boundary values from finite +/-1000 intercepts)",
+      "all_weights_in_0_1": true,
+      "accepted_by_tolerance": true,
+      "normalized_float_weight_sum": 1.0000000000000002
+    },
+    "results": {
+      "N_1000000": {"returned_mean": -2.3283064365386963e-10, "exact_fraction_mean": 9.555591182889166e-13, "outside_support": true},
+      "N_2_pow_53": {"returned_mean": -2.0, "exact_fraction_mean": 0.00860691137811289, "outside_support": true, "returned_covariance": 77524165750564.22, "exact_fraction_covariance": 77524165750560.19}
+    },
+    "mechanism": "After elementwise normalization, the binary floating weights still sum to 1.0000000000000002. The anchored formula assumes an exactly unit sum: anchor + sum(w_i*(mean_i-anchor)). When the anchor is the rare high-mean scenario and other means are zero, the rounding residual is multiplied by a very large negative centered difference and produces a negative result.",
+    "reproducer": "rare-anchor_counterexample.py and rare-anchor_counterexample.json in this packet"
+  },
+  "recommendation": "Keep the candidate separate and unadmitted until the mean computation has a stable convex-combination implementation that preserves [0,N] over accepted inputs and the rare-anchor probe plus randomized/adversarial boundary tests pass. Direct weighted products with math.fsum produced the exact Fraction reference for this counterexample, but that observation is not a general proof or a prescribed owner implementation. Preserve the explicit boundary, dimensions, and covariance checks. This concerns only internal scenario weights and gives no license to reweight protected outer population parents.",
+  "test_command": "PYTHONDONTWRITEBYTECODE=1 nice -n 15 python3 -B -m unittest test_participation_extrapolation_prototype test_normalized_simplex -v",
+  "test_result": "12 passed in 0.001s from isolated temporary scratch copy",
+  "repro_command": "PYTHONDONTWRITEBYTECODE=1 nice -n 15 python3 -B rare-anchor_counterexample.py",
+  "source_pins": "source-pins.json"
+}
