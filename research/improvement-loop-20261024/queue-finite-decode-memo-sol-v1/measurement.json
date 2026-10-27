@@ -1,0 +1,85 @@
+{
+  "original": {
+    "real_jobs": 1,
+    "audits_per_phase": 2,
+    "phases": [
+      {
+        "phase": "original-off",
+        "elapsed_seconds_instrumented": 0.019616780104115605,
+        "decode_calls": 46,
+        "base_parse_calls": 46,
+        "decode_input_bytes": 35400,
+        "base_parse_input_bytes": 35400,
+        "execution_pin_calls": 58,
+        "execution_pin_reported_bytes": 16464724,
+        "execution_checked_calls": 6,
+        "execution_checked_bytes": 5112,
+        "memo_stats_after_exit": null
+      }
+    ],
+    "within_store_snapshots_identical": true,
+    "within_store_pin_sequence_identical": true,
+    "within_store_checked_sequence_identical": true,
+    "scope": "instrumented tiny histories, not throughput/scaling or hard RSS; separate original source stores differ in bytes/path"
+  },
+  "prototype": {
+    "real_jobs": 1,
+    "audits_per_phase": 2,
+    "phases": [
+      {
+        "phase": "off-before",
+        "elapsed_seconds_instrumented": 0.01952526718378067,
+        "decode_calls": 46,
+        "base_parse_calls": 46,
+        "decode_input_bytes": 35520,
+        "base_parse_input_bytes": 35520,
+        "execution_pin_calls": 58,
+        "execution_pin_reported_bytes": 16478512,
+        "execution_checked_calls": 6,
+        "execution_checked_bytes": 5112,
+        "memo_stats_after_exit": null
+      },
+      {
+        "phase": "on",
+        "elapsed_seconds_instrumented": 0.0193837599363178,
+        "decode_calls": 46,
+        "base_parse_calls": 7,
+        "decode_input_bytes": 35520,
+        "base_parse_input_bytes": 4905,
+        "execution_pin_calls": 58,
+        "execution_pin_reported_bytes": 16478512,
+        "execution_checked_calls": 6,
+        "execution_checked_bytes": 5112,
+        "memo_stats_after_exit": {
+          "calls": 46,
+          "hits": 39,
+          "parses": 7,
+          "bypasses": 0,
+          "errors": 0,
+          "evictions": 0,
+          "copy_bypasses": 0,
+          "peak_entries": 7,
+          "peak_bytes": 4905,
+          "cleared": true
+        }
+      },
+      {
+        "phase": "off-after",
+        "elapsed_seconds_instrumented": 0.02016087109223008,
+        "decode_calls": 46,
+        "base_parse_calls": 46,
+        "decode_input_bytes": 35520,
+        "base_parse_input_bytes": 35520,
+        "execution_pin_calls": 58,
+        "execution_pin_reported_bytes": 16478512,
+        "execution_checked_calls": 6,
+        "execution_checked_bytes": 5112,
+        "memo_stats_after_exit": null
+      }
+    ],
+    "within_store_snapshots_identical": true,
+    "within_store_pin_sequence_identical": true,
+    "within_store_checked_sequence_identical": true,
+    "scope": "instrumented tiny histories, not throughput/scaling or hard RSS; separate original source stores differ in bytes/path"
+  }
+}

@@ -1,0 +1,144 @@
+--- ancestor/experiment_queue.py
++++ decode-memo/experiment_queue.py
+@@ -627,11 +627,12 @@
+ def status(root):
+     config,fd=dispatcher(root)
+     try:
+-        finite_intake.frontier(root)
+-        value=_status_snapshot(root,False)
+-        value['intake']=finite_intake.info(root)
+-        value['finality']='metadata snapshot; only finalize authenticates final receipt'
+-        return value
++        with executor.decode_operation():
++            finite_intake.frontier(root)
++            value=_status_snapshot(root,False)
++            value['intake']=finite_intake.info(root)
++            value['finality']='metadata snapshot; only finalize authenticates final receipt'
++            return value
+     finally:os.close(fd)
+ 
+ def enqueue(root, plan, expected_sha256):
+@@ -650,22 +651,24 @@
+ def tick(root):
+     config,fd=dispatcher(root)
+     try:
+-        finite_intake.frontier(root)
+-        finite_intake.require_accepted(root)
+-        value=_tick_locked(root,config)
+-        value["intake"]=finite_intake.info(root)
+-        return value
++        with executor.decode_operation():
++            finite_intake.frontier(root)
++            finite_intake.require_accepted(root)
++            value=_tick_locked(root,config)
++            value["intake"]=finite_intake.info(root)
++            return value
+     finally:os.close(fd)
+ 
+ def finalize(root):
+     config,fd=dispatcher(root)
+     try:
+-        finite_intake.frontier(root)
+-        finite_intake.require_accepted(root)
+-        value=_tick_locked(root,config)
+-        snapshot=executor.ownership_audit(Path(root)/'executions',ownership_expected(root))
+-        value['ownership']=snapshot
+-        return finite_intake.finalize(root,value)
++        with executor.decode_operation():
++            finite_intake.frontier(root)
++            finite_intake.require_accepted(root)
++            value=_tick_locked(root,config)
++            snapshot=executor.ownership_audit(Path(root)/'executions',ownership_expected(root))
++            value['ownership']=snapshot
++            return finite_intake.finalize(root,value)
+     finally:os.close(fd)
+ 
+ def work(root,output,poll_seconds,max_runtime):
+--- ancestor/execution.py
++++ decode-memo/execution.py
+@@ -23,7 +23,10 @@
+ import ledger as ownership_ledger
+ import run_receipts as ownership_receipts
+ from ledger import canonical
+-from run_receipts import decode
++from run_receipts import decode as _base_decode
++from contextlib import contextmanager
++from contextvars import ContextVar
++from copy import deepcopy
+ 
+ _SUPERVISORS = []
+ 
+@@ -34,6 +37,73 @@
+ def require(value, message):
+     if not value:
+         raise ExecutionError(message)
++
++
++# Pure parsing memo only; no filesystem, ownership, drift or audit-result caching.
++_DECODE_MEMO = ContextVar('execution_decode_memo', default=None)
++DECODE_MAX_ENTRIES = 64
++DECODE_MAX_BYTES = 256 * 1024
++DECODE_MAX_ITEM_BYTES = 64 * 1024
++
++class _DecodeMemo:
++    def __init__(self, entries, budget, item):
++        self.entries, self.budget, self.item = entries, budget, item
++        self.values = {}; self.bytes = 0; self.owner_pid = os.getpid()
++        self.stats = dict(calls=0, hits=0, parses=0, bypasses=0, errors=0,
++                          evictions=0, copy_bypasses=0, peak_entries=0, peak_bytes=0, cleared=False)
++    def clear(self):
++        self.values.clear(); self.bytes = 0; self.stats['cleared'] = True
++    def decode(self, data):
++        self.stats['calls'] += 1
++        if type(data) not in (bytes, str) or not self.entries or not self.budget or not self.item or len(data) > self.item:
++            self.stats['bypasses'] += 1
++            return self.parse(data)
++        size = len(data) if type(data) is bytes else len(data.encode('utf-8', 'surrogatepass'))
++        if size > self.item or size > self.budget:
++            self.stats['bypasses'] += 1
++            return self.parse(data)
++        key = (type(data), data)  # full equality, not a digest/mtime/size key
++        if key in self.values:
++            self.stats['hits'] += 1
++            try: return deepcopy(self.values[key][0])
++            except (MemoryError, RecursionError):
++                self.values.clear(); self.bytes = 0; self.stats['copy_bypasses'] += 1
++                return self.parse(data)
++        value = self.parse(data)  # failures are never inserted
++        try: independent = deepcopy(value)
++        except (MemoryError, RecursionError):
++            self.stats['copy_bypasses'] += 1
++            return value
++        while self.values and (len(self.values) >= self.entries or self.bytes + size > self.budget):
++            oldest = next(iter(self.values)); _, charge = self.values.pop(oldest)
++            self.bytes -= charge; self.stats['evictions'] += 1
++        self.values[key] = (independent, size); self.bytes += size
++        self.stats['peak_entries'] = max(self.stats['peak_entries'], len(self.values))
++        self.stats['peak_bytes'] = max(self.stats['peak_bytes'], self.bytes)
++        return value
++    def parse(self, data):
++        self.stats['parses'] += 1
++        try: return _base_decode(data)
++        except BaseException:
++            self.stats['errors'] += 1
++            raise
++
++@contextmanager
++def decode_operation(*, max_entries=DECODE_MAX_ENTRIES, max_bytes=DECODE_MAX_BYTES,
++                     max_item_bytes=DECODE_MAX_ITEM_BYTES):
++    require(_DECODE_MEMO.get() is None, 'nested decode operation is unsupported')
++    for value, ceiling in [(max_entries, DECODE_MAX_ENTRIES), (max_bytes, DECODE_MAX_BYTES), (max_item_bytes, DECODE_MAX_ITEM_BYTES)]:
++        require(type(value) is int and 0 <= value <= ceiling, 'decode memo limit outside fixed research cap')
++    memo = _DecodeMemo(max_entries, max_bytes, max_item_bytes)
++    token = _DECODE_MEMO.set(memo)
++    try: yield memo
++    finally:
++        memo.clear()
++        _DECODE_MEMO.reset(token)
++
++def decode(data):
++    memo = _DECODE_MEMO.get()
++    return _base_decode(data) if memo is None or memo.owner_pid != os.getpid() else memo.decode(data)
+ 
+ 
+ def now():
