@@ -1,0 +1,11 @@
+# Independent review: weakest forecast layer
+
+Observed 2026-10-27 UTC. This read-only review supports the existing ledger conclusion: current evidence does not identify an empirically weakest incremental layer in the whole joint count forecast.
+
+The candidate comparisons are not interchangeable. The two-cycle count/F/FP results use different information sets and retain numerical warnings; named-vote error does not isolate a component. Momentum FS5/FS6 is a useful bounded decision on a different target, and the gasoline decision has mixed cycle results. Neither is a matched count-stack layer intervention. The national 2018 bank is marked complete but unqualified, with 76 retained divergences and a repeatedly failing event-gamma coordinate; that is a computation/diagnostic problem, not evidence against a scientific layer.
+
+At the time inspected, the provisional 2018 prediction output contained complete records for parents 0–2 (4,000 rows each) and an in-flight parent-3 record. All four result records explicitly say the forecast is unqualified and publication unauthorized; the three complete records and the partial fourth fail their conditional MCMC diagnostic gate. The fourth record said `rows_3800`, but its gzip file was modified later, so the JSON was stale. I did not read the compressed rows, inspect NPZs, or infer any score. No parents 4–7, aggregate output, or matched score existed in this output directory at that observation. These mutable files are pinned as a time-specific metadata snapshot only.
+
+There is no defensible layer comparison ready to execute before a qualified common baseline exists. After qualification, use one predeclared provider/layer intervention in the full joint model, hold the other providers, source/training information, target, cut weights, and roster fixed, and score the same exposed-cycle cases with joint count/event-total proper scores, per-cycle calibration, regression guards, and Monte Carlo uncertainty. Do not call exposed cycles independent validation.
+
+No model, forecast, score, owner job, or owner file was changed. See `review.json` and `source-pins.json` for exact scope, paths, timestamps, and hashes. The result JSONs may continue changing; their pins record what this review observed, not a durable execution attestation.
