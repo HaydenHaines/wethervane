@@ -1,0 +1,110 @@
+{
+  "schema": "PreparedSixParentDynamicWitnessEvidenceV1",
+  "status": "frozen_bounded_invented_tests_passed_actual_unexecuted",
+  "predecessor_evidence_sha256": "320161340e969123ab5673b9727c4973072a6020f4d063cc835e9934937eef30",
+  "predecessor_preserved": true,
+  "files": {
+    "common.py": {
+      "sha256": "ee0b4475bcec0d2dd0da247dfb9df82eaabe98dc9a25420a3cbd15348e5ea1d2",
+      "bytes": 3815
+    },
+    "entry.py": {
+      "sha256": "e028184a96241cf9d63708b91e4bd84c749327a0421e63b75cbe031c7862c79c",
+      "bytes": 3635
+    },
+    "child.py": {
+      "sha256": "eb1fd0a9e0b345cc84e61eb6c58d12e98ae5725f755012146edb4cd7e3b7824a",
+      "bytes": 10921
+    },
+    "evaluator.py": {
+      "sha256": "20d6497a26577e196aa77a8842c48954e7ed33aa283394422b51385597cdb1a0",
+      "bytes": 4817
+    },
+    "launch.py": {
+      "sha256": "2294429ac7e2b299367ec409b69983da7bd7629a0abf481a580e019c900431af",
+      "bytes": 7873
+    },
+    "selection.py": {
+      "sha256": "6ade54936c129947ba4b0ba519bcd839332d781b4bbff1ffc0ffe881bd1f84ae",
+      "bytes": 1266
+    },
+    "baseline_compare.py": {
+      "sha256": "96093e3391d38e78b7e2e4a3ae06ac74e77afc4014ce09e0a10ed80ef3cf2f6b",
+      "bytes": 8137
+    },
+    "compare.py": {
+      "sha256": "e009d481a7ca5b48f784d6f253888f5e6e159fdb86803bc5986e5d39e993c4c5",
+      "bytes": 6187
+    },
+    "comparison_gate.py": {
+      "sha256": "85671df94a057848e5199832edf15bda5201fd8a57dc2425732f9e9e85f88dde",
+      "bytes": 1785
+    },
+    "completion.py": {
+      "sha256": "9aa5b7d6a4ad5b54173de092019e30dc76ec5038c327b675b799f0938d2940c0",
+      "bytes": 5632
+    },
+    "protocol_fixture.py": {
+      "sha256": "32b4a9bdac3064ff39278e7a5ca19c186c54a0f3043f7c331903a285dfd5793a",
+      "bytes": 2577
+    },
+    "drift_fixture.py": {
+      "sha256": "0fb1ff7bc2f9671fae0a36a4715c6de9cc8deadd29359ae1f47353716efa2620",
+      "bytes": 1680
+    },
+    "test_tiny.py": {
+      "sha256": "1981f91bc0c6b71fdce60dd64a02ad598885ad9eec8d0054cef0b0132a04f770",
+      "bytes": 14110
+    },
+    "contract.json": {
+      "sha256": "bbd46183000b9fa3387541d3866607b93ba3ba8d09a6c4b24847b4facfef35f4",
+      "bytes": 53203
+    },
+    "tiny-result.json": {
+      "sha256": "c1b678af42369291e93d14d3fafc34fc7c969e98e8a14a17b54adf21e11d3ffd",
+      "bytes": 5092
+    },
+    "tiny-first.log": {
+      "sha256": "874a3840bd25e437b7e6b047adc3132bee4a52824f74ba390eb6cd92a34538c0",
+      "bytes": 56
+    },
+    "tiny.log": {
+      "sha256": "051d565746128c40a32bc24f75a18c9e1b16ed103eb660a1fc103be45ad5ebee",
+      "bytes": 56
+    },
+    "resource-assessment.json": {
+      "sha256": "67e51d149776a1fc6d8dbf62e0389817c8d77d8e26ca6bd38cb5cfa940152080",
+      "bytes": 2721
+    },
+    "DESIGN.md": {
+      "sha256": "d3a196e0c453c91d2e2138d93f3e8b951ac93713d6c6a714c225f34dfc9c7704",
+      "bytes": 10842
+    },
+    "README.md": {
+      "sha256": "e6e09b05fc29fc5b18b38a11f0789bc3e1284547b206b4ecc6595cb4173b83f5",
+      "bytes": 760
+    }
+  },
+  "tests": 32,
+  "test_exit_code": 0,
+  "invented_owned_calls": 42,
+  "actual_graph_imported": false,
+  "actual_graph_compiled": false,
+  "actual_graph_evaluated": false,
+  "actual_attempt_exists": false,
+  "actual_review_or_resource_receipt_created": false,
+  "exact_batch_roster": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "exact_call_roster": "six parents times(3base+4FD)=42; no added A revisit",
+  "new_final_state_isolation_check": false,
+  "resource_feasibility_measured": false,
+  "normalizers_posteriors_and_fixed2_to7": "unverified",
+  "test_command": "OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 NUMBA_NUM_THREADS=1 PYTHONDONTWRITEBYTECODE=1 timeout --kill-after=3s 30s nice -n15 .improvement-ledger/runtime/calibration-v1-env/bin/python -B /home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-six-parent-witness-sol-v1/test_tiny.py",
+  "no_more_source_changes_or_runs": true
+}

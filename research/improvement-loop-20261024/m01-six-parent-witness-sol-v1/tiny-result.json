@@ -1,0 +1,94 @@
+{
+  "schema": "SixParentWitnessTinyTestsV1",
+  "status": "passed",
+  "tests": [
+    "old_successful_caller_ack_chains_and_source_pins",
+    "normal_all_six_exact_42_owned_calls_and_independent_invented_oracle",
+    "missing_parent",
+    "reordered_parent",
+    "duplicate_parent",
+    "wrong_roster",
+    "wrong_output_matches_no_saved_reference",
+    "wrong_parent_bound_record",
+    "stale_kernel_source",
+    "wrong_FD_complete_point",
+    "wrong_FD_value",
+    "truncated_prefix_0_never_completes",
+    "truncated_prefix_1_never_completes",
+    "truncated_prefix_5_never_completes",
+    "stale_parent_index_bytes_pin",
+    "one_job_all_six_reviewed_resource_gate",
+    "partial_resource_roster",
+    "stale_resource",
+    "owner_conflict",
+    "stale_comparator_reuse_rejected",
+    "actual_publisher_full_batch_external_capture_readonly_gate",
+    "no_batch_success_partial_comparison_roster",
+    "no_batch_success_truncated_call_count",
+    "no_batch_success_failed_child",
+    "no_batch_success_wrong_parent_roster",
+    "no_batch_success_missing_artifact",
+    "empty_artifact_map_even_rehashed_caller_rejected",
+    "clean_comparator_snapshot_control",
+    "child_then_comparator_drift_no_success",
+    "receipt_fault_owned_child_reaped_no_success",
+    "controller_interruption_owned_child_reaped_no_success",
+    "direct_child_refused_before_actual_graph_import"
+  ],
+  "invented_owned_calls": 42,
+  "protocol_flow": [
+    {
+      "exit_code": 0,
+      "stdout": "{\"schema\": \"SixParentControllerReturnV1\", \"status\": \"completed\", \"phase\": \"dynamic-six\", \"parent_roster\": [2, 3, 4, 5, 6, 7], \"contract_sha256\": \"bbd46183000b9fa3387541d3866607b93ba3ba8d09a6c4b24847b4facfef35f4\", \"controller_success\": {\"sha256\": \"594f2bbc244a80b2ddfd385329f1acfdc650d28f6bf7765d4d26ebd5501dd674\", \"bytes\": 973}, \"comparisons\": {\"comparison-execution.json\": {\"sha256\": \"9ab218bd8c46fb23c81c64c1baf610bd22564ec099a62c4f9d184a30ebbc2a00\", \"bytes\": 1449}, \"../all-six-comparison.json\": {\"sha256\": \"0e407260b39e4c34ad7ccf741f838a21eeec4962867bf8ec390627021ef455e9\", \"bytes\": 4809}}}\n"
+    }
+  ],
+  "child_failure_terminals": [
+    {
+      "arm": "dynamic-six",
+      "pid": 2040036,
+      "returncode": -15,
+      "reason": "controller_exception",
+      "controller_error": "Traceback (most recent call last):\n  File \"/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-six-parent-witness-sol-v1/launch.py\", line 39, in run_child\n    atomic_json(out/'launch.json',{'pid':child.pid,'arm':arm,'control_channel_sha256':env['M01_PROBE_CONTROL_SHA256'],'controller_start_ticks':payload['controller_start_ticks'],'command':child.args,'environment':{k:env[k]for k in ['OPENBLAS_NUM_THREADS','OMP_NUM_THREADS','MKL_NUM_THREADS','NUMEXPR_NUM_THREADS','NUMBA_NUM_THREADS','PYTENSOR_FLAGS','NUMBA_CACHE_DIR']},'live_resources':live,'caps':cap})\n  File \"/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-six-parent-witness-sol-v1/test_tiny.py\", line 95, in fail\n    if Path(path).name=='launch.json':raise error\n                                      ^^^^^^^^^^^\nOSError: injected\n",
+      "seconds": 0.005136534105986357,
+      "peak_rss_bytes": 0,
+      "peak_threads": 0,
+      "peak_disk_bytes": 0,
+      "no_retry": true
+    },
+    {
+      "arm": "dynamic-six",
+      "pid": 2040037,
+      "returncode": -15,
+      "reason": "controller_exception",
+      "controller_error": "Traceback (most recent call last):\n  File \"/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-six-parent-witness-sol-v1/launch.py\", line 39, in run_child\n    atomic_json(out/'launch.json',{'pid':child.pid,'arm':arm,'control_channel_sha256':env['M01_PROBE_CONTROL_SHA256'],'controller_start_ticks':payload['controller_start_ticks'],'command':child.args,'environment':{k:env[k]for k in ['OPENBLAS_NUM_THREADS','OMP_NUM_THREADS','MKL_NUM_THREADS','NUMEXPR_NUM_THREADS','NUMBA_NUM_THREADS','PYTENSOR_FLAGS','NUMBA_CACHE_DIR']},'live_resources':live,'caps':cap})\n  File \"/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-six-parent-witness-sol-v1/test_tiny.py\", line 95, in fail\n    if Path(path).name=='launch.json':raise error\n                                      ^^^^^^^^^^^\nKeyboardInterrupt: injected\n",
+      "seconds": 0.004203286021947861,
+      "peak_rss_bytes": 0,
+      "peak_threads": 0,
+      "peak_disk_bytes": 0,
+      "no_retry": true
+    }
+  ],
+  "comparator_drift_receipts": [
+    {
+      "mode": "clean",
+      "child_returncode": 0,
+      "rejected": false,
+      "error": null,
+      "compared": true,
+      "bad_import": false,
+      "success": true
+    },
+    {
+      "mode": "drift",
+      "child_returncode": 0,
+      "rejected": true,
+      "error": "reviewed packet source changed: compare.py",
+      "compared": false,
+      "bad_import": false,
+      "success": false
+    }
+  ],
+  "actual_graph_imported": false,
+  "actual_graph_evaluated": false,
+  "normalizers_posteriors": "unverified"
+}

@@ -1,0 +1,69 @@
+{
+  "schema": "SixParentWitnessResourceAssessmentV1",
+  "observed_receipts": {
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-owned-parent-evaluator-sol-v3/attempt-v1/dynamic/terminal.json": {
+      "sha256": "32976ffa65667e6ae30f8010ffb68f33178a3f892e63b9c99a7195eb0d5c6a3a",
+      "data": {
+        "arm": "dynamic",
+        "pid": 2016801,
+        "returncode": 0,
+        "reason": null,
+        "controller_error": null,
+        "seconds": 114.12016431917436,
+        "peak_rss_bytes": 1776799744,
+        "peak_threads": 1,
+        "peak_disk_bytes": 1679776,
+        "no_retry": true
+      }
+    },
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/m01-owned-parent-evaluator-sol-v3/attempt-v1/fixed-B/terminal.json": {
+      "sha256": "a9d3709e85965f7580654447de7b605fdcadb19a9de4bed7c2d39851983f0cfa",
+      "data": {
+        "arm": "fixed-B",
+        "pid": 2023677,
+        "returncode": 0,
+        "reason": null,
+        "controller_error": null,
+        "seconds": 95.60017419187352,
+        "peak_rss_bytes": 1499783168,
+        "peak_threads": 1,
+        "peak_disk_bytes": 656662,
+        "no_retry": true
+      }
+    }
+  },
+  "old_dynamic_owned_calls": 31,
+  "new_exact_owned_calls": 42,
+  "new_parent_roster": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "new_A_before_after_calls": 0,
+  "new_compilations": 1,
+  "caps": {
+    "wall_seconds": 600,
+    "cpu_soft_seconds": 540,
+    "cpu_hard_seconds": 550,
+    "rss_bytes": 4294967296,
+    "address_space_bytes": 8589934592,
+    "file_bytes": 67108864,
+    "arm_disk_bytes": 536870912,
+    "one_cpu_affinity": true,
+    "threads": 1,
+    "nice": 15
+  },
+  "assessment": [
+    "Retain original600s wall/540soft550hardCPU,4GiBRSS watchdog,8GiBAS hard,64MiBfile hard and512MiBstage watchdog.",
+    "Old actual dynamic completed in114.120s at1,776,799,744observedRSSbytes and1,679,776stagebytes; fixedB95.600s at1,499,783,168RSSbytes. These are context only, not a batch runtime/resource prediction.",
+    "42calls occur serially through one compiled function; receipts are written one at a time, not retained as42fullgraphobjects. No graph serialization, gradients or model sampling.",
+    "A new numeric point/support or NUMBA/runtime/resource failure aborts the whole batch; caps are not automatically widened.",
+    "Sampled RSS/disk/thread watchdogs can overshoot; actual JIT/runtime/cache demand and owner load remain unmeasured.",
+    "Fresh independently assessed nonconflicting capacity and current staging commitments are required despite observed historical headroom."
+  ],
+  "feasibility_demonstrated": false,
+  "normalizers_posteriors": "unverified"
+}
