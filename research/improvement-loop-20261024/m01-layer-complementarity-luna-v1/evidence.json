@@ -1,0 +1,33 @@
+{
+  "schema": "SenateLayerEvidenceOwnershipReviewV1",
+  "source_pins_file": "source-pins.json",
+  "observed_scope": {
+    "plan": "A2018 UNADMITTED-plan.json; actual_research / retrospective_proxy",
+    "selected_choice": "candidate_iid_profile_choice_v1",
+    "selected_participation": "profile_turnout_response_observed_total_gamma_v1",
+    "selected_counts": "single_mark_category_allocation_poisson_v1",
+    "selected_measurement": "joint_CES_ranked_intended_report_F1a_pair_v1",
+    "fixed_parent_masses": [0.125,0.125,0.125,0.125,0.125,0.125,0.125,0.125],
+    "national_complete": false,
+    "publication_authorized": false,
+    "forecast_qualified": false
+  },
+  "source_locations": [
+    {"source":"117-components.py", "lines":"152-265", "finding":"cell_intensity is exposure × community × sigmoid(profile turnout logit); eventG scales event intensity and observed/unobserved event branch uses Gamma event scale; response is contest-level scalar from baseline + race effect."},
+    {"source":"117-components.py", "lines":"280-383", "finding":"selected IID choice provider assigns per-candidate other effects (Normal(-3,1) except sole-other case) and softmaxes candidate utilities per profile; separate RoleChoice provider enables role hierarchy but is not selected in A2018."},
+    {"source":"117-components.py", "lines":"392-445", "finding":"single-mark category probabilities are candidate response × candidate softmax plus (1-response) × a noncandidate-category simplex; rates aggregate cell intensity × categories and are eventG scaled; each official count-vector observation has one Poisson factor over its included candidate/noncandidate categories."},
+    {"source":"117-components.py", "lines":"483-565", "finding":"survey-row likelihoods use source-specific turnout/choice/response emission; participation reports use NegativeBinomial on event_intensity; ordinary poll means are log candidate category-rate ratios; ranked-channel polls use a separate emission path."},
+    {"source":"candidate-calibration-review/README.md", "lines":"1-34, 100-150", "finding":"Arizona target has 20 major-pair poll rows and no target survey/count/report factor; write-in score is candidate marks, not turnout; profile aggregation permits indirect coupling."},
+    {"source":"role_aware_prototype.py", "lines":"60-128", "finding":"synthetic allocation consumes supplied other_mass, writein_fraction, utilities, eligibility, scalar response, and complete noncandidate simplex; it emits category probabilities and expected marks, not a fitted likelihood."},
+    {"source":"participation V2 prototype", "lines":"conditional_moments, mixture_moments", "finding":"synthetic integer eligible cell counts and caller-supplied shared scenarios; rationalizes internal scenario mixture; conditional cell-binomial moments and shared-scenario covariance only."}
+  ],
+  "factorial_comparison": {
+    "baseline": "selected IID choice + native profile participation/event scale",
+    "candidate_only": "learned role-level mass followed by within-role choice; retain the same scalar response and native participation path",
+    "participation_only": "one finite-population participation law that replaces the competing native q/eventG scale path; retain native candidate allocation and scalar response",
+    "combined": "the same role-level allocation and same single participation replacement",
+    "all_arms_require": ["same cutoff-valid data/source roster", "same priors except preregistered changed layers", "same target set and measurement ledger", "same sampler/replication protocol", "same parent identities and protected 0.125 masses", "joint predictive draws for dependence", "separate physical-participation and candidate/noncandidate scoring"],
+    "limitations": ["2018 AZ and Nevada 2022 outcomes are exposed development targets", "no fitted comparator or independent heldout score exists in this packet", "data-unit/source overlap and integer-eligibility contract remain prerequisites"]
+  },
+  "no_claims": ["no weakest-layer ranking", "no causal attribution", "no forecast qualification", "no outer parent reweighting", "no claim that the prototypes are composable as written"]
+}
