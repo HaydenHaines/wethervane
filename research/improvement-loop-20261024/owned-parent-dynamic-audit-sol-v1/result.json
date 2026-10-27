@@ -1,0 +1,144 @@
+{
+  "status": "dynamic_receipts_and_saved_numerical_comparison_passed",
+  "sourceDependenciesVerified": 109,
+  "calls": 27,
+  "parentIndices": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "points": 3,
+  "AreturnAllOutputsBitwiseJSONEqual": true,
+  "baselineErrorsRecomputed": [
+    {
+      "point": 0,
+      "logp": 0.0,
+      "poll_logp": 0.0,
+      "factors": 0.0,
+      "selected_contest_rate": 0.0
+    },
+    {
+      "point": 1,
+      "logp": 0.0,
+      "poll_logp": 0.0,
+      "factors": 0.0,
+      "selected_contest_rate": 0.0
+    }
+  ],
+  "finiteDifferenceDerivatives": [
+    {
+      "variable": "choice_intercept",
+      "derivative": 712951.3904801569
+    },
+    {
+      "variable": "event_gamma_shape_log__",
+      "derivative": -0.627216650173068
+    }
+  ],
+  "analyticGradientConstructed": false,
+  "FDScalarCalls": 4,
+  "fixedBPresent": false,
+  "conditionalNormalization": "unverified",
+  "terminal": {
+    "arm": "dynamic",
+    "pid": 2016801,
+    "returncode": 0,
+    "reason": null,
+    "controller_error": null,
+    "seconds": 114.12016431917436,
+    "peak_rss_bytes": 1776799744,
+    "peak_threads": 1,
+    "peak_disk_bytes": 1679776,
+    "no_retry": true
+  },
+  "entry": {
+    "pid": 2016801,
+    "controller_pid": 2016797,
+    "controller_start_ticks": 119620131,
+    "channel_sha256": "084c61d0ca8a0aa54873cfe816cebb954dec206b05fe3eb3ec1cf488dd536aef",
+    "cpu_affinity": [
+      2
+    ],
+    "nice": 15,
+    "limits": {
+      "0": [
+        540,
+        550
+      ],
+      "9": [
+        8589934592,
+        8589934592
+      ],
+      "1": [
+        67108864,
+        67108864
+      ],
+      "4": [
+        0,
+        0
+      ]
+    },
+    "wall_alarm_seconds": 600,
+    "parent_death_signal": "SIGKILL"
+  },
+  "callerReturnFile": {
+    "sha256": "41ef63d1b610b52527064aad61f87307eb319e6fa99be75db238e614fb9b71ff",
+    "bytes": 820
+  },
+  "pins": {
+    "result.json": {
+      "sha256": "fe45a567da17f5bc71be8c6519ffde05b1cf6fd06c212163109a91e642c8074c",
+      "bytes": 12480
+    },
+    "terminal.json": {
+      "sha256": "32976ffa65667e6ae30f8010ffb68f33178a3f892e63b9c99a7195eb0d5c6a3a",
+      "bytes": 242
+    },
+    "controller-success.json": {
+      "sha256": "649f1e4c94d40872318c53449e417e8990f596f61610389fe2b96f1a9d6aa30f",
+      "bytes": 689
+    },
+    "comparison-execution.json": {
+      "sha256": "e1f8b9f3b14263f4ac07db932f03da52b96e1c2848e46f5981acdbbbebcee74a",
+      "bytes": 1236
+    },
+    "kernel.json": {
+      "sha256": "12b85d97462ba1c5826e3a49518189f250c6cde2c2b57dc1c1394aef4de12c77",
+      "bytes": 17876
+    },
+    "model-envelope.json": {
+      "sha256": "8f505a35254b85f4ab92246939eadcb4c12468814ba3f44f597e401c175a91c9",
+      "bytes": 332047
+    },
+    "call-index.json": {
+      "sha256": "b4e110e2e2c7ed229c448dfeb93f4300566537533b4dea28567eebd4252c1725",
+      "bytes": 10479
+    },
+    "finite-differences.json": {
+      "sha256": "398ecda1c9bc05a776c548b5d700f6aa3d57431b6fb4ccb3f6a93d05c5bc69fe",
+      "bytes": 1271
+    },
+    "entry.json": {
+      "sha256": "90031a968479d7eae9bce3387387d3ee15873c9945231fc202aa26fae318aa22",
+      "bytes": 481
+    },
+    "launch.json": {
+      "sha256": "6742d61f81118f05c3c26da164dfa82b58c38ac4d91b1ea4056339549a3a0a37",
+      "bytes": 2262
+    },
+    "authorization.json": {
+      "sha256": "46881fbb85cdb615aeedf4caf86c094d927a7f355e0a84b138483e2c4acff80d",
+      "bytes": 3652
+    }
+  },
+  "baseline": {
+    "sha256": "83fba2520bc229f8a94aeede63ccc3dc3cfe54ac7c0b9d018b0d1d0a1632a571",
+    "bytes": 640
+  },
+  "scope": "Parent0 saved two-point baseline only; three owned points for all8 and A-return,2 scalar central differences at B. No all-parent native baseline, full gradient, fixedB, normalizers, posterior or forecast."
+}
