@@ -1,0 +1,20 @@
+{
+  "schema": "ContinuousImprovementCheckpointV118",
+  "recordedAtUtc": "2026-10-27T03:36:01.658244+00:00",
+  "status": "active; arithmetic correction recorded, guarded pilot V2 reviewed but not admitted",
+  "previous": {
+    "path": "research/improvement-loop-20261024/checkpoints/continuation-v117.json",
+    "sha256": "49d5b21a8e9534233839dc8ebe1a5679c615a5eafa61bd5c3de130e27ba38c87",
+    "bytes": 3334
+  },
+  "science": "Senate Arizona read-only source checks confirmed 7 FEC W labels total 566 candidate marks, 8 other-bloc candidates including a separate non-W candidate, IID nonmajor-utility mechanism, and 20 target pair polls but no target survey/count/participation-report factors. Saved summaries have all 7 observations below their individual 95% interval lower endpoints, 83.56% of total candidate-mark mean excess by arithmetic; raw rows not independently rescanned, 76 divergences retained, no causal/weakest-layer/default or turnout claim. Findings relayed to Senate.",
+  "correction": "Original independent V1 toy review mistakenly asserted actual response is cell-specific. Pinned 117-components.py lines193\u2013200 instead has scalar response per contest and cell-varying propensity/intensity. User and Senate notified promptly; original review README restored to its pinned hash, CORRECTION-NOTICE.md and separate source-pinned correction preserve provenance. V2 vector-response oracle is explicitly hypothetical; 11 tests independently reproduced.",
+  "pilot": "queue-scaling-harness-sol-v2 plus queue-scaling-harness-independent-review-sol-v2 close four V1 blockers in fake/source scope; 32 supplied and 7 independent preflight cases pass. No actual pilot, worker, cgroup change or Linux lifecycle test. Real admission requires fresh owner coordination and eligible delegated leaf with finite CPU/memory/pids and full I/O accounting. Read-only current user@1000.service has no io.stat or io.max; do not bypass or change system policy.",
+  "microbench": "queue-overlap-microbench-root-v1 runs actual old/new isolated functions on synthetic sibling paths under nice19 CPU2. At 300 paths median 1.3214s vs 0.00681s; independent review reproduced trend with different affinity. It is not real queue throughput, file-I/O measurement or thousand-cycle evidence.",
+  "owners": "2022 GPU parity queue reports terminal exit1; coordinator identified 1053 vs1024 backend device-argument limit; owner investigating, dependent sampler/full sampling gated. House handoff still absent; owner work and reserves preserved.",
+  "next": [
+    "Wait for eligible controlled pilot resource window/leaf, validate actual fork/grant/cleanup and owner guards before any pilot.",
+    "Continue owner-coordinated scientific diagnostic of candidate allocation/scale without duplicate heavy scans; do not claim root cause or layer rank.",
+    "Follow House qualified handoff and actual SiteGround activation."
+  ]
+}
