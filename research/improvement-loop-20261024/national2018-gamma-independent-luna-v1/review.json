@@ -1,0 +1,83 @@
+{
+  "schema": "IndependentNational2018GammaReviewV1",
+  "reviewer": "luna",
+  "review_date": "2026-10-26",
+  "source_review_packet": {
+    "path": "../national2018-gamma-source-review-sol-v1",
+    "README_sha256": "65d52fcb8fd64e9e0f64c2080d89f730923006e06822728a3124517700b2b97e",
+    "review_json_sha256": "c4974f0a2cd5afc16ddc816f6312b503797e54b43349ebfe9d76ee80831e4cc3"
+  },
+  "result": "source_algebra_supports_prior_only_kappa_G_for_this_problem_only; no qualified numerical remedy or causal divergence claim",
+  "source_integrity": {
+    "sol_review_hash_pins_checked": 40,
+    "hash_matches": 39,
+    "mismatch": {
+      "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-2018-gpu-preparation-root-v1/divergent-trajectory-replay-queue-v1.json",
+      "expected": "5203035e373808658786a72ee5da2acd6e53e1adac6816f05de6ae190e604ef5",
+      "observed": "5518e57b65e33ad5e0035bdb15446869490c8afc113e5e50977da15afc3becc8",
+      "classification": "mutable timestamped action/status context; old bytes unavailable, original hash unreproducible"
+    },
+    "current_transitive_sources_observed_but_not_directly_listed_in_sol_review_hash_map": {
+      "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-problem-assembly-astra-v1/inputs_v3.py": "85adb960b982be3e5dd10e2cbd29521a209ad380e22e323ad97646c523a96180",
+      "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-problem-assembly-astra-v1/dependencies.py": "f36a835dc82fc02e8963be81eb27db6d0d538aab19d68b150e0dd7039f44b95f",
+      "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-problem-assembly-astra-v1/reader.py": "70f9fda6564f5890d8bc9c80bb782d6e3d0762b4b454e2e53d010fe3db887b95",
+      "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-problem-assembly-astra-v1/assemble.py": "e28e5f715051f4f3aab0323e403250e57d1334535415d3348312164ef1d4888b"
+    }
+  },
+  "observed_selected_input_summary": {
+    "problem_json_sha256": "abcaf347e682422303780c5ff12bb3e6179e4b98362686c01338e29df06a385a",
+    "extension_json_sha256": "f89e6e38787752e6fc5f93ae5048ab5c8890783b0620b1923505482eb19f3084",
+    "events": 54,
+    "contests": 37,
+    "surveys": 65,
+    "survey_rows": 7968,
+    "official_count_observations": 0,
+    "participation_report_observations": 0,
+    "poll_blocks": 1,
+    "poll_rows": 274,
+    "ranked_poll_channels": 0,
+    "extension_ranked_definitions": 1,
+    "extension_ranked_observations": 0,
+    "extension_runoff_definitions": 1,
+    "extension_runoff_observations": 0,
+    "open_person_extension_present": false,
+    "all_poll_rows_enter_ordinary_pairwise_log_rate_branch": true
+  },
+  "current_source_pins_observed": {
+    "components.py": "1574e7831344009f08470b9287b257556a9c031fb7e33e29938a70d51b1a854d",
+    "api.py": "406445500ee36e1d9eb273887bcc836c5dfc7f3a1106f78e2840343be2d9be19",
+    "graph.py": "0e28c1a329d3cc30db63bb5c9ab4aed330fc20fb32bab360e3308f8558c009db",
+    "native_execution_provider.py": "86a4046e4611c6542e58de61752c22b13024b5aa1ffbf0217800cda0625c490a",
+    "native.py": "1dd5661b232a28340fcda192b7bc8beccd03649c4d316605203220580b1fba3d",
+    "prediction.py": "ac489ad7157f4bee94a79f3ddc4f92cae8e3049fcc14a2ae982af413b01bca03",
+    "rank_contribution.py": "7fbc42874bb6fde95195fe0506db51bb86d2fb2ef418b2fc12592578f1bf2cf7",
+    "open_contribution.py": "444d3b82883e1d9c921046c3bd643096a04b4b0ff950a0e42788f3e124cefdb3"
+  },
+  "factorization": {
+    "selected_likelihood_paths": [
+      "7,968 survey answer rows depend on community/turnout/choice/response/reporting variables and contain no eventG input.",
+      "All 274 poll rows use ordinary MvNormal pairwise log-rate means; category_rates[event,category] = eventG[event] * base_category_rates[contest,category], and the same positive eventG cancels exactly in log rate ratios. Covariance is fixed source data.",
+      "No official_counts, participation_reports, ranked observations, runoff observations, or open_person observations activate count factors with eventG-scaled intensities.",
+      "All 54 event indices are in the unobserved set, so eventG are conditionally independent Gamma(kappa,kappa) prior draws, not observed-total transformed coordinates."
+    ],
+    "math": "If L(D|theta,kappa,G)=L(D|theta), then p(theta,kappa,G|D)=p(theta|D)p(kappa)prod_e Gamma(G_e|kappa,kappa). Integrating G and kappa leaves the same within-parent posterior for theta. This does not alter protected outer parent masses.",
+    "counterexamples": [
+      "Any active official count Poisson likelihood uses G times base category rates; the observed-total branch has a coordinate-dependent Gamma density and Jacobian, so the prior-only simplification is invalid.",
+      "Participation-report NegativeBinomial means use event_intensity, hence G.",
+      "Ranked, runoff or open-person count observations use G-scaled Poisson intensities.",
+      "Ordinary poll rate-level additive epsilon breaks cancellation: log(G*r1+eps)-log(G*r2+eps) depends on G for eps>0.",
+      "Future absolute count or sample-total poll likelihoods need separate review."
+    ]
+  },
+  "prediction": {
+    "eventG_required_by_native_and_prediction_path": true,
+    "joint_reconstruction_condition": "Draw one shared kappa per retained conditional parent row, then draw all 54 G_e independently conditional on that same kappa; use each event's G_e in the shared event-level participant Poisson process, then reuse participant rows across contests in the event. Preserve parent mass and parent identity.",
+    "invalid_shortcuts": ["drop eventG/set to 1", "draw independent kappa per event", "draw marginal G_e independently after integrating out shared kappa", "splice contest predictions from separate participant rows"]
+  },
+  "limits": [
+    "No graph build, compile, fit, sampler, NPZ/array read, or model outcome evaluation.",
+    "Source algebra is not compiled symbolic dependency proof or finite-precision equality test.",
+    "The Gamma block may plausibly contribute to poor HMC geometry, but diagnostics alone do not prove causality for 76 divergences or poor mixing.",
+    "A collapsed/prior-reconstruction implementation needs a fresh registered source-bound target, predictor/RNG law checks, fixed parent masses, all-parent comparisons and original qualification gates."
+  ]
+}
