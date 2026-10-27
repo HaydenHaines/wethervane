@@ -1,0 +1,15 @@
+{
+  "schema": "ObservationOwnershipCheckerV2IndependentReviewPins",
+  "reviewed": {
+    "observation-ownership-checker-sol-v2/checker.py": "65c28c3dbf0a5d6e1f1cd7dc60e8cccc47dce2b336a660ddd73769aac3bde8c2",
+    "observation-ownership-checker-sol-v2/test_checker.py": "be9adc877f4c94297fc4830006c2f1206d53ab8a5167cb961b1adde3e609f7df",
+    "observation-ownership-checker-sol-v2/evidence.json": "7006bb1794aa3963334ce2b60059abc80df9933162fa42fc4a75c65d7fe4c8c1"
+  },
+  "reproduction": {
+    "command": "PYTHONDONTWRITEBYTECODE=1 nice -n 15 python3 -B -m unittest test_checker -v in fresh temp copy",
+    "tests_passed": 24,
+    "result": "all tests passed",
+    "log": "tests.log"
+  },
+  "scope": "Invented fixtures only; read-only source review; no respondent IDs, raw arrays, model/owner jobs, or authentication claim."
+}
