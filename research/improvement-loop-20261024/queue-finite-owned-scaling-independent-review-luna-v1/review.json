@@ -1,0 +1,83 @@
+{
+  "arithmetic": {
+    "finalize_count": "An idle healthy finalize invokes tick (2N audits), then its explicit ownership audit once: 2N+1. Standalone status performs N audits for N reserved results. This excludes the separate work of collecting/pinning the final evidence.",
+    "general_expression": "2R audits \u00d7 A(A\u22121)/2 = R A(A\u22121) containment checks per idle tick; 2RA executable verifications. In the equal all-success case R=A=N, these become N\u00b2(N\u22121) and 2N\u00b2 respectively.",
+    "interpretation": "The large-N values are source-level operation-count projections, not elapsed-time or throughput estimates. Warm cache may lower physical reads but not bytes passed through the hasher.",
+    "logical_bytes_example": {
+      "N_1000": 16041856000000,
+      "assumption": "same 8,020,928-byte interpreter for each job; logical hashed bytes, not physical device I/O",
+      "expression": "2 N^2 \u00d7 8,020,928"
+    },
+    "per_audit_live_hashing": "ownership_audit loops over all A intents and calls validate(spec); validate performs live validation, including verify_executable. That is A executable verifications per audit, assuming one executable per intent.",
+    "per_audit_pairs": "ownership_intents constructs the full retained intent list and checks every unordered pair for output-path overlap: A(A-1)/2 comparisons.",
+    "recomputed_examples": [
+      {
+        "N": 1,
+        "audits": 2,
+        "pairwise_comparisons_per_audit": 0,
+        "tick_pairwise_total": 0,
+        "tick_rehashes": 2
+      },
+      {
+        "N": 2,
+        "audits": 4,
+        "pairwise_comparisons_per_audit": 1,
+        "tick_pairwise_total": 4,
+        "tick_rehashes": 8
+      },
+      {
+        "N": 4,
+        "audits": 8,
+        "pairwise_comparisons_per_audit": 6,
+        "tick_pairwise_total": 48,
+        "tick_rehashes": 32
+      },
+      {
+        "N": 8,
+        "audits": 16,
+        "pairwise_comparisons_per_audit": 28,
+        "tick_pairwise_total": 448,
+        "tick_rehashes": 128
+      },
+      {
+        "N": 1000,
+        "audits": 2000,
+        "pairwise_comparisons_per_audit": 499500,
+        "tick_pairwise_total": 999000000,
+        "tick_rehashes": 2000000
+      }
+    ],
+    "source_call_path": "_tick_locked iterates all released reservations and calls verified_result; it then calls _status_snapshot which calls verified_result for every job. For a reserved result, verified_result calls ownership_for_job; ownership_for_job rebuilds ownership_expected and calls ownership_audit. Thus the stated healthy case has 2R audits per idle tick."
+  },
+  "benchmark_design_assessment": {
+    "safety_and_representativeness": "A 1 KiB no-fork fixture with at most 16 launches is a reasonable first queue-overhead pilot only. It can validate small-N call counts and overhead under the observed host/cache conditions; it cannot establish model-cycle cost, active scientific worker behavior, long-tail storage stalls, H-root coordinator behavior, or thousands-scale service behavior. The planned 1/2/4/8 prefixes should be explicitly cumulative on one history (rather than four independent cohorts), or label repeated admissions precisely; first-batch 16 cap remains a safety ceiling.",
+    "scratch_and_source": "Use a new caller-selected scratch root on the same intended filesystem, preserve exact source paths/pins, and send all receipts/cleanup output outside the frozen source packet. Do not move/copy the store to make authenticated history; report same-mount and cache conditions. The source packet correctly identifies that current run_tests.sh rewrites cleanup-verification.json if run in place.",
+    "strengths": [
+      "Runs source-bound frozen code in fresh temporary stores rather than fabricated history.",
+      "Small real no-fork subprocess payload and capacity one, explicit launch cap, no model jobs.",
+      "Separates completed idle ticks, status, active polling, completion, restart, seal and finalize; compares plan shape and dependencies separately.",
+      "Requires record of P/J/R/A/E/H and actual accepted/released evidence; leaves operation checks enabled.",
+      "Requires scratch output and explicitly avoids executing the source-changing cleanup test script in place.",
+      "Separates logical hashing from physical storage reads and does not treat test durations as thousands-cycle results."
+    ]
+  },
+  "limitations": [
+    "I ran only the four arithmetic tests in the scaling packet; I did not import the queue, execute fixtures, inspect active jobs, or run a benchmark.",
+    "Complexity analysis is conditional on one root, all N jobs having reservations and retained executor intents, fully valid releases, no early exits/corruption/lock contention, and equal N relationships. Partial, dependency-heavy, failure, retry, and active-job states have different paths.",
+    "The source pins establish source identity at review time, not historical runtime attestation.",
+    "The design\u2019s first benchmark is not yet implemented; workload control, cleanup, resource, and successful durable returns require independent review once a harness exists."
+  ],
+  "missing_active_owner_load_controls": [
+    "No explicit pre-run exclusion/admission rule for concurrent owner scientific jobs or queue managers. The \u201cfresh resource check\u201d is not operationalized as a recorded owner workload snapshot.",
+    "No before/during/after samples of host CPU load/run queue, memory pressure, disk I/O/latency, filesystem free space/inodes, or cgroup/job-level CPU/memory/I/O counters. Nice 15 and controller RSS alone do not isolate queue cost from shared workload.",
+    "No owned process-tree aggregate CPU/RSS/PSS measurement; detached supervisor/child and manager observations should be recorded separately from the benchmark controller. RSS summation risks double-counting shared pages, so state the accounting method.",
+    "No explicit policy for owner job starts during a batch: pause/abort while preserving current root/reservation state, or tag that interval as contaminated and exclude only by predeclared rules (never silently discard samples).",
+    "No repeated baseline/control runs to quantify timing noise, nor a fixed warm-cache/cold-cache condition. Report cache policy and avoid dropping global caches; compare like with like.",
+    "No threshold tied to reserved owner headroom beyond proposed per-operation, scratch, and observed-controller-RSS caps. Root should bind the actual live resource envelope and stop rule before the first trial."
+  ],
+  "no_owner_work_or_mutation": true,
+  "observed_at_utc": "2026-10-27T02:39:18.513085+00:00",
+  "schema": "QueueFiniteOwnedScalingIndependentReviewV1",
+  "source_pin_file": "source-pins.json",
+  "verdict": "The source-derived complexity arithmetic is correct for the explicitly stated all-success, same-root assumptions. It establishes no measured performance or thousands-cycle capability. The proposed tiny pilot is bounded and scientifically irrelevant to models, but should add explicit shared-owner-load controls before execution."
+}
