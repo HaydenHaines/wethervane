@@ -1,0 +1,13 @@
+{
+  "schema": "UnexecutedFiniteOwnedScalingPlanV1",
+  "status": "source_only_design_no_workload_executed_no_harness_yet",
+  "implementation": "../queue-finite-owned-sol-v1",
+  "first_batch": {"capacity": 1, "adaptive_successful_job_milestones": [1, 2, 4, 8], "maximum_actual_launches_across_batch": 16, "maximum_live_attempts": 1, "nice": 15, "fixture_data_bytes": 1024, "completed_idle_tick_repeats": 3, "fresh_resource_check_required": true},
+  "operational_stops": {"requested_operation_wall_seconds": 5, "batch_wall_seconds": 120, "temporary_allocated_bytes": 134217728, "temporary_inode_entries": 10000, "maximum_observed_controller_rss_bytes": 268435456, "claim": "proposed stop criteria, not real-time or aggregate-RSS guarantees"},
+  "later_separate_batches": ["same jobs in one plan vs one job per plan", "within-plan producer-consumer chains", "explicit failure/terminal retry plus exact prelaunch resumption", "same active size with 0 vs 2 retained finalized roots, built in place", "recorded-child crash/restart and one-artifact corruption in independent fresh stores"],
+  "larger_tiers": {"milestones": [16, 32, 64], "condition": "only after previous tier evidence and fresh resource check fit declared budget; no automatic 1000-job run"},
+  "required_outputs": ["exact source/harness/runtime pins", "controller return and durable stage receipts", "actual P/J/R/A/E/H counts", "per-phase elapsed/controller CPU/resource scope", "logical read/hash counters only in separately identified diagnostic run", "file/inode/allocated-byte accounting", "authenticated child cleanup and exact terminal roster", "failure/deadline receipts"],
+  "source_preservation": "caller-selected scratch output; never run source-directory-changing run_tests.sh in place; verify frozen pins before/after",
+  "integrity": "all existing checks enabled, real tiny subprocess histories only, no fabricated terminals, no moved/cloned stores, no source bypass or stale index",
+  "execution_gate": "independent technical review plus fresh resource boundary under standing authorization; no new user-approval requirement"
+}

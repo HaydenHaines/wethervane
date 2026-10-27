@@ -1,0 +1,265 @@
+{
+  "schema": "FiniteOwnedScalingSourceAnalysisV1",
+  "scope": "source-only; no implementation import, execution, workload or timing benchmark",
+  "source_pins": [
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-finite-owned-sol-v1/experiment_queue.py",
+      "sha256": "6786be8745fb4ddba713e5dda85e90f2c3ce50e814a095cddf4bbad122796c9b",
+      "bytes": 43154
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-finite-owned-sol-v1/execution.py",
+      "sha256": "5a29ecdc6b8607d4575c4066a6056f99bc3b6aa2314a6e1da65e3badee0424e9",
+      "bytes": 52486
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-finite-owned-sol-v1/finite_intake.py",
+      "sha256": "900307f05113791fe4ce9ac45d8e0b5b7928e0ae1feacbec9346d8094ec0bff9",
+      "bytes": 9101
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-finite-owned-sol-v1/receipt_projection.py",
+      "sha256": "9895a5c991d81e5ab4d5a8d22ada312adbd9622b318a467f73d1fc76dafe3f47",
+      "bytes": 8738
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-finite-owned-sol-v1/run_tests.py",
+      "sha256": "adf2015818f6241a8fa8de5df8dd43f600c50bfd59635422c983d889b77d41a7",
+      "bytes": 1434
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-finite-owned-sol-v1/run_tests.sh",
+      "sha256": "0fb167275c03d41f037d0f6fd53a2a85efcca2d2e04624948d03a33360867fe3",
+      "bytes": 79
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-finite-owned-sol-v1/evidence.json",
+      "sha256": "9a3f18f938496a168747eeae1a0da3a91e804c236cf61c73a14afcd760a71194",
+      "bytes": 13278
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-finite-owned-sol-v1/README.md",
+      "sha256": "ebbe1c70ef30cee9c5f18812583910f009e4cec66466a2bf2bcf26c62b262003",
+      "bytes": 10701
+    }
+  ],
+  "frozen_local_pin_checks": 29,
+  "static_assertions": {
+    "tick_calls_released_result_and_status": true,
+    "status_calls_verified_result": true,
+    "result_calls_ownership_for_job": true,
+    "ownership_for_job_rebuilds_expected_and_audit": true,
+    "audit_calls_registry_and_live_validate": true,
+    "registry_calls_overlap": true,
+    "live_validation_calls_executable_pin_check": true,
+    "manager_gate_calls_full_admission_scan": true,
+    "test_runner_relative_cleanup_output": true
+  },
+  "illustrative_local_interpreter_metadata": {
+    "path": "/usr/bin/python3.12",
+    "bytes": 8020928,
+    "method": "stat only; not hashed or run as fixture"
+  },
+  "healthy_released_case_assumptions": [
+    "N successful jobs, N reservations and N distinct intents in one root",
+    "valid released receipts, no corruption/contention/partial or active jobs, no early return",
+    "plain idle tick, not timing/model-cycle evidence"
+  ],
+  "arithmetic_projection": [
+    {
+      "successful_jobs": 1,
+      "reservations": 1,
+      "executor_intents": 1,
+      "ownership_audits_per_idle_tick": 2,
+      "containment_comparisons_per_idle_tick": 0,
+      "executable_rehashes_per_idle_tick": 2,
+      "logical_executable_bytes_per_idle_tick": 16041856
+    },
+    {
+      "successful_jobs": 2,
+      "reservations": 2,
+      "executor_intents": 2,
+      "ownership_audits_per_idle_tick": 4,
+      "containment_comparisons_per_idle_tick": 4,
+      "executable_rehashes_per_idle_tick": 8,
+      "logical_executable_bytes_per_idle_tick": 64167424
+    },
+    {
+      "successful_jobs": 4,
+      "reservations": 4,
+      "executor_intents": 4,
+      "ownership_audits_per_idle_tick": 8,
+      "containment_comparisons_per_idle_tick": 48,
+      "executable_rehashes_per_idle_tick": 32,
+      "logical_executable_bytes_per_idle_tick": 256669696
+    },
+    {
+      "successful_jobs": 8,
+      "reservations": 8,
+      "executor_intents": 8,
+      "ownership_audits_per_idle_tick": 16,
+      "containment_comparisons_per_idle_tick": 448,
+      "executable_rehashes_per_idle_tick": 128,
+      "logical_executable_bytes_per_idle_tick": 1026678784
+    },
+    {
+      "successful_jobs": 16,
+      "reservations": 16,
+      "executor_intents": 16,
+      "ownership_audits_per_idle_tick": 32,
+      "containment_comparisons_per_idle_tick": 3840,
+      "executable_rehashes_per_idle_tick": 512,
+      "logical_executable_bytes_per_idle_tick": 4106715136
+    },
+    {
+      "successful_jobs": 32,
+      "reservations": 32,
+      "executor_intents": 32,
+      "ownership_audits_per_idle_tick": 64,
+      "containment_comparisons_per_idle_tick": 31744,
+      "executable_rehashes_per_idle_tick": 2048,
+      "logical_executable_bytes_per_idle_tick": 16426860544
+    },
+    {
+      "successful_jobs": 64,
+      "reservations": 64,
+      "executor_intents": 64,
+      "ownership_audits_per_idle_tick": 128,
+      "containment_comparisons_per_idle_tick": 258048,
+      "executable_rehashes_per_idle_tick": 8192,
+      "logical_executable_bytes_per_idle_tick": 65707442176
+    },
+    {
+      "successful_jobs": 128,
+      "reservations": 128,
+      "executor_intents": 128,
+      "ownership_audits_per_idle_tick": 256,
+      "containment_comparisons_per_idle_tick": 2080768,
+      "executable_rehashes_per_idle_tick": 32768,
+      "logical_executable_bytes_per_idle_tick": 262829768704
+    },
+    {
+      "successful_jobs": 256,
+      "reservations": 256,
+      "executor_intents": 256,
+      "ownership_audits_per_idle_tick": 512,
+      "containment_comparisons_per_idle_tick": 16711680,
+      "executable_rehashes_per_idle_tick": 131072,
+      "logical_executable_bytes_per_idle_tick": 1051319074816
+    },
+    {
+      "successful_jobs": 1000,
+      "reservations": 1000,
+      "executor_intents": 1000,
+      "ownership_audits_per_idle_tick": 2000,
+      "containment_comparisons_per_idle_tick": 999000000,
+      "executable_rehashes_per_idle_tick": 2000000,
+      "logical_executable_bytes_per_idle_tick": 16041856000000
+    }
+  ],
+  "function_lines": {
+    "queue": {
+      "digest": 27,
+      "document": 31,
+      "require": 35,
+      "current_sources": 39,
+      "initialize": 49,
+      "configuration": 82,
+      "dispatcher": 94,
+      "outputs_overlap": 106,
+      "validate_plan": 110,
+      "entries": 188,
+      "_enqueue_locked": 206,
+      "job_result": 271,
+      "verified_result": 276,
+      "verify_binding": 326,
+      "validate_resume": 354,
+      "bind": 381,
+      "result": 410,
+      "finish": 415,
+      "defer_unlaunched": 451,
+      "_tick_locked": 463,
+      "_status_snapshot": 569,
+      "ownership_expected": 600,
+      "ownership_for_job": 614,
+      "status": 627,
+      "enqueue": 637,
+      "seal": 645,
+      "tick": 650,
+      "finalize": 660,
+      "work": 671,
+      "main": 687
+    },
+    "executor": {
+      "require": 34,
+      "now": 39,
+      "pin": 43,
+      "checked": 53,
+      "verify_pin": 62,
+      "executable_pin": 66,
+      "verify_executable": 70,
+      "sync_directory": 75,
+      "ensure_directory": 83,
+      "publish": 95,
+      "identifier": 112,
+      "attempt": 117,
+      "absolute": 121,
+      "lexical_absolute": 131,
+      "validate": 135,
+      "bounded_flock": 140,
+      "_validate": 148,
+      "load": 191,
+      "registered": 213,
+      "job_directory": 234,
+      "lock_identity": 238,
+      "holds_lock": 243,
+      "lock": 262,
+      "process_identity": 275,
+      "observe": 285,
+      "session_members": 296,
+      "inspect": 308,
+      "ownership_sources": 341,
+      "ownership_binding": 348,
+      "ownership_crash": 358,
+      "overlap": 362,
+      "ownership_intents": 367,
+      "publish_exact": 400,
+      "prepare": 408,
+      "launch": 485,
+      "collect": 509,
+      "validate_terminal": 536,
+      "supervise": 566,
+      "child_main": 631,
+      "recover": 643,
+      "open_pidfd": 667,
+      "wait_stopped": 677,
+      "stop": 686,
+      "stop_owned": 699,
+      "attach": 794,
+      "main": 813,
+      "domain_pin": 840,
+      "assert_manager": 858,
+      "managed_admissions": 878,
+      "initialize_domain": 902,
+      "ownership_audit": 907
+    },
+    "intake": {
+      "crash": 9,
+      "digest": 11,
+      "doc": 12,
+      "require": 13,
+      "db": 14,
+      "initialize": 16,
+      "opened": 35,
+      "admissions": 42,
+      "checkseal": 43,
+      "frontier": 47,
+      "require_accepted": 59,
+      "evidence": 61,
+      "info": 75,
+      "enqueue": 80,
+      "seal": 105,
+      "finalize": 114
+    }
+  }
+}
