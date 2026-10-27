@@ -1,0 +1,41 @@
+{
+  "schema": "FiniteIntakeCoreIndependentReviewLunaV1",
+  "status": "bounded_core_reproduced_with_one_recovery_blocker",
+  "reviewed_frozen_packet": "../finite-intake-core-sol-v1",
+  "scope": "read-only review and tests on temporary SQLite stores; no queue-v3 integration, production store, scientific job or model run",
+  "pins": {
+    "core.py": "0cc966f68d1ac41d148aeb7bb98beddb13f2f76fca0823411e2fce24cb6585f6",
+    "test_core.py": "09e1f78d49f65d0365a11341486e08de67dc9e8d20b4f520fe7a646ec09aa158",
+    "evidence.json": "75c35e335a9bb756f400aaabc26158165d0fa6771318206b0ab3cdee65f35711",
+    "README.md": "e47b0f0284d400b48137afeb3777ed9f530173eab2ae0f7e852658603313c4a2",
+    "reproduce_stale_tmp.py": "0cf21073755ff3551ca8b8e28c8b3370ffbc8c9ec1819caa9c200bef2e5247e8"
+  },
+  "reproduction": {
+    "author_suite_command": "PYTHONDONTWRITEBYTECODE=1 nice -n 15 python3 -B -m unittest -v test_core",
+    "author_suite_result": "13 tests passed in 0.380 seconds in this review; the 12 simultaneous race samples again all had seal win, while explicit held-order tests covered both serializations.",
+    "targeted_command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/finite-intake-core-sol-v1 python3 -B /home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/finite-intake-core-review-luna-v1/reproduce_stale_tmp.py",
+    "targeted_output": [
+      "first_finalize OSError simulated interruption after temp fsync",
+      "stale_temp ['receipt-r-<pid>.tmp']",
+      "retry_error FileExistsError [Errno 17] File exists: .../receipt-r-<same-pid>.tmp"
+    ]
+  },
+  "confirmed_properties": [
+    "The serialized enqueue/seal operations share the same flock and BEGIN IMMEDIATE database transaction; tests cover enqueue-first and seal-first orders, and both produce the intended membership and state.",
+    "Pre/post SQLite commit process exits behave as documented in the temporary fixture. Sealed membership and exact accepted retry persist after commit; new admission rejects after seal.",
+    "Final row bytes are committed before filesystem projection, and retry validates and projects the same bytes. Tested explicit-empty and terminal-with-failure dispositions remain clearly distinct from success/qualification.",
+    "The core expressly does not integrate V3 admission intents, executor reconciliation, dependency/liveness evidence, or scientific qualification. The report does not support production or thousands-cycle claims."
+  ],
+  "blocker": {
+    "name": "same-process retry can be permanently blocked by stale pid-named receipt temp",
+    "source": "core.py project(): temporary path is receipt-<run>-<os.getpid()>.tmp and is opened with xb; failures before unlink leave it behind.",
+    "counterexample": "Create and seal an explicit-empty run, inject an ordinary OSError at receipt_before_publish after the temporary file has been fsynced, restore the fault, and call finalize again from the same process. The first call has already committed FINALIZED; the retry raises FileExistsError because the first temp file remains and the pid is unchanged.",
+    "impact": "This is an ordinary API exception/retry case, distinct from same-user forgery and from process-crash recovery where the next process usually has a different PID. It contradicts unconditional retryability after publication-stage failure. It also can recur after a real crash if a PID is reused before stale temp cleanup.",
+    "smallest_fix": "Use a collision-resistant per-attempt exclusive temporary name (e.g. random nonce plus pid) so a stale inert temp cannot block a retry; optionally clean only the current attempt's temp in a finally block when safe. Keep exclusive final publication and exact-byte verification. Add same-process injected-error retry, stale-PID temp, and crash-restart tests."
+  },
+  "remaining_limits": [
+    "The tests assume honest local Linux filesystems and cooperating writers; they do not prove power-loss/device-flush durability, network-filesystem semantics, malicious coherent SQLite rewrites or immutable evidence.",
+    "The injected test seam exercises process exits at enumerated points; it does not establish all kernel/storage failure behavior.",
+    "A production adapter still must atomically own partial admission before scaffolding and integrate actual queue-v3 reconciliation under its authoritative lock. The core alone does not fix the previously identified V3 enqueue/seal race."
+  ]
+}
