@@ -1,0 +1,115 @@
+{
+  "schema": "OwnerTerminalObservationV1",
+  "observed_at_utc": "2026-10-27T00:20:24.227860+00:00",
+  "house_context": {
+    "path": "/home/hayden/projects/ballotmancy-house-benchmark/research/house-live-correction-20261026-v2/precision-recovery-context-v1/receipt.json",
+    "sha256": "68fdc285c5e49a9a8b300c8156be026b4fc5f52d3eb231154ba4237ee173278c",
+    "receipt": {
+      "schema": "HouseContextPrecisionRecoveryReceiptV1",
+      "at": "2026-10-27T00:19:33.382291+00:00",
+      "plan": {
+        "path": "research/house-precision-recovery-20261026-v1/context-recovery-plan-v1.json",
+        "sha256": "34122b314cdfda8ad7fd8b85f66c6f648b634a8bbdc0d9e0c42543f17a8fdffc"
+      },
+      "stages": [
+        {
+          "label": "source-queue",
+          "return_code": 0
+        },
+        {
+          "label": "source-binding",
+          "return_code": 0
+        },
+        {
+          "label": "source-audit",
+          "return_code": 0
+        },
+        {
+          "label": "combine",
+          "return_code": 0
+        },
+        {
+          "label": "combined-binding",
+          "return_code": 0
+        },
+        {
+          "label": "combined-audit",
+          "return_code": 0
+        }
+      ],
+      "publication_qualified": false,
+      "status": "context_precision_and_audits_passed",
+      "combined_receipt": {
+        "path": "research/house-live-correction-20261026-v2/combined-fp-recovery-v1/house-current-comparison-house_relative_context_v1-fp/receipt.json",
+        "sha256": "07c83161bf7b2ed7e3d000a1715ee12d8dcd7e6f58cf7ef3fc8aaf7225b02e70"
+      },
+      "combined_binding": {
+        "path": "research/house-live-correction-20261026-v2/precision-recovery-context-v1/combined-reviews/binding.json",
+        "sha256": "a916c532f8ab450e08430ce716898a5fd8d7f896422dfae29132b3e56fd80068"
+      },
+      "combined_audit": {
+        "path": "research/house-live-correction-20261026-v2/precision-recovery-context-v1/combined-reviews/audit.json",
+        "sha256": "ab50592bc1aac8e1765c3055c5b5434d1c238391a252a3c87cf5f69685d5d2f1"
+      },
+      "prior_combination_statuses": {
+        "house-current-polling": "passed",
+        "house-current-comparison-house_relative_lean_v1-fp": "passed",
+        "house-current-comparison-house_relative_context_v1-fp": "diagnostic_failure",
+        "house-current-cycle-high": "diagnostic_failure",
+        "house-current-error-high": "passed"
+      },
+      "remaining": "Inspect all other scenario gates, prepare a new explicitly reviewed selection and release plan, then website-owner integration."
+    }
+  },
+  "senate_materialization": {
+    "path": "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-2018-gpu-preparation-root-v1/materialization-queue-v1.json",
+    "sha256": "c0fc1d332560a8a550c8865f82c00b2f55e916d837ab3b3da62181801cd2ed40",
+    "receipt": {
+      "schema": "National2018MaterializationQueueV1",
+      "utc": "2026-10-26T20:27:38.582949+00:00",
+      "runner_sha256": "ce58a06562dea3b887be328cd2cea2a696a647400bb77553ac70eac4948fadd7",
+      "automatic_retry": false,
+      "materialization_memory_cap_bytes": 25769803776,
+      "action": "materialization_terminal",
+      "sampling_action": "full_sampling_terminal",
+      "house_program": "completed",
+      "house_release": "further_precision_required",
+      "available_memory_bytes": 63326814208,
+      "root_free_bytes": 229039927296,
+      "staging_free_bytes": 104034332672,
+      "observed_utc": "2026-10-26T23:46:39.600066+00:00",
+      "command": [
+        "systemd-run",
+        "--user",
+        "--wait",
+        "--unit=ballotmancy-national2018-materialization-20261026-v1",
+        "--property=MemoryMax=24G",
+        "--property=MemorySwapMax=0",
+        "--property=Restart=no",
+        "--working-directory=/home/hayden/projects/wethervane-redesign-20261006/integration",
+        "/usr/bin/env",
+        "-u",
+        "AMD_SERIALIZE_COPY",
+        "-u",
+        "AMD_SERIALIZE_KERNEL",
+        "-u",
+        "XLA_PYTHON_CLIENT_ALLOCATOR",
+        "JAX_PLATFORMS=rocm,cpu",
+        "XLA_FLAGS=--xla_force_host_platform_device_count=100",
+        "HSA_ENABLE_SDMA=1",
+        "GPU_MAX_HW_QUEUES=1",
+        "HSA_OVERRIDE_GFX_VERSION=11.0.1",
+        "BENCHMARK_CPU=10,11",
+        "bash",
+        "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/gpu-backend-implementation-20261025/run_isolated.sh",
+        "/home/hayden/projects/wethervane-redesign-20261006/integration/research/senate-stack-integration-20261020/national-2018-gpu-preparation-root-v1/gpu_runner_v2.py",
+        "materialize"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "Running as unit: ballotmancy-national2018-materialization-20261026-v1.service; invocation ID: 456ea1e242cd493bbb5e4dd7a1c8eeef\nFinished with result: success\nMain processes terminated with: code=exited/status=0\nService runtime: 25min 34.472s\nCPU time consumed: 25min 37.355s\nMemory peak: 24.0G\nMemory swap peak: 0B\n",
+      "finished_utc": "2026-10-27T00:12:14.092992+00:00"
+    }
+  },
+  "scope": "These terminal process/owner receipts are observations, not forecast qualification or release handoffs."
+}
