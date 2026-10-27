@@ -1,0 +1,83 @@
+{
+  "schema": "QueueExecutorIntegrationStaticEvidenceV1",
+  "method": "read/hash/AST only; no imports, fixtures, queue execution or model jobs",
+  "pins": {
+    "queue": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-finite-run-sol-v2/experiment_queue.py",
+      "sha256": "1c8c3a55edfee4a95b62157e3175fc47438915a04ed9f607e9c170438b1c2965",
+      "bytes": 39918
+    },
+    "intake": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-finite-run-sol-v2/finite_intake.py",
+      "sha256": "8f3521aca4ea2284d3d6d8b7cd2ed83fd3d9e212ee757d420339fe7ba5c45fac",
+      "bytes": 9018
+    },
+    "queue_tests": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-finite-run-sol-v2/test_experiment_queue.py",
+      "sha256": "390b6ede9328b6166c1aa78e5e40fa7267ce1f47dbc85ef672e4125c12022c1a",
+      "bytes": 43711
+    },
+    "finite_tests": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-finite-run-sol-v2/test_finite.py",
+      "sha256": "e49ae1056fbb737062187dc7ac2d78fd39f16e913bdf928312da11f0f3912205",
+      "bytes": 8665
+    },
+    "queue_evidence": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-finite-run-sol-v2/evidence.json",
+      "sha256": "3e98abfb6f75c2c6021737bc97871db25e940aae4929f632330920a21289e8ec",
+      "bytes": 5340
+    },
+    "executor": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/executor-output-ownership-sol-v1/execution.py",
+      "sha256": "b9f3a178fdff113d01e95bfe06544105fa550b6e904e283333e1390d1c7e2459",
+      "bytes": 43502
+    },
+    "executor_tests": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/executor-output-ownership-sol-v1/test_ownership.py",
+      "sha256": "8047d98aaaacb69fef431a5f5f2db3574cd8044b9cb403e2b6fb9beafc422ded",
+      "bytes": 10226
+    },
+    "executor_evidence": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/executor-output-ownership-sol-v1/evidence.json",
+      "sha256": "f8e6411dd9c19450df5c6ae92f1c2d640291f95e348b349cb2a510a74a442afb",
+      "bytes": 3622
+    },
+    "executor_review": {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/executor-output-ownership-review-luna-v1/review.json",
+      "sha256": "911ffda02cb61dec6c58f9ed8cf10988d65837bf68b3e62b6441765a95adccd6",
+      "bytes": 5320
+    }
+  },
+  "static_checks": {
+    "released_result_does_not_call_executor_load_or_registered": true,
+    "historical_registry_calls_full_validate": true,
+    "full_validate_calls_verify_pin": true,
+    "dispatcher_has_flock": true,
+    "prepare_has_global_flock_and_job_lock": true,
+    "launch_has_no_global_ownership_lock_call": true,
+    "supervisor_does_not_call_prepare": true,
+    "queue_tick_calls_prepare_then_launch": true,
+    "inherited_unrelated_drift_test_present": true
+  },
+  "definitions": {
+    "queue": {
+      "current_sources": 39,
+      "configuration": 80,
+      "dispatcher": 92,
+      "verified_result": 274,
+      "validate_resume": 350,
+      "_tick_locked": 458,
+      "finalize": 623
+    },
+    "executor": {
+      "load": 169,
+      "registered": 191,
+      "ownership_binding": 326,
+      "ownership_intents": 345,
+      "prepare": 383,
+      "launch": 458,
+      "recover": 615
+    }
+  },
+  "conclusion": "integration requires reviewed changes; not a drop-in replacement; static checks are limited source facts, not runtime/deadlock proof"
+}

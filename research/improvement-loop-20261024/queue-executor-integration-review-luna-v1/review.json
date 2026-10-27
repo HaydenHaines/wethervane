@@ -1,0 +1,63 @@
+{
+  "schema": "QueueExecutorIntegrationDesignIndependentReviewLunaV1",
+  "status": "source_risks_confirmed_integration_not_drop_in",
+  "reviewed_packet": "../queue-executor-integration-design-sol-v1",
+  "scope": "read-only source/hash/AST review; no imports of implementation, fixtures, executor, queue tests, model, fit or owner work",
+  "pins": {
+    "design_README.md": "5db3c823cd7e4d003a63bab74ce954e830bfc559af7315081b0583ce49d875d2",
+    "design_check_sources.py": "e5ec365d9a8f8b9c7981a68954a654ed6e905380ce7ada83c735c0b2cc3523e5",
+    "design_evidence.json": "585997d8623cd6d01d955387badd3897559662a87fecfd13b7398e37b2869186",
+    "check_output.json": "585997d8623cd6d01d955387badd3897559662a87fecfd13b7398e37b2869186",
+    "queue_v2_experiment_queue.py": "1c8c3a55edfee4a95b62157e3175fc47438915a04ed9f607e9c170438b1c2965",
+    "queue_v2_finite_intake.py": "8f3521aca4ea2284d3d6d8b7cd2ed83fd3d9e212ee757d420339fe7ba5c45fac",
+    "executor_ownership_execution.py": "b9f3a178fdff113d01e95bfe06544105fa550b6e904e283333e1390d1c7e2459",
+    "queue_v2_tests.py": "390b6ede9328b6166c1aa78e5e40fa7267ce1f47dbc85ef672e4125c12022c1a",
+    "executor_ownership_tests.py": "8047d98aaaacb69fef431a5f5f2db3574cd8044b9cb403e2b6fb9beafc422ded",
+    "direct_executor_luna_review.json": "911ffda02cb61dec6c58f9ed8cf10988d65837bf68b3e62b6441765a95adccd6",
+    "queue_v2_finite_tests.py": "e49ae1056fbb737062187dc7ac2d78fd39f16e913bdf928312da11f0f3912205",
+    "queue_v2_evidence.json": "3e98abfb6f75c2c6021737bc97871db25e940aae4929f632330920a21289e8ec",
+    "executor_ownership_evidence.json": "f8e6411dd9c19450df5c6ae92f1c2d640291f95e348b349cb2a510a74a442afb"
+  },
+  "independent_checks": {
+    "check_sources.py": "rerun read/hash/AST-only script; all nine assertions passed",
+    "evidence_pin_validation": "all nine source/evidence input pins and byte counts matched current files",
+    "runtime": "none; source-only review as requested"
+  },
+  "confirmed_gaps": [
+    {
+      "name": "historical intent scan revalidates mutable runnable inputs",
+      "source_evidence": "Executor ownership_intents (lines 345\u2013354) calls full validate(spec) for every historical intent. validate (lines 126\u2013166) rechecks executable pin, cwd existence, canonical output, and every input pin's current bytes. Queue V2 retains a regression test whose contract is that drift in one prepared job defers that job without a terminal while an unrelated job with independent unchanged inputs can run (test lines 496\u2013519).",
+      "predicted_integration_effect": "Directly substituting E.prepare/ownership_intents into queue V2 makes every new preparation scan old intents; a drifted historical input can therefore reject unrelated new preparation. This is a source-based predicted regression, not an executed result.",
+      "required_design": "Split immutable ownership-shape/claim validation from fresh runnable-input validation. Preserve old intent bytes, source/store/root binding, canonical ownership identity and output containment checks. Validate current executable/cwd/inputs for the target attempt at admission/launch. Historical drift remains visible to that attempt's audit and any dependent/finality policy but should not automatically abort unrelated ownership claims unless semantics are deliberately versioned to do so."
+    },
+    {
+      "name": "released result reconciliation bypasses executor ownership metadata",
+      "source_evidence": "Queue V2 verified_result (lines 274\u2013319) checks queue binding/reservation/result/release/terminal and declared outputs, but has no E.load/registered/ownership audit call. _tick_locked lines 476\u2013479 trusts this path and skips the released job on success. finalize calls tick then intake finalization; finite_intake.evidence (lines 61\u201374) pins queue-side records and outputs but no E ownership store/intent/prepared/job/output claims.",
+      "predicted_integration_effect": "After queue result/release is valid, drift or deletion of the new E ownership intent/claim may not be observed by Q reconciliation or final receipt. Existing E.load would reject the missing intent, but Q does not invoke it on this path. This is a source fact about call structure; no runtime mutation was performed.",
+      "required_design": "Add an explicit read-only ownership audit at released-result reconciliation and before final DB commit. Under the ownership lock, bind the attempt roster and exact effective specs to queue reservations/bindings, verify store/intent/prepared/job/output claim pins, and include those facts in the new final evidence. Keep original result/release/terminal/dependency checks. Accept absence of an E store only when authenticated queue evidence proves no attempt was ever prepared; if previously witnessed store/claims vanish, fail closed."
+    },
+    {
+      "name": "queue capacity domain is not enforced against direct executor entry",
+      "source_evidence": "The ownership global lock serializes executor prepare clients in one root, but queue capacity reservations are created by Q before prepare and direct executor.prepare/launch does not consult Q's reservation store. The design explicitly states that all managed-domain launches must pass through Q and that this restriction is not supplied by either source packet.",
+      "required_design": "Use a dedicated execution root with an enforced manager entry boundary, or add a queue-authenticated admission gate to direct executor launch. If this cannot be enforced, describe the managed-domain assumption as a deployment requirement and do not claim the queue's capacity bound covers arbitrary same-root clients."
+    }
+  ],
+  "lock_order_assessment": {
+    "source_facts": "Q operations acquire dispatcher flock D; Q tick's preparation path invokes E.prepare. E.prepare acquires ownership flock O and then the nonblocking per-job flock J; both close before Q invokes E.launch. E.launch acquires J without acquiring O or D. Executor worker/supervisor paths load source/store bindings but do not call prepare. Q lifecycle SQLite transaction S is local to admission/seal/finalization.",
+    "design_order": "D -> O -> J(nonblocking) during prepare; release O and manager J; D -> J(nonblocking) during launch; proposed audit D -> O, release O, then D -> S commit/projection. No E path should acquire D while holding O/J, and no wait for workers while holding S/O.",
+    "verdict": "The stated order avoids an obvious lock cycle under these exact source paths. It is not a runtime deadlock/bounded-wait proof: E.prepare's ownership flock is blocking while Q holds D, so a stalled same-root preparer or filesystem sync can stall queue operations. Direct clients in the managed domain also violate the queue-capacity invariant even absent deadlock."
+  },
+  "compatibility_and_root_constraints": [
+    "A successor must be self-contained and use new queue and executor roots/store schemas; the reviewed queue V2 root and direct-executor V1 root cannot be combined or silently adopted.",
+    "Queue Q.current_sources/configuration pins all modules; E ownership binding independently pins execution.py, ledger.py, run_receipts.py and the absolute execution root. The integrated child must use these exact source paths and effective dependency-substituted spec from Q binding, not the unbound plan spec.",
+    "Do not create a nonempty execution root before E ownership binding. Queue initialization and E's first store/intents have different crash ordering; permit only explicitly specified initial files and test each interrupted setup state.",
+    "E-owned output claims persist after terminal. Queue prelaunch resume and new terminal retry must preserve original proof and attempt-leaf semantics; never delete executor claims to make queue resumption pass.",
+    "Cross-system SQLite and file operations cannot commit atomically. Every queue intent, reservation, E intent/prepared/claims, dispatch/launch intent, terminal, result/release and final projection needs an explicit authenticated replay rule."
+  ],
+  "limits": [
+    "The design checks are static only and establish no runtime regression, dynamic concurrency behavior, lock liveness, durability, power-loss or production readiness.",
+    "E ownership registry is mutable local owner-writable evidence; loss of its sole pre-scaffold intent can free an otherwise unwitnessed claim. Queue accepted plan/binding may provide a second local witness only if the proposed audit actually cross-checks it; this is not an external immutable/hostile-owner guarantee.",
+    "Full inherited V3 regression, exact drift-policy integration tests, released-ownership mutation tests, every partial executor/queue crash boundary, direct-client exclusion, and scale/performance remain unimplemented and unverified.",
+    "No normalizers, model evaluation, scientific qualification, forecast or thousands-cycle capability is implicated."
+  ]
+}
