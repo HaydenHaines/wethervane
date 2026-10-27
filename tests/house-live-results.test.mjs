@@ -153,6 +153,32 @@ test("mixed Other groups retain member affiliations without adopting one member'
   assert.match(singleton, /class="party-label">Independent · Other \(O\)<\/span>/);
 });
 
+test("a declared write-in without a party label is not presented as having an Other affiliation", () => {
+  const entry = nativeCatalog.entries.find(item => item.id === nativeCatalog.default_id);
+  const raw = makeHouseLiveResult(entry.configuration);
+  raw.qualification.publication_status = "reviewed";
+  const race = raw.races.find(item => item.district_key === "AL-02");
+  const outcome = race.outcomes.find(item => item.party === "O");
+  const candidate = race.candidates.find(item => item.candidate_id === outcome.member_candidate_ids[0]);
+  candidate.name = "Invented Write-in";
+  candidate.party_label = null;
+  candidate.ballot_status = "declared_writein";
+  outcome.label = candidate.name;
+  const parsed = parseHouseLiveResult(raw);
+  assert.ok(parsed, "a declared write-in may have no listed party");
+  const updated = houseLiveView(parsed, entry);
+
+  const html = render({ view: updated, selectedRaceId: race.race_id });
+  assert.match(html, /Invented Write-in · Party affiliation not listed · Declared write-in/);
+  assert.doesNotMatch(html, /Invented Write-in · O(?:<| ·)/);
+
+  candidate.party_label = "Independent";
+  const listed = parseHouseLiveResult(raw);
+  assert.ok(listed);
+  const listedHtml = render({ view: houseLiveView(listed, entry), selectedRaceId: race.race_id });
+  assert.match(listedHtml, /Invented Write-in · Independent · Declared write-in/);
+});
+
 test("polling display separates included questions, zero local inputs, disabled polling, and unpublished details", () => {
   const included = withInventedPolling(makeHouseLivePublication());
   const html = render({ view: included.view, polling: included.polling, selectedRaceId: "2026:AL-01:house:regular" });

@@ -99,8 +99,9 @@ function HouseLiveRaceDetail({ race, detailRef, pollingEnabled, notice }: { race
       {outcome.kind === "group" && <p className="detail-note">Combined probability for {outcome.members.map((member) => member.name).join("; ")}. This probability is not split among the individual candidates.</p>}
       {outcome.members.map((member) => {
         const candidate = race.candidates.find((item) => item.id === member.id);
+        const affiliation = candidate?.partyLabel ?? (candidate?.ballotStatus === "declared_writein" ? "Party affiliation not listed" : member.party);
         return <p className="detail-note" key={member.id}>
-          {member.name}{candidate?.partyLabel ? ` · ${candidate.partyLabel}` : ` · ${member.party}`}{member.incumbent ? " · currently holds this seat" : ""}
+          {member.name} · {affiliation}{candidate?.ballotStatus === "declared_writein" ? " · Declared write-in" : ""}{member.incumbent ? " · currently holds this seat" : ""}
           {member.sourceUrls.map((url) => <span key={url}> · <a href={url} target="_blank" rel="noreferrer">Source</a></span>)}
         </p>;
       })}
