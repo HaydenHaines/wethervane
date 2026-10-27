@@ -1,0 +1,65 @@
+{
+  "schema": "M01BatchedDynamicWitnessDesignReviewLunaV1",
+  "status": "mathematically_equivalent_if_roster_and_binding_invariants_hold; batch_protocol_needs_new_version",
+  "scope": "source/design review only; no model/graph execution, fit, forecast, or owner modification",
+  "scientific_equivalence": {
+    "conclusion": "A batch dynamic-witness phase does not inherently change pointwise scientific meaning versus six separate dynamic-witness phases, if it builds the same parent0 dynamic graph once, replaces only the exact dynamic exposure port, and evaluates the same frozen complete 662-coordinate points against each exact authenticated selected-parent binding. It remains pointwise witness evidence only.",
+    "ways_batching_could_break_equivalence": [
+      "Using one exposure with another parent's record/envelope or parent_id.",
+      "Mutating/reusing an exposure or point buffer between calls, or reusing a bound object after identity changed.",
+      "Changing call coordinates, FD sign/step/order, compiler source/runtime, or target formula.",
+      "Treating compiler-parent0 identity as the evaluated parent identity, or using dynamic outputs as independent native fixed-parent outputs.",
+      "Allowing state/cache/order dependence to change later results; a return-to-A control helps expose this class of bug."
+    ],
+    "fixed_cut": "Each of six parent records retains its immutable mass 0.125 outside conditional logp. These are evaluations at fixed inputs, not normalized q_i samples; no parent evidence reweighting or inference follows."
+  },
+  "minimal_call_roster": {
+    "selected_parent_ordinals": [2, 3, 4, 5, 6, 7],
+    "per_parent": {
+      "baseline_points": [0, 1, 2],
+      "fd_base_point": 1,
+      "fd_variables": ["choice_intercept", "event_gamma_shape_log__"],
+      "fd_coordinate": 0,
+      "fd_step": 0.00001,
+      "fd_signs": [-1, 1],
+      "calls": 7
+    },
+    "total_selected_calls": 42,
+    "ordered_roster": "parent ordinal ascending; for each parent emit baseline point indices 0,1,2, then FD in contract variable order and sign order (-,+). The order and uniqueness must be asserted, not inferred from filenames.",
+    "optional_state_isolation": "Evaluate parent0/A at all three baseline points before the six-parent sequence and again after it: A(0,1,2) -> parents2..7 (each 7 calls) -> A(0,1,2). This adds six calls, total48. Require exact equality with saved parent0 baseline at each repeated point. This is an order/state-isolation control, not another parent baseline.",
+    "comparisons": "For each selected parent compare all three base outputs to its exact saved dynamic calls (logp, poll logp, every factor, all contest rates and physical outputs); validate each FD full point, source, parent, signed step and central-difference arithmetic. FD values are newly captured, not compared to parent1's old FD values."
+  },
+  "parent_and_source_binding": {
+    "per_parent_fields": ["ordinal", "parent_id", "row_id", "full record digest", "upstream identity", "complete exposure digest", "mass 0.125", "population_cut_v1 target identity"],
+    "compiler_vs_evaluated_identity": "The one compiled dynamic graph remains compiled under original parent0. Every call receipt must separately bind the selected evaluated parent record/envelope and its exact exposure. The compiler target is not relabeled as the selected parent's fixed-native target.",
+    "source_review": "Require a new independently pinned V3 batch contract and review object whose exact allowed parent roster is [2,3,4,5,6,7], phase is only dynamic-witness-batch, and whose source pins bind the full batch roster/comparator/controller. Existing Luna admission allows only ordinal2/single-parent dynamic-witness and cannot authorize this batch.",
+    "cut": "Retain all eight original masses as metadata; do not estimate or apply Z_i. Batch witnesses do not qualify the conditional normalizers or posterior."
+  },
+  "durable_complete_partial_error_protocol": {
+    "reserve": "Create one immutable batch attempt ID before child launch with exact ordered 42-call roster (and explicit A controls if included), six full parent identities, source/contract/review/resource hashes and unique owner. Never write into the existing per-parent V2 attempt namespace.",
+    "per_call": "Persist each owned call as canonical, fsynced bytes with exact parent/point/FD identity and pin. Do not expose a success marker while any expected call/comparison is missing. Preserve call terminal and controller receipt.",
+    "completion": "Only after all 42 calls are present exactly once, all six per-parent baseline comparisons pass, all four FD points per parent validate, and optional A-before/A-after outputs match, atomically publish a complete batch comparison with exact roster, artifact pins, source execution identity and clean child/controller terminal. Caller retains actual successful tool return; next-stage evidence must bind that full return.",
+    "partial_or_error": "A crash, timeout, numerical failure, missing call or comparison failure leaves an explicit partial/error attempt with files retained for diagnosis but no batch success/ACK and no fixed-stage authorization. Never infer six-parent completion from a prefix or average over completed parents.",
+    "retry": "Safest match to V2: refuse automatic retry/reuse of a partial attempt; any rerun gets a new versioned attempt identity and fresh source/resource assessment. A future resumable protocol could reuse only individually complete immutable per-parent subcapsules after independently validating every call, but must label the enclosing batch partial until all six are complete; compilation after restart would be a new process and must not be represented as the original uninterrupted stage.",
+    "partial_subcapsules": "If downstream fixed checks are to consume one parent's completed witness from a failed batch, define a separate per-parent completion record and real caller acknowledgment explicitly. Do not silently treat an aggregate partial batch as success or grant all six."
+  },
+  "resource_and_scope": {
+    "compile_count": "Current V2 separate method implies six dynamic graph builds/NUMBA compilations for six selected parents. A batch should build/compile the parent0 dynamic graph once; scientific evaluation calls remain 42, or 48 with A controls. This is a plausible compile-cost reduction, not measured performance.",
+    "memory": "Peak memory may remain near one compiled graph if one engine is retained and calls are streamed serially. Do not retain six graphs or accumulate all decoded arrays unnecessarily. Actual graph/NUMBA footprint is unknown; current 4 GiB sampled RSS and 8 GiB address-space caps are not proven feasible for a batch.",
+    "time": "One compile plus 42/48 owned calls and durable writes could fit a single 600-second stage, but there is no actual benchmark. A new single-stage resource assessment must measure/allow full batch wall/CPU budget; do not multiply or assume current 600-second per-parent receipt implies a six-parent fit.",
+    "disk": "Call receipts grow approximately with the 42/48 call count; model envelope/compiler cache are shared once. File64 MiB and stage/cache512 MiB limits must be checked against measured or conservatively bounded outputs/cache. Do not copy/pickle the graph.",
+    "owner_goal": "This can reduce repeated compilation and improve provenance efficiency, but it is not itself a forecasting improvement or weakest-layer ranking. Complete goal still requires matched full predictive comparisons and separate inference/normalization qualification."
+  },
+  "current_review_object": {
+    "path": "research/improvement-loop-20261024/m01-remaining-fixed-parent-admission-luna-v1/review-ordinal2-dynamic-witness.json",
+    "sha256": "4f8ba6252d686e53ac48729c93c2698cf4f5c4f630430fe01f31682e0357128b",
+    "scope": "ordinal2 only; dynamic-witness only; cannot authorize batch or remaining ordinals"
+  },
+  "next_review": "Sol's batch packet was not yet frozen when this review was written. Independently inspect its frozen source/test pins and exact roster before any actual use.",
+  "limitations": [
+    "No batch code or numerical execution was reviewed or run.",
+    "No actual runtime/resource estimate is established.",
+    "Coherent same-user fabricated local receipts remain outside the V2 trust boundary; batch success requires retained caller-return discipline and exact source/artifact pins.",
+    "No parent conditional normalizer, posterior, predictive distribution or forecast score is established."
+  ]
+}
