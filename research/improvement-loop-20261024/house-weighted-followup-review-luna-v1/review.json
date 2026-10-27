@@ -1,0 +1,45 @@
+{
+  "schema": "HouseWeightedFollowupIndependentReviewV1",
+  "reviewed_commit": "cd5dec180a8786dd7acb5ed67d573a7ad9802cec",
+  "compared_to": "9a4dc1adaefafb8d6979d805a239dcbe1ad5ed0b",
+  "verdict": "The follow-up closes the two concrete V1 subprocess lifecycle defects reviewed here. Bounded invented-fixture tests pass. This remains research-only consistency checking, not forecast qualification or release approval.",
+  "findings": [
+    {
+      "severity": "resolved_prior_finding",
+      "topic": "serialization before child creation",
+      "evidence": "Both wrappers JSON.stringify the complete request before spawn. Existing cyclic-identity tests for joint and pair confirm the marker decoder never starts. This removes the V1 orphan-child path caused by cyclic JSON serialization after spawn."
+    },
+    {
+      "severity": "resolved_prior_finding",
+      "topic": "operation deadline and cleanup",
+      "evidence": "Both wrappers accept timeoutMs only as positive safe integer <= 7,200,000 ms; default is 7,200,000 ms. A timer marks timeout, invokes shared SIGTERM then SIGKILL cleanup, and is cleared in finally. The 500 ms silent SIGTERM-resistant tests both reject with deadline error and verify ESRCH for the child."
+    },
+    {
+      "severity": "verified",
+      "topic": "stdin failure and error propagation",
+      "evidence": "Independent invented fixture closes stdin after first data while receiving a 2 MB request. Joint wrapper rejects with EPIPE and confirms direct child PID is ESRCH. The finally path executes cleanup. Existing joint/pair tests cover errors/abort; the pair's analogous stdin EPIPE path is implemented symmetrically but was not separately probed."
+    },
+    {
+      "severity": "verified",
+      "topic": "abort, termination, and reaping",
+      "evidence": "Existing tests exercise invalid-row decoder that ignores SIGTERM, manual AbortController against silent SIGTERM-resistant child, and deadline kill. Both wrapper implementations share stopWeightedDecoder: SIGTERM, 1 s grace, SIGKILL, 1 s grace, then close streams/unref and throw if still not closed."
+    },
+    {
+      "severity": "limitation",
+      "topic": "identity and publication scope",
+      "evidence": "No change to identity/provenance logic. Caller identity is compared to hash-pinned stage preflight, which establishes consistency, not upstream result provenance, lawful map boundaries, or scenario authority. Existing identity audit documents 14 replay stages without forecast_identity and unresolved map/scenario reconciliation. API returns publicationAdmission:false. The historical stages remain unqualified until valid identity-bearing evidence exists."
+    },
+    {
+      "severity": "limitation",
+      "topic": "resource and process scope",
+      "evidence": "Tests exercise 500 ms shorter deadlines, not a two-hour run; default/max are verified from source. Cleanup directly controls the decoder child, not arbitrary descendants or an OS process in uninterruptible state. A failed close after SIGKILL raises a cleanup error. No owner forecast/jobs or private stage data were run."
+    }
+  ],
+  "test": {
+    "command": "HOUSE_TEST_PYTHON=/home/hayden/projects/ballotmancy-house-benchmark/.venv/bin/python node --experimental-strip-types --test tests/house-weighted-research-stage.test.mjs tests/house-weighted-pair-research-stage.test.mjs",
+    "result": "18 passed, 0 failed; about 6.7 s in archived cd5dec1 source tree",
+    "independent_probe": "HOUSE_SOURCE=$PWD node --experimental-strip-types stdin-probe.mjs",
+    "probe_result": "PASS: early child stdin close rejected as EPIPE; controlled child was already reaped (ESRCH)."
+  },
+  "scope": "Source/tests copied via git archive to /tmp; no owner worktree edits, no active 99ff6eb job interaction, no private forecast data, no release or qualification claim."
+}
