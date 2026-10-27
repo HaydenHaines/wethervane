@@ -1,0 +1,36 @@
+{
+  "schema": "ContinuousImprovementCheckpointV87",
+  "recordedAtUtc": "2026-10-27T00:16:40.063715+00:00",
+  "status": "active; queue frontier isolated research, independent review passed within stated bounds",
+  "references": {
+    "previous": {
+      "path": "research/improvement-loop-20261024/checkpoints/continuation-v86.json",
+      "sha256": "5a68d7c73890cff41e2bf13d8f1754d4cb48b94baf51ba0d6b62f029fe4420a0",
+      "bytes": 3401
+    },
+    "frontier": {
+      "path": "research/improvement-loop-20261024/queue-durable-frontier-sol-v1/evidence.json",
+      "sha256": "81c196c3080aa0d47ad10dcb7591f18a6de8eeaa6c041cfcb9ab2b8dd3009c00",
+      "bytes": 2421
+    },
+    "frontier_review": {
+      "path": "research/improvement-loop-20261024/queue-durable-frontier-independent-luna-v1/independent-review.json",
+      "sha256": "7134e211b928c6aed9e56b9f6f67c8e93b83dbb2d9bad33a6fa741bfed6ba487",
+      "bytes": 6336
+    },
+    "frontier_extra_checks": {
+      "path": "research/improvement-loop-20261024/queue-durable-frontier-independent-luna-v1/additional_checks_manifest.json",
+      "sha256": "b8ebf36aff0162fa60d6c21087618d34ba4063dbddf31131c80127285d29af4f",
+      "bytes": 1360
+    }
+  },
+  "queue": "A new opt-in local SQLite runnable/active frontier stores claims, dependency counts, capacity and releases in atomic transactions. Eight bounded real-command process-death/concurrency/tamper tests passed; independent Luna reproduced them and preserved two additional tiny checks. Synthetic SQL queries over 0/256/4096 released rows support reduced selection scans only, not end-to-end scale or production reliability. Frozen V2 and production untouched.",
+  "limitations": "Trusted mutable SQLite and cooperating writers only, no automatic repair, power-loss test, protected history/rollback audit, cross-plan dependency authority, failed-descendant propagation, cancellation, unattended service, or authenticated thousands-cycle run. Stale overcounts can strand work; empty ready frontier does not imply completion.",
+  "owner_status": "2018 sampling and materialization completed successfully as processes but owner diagnostics report 76 divergences and event_gamma_shape Rhat and bulk ESS failures in all eight parents; original zero divergence/Rhat/ESS gate remains unchanged. Provisional parent prediction PID2010734 was live with 12GiB cap. House combiner PID2003306 exited and owner audit PID2011797 was live; exact corrected release handoff was absent. 2022 remains in wait_for_2018_analysis.",
+  "capacity": "Do not infer House work completed merely because combiner exited. 2018 provisional owner queue explicitly reserves 30,655,329,075 bytes for House plus full 12GiB per running worker and 1GiB; available memory recently around 41.7GiB with one worker. Dynamic graph probe remains unrun to preserve those conservative commitments.",
+  "next": [
+    "Complete independent source audit of the 2018 gamma block and challenge any proposed marginalization against all observed factors and prediction paths.",
+    "Continue queue design with crash-safe lifecycle, recovery, protected-history trust and authenticated scale, without altering frozen prototypes.",
+    "Monitor owner jobs and integrate only the exact reviewed House release."
+  ]
+}

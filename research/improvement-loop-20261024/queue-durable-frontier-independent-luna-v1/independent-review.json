@@ -1,0 +1,49 @@
+{
+  "schema": "IndependentDurableFrontierReviewV1",
+  "reviewer": "luna",
+  "review_date": "2026-10-26",
+  "reviewed_packet": "../queue-durable-frontier-sol-v1",
+  "frozen_author_hashes_rechecked": {
+    "dispatch.py": "a5c139d5ac888c74d109ea775f01f520b880914bfc84014ccee256cb1c54b165",
+    "test_frontier.py": "d7a4701c3d77e7bdd2a65c968ce19861a5b284d9ee94ca8f1d3e2d7fa8a4ed0d",
+    "measure.py": "52da2c52a9c3f83bed02e0e140341f690ed7f6f64d45ec2bfb25c8401c51e10e",
+    "measurements.json": "93f029f6b72be92bd16519aad272ea30c6372eadcf5e7fc9c14b1d1615405bd7",
+    "source-pins.json": "74b5a4743a414a141a4bba8c370a8c16105a4a9b52f2d786fcc5ee83ae1cbefa",
+    "evidence.json": "81c196c3080aa0d47ad10dcb7591f18a6de8eeaa6c041cfcb9ab2b8dd3009c00"
+  },
+  "review_verdict": "bounded_frontier_correctness_supported_under_declared_cooperating_local_writer_and_trusted_mutable_sqlite_contract; not production_ready",
+  "reproduction": {
+    "supplied_suite": {
+      "command": "OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 NUMBA_NUM_THREADS=1 PYTHONDONTWRITEBYTECODE=1 timeout --kill-after=3s 60s nice -n 15 python3 -B -m unittest -v test_frontier.py",
+      "result": "8/8 passed in 4.303 seconds",
+      "stores": "The test suite created and cleaned TemporaryDirectory stores; no owner queue/store or scientific job was accessed."
+    },
+    "additional_tiny_checks": [
+      {
+        "case": "two consumer jobs each depend on two roles from the same producer; frontier uses one producer-consumer unresolved edge and both consumers wake after the producer release",
+        "result": "passed; three real tiny fixture commands completed and audit_frontier returned active=0,pending=0,released=3,historical_input_audit=false"
+      },
+      {
+        "case": "corrupt store source hash before first tick",
+        "result": "passed; tick rejected source identity before creating dispatcher.lock"
+      }
+    ]
+  },
+  "source_review": {
+    "identity": "The frontier dispatcher checks loaded V2 validator and admission module origins and pins current dispatcher, admission core and V2 current_sources before lock creation. I independently compared the source-pins.json hashes of the shared V2 executor, queue validator, ledger, receipt code and admission core with local SHA-256; all matched.",
+    "admission": "The BEGIN IMMEDIATE transaction inserts canonical plan evidence, unique output ownership, unique producer-consumer edges and pending rows together. Process-death tests at evidence/owner/frontier insertion and postcommit support rollback-before-commit and exact-retained postcommit behavior.",
+    "readiness": "The ready_frontier/remaining count is a scheduling projection, not an authorization source: before reservation, binding() re-derives every declared dependency from producer release/result/terminal/output facts and verifies their pins. It also repeats the chain check after executor preparation immediately before launch. A stale undercount therefore fails closed when the producer has no valid release; selected producer-output tampering is covered by the supplied test.",
+    "reservation_and_release": "Capacity is structurally one active slot. Reservation/removal from pending is one DB transaction. The external release file is published before the release row/count-decrement/active-slot deletion transaction; a crash in that gap leaves active capacity held and retry verifies/reuses the exact file before committing the DB transition. A crash after commit preserves the downstream ready count. Supplied real process-death tests exercise these boundaries and replay.",
+    "branching": "The frontier stores one edge per producer/consumer, even if multiple output roles from that producer are requested. The additional tiny test confirmed both roles bind and two consumers awaken after one producer release. Capacity contention retains a single active attempt. Failed producer directly blocks consumers; grandchildren stay waiting and queue completion is explicitly not inferred from an empty ready frontier.",
+    "measurements": "The fixed SQL selection counts are supported for the exact query/schema fixture and grow with unauthenticated synthetic history in the old query, while the new active/ready queries remain fixed across tested sizes. The fixture is in-memory and is not passed to tick or authenticated as execution history. This does not establish full dispatch cost, authenticated-history scale, physical I/O, or thousands-cycle throughput."
+  },
+  "material_gaps_and_limits": [
+    "No concrete false-launch or transaction/replay defect found in frozen code under its declared contract.",
+    "The trusted mutable SQLite/cooperating-writer assumption is material: coherent external database/file rewrites, raw concurrent SQLite writers, rollback/restore, or hostile same-UID changes are not authenticated by a protected archive head. The dispatcher intentionally does not audit arbitrary unselected released history every tick.",
+    "A stale positive unresolved count can leave an otherwise runnable job stranded; the structural audit can expose such projection corruption, but no automatic repair or liveness recovery exists. This is fail-closed, but not self-healing.",
+    "Failed producer descendants can wait indefinitely; no recursive block propagation, cancellation or completion detector exists. The packet discloses this accurately.",
+    "Process-death tests use os._exit and SQLite FULL-sync rollback-journal recovery, not kernel crash/power loss, disk-full/fsync uncertainty or storage corruption. Fresh-root bootstrap crash recovery is absent and should be treated as an orphaned failed initialization requiring manual handling.",
+    "Only within-plan dependency graphs are supported. No cross-plan dependencies, V2 migration, unattended service lifecycle, large DAG tests, full authenticated historical audit, or production integration is shown."
+  ],
+  "recommendation": "Keep isolated research only. Evidence supports the specific bounded claim that frontier-based selection avoids old released-history SQL scans and that tested local crash/replay transitions preserve readiness/capacity. Before adoption, specify bootstrap/liveness/failed-descendant recovery and durable storage/backup guarantees; then test authenticated large histories and DAGs."
+}

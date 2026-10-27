@@ -1,0 +1,24 @@
+{
+  "schema": "LunaFrontierAdditionalChecksManifestV1",
+  "preserved_review": {
+    "path": "independent-review.json",
+    "sha256": "7134e211b928c6aed9e56b9f6f67c8e93b83dbb2d9bad33a6fa741bfed6ba487",
+    "note": "Frozen review bytes preserved unchanged."
+  },
+  "reproduction_source": {
+    "path": "additional_checks.py",
+    "sha256": "28536108aa546f865f677940cac479384a975491a97b6068ab1a09cf38b46c62",
+    "description": "Two invented checks; creates all stores under TemporaryDirectory."
+  },
+  "observed_output": {
+    "path": "additional_checks_result.json",
+    "sha256": "69184828656dab1fe5cc8d0b05891bb1ecfa91f9bc88cc5a53a40f00e68f1add",
+    "result": "Both checks passed; one shared producer supplied two roles to each of two consumers, all three fixture jobs released, and a stale dispatcher source hash was rejected before lock creation."
+  },
+  "command": "OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 NUMBA_NUM_THREADS=1 PYTHONDONTWRITEBYTECODE=1 timeout --kill-after=3s 30s nice -n 15 python3 -B additional_checks.py",
+  "reviewed_frontier_source": {
+    "path": "../queue-durable-frontier-sol-v1/dispatch.py",
+    "sha256": "a5c139d5ac888c74d109ea775f01f520b880914bfc84014ccee256cb1c54b165"
+  },
+  "scope": "Temporary synthetic fixtures only. No owner data, owner stores, model code, or scientific work."
+}

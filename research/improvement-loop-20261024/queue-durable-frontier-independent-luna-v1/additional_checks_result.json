@@ -1,0 +1,33 @@
+{
+  "checks": {
+    "shared_producer_multiple_roles": {
+      "audit": {
+        "active": 0,
+        "historical_input_audit": false,
+        "pending": 0,
+        "released": 3
+      },
+      "producer_consumer_edges": 1,
+      "producer_roles_per_consumer": {
+        "consumer-a": [
+          "receipt",
+          "second"
+        ],
+        "consumer-b": [
+          "receipt",
+          "second"
+        ]
+      },
+      "shared_producer_consumers": 2,
+      "status": "passed",
+      "stores": "TemporaryDirectory"
+    },
+    "stale_source_pin": {
+      "stale_source_pin_rejected_before_lock": true,
+      "status": "passed"
+    }
+  },
+  "schema": "LunaFrontierAdditionalChecksV1",
+  "scope": "Invented local fixtures only; no owner stores or scientific work.",
+  "source": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-durable-frontier-independent-luna-v1/additional_checks.py"
+}

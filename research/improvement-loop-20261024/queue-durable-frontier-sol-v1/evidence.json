@@ -1,0 +1,73 @@
+{
+  "schema": "DurableFrontierResearchEvidenceV1",
+  "status": "frozen_bounded_tests_passed_pending_independent_review",
+  "files": {
+    "dispatch.py": {
+      "sha256": "a5c139d5ac888c74d109ea775f01f520b880914bfc84014ccee256cb1c54b165",
+      "bytes": 20877
+    },
+    "test_frontier.py": {
+      "sha256": "d7a4701c3d77e7bdd2a65c968ce19861a5b284d9ee94ca8f1d3e2d7fa8a4ed0d",
+      "bytes": 8250
+    },
+    "measure.py": {
+      "sha256": "52da2c52a9c3f83bed02e0e140341f690ed7f6f64d45ec2bfb25c8401c51e10e",
+      "bytes": 4318
+    },
+    "tests-first.log": {
+      "sha256": "d5255671f68713f7d240f951600ff36f68907383706c9461012d9efec055f1a4",
+      "bytes": 876
+    },
+    "tests.log": {
+      "sha256": "17dac85faca3e584b34af483c54f36e3eddacb2720783ef3a201c01dca251eee",
+      "bytes": 1178
+    },
+    "measure.log": {
+      "sha256": "a8ad5be7531d98e00919f9932467e45f472d7a4f6dd7f2d1c7cd0adc251ec4fb",
+      "bytes": 2839
+    },
+    "measure-frozen.log": {
+      "sha256": "692dfabbd052858252e339a4745c174b438c44d74c1ab3a1834ba20fa4159980",
+      "bytes": 2838
+    },
+    "measurements.json": {
+      "sha256": "93f029f6b72be92bd16519aad272ea30c6372eadcf5e7fc9c14b1d1615405bd7",
+      "bytes": 12509
+    },
+    "source-pins.json": {
+      "sha256": "74b5a4743a414a141a4bba8c370a8c16105a4a9b52f2d786fcc5ee83ae1cbefa",
+      "bytes": 2589
+    },
+    "FINDINGS.md": {
+      "sha256": "ea17babeefc564cdc17e7e113f8e492097409828da479302246b5ea0e45f8234",
+      "bytes": 10628
+    },
+    "README.md": {
+      "sha256": "c877b9da3afbb7993cddf2b53c007a9aa412e209d1a2058e4885ef3e83b08ad3",
+      "bytes": 806
+    }
+  },
+  "tests": {
+    "final_count": 8,
+    "exit_code": 0,
+    "reported_seconds": 4.472,
+    "earlier_six_test_run_preserved": true,
+    "scope": "real invented commands, SQLite process death/replay, cooperating admissions/ticks; not power-loss testing"
+  },
+  "measurement": {
+    "exit_code": 0,
+    "seconds": 0.03857864183373749,
+    "maxrss_kib": 19156,
+    "history_fixture_sizes": [
+      0,
+      256,
+      4096
+    ],
+    "scope": "SQL selection only, synthetic rows not executor-authenticated history; no dispatcher tick on measurement fixture DBs"
+  },
+  "trust": "trusted mutable SQLite/cooperating writers; no historical byte audit or rollback anchor",
+  "production_ready": false,
+  "frozen_v2_or_other_sessions_modified": false,
+  "model_runs": false,
+  "no_more_source_changes_or_runs": true
+}

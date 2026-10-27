@@ -1,0 +1,476 @@
+{
+  "source_pins": {
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-durable-frontier-sol-v1/dispatch.py": "a5c139d5ac888c74d109ea775f01f520b880914bfc84014ccee256cb1c54b165",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-durable-frontier-sol-v1/measure.py": "52da2c52a9c3f83bed02e0e140341f690ed7f6f64d45ec2bfb25c8401c51e10e",
+    "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-v2-incremental-assessment-sol-v1/dispatch.py": "4a55b1fd276d143cccd8aaf997d97c6c2d8c7873c0a7b0239d1b9f107807417c"
+  },
+  "schema": "DurableFrontierBoundedSQLSelectionV1",
+  "status": "passed",
+  "scope": "Synthetic SQL rows only, no executor result authority; no dispatcher tick called on these fixture databases. New/old exact query strings and relevant schema/indexes only.",
+  "rows": [
+    {
+      "historical_fixture_rows": 0,
+      "frontier": "empty",
+      "query": "old_active",
+      "sqlite_vm_instructions": 12,
+      "seconds_including_per_instruction_python_hook": 1.2222910299897194e-05,
+      "result_rows": 0,
+      "query_plan": [
+        [
+          3,
+          0,
+          0,
+          "SCAN r USING COVERING INDEX sqlite_autoindex_reservations_1"
+        ],
+        [
+          5,
+          0,
+          0,
+          "SEARCH l USING COVERING INDEX sqlite_autoindex_releases_1 (attempt=?) LEFT-JOIN"
+        ]
+      ]
+    },
+    {
+      "historical_fixture_rows": 0,
+      "frontier": "empty",
+      "query": "old_pending",
+      "sqlite_vm_instructions": 13,
+      "seconds_including_per_instruction_python_hook": 1.0661082342267036e-05,
+      "result_rows": 0,
+      "query_plan": [
+        [
+          4,
+          0,
+          0,
+          "SCAN o"
+        ],
+        [
+          6,
+          0,
+          0,
+          "SEARCH r USING COVERING INDEX sqlite_autoindex_reservations_1 (attempt=?) LEFT-JOIN"
+        ]
+      ]
+    },
+    {
+      "historical_fixture_rows": 0,
+      "frontier": "empty",
+      "query": "new_active",
+      "sqlite_vm_instructions": 6,
+      "seconds_including_per_instruction_python_hook": 4.768837243318558e-06,
+      "result_rows": 0,
+      "query_plan": [
+        [
+          2,
+          0,
+          0,
+          "SCAN active"
+        ]
+      ]
+    },
+    {
+      "historical_fixture_rows": 0,
+      "frontier": "empty",
+      "query": "new_ready",
+      "sqlite_vm_instructions": 15,
+      "seconds_including_per_instruction_python_hook": 1.0650139302015305e-05,
+      "result_rows": 0,
+      "query_plan": [
+        [
+          5,
+          0,
+          0,
+          "SCAN pending USING INDEX ready_frontier"
+        ]
+      ]
+    },
+    {
+      "historical_fixture_rows": 0,
+      "frontier": "one_ready_one_active",
+      "query": "old_active",
+      "sqlite_vm_instructions": 7,
+      "seconds_including_per_instruction_python_hook": 3.4871045500040054e-06,
+      "result_rows": 0,
+      "query_plan": [
+        [
+          3,
+          0,
+          0,
+          "SCAN r USING COVERING INDEX sqlite_autoindex_reservations_1"
+        ],
+        [
+          5,
+          0,
+          0,
+          "SEARCH l USING COVERING INDEX sqlite_autoindex_releases_1 (attempt=?) LEFT-JOIN"
+        ]
+      ]
+    },
+    {
+      "historical_fixture_rows": 0,
+      "frontier": "one_ready_one_active",
+      "query": "old_pending",
+      "sqlite_vm_instructions": 22,
+      "seconds_including_per_instruction_python_hook": 5.310168489813805e-06,
+      "result_rows": 1,
+      "query_plan": [
+        [
+          4,
+          0,
+          0,
+          "SCAN o"
+        ],
+        [
+          6,
+          0,
+          0,
+          "SEARCH r USING COVERING INDEX sqlite_autoindex_reservations_1 (attempt=?) LEFT-JOIN"
+        ]
+      ]
+    },
+    {
+      "historical_fixture_rows": 0,
+      "frontier": "one_ready_one_active",
+      "query": "new_active",
+      "sqlite_vm_instructions": 9,
+      "seconds_including_per_instruction_python_hook": 2.8051435947418213e-06,
+      "result_rows": 1,
+      "query_plan": [
+        [
+          2,
+          0,
+          0,
+          "SCAN active"
+        ]
+      ]
+    },
+    {
+      "historical_fixture_rows": 0,
+      "frontier": "one_ready_one_active",
+      "query": "new_ready",
+      "sqlite_vm_instructions": 13,
+      "seconds_including_per_instruction_python_hook": 3.297114744782448e-06,
+      "result_rows": 1,
+      "query_plan": [
+        [
+          5,
+          0,
+          0,
+          "SCAN pending USING INDEX ready_frontier"
+        ]
+      ]
+    },
+    {
+      "historical_fixture_rows": 256,
+      "frontier": "empty",
+      "query": "old_active",
+      "sqlite_vm_instructions": 2316,
+      "seconds_including_per_instruction_python_hook": 0.00025907112285494804,
+      "result_rows": 0,
+      "query_plan": [
+        [
+          3,
+          0,
+          0,
+          "SCAN r USING COVERING INDEX sqlite_autoindex_reservations_1"
+        ],
+        [
+          5,
+          0,
+          0,
+          "SEARCH l USING COVERING INDEX sqlite_autoindex_releases_1 (attempt=?) LEFT-JOIN"
+        ]
+      ]
+    },
+    {
+      "historical_fixture_rows": 256,
+      "frontier": "empty",
+      "query": "old_pending",
+      "sqlite_vm_instructions": 2317,
+      "seconds_including_per_instruction_python_hook": 0.00025825086049735546,
+      "result_rows": 0,
+      "query_plan": [
+        [
+          4,
+          0,
+          0,
+          "SCAN o"
+        ],
+        [
+          6,
+          0,
+          0,
+          "SEARCH r USING COVERING INDEX sqlite_autoindex_reservations_1 (attempt=?) LEFT-JOIN"
+        ]
+      ]
+    },
+    {
+      "historical_fixture_rows": 256,
+      "frontier": "empty",
+      "query": "new_active",
+      "sqlite_vm_instructions": 6,
+      "seconds_including_per_instruction_python_hook": 4.678964614868164e-06,
+      "result_rows": 0,
+      "query_plan": [
+        [
+          2,
+          0,
+          0,
+          "SCAN active"
+        ]
+      ]
+    },
+    {
+      "historical_fixture_rows": 256,
+      "frontier": "empty",
+      "query": "new_ready",
+      "sqlite_vm_instructions": 15,
+      "seconds_including_per_instruction_python_hook": 1.0170042514801025e-05,
+      "result_rows": 0,
+      "query_plan": [
+        [
+          5,
+          0,
+          0,
+          "SCAN pending USING INDEX ready_frontier"
+        ]
+      ]
+    },
+    {
+      "historical_fixture_rows": 256,
+      "frontier": "one_ready_one_active",
+      "query": "old_active",
+      "sqlite_vm_instructions": 2311,
+      "seconds_including_per_instruction_python_hook": 0.0002565770410001278,
+      "result_rows": 0,
+      "query_plan": [
+        [
+          3,
+          0,
+          0,
+          "SCAN r USING COVERING INDEX sqlite_autoindex_reservations_1"
+        ],
+        [
+          5,
+          0,
+          0,
+          "SEARCH l USING COVERING INDEX sqlite_autoindex_releases_1 (attempt=?) LEFT-JOIN"
+        ]
+      ]
+    },
+    {
+      "historical_fixture_rows": 256,
+      "frontier": "one_ready_one_active",
+      "query": "old_pending",
+      "sqlite_vm_instructions": 2326,
+      "seconds_including_per_instruction_python_hook": 0.0002529500052332878,
+      "result_rows": 1,
+      "query_plan": [
+        [
+          4,
+          0,
+          0,
+          "SCAN o"
+        ],
+        [
+          6,
+          0,
+          0,
+          "SEARCH r USING COVERING INDEX sqlite_autoindex_reservations_1 (attempt=?) LEFT-JOIN"
+        ]
+      ]
+    },
+    {
+      "historical_fixture_rows": 256,
+      "frontier": "one_ready_one_active",
+      "query": "new_active",
+      "sqlite_vm_instructions": 9,
+      "seconds_including_per_instruction_python_hook": 5.370005965232849e-06,
+      "result_rows": 1,
+      "query_plan": [
+        [
+          2,
+          0,
+          0,
+          "SCAN active"
+        ]
+      ]
+    },
+    {
+      "historical_fixture_rows": 256,
+      "frontier": "one_ready_one_active",
+      "query": "new_ready",
+      "sqlite_vm_instructions": 13,
+      "seconds_including_per_instruction_python_hook": 3.1460076570510864e-06,
+      "result_rows": 1,
+      "query_plan": [
+        [
+          5,
+          0,
+          0,
+          "SCAN pending USING INDEX ready_frontier"
+        ]
+      ]
+    },
+    {
+      "historical_fixture_rows": 4096,
+      "frontier": "empty",
+      "query": "old_active",
+      "sqlite_vm_instructions": 36876,
+      "seconds_including_per_instruction_python_hook": 0.004272041842341423,
+      "result_rows": 0,
+      "query_plan": [
+        [
+          3,
+          0,
+          0,
+          "SCAN r USING COVERING INDEX sqlite_autoindex_reservations_1"
+        ],
+        [
+          5,
+          0,
+          0,
+          "SEARCH l USING COVERING INDEX sqlite_autoindex_releases_1 (attempt=?) LEFT-JOIN"
+        ]
+      ]
+    },
+    {
+      "historical_fixture_rows": 4096,
+      "frontier": "empty",
+      "query": "old_pending",
+      "sqlite_vm_instructions": 36877,
+      "seconds_including_per_instruction_python_hook": 0.0042628939263522625,
+      "result_rows": 0,
+      "query_plan": [
+        [
+          4,
+          0,
+          0,
+          "SCAN o"
+        ],
+        [
+          6,
+          0,
+          0,
+          "SEARCH r USING COVERING INDEX sqlite_autoindex_reservations_1 (attempt=?) LEFT-JOIN"
+        ]
+      ]
+    },
+    {
+      "historical_fixture_rows": 4096,
+      "frontier": "empty",
+      "query": "new_active",
+      "sqlite_vm_instructions": 6,
+      "seconds_including_per_instruction_python_hook": 6.0820020735263824e-06,
+      "result_rows": 0,
+      "query_plan": [
+        [
+          2,
+          0,
+          0,
+          "SCAN active"
+        ]
+      ]
+    },
+    {
+      "historical_fixture_rows": 4096,
+      "frontier": "empty",
+      "query": "new_ready",
+      "sqlite_vm_instructions": 15,
+      "seconds_including_per_instruction_python_hook": 1.257401891052723e-05,
+      "result_rows": 0,
+      "query_plan": [
+        [
+          5,
+          0,
+          0,
+          "SCAN pending USING INDEX ready_frontier"
+        ]
+      ]
+    },
+    {
+      "historical_fixture_rows": 4096,
+      "frontier": "one_ready_one_active",
+      "query": "old_active",
+      "sqlite_vm_instructions": 36871,
+      "seconds_including_per_instruction_python_hook": 0.004197960952296853,
+      "result_rows": 0,
+      "query_plan": [
+        [
+          3,
+          0,
+          0,
+          "SCAN r USING COVERING INDEX sqlite_autoindex_reservations_1"
+        ],
+        [
+          5,
+          0,
+          0,
+          "SEARCH l USING COVERING INDEX sqlite_autoindex_releases_1 (attempt=?) LEFT-JOIN"
+        ]
+      ]
+    },
+    {
+      "historical_fixture_rows": 4096,
+      "frontier": "one_ready_one_active",
+      "query": "old_pending",
+      "sqlite_vm_instructions": 36886,
+      "seconds_including_per_instruction_python_hook": 0.004183934070169926,
+      "result_rows": 1,
+      "query_plan": [
+        [
+          4,
+          0,
+          0,
+          "SCAN o"
+        ],
+        [
+          6,
+          0,
+          0,
+          "SEARCH r USING COVERING INDEX sqlite_autoindex_reservations_1 (attempt=?) LEFT-JOIN"
+        ]
+      ]
+    },
+    {
+      "historical_fixture_rows": 4096,
+      "frontier": "one_ready_one_active",
+      "query": "new_active",
+      "sqlite_vm_instructions": 9,
+      "seconds_including_per_instruction_python_hook": 4.337867721915245e-06,
+      "result_rows": 1,
+      "query_plan": [
+        [
+          2,
+          0,
+          0,
+          "SCAN active"
+        ]
+      ]
+    },
+    {
+      "historical_fixture_rows": 4096,
+      "frontier": "one_ready_one_active",
+      "query": "new_ready",
+      "sqlite_vm_instructions": 13,
+      "seconds_including_per_instruction_python_hook": 5.65103255212307e-06,
+      "result_rows": 1,
+      "query_plan": [
+        [
+          5,
+          0,
+          0,
+          "SCAN pending USING INDEX ready_frontier"
+        ]
+      ]
+    }
+  ],
+  "seconds": 0.03857864183373749,
+  "controller_maxrss_kib": 19156,
+  "storage": "in-memory fixture databases, released after each size; output JSON only",
+  "limitations": [
+    "VM counts include SQLite implementation choices and Python hook overhead; timings are not throughput evidence.",
+    "Does not measure full executor/source-hash/dependency authentication, admission, physical disk I/O or thousands of real cycles.",
+    "History here is deliberately unauthenticated synthetic SQL; production adoption is not justified."
+  ]
+}
