@@ -1,0 +1,31 @@
+{
+  "worktree": "/home/hayden/projects/ballotmancy-house-boundary-display-20261026",
+  "base_commit": "317ff150f012871aec6c71ae680d7e76eec5b4db",
+  "scope": "read-only independent UI review; focused existing tests and invented helper fixture only",
+  "diff_sha256": "b973a40c4cc669aecd8d53e77870bdce36db892ec5a640703e7b5f10ff93a50d",
+  "changed_source_sha256": {
+    "components/DistrictMap.tsx": "8342a8b0005d4aaf740fabb988591e9406a63e656c1f41b48b5d6d2fcaa289a5",
+    "components/HouseGroupRibbon.tsx": "374d04fe60b7de46516d675d3b91879b2a9689ce1882e642e6cdd7c54fc399fd",
+    "components/HouseLiveResults.tsx": "7eac0a1dc4a661c00f9c96728c694ec0265c3e472c9d7c24430e9a41714600a1",
+    "lib/group-ribbon-layout.ts": "f44a1eb2f4b5a5e26198fd8dd89077c4bfe958ee2d7827bf82f44918dbb06438"
+  },
+  "changed_test_sha256": {
+    "tests/group-ribbon-layout.test.mjs": "25b942322fa5617b06c4775add49d82cf462da5147c595fa68176626fa779d28",
+    "tests/house-live-results.test.mjs": "2adba205c755475e180544bd2e1953bffaac8cda344c093a942b243dc0583cb0"
+  },
+  "reviewed_unchanged_endpoint_source_sha256": {
+    "components/HouseGroupResults.tsx": "a9a4cc6db085171eb5aa361d01a17e0b17822c0b4b83a95c676920dc095ba82b",
+    "lib/house-group-result.ts": "63717477c36d85e701962c1f084da42d6e6995d216db73ca9bd4ad3426932258",
+    "components/ElectionNightGuide.tsx": "a62ce3be7465415e310364b576579da2f11ceb057e0a510c4be879351a43bf8b",
+    "components/ElectionNightEvaluation.tsx": "a5fec5f4c0aadc911101adff8064e0bb42c50f2a11058f595298f2c47e2558f9",
+    "components/ChamberExplorer.tsx": "123ffed8cc6a723f0bc61b14e72f42923b211658f90231e3a2c8365cd205acb9",
+    "components/HouseGroupRaceDetails.tsx": "aba0e40bad82218914eb9e03b88f3219d64d97a0b4b2385cd4bcdfe08ab3262c"
+  },
+  "test_command": "node --experimental-strip-types --test tests/group-ribbon-layout.test.mjs tests/house-live-results.test.mjs tests/house-group-ribbon-preview.test.mjs",
+  "test_counts": {"passed": 22, "failed": 0, "skipped": 5},
+  "invented_counterexample_sha256": {
+    "structural-flag-probe.mjs": "763e7d03924a772179ef02976ebe7817444f5ede84b2d9a2dfefabcb2de87c55",
+    "structural-flag-probe-result.json": "a5957a1b1b132a380affe56564fcbdef9a686d6484d8000f12f7a62abac02c85"
+  },
+  "conclusion": "Useful live boundary safeguards; historical ribbon support propagation, structural-source coherence, and election-night endpoints remain open. No site or forecast files changed."
+}
