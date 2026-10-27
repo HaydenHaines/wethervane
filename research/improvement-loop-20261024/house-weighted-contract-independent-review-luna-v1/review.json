@@ -1,0 +1,85 @@
+{
+  "findings": [
+    {
+      "evidence": "In both stages spawn() and attach child listeners before JSON.stringify(child request), but the try/finally that calls stopWeightedDecoder begins after child.stdin.end(). A caller-supplied cyclic forecastIdentity (or a BigInt/non-JSON value in a runtime-typed option) throws synchronously during JSON.stringify. Since stdin is not ended and the cleanup finally is not entered, the decoder remains alive waiting for input. Reproduced with an invented fake executable: the stage promise rejected \u201ccircular\u201d, while the controlled child PID remained alive; the probe then SIGKILLed and reaped it.",
+      "id": "HWC-LUNA-01",
+      "location": [
+        "lib/house-weighted-research-stage.ts:42-44",
+        "lib/house-weighted-pair-research-stage.ts:46-51"
+      ],
+      "recommended_correction": "Serialize and validate the request before spawn, or move every post-spawn setup/write under a cleanup finally.",
+      "severity": "medium",
+      "title": "Synchronous request serialization can leave the spawned decoder alive"
+    },
+    {
+      "evidence": "The exported stage options accept an optional AbortSignal; absent it, the row async iterator can wait indefinitely for child.stdout/close. stopWeightedDecoder sends SIGTERM, waits 1s, then SIGKILL and waits 1s only from the operation\u2019s finally or an explicit abort listener. Candidate CLIs call the stage without a signal or timeout. Existing tests prove bounded rejection after an injected bad row and after a manually-triggered AbortController; they do not establish an automatic deadline.",
+      "id": "HWC-LUNA-02",
+      "location": [
+        "lib/house-weighted-research-stage.ts:37-44,63-69",
+        "lib/house-weighted-pair-research-stage.ts:40-51,70-77",
+        "lib/house-weighted-decoder-cleanup.ts:17-23",
+        "scripts/check_house_weighted_research_candidate.mjs:31-34",
+        "scripts/check_house_weighted_pair_candidate.mjs:56-61"
+      ],
+      "recommended_correction": "If bounded CLI duration is intended, establish a deadline/AbortSignal.timeout in the wrapper or stage and record timeout as a distinct rejection. Until then document caller-managed cancellation.",
+      "severity": "medium",
+      "title": "Cleanup grace is not an operation timeout"
+    },
+    {
+      "evidence": "Decoder requires the exact caller forecastIdentity to equal the hash-pinned stage preflight, checks forecast_cutoff and 2026 race-ID prefixes, and the pair path additionally binds the latent receipt to parent receipt, source list, core IDs and support pin. Candidate CLI hashes the candidate bytes and recomputes summaries from stage rows. However WeightedResearchResult has no identity or source-result pin, and the checker cannot independently establish where that summary came from. mapVintage/scenarioId are bounded identity strings matched to preflight; this is metadata alignment, not independent legal map/scenario authentication. The wrapper disclaims upstream model-input/scientific admission. Separately inspected `identity-evidence-v2.json` (SHA pinned) says all 14 existing replay stages lack the full forecast_identity object, even though their cutoffs, candidate edition, experiment, support/features, input-audit pins and district keys/map label align. It says map/statistical reconciliation and full scenario remain pending. Thus fail-closed rejection of these old stages is correct; do not backfill identity by inference or claim they are now validated.",
+      "id": "HWC-LUNA-03",
+      "location": [
+        "scripts/decode_house_weighted_stage.py:26-37,82-89",
+        "lib/house-weighted-research-check.ts:1-5 and WeightedResearchResult interface",
+        "scripts/check_house_weighted_research_candidate.mjs:21-35"
+      ],
+      "severity": "medium_scope_limit",
+      "title": "The new identity is bound to the stage, but not independently to the result summary or map/scenario authority"
+    },
+    {
+      "evidence": "Number.isSafeInteger plus exact equality to lower inverse CDF rejects fractional seats. Invented 435-race joint rows with exactly half weight at seats 0 and 435 return the required p50 ambiguity; a mass just inside \u00b11e-12 is flagged, and mass outside is not. Existing 14 stage/pair integration tests also pass.",
+      "id": "HWC-LUNA-04",
+      "location": [
+        "lib/house-weighted-research-check.ts:122-133"
+      ],
+      "severity": "none_observed",
+      "title": "Integer discrete quantiles and q\u00b11e-12 ambiguity handling"
+    },
+    {
+      "evidence": "Invented integration tests passed identity mismatch checks for year/cutoff/map/scenario; stage and array bytes are checked before/after. Pair decoder binds support, exact race/core order, candidate membership, parent receipt, latent parent/source/core identity and output pins. These are research consistency gates, not publication or legal map admission.",
+      "id": "HWC-LUNA-05",
+      "location": [
+        "scripts/decode_house_weighted_stage.py:82-89",
+        "scripts/decode_house_weighted_pair.py:84-100,120-137",
+        "scripts/check_house_weighted_pair_candidate.mjs:42-61"
+      ],
+      "severity": "none_observed",
+      "title": "Hash-pinned stage/pair provenance checks"
+    }
+  ],
+  "observed_at_utc": "2026-10-27T03:09:29.025730+00:00",
+  "reproduction": {
+    "cleanup_tests": "Existing SIGTERM-resistant invalid-row and explicit-abort tests pass; no automatic timeout was tested because no timeout exists.",
+    "environment_note": "First attempt with /usr/bin/python3 failed because that interpreter lacks NumPy; rerun succeeded using existing house-benchmark venv. No install performed.",
+    "integration_command": "HOUSE_TEST_PYTHON=/home/hayden/projects/ballotmancy-house-benchmark/.venv/bin/python node --experimental-strip-types --test tests/house-weighted-research-stage.test.mjs tests/house-weighted-pair-research-stage.test.mjs",
+    "integration_result": "14 passed; 0 failed; 4.853 seconds on captured rerun. Uses invented fixture arrays only.",
+    "leak_probe": "probes/serialization-cleanup-probe.mjs: reproduced child alive after serialization exception; probe kills/reaps the sole controlled `/bin/sleep` child in finally.",
+    "quantile_probe": "probes/quantile-threshold-probe.mjs: exact half-mass, just-inside tolerance and just-outside tolerance tests pass.",
+    "source_archive": "git archive 9a4dc1a in /tmp/house-weighted-review-luna-9jeNUj; owner worktree was not modified."
+  },
+  "schema": "HouseWeightedResearchHardeningIndependentReviewV1",
+  "scope_and_release_limitations": [
+    "All checks are private/research-only; results say consistency checked not qualified and publicationAdmission is false.",
+    "No private model data, live forecast artifacts, stage receipts, active jobs or owner files were read or modified. The additional identity-audit packet was read as metadata/evidence only.",
+    "No stage re-run, map/scenario qualification, result provenance admission, scientific qualification, or publication authorization follows.",
+    "New identity schema is incompatible with the 14 existing stage preflights as recorded; a separate audited bridge or fresh stage generation is needed before applying it to that cohort."
+  ],
+  "source_pin_file": "source-pins.json",
+  "subject": {
+    "branch": "fix/house-weighted-contract-20261026",
+    "commit": "9a4dc1adaefafb8d6979d805a239dcbe1ad5ed0b",
+    "repository": "/home/hayden/projects/ballotmancy-house-weighted-contract-20261026",
+    "research_only": true
+  },
+  "verdict": "The commit\u2019s integer quantile and stage-identity checks behave as intended in invented tests. The exact stage/pair lineage checks fail closed. Two subprocess-control gaps remain: request serialization can leak a spawned decoder before try/finally, and there is no built-in operation timeout when callers omit AbortSignal. Existing real replay stages lack the newly required identity, so this patch does not harden/validate that existing cohort without a separate evidence-based bridge or rerun."
+}
