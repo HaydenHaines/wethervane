@@ -1,0 +1,7 @@
+# Independent review: fixed-from-batch adapter V1
+
+The frozen adapter passes its bounded fixture suite in my rerun (22 checks). Source inspection supports the intended sequence: verify the externally retained all-six completion and recompare all 42 underlying calls using pinned historical source snapshots before selecting one parent's immutable seven calls; then compare that parent's fixed-native outputs at three saved points and four signed finite-difference points. Parent identity, original 0.125 mass and `population_cut_v1` are bound. The numeric comparator checks logp, poll logp, every factor, rates, physical values and derivatives against declared tolerances before publishing success.
+
+The prior same-user false-summary concern is handled for ordinary/cooperating use by recomputing the full batch comparison, not trusting the summary errors. Import aliases are scoped and restored; completion pins exact per-phase artifacts and matches the full retained controller response. No source blocker surfaced within the stated local trust model.
+
+The fixtures are invented protocol data, not an actual model run. There is no completed real batch in this packet, so actual fixed execution remains gated on real batch evidence, an independent resource assessment and separately reviewed authorization. No graph, fit, normalization or forecast was run. See `review.json` for source pins, command, limits and exact evidence.
