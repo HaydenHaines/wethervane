@@ -1,0 +1,35 @@
+{
+  "schema": "IndependentHistoryAuthorityReferenceReviewV1",
+  "owner_packet": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-history-authority-reference-sol-v1",
+  "source_pins": {
+    "reference.py": "dbfb14d9b9365fcf0a9feaaebe24b11f80e874273b601ea55606a8a89027f1f2",
+    "test_reference.py": "dd80817397690fe67013adf5e43b7931614f8cda34a89449bb9194d7d4690e8b",
+    "evidence.json": "59cce4cfe9622b85364947329c9d585b40453c158f0d6823a48ae16510d41078",
+    "README.md": "906770f403dd8103ae0fea05cb09bc5320957899e8d9b1c5dc105a9961025a49",
+    "source-pins.json": "1fc7a49225868d31a388916826273be579509ac19b164dab2c8ca837bbd06b8f",
+    "test-result.json": "8bedc500c5bfaddfccd94b74d691fc4bf5e1b31ef4b6a9ed26e68af821f9e6b9",
+    "tests.log": "87da41e395b4072237e5228d099025ff1daddf46d2870fb6fb25799e877f4d5f"
+  },
+  "independent_test": {
+    "command": "nice -n 15 python3 -B -m unittest test_reference -v",
+    "layout": "fresh temporary copy of reference.py and test_reference.py",
+    "result": "16 passed",
+    "elapsed_seconds": 0.711,
+    "actual_model_or_executor_workers": 0
+  },
+  "targeted_probe": {
+    "source": "targeted_probe.py",
+    "source_sha256": "2606d6284f8be988c051b565e00052d899a399656635484568c257f4d113ff7f",
+    "result": "targeted-probe-result.json",
+    "result_sha256": "1df5cad05fdf737e8eadda100db52ba69a15d19a269e639cc26e3f700c3c94ff",
+    "findings": [
+      "exact retry after later head and lease advancement returns original historical receipt without a new append",
+      "same idempotency key reused for another action is refused",
+      "coherent caller-fabricated cleanup is accepted but marked unauthenticated",
+      "check_response accepts arbitrary later head hash with echoed floor and returns unauthenticated consistency claim"
+    ]
+  },
+  "review_conclusion": "No blocker in declared trusted-mutable-same-UID correctness-reference scope; not a protected service, production queue, executor evidence verifier, rollback authority or scale implementation.",
+  "owner_worktree_modified": false,
+  "model_or_executor_jobs_run": false
+}
