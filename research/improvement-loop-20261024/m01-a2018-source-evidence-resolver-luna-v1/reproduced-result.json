@@ -1,0 +1,101 @@
+{
+  "actual_compiled_factor_graph_authenticated": false,
+  "aggregate_check": {
+    "frozen_aggregate_sha256": "077e620e255fdb12474497f040afa061fcebb17c506b173692ced2acb438e423",
+    "likelihood_factors": 66,
+    "memberships": 8242,
+    "poll_blocks": 1,
+    "poll_rows": 274,
+    "record_ownership_audited": false,
+    "sampling_overlap": "unknown",
+    "schema": "FrozenA2018AggregateConsistencyV1",
+    "scientifically_qualified": false,
+    "scope": "source-pinned aggregate consistency only; no row-level ownership inference",
+    "survey_blocks": 65,
+    "survey_memberships": 7968,
+    "target_poll_rows": 20
+  },
+  "claim_checker": {
+    "aggregate_consistency": "passed",
+    "full_row_audit": "not_invoked_missing_source_measurement_and_chronology",
+    "reason": "prepared survey masks do not establish original question field IDs/collection period; poll rows lack sample/publication metadata; available_utc is a supplied registry claim, not verified exact-version release"
+  },
+  "closure_condition_counts": {
+    "contest_response_is_scalar": true,
+    "core_ranked_config_count": 1,
+    "core_ranked_observation_count": 0,
+    "official_count_observation_count": 0,
+    "open_person_absent": true,
+    "ordinary_poll_formula_verified": true,
+    "ordinary_poll_row_count": 274,
+    "participation_report_count": 0,
+    "ranked_config_count": 1,
+    "ranked_observation_count": 0,
+    "ranked_poll_channel_count": 0,
+    "runoff_config_count": 1,
+    "runoff_observation_count": 0,
+    "survey_loop_eventG_free": true
+  },
+  "closure_status": "source_algebra_original_eventG_conditional_on_shared_kappa_not_posterior_or_transformed_density",
+  "exact_source_version_publication_times_verified": false,
+  "factor_blocks": 66,
+  "original_source_observation_atoms_authenticated": false,
+  "pins_sha256": {
+    "aggregate": "077e620e255fdb12474497f040afa061fcebb17c506b173692ced2acb438e423",
+    "claim_checker": "65c28c3dbf0a5d6e1f1cd7dc60e8cccc47dce2b336a660ddd73769aac3bde8c2",
+    "closure_builder": "c2a9686239cd80dd005a3a8fab3f5f49ca9e6a64b93d8306d9f263250ce486af",
+    "components": "1574e7831344009f08470b9287b257556a9c031fb7e33e29938a70d51b1a854d",
+    "context": "4d1f9fa71a67e83405d1f769dd4f4f238ada3046f7396947af29cd0a8b77bcf4",
+    "open": "444d3b82883e1d9c921046c3bd643096a04b4b0ff950a0e42788f3e124cefdb3",
+    "plan": "3e33169c4e1b0f2811d43d3afbb8d8a8f74132b132db866d65ca119567e27003",
+    "problem": "abcaf347e682422303780c5ff12bb3e6179e4b98362686c01338e29df06a385a",
+    "rank": "7fbc42874bb6fde95195fe0506db51bb86d2fb2ef418b2fc12592578f1bf2cf7"
+  },
+  "prepared_context_plan_and_closure_binding_checked": true,
+  "prepared_measurement_types": {
+    "poll_row": "paired-candidate logit statistic in one ordered covariance block; not a person/sample identifier",
+    "survey_contest_row": "joint masked community/turnout/answer contribution; original source question identity unknown",
+    "survey_no_contest_row": "joint masked community/turnout contribution; answer mask not consumed in this branch"
+  },
+  "prepared_source_factor_contract": "source-declared survey Potential and poll MvNormal mappings; no compiled graph execution",
+  "respondent_or_sample_independence_verified": false,
+  "schema": "FrozenA2018SourceResolverV1",
+  "scientifically_qualified": false,
+  "source_bytes_pinned_and_checked": true,
+  "source_registry_availability_status": "available_utc supplied and byte-pinned; exact original public version availability unverified",
+  "status": "prepared_mapping_audited_full_atom_admission_blocked",
+  "summary": {
+    "alias_lineage_status": "unresolved_alias_groups",
+    "contests": 37,
+    "covariance_checks": [
+      "dimensions",
+      "finite",
+      "exact_symmetry",
+      "positive_diagonal"
+    ],
+    "covariance_positive_definite_verified": false,
+    "events": 54,
+    "poll_blocks": 1,
+    "poll_keys_unique": true,
+    "poll_ordered_vector_covariance_sha256": "4cea6671dc843c10bbd969856c550819cff7cc3ef89e5917713f3fde590caa44",
+    "poll_rows": 274,
+    "source_scoped_survey_keys_unique": true,
+    "survey_blocks": 65,
+    "survey_contest_joint_answer_blocks": 31,
+    "survey_memberships": 7968,
+    "survey_no_contest_community_turnout_blocks": 34,
+    "survey_prepared_vector_sha256": "1ebedf6418bc280cc45f468c1cfd83c37ecac3ee7b0984e0329c55fb5c5db235",
+    "target_poll_rows": 20,
+    "used_source_alias_hash_groups": 1
+  },
+  "unknown_or_unsupported": [
+    "original survey raw question/response lineage",
+    "respondent uniqueness and cross-source sample overlap",
+    "poll sample identity/design/error overlap",
+    "exact byte-version public availability versus registry available_utc",
+    "per-row measurement collection intervals",
+    "complete raw-source target/field semantic admission",
+    "compiled likelihood/vector/parent execution binding",
+    "covariance positive-definite numerical check"
+  ]
+}
