@@ -1,0 +1,55 @@
+{
+  "utc": "2026-10-27T02:56:26.084094+00:00",
+  "method": "read-only stat/access/controller-file inspection; no leaf created or process moved",
+  "path": "/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service",
+  "exists": true,
+  "pilot_admitted": false,
+  "uid": 1000,
+  "mode": "0o755",
+  "directory_writable": true,
+  "files": {
+    "cgroup.controllers": {
+      "exists": true,
+      "writable": false,
+      "value": "cpu memory pids"
+    },
+    "cgroup.subtree_control": {
+      "exists": true,
+      "writable": true,
+      "value": "cpu memory pids"
+    },
+    "cpu.max": {
+      "exists": true,
+      "writable": false,
+      "value": "max 100000"
+    },
+    "memory.max": {
+      "exists": true,
+      "writable": false,
+      "value": "max"
+    },
+    "pids.max": {
+      "exists": true,
+      "writable": false,
+      "value": "max"
+    },
+    "cgroup.procs": {
+      "exists": true,
+      "writable": true,
+      "value": null
+    },
+    "cgroup.kill": {
+      "exists": true,
+      "writable": false,
+      "value": null
+    }
+  },
+  "node_direct_process_count": 0,
+  "children_count": 3,
+  "io_accounting_presence": {
+    "io.stat": false,
+    "io.pressure": true,
+    "io.max": false
+  },
+  "interpretation": "No eligible leaf verified or created. cpu/memory/pids delegation exists; io absent from delegated controllers, so strict full-I/O pilot is not presently admitted."
+}

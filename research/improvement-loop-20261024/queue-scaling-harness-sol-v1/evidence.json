@@ -1,0 +1,104 @@
+{
+  "schema": "ScratchQueueScalingHarnessEvidenceV1",
+  "status": "frozen_unexecuted_for_independent_review",
+  "local_pins": [
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-scaling-harness-sol-v1/README.md",
+      "sha256": "2fee79890422e0cfd8fda53bac41d95f366b62c85366e6d20492a320949bde92",
+      "bytes": 11978
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-scaling-harness-sol-v1/admission-template.json",
+      "sha256": "33745e7ce01e66e98ee1df66c098599d84d7c01f085ae323c3a05534ff791550",
+      "bytes": 1201
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-scaling-harness-sol-v1/environment-readonly.json",
+      "sha256": "26108d9a6c918cd8668b478e8b909d0cd5ae99a186e83a7623552aac7b3edd0f",
+      "bytes": 1400
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-scaling-harness-sol-v1/pilot.py",
+      "sha256": "bf87425fca60ec404fa07c578a9c7d01a363ecca12b229b5f4fe243e00493b43",
+      "bytes": 17894
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-scaling-harness-sol-v1/queue-pins.json",
+      "sha256": "0468ce2e17df6c573c87893de9ed769e32a10ff62c513048e3d7cc181df0bcd8",
+      "bytes": 7874
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-scaling-harness-sol-v1/sensors.py",
+      "sha256": "c390b054d198652cb52d2a949beedd67400bbec6046e4201dd203fb997f7e834",
+      "bytes": 9584
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-scaling-harness-sol-v1/test_pilot.py",
+      "sha256": "d4f70b11efe740dc76c0ca4e284106d6af835897e962cab957be323bb3683d78",
+      "bytes": 7534
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-scaling-harness-sol-v1/tests-final.log",
+      "sha256": "f8e1b92246faca4af81680db58fed6f005206f6eebfe064965440da3dca7d83f",
+      "bytes": 2080
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-scaling-harness-sol-v1/tests-first.log",
+      "sha256": "8b16f578c8fdf9a6720d322295996c5ad23f5fb2f5e35e0bafe29645508d3d61",
+      "bytes": 2102
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-scaling-harness-sol-v1/tests-second.log",
+      "sha256": "b56ed2665faf0344842a7dc3c63b0d60283d8d29ce1bfbea458e1c55448d8335",
+      "bytes": 1469
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-scaling-harness-sol-v1/tests-third.log",
+      "sha256": "16ee740b909079aae8c3f1710c2c0370fbbac93956c6780df0904a2bfd9d977d",
+      "bytes": 1469
+    }
+  ],
+  "requirements": [
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-finite-owned-scaling-design-sol-v1/README.md",
+      "sha256": "5d233ee9fa1c5c6db9697d776402a04be3808aaa7776e8d90897c90c40cfbfb1",
+      "bytes": 13426
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-finite-owned-scaling-design-sol-v1/benchmark-plan.json",
+      "sha256": "6b7f3c1d677461513032fdc63f7b7845a821838f0ec8e8ec8fba91f1fb699275",
+      "bytes": 2104
+    },
+    {
+      "path": "/home/hayden/projects/ballotmancy-improvement-lab/research/improvement-loop-20261024/queue-finite-owned-scaling-independent-review-luna-v1/review.json",
+      "sha256": "1a7c86a4c7548f583d2641db75c966d6e25793c7a19132553479ed252f63fd72",
+      "bytes": 7089
+    }
+  ],
+  "tests": {
+    "command": "python3 -B -m unittest test_pilot -v",
+    "passed": 17,
+    "seconds": 0.315,
+    "production_start_and_sample": "patched to raise if called",
+    "mode": "invented sensors and driver only"
+  },
+  "actual_work": {
+    "queue_jobs": 0,
+    "benchmark_runs": 0,
+    "scientific_cycles": 0,
+    "cgroup_writes": 0,
+    "owner_writes": 0,
+    "environment": "read-only delegated-node capability observation"
+  },
+  "source_checks": {
+    "frozen_selected_queue_pins_verified": 29
+  },
+  "admission_state": "not admitted: observed delegation lacks io.stat; no eligible leaf was created or tested",
+  "limits": [
+    "Real sensors/driver/cleanup paths are unexecuted and not integration-qualified.",
+    "Owner/resource monitoring is sampled and guard-scoped; not global owner absence proof.",
+    "Full detached accounting is conditional on dedicated cgroup membership and available kernel accounting.",
+    "I/O and scheduling can outlast requested5s/120s checks; no hard-real-time/powerloss/diskfull proof.",
+    "Owner-writable local evidence and cooperating processes; no hostile-user isolation."
+  ]
+}
