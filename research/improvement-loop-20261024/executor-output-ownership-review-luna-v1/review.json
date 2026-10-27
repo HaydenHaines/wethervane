@@ -1,0 +1,49 @@
+{
+  "schema": "DirectExecutorOwnershipIndependentReviewLunaV1",
+  "status": "bounded_cooperating_client_contract_supported_with_documented_single_intent_loss_boundary",
+  "reviewed_packet": "../executor-output-ownership-sol-v1",
+  "scope": "source review, AST comparison and bounded temporary-root tests; no owner root, model, science workload or production adoption",
+  "source_pins": {
+    "execution.py": "b9f3a178fdff113d01e95bfe06544105fa550b6e904e283333e1390d1c7e2459",
+    "ledger.py": "d65cea890ecf9b456f8b9625d173f15dac1e7fa94bb618d3407e26f368ee220a",
+    "run_receipts.py": "a7e78b822207109e0257adce9abb6493c53a0d93158177131ade76c0d874e73e",
+    "test_ownership.py": "8047d98aaaacb69fef431a5f5f2db3574cd8044b9cb403e2b6fb9beafc422ded",
+    "evidence.json": "f8e6411dd9c19450df5c6ae92f1c2d640291f95e348b349cb2a510a74a442afb",
+    "README.md": "a7a634be7ab34582872b3f4a2f9069174f6bf5c289244a437d2f7b3d186757d6",
+    "tests-frozen.log": "20cdfcaef05db15f492d561b641deec971a081545a05b74645cca476af8cc003",
+    "ast-comparison.json": "01b8a496ec9f1ea595e509cef4e8601360557e742a82487fe08200a949d75c14",
+    "baseline-queue-v3-execution.py": "ce02f4c4b9be397b299c2219092fdd355db1695798af07c4974bc63cb6bbbc93",
+    "independent-tests.log": "bed21483f71df594d71a2fdd881c4d410f2cf4b21fe0e9345f97a8ade910b8c6",
+    "independent-ast-check.json": "fc3b125831a87506fb76aae00d32cf48f7ba9e0fb5e70bfef7ee0165f1ad819d"
+  },
+  "independent_test": {
+    "command": "nice -n 15 python3 -B -m unittest test_ownership -v",
+    "result": "12 tests passed in 3.208 seconds",
+    "scope": "real small Python children and temporary execution roots only"
+  },
+  "independent_ast_result": {
+    "method": "AST dump comparison of top-level functions in new execution.py against pinned queue-v3 execution.py",
+    "shared_function_count": 37,
+    "changed_original_functions": ["load", "prepare", "registered"],
+    "unchanged_original_functions": 34,
+    "added_helpers": ["overlap", "ownership_binding", "ownership_crash", "ownership_intents", "ownership_sources", "publish_exact"],
+    "launch_and_reservation_note": "launch, lock, inspect, supervise, child_main, terminal validation, recover, stop and collection function ASTs are unchanged; their calls now pass through source-bound load/registered checks. Runtime fixtures cover success, nonzero exit, retry, live worker, unknown recovery and stop cleanup."
+  },
+  "verified_contract": [
+    "Preparation calls across different cycle/job keys serialize through one ownership.lock. Under that lock, immutable-by-convention output and attempt/job claims are scanned before new claims; output path equality or component containment in either direction rejects, while lexical siblings remain available.",
+    "The intent is atomically published/fsynced before attempt/scaffold files. Intent records the exact spec, store binding and job-lock identity. Crashes after intent and at five scaffold stages retain the output/job claim and exact replay repairs only matching content without launch; changed specifications and nested contenders fail.",
+    "Concurrent tests cover both conflict orientations, exact collision, identical exact replay and nonoverlapping siblings. For same conflicting claims only one process succeeds; identical replay returns the same prepared receipt with one intent.",
+    "Store identity binds absolute root and exact execution/ledger/receipt source pins; old/unadopted roots, mixed imports, alternate module paths and source drift fail closed in tests. Existing queue finite-run V1/V2 stores are separate and unchanged."
+  ],
+  "explicit_negative_boundary": {
+    "reproduction": "test_external_deletion_of_sole_intent_is_documented_limit: child exits immediately after publishing the only durable intent and before attempt/output/job claims; external deletion of that intent allows a nested output claim to be prepared.",
+    "interpretation": "A cooperating process crash alone leaves the fsynced intent for repair. Deleting it is an external filesystem mutation; this exact negative case means the registry is not self-healing or independently witnessed if a sole pre-scaffold intent is lost. It is acknowledged, not a passing security property.",
+    "mitigation_needed_if_in_scope": "Use a second independent durable witness or store-level append-only/integrity mechanism; same mutable root and same owner cannot protect against coherent removal/rollback."
+  },
+  "limits": [
+    "The global lock coordinates only successor clients for one execution root. Legacy/original managers, other roots and noncooperating writers can bypass it. No migration/adoption of existing execution roots occurs.",
+    "Output directory containment is an ownership namespace check; it does not sandbox child code that writes outside its declared root. Symlink/namespace mutation after canonical validation and hostile same-user changes are not prevented.",
+    "The registry is owner-writable JSON; no external append-only witness, hostile-owner security, power-loss/fsync ambiguity proof, disk-full/NFS behavior, exhaustive schedule, full original regression suite or scale benchmark is supplied. Pairwise scans are quadratic in retained intents.",
+    "Tests are small fixtures, not production work. No scientific qualification or thousands-cycle capability follows."
+  ]
+}
