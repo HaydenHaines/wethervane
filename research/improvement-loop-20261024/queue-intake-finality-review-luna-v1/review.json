@@ -1,0 +1,37 @@
+{
+  "schema": "QueueIntakeFinalityGapReviewLunaV1",
+  "status": "specific_operational_gap_confirmed_source_only",
+  "scope": "read-only source audit; no queue job, model, fit, owner state or frozen packet was modified",
+  "production_facing_gap": {
+    "name": "snapshot completion has no atomic admission cutoff",
+    "source_counterexample": [
+      "queue-v3 tick() obtains/releases the shared dispatcher lock and returns a LocalExperimentQueueObservationV1 with all_jobs_recorded=true for the currently admitted plans.",
+      "queue-v3 work() tests that snapshot at experiment_queue.py:539–543 and breaks immediately when all_jobs_recorded is true; it then writes a worker receipt with status=finished at lines544–545.",
+      "enqueue() independently acquires the same dispatcher lock at lines169–174. After tick() returns and releases the lock but before work() publishes its worker receipt, another cooperating client can enqueue a new valid plan. No store state marks intake closed, and enqueue has no sealed-epoch rejection.",
+      "The resulting finished receipt contains the earlier all_jobs_recorded=true snapshot while the store now contains newly admitted pending work. A subsequent status/tick will show it; an orchestrator that treats finished as final can stop and strand it."
+    ],
+    "classification": "This is not a false statement that the prior snapshot had completed; it is a missing run-intake lifecycle boundary for callers that need final batch completion or process shutdown. The docs already caution that completion is a current-admissions snapshot and not intake finality. The remaining gap is that no production queue protocol enforces that distinction at the worker boundary.",
+    "why_lifecycle_successor_does_not_close_it": "queue-nonempty-lifecycle-sol-v1/dispatch.py:341–352 defines completion as a current-admissions snapshot; FINDINGS.md:12 and :32 explicitly say new admission reopens work and no intake seal/service protocol exists. Its consumer.py accepts a snapshot only; it is separate research code and is not wired into queue-v3 work()/enqueue()."
+  },
+  "minimal_correct_approach": {
+    "continuous_service": "Keep an idle-capable supervisor alive after a current snapshot becomes terminal. Report idle_waiting_for_intake (not finished), continue polling/waiting for new admissions, and only stop on an explicit durable shutdown/close operation.",
+    "finite_batch": "Add a durable run/epoch row with OPEN/SEALED/FINALIZED state and a monotonic epoch ID. Seal under the same dispatcher lock/SQLite transaction as enqueue. Enqueue must atomically reject admissions to a sealed epoch. Worker may publish finished only after observing SEALED plus zero pending/active/integrity-quarantined work and an explicit nonempty or intentionally empty policy.",
+    "receipt_recovery": "Persist the final completion record or its canonical bytes/hash in the same authoritative SQLite transaction as FINALIZED. A filesystem receipt is an idempotent projection: after crash, regenerate/verify the exact same bytes from the sealed epoch. Do not infer finality from an external JSON marker alone.",
+    "next_epoch": "A new epoch must be an explicit generation transition with its own admission set and completion receipt; late plans cannot silently reopen/alter the already finalized epoch.",
+    "scientific_boundary": "All accepted_execution records remain unqualified. Intake sealing and workflow terminal status must not imply fit success, model promotion, scientific qualification or publication."
+  },
+  "crash_and_race_cases_to_test": [
+    "Enqueue races seal: whichever obtains the shared transaction/lock first decides atomically. If enqueue wins, seal observes the newly admitted plan and cannot finalize; if seal wins, enqueue rejects for that epoch.",
+    "Crash before seal commit: intake remains OPEN; restart resumes normally.",
+    "Crash after SEALED commit before reconciliation/finalization: restart must reconcile admitted reservations and resume toward the same terminal result; no new admission is allowed in the sealed epoch.",
+    "Crash after final DB commit before filesystem receipt: regenerate the identical receipt idempotently.",
+    "Crash after receipt publication: replay validates same epoch/receipt and does not create a second finalization or reopen the epoch.",
+    "Empty sealed epoch: explicit policy must distinguish no work from completed nonempty work; never use vacuous all-terminal=true as accepted execution."
+  ],
+  "limits_and_nonclaims": [
+    "This is a source-interleaving finding; no runtime reproduction or workload benchmark was run.",
+    "Does not establish SQLite power-loss durability, backup/restore, portable recovery, intake policy, or thousands-cycle throughput.",
+    "queue-nonempty-lifecycle-sol-v1 itself explicitly says it is not production integration, a service shutdown predicate or a thousands-cycle proof.",
+    "The separate queue-durable-frontier research prototype documents that direct failed consumers block while grandchildren can wait indefinitely; that is a distinct lifecycle policy gap, not the race analyzed here."
+  ]
+}
