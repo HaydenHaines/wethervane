@@ -1,0 +1,80 @@
+{
+  "canonical_commit": "317ff150f012871aec6c71ae680d7e76eec5b4db",
+  "scope": "read-only compatibility gaps; no owner import/publication/code change",
+  "test_command": "nice -n 15 node --experimental-strip-types --test tests/house-live-result.test.mjs tests/house-live-joint-check.test.mjs tests/house-live-comparison.test.mjs tests/house-live-publication.test.mjs",
+  "test_observation": {
+    "exit_code": 0,
+    "pass": 38,
+    "fail": 0,
+    "skip": 0,
+    "duration_ms": 1084.33738,
+    "warning": "MODULE_TYPELESS_PACKAGE_JSON reparsing"
+  },
+  "pins": {
+    "docs/development/house-live-frontend-handoff-20261025.json": {
+      "sha256": "a3d7eb12f43f73d026f41efc26542dd77b69c1599efc221e4d134d44c9754891",
+      "size": 16025
+    },
+    "docs/development/house-live-contract-feedback-20261025.json": {
+      "sha256": "f5e61bc3f058da3014372d34288aae0e45346d056b7a147c5758a2286d71d57a",
+      "size": 4247
+    },
+    "lib/house-live-result.ts": {
+      "sha256": "27d071b9eee2d0bb52ab0755c41b0b3ca0fa218727a7726ecda5e4ee23ddf5ad",
+      "size": 19229
+    },
+    "lib/house-live-publication.ts": {
+      "sha256": "42388e7042bc7570b23785535b79ff815a16e8c5117d3728909c9e3bc309756d",
+      "size": 27382
+    },
+    "lib/house-live-native-qualification.ts": {
+      "sha256": "112bd1192404a4e4597013cbb5e652bcee1273cd70aabb66661f959f11085b94",
+      "size": 1758
+    },
+    "lib/house-live-comparison.ts": {
+      "sha256": "9fbba0856e641034a90f66a1dd58aea430d81d91ef8f93311c949ed47a97acc4",
+      "size": 10035
+    },
+    "lib/house-live-joint-check.ts": {
+      "sha256": "7d64e2d6dad5fb37f470a51316a57002bad47dd34800f1c7b93ca765dfacf022",
+      "size": 7735
+    },
+    "scripts/house_live_evidence.mjs": {
+      "sha256": "fd05542d11002ba87f5fb2b99bbd062952f5f5aaa8abab33fe1a6649402711dd",
+      "size": 6125
+    },
+    "scripts/house_live_conditional_storage.py": {
+      "sha256": "85e2c08dd6a9d44b0cf75040671f0947c12eba784c0ee695bffcffc3e845f733",
+      "size": 19237
+    },
+    "scripts/import_house_live.mjs": {
+      "sha256": "a94b20c8cf1a8b887bde38972b66acc5e9c30df522a2e201373e4119a019c702",
+      "size": 18198
+    },
+    "scripts/decode_house_live_joint.py": {
+      "sha256": "1edf6a075d83d2b4973df56226bab9e7e8735233ed7c4f92660f0b3c8fa16900",
+      "size": 22413
+    }
+  },
+  "findings_sha256": "dfbce722e3d8e565c9543302fde9c269b2013673d4ee9c8040447f890af63a1f",
+  "weighted_research_source_pins": {
+    "lib/house-weighted-research-stage.ts": {
+      "commit": "99ff6eb",
+      "sha256": "a025b693a17218819d572f292ab0a16a3ed055de193402e641776b07ec9426c4",
+      "bytes": 3797,
+      "git_blob": "294852701e7ae1408733ca44ccd924d488b3c09a"
+    },
+    "lib/house-weighted-research-check.ts": {
+      "commit": "99ff6eb",
+      "sha256": "78ddc1c5caea7e5d3857e1a74e788826b17d48efc5eda3a1b714d35c81a838c8",
+      "bytes": 7179,
+      "git_blob": "aa37943259e2e87f2a17b0c609fc05987a3f66fb"
+    },
+    "scripts/decode_house_weighted_stage.py": {
+      "commit": "99ff6eb",
+      "sha256": "bea843c1fc32d907feda1db837bed9899545e1c18ea781b9cd36ffa2de465141",
+      "bytes": 8736,
+      "git_blob": "1a5c97b1fc2e2a09789644d3216f627cc734dc40"
+    }
+  }
+}
