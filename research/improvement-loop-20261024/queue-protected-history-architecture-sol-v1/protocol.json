@@ -1,0 +1,29 @@
+{
+  "status": "proposed_not_implemented",
+  "authority_anchor": [
+    "domain_uuid",
+    "sequence",
+    "head_hash",
+    "source_roster_digest",
+    "policy_digest",
+    "lease_generation"
+  ],
+  "methods": {
+    "admit": "expected_head+idempotency_key+canonical_plan+protected_object_descriptors; atomic owner/frontier commit",
+    "get_head": "fresh nonce-bound authenticated head and current generation",
+    "get_committed": "idempotency lookup returns exact bytes/status or unknown; no inferred success",
+    "reserve": "CAS expected generation/head and transactional capacity; committed exact attempt/binding",
+    "release": "authenticated terminal/output/archive/cleanup evidence; atomic descendant/frontier transition",
+    "rebuild_projection": "replay from independently anchored committed prefix; no authority from projection"
+  },
+  "unknown_behavior": "stop new launches; retain active reservation and exact evidence; no automatic retry/cleanup assumption",
+  "local_reference_trust": "trusted_mutable_same_uid_reference_only",
+  "not_claimed": [
+    "protected storage implemented",
+    "source/scientific admission",
+    "immediate unused mutable-history tamper detection",
+    "power-loss guarantees",
+    "constant-time whole dispatch",
+    "production readiness"
+  ]
+}
